@@ -4,8 +4,8 @@ Advanced Combat Tracker の FFXIV向けプラグインの詰合せです。
 スペスペ・ウルスカ・TTSゆっくりをまとめたものです。これ自体が独立したプラグインではありません。
 
 ## 最新リリース
-(正式版)[https://github.com/anoyetta/ACT.Hojoring/releases/latest]  
-(プレリリース板)[https://github.com/anoyetta/ACT.Hojoring/releases]
+**(release)[https://github.com/anoyetta/ACT.Hojoring/releases/latest]**
+(pre-releease)[https://github.com/anoyetta/ACT.Hojoring/releases]
 
 ## ライセンス
 Copyright(C) 2017, anoyetta all rights reserved.
