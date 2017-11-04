@@ -10,19 +10,20 @@ Advanced Combat Tracker の FFXIV向けプラグインの詰合せです。
 ## インストール
 1. .NET Framework 4.7 をインストールする  
 https://www.microsoft.com/en-us/download/details.aspx?id=55170  
-から .NET Framework を入手してインストールする
+から .NET Framework を入手してインストールします。
 
 2. 最新版を取得する  
-最新リリースからダウンロードする
+最新リリースからダウンロードします。
 
 3. 解凍する  
-ダウンロードしたプラグイン一式を解凍し任意のフォルダに配置する。
+ダウンロードしたプラグイン一式を解凍し任意のフォルダに配置します。
 
 4. ACTに追加する  
-ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
+ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
   * ACT.SpecialSpellTimer.dll
   * ACT.UltraScouter.dll
-  * ACT.TTSYukkuri.dll
+  * ACT.TTSYukkuri.dll
+必要なものだけ登録してください。もちろんすべて登録しても問題ありません。  
 
 ## ライセンス
 Copyright(C) 2017, anoyetta all rights reserved.  
