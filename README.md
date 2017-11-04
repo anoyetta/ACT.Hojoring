@@ -20,11 +20,10 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 
 4. ACTに追加する  
 ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
-  * ACT.SpecialSpellTimer.dll
+必要なものだけ登録してください。もちろんすべて登録しても問題ありません。  
+  * ACT.SpecialSpellTimer.dll
   * ACT.UltraScouter.dll
   * ACT.TTSYukkuri.dll
-
-必要なものだけ登録してください。もちろんすべて登録しても問題ありません。  
 
 ## ライセンス
 Copyright(C) 2017, anoyetta all rights reserved.  
