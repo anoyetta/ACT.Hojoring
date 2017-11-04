@@ -18,7 +18,7 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 3. 解凍する  
 ダウンロードしたプラグイン一式を解凍し任意のフォルダに配置します。
 
-  3.1 Dicord への通知を使用する場合
+  3.1 Dicord への通知を使用する場合  
   lib\libopus.dll, libsodium.dll を **ACT本体と同じフォルダ** にコピーします。
 
 4. ACTに追加する
