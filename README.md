@@ -9,7 +9,7 @@ Advanced Combat Tracker の FFXIV向けプラグインの詰合せです。
 
 ## インストール
 1. .NET Framework 4.7 をインストールする  
-https://www.microsoft.com/en-us/download/details.aspx?id=55170
+https://www.microsoft.com/en-us/download/details.aspx?id=55170  
 から .NET Framework を入手してインストールする
 
 2. 最新版を取得する
