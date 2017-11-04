@@ -8,7 +8,7 @@ Copyright(C) 2017, anoyetta all rights reserved.
 (LICENSE)
 
 ## お問合わせ
-main anoyetta (at) gmail.com  
+mail anoyetta (at) gmail.com  
 twitter @anoyetta  
 discord https://discord.gg/n6Mut3F  
 まで。
