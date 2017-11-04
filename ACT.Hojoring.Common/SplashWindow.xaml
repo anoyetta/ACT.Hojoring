@@ -1,0 +1,120 @@
+﻿<Window
+  x:Class="ACT.Hojoring.Common.SplashWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="clr-namespace:ACT.Hojoring"
+  mc:Ignorable="d"
+  Title="ACT.Hojoring"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  Topmost="True"
+  AllowsTransparency="True"
+  WindowStyle="None"
+  ShowInTaskbar="False"
+  Background="Transparent"
+  Height="200"
+  Width="500"
+  WindowStartupLocation="CenterScreen">
+  <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <Grid>
+      <Label x:Name="TitleLabel" Content="ACT.Hojoring" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="60">
+        <Label.Effect>
+          <DropShadowEffect
+          Opacity="1"
+          Direction="0"
+          ShadowDepth="0"
+          Color="Navy"
+          BlurRadius="6" />
+        </Label.Effect>
+      </Label>
+      <Label
+        Content="{Binding ElementName=TitleLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=TitleLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=TitleLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=TitleLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=TitleLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
+      <Label
+        Content="{Binding ElementName=TitleLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=TitleLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=TitleLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=TitleLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=TitleLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
+      <Label
+        Content="{Binding ElementName=TitleLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=TitleLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=TitleLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=TitleLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=TitleLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
+      <Label
+        Content="{Binding ElementName=TitleLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=TitleLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=TitleLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=TitleLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=TitleLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
+      <Label
+        Content="{Binding ElementName=TitleLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=TitleLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=TitleLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=TitleLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=TitleLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
+    </Grid>
+    <Grid HorizontalAlignment="Right">
+      <Label x:Name="VersionLabel" Content="v1.0.0" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="40">
+        <Label.Effect>
+          <DropShadowEffect
+          Opacity="1"
+          Direction="0"
+          ShadowDepth="0"
+          Color="Navy"
+          BlurRadius="6" />
+        </Label.Effect>
+      </Label>
+      <Label
+        Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
+      <Label
+        Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
+      <Label
+        Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
+      <Label
+        Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
+      <Label
+        Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
+    </Grid>
+  </StackPanel>
+</Window>
