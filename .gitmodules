@@ -1,0 +1,12 @@
+[submodule "FFXIV.Framework"]
+	path = FFXIV.Framework
+	url = https://github.com/anoyetta/FFXIV.Framework.git
+[submodule "ACT.TTSYukkuri"]
+	path = ACT.TTSYukkuri
+	url = https://github.com/anoyetta/ACT.TTSYukkuri.git
+[submodule "ACT.SpecialSpellTimer"]
+	path = ACT.SpecialSpellTimer
+	url = https://github.com/anoyetta/ACT.SpecialSpellTimer.git
+[submodule "ACT.UltraScouter"]
+	path = ACT.UltraScouter
+	url = https://github.com/anoyetta/ACT.UltraScouter.git

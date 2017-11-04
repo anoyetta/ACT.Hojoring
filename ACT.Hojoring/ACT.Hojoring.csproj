@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CC751668-0CB9-4BDE-AF31-BA99DA079E59}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ACT.Hojoring</RootNamespace>
+    <AssemblyName>ACT.Hojoring</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ACT.SpecialSpellTimer\ACT.SpecialSpellTimer.Core\ACT.SpecialSpellTimer.Core.csproj">
+      <Project>{ea12d333-f0ed-4524-8bad-b986b0137ea5}</Project>
+      <Name>ACT.SpecialSpellTimer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.SpecialSpellTimer\ACT.SpecialSpellTimer\ACT.SpecialSpellTimer.csproj">
+      <Project>{ccf72089-92fa-4afb-bde7-869ca0e394f9}</Project>
+      <Name>ACT.SpecialSpellTimer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj">
+      <Project>{c3fa9195-3381-4622-97eb-d0e1ca7c8b14}</Project>
+      <Name>XIVDBDownloader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.TTSYukkuri\ACT.TTSYukkuri.Core\ACT.TTSYukkuri.Core.csproj">
+      <Project>{9a615561-6cec-4857-870f-88f6ff07764c}</Project>
+      <Name>ACT.TTSYukkuri.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.TTSYukkuri\ACT.TTSYukkuri\ACT.TTSYukkuri.csproj">
+      <Project>{f20b280b-35b9-4462-a71e-e187cc2a60e7}</Project>
+      <Name>ACT.TTSYukkuri</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.UltraScouter\ACT.UltraScouter.Core\ACT.UltraScouter.Core.csproj">
+      <Project>{6d17f2c1-f9bd-4c9c-96c9-1a60ad975e4b}</Project>
+      <Name>ACT.UltraScouter.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.UltraScouter\ACT.UltraScouter\ACT.UltraScouter.csproj">
+      <Project>{dda65b79-1b89-4223-ba81-c748755057e6}</Project>
+      <Name>ACT.UltraScouter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework.Dialog.Wrapper\FFXIV.Framework.Dialog.Wrapper.csproj">
+      <Project>{dd7824d5-f74e-4412-9e87-c7b89e1c6165}</Project>
+      <Name>FFXIV.Framework.Dialog.Wrapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework.Dialog\FFXIV.Framework.Dialog.csproj">
+      <Project>{5fc72c62-16d6-4f95-aa45-c7ad5f8a7901}</Project>
+      <Name>FFXIV.Framework.Dialog</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework.TTS.Common\FFXIV.Framework.TTS.Common.csproj">
+      <Project>{18ce9b28-4f0b-45d1-ae3f-14f3982f0e59}</Project>
+      <Name>FFXIV.Framework.TTS.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework.TTS.Server\FFXIV.Framework.TTS.Server.csproj">
+      <Project>{4cb004be-8162-4601-8f98-162d4f1c0fa1}</Project>
+      <Name>FFXIV.Framework.TTS.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework.TTS\FFXIV.Framework.TTS.csproj">
+      <Project>{b796d164-4154-4ce5-aaa4-7ff0365fbd92}</Project>
+      <Name>FFXIV.Framework.TTS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
+      <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>
+      <Name>FFXIV.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>IF  "$(ConfigurationName)" == "Debug" (
+   EXIT /B
+)
+
+DEL /F *.xml
+DEL /F *.pdb
+</PostBuildEvent>
+  </PropertyGroup>
+</Project>
