@@ -4,14 +4,24 @@ $startdir=Get-Location
 $sln=Get-Item *.sln
 
 'ÅúReplace License Key'
-$codefile = ".\ACT.TTSYukkuri.Core\Yukkuri\AquesTalk.cs"
-$codefileBack = ".\ACT.TTSYukkuri.Core\Yukkuri\AquesTalk.cs.back"
+$keyfile = ".\ACT.TTSYukkuri\AquesTalk.key"
+$codefile = ".\ACT.TTSYukkuri\ACT.TTSYukkuri.Core\Yukkuri\AquesTalk.cs"
+$codefileBack = ".\ACT.TTSYukkuri\ACT.TTSYukkuri.Core\Yukkuri\AquesTalk.cs.back"
 
-if (Test-Path .\AquesTalk.key) {
+if (Test-Path $keyfile) {
     $replacement = "#DEVELOPER_KEY_IS_HERE#"
-    $key = $(Get-Content .\AquesTalk.key)
-    Copy-Item -Force $codefile $codefileBack
-    (Get-Content $codefile) | % { $_ -replace $replacement, $key } > $codefile
+
+    if (Test-Path $codefile) {
+        $key = $(Get-Content $keyfile)
+        Copy-Item -Force $codefile $codefileBack
+        (Get-Content $codefile) | % { $_ -replace $replacement, $key } > $codefile
+    } else {
+        'Å~error:AquesTalk.cs not found.'
+        exit
+    }
+} else {
+    'Å~error:License key not found.'
+    exit
 }
 
 'ÅúBuild XIVDBDownloader Debug'
