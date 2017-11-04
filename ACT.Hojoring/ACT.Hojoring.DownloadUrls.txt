@@ -1,3 +1,0 @@
-﻿ACT.TTSYukkuri https://github.com/anoyetta/ACT.Hojoring/releases/latest
-ACT.SpecialSpellTimer https://github.com/anoyetta/ACT.Hojoring/releases/latest
-ACT.UltraScouter https://github.com/anoyetta/ACT.Hojoring/releases/latest
