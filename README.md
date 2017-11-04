@@ -25,8 +25,8 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
   * ACT.TTSYukkuri.dll
 
 ## ライセンス
-Copyright(C) 2017, anoyetta all rights reserved.
-(LICENSE)
+Copyright(C) 2017, anoyetta all rights reserved.  
+[3-clause BSD license](LICENSE)
 
 ## お問合わせ
 mail anoyetta (at) gmail.com  
