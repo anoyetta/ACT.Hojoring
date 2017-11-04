@@ -12,13 +12,13 @@ Advanced Combat Tracker の FFXIV向けプラグインの詰合せです。
 https://www.microsoft.com/en-us/download/details.aspx?id=55170  
 から .NET Framework を入手してインストールする
 
-2. 最新版を取得する
+2. 最新版を取得する  
 最新リリースからダウンロードする
 
-3. 解凍する
+3. 解凍する  
 ダウンロードしたプラグイン一式を解凍し任意のフォルダに配置する。
 
-4. ACTに追加する
+4. ACTに追加する  
 ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
 * ACT.SpecialSpellTimer.dll
 * ACT.UltraScouter.dll
