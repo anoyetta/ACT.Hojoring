@@ -36,3 +36,14 @@ mail anoyetta (at) gmail.com
 twitter @anoyetta  
 discord https://discord.gg/n6Mut3F  
 まで。
+
+### なんかエラー出た
+作者に問合せる場合は、下記の情報を添えて質問してください。
+* FFXIV_ACT_Plugin.dll のバージョン
+* ACT.SpecialSpellTimer.dll のバージョン
+* ACT.UltraScouter.dll のバージョン
+* ACT.TTSYukkuri.dll のバージョン
+* エラーダイアログのスクリーンショット
+* ACT本体のログファイル
+* ACT.SpecialSpellTimer のログファイル
+* ACT.UltraScouter のログファイル
