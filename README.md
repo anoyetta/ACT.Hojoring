@@ -19,7 +19,7 @@ https://www.microsoft.com/en-us/download/details.aspx?id=55170
 ダウンロードしたプラグイン一式を解凍し任意のフォルダに配置します。
 
 4. ACTに追加する  
-ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
+ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
 必要なものだけ登録してください。もちろんすべて登録しても問題ありません。  
   * ACT.SpecialSpellTimer.dll
   * ACT.UltraScouter.dll
