@@ -32,18 +32,30 @@ Copyright(C) 2017, anoyetta all rights reserved.
 [3-clause BSD license](LICENSE)
 
 ## お問合わせ
-mail anoyetta (at) gmail.com  
-twitter @anoyetta  
-discord https://discord.gg/n6Mut3F  
-まで。
-
 ### なんかエラー出た
-作者に問合せる場合は、下記の情報を添えて質問してください。
+作者に尋ねる場合は、下記の情報を添えてください。
 * FFXIV_ACT_Plugin.dll のバージョン
 * ACT.SpecialSpellTimer.dll のバージョン
 * ACT.UltraScouter.dll のバージョン
-* ACT.TTSYukkuri.dll のバージョン
-* エラーダイアログのスクリーンショット
-* ACT本体のログファイル
+* ACT.TTSYukkuri.dll のバージョン  
+* ACT本体のログファイル  
+%APPDATA%\Advanced Combat Traker\Advanced Combat Tracker.log
 * ACT.SpecialSpellTimer のログファイル
 * ACT.UltraScouter のログファイル
+* ACT.TTSYukkuri のログファイル  
+%APPDATA%\anoyetta\ACT\log\ACT.Hojoring.YYYY-MM-DD.log  
+3プラグインのログは共通になっています。
+* （あれば）エラーダイアログのスクリーンショット
+
+### 問合せフォーム
+[https://github.com/anoyetta/ACT.Hojoring/issues/new](https://github.com/anoyetta/ACT.Hojoring/issues/new)  
+からチケットを登録してください。[issues](https://github.com/anoyetta/ACT.Hojoring/issues) から既存の課題、現在の状況を確認出来ます。  
+重複する質問はご遠慮ください。
+
+### 連絡先
+discord:  [ACT.SST Forum](https://discord.gg/n6Mut3F)  
+mail:     anoyetta(at)gmail.com  
+twitter:  [@anoyetta](https://twitter.com/anoyetta)  
+まで。  
+基本的に issues からお願いします。issues の課題から優先的に対応します。  
+どうしても直接連絡したい場合はなるべく discord を使用してください。 
