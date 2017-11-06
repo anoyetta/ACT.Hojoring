@@ -9,21 +9,21 @@ $codefile = ".\ACT.TTSYukkuri\ACT.TTSYukkuri.Core\Yukkuri\AquesTalk.cs"
 $codefileBack = ".\ACT.TTSYukkuri\ACT.TTSYukkuri.Core\Yukkuri\AquesTalk.cs.back"
 
 if (Test-Path $keyfile) {
-		$replacement = "#DEVELOPER_KEY_IS_HERE#"
+    $replacement = "#DEVELOPER_KEY_IS_HERE#"
 
-		if (Test-Path $codefile) {
-				$key = $(Get-Content $keyfile)
-				Copy-Item -Force $codefile $codefileBack
-				(Get-Content $codefile) | % { $_ -replace $replacement, $key } > $codefile
-		} else {
-				'×error:AquesTalk.cs not found.'
-				Read-Host "終了するには何かキーを教えてください..."
-				exit
-		}
+    if (Test-Path $codefile) {
+        $key = $(Get-Content $keyfile)
+        Copy-Item -Force $codefile $codefileBack
+        (Get-Content $codefile) | % { $_ -replace $replacement, $key } > $codefile
+    } else {
+        '×error:AquesTalk.cs not found.'
+        Read-Host "終了するには何かキーを教えてください..."
+        exit
+    }
 } else {
-		'×error:License key not found.'
-		Read-Host "終了するには何かキーを教えてください..."
-		exit
+    '×error:License key not found.'
+    Read-Host "終了するには何かキーを教えてください..."
+    exit
 }
 
 '●Build XIVDBDownloader Debug'
@@ -40,28 +40,28 @@ if (Test-Path $keyfile) {
 
 '●Restore Backup'
 if (Test-Path $codefileBack) {
-		Copy-Item -Force $codefileBack $codefile
+    Copy-Item -Force $codefileBack $codefile
 }
 
 '●Deploy Release'
 if (Test-Path .\ACT.Hojoring\bin\Release) {
-		Set-Location .\ACT.Hojoring\bin\Release
+    Set-Location .\ACT.Hojoring\bin\Release
 
-		'●XIVDBDownloader の出力を取得する'
-		if (Test-Path .\tools) {
-				Remove-Item .\tools -Force -Recurse
-		}
+    '●XIVDBDownloader の出力を取得する'
+    if (Test-Path .\tools) {
+        Remove-Item .\tools -Force -Recurse
+    }
 
-		Copy-Item -Recurse -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\
+    Copy-Item -Recurse -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\
 
-		'●配布ファイルをアーカイブする'
-		if (Test-Path ACT.Hojoring.zip) {
-				Remove-Item ACT.Hojoring.zip -Force
-		}
+    '●配布ファイルをアーカイブする'
+    if (Test-Path ACT.Hojoring.zip) {
+        Remove-Item ACT.Hojoring.zip -Force
+    }
 
-		$files = Get-ChildItem -Path .\ -Exclude *.zip
-		Compress-Archive -CompressionLevel Optimal -Path $files -DestinationPath ACT.Hojoring.zip
-		Set-Location $startdir
+    $files = Get-ChildItem -Path .\ -Exclude *.zip
+    Compress-Archive -CompressionLevel Optimal -Path $files -DestinationPath ACT.Hojoring.zip
+    Set-Location $startdir
 }
 
 Read-Host "終了するには何かキーを教えてください..."
