@@ -1,3 +1,11 @@
+Start-Transcript make.log
+
+function EndMake() {
+  Stop-Transcript
+  Read-Host "終了するには何かキーを教えてください..."
+  exit
+}
+
 $devenv="C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\devenv.com"
 $startdir=Get-Location
 
@@ -17,13 +25,11 @@ if (Test-Path $keyfile) {
         (Get-Content $codefile) | % { $_ -replace $replacement, $key } > $codefile
     } else {
         '×error:AquesTalk.cs not found.'
-        Read-Host "終了するには何かキーを教えてください..."
-        exit
+        EndMake
     }
 } else {
     '×error:License key not found.'
-    Read-Host "終了するには何かキーを教えてください..."
-    exit
+    EndMake
 }
 
 '●Build XIVDBDownloader Debug'
@@ -64,4 +70,4 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Set-Location $startdir
 }
 
-Read-Host "終了するには何かキーを教えてください..."
+EndMake
