@@ -58,7 +58,8 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         Remove-Item .\tools -Force -Recurse
     }
 
-    Copy-Item -Recurse -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\
+    Copy-Item -Recurse -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\ -Exclude *.pdb
+    Remove-Item -Recurse * -Include *.pdb
 
     '●配布ファイルをアーカイブする'
     if (Test-Path ACT.Hojoring.zip) {
