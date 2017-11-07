@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -13,6 +13,8 @@ namespace ACT.Hojoring.Common
     /// </summary>
     public partial class SplashWindow : Window
     {
+        public static Version HojoringVersion => Assembly.GetExecutingAssembly()?.GetName()?.Version;
+
         public SplashWindow()
         {
             this.InitializeComponent();
@@ -20,14 +22,10 @@ namespace ACT.Hojoring.Common
             this.ToNonActive();
             this.ToTransparent();
 
-            var asm = Assembly.GetExecutingAssembly();
-            if (asm != null)
+            var ver = HojoringVersion;
+            if (ver != null)
             {
-                var ver = asm.GetName().Version;
-                if (ver != null)
-                {
-                    this.VersionLabel.Content = $"v{ver.Major}.{ver.Minor}.{ver.Revision}";
-                }
+                this.VersionLabel.Content = $"v{ver.Major}.{ver.Minor}.{ver.Revision}";
             }
 
             this.Loaded += (x, y) =>

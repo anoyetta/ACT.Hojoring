@@ -1,4 +1,4 @@
-﻿<Window
+<Window
   x:Class="ACT.Hojoring.Common.SplashWindow"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -21,6 +21,13 @@
   Height="200"
   Width="500"
   WindowStartupLocation="CenterScreen">
+
+  <Window.LayoutTransform>
+    <ScaleTransform
+      ScaleX="0.8"
+      ScaleY="0.8" />
+  </Window.LayoutTransform>
+  
   <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
     <Grid>
       <Label x:Name="TitleLabel" Content="ACT.Hojoring" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="60">

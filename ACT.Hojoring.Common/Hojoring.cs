@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
@@ -21,6 +22,15 @@ namespace ACT.Hojoring.Common
             }
 
             isSplashShown = true;
+
+            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (Directory.GetFiles(
+                dir, 
+                "*NOSPLASH*",
+                SearchOption.TopDirectoryOnly).Length > 0)
+            {
+                return;
+            }
 
             var window = default(SplashWindow);
 
