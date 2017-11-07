@@ -53,7 +53,7 @@ Copyright(C) 2017, anoyetta all rights reserved.
 重複する質問はご遠慮ください。
 
 ### 連絡先
-discord:  [ACT.SST Forum](https://discord.gg/n6Mut3F)  
+discord:  [Hojoring](https://discord.gg/n6Mut3F)  
 mail:     anoyetta(at)gmail.com  
 twitter:  [@anoyetta](https://twitter.com/anoyetta)  
 まで。  
