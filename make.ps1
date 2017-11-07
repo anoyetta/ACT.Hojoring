@@ -13,7 +13,7 @@ $sln = Get-Item *.sln
 $archives = Get-Item .\archives\
 
 'ÅúVersion'
-$versionContent = $(Get-Content "@MasterVersion.txt")
+$versionContent = $(Get-Content "@MasterVersion.txt").Trim("\r").Trim("\n")
 $version = $versionContent.Replace(".X", ".0")
 $versionShort = $versionContent.Replace(".X", "")
 $masterVersionCS = "MasterVersion.cs"
