@@ -6,10 +6,28 @@ function EndMake() {
   exit
 }
 
-$devenv="C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\devenv.com"
-$startdir=Get-Location
+$devenv = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\devenv.com"
+$startdir = Get-Location
+$7z = Get-Item .\tools\7za.exe
+$sln = Get-Item *.sln
+$archives = Get-Item .\archives\
 
-$sln=Get-Item *.sln
+'●Version'
+$versionContent = $(Get-Content "@MasterVersion.txt")
+$version = $versionContent.Replace(".X", ".0")
+$versionShort = $versionContent.Replace(".X", "")
+$masterVersionCS = "MasterVersion.cs"
+$masterVersionTemp = $masterVersionCS + ".tmp"
+
+Write-Output "***"
+Write-Output ("*** ACT.Hojoring v" + $versionShort + " ***")
+Write-Output "***"
+
+# MasterVersion.cs のバージョンを置換する
+(Get-Content $masterVersionCS) | % { $_ -replace "#MASTER_VERSION#", $version } > $masterVersionTemp
+
+# MasterVersion.cs.tmp をコピーする
+Copy-Item -Force $masterVersionTemp ".\ACT.Hojoring.Common\Version.cs"
 
 '●Replace License Key'
 $keyfile = ".\ACT.TTSYukkuri\AquesTalk.key"
@@ -51,24 +69,43 @@ if (Test-Path $codefileBack) {
 
 '●Deploy Release'
 if (Test-Path .\ACT.Hojoring\bin\Release) {
-    Set-Location .\ACT.Hojoring\bin\Release
+  Set-Location .\ACT.Hojoring\bin\Release
 
-    '●XIVDBDownloader の出力を取得する'
-    if (Test-Path .\tools) {
-        Remove-Item .\tools -Force -Recurse
-    }
+  '●XIVDBDownloader の出力を取得する'
+  if (Test-Path .\tools) {
+    Remove-Item .\tools -Force -Recurse
+  }
 
-    Copy-Item -Recurse -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\ -Exclude *.pdb
-    Remove-Item -Recurse * -Include *.pdb
+  Copy-Item -Recurse -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\ -Exclude *.pdb
+  Remove-Item -Recurse * -Include *.pdb
 
-    '●配布ファイルをアーカイブする'
-    if (Test-Path ACT.Hojoring.zip) {
-        Remove-Item ACT.Hojoring.zip -Force
-    }
+  '●配布ファイルをアーカイブする'
+  $archive = "ACT.Hojoring-v" + $versionShort
+  $archiveZip = $archive + ".zip"
+  $archive7z = $archive + ".7z"
 
-    $files = Get-ChildItem -Path .\ -Exclude *.zip
-    Compress-Archive -CompressionLevel Optimal -Path $files -DestinationPath ACT.Hojoring.zip
-    Set-Location $startdir
+  if (Test-Path $archiveZip) {
+    Remove-Item $archiveZip -Force
+  }
+  
+  if (Test-Path $archive7z) {
+    Remove-Item $archive7z -Force
+  }
+
+  '●to 7z'
+  & $7z a -r "-xr!*.zip" "-xr!*.7z" "-xr!*.pdb" "-xr!archives\" $archive7z *
+
+  '●to zip'
+  & $7z a -r "-xr!*.zip" "-xr!*.7z" "-xr!*.pdb" "-xr!archives\" $archiveZip *
+
+  Move-Item $archiveZip $archives -Force
+  Move-Item $archive7z $archives -Force
+
+  Set-Location $startdir
 }
+
+Write-Output "***"
+Write-Output ("*** ACT.Hojoring v" + $versionShort + " Done! ***")
+Write-Output "***"
 
 EndMake
