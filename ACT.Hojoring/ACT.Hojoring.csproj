@@ -106,14 +106,6 @@
       <Project>{dda65b79-1b89-4223-ba81-c748755057e6}</Project>
       <Name>ACT.UltraScouter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework.Dialog.Wrapper\FFXIV.Framework.Dialog.Wrapper.csproj">
-      <Project>{dd7824d5-f74e-4412-9e87-c7b89e1c6165}</Project>
-      <Name>FFXIV.Framework.Dialog.Wrapper</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework.Dialog\FFXIV.Framework.Dialog.csproj">
-      <Project>{5fc72c62-16d6-4f95-aa45-c7ad5f8a7901}</Project>
-      <Name>FFXIV.Framework.Dialog</Name>
-    </ProjectReference>
     <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework.TTS.Common\FFXIV.Framework.TTS.Common.csproj">
       <Project>{18ce9b28-4f0b-45d1-ae3f-14f3982f0e59}</Project>
       <Name>FFXIV.Framework.TTS.Common</Name>

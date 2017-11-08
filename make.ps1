@@ -1,9 +1,9 @@
 Start-Transcript make.log
 
 function EndMake() {
-  Stop-Transcript
-  Read-Host "終了するには何かキーを教えてください..."
-  exit
+    Stop-Transcript
+    Read-Host "終了するには何かキーを教えてください..."
+    exit
 }
 
 $devenv = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\devenv.com"
@@ -11,6 +11,7 @@ $startdir = Get-Location
 $7z = Get-Item .\tools\7za.exe
 $sln = Get-Item *.sln
 $archives = Get-Item .\archives\
+$libz = Get-Item .\tools\libz.exe
 
 '●Version'
 $versionContent = $(Get-Content "@MasterVersion.txt").Trim("\r").Trim("\n")
@@ -29,29 +30,6 @@ Write-Output "***"
 # MasterVersion.cs.tmp をコピーする
 Copy-Item -Force $masterVersionTemp ".\ACT.Hojoring.Common\Version.cs"
 
-<#
-'●Replace License Key'
-$keyfile = ".\ACT.TTSYukkuri\AquesTalk.key"
-$codefile = ".\ACT.TTSYukkuri\ACT.TTSYukkuri.Core\Yukkuri\AquesTalk.cs"
-$codefileBack = ".\ACT.TTSYukkuri\ACT.TTSYukkuri.Core\Yukkuri\AquesTalk.cs.back"
-
-if (Test-Path $keyfile) {
-    $replacement = "#DEVELOPER_KEY_IS_HERE#"
-
-    if (Test-Path $codefile) {
-        $key = $(Get-Content $keyfile)
-        Copy-Item -Force $codefile $codefileBack
-        (Get-Content $codefile) | % { $_ -replace $replacement, $key } > $codefile
-    } else {
-        '×error:AquesTalk.cs not found.'
-        EndMake
-    }
-} else {
-    '×error:License key not found.'
-    EndMake
-}
-#>
-
 '●Build XIVDBDownloader Debug'
 & $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Debug
 
@@ -64,48 +42,119 @@ if (Test-Path $keyfile) {
 '●Build ACT.Hojoring Release'
 & $devenv $sln /nologo /project ACT.Hojoring\ACT.Hojoring.csproj /Rebuild Release
 
-<#
-'●Restore Backup'
-if (Test-Path $codefileBack) {
-    Copy-Item -Force $codefileBack $codefile
-}
-#>
-
 '●Deploy Release'
 if (Test-Path .\ACT.Hojoring\bin\Release) {
-  Set-Location .\ACT.Hojoring\bin\Release
+    Set-Location .\ACT.Hojoring\bin\Release
 
-  '●XIVDBDownloader の出力を取得する'
-  if (Test-Path .\tools) {
-    Remove-Item .\tools -Force -Recurse
-  }
+    '●Hojoring.dll を削除する'
+    Remove-Item -Force ACT.Hojoring.dll
 
-  Copy-Item -Recurse -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\ -Exclude *.pdb
-  Remove-Item -Recurse * -Include *.pdb
+    '●XIVDBDownloader の出力を取得する'
+    if (Test-Path .\tools) {
+        Remove-Item .\tools -Force -Recurse
+    }
 
-  '●配布ファイルをアーカイブする'
-  $archive = "ACT.Hojoring-v" + $versionShort
-  $archiveZip = $archive + ".zip"
-  $archive7z = $archive + ".7z"
+    Copy-Item -Recurse -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\ -Exclude *.pdb
+    Remove-Item -Recurse * -Include *.pdb
 
-  if (Test-Path $archiveZip) {
-    Remove-Item $archiveZip -Force
-  }
+    '●不要なロケールを削除する'
+    $locales = @(
+        "de",
+        "en",
+        "es",
+        "fr",
+        "it",
+        "ja",
+        "ko",
+        "ja",
+        "ru",
+        "zh-Hans",
+        "zh-Hant"
+    )
+
+    foreach ($locale in $locales) {
+        if (Test-Path $locale) {
+            Remove-Item -Force -Recurse $locale
+        }
+    }
+    
+    '●TTSYukkuri のAssemblyをマージする'
+    $dlls = @(
+        "DSharpPlus.dll",
+        "DSharpPlus.VoiceNext.dll",
+        "DSharpPlus.CommandsNext.dll",
+        "ReactiveProperty.dll",
+        "ReactiveProperty.NET46.dll",
+        "RucheHome.Voiceroid.dll",
+        "RucheHomeLib.dll",
+        "System.Reactive.Core.dll",
+        "System.Reactive.Interfaces.dll",
+        "System.Reactive.Linq.dll"
+        "System.Reactive.PlatformServices.dll"
+        "System.Reactive.Windows.Threading.dll"
+    )
+
+    foreach ($dll in $dlls) {
+        if (Test-Path $dll) {
+            & $libz inject-dll --assembly ACT.TTSYukkuri.Core.dll --include $dll --move
+        }
+    }
+
+    '●その他のDLLをマージする'
+    $otherLibs = @(
+        "FontAwesome.WPF.dll",
+        "NAudio.dll",
+        "Newtonsoft.Json.dll",
+        "NLog.dll",
+        "Prism.dll",
+        "Prism.Wpf.dll",
+        "System.Windows.Interactivity.dll"
+    )
+
+    $plugins = @(
+        "ACT.SpecialSpellTimer.Core.dll",
+        "ACT.TTSYukkuri.Core.dll",
+        "ACT.UltraScouter.Core.dll"
+        "FFXIV.Framework.TTS.Server.exe"
+    )
+
+    foreach ($olib in $otherLibs) {
+        foreach ($plugin in $plugins) {
+            & $libz inject-dll --assembly $plugin --include $olib
+      }
+
+      Remove-Item -Force $olib
+    }
+
+    '●フォルダをリネームする'
+    Rename-Item Yukkuri _yukkuri
+    Rename-Item OpenJTalk _openJTalk
+    Rename-Item _yukkuri yukkuri
+    Rename-Item _openJTalk openJTalk
+
+    '●配布ファイルをアーカイブする'
+    $archive = "ACT.Hojoring-v" + $versionShort
+    $archiveZip = $archive + ".zip"
+    $archive7z = $archive + ".7z"
+
+    if (Test-Path $archiveZip) {
+        Remove-Item $archiveZip -Force
+    }
   
-  if (Test-Path $archive7z) {
-    Remove-Item $archive7z -Force
-  }
+    if (Test-Path $archive7z) {
+        Remove-Item $archive7z -Force
+    }
 
-  '●to 7z'
-  & $7z a -r "-xr!*.zip" "-xr!*.7z" "-xr!*.pdb" "-xr!archives\" $archive7z *
+    '●to 7z'
+    & $7z a -r "-xr!*.zip" "-xr!*.7z" "-xr!*.pdb" "-xr!archives\" $archive7z *
 
-  '●to zip'
-  & $7z a -r "-xr!*.zip" "-xr!*.7z" "-xr!*.pdb" "-xr!archives\" $archiveZip *
+    '●to zip'
+    & $7z a -r "-xr!*.zip" "-xr!*.7z" "-xr!*.pdb" "-xr!archives\" $archiveZip *
 
-  Move-Item $archiveZip $archives -Force
-  Move-Item $archive7z $archives -Force
+    Move-Item $archiveZip $archives -Force
+    Move-Item $archive7z $archives -Force
 
-  Set-Location $startdir
+    Set-Location $startdir
 }
 
 Write-Output "***"
