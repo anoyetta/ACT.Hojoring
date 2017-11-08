@@ -29,6 +29,7 @@ Write-Output "***"
 # MasterVersion.cs.tmp ‚ğƒRƒs[‚·‚é
 Copy-Item -Force $masterVersionTemp ".\ACT.Hojoring.Common\Version.cs"
 
+<#
 'œReplace License Key'
 $keyfile = ".\ACT.TTSYukkuri\AquesTalk.key"
 $codefile = ".\ACT.TTSYukkuri\ACT.TTSYukkuri.Core\Yukkuri\AquesTalk.cs"
@@ -49,6 +50,7 @@ if (Test-Path $keyfile) {
     '~error:License key not found.'
     EndMake
 }
+#>
 
 'œBuild XIVDBDownloader Debug'
 & $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Debug
@@ -62,10 +64,12 @@ if (Test-Path $keyfile) {
 'œBuild ACT.Hojoring Release'
 & $devenv $sln /nologo /project ACT.Hojoring\ACT.Hojoring.csproj /Rebuild Release
 
+<#
 'œRestore Backup'
 if (Test-Path $codefileBack) {
     Copy-Item -Force $codefileBack $codefile
 }
+#>
 
 'œDeploy Release'
 if (Test-Path .\ACT.Hojoring\bin\Release) {
