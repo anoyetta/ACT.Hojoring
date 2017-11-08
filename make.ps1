@@ -147,12 +147,14 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     'Åúto 7z'
     & $7z a -r "-xr!*.zip" "-xr!*.7z" "-xr!*.pdb" "-xr!archives\" $archive7z *
+    Move-Item $archive7z $archives -Force
 
+    <#
     'Åúto zip'
     & $7z a -r "-xr!*.zip" "-xr!*.7z" "-xr!*.pdb" "-xr!archives\" $archiveZip *
-
     Move-Item $archiveZip $archives -Force
-    Move-Item $archive7z $archives -Force
+    #>
+
 
     Set-Location $startdir
 }
