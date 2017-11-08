@@ -27,9 +27,16 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
   * ACT.UltraScouter.dll
   * ACT.TTSYukkuri.dll
 
+## 使い方
+**[Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki)** を見てください。
+
 ## ライセンス
 Copyright(C) 2017, anoyetta all rights reserved.  
-[3-clause BSD license](LICENSE)
+[3-clause BSD license](LICENSE)  
+
+ただし下記の行為を禁止します。
+* 配布されたバイナリに対してリバースエンジニアリング等を行い内部を解析する行為
+* 配布されたバイナリのすべてもしくは一部を本来の目的とは異なる目的に使用する行為
 
 ## お問合わせ
 ### なんかエラー出た
@@ -53,7 +60,7 @@ Copyright(C) 2017, anoyetta all rights reserved.
 重複する質問はご遠慮ください。
 
 ### 連絡先
-discord:  [Hojoring](https://discord.gg/n6Mut3F)  
+discord:  [Hojoring Forum](https://discord.gg/n6Mut3F)  
 mail:     anoyetta(at)gmail.com  
 twitter:  [@anoyetta](https://twitter.com/anoyetta)  
 まで。  
