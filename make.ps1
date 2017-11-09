@@ -12,6 +12,7 @@ $7z = Get-Item .\tools\7za.exe
 $sln = Get-Item *.sln
 $archives = Get-Item .\archives\
 $libz = Get-Item .\tools\libz.exe
+$cevioLib = Get-Item FFXIV.Framework\Thirdparty\CeVIO.Talk.RemoteService.dll
 
 '●Version'
 $versionContent = $(Get-Content "@MasterVersion.txt").Trim("\r").Trim("\n")
@@ -100,6 +101,9 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
             & $libz inject-dll --assembly ACT.TTSYukkuri.Core.dll --include $dll --move | Select-String "Injecting"
         }
     }
+
+    '●TTSServer にCeVIOをマージする'
+    & $libz inject-dll -a FFXIV.Framework.TTS.Server.exe -i $cevioLib | Select-String "Injecting"
 
     '●その他のDLLをマージする'
     $otherLibs = @(
