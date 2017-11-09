@@ -5,5 +5,5 @@ foreach ($sln in $solutions) {
     & $nuget restore $sln | Write-Output
 }
 
-Read-Host "çµ‚äº†ã™ã‚‹ã«ã¯ä½•ã‹ã‚­ãƒ¼ã‚’æ•™ãˆã¦ãã ã•ã„..."
+Read-Host "I—¹‚·‚é‚É‚Í‰½‚©ƒL[‚ğ‹³‚¦‚Ä‚­‚¾‚³‚¢..."
 exit
