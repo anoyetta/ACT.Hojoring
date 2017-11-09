@@ -12,14 +12,16 @@ Advanced Combat Tracker の FFXIV向けプラグインの詰合せです。
 https://www.microsoft.com/en-us/download/details.aspx?id=55170  
 から .NET Framework を入手してインストールします。
 
-2. 最新版を取得する  
+2. **[Visual Studio 2017 用 Microsoft Visual C++ 再頒布可能パッケージ](https://go.microsoft.com/fwlink/?LinkId=746572)** をインストールする
+
+3. 最新版を取得する  
 最新リリースからダウンロードします。
 
-3. 解凍する  
+4. 解凍する  
 ダウンロードしたプラグイン一式を解凍し任意のフォルダに配置します。  
 Discord への通知を使用する場合は、lib\libopus.dll, lib\libsodium.dll を **ACT本体と同じフォルダ** にコピーします。
 
-4. ACTに追加する
+5. ACTに追加する
 ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
 必要なものだけ登録してください。もちろんすべて登録しても問題ありません。  
 
