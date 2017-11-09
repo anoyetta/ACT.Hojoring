@@ -8,11 +8,11 @@ Advanced Combat Tracker の FFXIV向けプラグインの詰合せです。
 [pre-releease](https://github.com/anoyetta/ACT.Hojoring/releases)
 
 ## インストール
-1. .NET Framework 4.7 をインストールする  
-https://www.microsoft.com/en-us/download/details.aspx?id=55170  
-から .NET Framework を入手してインストールします。
+1. 各種ランタイムをインストールする  
+**[Visual Studio 2017 用 Microsoft Visual C++ 再頒布可能パッケージ](https://go.microsoft.com/fwlink/?LinkId=746572)**  
+**[Microsoft .NET Framework 4.7](https://www.microsoft.com/en-us/download/details.aspx?id=55170)**  
+をインストールする。
 
-2. **[Visual Studio 2017 用 Microsoft Visual C++ 再頒布可能パッケージ](https://go.microsoft.com/fwlink/?LinkId=746572)** をインストールする
 
 3. 最新版を取得する  
 最新リリースからダウンロードします。
