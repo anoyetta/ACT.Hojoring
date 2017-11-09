@@ -31,16 +31,16 @@ Write-Output "***"
 Copy-Item -Force $masterVersionTemp ".\ACT.Hojoring.Common\Version.cs"
 
 'ÅúBuild XIVDBDownloader Debug'
-& $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Debug
+& $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Debug | Write-Output
 
 'ÅúBuild ACT.Hojoring Debug'
-& $devenv $sln /nologo /project ACT.Hojoring\ACT.Hojoring.csproj /Rebuild Debug
+& $devenv $sln /nologo /project ACT.Hojoring\ACT.Hojoring.csproj /Rebuild Debug | Write-Output
 
 'ÅúBuild XIVDBDownloader Release'
-& $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Release
+& $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Release | Write-Output
 
 'ÅúBuild ACT.Hojoring Release'
-& $devenv $sln /nologo /project ACT.Hojoring\ACT.Hojoring.csproj /Rebuild Release
+& $devenv $sln /nologo /project ACT.Hojoring\ACT.Hojoring.csproj /Rebuild Release | Write-Output
 
 'ÅúDeploy Release'
 if (Test-Path .\ACT.Hojoring\bin\Release) {
@@ -96,7 +96,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     foreach ($dll in $dlls) {
         if (Test-Path $dll) {
-            & $libz inject-dll --assembly ACT.TTSYukkuri.Core.dll --include $dll --move
+            & $libz inject-dll --assembly ACT.TTSYukkuri.Core.dll --include $dll --move | Select-String "Injecting"
         }
     }
 
@@ -120,7 +120,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     foreach ($olib in $otherLibs) {
         foreach ($plugin in $plugins) {
-            & $libz inject-dll --assembly $plugin --include $olib
+            & $libz inject-dll --assembly $plugin --include $olib | Select-String "Injecting"
       }
 
       Remove-Item -Force $olib
