@@ -112,16 +112,16 @@
     <Content Include="resources\wav\system47.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\wav\さとうささら_危険が危ない.wav">
+    <Content Include="resources\wav\Sasara_Warning2.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\wav\さとうささら_構え.wav">
+    <Content Include="resources\wav\Sasara_StartsUsing.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\wav\さとうささら_注意.wav">
+    <Content Include="resources\wav\Sasara_Caution.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\wav\さとうささら_警告.wav">
+    <Content Include="resources\wav\Sasara_Warning.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\xivdb\Action.de-DE.csv">
