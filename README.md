@@ -48,11 +48,11 @@ Copyright(C) 2017, anoyetta all rights reserved.
 * ACT.UltraScouter.dll のバージョン
 * ACT.TTSYukkuri.dll のバージョン  
 * ACT本体のログファイル  
-%APPDATA%\Advanced Combat Traker\Advanced Combat Tracker.log
+%APPDATA%\Advanced Combat Tracker\Advanced Combat Tracker.log
 * ACT.SpecialSpellTimer のログファイル
 * ACT.UltraScouter のログファイル
 * ACT.TTSYukkuri のログファイル  
-%APPDATA%\anoyetta\ACT\log\ACT.Hojoring.YYYY-MM-DD.log  
+%APPDATA%\anoyetta\ACT\logs\ACT.Hojoring.YYYY-MM-DD.log  
 3プラグインのログは共通になっています。
 * （あれば）エラーダイアログのスクリーンショット
 
