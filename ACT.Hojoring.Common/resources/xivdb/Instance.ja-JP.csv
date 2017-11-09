@@ -1,0 +1,259 @@
+ID,NameEn,Name
+1,The Thousand Maws Of Toto-Rak,監獄廃墟 トトラクの千獄
+2,The Tam-Tara Deepcroft,地下霊殿 タムタラの墓所
+3,Copperbell Mines,封鎖坑道 カッパーベル銅山
+4,Sastasha,天然要害 サスタシャ浸食洞
+5,The Aurum Vale,霧中行軍 オーラムヴェイル
+6,Haukke Manor,名門屋敷 ハウケタ御用邸
+7,Halatali,魔獣領域 ハラタリ修練所
+8,Brayflox's Longstop,奪還支援 ブレイフロクスの野営地
+9,The Sunken Temple Of Qarn,遺跡探索 カルン埋没寺院
+10,The Wanderer's Palace,旅神聖域 ワンダラーパレス
+11,The Stone Vigil,城塞攻略 ストーンヴィジル
+12,Cutter's Cry,流砂迷宮 カッターズクライ
+13,Dzemael Darkhold,掃討作戦 ゼーメル要塞
+14,Amdapor Keep,邪教排撃 古城アムダプール
+15,Castrum Meridianum,外郭攻略 カストルム・メリディアヌム
+16,The Praetorium,最終決戦 魔導城プラエトリウム
+17,Pharos Sirius,怪鳥巨塔 シリウス大灯台
+18,Copperbell Mines (Hard),騒乱坑道 カッパーベル銅山 (Hard)
+19,Haukke Manor (Hard),妖異屋敷 ハウケタ御用邸 (Hard)
+20,Brayflox's Longstop (Hard),盟友支援 ブレイフロクスの野営地 (Hard)
+21,Halatali (Hard),剣闘領域 ハラタリ修練所 (Hard)
+22,The Lost City Of Amdapor,腐敗遺跡 古アムダプール市街
+23,Hullbreaker Isle,財宝伝説 ハルブレーカー・アイル
+24,The Tam-Tara Deepcroft (Hard),惨劇霊殿 タムタラの墓所 (Hard)
+25,The Stone Vigil (Hard),城塞奪回 ストーンヴィジル (Hard)
+26,The Sunken Temple Of Qarn (Hard),遺跡救援 カルン埋没寺院 (Hard)
+27,Snowcloak,氷結潜窟 スノークローク大氷壁
+28,Sastasha (Hard),逆襲要害 サスタシャ浸食洞 (Hard)
+29,Amdapor Keep (Hard),邪念排撃 古城アムダプール (Hard)
+30,The Wanderer's Palace (Hard),武装聖域 ワンダラーパレス (Hard)
+31,The Great Gubal Library,禁書回収 グブラ幻想図書館
+32,The Keeper Of The Lake,幻龍残骸 黙約の塔
+33,Neverreap,神域浮島 ネバーリープ
+34,The Vault,強硬突入 イシュガルド教皇庁
+35,The Fractal Continuum,博物戦艦 フラクタル・コンティニアム
+36,The Dusk Vigil,廃砦捜索 ダスクヴィジル
+37,Sohm Al,霊峰踏破 ソーム・アル
+38,The Aetherochemical Research Facility,蒼天聖戦 魔科学研究所
+39,The Aery,邪竜血戦 ドラゴンズエアリー
+40,Pharos Sirius (Hard),制圧巨塔 シリウス大灯台 (Hard)
+41,Saint Mocianne's Arboretum,草木庭園 聖モシャーヌ植物園
+42,The Lost City Of Amdapor (Hard),神聖遺跡 古アムダプール市街 (Hard)
+43,The Antitower,星海観測 逆さの塔
+44,Sohr Khai,天竜宮殿 ソール・カイ
+45,Hullbreaker Isle (Hard),黒渦伝説 ハルブレーカー・アイル (Hard)
+46,Xelphatol,峻厳渓谷 ゼルファトル
+47,The Great Gubal Library (Hard),稀書回収 グブラ幻想図書館 (Hard)
+48,Baelsar's Wall,巨大防壁 バエサルの長城
+49,Sohm Al (Hard),霊峰浄化 ソーム・アル (Hard)
+50,Shisui Of The Violet Tides,海底宮殿 紫水宮
+51,The Temple Of The Fist,壊神修行 星導山寺院
+52,The Sirensong Sea,漂流海域 セイレーン海
+53,Bardam's Mettle,伝統試練 バルダム覇道
+54,Doma Castle,解放決戦 ドマ城
+55,Castrum Abania,巨砲要塞 カストルム・アバニア
+56,Ala Mhigo,紅蓮決戦 アラミゴ
+57,Kugane Castle,悪党成敗 クガネ城
+58,The Drowned City Of Skalla,水没遺構 スカラ
+5001,A Spectacle For The Ages,四国合同演習
+5002,A Bloody Reunion,レグラ・ヴァン・ヒュドルス追撃戦
+5003,One Life For One World,絡み合う宿命
+5004,The Carteneau Flats: Heliodrome,カルテノー平原遭遇戦
+5005,It's Probably A Trap,ギョドウ現る！
+5006,In Thal's Name,ウル王杯闘技会の始まり
+5007,With Heart And Steel,抗う力
+5008,Naadam,終節の合戦
+5009,Blood On The Deck,海都を震わす人斬りの宴！
+5010,The Face Of True Evil,極悪人コガラシ
+5011,Matsuba Mayhem,松葉門外の変
+5012,The Battle On Bekko,ベッコウ島の決闘
+5013,Curious Gorge Meets His Match,原初的な彼女
+5014,Our Unsung Heroes,時をかける願い
+5015,The Heart Of The Problem,燃えよゴージ！
+5016,Darkwing Dragon,漆黒の巨竜
+5017,The Resonant,ウリエンジェの秘策
+5018,Raising The Sword,さらなる剣術の高みへ
+5019,The Orphans And The Broken Blade,あと三度、遥かな憧憬
+5020,Our Compromise,あと一度、君に会えたら
+5021,Blood Dragoon,紅の竜騎士
+5022,When Clans Collide,影隠忍法帖
+5023,Interdimensional Rift,次元の狭間：外縁
+5024,Return Of The Bull,英雄の帰還
+10001,Basic Training: Enemy Parties,集団戦訓練をくぐり抜けろ！
+10002,Under The Armor,彷徨う死霊を討て！
+10003,Basic Training: Enemy Strongholds,全関門を突破し、最深部の敵を討て！
+10004,Hero On The Halfshell,ギルガメを捕獲せよ！
+10005,Pulling Poison Posies,有毒妖花を駆除せよ！
+10006,Stinging Back,無法者「似我蜂団」を撃滅せよ！
+10007,All's Well That Ends In The Well,夢幻のブラキシオを討て！
+10008,Flicking Sticks And Taking Names,爆弾魔ゴブリン軍団を撃滅せよ！
+10009,More Than A Feeler,汚染源モルボルを討て！
+10010,Annoy The Void,坑道に現れた妖異ブソを討て！
+10011,Shadow And Claw,無敵の眷属を従えし、大型妖異を討て！
+10012,Long Live The Queen,ボムを率いる「ボムクイーン」を討て！
+10013,Ward Up,不気味な陣形を組む妖異をせん滅せよ！
+10014,Solemn Trinity,三つ巴の巨人族を制し、遺物を守れ！
+15001,Avoid Area Of Effect Attacks,範囲攻撃を避けよう！
+15002,Execute A Combo To Increase Enmity,コンボで敵視を集めよう！
+15003,Execute A Combo In Battle,実戦でコンボに挑戦しよう！
+15004,Accrue Enmity From Multiple Targets,複数の敵から敵視を集めよう！
+15005,Engage Multiple Targets,実戦で複数の敵と戦ってみよう！
+15006,Execute A Ranged Attack To Increase Enmity,遠距離から敵視を集めよう！
+15007,Engage Enemy Reinforcements,敵の増援に対応しよう！
+15008,Assist Allies In Defeating A Target,味方と協力して敵を倒そう！
+15009,Defeat An Occupied Target,味方が引きつけている敵を倒そう！
+15010,Avoid Engaged Targets,敵の攻撃を避けながら戦おう！
+15011,Engage Enemy Reinforcements,敵の増援に対応しよう！
+15012,Interact With The Battlefield,ギミックを活用して戦おう！
+15013,Heal An Ally,味方を回復しよう！
+15014,Heal Multiple Allies,複数の味方を回復しよう！
+15015,Avoid Engaged Targets,敵の攻撃を避けながら戦おう！
+15016,Final Exercise,最終訓練！
+20001,The Bowl Of Embers,イフリート討伐戦
+20002,The Navel,タイタン討伐戦
+20003,The Howling Eye,ガルーダ討伐戦
+20004,The Bowl Of Embers (Hard),真イフリート討滅戦
+20005,The Navel (Hard),真タイタン討滅戦
+20006,The Howling Eye (Hard),真ガルーダ討滅戦
+20007,Cape Westwind,リットアティン強襲戦
+20008,The Bowl Of Embers (Extreme),極イフリート討滅戦
+20009,The Navel (Extreme),極タイタン討滅戦
+20010,The Howling Eye (Extreme),極ガルーダ討滅戦
+20011,Thornmarch (Hard),善王モグル・モグXII世討滅戦
+20012,Thornmarch (Extreme),極王モグル・モグXII世討滅戦
+20013,The Minstrel's Ballad: Ultima's Bane,究極幻想 アルテマウェポン破壊作戦
+20014,Special Event I,イベント用コンテンツ：3
+20015,Special Event II,イベント用コンテンツ：1
+20016,Special Event III,イベント用コンテンツ：2
+20017,The Whorleater (Hard),真リヴァイアサン討滅戦
+20018,The Whorleater (Extreme),極リヴァイアサン討滅戦
+20019,A Relic Reborn: The Chimera,ドルムキマイラ討伐戦
+20020,A Relic Reborn: The Hydra,ハイドラ討伐戦
+20021,Battle On The Big Bridge,ギルガメッシュ討伐戦
+20022,The Striking Tree (Hard),真ラムウ討滅戦
+20023,The Striking Tree (Extreme),極ラムウ討滅戦
+20024,Akh Afah Amphitheatre (Hard),真シヴァ討滅戦
+20025,Akh Afah Amphitheatre (Extreme),極シヴァ討滅戦
+20026,The Dragon's Neck,アマジナ杯闘技会決勝戦
+20027,Urth's Fount,闘神オーディン討滅戦
+20028,The Steps Of Faith,皇都イシュガルド防衛戦
+20029,The Chrysalis,アシエン・ナプリアレス討伐戦
+20030,Battle In The Big Keep,真ギルガメッシュ討滅戦
+20031,Thok Ast Thok (Hard),真ラーヴァナ討滅戦
+20032,Thok Ast Thok (Extreme),極ラーヴァナ討滅戦
+20033,The Limitless Blue (Hard),真ビスマルク討滅戦
+20034,The Limitless Blue (Extreme),極ビスマルク討滅戦
+20035,The Singularity Reactor,ナイツ・オブ・ラウンド討滅戦
+20036,The Minstrel's Ballad: Thordan's Reign,蒼天幻想 ナイツ・オブ・ラウンド討滅戦
+20037,Containment Bay S1T7,魔神セフィロト討滅戦
+20038,Containment Bay S1T7 (Extreme),極魔神セフィロト討滅戦
+20039,The Final Steps Of Faith,ニーズヘッグ征竜戦
+20040,The Minstrel's Ballad: Nidhogg's Rage,極ニーズヘッグ征竜戦
+20041,Containment Bay P1T6,女神ソフィア討滅戦
+20042,Containment Bay P1T6 (Extreme),極女神ソフィア討滅戦
+20043,Containment Bay Z1T9,鬼神ズルワーン討滅戦
+20044,Containment Bay Z1T9 (Extreme),極鬼神ズルワーン討滅戦
+20045,The Royal Menagerie,神龍討滅戦
+20046,The Pool Of Tribute,スサノオ討滅戦
+20047,The Pool Of Tribute (Extreme),極スサノオ討滅戦
+20048,Emanation,ラクシュミ討滅戦
+20049,Emanation (Extreme),極ラクシュミ討滅戦
+20050,The Minstrel's Ballad: Shinryu's Domain,極神龍討滅戦
+25001,The Haunted Manor,亡霊屋敷 ホーンテッドマナー
+30001,The Labyrinth Of The Ancients,クリスタルタワー：古代の民の迷宮
+30002,The Binding Coil Of Bahamut - Turn 1,大迷宮バハムート：邂逅編1
+30003,The Binding Coil Of Bahamut - Turn 2,大迷宮バハムート：邂逅編2
+30004,The Binding Coil Of Bahamut - Turn 3,大迷宮バハムート：邂逅編3
+30005,The Binding Coil Of Bahamut - Turn 4,大迷宮バハムート：邂逅編4
+30006,The Binding Coil Of Bahamut - Turn 5,大迷宮バハムート：邂逅編5
+30007,The Second Coil Of Bahamut - Turn 1,大迷宮バハムート：侵攻編1
+30008,The Second Coil Of Bahamut - Turn 2,大迷宮バハムート：侵攻編2
+30009,The Second Coil Of Bahamut - Turn 3,大迷宮バハムート：侵攻編3
+30010,The Second Coil Of Bahamut - Turn 4,大迷宮バハムート：侵攻編4
+30011,Syrcus Tower,クリスタルタワー：シルクスの塔
+30012,The Second Coil Of Bahamut (Savage) - Turn 1,大迷宮バハムート零式：侵攻編1
+30013,The Second Coil Of Bahamut (Savage) - Turn 2,大迷宮バハムート零式：侵攻編2
+30014,The Second Coil Of Bahamut (Savage) - Turn 3,大迷宮バハムート零式：侵攻編3
+30015,The Second Coil Of Bahamut (Savage) - Turn 4,大迷宮バハムート零式：侵攻編4
+30016,The Final Coil Of Bahamut - Turn 1,大迷宮バハムート：真成編1
+30017,The Final Coil Of Bahamut - Turn 2,大迷宮バハムート：真成編2
+30018,The Final Coil Of Bahamut - Turn 3,大迷宮バハムート：真成編3
+30019,The Final Coil Of Bahamut - Turn 4,大迷宮バハムート：真成編4
+30020,The World Of Darkness,クリスタルタワー：闇の世界
+30021,Alexander - The Fist Of The Father,機工城アレキサンダー：起動編1
+30022,Alexander - The Cuff Of The Father,機工城アレキサンダー：起動編2
+30023,Alexander - The Arm Of The Father,機工城アレキサンダー：起動編3
+30024,Alexander - The Burden Of The Father,機工城アレキサンダー：起動編4
+30025,Alexander - The Fist Of The Father (Savage),機工城アレキサンダー零式：起動編1
+30026,Alexander - The Cuff Of The Father (Savage),機工城アレキサンダー零式：起動編2
+30027,Alexander - The Arm Of The Father (Savage),機工城アレキサンダー零式：起動編3
+30028,Alexander - The Burden Of The Father (Savage),機工城アレキサンダー零式：起動編4
+30029,The Void Ark,魔航船ヴォイドアーク
+30030,Alexander - The Fist Of The Son,機工城アレキサンダー：律動編1
+30031,Alexander - The Cuff Of The Son,機工城アレキサンダー：律動編2
+30032,Alexander - The Arm Of The Son,機工城アレキサンダー：律動編3
+30033,Alexander - The Burden Of The Son,機工城アレキサンダー：律動編4
+30034,Alexander - The Fist Of The Son (Savage),機工城アレキサンダー零式：律動編1
+30035,Alexander - The Cuff Of The Son (Savage),機工城アレキサンダー零式：律動編2
+30036,Alexander - The Arm Of The Son (Savage),機工城アレキサンダー零式：律動編3
+30037,Alexander - The Burden Of The Son (Savage),機工城アレキサンダー零式：律動編4
+30038,The Weeping City Of Mhach,禁忌都市マハ
+30039,Alexander - The Eyes Of The Creator,機工城アレキサンダー：天動編1
+30040,Alexander - The Breath Of The Creator,機工城アレキサンダー：天動編2
+30041,Alexander - The Heart Of The Creator,機工城アレキサンダー：天動編3
+30042,Alexander - The Soul Of The Creator,機工城アレキサンダー：天動編4
+30043,Alexander - The Eyes Of The Creator (Savage),機工城アレキサンダー零式：天動編1
+30044,Alexander - The Breath Of The Creator (Savage),機工城アレキサンダー零式：天動編2
+30045,Alexander - The Heart Of The Creator (Savage),機工城アレキサンダー零式：天動編3
+30046,Alexander - The Soul Of The Creator (Savage),機工城アレキサンダー零式：天動編4
+30047,Dun Scaith,影の国ダン・スカー
+30049,Deltascape V1.0,次元の狭間オメガ：デルタ編1
+30050,Deltascape V2.0,次元の狭間オメガ：デルタ編2
+30051,Deltascape V3.0,次元の狭間オメガ：デルタ編3
+30052,Deltascape V4.0,次元の狭間オメガ：デルタ編4
+30053,Deltascape V1.0 (Savage),次元の狭間オメガ零式：デルタ編1
+30054,Deltascape V2.0 (Savage),次元の狭間オメガ零式：デルタ編2
+30055,Deltascape V3.0 (Savage),次元の狭間オメガ零式：デルタ編3
+30056,Deltascape V4.0 (Savage),次元の狭間オメガ零式：デルタ編4
+30057,The Unending Coil Of Bahamut (Ultimate),絶バハムート討滅戦
+30058,The Royal City Of Rabanastre,失われた都 ラバナスタ
+40007,The Feast (8 On 8 - Training),ザ・フィースト (8対8 / カジュアルマッチ)
+40008,The Feast (4 On 4 - Training),ザ・フィースト (4対4 / カジュアルマッチ)
+40010,The Feast (4 On 4 - Ranked),ザ・フィースト (4対4 / ランクマッチ)
+40012,★The Feast (4 On 4 - Light Party),★ザ・フィースト (4対4 / 固定ライトパーティ専用)
+40013,The Feast (8 On 8 - Custom Match - Feasting Grounds),ザ・フィースト (8対8 / カスタムマッチ専用 / ウルヴズジェイル演習場)
+40014,The Feast (4 On 4 - Custom Match - Feasting Grounds),ザ・フィースト (4対4 / カスタムマッチ専用 / ウルヴズジェイル演習場)
+40015,The Feast (8 On 8 - Training),ザ・フィースト (8対8 / カジュアルマッチ)
+40016,The Feast (4 On 4 - Training),ザ・フィースト (4対4 / カジュアルマッチ)
+40018,The Feast (4 On 4 - Ranked),ザ・フィースト (4対4 / ランクマッチ)
+40020,The Feast (8 On 8 - Custom Match - Lichenweed),ザ・フィースト (8対8 / カスタムマッチ専用 / ライケンウィード演習場)
+40021,The Feast (4 On 4 - Custom Match - Lichenweed),ザ・フィースト (4対4 / カスタムマッチ専用 / ライケンウィード演習場)
+50001,The Borderland Ruins (Secure),外縁遺跡群 (制圧戦)
+50004,Seal Rock (Seize),シールロック (争奪戦)
+50005,The Fields Of Glory (Shatter),フィールド・オブ・グローリー (砕氷戦)
+51001,Astragalos,アストラガロス (機工戦)
+55001,The Aquapolis,宝物庫 アクアポリス
+55002,The Lost Canals Of Uznair,宝物庫 ウズネアカナル
+55003,The Hidden Canals Of Uznair,宝物庫 ウズネアカナル深層
+60001,The Palace Of The Dead (Floors 1-10),死者の宮殿 B1～B10
+60002,The Palace Of The Dead (Floors 11-20),死者の宮殿 B11～B20
+60003,The Palace Of The Dead (Floors 21-30),死者の宮殿 B21～B30
+60004,The Palace Of The Dead (Floors 31-40),死者の宮殿 B31～B40
+60005,The Palace Of The Dead (Floors 41-50),死者の宮殿 B41～B50
+60006,The Palace Of The Dead (Floors 51-60),死者の宮殿 B51～B60
+60007,The Palace Of The Dead (Floors 61-70),死者の宮殿 B61～B70
+60008,The Palace Of The Dead (Floors 71-80),死者の宮殿 B71～B80
+60009,The Palace Of The Dead (Floors 81-90),死者の宮殿 B81～B90
+60010,The Palace Of The Dead (Floors 91-100),死者の宮殿 B91～B100
+60011,The Palace Of The Dead (Floors 101-110),死者の宮殿 B101～B110
+60012,The Palace Of The Dead (Floors 111-120),死者の宮殿 B111～B120
+60013,The Palace Of The Dead (Floors 121-130),死者の宮殿 B121～B130
+60014,The Palace Of The Dead (Floors 131-140),死者の宮殿 B131～B140
+60015,The Palace Of The Dead (Floors 141-150),死者の宮殿 B141～B150
+60016,The Palace Of The Dead (Floors 151-160),死者の宮殿 B151～B160
+60017,The Palace Of The Dead (Floors 161-170),死者の宮殿 B161～B170
+60018,The Palace Of The Dead (Floors 171-180),死者の宮殿 B171～B180
+60019,The Palace Of The Dead (Floors 181-190),死者の宮殿 B181～B190
+60020,The Palace Of The Dead (Floors 191-200),死者の宮殿 B191～B200
