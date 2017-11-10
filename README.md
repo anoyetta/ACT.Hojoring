@@ -43,18 +43,20 @@ Copyright(C) 2017, anoyetta all rights reserved.
 ## お問合わせ
 ### なんかエラー出た
 作者に尋ねる場合は、下記の情報を添えてください。
-* FFXIV_ACT_Plugin.dll のバージョン
-* ACT.SpecialSpellTimer.dll のバージョン
-* ACT.UltraScouter.dll のバージョン
-* ACT.TTSYukkuri.dll のバージョン  
 * ACT本体のログファイル  
-%APPDATA%\Advanced Combat Tracker\Advanced Combat Tracker.log
-* ACT.SpecialSpellTimer のログファイル
-* ACT.UltraScouter のログファイル
-* ACT.TTSYukkuri のログファイル  
-%APPDATA%\anoyetta\ACT\logs\ACT.Hojoring.YYYY-MM-DD.log  
-3プラグインのログは共通になっています。
+* 当プラグインのログファイル
 * （あれば）エラーダイアログのスクリーンショット
+
+[Help] → [サポート情報を保存する] から必要な情報一式を保存できます。起動できないなどUIから取得できない場合は下記のフォルダから収集してください。  
+%APPDATA%\Advanced Combat Tracker\Advanced Combat Tracker.log  
+%APPDATA%\anoyetta\ACT\logs\ACT.Hojoring.YYYY-MM-DD.log  
+
+### スペルが動かない
+前述の情報に以下の情報も追加で必要になります。  
+* 引っ掛けたい対象のログ
+* 対象のスペルやテロップの設定
+
+これらの情報がない場合は回答できません。
 
 ### 問合せフォーム
 [https://github.com/anoyetta/ACT.Hojoring/issues/new](https://github.com/anoyetta/ACT.Hojoring/issues/new)  
