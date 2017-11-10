@@ -58,6 +58,11 @@ Copyright(C) 2017, anoyetta all rights reserved.
 
 これらの情報がない場合は回答できません。
 
+### どうやっても導入に失敗する
+こちらの ALL-IN-ONE インストーラを使ってみてください。  
+**[Actor](https://github.com/eai04191/Actor)**  
+
+
 ### 問合せフォーム
 [https://github.com/anoyetta/ACT.Hojoring/issues/new](https://github.com/anoyetta/ACT.Hojoring/issues/new)  
 からチケットを登録してください。[issues](https://github.com/anoyetta/ACT.Hojoring/issues) から既存の課題、現在の状況を確認出来ます。  
