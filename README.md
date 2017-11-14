@@ -29,6 +29,15 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
   * ACT.UltraScouter.dll
   * ACT.TTSYukkuri.dll
 
+### ALL-IN-ONE インストーラ
+**[こちら](https://github.com/eai04191/Actor)** のALL-IN-ONEインストーラを使用してACT本体ごと簡単に導入できます。設定も引き継がれますのでこの方法でのインストールをお勧めします。  
+1. 各種ランタイムをインストールする  
+**[Visual Studio 2017 用 Microsoft Visual C++ 再頒布可能パッケージ](https://go.microsoft.com/fwlink/?LinkId=746572)**  
+**[Microsoft .NET Framework 4.7](https://www.microsoft.com/en-us/download/details.aspx?id=55170)**  
+2. **[Win10Pcap](http://www.win10pcap.org/ja/)** をインストールする  
+3. **[Actor](https://github.com/eai04191/Actor)** をダウンロードする
+4. **Actor.exe** を実行する
+
 ## 使い方
 **[Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki)** を見てください。
 
@@ -57,11 +66,6 @@ Copyright(C) 2017, anoyetta all rights reserved.
 * 対象のスペルやテロップの設定
 
 これらの情報がない場合は回答できません。
-
-### どうやっても導入に失敗する
-こちらの ALL-IN-ONE インストーラを使ってみてください。  
-**[Actor](https://github.com/eai04191/Actor)**  
-
 
 ### 問合せフォーム
 [https://github.com/anoyetta/ACT.Hojoring/issues/new](https://github.com/anoyetta/ACT.Hojoring/issues/new)  
