@@ -30,7 +30,7 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
   * ACT.TTSYukkuri.dll
 
 ### ALL-IN-ONE インストーラ
-**[こちら](https://github.com/eai04191/Actor)** のALL-IN-ONEインストーラを使用してACT本体ごと簡単に導入できます。設定も引き継がれますのでこの方法でのインストールをお勧めします。  
+ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」を使用してACT本体ごと簡単に導入できます。設定も引き継がれますのでこの方法でのインストールをお勧めします。  
 1. 各種ランタイムをインストールする  
 **[Visual Studio 2017 用 Microsoft Visual C++ 再頒布可能パッケージ](https://go.microsoft.com/fwlink/?LinkId=746572)**  
 **[Microsoft .NET Framework 4.7](https://www.microsoft.com/en-us/download/details.aspx?id=55170)**  
