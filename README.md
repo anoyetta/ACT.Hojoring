@@ -11,32 +11,34 @@ Advanced Combat Tracker の FFXIV向けプラグインの詰合せです。
 [pre-releease](https://github.com/anoyetta/ACT.Hojoring/releases)
 
 ## インストール
+### ALL-IN-ONE インストール
+ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」を使用してACT本体ごと簡単に導入できます。設定も引き継がれますのでこの方法でのインストールをお勧めします。  
+1. 最新版の Actor を **[こちら](https://github.com/eai04191/Actor/releases)** からダウンロードする  
+2. Actor の **[README](https://github.com/eai04191/Actor)** を読む。
+3. **Actor.exe** を実行する
+
+### マニュアルインストール
+自分でDLLを入手して手動で追加したい方はこちらの方法になります。
+
 1. 各種ランタイムをインストールする  
 **[Visual Studio 2017 用 Microsoft Visual C++ 再頒布可能パッケージ](https://go.microsoft.com/fwlink/?LinkId=746572)**  
 **[Microsoft .NET Framework 4.7](https://www.microsoft.com/en-us/download/details.aspx?id=55170)**  
 をインストールする。
 
-
-3. 最新版を取得する  
+2. 最新版を取得する  
 最新リリースからダウンロードします。
 
-4. 解凍する  
+3. 解凍する  
 ダウンロードしたプラグイン一式を解凍し任意のフォルダに配置します。  
 Discord への通知を使用する場合は、lib\libopus.dll, lib\libsodium.dll を **ACT本体と同じフォルダ** にコピーします。
 
-5. ACTに追加する
+4. ACTに追加する
 ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
 必要なものだけ登録してください。もちろんすべて登録しても問題ありません。  
 
   * ACT.SpecialSpellTimer.dll
   * ACT.UltraScouter.dll
   * ACT.TTSYukkuri.dll
-
-### ALL-IN-ONE インストーラ
-ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」を使用してACT本体ごと簡単に導入できます。設定も引き継がれますのでこの方法でのインストールをお勧めします。  
-1. 最新版の Actor を **[こちら](https://github.com/eai04191/Actor/releases)** からダウンロードする  
-2. Actor の **[README](https://github.com/eai04191/Actor)** を読む。
-3. **Actor.exe** を実行する
 
 ## 使い方
 **[Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki)** を見てください。
