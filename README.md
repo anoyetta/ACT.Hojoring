@@ -44,8 +44,8 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 **[Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki)** を見てください。
 
 ## ライセンス
-Copyright(C) 2017, anoyetta all rights reserved.  
-[3-clause BSD license](LICENSE)  
+[3-Clause BSD License](LICENSE)  
+&copy; 2017 anoyetta  
 
 ただし下記の行為を禁止します。
 * 配布されたバイナリに対してリバースエンジニアリング等を行い内部を解析する行為
