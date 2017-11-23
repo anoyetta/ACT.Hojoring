@@ -69,6 +69,14 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 
 これらの情報がない場合は回答できません。
 
+### まったく分かっていない
+リテラシーが不足していてまったく分かっていない場合は  
+[TeamViewer](http://connect.teamviewer.com/v12)  
+をインストールして私にIDとパスワードを連絡してください。  
+リモートで設定してあげます。  
+インストール、設定についてお問合せを頂いても理解していただくのが難しい場合も TeamViewer でのリモート設定をご案内する場合があります。
+
+
 ### 問合せフォーム
 [https://github.com/anoyetta/ACT.Hojoring/issues/new](https://github.com/anoyetta/ACT.Hojoring/issues/new)  
 からチケットを登録してください。[issues](https://github.com/anoyetta/ACT.Hojoring/issues) から既存の課題、現在の状況を確認出来ます。  
