@@ -70,12 +70,9 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 これらの情報がない場合は回答できません。
 
 ### まったく分かっていない
-リテラシーが不足していてまったく分かっていない場合は  
-[TeamViewer](http://connect.teamviewer.com/v12)  
-をインストールして私にIDとパスワードを連絡してください。  
-リモートで設定してあげます。  
-インストール、設定についてお問合せを頂いても理解していただくのが難しい場合も TeamViewer でのリモート設定をご案内する場合があります。
-
+リモートでサポートすることも出来ます。  
+[こちら](https://support.google.com/chrome/answer/1649523?co=GENIE.Platform%3DDesktop&hl=ja) の [他のユーザーとパソコンを共有する] を参考にして私にアクセスコードを教えてください。  
+また、リモートサポートの依頼ではなくても説明が困難な場合はリモートによる設定を案内する場合があります。その場合は案内に従ってください。
 
 ### 問合せフォーム
 [https://github.com/anoyetta/ACT.Hojoring/issues/new](https://github.com/anoyetta/ACT.Hojoring/issues/new)  
