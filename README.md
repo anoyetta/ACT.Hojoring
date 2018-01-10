@@ -58,7 +58,9 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 * 当プラグインのログファイル
 * （あれば）エラーダイアログのスクリーンショット
 
-[Help] → [サポート情報を保存する] から必要な情報一式を保存できます。起動できないなどUIから取得できない場合は下記のフォルダから収集してください。  
+##### [Help] → [サポート情報を保存する] から必要な情報一式を保存できます。
+
+##### 起動できないなどUIから取得できない場合は下記のフォルダから収集してください。
 %APPDATA%\Advanced Combat Tracker\Advanced Combat Tracker.log  
 %APPDATA%\anoyetta\ACT\logs\ACT.Hojoring.YYYY-MM-DD.log  
 
