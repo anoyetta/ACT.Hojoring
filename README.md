@@ -40,6 +40,9 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
   * ACT.UltraScouter.dll
   * ACT.TTSYukkuri.dll
 
+### 動作環境
+* Windows 10 以降
+
 ## 使い方
 **[Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki)** を見てください。
 
