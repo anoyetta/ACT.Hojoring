@@ -46,6 +46,10 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 ## 使い方
 **[Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki)** を見てください。
 
+#### おすすめ設定とか教えて
+**[ACT.Hojoring アップローダ](https://ux.getuploader.com/hojoring/)**  
+設定の共有向けにアップローダを用意しました。作者または有志が公開してくれた設定がアップロードされていますので自由にお使いください。
+
 ## ライセンス
 [3-Clause BSD License](LICENSE)  
 &copy; 2017 anoyetta  
