@@ -44,7 +44,7 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 * Windows 10 以降
 
 ## 使い方
-**[Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki)** を見てください。
+基本的に **[Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki)** を見てください。
 
 #### おすすめ設定とか教えて
 **[ACT.Hojoring アップローダ](https://ux.getuploader.com/hojoring/)**  
@@ -60,7 +60,7 @@ ACT.SpecialSpellTimer.config
 ACT.TTSYukkuri.config  
 ACT.UltraScouter.config  
 それぞれ、スペスペ・ゆっくり・ウルスカの設定ファイルです。  
-スペスペではトリガ以外のオプション関係の設定が保存されています。他のプラグインではプラグインそのもの設定が保存されています。  
+スペスペではトリガ以外のオプション関係の設定が保存されています。他のプラグインではプラグインそのものの設定が保存されています。  
 
 3. スペスペのトリガの設定ファイル  
 ACT.SpecialSpellTimer.Panels.xml  
