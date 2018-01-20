@@ -27,16 +27,16 @@
       ScaleX="0.8"
       ScaleY="0.8" />
   </Window.LayoutTransform>
-  
+
   <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
     <Grid>
-      <Label x:Name="TitleLabel" Content="ACT.Hojoring" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="60">
+      <Label x:Name="TitleLabel" Content="ACT.Hojoring" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="45">
         <Label.Effect>
           <DropShadowEffect
           Opacity="1"
           Direction="0"
           ShadowDepth="0"
-          Color="Navy"
+          Color="Chocolate"
           BlurRadius="6" />
         </Label.Effect>
       </Label>
@@ -77,13 +77,13 @@
         Effect="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
     </Grid>
     <Grid HorizontalAlignment="Right">
-      <Label x:Name="VersionLabel" Content="v1.0.0" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="40">
+      <Label x:Name="VersionLabel" Content="v1.0.0" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="30">
         <Label.Effect>
           <DropShadowEffect
           Opacity="1"
           Direction="0"
           ShadowDepth="0"
-          Color="Navy"
+          Color="Chocolate"
           BlurRadius="6" />
         </Label.Effect>
       </Label>
