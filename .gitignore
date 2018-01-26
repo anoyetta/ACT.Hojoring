@@ -288,3 +288,5 @@ __pycache__/
 *.xsd.cs
 /archives/*.7z
 /archives/*.zip
+/*.bak
+/ACT.Hojoring.Common/*.bak
