@@ -290,3 +290,4 @@ __pycache__/
 /archives/*.zip
 /*.bak
 /ACT.Hojoring.Common/*.bak
+/document
