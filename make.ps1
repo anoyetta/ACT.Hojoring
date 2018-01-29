@@ -71,7 +71,11 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "ja",
         "ru",
         "zh-Hans",
-        "zh-Hant"
+        "zh-Hant",
+        "hu",
+        "pt-BR",
+        "ro",
+        "sv"
     )
 
     foreach ($locale in $locales) {
@@ -113,19 +117,24 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "NLog.dll",
         "Prism.dll",
         "Prism.Wpf.dll",
-        "System.Windows.Interactivity.dll"
+        "System.Windows.Interactivity.dll",
+        "Xceed.Wpf.Toolkit.dll",
+        "Xceed.Wpf.AvalonDock.dll",
+        "Xceed.Wpf.AvalonDock.Themes.Aero.dll",
+        "Xceed.Wpf.AvalonDock.Themes.Metro.dll",
+        "Xceed.Wpf.AvalonDock.Themes.VS2010.dll",
+        "Xceed.Wpf.DataGrid.dll"
     )
 
     $plugins = @(
-        "ACT.SpecialSpellTimer.Core.dll",
-        "ACT.TTSYukkuri.Core.dll",
-        "ACT.UltraScouter.Core.dll"
-        "FFXIV.Framework.TTS.Server.exe"
+        "FFXIV.Framework.dll"
     )
 
     foreach ($olib in $otherLibs) {
-        foreach ($plugin in $plugins) {
-            & $libz inject-dll --assembly $plugin --include $olib | Select-String "Injecting"
+        if (Test-Path $olib) {
+            foreach ($plugin in $plugins) {
+                & $libz inject-dll --assembly $plugin --include $olib | Select-String "Injecting"
+        }
       }
 
       Remove-Item -Force $olib
