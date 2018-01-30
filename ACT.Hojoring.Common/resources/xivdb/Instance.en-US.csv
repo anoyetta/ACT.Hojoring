@@ -57,6 +57,8 @@ ID,NameEn,Name
 56,Ala Mhigo,Ala Mhigo
 57,Kugane Castle,Kugane Castle
 58,The Drowned City Of Skalla,The Drowned City Of Skalla
+59,Hells' Lid,Hells' Lid
+60,The Fractal Continuum (Hard),The Fractal Continuum (Hard)
 5001,A Spectacle For The Ages,A Spectacle For The Ages
 5002,A Bloody Reunion,A Bloody Reunion
 5003,One Life For One World,One Life For One World
@@ -84,7 +86,7 @@ ID,NameEn,Name
 10001,Basic Training: Enemy Parties,Basic Training: Enemy Parties
 10002,Under The Armor,Under The Armor
 10003,Basic Training: Enemy Strongholds,Basic Training: Enemy Strongholds
-10004,Hero On The Halfshell,Hero On The Halfshell
+10004,Hero On The Half Shell,Hero On The Half Shell
 10005,Pulling Poison Posies,Pulling Poison Posies
 10006,Stinging Back,Stinging Back
 10007,All's Well That Ends In The Well,All's Well That Ends In The Well
@@ -161,7 +163,10 @@ ID,NameEn,Name
 20048,Emanation,Emanation
 20049,Emanation (Extreme),Emanation (Extreme)
 20050,The Minstrel's Ballad: Shinryu's Domain,The Minstrel's Ballad: Shinryu's Domain
+20051,The Jade Stoa,The Jade Stoa
+20052,The Jade Stoa (Extreme),The Jade Stoa (Extreme)
 25001,The Haunted Manor,The Haunted Manor
+25002,The Valentione's Ceremony,The Valentione's Ceremony
 30001,The Labyrinth Of The Ancients,The Labyrinth Of The Ancients
 30002,The Binding Coil Of Bahamut - Turn 1,The Binding Coil Of Bahamut - Turn 1
 30003,The Binding Coil Of Bahamut - Turn 2,The Binding Coil Of Bahamut - Turn 2
@@ -219,17 +224,25 @@ ID,NameEn,Name
 30056,Deltascape V4.0 (Savage),Deltascape V4.0 (Savage)
 30057,The Unending Coil Of Bahamut (Ultimate),The Unending Coil Of Bahamut (Ultimate)
 30058,The Royal City Of Rabanastre,The Royal City Of Rabanastre
-40007,The Feast (8 On 8 - Training),The Feast (8 On 8 - Training)
+30059,Sigmascape V1.0,Sigmascape V1.0
+30060,Sigmascape V2.0,Sigmascape V2.0
+30061,Sigmascape V3.0,Sigmascape V3.0
+30062,Sigmascape V4.0,Sigmascape V4.0
+30063,Sigmascape V1.0 (Savage),Sigmascape V1.0 (Savage)
+30064,Sigmascape V2.0 (Savage),Sigmascape V2.0 (Savage)
+30065,Sigmascape V3.0 (Savage),Sigmascape V3.0 (Savage)
+30066,Sigmascape V4.0 (Savage),Sigmascape V4.0 (Savage)
 40008,The Feast (4 On 4 - Training),The Feast (4 On 4 - Training)
 40010,The Feast (4 On 4 - Ranked),The Feast (4 On 4 - Ranked)
 40012,★The Feast (4 On 4 - Light Party),★The Feast (4 On 4 - Light Party)
-40013,The Feast (8 On 8 - Custom Match - Feasting Grounds),The Feast (8 On 8 - Custom Match - Feasting Grounds)
-40014,The Feast (4 On 4 - Custom Match - Feasting Grounds),The Feast (4 On 4 - Custom Match - Feasting Grounds)
-40015,The Feast (8 On 8 - Training),The Feast (8 On 8 - Training)
+40014,The Feast (Custom Match - Feasting Grounds),The Feast (Custom Match - Feasting Grounds)
 40016,The Feast (4 On 4 - Training),The Feast (4 On 4 - Training)
 40018,The Feast (4 On 4 - Ranked),The Feast (4 On 4 - Ranked)
-40020,The Feast (8 On 8 - Custom Match - Lichenweed),The Feast (8 On 8 - Custom Match - Lichenweed)
-40021,The Feast (4 On 4 - Custom Match - Lichenweed),The Feast (4 On 4 - Custom Match - Lichenweed)
+40021,The Feast (Custom Match - Lichenweed),The Feast (Custom Match - Lichenweed)
+40022,The Feast (Team Ranked),The Feast (Team Ranked)
+40023,The Feast (Ranked),The Feast (Ranked)
+40024,The Feast (Training),The Feast (Training)
+40025,The Feast (Custom Match - Crystal Tower),The Feast (Custom Match - Crystal Tower)
 50001,The Borderland Ruins (Secure),The Borderland Ruins (Secure)
 50004,Seal Rock (Seize),Seal Rock (Seize)
 50005,The Fields Of Glory (Shatter),The Fields Of Glory (Shatter)
