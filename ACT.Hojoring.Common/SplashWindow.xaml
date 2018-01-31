@@ -1,4 +1,4 @@
-<Window
+﻿<Window
   x:Class="ACT.Hojoring.Common.SplashWindow"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -27,7 +27,7 @@
       ScaleX="0.8"
       ScaleY="0.8" />
   </Window.LayoutTransform>
-  
+
   <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
     <Grid>
       <Label x:Name="TitleLabel" Content="ACT.Hojoring" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="60">
@@ -76,18 +76,19 @@
         FontSize="{Binding ElementName=TitleLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
     </Grid>
-    <Grid HorizontalAlignment="Right">
-      <Label x:Name="VersionLabel" Content="v1.0.0" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="40">
+    <Grid>
+      <Label HorizontalAlignment="Right" x:Name="VersionLabel" Content="v1.0.0" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="40">
         <Label.Effect>
           <DropShadowEffect
-          Opacity="1"
-          Direction="0"
-          ShadowDepth="0"
-          Color="Navy"
-          BlurRadius="6" />
+            Opacity="1"
+            Direction="0"
+            ShadowDepth="0"
+            Color="Navy"
+            BlurRadius="6" />
         </Label.Effect>
       </Label>
       <Label
+        HorizontalAlignment="{Binding ElementName=VersionLabel, Path=HorizontalAlignment, Mode=OneWay}"
         Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
         Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
         FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
@@ -95,6 +96,7 @@
         FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
       <Label
+        HorizontalAlignment="{Binding ElementName=VersionLabel, Path=HorizontalAlignment, Mode=OneWay}"
         Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
         Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
         FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
@@ -102,6 +104,7 @@
         FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
       <Label
+        HorizontalAlignment="{Binding ElementName=VersionLabel, Path=HorizontalAlignment, Mode=OneWay}"
         Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
         Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
         FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
@@ -109,6 +112,7 @@
         FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
       <Label
+        HorizontalAlignment="{Binding ElementName=VersionLabel, Path=HorizontalAlignment, Mode=OneWay}"
         Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
         Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
         FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
@@ -116,12 +120,69 @@
         FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
       <Label
+        HorizontalAlignment="{Binding ElementName=VersionLabel, Path=HorizontalAlignment, Mode=OneWay}"
         Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
         Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
         FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
         FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
         FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
+
+      <Label HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="CopyrightLabel" Content="©anoyetta" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="20">
+        <Label.Effect>
+          <DropShadowEffect
+            Opacity="1"
+            Direction="0"
+            ShadowDepth="0"
+            Color="Navy"
+            BlurRadius="6" />
+        </Label.Effect>
+      </Label>
+      <Label
+        HorizontalAlignment="{Binding ElementName=CopyrightLabel, Path=HorizontalAlignment, Mode=OneWay}"
+        VerticalAlignment="{Binding ElementName=CopyrightLabel, Path=VerticalAlignment, Mode=OneWay}"
+        Content="{Binding ElementName=CopyrightLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=CopyrightLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=CopyrightLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=CopyrightLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=CopyrightLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=CopyrightLabel, Path=Effect, Mode=OneWay}" />
+      <Label
+        HorizontalAlignment="{Binding ElementName=CopyrightLabel, Path=HorizontalAlignment, Mode=OneWay}"
+        VerticalAlignment="{Binding ElementName=CopyrightLabel, Path=VerticalAlignment, Mode=OneWay}"
+        Content="{Binding ElementName=CopyrightLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=CopyrightLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=CopyrightLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=CopyrightLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=CopyrightLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=CopyrightLabel, Path=Effect, Mode=OneWay}" />
+      <Label
+        HorizontalAlignment="{Binding ElementName=CopyrightLabel, Path=HorizontalAlignment, Mode=OneWay}"
+        VerticalAlignment="{Binding ElementName=CopyrightLabel, Path=VerticalAlignment, Mode=OneWay}"
+        Content="{Binding ElementName=CopyrightLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=CopyrightLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=CopyrightLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=CopyrightLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=CopyrightLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=CopyrightLabel, Path=Effect, Mode=OneWay}" />
+      <Label
+        HorizontalAlignment="{Binding ElementName=CopyrightLabel, Path=HorizontalAlignment, Mode=OneWay}"
+        VerticalAlignment="{Binding ElementName=CopyrightLabel, Path=VerticalAlignment, Mode=OneWay}"
+        Content="{Binding ElementName=CopyrightLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=CopyrightLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=CopyrightLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=CopyrightLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=CopyrightLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=CopyrightLabel, Path=Effect, Mode=OneWay}" />
+      <Label
+        HorizontalAlignment="{Binding ElementName=CopyrightLabel, Path=HorizontalAlignment, Mode=OneWay}"
+        VerticalAlignment="{Binding ElementName=CopyrightLabel, Path=VerticalAlignment, Mode=OneWay}"
+        Content="{Binding ElementName=CopyrightLabel, Path=Content, Mode=OneWay}"
+        Foreground="{Binding ElementName=CopyrightLabel, Path=Foreground, Mode=OneWay}"
+        FontFamily="{Binding ElementName=CopyrightLabel, Path=FontFamily, Mode=OneWay}"
+        FontWeight="{Binding ElementName=CopyrightLabel, Path=FontWeight, Mode=OneWay}"
+        FontSize="{Binding ElementName=CopyrightLabel, Path=FontSize, Mode=OneWay}"
+        Effect="{Binding ElementName=CopyrightLabel, Path=Effect, Mode=OneWay}" />
     </Grid>
   </StackPanel>
 </Window>
