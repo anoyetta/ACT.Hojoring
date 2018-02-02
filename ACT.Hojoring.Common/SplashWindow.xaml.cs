@@ -33,7 +33,7 @@ namespace ACT.Hojoring.Common
             {
                 Task.Run(() =>
                 {
-                    Thread.Sleep(4000);
+                    Thread.Sleep(3500);
 
                     for (int i = 0; i < 100; i++)
                     {
@@ -42,7 +42,7 @@ namespace ACT.Hojoring.Common
                             this.Opacity -= 0.01;
                         }));
 
-                        Thread.Sleep(15);
+                        Thread.Sleep(8);
                     }
 
                     Application.Current.Dispatcher.BeginInvoke(
