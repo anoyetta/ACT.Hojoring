@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
@@ -30,10 +31,21 @@ namespace ACT.Hojoring.Common
 
             this.Loaded += (x, y) =>
             {
-                Task.Run(async () =>
+                Task.Run(() =>
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                    await Application.Current.Dispatcher.BeginInvoke(
+                    Thread.Sleep(4000);
+
+                    for (int i = 0; i < 100; i++)
+                    {
+                        Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            this.Opacity -= 0.01;
+                        }));
+
+                        Thread.Sleep(15);
+                    }
+
+                    Application.Current.Dispatcher.BeginInvoke(
                         DispatcherPriority.Background,
                         new Action(() =>
                         {
