@@ -4,8 +4,9 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:local="clr-namespace:ACT.Hojoring"
+  xmlns:local="clr-namespace:ACT.Hojoring.Common"
   mc:Ignorable="d"
+  x:Name="BaseWindow"
   Title="ACT.Hojoring"
   TextOptions.TextFormattingMode="Display"
   TextOptions.TextHintingMode="Animated"
@@ -23,8 +24,10 @@
   WindowStartupLocation="CenterScreen">
 
   <Window.Resources>
-    <SolidColorBrush x:Key="MainColor" Color="Indigo" />
+    <SolidColorBrush x:Key="MainColor" Color="DarkOrchid" />
+    <FontFamily x:Key="Font">Comic Sans MS</FontFamily>
   </Window.Resources>
+
   <Window.LayoutTransform>
     <ScaleTransform
       ScaleX="0.8"
@@ -34,7 +37,7 @@
   <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
     <Label x:Name="Dummy" Background="{StaticResource MainColor}" Visibility="Collapsed" />
     <Grid>
-      <Label x:Name="TitleLabel" Content="ACT.Hojoring" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="60">
+      <Label x:Name="TitleLabel" Content="ACT.Hojoring" Foreground="White" FontFamily="{StaticResource Font}" FontWeight="Black" FontSize="60">
         <Label.Effect>
           <DropShadowEffect
             Opacity="1"
@@ -80,8 +83,9 @@
         FontSize="{Binding ElementName=TitleLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
     </Grid>
+
     <Grid>
-      <Label HorizontalAlignment="Right" x:Name="VersionLabel" Content="v1.0.0" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="40">
+      <Label HorizontalAlignment="Right" x:Name="VersionLabel" Content="v1.0.0" Foreground="White" FontFamily="{StaticResource Font}" FontWeight="Black" FontSize="35">
         <Label.Effect>
           <DropShadowEffect
             Opacity="1"
@@ -97,6 +101,7 @@
         Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
         FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
         FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
+        FontStyle="{Binding ElementName=VersionLabel, Path=FontStyle, Mode=OneWay}"
         FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
       <Label
@@ -105,6 +110,7 @@
         Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
         FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
         FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
+        FontStyle="{Binding ElementName=VersionLabel, Path=FontStyle, Mode=OneWay}"
         FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
       <Label
@@ -113,6 +119,7 @@
         Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
         FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
         FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
+        FontStyle="{Binding ElementName=VersionLabel, Path=FontStyle, Mode=OneWay}"
         FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
       <Label
@@ -121,6 +128,7 @@
         Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
         FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
         FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
+        FontStyle="{Binding ElementName=VersionLabel, Path=FontStyle, Mode=OneWay}"
         FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
       <Label
@@ -129,10 +137,11 @@
         Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
         FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
         FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
+        FontStyle="{Binding ElementName=VersionLabel, Path=FontStyle, Mode=OneWay}"
         FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
 
-      <Label HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="CopyrightLabel" Content="©anoyetta" Foreground="White" FontFamily="Arial" FontWeight="Black" FontSize="20">
+      <Label HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="CopyrightLabel" Content="©anoyetta" Foreground="White" FontFamily="{StaticResource Font}" FontWeight="Black" FontSize="20">
         <Label.Effect>
           <DropShadowEffect
             Opacity="1"
