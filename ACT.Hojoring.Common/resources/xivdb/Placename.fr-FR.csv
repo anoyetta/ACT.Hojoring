@@ -57,6 +57,8 @@ ID,NameEn,Name
 56,Ala Mhigo,Ala Mhigo
 57,Kugane Castle,Le Château De Kugane
 58,The Drowned City Of Skalla,La Cité Engloutie De Skalla
+59,Hells' Lid,Le Couvercle Des Enfers
+60,The Fractal Continuum (Hard),Le Continuum Fractal (brutal)
 5001,A Spectacle For The Ages,La Grande Manœuvre éorzéenne
 5002,A Bloody Reunion,Course-poursuite Dans Le Laboratoire
 5003,One Life For One World,Destins Entrecroisés
@@ -84,7 +86,7 @@ ID,NameEn,Name
 10001,Basic Training: Enemy Parties,Entraînement: Groupes D'ennemis
 10002,Under The Armor,Chasse Au Fantôme Fantoche
 10003,Basic Training: Enemy Strongholds,Entraînement: Infiltration En Base Ennemie
-10004,Hero On The Halfshell,Reconquête D'une Carapace Escamotée
+10004,Hero On The Half Shell,Reconquête D'une Carapace Escamotée
 10005,Pulling Poison Posies,Opération Fleurs Du Mal
 10006,Stinging Back,Expédition Punitive Contre Les Ventrerouge
 10007,All's Well That Ends In The Well,Briaxio à Bras Raccourcis
@@ -161,7 +163,10 @@ ID,NameEn,Name
 20048,Emanation,Émanation
 20049,Emanation (Extreme),Émanation (extrême)
 20050,The Minstrel's Ballad: Shinryu's Domain,Le Domaine De Shinryu
+20051,The Jade Stoa,La Clairière De Jade
+20052,The Jade Stoa (Extreme),La Clairière De Jade (extrême)
 25001,The Haunted Manor,Le Manoir Hanté
+25002,The Valentione's Ceremony,La Cérémonie De La Valention
 30001,The Labyrinth Of The Ancients,La Tour De Cristal - Dédale Antique
 30002,The Binding Coil Of Bahamut - Turn 1,Le Labyrinthe De Bahamut I
 30003,The Binding Coil Of Bahamut - Turn 2,Le Labyrinthe De Bahamut II
@@ -219,21 +224,25 @@ ID,NameEn,Name
 30056,Deltascape V4.0 (Savage),Deltastice V4.0 (sadique)
 30057,The Unending Coil Of Bahamut (Ultimate),L'Abîme Infini De Bahamut (fatal)
 30058,The Royal City Of Rabanastre,La Cité Royale De Rabanastre
-40007,The Feast (8 On 8 - Training),The Feast (8x8/entraînement)
+30059,Sigmascape V1.0,Sigmastice V1.0
+30060,Sigmascape V2.0,Sigmastice V2.0
+30061,Sigmascape V3.0,Sigmastice V3.0
+30062,Sigmascape V4.0,Sigmastice V4.0
+30063,Sigmascape V1.0 (Savage),Sigmastice V1.0 (sadique)
+30064,Sigmascape V2.0 (Savage),Sigmastice V2.0 (sadique)
+30065,Sigmascape V3.0 (Savage),Sigmastice V3.0 (sadique)
+30066,Sigmascape V4.0 (Savage),Sigmastice V4.0 (sadique)
 40008,The Feast (4 On 4 - Training),The Feast (4x4/entraînement)
 40010,The Feast (4 On 4 - Ranked),The Feast (4x4/classé)
 40012,★The Feast (4 On 4 - Light Party),★The Feast (4x4/équipe Préformée)
-40013,The Feast (8 On 8 - Custom Match - Feasting Grounds),The Feast 
-(8x8/personnalisé/Festin Des Loups)
-40014,The Feast (4 On 4 - Custom Match - Feasting Grounds),The Feast 
-(4x4/personnalisé/Festin Des Loups)
-40015,The Feast (8 On 8 - Training),The Feast (8x8/entraînement)
+40014,The Feast (Custom Match - Feasting Grounds),The Feast (personnalisé/Festin Des Loups)
 40016,The Feast (4 On 4 - Training),The Feast (4x4/entraînement)
 40018,The Feast (4 On 4 - Ranked),The Feast (4x4/classé)
-40020,The Feast (8 On 8 - Custom Match - Lichenweed),The Feast 
-(8x8/personnalisé/Pré-de-lichen)
-40021,The Feast (4 On 4 - Custom Match - Lichenweed),The Feast 
-(4x4/personnalisé/Pré-de-lichen)
+40021,The Feast (Custom Match - Lichenweed),The Feast (personnalisé/Pré-de-lichen)
+40022,The Feast (Team Ranked),The Feast (classé/troupe JcJ)
+40023,The Feast (Ranked),The Feast (classé)
+40024,The Feast (Training),The Feast (entraînement)
+40025,The Feast (Custom Match - Crystal Tower),The Feast (personnalisé/Tour De Cristal)
 50001,The Borderland Ruins (Secure),Les Ruines Frontalières (annexion)
 50004,Seal Rock (Seize),Le Rocher Des Tréfonds (invasion)
 50005,The Fields Of Glory (Shatter),Les Champs De La Gloire (brise-glace)
