@@ -57,6 +57,8 @@ ID,NameEn,Name
 56,Ala Mhigo,紅蓮決戦 アラミゴ
 57,Kugane Castle,悪党成敗 クガネ城
 58,The Drowned City Of Skalla,水没遺構 スカラ
+59,Hells' Lid,紅玉火山 獄之蓋
+60,The Fractal Continuum (Hard),暴走戦艦 フラクタル・コンティニアム (Hard)
 5001,A Spectacle For The Ages,四国合同演習
 5002,A Bloody Reunion,レグラ・ヴァン・ヒュドルス追撃戦
 5003,One Life For One World,絡み合う宿命
@@ -84,7 +86,7 @@ ID,NameEn,Name
 10001,Basic Training: Enemy Parties,集団戦訓練をくぐり抜けろ！
 10002,Under The Armor,彷徨う死霊を討て！
 10003,Basic Training: Enemy Strongholds,全関門を突破し、最深部の敵を討て！
-10004,Hero On The Halfshell,ギルガメを捕獲せよ！
+10004,Hero On The Half Shell,ギルガメを捕獲せよ！
 10005,Pulling Poison Posies,有毒妖花を駆除せよ！
 10006,Stinging Back,無法者「似我蜂団」を撃滅せよ！
 10007,All's Well That Ends In The Well,夢幻のブラキシオを討て！
@@ -161,7 +163,10 @@ ID,NameEn,Name
 20048,Emanation,ラクシュミ討滅戦
 20049,Emanation (Extreme),極ラクシュミ討滅戦
 20050,The Minstrel's Ballad: Shinryu's Domain,極神龍討滅戦
+20051,The Jade Stoa,白虎征魂戦
+20052,The Jade Stoa (Extreme),極白虎征魂戦
 25001,The Haunted Manor,亡霊屋敷 ホーンテッドマナー
+25002,The Valentione's Ceremony,ヴァレンティオンセレモニー
 30001,The Labyrinth Of The Ancients,クリスタルタワー：古代の民の迷宮
 30002,The Binding Coil Of Bahamut - Turn 1,大迷宮バハムート：邂逅編1
 30003,The Binding Coil Of Bahamut - Turn 2,大迷宮バハムート：邂逅編2
@@ -219,17 +224,25 @@ ID,NameEn,Name
 30056,Deltascape V4.0 (Savage),次元の狭間オメガ零式：デルタ編4
 30057,The Unending Coil Of Bahamut (Ultimate),絶バハムート討滅戦
 30058,The Royal City Of Rabanastre,失われた都 ラバナスタ
-40007,The Feast (8 On 8 - Training),ザ・フィースト (8対8 / カジュアルマッチ)
+30059,Sigmascape V1.0,次元の狭間オメガ：シグマ編1
+30060,Sigmascape V2.0,次元の狭間オメガ：シグマ編2
+30061,Sigmascape V3.0,次元の狭間オメガ：シグマ編3
+30062,Sigmascape V4.0,次元の狭間オメガ：シグマ編4
+30063,Sigmascape V1.0 (Savage),次元の狭間オメガ零式：シグマ編1
+30064,Sigmascape V2.0 (Savage),次元の狭間オメガ零式：シグマ編2
+30065,Sigmascape V3.0 (Savage),次元の狭間オメガ零式：シグマ編3
+30066,Sigmascape V4.0 (Savage),次元の狭間オメガ零式：シグマ編4
 40008,The Feast (4 On 4 - Training),ザ・フィースト (4対4 / カジュアルマッチ)
 40010,The Feast (4 On 4 - Ranked),ザ・フィースト (4対4 / ランクマッチ)
 40012,★The Feast (4 On 4 - Light Party),★ザ・フィースト (4対4 / 固定ライトパーティ専用)
-40013,The Feast (8 On 8 - Custom Match - Feasting Grounds),ザ・フィースト (8対8 / カスタムマッチ専用 / ウルヴズジェイル演習場)
-40014,The Feast (4 On 4 - Custom Match - Feasting Grounds),ザ・フィースト (4対4 / カスタムマッチ専用 / ウルヴズジェイル演習場)
-40015,The Feast (8 On 8 - Training),ザ・フィースト (8対8 / カジュアルマッチ)
+40014,The Feast (Custom Match - Feasting Grounds),ザ・フィースト (ウルヴズジェイル演習場：カスタムマッチ）
 40016,The Feast (4 On 4 - Training),ザ・フィースト (4対4 / カジュアルマッチ)
 40018,The Feast (4 On 4 - Ranked),ザ・フィースト (4対4 / ランクマッチ)
-40020,The Feast (8 On 8 - Custom Match - Lichenweed),ザ・フィースト (8対8 / カスタムマッチ専用 / ライケンウィード演習場)
-40021,The Feast (4 On 4 - Custom Match - Lichenweed),ザ・フィースト (4対4 / カスタムマッチ専用 / ライケンウィード演習場)
+40021,The Feast (Custom Match - Lichenweed),ザ・フィースト (ライケンウィード演習場：カスタムマッチ）
+40022,The Feast (Team Ranked),ザ・フィースト (チーム用ランクマッチ)
+40023,The Feast (Ranked),ザ・フィースト (ランクマッチ)
+40024,The Feast (Training),ザ・フィースト (カジュアルマッチ)
+40025,The Feast (Custom Match - Crystal Tower),ザ・フィースト (クリスタルタワー演習場：カスタムマッチ）
 50001,The Borderland Ruins (Secure),外縁遺跡群 (制圧戦)
 50004,Seal Rock (Seize),シールロック (争奪戦)
 50005,The Fields Of Glory (Shatter),フィールド・オブ・グローリー (砕氷戦)

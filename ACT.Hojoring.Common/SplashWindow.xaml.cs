@@ -1,9 +1,11 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
 namespace ACT.Hojoring.Common
@@ -14,6 +16,10 @@ namespace ACT.Hojoring.Common
     public partial class SplashWindow : Window
     {
         public static Version HojoringVersion => Assembly.GetExecutingAssembly()?.GetName()?.Version;
+
+        private DoubleAnimation opacityAnimation = new DoubleAnimation(
+            0,
+            new Duration(TimeSpan.FromSeconds(1)));
 
         public SplashWindow()
         {
@@ -28,12 +34,26 @@ namespace ACT.Hojoring.Common
                 this.VersionLabel.Content = $"v{ver.Major}.{ver.Minor}.{ver.Revision}";
             }
 
+            Timeline.SetDesiredFrameRate(this.opacityAnimation, 30);
+
             this.Loaded += (x, y) =>
             {
-                Task.Run(async () =>
+                Task.Run(() =>
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                    await Application.Current.Dispatcher.BeginInvoke(
+                    Thread.Sleep(3500);
+
+                    Application.Current.Dispatcher.BeginInvoke(
+                        DispatcherPriority.Background,
+                        new Action(() =>
+                        {
+                            this.BeginAnimation(
+                                Window.OpacityProperty,
+                                this.opacityAnimation);
+                        }));
+
+                    Thread.Sleep(1000);
+
+                    Application.Current.Dispatcher.BeginInvoke(
                         DispatcherPriority.Background,
                         new Action(() =>
                         {
