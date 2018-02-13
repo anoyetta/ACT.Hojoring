@@ -123,7 +123,9 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "Xceed.Wpf.AvalonDock.Themes.Aero.dll",
         "Xceed.Wpf.AvalonDock.Themes.Metro.dll",
         "Xceed.Wpf.AvalonDock.Themes.VS2010.dll",
-        "Xceed.Wpf.DataGrid.dll"
+        "Xceed.Wpf.DataGrid.dll",
+        "FFXIV_MemoryReader.Base.dll",
+        "FFXIV_MemoryReader.Model.dll"
     )
 
     $plugins = @(
