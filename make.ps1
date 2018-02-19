@@ -130,7 +130,8 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "NPOI.OpenXmlFormats.dll",
         "ICSharpCode.SharpZipLib.dll",
         "FFXIV_MemoryReader.Base.dll",
-        "FFXIV_MemoryReader.Model.dll"
+        "FFXIV_MemoryReader.Model.dll",
+        "FFXIV_MemoryReader.Core.dll"
     )
 
     $plugins = @(
