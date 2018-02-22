@@ -24,7 +24,7 @@
   WindowStartupLocation="CenterScreen">
 
   <Window.Resources>
-    <SolidColorBrush x:Key="MainColor" Color="DarkOrchid" />
+    <SolidColorBrush x:Key="MainColor" Color="Gold" />
     <FontFamily x:Key="Font">Comic Sans MS</FontFamily>
   </Window.Resources>
 
