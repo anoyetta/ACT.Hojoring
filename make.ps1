@@ -6,6 +6,10 @@ function EndMake() {
     exit
 }
 
+# 現在のディレクトリを取得する
+$cd = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $cd
+
 $devenv = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\devenv.com"
 $startdir = Get-Location
 $7z = Get-Item .\tools\7za.exe
