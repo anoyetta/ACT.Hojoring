@@ -24,7 +24,11 @@ namespace ACT.Hojoring.Updater
                     bool.TryParse(args[1], out usePre);
                 }
 
-                var client = new GitHubClient(new ProductHeaderValue("ACT.Hojoring.Updater"));
+                var client = new GitHubClient(new ProductHeaderValue("ACT.Hojoring.Updater"))
+                {
+                    Credentials = new Credentials("4a380243ea7a6894be1c1cfc154f4fecd1a46bd0")
+                };
+
                 var releases = client.Repository.Release.GetAll("anoyetta", "ACT.Hojoring").Result;
 
                 var lastest = releases.FirstOrDefault(x => x.Prerelease == usePre);
