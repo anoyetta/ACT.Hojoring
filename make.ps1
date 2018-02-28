@@ -1,7 +1,7 @@
-Start-Transcript make.log
+Start-Transcript make.log | Out-Null
 
 function EndMake() {
-    Stop-Transcript
+    Stop-Transcript | Out-Null
     Read-Host "I—¹‚·‚é‚É‚Í‰½‚©ƒL[‚ğ‹³‚¦‚Ä‚­‚¾‚³‚¢..."
     exit
 }
@@ -18,7 +18,7 @@ $archives = Get-Item .\archives\
 $libz = Get-Item .\tools\libz.exe
 $cevioLib = Get-Item FFXIV.Framework\Thirdparty\CeVIO.Talk.RemoteService.dll
 
-'œVersion'
+# 'œVersion'
 $versionContent = $(Get-Content "@MasterVersion.txt").Trim("\r").Trim("\n")
 $version = $versionContent.Replace(".X", ".0")
 $versionShort = $versionContent.Replace(".X", "")
