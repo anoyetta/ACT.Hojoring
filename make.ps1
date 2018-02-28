@@ -31,11 +31,16 @@ Write-Output "***"
 # MasterVersion.cs.tmp をコピーする
 Copy-Item -Force $masterVersionTemp ".\ACT.Hojoring.Common\Version.cs"
 
-'●Build XIVDBDownloader Debug'
-& $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Debug | Write-Output
+if (Test-Path .\ACT.Hojoring\bin\Release\tools) {
+    Remove-Item -Path .\ACT.Hojoring\bin\Release\tools\* -Force -Recurse
+    Remove-Item -Path .\ACT.Hojoring\bin\Release\tools -Force -Recurse
+}
 
-'●Build ACT.Hojoring Debug'
-& $devenv $sln /nologo /project ACT.Hojoring\ACT.Hojoring.csproj /Rebuild Debug | Write-Output
+# '●Build XIVDBDownloader Debug'
+# & $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Debug | Write-Output
+
+# '●Build ACT.Hojoring Debug'
+# & $devenv $sln /nologo /project ACT.Hojoring\ACT.Hojoring.csproj /Rebuild Debug | Write-Output
 
 '●Build XIVDBDownloader Release'
 & $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Release | Write-Output
@@ -50,12 +55,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     '●Hojoring.dll を削除する'
     Remove-Item -Force ACT.Hojoring.dll
 
-    '●XIVDBDownloader の出力を取得する'
-    if (Test-Path .\tools) {
-        Remove-Item .\tools -Force -Recurse
-    }
-
-    Copy-Item -Recurse -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\ -Exclude *.pdb
+    Copy-Item -Recurse -Force -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\ -Exclude *.pdb
     Remove-Item -Recurse .\tools\XIVDBDownloader\resources
     Remove-Item -Recurse * -Include *.pdb
 
@@ -108,6 +108,10 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     '●TTSServer にCeVIOをマージする'
     & $libz inject-dll -a FFXIV.Framework.TTS.Server.exe -i $cevioLib | Select-String "Injecting"
+
+    '●ACT.Hojoring.Updater をマージする'
+    & $libz inject-dll -a ACT.Hojoring.Updater.exe -i Octokit.dll --move | Select-String "Injecting"
+    & $libz inject-dll -a ACT.Hojoring.Updater.exe -i SevenZipSharp.dll --move | Select-String "Injecting"
 
     '●その他のDLLをマージする'
     $otherLibs = @(
