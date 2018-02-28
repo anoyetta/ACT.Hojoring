@@ -10,7 +10,7 @@ namespace ACT.Hojoring.Updater
 {
     public class Program
     {
-        private const string AuthToken = "46200a9def12b2f5c765ab41f2b44e5bb4e0f0f7";
+        private const string AuthToken = "b9015b819bee071e0bc0a9099c9eed80c7ddb7c7";
 
         public static void Main(
             string[] args)
