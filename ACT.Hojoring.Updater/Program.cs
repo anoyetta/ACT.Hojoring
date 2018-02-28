@@ -10,8 +10,6 @@ namespace ACT.Hojoring.Updater
 {
     public class Program
     {
-        private const string AuthToken = "b9015b819bee071e0bc0a9099c9eed80c7ddb7c7";
-
         public static void Main(
             string[] args)
         {
@@ -27,9 +25,6 @@ namespace ACT.Hojoring.Updater
                 }
 
                 var client = new GitHubClient(new ProductHeaderValue("ACT.Hojoring.Updater"));
-                var token = new Credentials(AuthToken);
-                client.Credentials = token;
-
                 var releases = client.Repository.Release.GetAll("anoyetta", "ACT.Hojoring").Result;
 
                 var lastest = releases.FirstOrDefault(x => x.Prerelease == usePre);
