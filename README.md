@@ -30,7 +30,9 @@ ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」
 
 3. 解凍する  
 ダウンロードしたプラグイン一式を解凍し任意のフォルダに配置します。  
-Discord への通知を使用する場合は、lib\libopus.dll, lib\libsodium.dll を **ACT本体と同じフォルダ** にコピーします。
+DISCORD への通知を使用する場合は下記のDLLを **ACT本体と同じフォルダ** にコピーします。
+* lib\libopus.dll
+* lib\libsodium.dll
 
 4. ACTに追加する
 ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
@@ -47,8 +49,9 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 基本的に **[Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki)** を見てください。
 
 #### おすすめ設定とか教えて
-**[ACT.Hojoring アップローダ](https://ux.getuploader.com/hojoring/)**  
-設定の共有向けにアップローダを用意しました。作者または有志が公開してくれた設定がアップロードされていますので自由にお使いください。
+下記の Google Drive 共有フォルダで各種リソースのサンプルを提供しています。  
+**[Google Drive > anoyetta > ACTv3](https://drive.google.com/open?id=1PnULHRCWzzbddItvHdTnmn4P8jkLNPgQ)**  
+**[ACTの共有リソースの使い方](https://drive.google.com/open?id=1dl4dMoBONNz-NRZLCqU7YbkmkEpLKAllN92U-SCwY3M)** **[必読]**  
 
 ##### Hojoring の設定ファイルあれこれ
 1. 格納場所  
@@ -69,15 +72,9 @@ ACT.SpecialSpellTimer.Telops.xml
 スペスペの各種トリガの設定ファイルです。それぞれ、スペルパネル・スペル・テロップの設定ファイルになります。  
 前述の格納場所に上書きしても使えますし、UIからインポートしても使えます（スペルパネルはインポートできません）。ファイルを上書きしたときは丸ごと入れ替わります。インポートした場合は、既存の設定に追加される形になります。他人のトリガを取り込む場合はインポートで追加したほうが良いでしょう。
 
-##### アップローダの注意事項
-* アップローダの利用規約を遵守してください
-* 公序良俗に違反しない範囲で自由に使用してください
-* アップロードされたものは [MIT License](https://ja.wikipedia.org/wiki/MIT_License) にもとづいて公開されているものとします
-* アップローダの容量の問題や公開物の内容によっては予告なく削除されることがあります
-
 ## ライセンス
 [3-Clause BSD License](LICENSE)  
-&copy; 2017 anoyetta  
+&copy; 2014-2018 anoyetta  
 
 ただし下記の行為を禁止します。
 * 配布されたバイナリに対してリバースエンジニアリング等を行い内部を解析する行為
@@ -113,7 +110,7 @@ ACT.SpecialSpellTimer.Telops.xml
 また、リモートサポートの依頼ではなくても説明が困難な場合はリモートによる設定を案内する場合があります。その場合は案内に従ってください。
 
 ### 問合せフォーム
-[https://github.com/anoyetta/ACT.Hojoring/issues/new](https://github.com/anoyetta/ACT.Hojoring/issues/new)  
+**[New Issue](https://github.com/anoyetta/ACT.Hojoring/issues/new)**  
 からチケットを登録してください。[issues](https://github.com/anoyetta/ACT.Hojoring/issues) から既存の課題、現在の状況を確認出来ます。  
 重複する質問はご遠慮ください。
 
@@ -124,3 +121,12 @@ twitter:  [@anoyetta](https://twitter.com/anoyetta)
 まで。  
 基本的に issues からお願いします。issues の課題から優先的に対応します。  
 どうしても直接連絡したい場合はなるべく discord を使用してください。 
+
+### どこに振り込んだらいいんだ？
+無償で提供しています。  
+どうしても寄付したい方は anoyetta(at)gmail.com 宛てに **[Amazonギフト券（Eメールタイプ）](https://www.amazon.co.jp/dp/BT00DHI8G4)** を送ってください。  
+大好きな コカ・コーラ ゼロ を買って開発時に役立てます。
+
+#### DONATION
+I can receive only  **[Amazon eGift Card (JP)](https://www.amazon.co.jp/dp/BT00DHI8G4)**   
+sendto: anoyetta(at)gmail.com
