@@ -124,7 +124,9 @@ twitter:  [@anoyetta](https://twitter.com/anoyetta)
 
 ### どこに振り込んだらいいんだ？
 無償で提供しています。  
-どうしても寄付したい方は anoyetta(at)gmail.com 宛てに **[Amazonギフト券（Eメールタイプ）](https://www.amazon.co.jp/dp/BT00DHI8G4)** を送ってください。  
+どうしても寄付したい方は anoyetta(at)gmail.com 宛てに  
+**[Amazonギフト券（Eメールタイプ）](https://www.amazon.co.jp/dp/BT00DHI8G4)**  
+を送ってください。  
 大好きな コカ・コーラ ゼロ を買って開発時に役立てます。
 
 #### DONATION
