@@ -31,16 +31,16 @@ ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」
 3. 解凍する  
 ダウンロードしたプラグイン一式を解凍し任意のフォルダに配置します。  
 DISCORD への通知を使用する場合は下記のDLLを **ACT本体と同じフォルダ** にコピーします。
-* lib\libopus.dll
-* lib\libsodium.dll
+    * lib\libopus.dll
+    * lib\libsodium.dll
 
 4. ACTに追加する
 ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
 必要なものだけ登録してください。もちろんすべて登録しても問題ありません。  
 
-  * ACT.SpecialSpellTimer.dll
-  * ACT.UltraScouter.dll
-  * ACT.TTSYukkuri.dll
+    * ACT.SpecialSpellTimer.dll
+    * ACT.UltraScouter.dll
+    * ACT.TTSYukkuri.dll
 
 ### 動作環境
 * Windows 10 以降
