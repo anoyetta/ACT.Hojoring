@@ -5,6 +5,7 @@ $isUsePreRelease = $FALSE
 # $isUsePreRelease = $TRUE
 
 # 更新の除外リスト
+# 除外リストをつかう場合はスクリプト自体も除外リストに追加しないと更新してしまうので注意してください。
 $updateExclude = @(
     "_dummy.txt",
     "_sample.txt"
@@ -13,7 +14,7 @@ $updateExclude = @(
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev1'
+'* rev2'
 '* (c) anoyetta, 2018'
 '***************************************************'
 '* Start Update Hojoring'
@@ -59,9 +60,11 @@ Remove-Item $archive
 '-> Update Assets'
 $srcs = Get-ChildItem $updateDir -Recurse -Exclude $updateExclude
 foreach ($src in $srcs) {
-    $dst = Join-Path .\ $src.FullName.Substring($updateDir.length)
-    Copy-Item -Force $src $dst | Write-Output
-    Write-Output ("--> " + $dst)
+    if ($src.GetType() -ne "DirectoryInfo") {
+        $dst = Join-Path .\ $src.FullName.Substring($updateDir.length)
+        Copy-Item -Force $src $dst | Write-Output
+        Write-Output ("--> " + $dst)
+    }
 }
 '-> Updated'
 
