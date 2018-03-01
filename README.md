@@ -16,6 +16,10 @@ ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」
 1. 最新版の Actor を **[こちら](https://github.com/eai04191/Actor/releases)** からダウンロードする  
 2. Actor の **[README](https://github.com/eai04191/Actor)** を読む。
 3. **Actor.exe** を実行する
+    * DISCORD への通知を使用する場合は...  
+    下記のDLLを **ACT本体と同じフォルダ** にコピーします。
+        * lib\libopus.dll
+        * lib\libsodium.dll
 
 ### マニュアルインストール
 自分でDLLを入手して手動で追加したい方はこちらの方法になります。
@@ -29,10 +33,11 @@ ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」
 最新リリースからダウンロードします。
 
 3. 解凍する  
-ダウンロードしたプラグイン一式を解凍し任意のフォルダに配置します。  
-DISCORD への通知を使用する場合は下記のDLLを **ACT本体と同じフォルダ** にコピーします。
-    * lib\libopus.dll
-    * lib\libsodium.dll
+ダウンロードしたプラグイン一式を解凍し任意のフォルダに配置します。
+    * DISCORD への通知を使用する場合は...  
+    下記のDLLを **ACT本体と同じフォルダ** にコピーします。
+        * lib\libopus.dll
+        * lib\libsodium.dll
 
 4. ACTに追加する
 ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
