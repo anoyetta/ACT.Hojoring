@@ -2,6 +2,7 @@ Start-Transcript make.log | Out-Null
 
 function EndMake() {
     Stop-Transcript | Out-Null
+    ''
     Read-Host "èIóπÇ∑ÇÈÇ…ÇÕâΩÇ©ÉLÅ[Çã≥Ç¶ÇƒÇ≠ÇæÇ≥Ç¢..."
     exit
 }
@@ -40,11 +41,13 @@ if (Test-Path .\ACT.Hojoring\bin\Release\tools) {
     Remove-Item -Path .\ACT.Hojoring\bin\Release\tools -Force -Recurse
 }
 
-# 'ÅúBuild XIVDBDownloader Debug'
-# & $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Debug | Write-Output
+<#
+'ÅúBuild XIVDBDownloader Debug'
+& $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Debug | Write-Output
 
-# 'ÅúBuild ACT.Hojoring Debug'
-# & $devenv $sln /nologo /project ACT.Hojoring\ACT.Hojoring.csproj /Rebuild Debug | Write-Output
+'ÅúBuild ACT.Hojoring Debug'
+& $devenv $sln /nologo /project ACT.Hojoring\ACT.Hojoring.csproj /Rebuild Debug | Write-Output
+#>
 
 'ÅúBuild XIVDBDownloader Release'
 & $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Release | Write-Output
@@ -184,7 +187,6 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     & $7z a -r "-xr!*.zip" "-xr!*.7z" "-xr!*.pdb" "-xr!archives\" $archiveZip *
     Move-Item $archiveZip $archives -Force
     #>
-
 
     Set-Location $startdir
 }
