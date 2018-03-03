@@ -14,7 +14,7 @@ $updateExclude = @(
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev2'
+'* rev3'
 '* (c) anoyetta, 2018'
 '***************************************************'
 '* Start Update Hojoring'
@@ -67,6 +67,9 @@ foreach ($src in $srcs) {
     }
 }
 '-> Updated'
+
+# 空のディレクトリを削除する
+Get-ChildItem -Recurse | Where-Object { $_.GetType().Name -eq "DirectoryInfo" -and $_.GetFiles().Count -eq 0 } | Remove-Item -Recurse
 
 if (Test-Path $updateDir) {
     Remove-Item ($updateDir + "/*") -Recurse -Force
