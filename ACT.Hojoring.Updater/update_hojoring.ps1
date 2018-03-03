@@ -5,8 +5,9 @@ $isUsePreRelease = $FALSE
 # $isUsePreRelease = $TRUE
 
 # 更新の除外リスト
-# 除外リストをつかう場合はスクリプト自体も除外リストに追加しないと更新してしまうので注意してください。
+# UPDATEスクリプトは自動更新されないので自分で更新してください
 $updateExclude = @(
+    "update_hojoring.ps1",
     "_dummy.txt",
     "_sample.txt"
 )
