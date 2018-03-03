@@ -61,16 +61,14 @@ Remove-Item $archive
 '-> Update Assets'
 $srcs = Get-ChildItem $updateDir -Recurse -Exclude $updateExclude
 foreach ($src in $srcs) {
-    if ($src.GetType() -ne "DirectoryInfo") {
+    if ($src.GetType().Name -ne "DirectoryInfo") {
         $dst = Join-Path .\ $src.FullName.Substring($updateDir.length)
+        New-Item (Split-Path $dst -Parent) -ItemType Directory -Force | Out-Null
         Copy-Item -Force $src $dst | Write-Output
         Write-Output ("--> " + $dst)
     }
 }
 '-> Updated'
-
-# 空のディレクトリを削除する
-Get-ChildItem -Recurse | Where-Object { $_.GetType().Name -eq "DirectoryInfo" -and $_.GetFiles().Count -eq 0 } | Remove-Item -Recurse
 
 if (Test-Path $updateDir) {
     Remove-Item ($updateDir + "/*") -Recurse -Force
