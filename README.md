@@ -55,7 +55,7 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 
 #### おすすめ設定とか教えて
 下記の Google Drive 共有フォルダで各種リソースのサンプルを提供しています。  
-**[Google Drive > anoyetta > ACTv3](https://drive.google.com/open?id=1PnULHRCWzzbddItvHdTnmn4P8jkLNPgQ)**  
+**[Google Drive > anoyetta > ACT](https://drive.google.com/drive/folders/1nPBuqd8z3jzk0RDOx6NqK6NYUoy08_k-?usp=sharing)**  
 **[ACTの共有リソースの使い方](https://drive.google.com/open?id=1dl4dMoBONNz-NRZLCqU7YbkmkEpLKAllN92U-SCwY3M)** **[必読]**  
 
 ##### Hojoring の設定ファイルあれこれ
