@@ -51,7 +51,7 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 * Windows 10 以降
 
 ## 使い方
-基本的に **[Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki)** を見てください。
+**基本的に [Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki) を見てください。**
 
 #### おすすめ設定とか教えて
 下記の Google Drive 共有フォルダで各種リソースのサンプルを提供しています。  
