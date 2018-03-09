@@ -36,9 +36,9 @@ Write-Output "***"
 # MasterVersion.cs.tmp ÇÉRÉsÅ[Ç∑ÇÈ
 Copy-Item -Force $masterVersionTemp ".\ACT.Hojoring.Common\Version.cs"
 
-if (Test-Path .\ACT.Hojoring\bin\Release\tools) {
-    Remove-Item -Path .\ACT.Hojoring\bin\Release\tools\* -Force -Recurse
-    Remove-Item -Path .\ACT.Hojoring\bin\Release\tools -Force -Recurse
+if (Test-Path .\ACT.Hojoring\bin\Release) {
+    Remove-Item -Path .\ACT.Hojoring\bin\Release\* -Force -Recurse
+    Remove-Item -Path .\ACT.Hojoring\bin\Release -Force -Recurse
 }
 
 <#
