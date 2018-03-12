@@ -140,6 +140,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "NPOI.OpenXml4Net.dll",
         "NPOI.OpenXmlFormats.dll",
         "ICSharpCode.SharpZipLib.dll",
+        "System.Web.Razor.dll",
         "FFXIV_MemoryReader.Base.dll",
         "FFXIV_MemoryReader.Model.dll",
         "FFXIV_MemoryReader.Core.dll"
