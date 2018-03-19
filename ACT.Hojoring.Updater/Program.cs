@@ -31,7 +31,14 @@ namespace ACT.Hojoring.Updater
 
                 var releases = client.Repository.Release.GetAll("anoyetta", "ACT.Hojoring").Result;
 
-                var lastest = releases.FirstOrDefault(x => x.Prerelease == usePre);
+                var lastest = releases.FirstOrDefault();
+                if (!usePre)
+                {
+                    if (lastest.Prerelease)
+                    {
+                        lastest = releases.FirstOrDefault(x => !x.Prerelease);
+                    }
+                }
 
                 if (lastest == null)
                 {
