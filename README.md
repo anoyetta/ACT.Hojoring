@@ -100,9 +100,6 @@ $updateExclude = @(
 )
 ```
 
-### 高度な設定
-
-
 ## ライセンス
 [3-Clause BSD License](LICENSE)  
 &copy; 2014-2018 anoyetta  
