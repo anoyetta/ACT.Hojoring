@@ -158,5 +158,5 @@ twitter:  [@anoyetta](https://twitter.com/anoyetta)
 大好きな コカ・コーラ ゼロ を買って開発時に役立てます。
 
 #### DONATION
-I can receive only  **[Amazon eGift Card (JP)](https://www.amazon.co.jp/dp/BT00DHI8G4)**   
+I can receive only  **[Amazon eGift Card](https://www.amazon.com/dp/B004LLIKVU)**   
 sendto: anoyetta(at)gmail.com
