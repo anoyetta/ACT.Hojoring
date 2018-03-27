@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{F9A5BAFF-4C35-4F15-BDD6-81CB8EC6977D}"
+	ProjectSection(SolutionItems) = preProject
+		FFXIV.Framework\FFXIV.Framework\resources\strings\Strings.en-US.xaml = FFXIV.Framework\FFXIV.Framework\resources\strings\Strings.en-US.xaml
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{EC98C548-6268-4B67-BC45-88DCD9B63960}"
 EndProject
