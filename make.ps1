@@ -125,6 +125,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "FontAwesome.WPF.dll",
         "NAudio.dll",
         "Newtonsoft.Json.dll",
+        "Hjson.dll",
         "NLog.dll",
         "Prism.dll",
         "Prism.Wpf.dll",
