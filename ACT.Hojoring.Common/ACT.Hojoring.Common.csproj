@@ -174,7 +174,9 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="resources\strings\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="resources\TTSDictionary.en-US.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
