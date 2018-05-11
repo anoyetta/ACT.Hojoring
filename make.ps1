@@ -144,7 +144,9 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "System.Web.Razor.dll",
         "FFXIV_MemoryReader.Base.dll",
         "FFXIV_MemoryReader.Model.dll",
-        "FFXIV_MemoryReader.Core.dll"
+        "FFXIV_MemoryReader.Core.dll",
+        "AWSSDK.Core.dll",
+        "AWSSDK.Polly.dll"
     )
 
     $plugins = @(
