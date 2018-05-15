@@ -116,6 +116,9 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     '●TTSServer にCeVIOをマージする'
     & $libz inject-dll -a FFXIV.Framework.TTS.Server.exe -i $cevioLib | Select-String "Injecting"
 
+    '●TTSServer にNAudioをマージする'
+    & $libz inject-dll -a FFXIV.Framework.TTS.Server.exe -i "NAudio.dll" | Select-String "Injecting"
+
     '●ACT.Hojoring.Updater をマージする'
     & $libz inject-dll -a ACT.Hojoring.Updater.exe -i Octokit.dll --move | Select-String "Injecting"
     & $libz inject-dll -a ACT.Hojoring.Updater.exe -i SevenZipSharp.dll --move | Select-String "Injecting"
@@ -123,7 +126,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     '●その他のDLLをマージする'
     $otherLibs = @(
         "FontAwesome.WPF.dll",
-        "NAudio.dll",
+        "CSCore.dll",
         "Newtonsoft.Json.dll",
         "Hjson.dll",
         "NLog.dll",
