@@ -118,6 +118,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     '●TTSServer にNAudioをマージする'
     & $libz inject-dll -a FFXIV.Framework.TTS.Server.exe -i "NAudio.dll" | Select-String "Injecting"
+    Remove-Item -Force "NAudio.dll"
 
     '●ACT.Hojoring.Updater をマージする'
     & $libz inject-dll -a ACT.Hojoring.Updater.exe -i Octokit.dll --move | Select-String "Injecting"
