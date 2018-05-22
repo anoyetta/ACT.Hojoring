@@ -59,6 +59,7 @@ ID,NameEn,Name
 58,The Drowned City Of Skalla,Die Versunkene Stadt Skalla
 59,Hells' Lid,Höllenspund
 60,The Fractal Continuum (Hard),Die Fraktal-Kontinuum (schwer)
+61,The Swallow's Compass,Kompass Der Schwalbe
 5001,A Spectacle For The Ages,Truppenübung Der Eorzäischen Allianz
 5002,A Bloody Reunion,Blutiges Wiedersehen
 5003,One Life For One World,Weltenübergreifendes Schicksal
@@ -83,6 +84,7 @@ ID,NameEn,Name
 5022,When Clans Collide,Aus Dem Verborgenen
 5023,Interdimensional Rift,Interdimensionaler Riss
 5024,Return Of The Bull,Verrat Der Qalyana
+5025,Emissary Of The Dawn,Der Knabe Der Morgenröte
 10001,Basic Training: Enemy Parties,Einer Für Alle, Alle Für Einen
 10002,Under The Armor,Bockmanns Gefolge
 10003,Basic Training: Enemy Strongholds,Sturmkommando
@@ -162,9 +164,11 @@ ID,NameEn,Name
 20047,The Pool Of Tribute (Extreme),Zenit Der Götter - Susano
 20048,Emanation,Götterdämmerung - Lakshmi
 20049,Emanation (Extreme),Zenit Der Götter - Lakshmi
-20050,The Minstrel's Ballad: Shinryu's Domain,Das Heldenlied Von Shinryu
+20050,The Minstrel's Ballad: Shinryu's Domain,Heldenlied Von Shinryu
 20051,The Jade Stoa,Seelentanz - Byakko
 20052,The Jade Stoa (Extreme),Seelensturm - Byakko
+20055,Castrum Fluminis,Götterdämmerung - Tsukuyomi
+20056,The Minstrel's Ballad: Tsukuyomi's Pain,Zenit Der Götter - Tsukuyomi
 25001,The Haunted Manor,Das Geisterschloss
 25002,The Valentione's Ceremony,Valentionzeremonie
 30001,The Labyrinth Of The Ancients,Kristallturm - Das Labyrinth Der Alten
@@ -232,6 +236,8 @@ ID,NameEn,Name
 30064,Sigmascape V2.0 (Savage),Sigmametrie 2.0 (episch)
 30065,Sigmascape V3.0 (Savage),Sigmametrie 3.0 (episch)
 30066,Sigmascape V4.0 (Savage),Sigmametrie 4.0 (episch)
+30068,The Ridorana Lighthouse,Richtfeuer Von Ridorana
+40001,The Fold,The Fold
 40008,The Feast (4 On 4 - Training),The Feast (4 Gegen 4, Übungskampf)
 40010,The Feast (4 On 4 - Ranked),The Feast (4 Gegen 4, Gewertet)
 40012,★The Feast (4 On 4 - Light Party),★The Feast (4 Gegen 4, Bestehende Gruppe)
@@ -243,6 +249,7 @@ ID,NameEn,Name
 40023,The Feast (Ranked),The Feast (gewertet)
 40024,The Feast (Training),The Feast (Übungskampf)
 40025,The Feast (Custom Match - Crystal Tower),The Feast (Kristallturm-Arena: Schaukampf)
+40026,The Feast (Team Custom Match - Crystal Tower),The Feast (Kristallturm-Arena: Team-Schaukampf)
 50001,The Borderland Ruins (Secure),Äußere Ruinen (Sicherung)
 50004,Seal Rock (Seize),Robbenholm (Eroberung)
 50005,The Fields Of Glory (Shatter),Feld Der Ehre (Zersplitterung)

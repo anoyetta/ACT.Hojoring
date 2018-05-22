@@ -1209,10 +1209,8 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 1570,0622,-1,0,Tir Explosif
 1571,0623,-1,0,Prisme Sacré
 1572,0624,-1,0,Souffle Divin
-1573,0625,-1,0,Aile Nocturne
 1574,0626,-1,0,Projectile Fantôme
 1575,0627,-1,0,Voile De Brume
-1576,0628,-1,0,Flétrissure
 1578,062A,-1,0,Traité De La Focalisation
 1579,062B,-1,0,Jet D'arme
 1581,062D,-1,0,Explosion éthérée
@@ -4844,7 +4842,7 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 5828,16C4,-1,0,Giga Feu
 5829,16C5,-1,0,Succion
 5830,16C6,-1,0,Déluge
-5831,16C7,-1,0,Giga Eau
+5831,16C7,-1,0,Méga Eau
 5832,16C8,-1,0,Éclat Mystérieux
 5833,16C9,-1,0,Double Rayon
 5834,16CA,-1,0,Énochien
@@ -6549,7 +6547,7 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 7853,1EAD,-1,0,Frappe Du Dragon
 7854,1EAE,-1,0,Gracieuseté
 7856,1EB0,-1,0,Chiten-gaeshi
-7858,1EB2,-1,0,Monomachie
+7859,1EB3,-1,0,Fente Volante
 7860,1EB4,-1,0,Hissatsu : Tsubame
 7870,1EBE,-1,0,Épine De La Mort
 7871,1EBF,-1,0,Appel Du Néant
@@ -6580,7 +6578,6 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 7896,1ED8,-1,0,Rafale Descendante
 7897,1ED9,-1,0,Rafale Descendante
 7898,1EDA,-1,0,Rafale Descendante
-7899,1EDB,-1,0,●スーパーダウンバースト：エンレイジ
 7900,1EDC,-1,0,Élément Neutre
 7901,1EDD,-1,0,Givre
 7902,1EDE,-1,0,Pinçage
@@ -7370,6 +7367,8 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 8744,2228,-1,0,Gyrocoup
 8745,2229,-1,0,Flambée
 8766,223E,-1,0,Révolte
+8868,22A4,-1,0,Sommeil
+8875,22AB,-1,0,Tri-entrave
 8919,22D7,-1,0,Feu
 8920,22D8,-1,0,Tirage
 8926,22DE,-1,0,Morsure Mandibulaire
@@ -8600,7 +8599,7 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 10374,2886,-1,0,Attaque
 10375,2887,-1,0,Trouze Mille Aiguilles
 10376,2888,-1,0,Attaque
-10377,2889,-1,0,Giga Eau
+10377,2889,-1,0,Méga Eau
 10378,288A,-1,0,Attaque
 10379,288B,-1,0,Ailes D'adversité
 10380,288C,-1,0,Attaque
@@ -8772,7 +8771,7 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 10554,293A,-1,0,Bombe Bourbeuse
 10555,293B,-1,0,Attaque
 10556,293C,-1,0,Bec Marteau
-10557,293D,-1,0,Haleine Soporifique
+10557,293D,-1,0,Pétrihaleine
 10558,293E,-1,0,Attaque
 10559,293F,-1,0,Écrasement
 10560,2940,-1,0,Glaire Moisie
@@ -8788,7 +8787,7 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 10570,294A,-1,0,Attaque
 10571,294B,-1,0,Queue Forante
 10572,294C,-1,0,Embrochement
-10573,294D,-1,0,Giga Eau
+10573,294D,-1,0,Méga Eau
 10574,294E,-1,0,Attaque
 10575,294F,-1,0,Guillotine Glacée
 10576,2950,-1,0,Attaque
@@ -8835,7 +8834,7 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 10617,2979,-1,0,Aveuglement
 10618,297A,-1,0,Cercle De Feu
 10619,297B,-1,0,Attaque
-10620,297C,-1,0,Giga Eau
+10620,297C,-1,0,Méga Eau
 10621,297D,-1,0,Eau
 10622,297E,-1,0,Coup Au Corps
 10623,297F,-1,0,Extra Foudre
@@ -9163,7 +9162,7 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 10973,2ADD,-1,0,Attaque Croisée
 10974,2ADE,-1,0,Aspiration
 10975,2ADF,-1,0,Déluge
-10976,2AE0,-1,0,Giga Eau
+10976,2AE0,-1,0,Méga Eau
 10977,2AE1,-1,0,Obscurcissement
 10978,2AE2,-1,0,Attaque
 10979,2AE3,-1,0,Attaque
@@ -9254,6 +9253,280 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11069,2B3D,-1,0,Ultima
 11071,2B3F,-1,0,Bourrade
 11072,2B40,-1,0,Déflagration Légère
+11156,2B94,-1,0,Tengu-tsubute
+11157,2B95,-1,0,Tengu-kaze
+11158,2B96,-1,0,Yama-kagura
+11159,2B97,-1,0,Malice De Tengu
+11160,2B98,-1,0,Flammes De La Rancune
+11161,2B99,-1,0,Conflagration
+11163,2B9B,-1,0,Paume Colossale
+11164,2B9C,-1,0,Paume Colossale
+11165,2B9D,-1,0,Paume Colossale
+11166,2B9E,-1,0,Paume Colossale
+11167,2B9F,-1,0,Cascade Colossale
+11168,2BA0,-1,0,Cascade Colossale
+11169,2BA1,-1,0,Mirage
+11170,2BA2,-1,0,Mirage
+11171,2BA3,-1,0,Grand Bouleversement
+11172,2BA4,-1,0,Grand Bouleversement
+11173,2BA5,-1,0,Raz-de-montagne
+11174,2BA6,-1,0,Coup De Bâton Court
+11175,2BA7,-1,0,Coup De Bâton Long
+11176,2BA8,-1,0,Coup De Bâton Tournicotant
+11177,2BA9,-1,0,Coup De Bâton Tournicotant
+11178,2BAA,-1,0,Mont Haguo
+11179,2BAB,-1,0,Mont Wuxing
+11181,2BAD,-1,0,Coup De Bâton Long
+11182,2BAE,-1,0,Coup De Bâton Tournicotant
+11183,2BAF,-1,0,Coup De Bâton Tournicotant
+11184,2BB0,-1,0,Mont Wuxing
+11185,2BB1,-1,0,Trayastrimsha
+11186,2BB2,-1,0,Dédoublement
+11187,2BB3,-1,0,Dédoublement
+11188,2BB4,-1,0,Égal Des Cieux
+11194,2BBA,-1,0,Correction
+11195,2BBB,-1,0,Brimade Meurtrière
+11196,2BBC,-1,0,Jeune Nuit
+11197,2BBD,-1,0,Jeune Nuit
+11198,2BBE,-1,0,Tir De L'au-delà
+11199,2BBF,-1,0,Pointes De L'au-delà
+11201,2BC1,-1,0,Brume Nocturne
+11202,2BC2,-1,0,Brume Nocturne
+11203,2BC3,-1,0,Explosion De Suie Noire
+11204,2BC4,-1,0,Explosion De Suie Noire
+11205,2BC5,-1,0,Zashiki Asobi
+11206,2BC6,-1,0,Maiôgi Lunaire
+11207,2BC7,-1,0,Lis Araignée
+11208,2BC8,-1,0,Kenki Concentré
+11212,2BCC,-1,0,Onde Kenki
+11213,2BCD,-1,0,Sélénomancie
+11214,2BCE,-1,0,Bruine Nocturne
+11216,2BD0,-1,0,Fragments Lunaires
+11217,2BD1,-1,0,Impact De Fragment Lunaire
+11218,2BD2,-1,0,Entrechoc De Fragments Lunaires
+11219,2BD3,-1,0,Rayons Lunaires
+11220,2BD4,-1,0,Faisceau Lunaire
+11221,2BD5,-1,0,Lune Du Crépuscule
+11222,2BD6,-1,0,Flamboiement Lunaire
+11223,2BD7,-1,0,Zénith Lunaire
+11224,2BD8,-1,0,Belle-de-nuit
+11226,2BDA,-1,0,Lame Ténébreuse
+11227,2BDB,-1,0,Lame Blafarde
+11228,2BDC,-1,0,Efflorescence Au Clair De Lune
+11229,2BDD,-1,0,Efflorescence Au Clair De Lune
+11230,2BDE,-1,0,Rancœur Blafarde
+11231,2BDF,-1,0,Rancœur Ténébreuse
+11232,2BE0,-1,0,Efflorescence Au Clair De Lune
+11233,2BE1,-1,0,Efflorescence Au Clair De Lune
+11234,2BE2,-1,0,Correction
+11235,2BE3,-1,0,Brimade Meurtrière
+11236,2BE4,-1,0,Jeune Nuit
+11237,2BE5,-1,0,Jeune Nuit
+11238,2BE6,-1,0,Tir De L'au-delà
+11239,2BE7,-1,0,Pointes De L'au-delà
+11240,2BE8,-1,0,Brume Nocturne
+11241,2BE9,-1,0,Brume Nocturne
+11242,2BEA,-1,0,Explosion De Suie Noire
+11243,2BEB,-1,0,Explosion De Suie Noire
+11244,2BEC,-1,0,Zashiki Asobi
+11245,2BED,-1,0,Maiôgi Lunaire
+11246,2BEE,-1,0,Lis Araignée
+11247,2BEF,-1,0,Kenki Concentré
+11248,2BF0,-1,0,Onde Kenki
+11249,2BF1,-1,0,Sélénomancie
+11250,2BF2,-1,0,Bruine Nocturne
+11251,2BF3,-1,0,Fragments Lunaires
+11252,2BF4,-1,0,Impact De Fragment Lunaire
+11253,2BF5,-1,0,Rayons Lunaires
+11254,2BF6,-1,0,Faisceau Lunaire
+11255,2BF7,-1,0,Zénith Lunaire
+11256,2BF8,-1,0,Belle-de-nuit
+11257,2BF9,-1,0,Lame Ténébreuse
+11258,2BFA,-1,0,Lame Blafarde
+11259,2BFB,-1,0,Efflorescence Au Clair De Lune
+11260,2BFC,-1,0,Efflorescence Au Clair De Lune
+11263,2BFF,-1,0,Évocation De La Terre
+11264,2C00,-1,0,Évocation De L'eau
+11265,2C01,-1,0,Évocation Du Vent
+11266,2C02,-1,0,Malédiction De L'eau
+11267,2C03,-1,0,Malédiction Du Vent
+11268,2C04,-1,0,Entraves Végétales
+11269,2C05,-1,0,Turbulence
+11270,2C06,-1,0,Contre-courant
+11271,2C07,-1,0,Turbulence
+11272,2C08,-1,0,Explosion
+11299,2C23,-1,0,Cyclone
+11300,2C24,-1,0,Front De Rafales
+11301,2C25,-1,0,Boule D'eau
+11302,2C26,-1,0,Griffes
+11303,2C27,-1,0,Griffes
+11304,2C28,-1,0,Griffes
+11305,2C29,-1,0,Souffle Pétrifiant
+11306,2C2A,-1,0,Dérèglement Magnétique
+11307,2C2B,-1,0,Stabilisation Du Champ Magnétique
+11308,2C2C,-1,0,Tempête Solaire
+11309,2C2D,-1,0,Prison De Vent
+11310,2C2E,-1,0,Prison De Vent
+11311,2C2F,-1,0,Malédiction Du Vent
+11312,2C30,-1,0,Turbulence
+11313,2C31,-1,0,Souffle Blanc
+11314,2C32,-1,0,Exacerbation
+11315,2C33,-1,0,Pentacle Mortel
+11316,2C34,-1,0,Pentacle Mortel
+11317,2C35,-1,0,Tempête De Poussière
+11318,2C36,-1,0,Tempête De Poussière
+11319,2C37,-1,0,Invocation
+11320,2C38,-1,0,Vent Ancien
+11321,2C39,-1,0,Éclatement
+11322,2C3A,-1,0,Stabilisation Du Champ Magnétique
+11323,2C3B,-1,0,Stabilisation Du Champ Magnétique
+11324,2C3C,-1,0,Griffes
+11325,2C3D,-1,0,Giga Eau
+11326,2C3E,-1,0,Frappe Aqueuse
+11327,2C3F,-1,0,Averse Ténébreuse
+11328,2C40,-1,0,Trombe D'eau
+11329,2C41,-1,0,Aqua-canon
+11330,2C42,-1,0,Bombardement Ténébreux
+11331,2C43,-1,0,Aiguières Ténèbreuses
+11332,2C44,-1,0,Bombardement Ténébreux
+11333,2C45,-1,0,Aqua-canon
+11334,2C46,-1,0,Trombe D'eau
+11336,2C48,-1,0,Tsunami
+11337,2C49,-1,0,Tsunami
+11338,2C4A,-1,0,Tsunami
+11339,2C4B,-1,0,Tsunami
+11340,2C4C,-1,0,Tsunami
+11341,2C4D,-1,0,Tsunami
+11342,2C4E,-1,0,Tsunami
+11343,2C4F,-1,0,Tsunami
+11344,2C50,-1,0,Tsunami
+11345,2C51,-1,0,Tsunami
+11346,2C52,-1,0,Tsunami
+11347,2C53,-1,0,Apparition
+11348,2C54,-1,0,Torrent
+11349,2C55,-1,0,Éclatement
+11350,2C56,-1,0,Nuage Stagnant
+11351,2C57,-1,0,Module D'arithmétique
+11352,2C58,-1,0,Module Tartaros
+11353,2C59,-1,0,Module Exterminator
+11354,2C5A,-1,0,Détruire
+11356,2C5C,-1,0,Écraser
+11357,2C5D,-1,0,Écraser
+11359,2C5F,-1,0,Annihiler
+11360,2C60,-1,0,Annihiler
+11361,2C61,-1,0,Broyer
+11362,2C62,-1,0,Broyer
+11363,2C63,-1,0,Tartaros
+11364,2C64,-1,0,Incinérer
+11365,2C65,-1,0,Aplatir
+11366,2C66,-1,0,Carboniser
+11367,2C67,-1,0,Carboniser
+11368,2C68,-1,0,Percuter
+11369,2C69,-1,0,Réfrigérer
+11372,2C6C,-1,0,Soustraire
+11373,2C6D,-1,0,Décharge électrostatique
+11375,2C6F,-1,0,Explosion
+11377,2C71,-1,0,Détruire
+11378,2C72,-1,0,Mauvaise Haleine
+11379,2C73,-1,0,Flamboiement Lunaire
+11380,2C74,-1,0,Ondulation D'écailles
+11381,2C75,-1,0,Tourbillon électrique
+11382,2C76,-1,0,Filoplumes
+11432,2CA8,-1,0,Troïka Immobile
+11433,2CA9,-1,0,Troïka Immobile
+11434,2CAA,-1,0,Troïka Immobile
+11435,2CAB,-1,0,Troïka Immobile
+11436,2CAC,-1,0,Troïka Immobile
+11437,2CAD,-1,0,Troïka Immobile
+11438,2CAE,-1,0,Lis Araignée
+11439,2CAF,-1,0,Lis Araignée
+11440,2CB0,-1,0,Lis Araignée
+11442,2CB2,-1,0,Missiles Balistiques
+11462,2CC6,-1,0,Choco-météore
+11464,2CC8,-1,0,Incinérer
+11466,2CCA,-1,0,Arithmétique : Multiples De 3
+11468,2CCC,-1,0,Arithmétique : Multiples De 4
+11469,2CCD,-1,0,Arithmétique : Multiples De 5
+11470,2CCE,-1,0,Arithmétique : Nombres Premiers
+11472,2CD0,-1,0,Danse Des Morts
+11474,2CD2,-1,0,Tempête Solaire
+11479,2CD7,-1,0,Explosion De Fragment Lunaire
+11480,2CD8,-1,0,Explosion De Fragment Lunaire
+11481,2CD9,-1,0,Cyclone
+11483,2CDB,-1,0,Feu
+11484,2CDC,-1,0,Giga Feu
+11485,2CDD,-1,0,Éruption
+11486,2CDE,-1,0,Éruption à Retardement
+11487,2CDF,-1,0,Éruption à Retardement
+11488,2CE0,-1,0,Éruption à Retardement
+11489,2CE1,-1,0,Cyclone écarlate
+11490,2CE2,-1,0,Cyclone écarlate
+11491,2CE3,-1,0,Cyclone écarlate
+11492,2CE4,-1,0,Cyclone écarlate
+11493,2CE5,-1,0,Trotteuse De L'au-delà
+11494,2CE6,-1,0,Bombe à Retardement
+11495,2CE7,-1,0,Bombe à Retardement
+11496,2CE8,-1,0,Flammes De L'enfer
+11497,2CE9,-1,0,Annihiler
+11498,2CEA,-1,0,Annihiler
+11501,2CED,-1,0,Triple Impact
+11502,2CEE,-1,0,Onde Dévastatrice
+11503,2CEF,-1,0,Feu
+11504,2CF0,-1,0,Immolation
+11505,2CF1,-1,0,Chargement Du Protocole De Défense
+11506,2CF2,-1,0,Plein Régime
+11507,2CF3,-1,0,Martelage
+11510,2CF6,-1,0,Tourbillonnement D'eau
+11511,2CF7,-1,0,Tourbillonnement D'eau
+11512,2CF8,-1,0,Grande Inondation
+11513,2CF9,-1,0,Grande Inondation
+11514,2CFA,-1,0,Tornade
+11515,2CFB,-1,0,Torrent Violent
+11516,2CFC,-1,0,Dispersion
+11520,2D00,-1,0,Coupe-courant
+11521,2D01,-1,0,Coupe-courant
+11522,2D02,-1,0,Attaque
+11523,2D03,-1,0,Attaque
+11527,2D07,-1,0,Coup De Bâton Court
+11528,2D08,-1,0,Mont Haguo
+11534,2D0E,-1,0,Arrêt D'urgence
+11535,2D0F,-1,0,Tueur D'ombres
+11536,2D10,-1,0,Balle D'argent
+11537,2D11,-1,0,Terminus Est
+11538,2D12,-1,0,Terminus Est
+11539,2D13,-1,0,Crochet Magitek
+11540,2D14,-1,0,Caducée
+11541,2D15,-1,0,Enfer D'eau
+11542,2D16,-1,0,Attaque
+11543,2D17,-1,0,Attaque
+11544,2D18,-1,0,Attaque
+11548,2D1C,-1,0,Pulvérisation Lunaire
+11549,2D1D,-1,0,Pulvérisation Lunaire
+11550,2D1E,-1,0,Percuter
+11551,2D1F,-1,0,Danse Des Morts
+11552,2D20,-1,0,Attaque
+11554,2D22,-1,0,Tornade
+11555,2D23,-1,0,Ferrofluide
+11556,2D24,-1,0,Bombe Accélératrice
+11557,2D25,-1,0,Magnétisme
+11558,2D26,-1,0,Ultra-magnétisme
+11559,2D27,-1,0,Bombe Accélératrice
+11560,2D28,-1,0,Eau
+11598,2D4E,-1,0,Griffes
+11599,2D4F,-1,0,Griffes
+11612,2D5C,-1,0,Incinérer
+11613,2D5D,-1,0,Incinérer
+11615,2D5F,-1,0,Cyclone écarlate
+11706,2DBA,-1,0,Explosion D'énergie Magique
+11710,2DBE,-1,0,Bulle D'énergie
+11784,2E08,0,0,Attaque
+11826,2E32,-1,0,Griffes
+11858,2E52,-1,0,Attaque
+11897,2E79,-1,0,Danse Des Morts
+11952,2EB0,-1,0,Sélénomancie Suprême
+11954,2EB2,-1,0,Brimade Meurtrière
+11955,2EB3,-1,0,Brimade Meurtrière
+12209,2FB1,-1,0,Attaque
 50002,C352,0,0,
 50004,C354,0,0,
 50006,C356,0,0,
@@ -9590,6 +9863,12 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 10717,29DD,0,1,Encourager (jaune)
 10718,29DE,0,1,Encourager (bleu)
 11063,2B37,0,1,Quitter Le Concert
+11191,2BB7,0,1,Méga Ruine
+11192,2BB8,0,1,Médecine
+11193,2BB9,0,1,Tempête D'étoiles
+11482,2CDA,0,1,Triple Punition
+11499,2CEB,0,1,Oh Hisse !
+11500,2CEC,0,1,Oh Hisse !
 244,00F4,8,9,Main Sûre
 252,00FC,8,9,Calme Intérieur
 260,0104,8,9,Grands Progrès
@@ -10208,6 +10487,7 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 158,009E,25,26,Conversion
 159,009F,25,26,Gel
 162,00A2,25,26,Brasier
+1573,0625,25,26,Aile Nocturne
 3573,0DF5,25,26,Manalignements
 3574,0DF6,25,26,Dynamisation
 3575,0DF7,25,26,Énochien
@@ -10227,7 +10507,6 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 8865,22A1,25,26,Infect
 8866,22A2,25,26,Brasier
 8867,22A3,25,26,Gel
-8868,22A4,25,26,Sommeil
 8869,22A5,25,26,Manipulation De L'éther
 8870,22A6,25,26,Magie Prompte
 9637,25A5,25,26,Conversion
@@ -10254,6 +10533,7 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 799,031F,-1,28,Bouclier Radiant
 800,0320,-1,28,Fracassement Flamboyant
 801,0321,-1,28,Flammes De L'enfer
+1576,0628,27,28,Flétrissure
 3578,0DFA,27,28,Brasier De Peine
 3579,0DFB,27,28,Méga Ruine
 3580,0DFC,27,28,Tri-désastre
@@ -10271,7 +10551,6 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 8872,22A8,27,28,Méga Ruine
 8873,22A9,27,28,Méga Bactérie
 8874,22AA,27,28,Méga Miasmes
-8875,22AB,27,28,Tri-entrave
 8876,22AC,27,28,Flux D'éther
 8877,22AD,27,28,Suppuration
 8878,22AE,27,28,Invocation Bahamut
@@ -10877,7 +11156,7 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 7528,1D68,35,112,Zwerchhau Enchanté
 7529,1D69,35,112,Redoublement Enchanté
 7530,1D6A,35,112,Moulinet Enchanté
-7859,1EB3,35,112,Fente Volante
+7858,1EB2,35,112,Monomachie
 8882,22B2,35,112,VerVent
 8883,22B3,35,112,VerTerre
 8884,22B4,35,112,VerFoudre
