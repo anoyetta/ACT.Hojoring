@@ -59,6 +59,7 @@ ID,NameEn,Name
 58,The Drowned City Of Skalla,The Drowned City Of Skalla
 59,Hells' Lid,Hells' Lid
 60,The Fractal Continuum (Hard),The Fractal Continuum (Hard)
+61,The Swallow's Compass,The Swallow's Compass
 5001,A Spectacle For The Ages,A Spectacle For The Ages
 5002,A Bloody Reunion,A Bloody Reunion
 5003,One Life For One World,One Life For One World
@@ -83,6 +84,7 @@ ID,NameEn,Name
 5022,When Clans Collide,When Clans Collide
 5023,Interdimensional Rift,Interdimensional Rift
 5024,Return Of The Bull,Return Of The Bull
+5025,Emissary Of The Dawn,Emissary Of The Dawn
 10001,Basic Training: Enemy Parties,Basic Training: Enemy Parties
 10002,Under The Armor,Under The Armor
 10003,Basic Training: Enemy Strongholds,Basic Training: Enemy Strongholds
@@ -165,6 +167,8 @@ ID,NameEn,Name
 20050,The Minstrel's Ballad: Shinryu's Domain,The Minstrel's Ballad: Shinryu's Domain
 20051,The Jade Stoa,The Jade Stoa
 20052,The Jade Stoa (Extreme),The Jade Stoa (Extreme)
+20055,Castrum Fluminis,Castrum Fluminis
+20056,The Minstrel's Ballad: Tsukuyomi's Pain,The Minstrel's Ballad: Tsukuyomi's Pain
 25001,The Haunted Manor,The Haunted Manor
 25002,The Valentione's Ceremony,The Valentione's Ceremony
 30001,The Labyrinth Of The Ancients,The Labyrinth Of The Ancients
@@ -232,6 +236,8 @@ ID,NameEn,Name
 30064,Sigmascape V2.0 (Savage),Sigmascape V2.0 (Savage)
 30065,Sigmascape V3.0 (Savage),Sigmascape V3.0 (Savage)
 30066,Sigmascape V4.0 (Savage),Sigmascape V4.0 (Savage)
+30068,The Ridorana Lighthouse,The Ridorana Lighthouse
+40001,The Fold,The Fold
 40008,The Feast (4 On 4 - Training),The Feast (4 On 4 - Training)
 40010,The Feast (4 On 4 - Ranked),The Feast (4 On 4 - Ranked)
 40012,★The Feast (4 On 4 - Light Party),★The Feast (4 On 4 - Light Party)
@@ -243,6 +249,7 @@ ID,NameEn,Name
 40023,The Feast (Ranked),The Feast (Ranked)
 40024,The Feast (Training),The Feast (Training)
 40025,The Feast (Custom Match - Crystal Tower),The Feast (Custom Match - Crystal Tower)
+40026,The Feast (Team Custom Match - Crystal Tower),The Feast (Team Custom Match - Crystal Tower)
 50001,The Borderland Ruins (Secure),The Borderland Ruins (Secure)
 50004,Seal Rock (Seize),Seal Rock (Seize)
 50005,The Fields Of Glory (Shatter),The Fields Of Glory (Shatter)

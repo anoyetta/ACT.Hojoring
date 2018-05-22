@@ -59,6 +59,7 @@ ID,NameEn,Name
 58,The Drowned City Of Skalla,La Cité Engloutie De Skalla
 59,Hells' Lid,Le Couvercle Des Enfers
 60,The Fractal Continuum (Hard),Le Continuum Fractal (brutal)
+61,The Swallow's Compass,Le Compas De L'Hirondelle
 5001,A Spectacle For The Ages,La Grande Manœuvre éorzéenne
 5002,A Bloody Reunion,Course-poursuite Dans Le Laboratoire
 5003,One Life For One World,Destins Entrecroisés
@@ -83,6 +84,7 @@ ID,NameEn,Name
 5022,When Clans Collide,La Bataille Des Clans
 5023,Interdimensional Rift,Fissure Interdimensionnelle
 5024,Return Of The Bull,Retour Au Bercail
+5025,Emissary Of The Dawn,Voyage En Terre Hostile
 10001,Basic Training: Enemy Parties,Entraînement: Groupes D'ennemis
 10002,Under The Armor,Chasse Au Fantôme Fantoche
 10003,Basic Training: Enemy Strongholds,Entraînement: Infiltration En Base Ennemie
@@ -165,6 +167,8 @@ ID,NameEn,Name
 20050,The Minstrel's Ballad: Shinryu's Domain,Le Domaine De Shinryu
 20051,The Jade Stoa,La Clairière De Jade
 20052,The Jade Stoa (Extreme),La Clairière De Jade (extrême)
+20055,Castrum Fluminis,Castrum Fluminis
+20056,The Minstrel's Ballad: Tsukuyomi's Pain,Castrum Fluminis (extrême)
 25001,The Haunted Manor,Le Manoir Hanté
 25002,The Valentione's Ceremony,La Cérémonie De La Valention
 30001,The Labyrinth Of The Ancients,La Tour De Cristal - Dédale Antique
@@ -232,6 +236,8 @@ ID,NameEn,Name
 30064,Sigmascape V2.0 (Savage),Sigmastice V2.0 (sadique)
 30065,Sigmascape V3.0 (Savage),Sigmastice V3.0 (sadique)
 30066,Sigmascape V4.0 (Savage),Sigmastice V4.0 (sadique)
+30068,The Ridorana Lighthouse,Le Phare De Ridorana
+40001,The Fold,The Fold
 40008,The Feast (4 On 4 - Training),The Feast (4x4/entraînement)
 40010,The Feast (4 On 4 - Ranked),The Feast (4x4/classé)
 40012,★The Feast (4 On 4 - Light Party),★The Feast (4x4/équipe Préformée)
@@ -243,6 +249,7 @@ ID,NameEn,Name
 40023,The Feast (Ranked),The Feast (classé)
 40024,The Feast (Training),The Feast (entraînement)
 40025,The Feast (Custom Match - Crystal Tower),The Feast (personnalisé/Tour De Cristal)
+40026,The Feast (Team Custom Match - Crystal Tower),The Feast (personnalisé/équipe JcJ/Tour De Cristal)
 50001,The Borderland Ruins (Secure),Les Ruines Frontalières (annexion)
 50004,Seal Rock (Seize),Le Rocher Des Tréfonds (invasion)
 50005,The Fields Of Glory (Shatter),Les Champs De La Gloire (brise-glace)

@@ -59,6 +59,7 @@ ID,NameEn,Name
 58,The Drowned City Of Skalla,水没遺構 スカラ
 59,Hells' Lid,紅玉火山 獄之蓋
 60,The Fractal Continuum (Hard),暴走戦艦 フラクタル・コンティニアム (Hard)
+61,The Swallow's Compass,風水霊殿 ガンエン廟
 5001,A Spectacle For The Ages,四国合同演習
 5002,A Bloody Reunion,レグラ・ヴァン・ヒュドルス追撃戦
 5003,One Life For One World,絡み合う宿命
@@ -83,6 +84,7 @@ ID,NameEn,Name
 5022,When Clans Collide,影隠忍法帖
 5023,Interdimensional Rift,次元の狭間：外縁
 5024,Return Of The Bull,英雄の帰還
+5025,Emissary Of The Dawn,「暁」の少年
 10001,Basic Training: Enemy Parties,集団戦訓練をくぐり抜けろ！
 10002,Under The Armor,彷徨う死霊を討て！
 10003,Basic Training: Enemy Strongholds,全関門を突破し、最深部の敵を討て！
@@ -165,6 +167,8 @@ ID,NameEn,Name
 20050,The Minstrel's Ballad: Shinryu's Domain,極神龍討滅戦
 20051,The Jade Stoa,白虎征魂戦
 20052,The Jade Stoa (Extreme),極白虎征魂戦
+20055,Castrum Fluminis,ツクヨミ討滅戦
+20056,The Minstrel's Ballad: Tsukuyomi's Pain,極ツクヨミ討滅戦
 25001,The Haunted Manor,亡霊屋敷 ホーンテッドマナー
 25002,The Valentione's Ceremony,ヴァレンティオンセレモニー
 30001,The Labyrinth Of The Ancients,クリスタルタワー：古代の民の迷宮
@@ -232,6 +236,8 @@ ID,NameEn,Name
 30064,Sigmascape V2.0 (Savage),次元の狭間オメガ零式：シグマ編2
 30065,Sigmascape V3.0 (Savage),次元の狭間オメガ零式：シグマ編3
 30066,Sigmascape V4.0 (Savage),次元の狭間オメガ零式：シグマ編4
+30068,The Ridorana Lighthouse,封じられた聖塔 リドルアナ
+40001,The Fold,ザ・フォールド
 40008,The Feast (4 On 4 - Training),ザ・フィースト (4対4 / カジュアルマッチ)
 40010,The Feast (4 On 4 - Ranked),ザ・フィースト (4対4 / ランクマッチ)
 40012,★The Feast (4 On 4 - Light Party),★ザ・フィースト (4対4 / 固定ライトパーティ専用)
@@ -243,6 +249,7 @@ ID,NameEn,Name
 40023,The Feast (Ranked),ザ・フィースト (ランクマッチ)
 40024,The Feast (Training),ザ・フィースト (カジュアルマッチ)
 40025,The Feast (Custom Match - Crystal Tower),ザ・フィースト (クリスタルタワー演習場：カスタムマッチ）
+40026,The Feast (Team Custom Match - Crystal Tower),ザ・フィースト (クリスタルタワー演習場：チーム用カスタムマッチ)
 50001,The Borderland Ruins (Secure),外縁遺跡群 (制圧戦)
 50004,Seal Rock (Seize),シールロック (争奪戦)
 50005,The Fields Of Glory (Shatter),フィールド・オブ・グローリー (砕氷戦)
