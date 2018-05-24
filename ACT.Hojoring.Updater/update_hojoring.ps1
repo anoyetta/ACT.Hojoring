@@ -1,11 +1,12 @@
 Start-Transcript update.log | Out-Null
 
-# プレリリースを取得するか否か？
+# アップデートチャンネル
+## プレリリースを取得するか否か？
 $isUsePreRelease = $FALSE
 # $isUsePreRelease = $TRUE
 
 # 更新の除外リスト
-# UPDATEスクリプトは自動更新されないので自分で更新してください
+## UPDATEスクリプトは自動更新されないので自分で更新してください
 $updateExclude = @(
     "update_hojoring.ps1",
     "_dummy.txt",
@@ -15,7 +16,7 @@ $updateExclude = @(
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev3'
+'* rev4'
 '* (c) anoyetta, 2018'
 '***************************************************'
 '* Start Update Hojoring'
@@ -24,9 +25,38 @@ $updateExclude = @(
 $cd = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $cd
 
+# 引数があればアップデートチャンネルを書き換える
+if ($args.Length -gt 0) {
+    $b = $FALSE
+    if ([bool]::TryParse($args[0], [ref]$b)) {
+        $isUsePreRelease = $b
+    }
+}
+
+# Processを殺す
+$existACT = $FALSE
+$processes = Get-Process
+foreach ($p in $processes) {
+    if ($p.Name -eq "Advanced Combat Tracker") {
+        $existACT = $TRUE
+        Stop-Process -InputObject $p
+        Start-Sleep -s 1
+    }
+
+    if ($p.Name -eq "FFXIV.Framework.TTS.Server") {
+        Stop-Process -InputObject $p
+        Start-Sleep -s 1
+    }
+}
+
 # プレリリースを使う？
 ''
-Write-Host ("Use Pre-Release :" + $isUsePreRelease)
+if ($isUsePreRelease) {
+    Write-Host ("-> Update Channel: *Pre-Release")
+}
+else {
+    Write-Host ("-> Update Channel: Release")
+}
 ''
 
 '-> Download Lastest Version'
@@ -42,9 +72,9 @@ if (Test-Path $updateDir) {
 '-> Downloaded!'
 
 ''
-'Execute Update.'
-$in = Read-Host "Are you sure? [Y] or [N]"
-if ($in.ToUpper() -eq "N") {
+'-> Execute Update.'
+$in = Read-Host "Are you sure? [Y] or [n]"
+if (!($in.ToUpper() -eq "Y")) {
     exit
 }
 
