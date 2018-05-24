@@ -117,12 +117,13 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     & $libz inject-dll -a FFXIV.Framework.TTS.Server.exe -i $cevioLib | Select-String "Injecting"
 
     '●ACT.Hojoring.Updater をマージする'
-    & $libz inject-dll -a ACT.Hojoring.Updater.exe -i Octokit.dll --move | Select-String "Injecting"
+    & $libz inject-dll -a ACT.Hojoring.Updater.exe -i Octokit.dll | Select-String "Injecting"
     & $libz inject-dll -a ACT.Hojoring.Updater.exe -i SevenZipSharp.dll --move | Select-String "Injecting"
 
     '●その他のDLLをマージする'
     $otherLibs = @(
         "FontAwesome.WPF.dll",
+        "Octokit.dll",
         "NAudio.dll",
         "Newtonsoft.Json.dll",
         "Hjson.dll",

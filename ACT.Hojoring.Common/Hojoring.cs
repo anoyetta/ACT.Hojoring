@@ -10,8 +10,6 @@ namespace ACT.Hojoring.Common
     {
         private static volatile bool isSplashShown = false;
 
-        public string LastestReleaseUrl => @"https://github.com/anoyetta/ACT.Hojoring/releases/latest";
-
         public Version Version => Assembly.GetExecutingAssembly().GetName().Version;
 
         public void ShowSplash()
@@ -25,7 +23,7 @@ namespace ACT.Hojoring.Common
 
             var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             if (Directory.GetFiles(
-                dir, 
+                dir,
                 "*NOSPLASH*",
                 SearchOption.TopDirectoryOnly).Length > 0)
             {
