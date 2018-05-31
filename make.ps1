@@ -93,18 +93,10 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     
     '●TTSYukkuri のAssemblyをマージする'
     $dlls = @(
-        "DSharpPlus.dll",
-        "DSharpPlus.VoiceNext.dll",
-        "DSharpPlus.CommandsNext.dll",
-        "ReactiveProperty.dll",
-        "ReactiveProperty.NET46.dll",
-        "RucheHome.Voiceroid.dll",
-        "RucheHomeLib.dll",
-        "System.Reactive.Core.dll",
-        "System.Reactive.Interfaces.dll",
-        "System.Reactive.Linq.dll"
-        "System.Reactive.PlatformServices.dll"
-        "System.Reactive.Windows.Threading.dll"
+        "DSharpPlus*.dll",
+        "ReactiveProperty*.dll",
+        "RucheHome*.dll",
+        "System.Reactive.*.dll"
     )
 
     foreach ($dll in $dlls) {
@@ -127,27 +119,19 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "NAudio.dll",
         "Newtonsoft.Json.dll",
         "Hjson.dll",
-        "NLog.dll",
-        "Prism.dll",
-        "Prism.Wpf.dll",
-        "System.Windows.Interactivity.dll",
-        "Xceed.Wpf.Toolkit.dll",
-        "Xceed.Wpf.AvalonDock.dll",
-        "Xceed.Wpf.AvalonDock.Themes.Aero.dll",
-        "Xceed.Wpf.AvalonDock.Themes.Metro.dll",
-        "Xceed.Wpf.AvalonDock.Themes.VS2010.dll",
-        "Xceed.Wpf.DataGrid.dll",
-        "NPOI.dll",
-        "NPOI.OOXML.dll",
-        "NPOI.OpenXml4Net.dll",
-        "NPOI.OpenXmlFormats.dll",
+        "NLog*.dll",
+        "Prism*.dll",
         "ICSharpCode.SharpZipLib.dll",
+        "CommonServiceLocator.dll",
+        "System.Windows.Interactivity.dll",
         "System.Web.Razor.dll",
-        "FFXIV_MemoryReader.Base.dll",
-        "FFXIV_MemoryReader.Model.dll",
-        "FFXIV_MemoryReader.Core.dll",
-        "AWSSDK.Core.dll",
-        "AWSSDK.Polly.dll"
+        "Xceed.*.dll",
+        "NPOI*.dll",
+        "FFXIV_MemoryReader.*.dll",
+        "AWSSDK.*.dll",
+        "Discord.*.dll",
+        "SuperSocket.ClientEngine.dll",
+        "WebSocket4Net.dll"
     )
 
     $plugins = @(
@@ -163,6 +147,11 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
       Remove-Item -Force $olib
     }
+
+    '●不要なDLLを削除する'
+    Remove-Item -Force System.*.dll
+    Remove-Item -Force Microsoft.*.dll
+    Remove-Item -Force netstandard.dll
 
     '●フォルダをリネームする'
     Rename-Item Yukkuri _yukkuri
