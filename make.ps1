@@ -90,68 +90,70 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
             Remove-Item -Force -Recurse $locale
         }
     }
-    
-    '●TTSYukkuri のAssemblyをマージする'
-    $dlls = @(
-        "DSharpPlus*.dll",
-        "ReactiveProperty*.dll",
-        "RucheHome*.dll",
-        "System.Reactive.*.dll"
-    )
 
-    foreach ($dll in $dlls) {
-        if (Test-Path $dll) {
-            & $libz inject-dll --assembly ACT.TTSYukkuri.Core.dll --include $dll --move | Select-String "Injecting"
-        }
-    }
-
-    '●TTSServer にCeVIOをマージする'
-    & $libz inject-dll -a FFXIV.Framework.TTS.Server.exe -i $cevioLib | Select-String "Injecting"
-
-    '●ACT.Hojoring.Updater をマージする'
-    & $libz inject-dll -a ACT.Hojoring.Updater.exe -i Octokit.dll | Select-String "Injecting"
-    & $libz inject-dll -a ACT.Hojoring.Updater.exe -i SevenZipSharp.dll --move | Select-String "Injecting"
-
-    '●その他のDLLをマージする'
-    $otherLibs = @(
-        "FontAwesome.WPF.dll",
-        "Octokit.dll",
-        "NAudio.dll",
-        "Newtonsoft.Json.dll",
-        "Hjson.dll",
-        "NLog*.dll",
-        "Prism*.dll",
+    '●外部参照用DLLを逃がす'
+    $references = @(
+        "System.Web.Razor.dll",
+        "System.Windows.Interactivity.dll",
         "ICSharpCode.SharpZipLib.dll",
         "CommonServiceLocator.dll",
-        "System.Windows.Interactivity.dll",
-        "System.Web.Razor.dll",
-        "Xceed.*.dll",
-        "NPOI*.dll",
-        "FFXIV_MemoryReader.*.dll",
-        "AWSSDK.*.dll",
-        "Discord.*.dll",
+        "Newtonsoft.Json.dll",
+        "ReactiveProperty*.dll",
+        "System.Reactive.*.dll",
+        "System.Collections.Immutable.dll",
+        "System.Interactive.Async.dll",
         "SuperSocket.ClientEngine.dll",
         "WebSocket4Net.dll"
     )
 
-    $plugins = @(
-        "FFXIV.Framework.dll"
+    New-Item -ItemType Directory "references" | Out-Null
+    Move-Item -Path $references -Destination "references" | Out-Null
+
+    '●TTSServer にCeVIOをマージする'
+    (& $libz inject-dll -a FFXIV.Framework.TTS.Server.exe -i $cevioLib) | Select-String "Injecting"
+
+    '●ACT.Hojoring.Updater をマージする'
+    (& $libz inject-dll -a ACT.Hojoring.Updater.exe -i Octokit.dll) | Select-String "Injecting"
+    (& $libz inject-dll -a ACT.Hojoring.Updater.exe -i SevenZipSharp.dll --move) | Select-String "Injecting"
+
+    # ●作業ディレクトリを作る
+    New-Item -ItemType Directory "temp" | Out-Null
+    
+    '●TTSYukkuri のAssemblyをマージする'
+    $libs = @(
+        "DSharpPlus*.dll",
+        "Discord.*.dll",
+        "RucheHome*.dll"
     )
 
-    foreach ($olib in $otherLibs) {
-        if (Test-Path $olib) {
-            foreach ($plugin in $plugins) {
-                & $libz inject-dll --assembly $plugin --include $olib | Select-String "Injecting"
-        }
-      }
+    Move-Item -Path $libs -Destination "temp" | Out-Null
+    (& $libz inject-dll -a "ACT.TTSYukkuri.Core.dll" -i "temp\*.dll" --move) | Select-String "Injecting"
 
-      Remove-Item -Force $olib
-    }
+    '●その他のDLLをマージする'
+    $libs = @(
+        "FontAwesome.WPF.dll",
+        "Octokit.dll",
+        "NAudio.dll",
+        "Hjson.dll",
+        "NLog*.dll",
+        "Prism*.dll",
+        "Xceed.*.dll",
+        "NPOI*.dll",
+        "FFXIV_MemoryReader.*.dll",
+        "AWSSDK.*.dll"
+    )
 
-    '●不要なDLLを削除する'
+    Move-Item -Path $libs -Destination "temp" | Out-Null
+    (& $libz inject-dll -a "FFXIV.Framework.dll" -i "temp\*.dll" --move) | Select-String "Injecting"
+
+    # ●作業ディレクトリを削除する
+    Remove-Item -Force -Recurse "temp"
+
+    '●不要なファイルを削除する'
     Remove-Item -Force System.*.dll
     Remove-Item -Force Microsoft.*.dll
     Remove-Item -Force netstandard.dll
+    Remove-Item -Force *.exe.config
 
     '●フォルダをリネームする'
     Rename-Item Yukkuri _yukkuri
