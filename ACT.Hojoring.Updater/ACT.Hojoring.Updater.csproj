@@ -37,6 +37,9 @@
   <PropertyGroup>
     <StartupObject>ACT.Hojoring.Updater.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ACT.Hojoring.Updater.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -58,6 +61,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ACT.Hojoring.Updater.ico" />
     <Content Include="tools\7z\7z.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

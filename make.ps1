@@ -11,7 +11,8 @@ function EndMake() {
 $cd = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $cd
 
-$devenv = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\devenv.com"
+# $devenv = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\devenv.com"
+$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe"
 $startdir = Get-Location
 $7z = Get-Item .\tools\7za.exe
 $sln = Get-Item *.sln
@@ -41,19 +42,10 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Remove-Item -Path .\ACT.Hojoring\bin\Release -Force -Recurse
 }
 
-<#
-'●Build XIVDBDownloader Debug'
-& $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Debug | Write-Output
-
-'●Build ACT.Hojoring Debug'
-& $devenv $sln /nologo /project ACT.Hojoring\ACT.Hojoring.csproj /Rebuild Debug | Write-Output
-#>
-
-'●Build XIVDBDownloader Release'
-& $devenv $sln /nologo /project ACT.SpecialSpellTimer\XIVDBDownloader\XIVDBDownloader.csproj /Rebuild Release | Write-Output
-
 '●Build ACT.Hojoring Release'
-& $devenv $sln /nologo /project ACT.Hojoring\ACT.Hojoring.csproj /Rebuild Release | Write-Output
+Start-Sleep -m 500
+& $msbuild $sln /nologo /v:minimal /p:Configuration=Release /t:Rebuild | Write-Output
+Start-Sleep -m 500
 
 '●Deploy Release'
 if (Test-Path .\ACT.Hojoring\bin\Release) {
@@ -110,18 +102,18 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Move-Item -Path $references -Destination "references" | Out-Null
 
     '●TTSServer にCeVIOをマージする'
-    (& $libz inject-dll -a FFXIV.Framework.TTS.Server.exe -i $cevioLib) | Select-String "Injecting"
+    (& $libz inject-dll -a "FFXIV.Framework.TTS.Server.exe" -i $cevioLib) | Select-String "Injecting"
 
     '●ACT.Hojoring.Updater をマージする'
-    (& $libz inject-dll -a ACT.Hojoring.Updater.exe -i Octokit.dll) | Select-String "Injecting"
-    (& $libz inject-dll -a ACT.Hojoring.Updater.exe -i SevenZipSharp.dll --move) | Select-String "Injecting"
+    (& $libz inject-dll -a "ACT.Hojoring.Updater.exe" -i "Octokit.dll") | Select-String "Injecting"
+    (& $libz inject-dll -a "ACT.Hojoring.Updater.exe" -i "SevenZipSharp.dll" --move) | Select-String "Injecting"
 
     # ●作業ディレクトリを作る
     New-Item -ItemType Directory "temp" | Out-Null
     
     '●TTSYukkuri のAssemblyをマージする'
     $libs = @(
-        "DSharpPlus*.dll",
+#        "DSharpPlus*.dll",
         "Discord.*.dll",
         "RucheHome*.dll"
     )
