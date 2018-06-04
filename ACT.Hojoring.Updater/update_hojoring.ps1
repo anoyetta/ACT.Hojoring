@@ -16,7 +16,7 @@ $updateExclude = @(
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev4'
+'* rev5'
 '* (c) anoyetta, 2018'
 '***************************************************'
 '* Start Update Hojoring'
@@ -68,7 +68,7 @@ if (Test-Path $updateDir) {
     Remove-Item $updateDir -Recurse -Force
 }
 
-& $updater $updateDir $isUsePreRelease | Write-Output
+& $updater $updateDir $isUsePreRelease
 '-> Downloaded!'
 
 ''
@@ -83,7 +83,7 @@ $archive = Get-Item ".\update\*.7z"
 
 ''
 '-> Extract New Assets'
-& $7za x $archive ("-o" + $updateDir) | Write-Output
+& $7za x $archive ("-o" + $updateDir)
 Remove-Item $archive
 '-> Extracted!'
 
