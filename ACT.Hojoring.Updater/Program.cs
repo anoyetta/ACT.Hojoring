@@ -2,19 +2,32 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Octokit;
 
 namespace ACT.Hojoring.Updater
 {
-    public class Program
+    public static class Program
     {
+        static Program()
+        {
+            AssemblyResolver.Instance.Initialize();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void Main(
             string[] args)
         {
             try
             {
+                // SSL/TLSを有効にする
+                ServicePointManager.SecurityProtocol =
+                    SecurityProtocolType.Tls |
+                    SecurityProtocolType.Tls11 |
+                    SecurityProtocolType.Tls12;
+
                 var dest = "update";
                 var usePre = false;
 
@@ -139,6 +152,10 @@ namespace ACT.Hojoring.Updater
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+            }
+            finally
+            {
+                AssemblyResolver.Free();
             }
         }
     }
