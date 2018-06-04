@@ -130,11 +130,22 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF  "$(ConfigurationName)" == "Debug" (
-   EXIT /B
+ 
+    EXIT /B 
+
 )
 
-DEL /F *.xml
-DEL /F *.pdb
+
+
+IF EXIST *.xml (
+    DEL /F *.xml
+
+)
+
+IF EXIST *.pdb (
+    DEL /F *.pdb
+
+)
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
