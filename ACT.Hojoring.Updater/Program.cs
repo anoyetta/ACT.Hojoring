@@ -97,34 +97,7 @@ namespace ACT.Hojoring.Updater
                 Directory.CreateDirectory(dest);
                 Thread.Sleep(200);
 
-                Task.Run(async () =>
-                {
-                    using (var web = new WebClient())
-                    {
-                        var preprogress = 0d;
-
-                        web.DownloadProgressChanged += (x, y) =>
-                        {
-                            var progress = (double)y.BytesReceived / (double)y.TotalBytesToReceive;
-                            if ((progress - preprogress) >= 0.05d)
-                            {
-                                Console.Write("+");
-                                preprogress = progress;
-                            }
-                        };
-
-                        Console.WriteLine("Downloading...");
-                        await web.DownloadFileTaskAsync(
-                            new Uri(asset.BrowserDownloadUrl),
-                            file);
-
-                        Thread.Sleep(200);
-
-                        Console.WriteLine(string.Empty);
-                        Console.WriteLine("Done!");
-                    }
-                }).Wait();
-
+                DownloadAssets(asset.BrowserDownloadUrl, file);
 #if false
                 if (!File.Exists(file))
                 {
@@ -157,6 +130,56 @@ namespace ACT.Hojoring.Updater
             {
                 AssemblyResolver.Free();
             }
+        }
+
+        private static void DownloadAssets(
+            string url,
+            string file)
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    using (var web = new WebClient())
+                    {
+                        var preprogress = 0d;
+
+                        web.DownloadProgressChanged += (x, y) =>
+                        {
+                            lock (web)
+                            {
+                                try
+                                {
+                                    var progress = (double)y.BytesReceived / (double)y.TotalBytesToReceive;
+                                    if ((progress - preprogress) >= 0.05d)
+                                    {
+                                        Console.Write("+");
+                                        Console.Out.Flush();
+                                        preprogress = progress;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex);
+                                }
+                            }
+                        };
+
+                        Console.WriteLine("Downloading...");
+                        await web.DownloadFileTaskAsync(
+                            new Uri(url),
+                            file);
+
+                        Thread.Sleep(200);
+
+                        Console.WriteLine(" Done!");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }).Wait();
         }
     }
 }
