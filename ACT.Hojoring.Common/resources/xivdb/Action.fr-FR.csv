@@ -9253,6 +9253,81 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11069,2B3D,-1,0,Ultima
 11071,2B3F,-1,0,Bourrade
 11072,2B40,-1,0,Déflagration Légère
+11073,2B41,-1,0,Grand Tourbillon
+11074,2B42,-1,0,Chant Du Mistral
+11075,2B43,-1,0,Lance De Plume
+11076,2B44,-1,0,Tumulte Thermique
+11077,2B45,-1,0,Cyclone
+11078,2B46,-1,0,Giga Tempête
+11079,2B47,-1,0,Super Cyclone
+11080,2B48,-1,0,Lame De Vent
+11081,2B49,-1,0,Anticyclone De Méso-échelle
+11082,2B4A,-1,0,Lame De Vent
+11083,2B4B,-1,0,Chant Du Mistral
+11084,2B4C,-1,0,Roue Mauvaise
+11085,2B4D,-1,0,Pluie De Plumes
+11086,2B4E,-1,0,Roue Mauvaise
+11087,2B4F,-1,0,Tornade Meurtrière
+11088,2B50,-1,0,Rafale Descendante
+11090,2B52,-1,0,Œil Du Cyclone
+11091,2B53,-1,0,Sillage
+11092,2B54,-1,0,Cri Du Mistral
+11093,2B55,-1,0,Rafale Aérienne
+11094,2B56,-1,0,Incinération
+11095,2B57,-1,0,Explosion Volcanique
+11096,2B58,-1,0,Brasier Infernal
+11097,2B59,-1,0,Éruption
+11098,2B5A,-1,0,Éruption
+11099,2B5B,-1,0,Rugissement Infernal
+11100,2B5C,-1,0,Carbonisation
+11101,2B5D,-1,0,Fracas De Flammes
+11102,2B5E,-1,0,Flammes De L'enfer
+11103,2B5F,-1,0,Cyclone écarlate
+11104,2B60,-1,0,Cyclone écarlate
+11105,2B61,-1,0,Panache Radiant
+11106,2B62,-1,0,Casse-roc
+11107,2B63,-1,0,Casse-montagnes
+11108,2B64,-1,0,Poids De La Terre
+11109,2B65,-1,0,Poids De La Terre
+11110,2B66,-1,0,Broie-terre
+11111,2B67,-1,0,Bouleversement
+11113,2B69,-1,0,Impact
+11114,2B6A,-1,0,Grosse Explosion
+11115,2B6B,-1,0,Jeté De Rocs
+11116,2B6C,-1,0,Jeté De Rocs
+11117,2B6D,-1,0,Impact De Rocs
+11118,2B6E,-1,0,Tir D'artillerie Lourde
+11119,2B6F,-1,0,Glissement De Terrain
+11120,2B70,-1,0,Glissement De Terrain
+11121,2B71,-1,0,Glissement De Terrain
+11122,2B72,-1,0,Auto-destruction
+11123,2B73,-1,0,Supplice
+11124,2B74,-1,0,Giga Ténèbres
+11126,2B76,-1,0,Fantasmagorie Prédatrice
+11128,2B78,-1,0,Laser Diffractif
+11129,2B79,-1,0,Éthéroplasma Poisseux
+11130,2B7A,-1,0,Éthéroplasma Poisseux
+11131,2B7B,-1,0,Lasers Autoguidés
+11132,2B7C,-1,0,Exutoire à Céruleum
+11133,2B7D,-1,0,Panache Radiant
+11134,2B7E,-1,0,Glissement De Terrain
+11135,2B7F,-1,0,Glissement De Terrain
+11137,2B81,-1,0,Éthéroplasma
+11138,2B82,-1,0,Colonne Lumineuse
+11139,2B83,-1,0,Colonne Lumineuse
+11140,2B84,-1,0,Laser Magismologique
+11141,2B85,-1,0,Laser Magismologique
+11142,2B86,-1,0,Laser Magismologique
+11143,2B87,-1,0,Vidange De Réservoir
+11144,2B88,-1,0,Onde D'éther
+11145,2B89,-1,0,Éthéroplasma
+11146,2B8A,-1,0,Fusion Explosive
+11147,2B8B,-1,0,Ultima
+11149,2B8D,-1,0,Siège De Citadelle
+11150,2B8E,-1,0,Chant Du Mistral
+11151,2B8F,-1,0,Éthéroplasma
+11152,2B90,-1,0,Fureur Tellurique
+11155,2B93,-1,0,Ultima Sabik
 11156,2B94,-1,0,Tengu-tsubute
 11157,2B95,-1,0,Tengu-kaze
 11158,2B96,-1,0,Yama-kagura
@@ -9284,6 +9359,8 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11186,2BB2,-1,0,Dédoublement
 11187,2BB3,-1,0,Dédoublement
 11188,2BB4,-1,0,Égal Des Cieux
+11189,2BB5,-1,0,Super Cyclone
+11190,2BB6,-1,0,Super Cyclone
 11194,2BBA,-1,0,Correction
 11195,2BBB,-1,0,Brimade Meurtrière
 11196,2BBC,-1,0,Jeune Nuit
@@ -9355,6 +9432,9 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11270,2C06,-1,0,Contre-courant
 11271,2C07,-1,0,Turbulence
 11272,2C08,-1,0,Explosion
+11288,2C18,-1,0,Tumulte
+11289,2C19,-1,0,Chaînes Infernales
+11298,2C22,-1,0,Glissement De Terrain
 11299,2C23,-1,0,Cyclone
 11300,2C24,-1,0,Front De Rafales
 11301,2C25,-1,0,Boule D'eau
@@ -9442,6 +9522,7 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11439,2CAF,-1,0,Lis Araignée
 11440,2CB0,-1,0,Lis Araignée
 11442,2CB2,-1,0,Missiles Balistiques
+11448,2CB8,-1,0,Impact De Rocs
 11462,2CC6,-1,0,Choco-météore
 11464,2CC8,-1,0,Incinérer
 11466,2CCA,-1,0,Arithmétique : Multiples De 3
@@ -9476,6 +9557,8 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11505,2CF1,-1,0,Chargement Du Protocole De Défense
 11506,2CF2,-1,0,Plein Régime
 11507,2CF3,-1,0,Martelage
+11508,2CF4,-1,0,Explosion Volcanique
+11509,2CF5,-1,0,Tir D'artillerie Lourde
 11510,2CF6,-1,0,Tourbillonnement D'eau
 11511,2CF7,-1,0,Tourbillonnement D'eau
 11512,2CF8,-1,0,Grande Inondation
@@ -9483,12 +9566,14 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11514,2CFA,-1,0,Tornade
 11515,2CFB,-1,0,Torrent Violent
 11516,2CFC,-1,0,Dispersion
+11517,2CFD,-1,0,Broie-terre
 11520,2D00,-1,0,Coupe-courant
 11521,2D01,-1,0,Coupe-courant
 11522,2D02,-1,0,Attaque
 11523,2D03,-1,0,Attaque
 11527,2D07,-1,0,Coup De Bâton Court
 11528,2D08,-1,0,Mont Haguo
+11529,2D09,-1,0,Panache Radiant
 11534,2D0E,-1,0,Arrêt D'urgence
 11535,2D0F,-1,0,Tueur D'ombres
 11536,2D10,-1,0,Balle D'argent
@@ -9512,6 +9597,8 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11558,2D26,-1,0,Ultra-magnétisme
 11559,2D27,-1,0,Bombe Accélératrice
 11560,2D28,-1,0,Eau
+11596,2D4C,-1,0,Fantasmagorie Infernale
+11597,2D4D,-1,0,Fantasmagorie Bestiale
 11598,2D4E,-1,0,Griffes
 11599,2D4F,-1,0,Griffes
 11612,2D5C,-1,0,Incinérer

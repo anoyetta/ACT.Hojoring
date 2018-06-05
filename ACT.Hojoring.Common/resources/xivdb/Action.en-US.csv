@@ -9253,6 +9253,81 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11069,2B3D,-1,0,Ultima
 11071,2B3F,-1,0,Thrub
 11072,2B40,-1,0,Light Blast
+11073,2B41,-1,0,Great Whirlwind
+11074,2B42,-1,0,Mistral Song
+11075,2B43,-1,0,Featherlance
+11076,2B44,-1,0,Thermal Tumult
+11077,2B45,-1,0,Cyclone
+11078,2B46,-1,0,Gigastorm
+11079,2B47,-1,0,Super Cyclone
+11080,2B48,-1,0,Friction
+11081,2B49,-1,0,Mesohigh
+11082,2B4A,-1,0,Friction
+11083,2B4B,-1,0,Mistral Song
+11084,2B4C,-1,0,Wicked Wheel
+11085,2B4D,-1,0,Feather Rain
+11086,2B4E,-1,0,Wicked Wheel
+11087,2B4F,-1,0,Wicked Tornado
+11088,2B50,-1,0,Downburst
+11090,2B52,-1,0,Eye Of The Storm
+11091,2B53,-1,0,Slipstream
+11092,2B54,-1,0,Mistral Shriek
+11093,2B55,-1,0,Aerial Blast
+11094,2B56,-1,0,Incinerate
+11095,2B57,-1,0,Vulcan Burst
+11096,2B58,-1,0,Infernal Surge
+11097,2B59,-1,0,Eruption
+11098,2B5A,-1,0,Eruption
+11099,2B5B,-1,0,Inferno Howl
+11100,2B5C,-1,0,Searing Wind
+11101,2B5D,-1,0,Flaming Crush
+11102,2B5E,-1,0,Hellfire
+11103,2B5F,-1,0,Crimson Cyclone
+11104,2B60,-1,0,Crimson Cyclone
+11105,2B61,-1,0,Radiant Plume
+11106,2B62,-1,0,Rock Buster
+11107,2B63,-1,0,Mountain Buster
+11108,2B64,-1,0,Weight Of The Land
+11109,2B65,-1,0,Weight Of The Land
+11110,2B66,-1,0,Geocrush
+11111,2B67,-1,0,Upheaval
+11113,2B69,-1,0,Bury
+11114,2B6A,-1,0,Burst
+11115,2B6B,-1,0,Rock Throw
+11116,2B6C,-1,0,Rock Throw
+11117,2B6D,-1,0,Granite Impact
+11118,2B6E,-1,0,Freefire
+11119,2B6F,-1,0,Landslide
+11120,2B70,-1,0,Landslide
+11121,2B71,-1,0,Landslide
+11122,2B72,-1,0,Self-destruct
+11123,2B73,-1,0,Blight
+11124,2B74,-1,0,Dark IV
+11126,2B76,-1,0,Ultimate Predation
+11128,2B78,-1,0,Diffractive Laser
+11129,2B79,-1,0,Viscous Aetheroplasm
+11130,2B7A,-1,0,Viscous Aetheroplasm
+11131,2B7B,-1,0,Homing Lasers
+11132,2B7C,-1,0,Ceruleum Vent
+11133,2B7D,-1,0,Radiant Plume
+11134,2B7E,-1,0,Landslide
+11135,2B7F,-1,0,Landslide
+11137,2B81,-1,0,Aetheroplasm
+11138,2B82,-1,0,Light Pillar
+11139,2B83,-1,0,Light Pillar
+11140,2B84,-1,0,Aetherochemical Laser
+11141,2B85,-1,0,Aetherochemical Laser
+11142,2B86,-1,0,Aetherochemical Laser
+11143,2B87,-1,0,Tank Purge
+11144,2B88,-1,0,Aetheric Boom
+11145,2B89,-1,0,Aetheroplasm
+11146,2B8A,-1,0,Fusion Burst
+11147,2B8B,-1,0,Ultima
+11149,2B8D,-1,0,Citadel Siege
+11150,2B8E,-1,0,Mistral Song
+11151,2B8F,-1,0,Viscous Aetheroplasm
+11152,2B90,-1,0,Earthen Fury
+11155,2B93,-1,0,Sabik
 11156,2B94,-1,0,Might Of The Tengu
 11157,2B95,-1,0,Clout Of The Tengu
 11158,2B96,-1,0,Yama-kagura
@@ -9284,6 +9359,8 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11186,2BB2,-1,0,Splitting Hairs
 11187,2BB3,-1,0,Splitting Hairs
 11188,2BB4,-1,0,Equal Of Heaven
+11189,2BB5,-1,0,Super Cyclone
+11190,2BB6,-1,0,Super Cyclone
 11194,2BBA,-1,0,Reprimand
 11195,2BBB,-1,0,Torment Unto Death
 11196,2BBC,-1,0,Nightfall
@@ -9355,6 +9432,9 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11270,2C06,-1,0,Upwell
 11271,2C07,-1,0,Wildswind
 11272,2C08,-1,0,Explosion
+11288,2C18,-1,0,Tumult
+11289,2C19,-1,0,Infernal Fetters
+11298,2C22,-1,0,Landslide
 11299,2C23,-1,0,Cyclone
 11300,2C24,-1,0,Gust Front
 11301,2C25,-1,0,Water Drop
@@ -9442,6 +9522,7 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11439,2CAF,-1,0,Nightbloom
 11440,2CB0,-1,0,Nightbloom
 11442,2CB2,-1,0,Ballistic Missile
+11448,2CB8,-1,0,Granite Impact
 11462,2CC6,-1,0,Choco Meteor
 11464,2CC8,-1,0,Incinerate
 11466,2CCA,-1,0,Divide By Three
@@ -9476,6 +9557,8 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11505,2CF1,-1,0,Defensive Protocols
 11506,2CF2,-1,0,Energize
 11507,2CF3,-1,0,Ovation
+11508,2CF4,-1,0,Vulcan Burst
+11509,2CF5,-1,0,Freefire
 11510,2CF6,-1,0,Eddy
 11511,2CF7,-1,0,Eddy
 11512,2CF8,-1,0,Great Flood
@@ -9483,12 +9566,14 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11514,2CFA,-1,0,Whirlwind
 11515,2CFB,-1,0,Upwell
 11516,2CFC,-1,0,Unwind
+11517,2CFD,-1,0,Geocrush
 11520,2D00,-1,0,Whitewater
 11521,2D01,-1,0,Whitewater
 11522,2D02,-1,0,Attack
 11523,2D03,-1,0,Attack
 11527,2D07,-1,0,The Short End
 11528,2D08,-1,0,Mount Huaguo
+11529,2D09,-1,0,Radiant Plume
 11534,2D0E,-1,0,Shutdown
 11535,2D0F,-1,0,Shadowkiller
 11536,2D10,-1,0,Silver Bullet
@@ -9512,6 +9597,8 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11558,2D26,-1,0,Ultramagnetism
 11559,2D27,-1,0,Acceleration Bomb
 11560,2D28,-1,0,Water
+11596,2D4C,-1,0,Ultimate Annihilation
+11597,2D4D,-1,0,Ultimate Suppression
 11598,2D4E,-1,0,Rake
 11599,2D4F,-1,0,Rake
 11612,2D5C,-1,0,Incinerate

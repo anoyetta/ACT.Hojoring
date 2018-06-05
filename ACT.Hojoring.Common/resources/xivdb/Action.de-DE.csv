@@ -9253,6 +9253,81 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11069,2B3D,-1,0,Ultima
 11071,2B3F,-1,0,Randalieren
 11072,2B40,-1,0,Lichtschwall
+11073,2B41,-1,0,Windhose
+11074,2B42,-1,0,Mistral-Song
+11075,2B43,-1,0,Federlanze
+11076,2B44,-1,0,Frühlingswind
+11077,2B45,-1,0,Zyklon
+11078,2B46,-1,0,Gigasturm
+11079,2B47,-1,0,Superzyklon
+11080,2B48,-1,0,Windklinge
+11081,2B49,-1,0,Meso-Hoch
+11082,2B4A,-1,0,Windklinge
+11083,2B4B,-1,0,Mistral-Song
+11084,2B4C,-1,0,Rad Der Bosheit
+11085,2B4D,-1,0,Federregen
+11086,2B4E,-1,0,Rad Der Bosheit
+11087,2B4F,-1,0,Tornado Der Bosheit
+11088,2B50,-1,0,Fallböe
+11090,2B52,-1,0,Auge Des Sturms
+11091,2B53,-1,0,Wirbelströmung
+11092,2B54,-1,0,Mistral-Schrei
+11093,2B55,-1,0,Windschlag
+11094,2B56,-1,0,Einäschern
+11095,2B57,-1,0,Feuerstoß
+11096,2B58,-1,0,Infernowallung
+11097,2B59,-1,0,Eruption
+11098,2B5A,-1,0,Eruption
+11099,2B5B,-1,0,Brennende Wut
+11100,2B5C,-1,0,Versengen
+11101,2B5D,-1,0,Flammenstoß
+11102,2B5E,-1,0,Höllenfeuer
+11103,2B5F,-1,0,Zinnober-Zyklon
+11104,2B60,-1,0,Zinnober-Zyklon
+11105,2B61,-1,0,Scheiterhaufen
+11106,2B62,-1,0,Steinsprenger
+11107,2B63,-1,0,Bergsprenger
+11108,2B64,-1,0,Gaias Gewicht
+11109,2B65,-1,0,Gaias Gewicht
+11110,2B66,-1,0,Geo-Stoß
+11111,2B67,-1,0,Urtrauma
+11113,2B69,-1,0,Begraben
+11114,2B6A,-1,0,Detonation
+11115,2B6B,-1,0,Granitgefängnis
+11116,2B6C,-1,0,Granitgefängnis
+11117,2B6D,-1,0,Granitstoß
+11118,2B6E,-1,0,Schwerer Beschuss
+11119,2B6F,-1,0,Bergsturz
+11120,2B70,-1,0,Bergsturz
+11121,2B71,-1,0,Bergsturz
+11122,2B72,-1,0,Selbstzerstörung
+11123,2B73,-1,0,Pesthauch
+11124,2B74,-1,0,Neka
+11126,2B76,-1,0,Ultimative Prädation
+11128,2B78,-1,0,Diffraktiver Laser
+11129,2B79,-1,0,Viskoses Ätheroplasma
+11130,2B7A,-1,0,Viskoses Ätheroplasma
+11131,2B7B,-1,0,Leitlaser
+11132,2B7C,-1,0,Erdseim-Entlüfter
+11133,2B7D,-1,0,Scheiterhaufen
+11134,2B7E,-1,0,Bergsturz
+11135,2B7F,-1,0,Bergsturz
+11137,2B81,-1,0,Ätheroplasma
+11138,2B82,-1,0,Lichtsäule
+11139,2B83,-1,0,Lichtsäule
+11140,2B84,-1,0,Ätherochemischer Laser
+11141,2B85,-1,0,Ätherochemischer Laser
+11142,2B86,-1,0,Ätherochemischer Laser
+11143,2B87,-1,0,Tankreinigung
+11144,2B88,-1,0,Ätherknall
+11145,2B89,-1,0,Ätheroplasma
+11146,2B8A,-1,0,Fusionsknall
+11147,2B8B,-1,0,Ultima
+11149,2B8D,-1,0,Belagerung Der Zitadelle
+11150,2B8E,-1,0,Mistral-Song
+11151,2B8F,-1,0,Viskoses Ätheroplasma
+11152,2B90,-1,0,Gaias Zorn
+11155,2B93,-1,0,Ultima-Sabik
 11156,2B94,-1,0,Fäuste Des Tengu
 11157,2B95,-1,0,Atem Des Tengu
 11158,2B96,-1,0,Yamakagura
@@ -9284,6 +9359,8 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11186,2BB2,-1,0,Haarspalterei
 11187,2BB3,-1,0,Haarspalterei
 11188,2BB4,-1,0,Dem Himmel Gleich
+11189,2BB5,-1,0,Superzyklon
+11190,2BB6,-1,0,Superzyklon
 11194,2BBA,-1,0,Maßregelung
 11195,2BBB,-1,0,Todesqualen
 11196,2BBC,-1,0,Einbruch Der Dunkelheit
@@ -9355,6 +9432,9 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11270,2C06,-1,0,Unterströmung
 11271,2C07,-1,0,Turbulenz
 11272,2C08,-1,0,Explosion
+11288,2C18,-1,0,Urerschütterung
+11289,2C19,-1,0,Infernofesseln
+11298,2C22,-1,0,Bergsturz
 11299,2C23,-1,0,Zyklon
 11300,2C24,-1,0,Böenfront
 11301,2C25,-1,0,Rauschendes Wasser
@@ -9442,6 +9522,7 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11439,2CAF,-1,0,Monddämmerung
 11440,2CB0,-1,0,Monddämmerung
 11442,2CB2,-1,0,Ballistische Rakete
+11448,2CB8,-1,0,Granitstoß
 11462,2CC6,-1,0,Choco-Meteo
 11464,2CC8,-1,0,Einäschern
 11466,2CCA,-1,0,Arithmetik: Durch 3 Teilen
@@ -9476,6 +9557,8 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11505,2CF1,-1,0,Abwehrprotokoll
 11506,2CF2,-1,0,Aufladen
 11507,2CF3,-1,0,Handschlag
+11508,2CF4,-1,0,Feuerstoß
+11509,2CF5,-1,0,Schwerer Beschuss
 11510,2CF6,-1,0,Schwemme
 11511,2CF7,-1,0,Schwemme
 11512,2CF8,-1,0,Sintflut
@@ -9483,12 +9566,14 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11514,2CFA,-1,0,Wirbelwind
 11515,2CFB,-1,0,Strömung
 11516,2CFC,-1,0,Trombe
+11517,2CFD,-1,0,Geo-Stoß
 11520,2D00,-1,0,Stauung
 11521,2D01,-1,0,Stauung
 11522,2D02,-1,0,Attacke
 11523,2D03,-1,0,Attacke
 11527,2D07,-1,0,Kurzes Ende
 11528,2D08,-1,0,Huaguo
+11529,2D09,-1,0,Scheiterhaufen
 11534,2D0E,-1,0,Abschaltung
 11535,2D0F,-1,0,Schattenmörder
 11536,2D10,-1,0,Silberkugel
@@ -9512,6 +9597,8 @@ ID,ID_HEX,ClassJob,ClassJobCategory,Name
 11558,2D26,-1,0,Ultramagnetismus
 11559,2D27,-1,0,Beschleunigungsbombe
 11560,2D28,-1,0,Wasser
+11596,2D4C,-1,0,Ultimative Vernichtung
+11597,2D4D,-1,0,Ultimative Unterdrückung
 11598,2D4E,-1,0,Prankenhieb
 11599,2D4F,-1,0,Prankenhieb
 11612,2D5C,-1,0,Einäschern
