@@ -22,7 +22,7 @@ ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」
 
 1. 各種ランタイムをインストールする  
 **[Visual Studio 2017 用 Microsoft Visual C++ 再頒布可能パッケージ](https://go.microsoft.com/fwlink/?LinkId=746572)**  
-**[Microsoft .NET Framework 4.7.2](https://www.microsoft.com/net/download/windows#/sdk)**  
+**[.NET Framework 4.7.2](https://www.microsoft.com/net/download/thank-you/net472)** 
 をインストールする。
 
 2. 最新版を取得する  
