@@ -41,6 +41,7 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 
 ### 動作環境
 * Windows 10 以降
+* .NET Framework 4.7.1 以降
 
 ## 使い方
 **基本的に [Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki) を見てください。**
