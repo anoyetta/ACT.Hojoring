@@ -32,7 +32,7 @@ Write-Output ("*** ACT.Hojoring v" + $versionShort + " ***")
 Write-Output "***"
 
 # MasterVersion.cs のバージョンを置換する
-(Get-Content $masterVersionCS) | % { $_ -replace "#MASTER_VERSION#", $version } > $masterVersionTemp
+(Get-Content $masterVersionCS) | ForEach-Object { $_ -replace "#MASTER_VERSION#", $version } > $masterVersionTemp
 
 # MasterVersion.cs.tmp をコピーする
 Copy-Item -Force $masterVersionTemp ".\ACT.Hojoring.Common\Version.cs"
