@@ -144,7 +144,6 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     '●不要なファイルを削除する'
     Remove-Item -Force System.*.dll
     Remove-Item -Force Microsoft.*.dll
-    Remove-Item -Force netstandard.dll
     Remove-Item -Force *.exe.config
 
     '●フォルダをリネームする'
