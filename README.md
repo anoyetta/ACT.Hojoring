@@ -23,7 +23,6 @@ ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」
 1. 各種ランタイムをインストールする  
 **[Visual Studio 2017 用 Microsoft Visual C++ 再頒布可能パッケージ](https://go.microsoft.com/fwlink/?LinkId=746572)**  
 **[.NET Framework 4.7.2](https://www.microsoft.com/net/download/thank-you/net472)**  
-**[.NET Core 2.1](https://www.microsoft.com/net/download/thank-you/dotnet-runtime-2.1.0-windows-hosting-bundle-installer)**  
 をインストールする。
 
 2. 最新版を取得する  
@@ -42,6 +41,7 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 
 ### 動作環境
 * Windows 10 以降
+* .NET Framework 4.7.1 以降
 
 ## 使い方
 **基本的に [Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki) を見てください。**
