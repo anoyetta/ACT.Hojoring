@@ -39,6 +39,14 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
     * ACT.UltraScouter.dll
     * ACT.TTSYukkuri.dll
 
+### 機能の拡張
+[FFXIV_MemoryReader](https://github.com/TamanegiMage/FFXIV_MemoryReader) を使用すると下記の機能が拡張されます。
+* UltraScouter の距離の表示がスキルの射程に準じたものに変わる
+* SpecialSpellTimer のスペルでリキャスト時間が動的に変化するスキルのリキャストを扱えるようになる
+* 全体的にパフォーマンスが改善するかも
+
+これらは FFXIV_MemoryReader を有効にするだけで機能します。
+
 ### 動作環境
 * Windows 10 以降
 * .NET Framework 4.7.1 以降
