@@ -40,12 +40,12 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
     * ACT.TTSYukkuri.dll
 
 ### 機能の拡張
-[FFXIV_MemoryReader](https://github.com/TamanegiMage/FFXIV_MemoryReader) を使用すると下記の機能が拡張されます。
-* UltraScouter の距離の表示がスキルの射程に準じたものに変わる
+[FFXIV_MemoryReader](https://github.com/TamanegiMage/FFXIV_MemoryReader) を使用すると以下の機能が拡張されます。
+* UltraScouter の距離の表示がスキルの射程に準じたものになる
 * SpecialSpellTimer のスペルでリキャスト時間が動的に変化するスキルのリキャストを扱えるようになる
 * 全体的にパフォーマンスが改善するかも
 
-これらは FFXIV_MemoryReader を有効にするだけで機能します。
+これらの機能は FFXIV_MemoryReader を有効にするだけで拡張されます。
 
 ### 動作環境
 * Windows 10 以降
@@ -75,8 +75,8 @@ ACT.UltraScouter.config
 ACT.SpecialSpellTimer.Panels.xml  
 ACT.SpecialSpellTimer.Spells.xml  
 ACT.SpecialSpellTimer.Telops.xml  
-スペスペの各種トリガの設定ファイルです。それぞれ、スペルパネル・スペル・テロップの設定ファイルになります。  
-前述の格納場所に上書きしても使えますし、UIからインポートしても使えます（スペルパネルはインポートできません）。ファイルを上書きしたときは丸ごと入れ替わります。インポートした場合は、既存の設定に追加される形になります。他人のトリガを取り込む場合はインポートで追加したほうが良いでしょう。
+ACT.SpecialSpellTimer.Tags.xml  
+スペスペの各種トリガの設定ファイルです。それぞれ、スペルパネル・スペル・テロップ・タグの設定ファイルになります。
 
 ## アップデート
 Help タブからアップデートしてください。  
