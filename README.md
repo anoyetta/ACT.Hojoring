@@ -26,7 +26,7 @@ ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」
 をインストールする。
 
 2. 最新版を取得する  
-最新リリースからダウンロードします。
+[最新リリース](https://github.com/anoyetta/ACT.Hojoring/releases/latest) からダウンロードします。
 
 3. 解凍する  
 ダウンロードしたプラグイン一式を解凍し任意のフォルダに配置します。
