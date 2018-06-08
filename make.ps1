@@ -55,7 +55,6 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Remove-Item -Force ACT.Hojoring.dll
 
     Copy-Item -Recurse -Force -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\ -Exclude *.pdb
-    Remove-Item -Recurse .\tools\XIVDBDownloader\resources
     Remove-Item -Recurse * -Include *.pdb
 
     '●不要なロケールを削除する'
