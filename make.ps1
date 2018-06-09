@@ -1,3 +1,7 @@
+# 現在のディレクトリを取得する
+$cd = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $cd
+
 Start-Transcript make.log | Out-Null
 
 function EndMake() {
@@ -6,10 +10,6 @@ function EndMake() {
     Read-Host "終了するには何かキーを教えてください..."
     exit
 }
-
-# 現在のディレクトリを取得する
-$cd = Split-Path -Parent $MyInvocation.MyCommand.Path
-Set-Location $cd
 
 # $devenv = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\IDE\devenv.com"
 $msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe"
@@ -86,11 +86,9 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     '●外部参照用DLLを逃がす'
     $references = @(
-        "System.Web.Razor.dll",
         "System.Windows.Interactivity.dll",
         "ICSharpCode.SharpZipLib.dll",
         "CommonServiceLocator.dll",
-        "Newtonsoft.Json.dll",
         "ReactiveProperty*.dll",
         "System.Reactive.*.dll",
         "System.Collections.Immutable.dll",
@@ -125,6 +123,8 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     '●その他のDLLをマージする'
     $libs = @(
         "FontAwesome.WPF.dll",
+        "System.Web.Razor.dll",
+        "Newtonsoft.Json.dll",
         "Octokit.dll",
         "NAudio.dll",
         "Hjson.dll",
