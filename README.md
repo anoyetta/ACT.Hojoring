@@ -153,6 +153,6 @@ twitter:  [@anoyetta](https://twitter.com/anoyetta)
 I can receive only  **[Amazon eGift Card](https://www.amazon.com/dp/B004LLIKVU)**   
 sendto: anoyetta(at)gmail.com
 
---
-記載されている会社名・製品名・システム名などは、各社の商標、または登録商標です。
+---
+記載されている会社名・製品名・システム名などは、各社の商標、または登録商標です。  
 Copyright &copy; 2010 - 2018 SQUARE ENIX CO., LTD. All Rights Reserved.
