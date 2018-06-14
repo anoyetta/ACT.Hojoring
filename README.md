@@ -43,7 +43,7 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 [FFXIV_MemoryReader](https://github.com/TamanegiMage/FFXIV_MemoryReader) を使用すると以下の機能が拡張されます。
 * UltraScouter の距離の表示がスキルの射程に準じたものになる
 * SpecialSpellTimer のスペルでリキャスト時間が動的に変化するスキルのリキャストを扱えるようになる
-* 全体的にパフォーマンスが改善するかも
+* 全体的なパフォーマンスが改善するかも
 
 これらの機能は FFXIV_MemoryReader を有効にするだけで拡張されます。
 
