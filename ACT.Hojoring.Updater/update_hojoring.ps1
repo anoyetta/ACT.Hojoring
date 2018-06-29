@@ -9,6 +9,11 @@ $isUsePreRelease = $FALSE
 ## UPDATEスクリプトは自動更新されないので自分で更新してください
 $updateExclude = @(
     "update_hojoring.ps1",
+    "TTSDictionary.en-US.txt",
+    "TTSDictionary.ja-JP.txt",
+    "TTSDictionary.fr-FR.txt",
+    "TTSDictionary.de-DE.txt",
+    "TTSDictionary.ko-KR.txt",
     "_dummy.txt",
     "_sample.txt"
 )
