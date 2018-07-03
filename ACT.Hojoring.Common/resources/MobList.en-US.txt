@@ -4,13 +4,16 @@
 # Define the mob that is displayed in the Mob list.
 #
 # format.
-# Mob Name[TAB]Rank
+# Mob Name[TAB]Rank[TAB]TTSEnabled
 # 
 # ex.
 # Ixion 			EX
 # Salt and Light	S
 # Naoki Yoshida 	
 # 
+# Trap 				EX	false
+# disable TTS this mob only.
+#
 # # is comment line.
 #
 
