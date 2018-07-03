@@ -1,18 +1,19 @@
 # ACT.UltraScouter MobList
-# Coryright(c) 2017, anoyetta
+# Coryright(c) 2017-2018, anoyetta
 #
 # Define the mob that is displayed in the Mob list.
 #
 # format.
-# Mob Name[TAB]Rank[TAB]TTSEnabled
+# Mob Name[TAB]Rank[TAB]Maximum Distance[TAB]TTSEnabled
 # 
-# ex.
+# ex. 1
 # Ixion 			EX
 # Salt and Light	S
 # Naoki Yoshida 	
 # 
-# Trap 				EX	false
-# disable TTS this mob only.
+# ex. 2
+# Trap 				DD	30	false
+# Notify traps within 30m, but don't TTS.
 #
 # # is comment line.
 #
