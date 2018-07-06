@@ -1,6 +1,6 @@
 <#
 ACTなど外部ツールを自動的に起動させる常駐スクリプト
-rev3
+rev4
 
 # 使い方
 タスクスケジューラに登録して使います
@@ -58,7 +58,16 @@ function StartProcess($path) {
 
 function ExistsProcess($name) {
     $p = Get-Process | Where-Object {$_.Name -like $name}
-    return $p -ne $null
+
+    if ($p -eq $null) {
+        return $false
+    }
+
+    if ($p.HasExited) {
+        return $false
+    }
+
+    return $true
 }
 
 while ($true) {
@@ -94,9 +103,9 @@ while ($true) {
         Start-Sleep -Seconds $ReactiveFFXIVDelay
 
         # FFXIVをアクティブにする
-        $ffxiv = Get-Process | Where-Object {$_.Name -like $FFXIV}
-        if ($ffxiv -ne $null) {
-            [Microsoft.VisualBasic.Interaction]::AppActivate($ffxiv.Id)
+        $p = Get-Process | Where-Object {$_.Name -like $FFXIV}
+        if ($p -ne $null) {
+            [Microsoft.VisualBasic.Interaction]::AppActivate($p.Id)
         }
     }
 }
