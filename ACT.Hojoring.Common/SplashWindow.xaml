@@ -6,7 +6,6 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:local="clr-namespace:ACT.Hojoring.Common"
   mc:Ignorable="d"
-  x:Name="BaseWindow"
   Title="ACT.Hojoring"
   TextOptions.TextFormattingMode="Ideal"
   TextOptions.TextHintingMode="Animated"
@@ -21,10 +20,11 @@
   Background="Transparent"
   Height="200"
   Width="500"
-  WindowStartupLocation="CenterScreen">
+  WindowStartupLocation="CenterScreen"
+  d:DataContext="{d:DesignInstance Type=local:SplashWindow, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
   <Window.Resources>
-    <SolidColorBrush x:Key="MainColor" Color="#b8d200" />
     <FontFamily x:Key="Font">Comic Sans MS</FontFamily>
   </Window.Resources>
 
@@ -35,7 +35,7 @@
   </Window.LayoutTransform>
 
   <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-    <Label x:Name="Dummy" Background="{StaticResource MainColor}" Visibility="Collapsed" />
+    <Label x:Name="Dummy" Background="{Binding MainBrush, Mode=OneWay}" Visibility="Collapsed" />
     <Grid>
       <Label x:Name="TitleLabel" Content="ACT.Hojoring" Foreground="White" FontFamily="{StaticResource Font}" FontWeight="Black" FontSize="60">
         <Label.Effect>
