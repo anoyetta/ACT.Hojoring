@@ -9,6 +9,7 @@ $isUsePreRelease = $FALSE
 ## UPDATEスクリプトは自動更新されないので自分で更新してください
 $updateExclude = @(
     "update_hojoring.ps1",
+    "start_ffxiv_tools.ps1",
     "TTSDictionary.en-US.txt",
     "TTSDictionary.ja-JP.txt",
     "TTSDictionary.fr-FR.txt",
