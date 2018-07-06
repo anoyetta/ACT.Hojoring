@@ -40,25 +40,21 @@ namespace ACT.Hojoring.Common
             {
                 Task.Run(() =>
                 {
-                    Thread.Sleep(3500);
+                    Thread.Sleep(2000);
 
                     Application.Current.Dispatcher.BeginInvoke(
-                        DispatcherPriority.Background,
+                        DispatcherPriority.Normal,
                         new Action(() =>
-                        {
                             this.BeginAnimation(
                                 Window.OpacityProperty,
-                                this.opacityAnimation);
-                        }));
+                                this.opacityAnimation)));
 
-                    Thread.Sleep(1000);
+                    Thread.Sleep(1010);
 
                     Application.Current.Dispatcher.BeginInvoke(
                         DispatcherPriority.Background,
                         new Action(() =>
-                        {
-                            this.Close();
-                        }));
+                            this.Close()));
                 });
             };
         }
