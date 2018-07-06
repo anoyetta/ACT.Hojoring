@@ -1,4 +1,4 @@
-﻿<#
+<#
 ACTなど外部ツールを自動的に起動させる常駐スクリプト
 rev3
 
@@ -34,6 +34,9 @@ $Tools = @(
     "C:[インストールフォルダ]\FFXIVZoomHack.exe"
 )
 
+# FFXIVのプロセス名
+$FFXIV = "ffxiv_dx11"
+
 # FFXIVのプロセスを検出する間隔（秒）
 $DetectInterval = 20
 
@@ -63,13 +66,13 @@ while ($true) {
 
     Start-Sleep -Seconds $DetectInterval
 
-    if (!(ExistsProcess "ffxiv_dx11")) {
+    if (!(ExistsProcess $FFXIV)) {
         continue
     }
 
     Start-Sleep -Seconds $StartDelay
 
-    if (!(ExistsProcess "ffxiv_dx11")) {
+    if (!(ExistsProcess $FFXIV)) {
         continue
     }
 
@@ -80,7 +83,7 @@ while ($true) {
         # 指定したツールが実行されていない？
         if (!(ExistsProcess $name)) {
             # ツールを起動する
-            StartProcess $tool 
+            StartProcess $tool
             Start-Sleep -Seconds 2
 
             $isKicked = $true
@@ -91,7 +94,7 @@ while ($true) {
         Start-Sleep -Seconds $ReactiveFFXIVDelay
 
         # FFXIVをアクティブにする
-        $ffxiv = Get-Process | Where-Object {$_.Name -like "ffxiv_dx11"}
+        $ffxiv = Get-Process | Where-Object {$_.Name -like $FFXIV}
         if ($ffxiv -ne $null) {
             [Microsoft.VisualBasic.Interaction]::AppActivate($ffxiv.Id)
         }
