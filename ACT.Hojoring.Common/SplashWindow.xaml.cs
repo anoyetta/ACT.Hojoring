@@ -17,7 +17,7 @@ namespace ACT.Hojoring.Common
     {
         public static Version HojoringVersion => Assembly.GetExecutingAssembly()?.GetName()?.Version;
 
-        private static readonly TimeSpan SplashDuration = TimeSpan.FromSeconds(2);
+        private static readonly TimeSpan SplashDuration = TimeSpan.FromSeconds(2.5);
         private static readonly TimeSpan FadeOutDuration = TimeSpan.FromSeconds(2);
 
         private readonly DoubleAnimation OpacityAnimation = new DoubleAnimation(
@@ -28,7 +28,7 @@ namespace ACT.Hojoring.Common
 
         private readonly static ColorConverter ColorConverter = new ColorConverter();
 
-        private readonly static string[] Colors = new[]
+        private readonly static string[] MainColors = new[]
         {
             "#745399",
             "#895b8a",
@@ -90,13 +90,36 @@ namespace ACT.Hojoring.Common
             "#a9cc51",
             "#ee7b1a",
             "#00a0de",
+            "#ffd900",
+            "#ffec47",
+            "#fcc800",
+            "#f8b500",
+            "#fabf14",
+            "#e6b422",
+            "#e45e32",
+            "#ffd700",
+            "#e6b422",
+            "#b98c46",
+            "#ec6800",
+            "#ea5506",
+            "#f39800",
+            "#f8e58c",
+            "#fddea5",
+            "#f19072",
+            "#df7163",
+            "#ddbb99",
+            "#e9bc00",
+            "#fff352",
+            /*
+            "XXXXXXX",
+            */
         };
 
         private static readonly Random Random = new Random();
 
-        private static string GetColor() => Colors[Random.Next(0, Colors.Length - 1)];
+        private static string GetColor() => MainColors[Random.Next(0, MainColors.Length - 1)];
 
-        public Color MainColor => (Color)ColorConverter.ConvertFromString(GetColor());
+        public Brush MainBrush => new SolidColorBrush((Color)ColorConverter.ConvertFromString(GetColor()));
 
         #endregion Colors
 
