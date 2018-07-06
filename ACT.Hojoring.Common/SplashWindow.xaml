@@ -6,7 +6,6 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:local="clr-namespace:ACT.Hojoring.Common"
   mc:Ignorable="d"
-  x:Name="BaseWindow"
   Title="ACT.Hojoring"
   TextOptions.TextFormattingMode="Ideal"
   TextOptions.TextHintingMode="Animated"
@@ -21,10 +20,12 @@
   Background="Transparent"
   Height="200"
   Width="500"
-  WindowStartupLocation="CenterScreen">
+  WindowStartupLocation="CenterScreen"
+  d:DataContext="{d:DesignInstance Type=local:SplashWindow, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
   <Window.Resources>
-    <SolidColorBrush x:Key="MainColor" Color="#745399" />
+    <SolidColorBrush x:Key="MainColor" Color="{Binding MainColor, Mode=OneWay}" />
     <FontFamily x:Key="Font">Comic Sans MS</FontFamily>
   </Window.Resources>
 
