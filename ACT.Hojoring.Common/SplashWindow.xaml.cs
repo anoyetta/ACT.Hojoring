@@ -17,7 +17,7 @@ namespace ACT.Hojoring.Common
     {
         public static Version HojoringVersion => Assembly.GetExecutingAssembly()?.GetName()?.Version;
 
-        private static readonly TimeSpan SplashDuration = TimeSpan.FromSeconds(2.5);
+        private static readonly TimeSpan SplashDuration = TimeSpan.FromSeconds(2);
         private static readonly TimeSpan FadeOutDuration = TimeSpan.FromSeconds(2);
 
         private readonly DoubleAnimation OpacityAnimation = new DoubleAnimation(
@@ -139,16 +139,16 @@ namespace ACT.Hojoring.Common
             Timeline.SetDesiredFrameRate(this.OpacityAnimation, 40);
 
             this.OpacityAnimation.Completed += (x, y) => this.Close();
+        }
 
-            this.Loaded += async (x, y) =>
-            {
-                await Task.Delay(SplashDuration);
-                await Application.Current.Dispatcher.InvokeAsync(
-                    () => this.BeginAnimation(
-                        Window.OpacityProperty,
-                        this.OpacityAnimation),
-                    DispatcherPriority.Normal);
-            };
+        public async void StartFadeOut()
+        {
+            await Task.Delay(SplashDuration);
+            await Application.Current.Dispatcher.InvokeAsync(
+                () => this.BeginAnimation(
+                    Window.OpacityProperty,
+                    this.OpacityAnimation),
+                DispatcherPriority.Normal);
         }
 
         /// <summary>
