@@ -12,7 +12,7 @@ namespace ACT.Hojoring.Common
 
         public Version Version => Assembly.GetExecutingAssembly().GetName().Version;
 
-        public void ShowSplash()
+        public async void ShowSplash()
         {
             if (isSplashShown)
             {
@@ -30,15 +30,14 @@ namespace ACT.Hojoring.Common
                 return;
             }
 
-            var window = default(SplashWindow);
-
-            Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
-                new Action(() =>
+            await Application.Current.Dispatcher.InvokeAsync(
+                () =>
                 {
-                    window = new SplashWindow();
+                    var window = new SplashWindow();
                     window.Show();
-                }));
+                    window.StartFadeOut();
+                },
+                DispatcherPriority.Normal);
         }
     }
 }
