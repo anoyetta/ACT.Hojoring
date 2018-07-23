@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFXIV.Framework.Dialog", ".
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFXIV.Framework.Dialog.Wrapper", "..\FFXIV.Framework\FFXIV.Framework.Dialog.Wrapper\FFXIV.Framework.Dialog.Wrapper.csproj", "{DD7824D5-F74E-4412-9E87-C7B89E1C6165}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "deploy", "deploy\deploy.csproj", "{9F031C94-8011-408E-B916-19C484EA95FF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,10 +41,6 @@ Global
 		{DD7824D5-F74E-4412-9E87-C7B89E1C6165}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD7824D5-F74E-4412-9E87-C7B89E1C6165}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD7824D5-F74E-4412-9E87-C7B89E1C6165}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9F031C94-8011-408E-B916-19C484EA95FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9F031C94-8011-408E-B916-19C484EA95FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9F031C94-8011-408E-B916-19C484EA95FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9F031C94-8011-408E-B916-19C484EA95FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
