@@ -1,0 +1,22 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+  <!--  Resources Strings in English  -->
+  <system:String x:Key="Help_GotoWiki">Wiki</system:String>
+  <system:String x:Key="Help_GotoLastestRelease">Neueste Erscheinung</system:String>
+  <system:String x:Key="Help_GotoIssues">Probleme</system:String>
+  <system:String x:Key="Help_Update">Aktualisieren</system:String>
+  <system:String x:Key="Help_UsePreReleaase">Verwenden Sie die Vorabversion</system:String>
+
+  <system:String x:Key="Help_ContactToAnoyetta">Kontakt zu anoyetta von DISCORD</system:String>
+  <system:String x:Key="Help_ContactToAnoyettaTwitter">Kontakt zu anoyetta von Twitter</system:String>
+
+  <system:String x:Key="Help_OpenConfig">Konfiguration öffnen</system:String>
+  <system:String x:Key="Help_ReloadConfig">Konfiguration neu laden</system:String>
+
+  <system:String x:Key="Help_OpenPluginLog">Öffnen Sie das Plugin</system:String>
+  <system:String x:Key="Help_OpenACTLog">Öffnen Sie das ACT</system:String>
+  <system:String x:Key="Help_SaveSupportInfo">Support-Informationen speichern</system:String>
+</ResourceDictionary>

@@ -1,0 +1,53 @@
+# PCOrder.sample.txt
+# PCの並び順を指定するファイル
+# (c) anoyetta, 2018
+# 
+# Hojoring は起動時に PCOrder.txt をロードしてそこに定義された並び順で内部の
+# パーティメンバリストをソートする。
+# PCOrder.txt に定義されていないジョブは定義されたジョブより優先順位の低い
+# グループに分類され、その中で Hojoring 標準のオーダーによってソートする。
+# 
+# 書式
+# [JOB]	[ORDER]
+# 
+# 例
+# WAR	1
+# DRK	2
+# PLD	3
+
+# ADV
+# GLA
+# PUG
+# MRD
+# LNC
+# ARC
+# CNJ
+# THM
+# CRP
+# BSM
+# ARM
+# GSM
+# LTW
+# WVR
+# ALC
+# CUL
+# MIN
+# BOT
+# FSH
+# PLD
+# MNK
+# WAR
+# DRG
+# BRD
+# WHM
+# BLM
+# ACN
+# SMN
+# SCH
+# ROG
+# NIN
+# MCH
+# DRK
+# AST
+# SAM
+# RDM
