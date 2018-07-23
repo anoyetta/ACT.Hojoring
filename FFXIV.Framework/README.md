@@ -1,1 +1,0 @@
-# FFXIV.Framework
