@@ -1,0 +1,22 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+  <!--  Resources Strings in Japanese  -->
+  <system:String x:Key="Help_GotoWiki">Wikiを見る</system:String>
+  <system:String x:Key="Help_GotoLastestRelease">最新リリースを確認する</system:String>
+  <system:String x:Key="Help_GotoIssues">課題リストを確認する</system:String>
+  <system:String x:Key="Help_Update">アップデートする</system:String>
+  <system:String x:Key="Help_UsePreReleaase">プレリリース版を使用する</system:String>
+
+  <system:String x:Key="Help_ContactToAnoyetta">DISCORDのフォーラムに参加する</system:String>
+  <system:String x:Key="Help_ContactToAnoyettaTwitter">Twitterで連絡する</system:String>
+
+  <system:String x:Key="Help_OpenConfig">Configファイルを開く</system:String>
+  <system:String x:Key="Help_ReloadConfig">Configをリロードする</system:String>
+
+  <system:String x:Key="Help_OpenPluginLog">プラグインのログを開く</system:String>
+  <system:String x:Key="Help_OpenACTLog">ACT本体のログを開く</system:String>
+  <system:String x:Key="Help_SaveSupportInfo">サポート情報を保存する</system:String>
+</ResourceDictionary>

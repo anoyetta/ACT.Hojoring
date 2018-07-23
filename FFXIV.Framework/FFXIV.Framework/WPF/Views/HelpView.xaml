@@ -1,0 +1,408 @@
+<UserControl
+  x:Class="FFXIV.Framework.WPF.Views.HelpView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF"
+  xmlns:cnv="clr-namespace:FFXIV.Framework.WPF.Converters"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:fa="http://schemas.fontawesome.io/icons/"
+  xmlns:local="clr-namespace:FFXIV.Framework.WPF.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:sys="clr-namespace:System;assembly=System"
+  xmlns:vm="clr-namespace:FFXIV.Framework.WPF.ViewModels"
+  d:DataContext="{d:DesignInstance Type=vm:HelpViewModel, IsDesignTimeCreatable=True}"
+  Background="White"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}"
+  FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
+  FontSize="17"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.EdgeMode="Unspecified"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  mc:Ignorable="d">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <cnv:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter" />
+
+      <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
+      <SolidColorBrush x:Key="MainColor" Color="Black" />
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../resources/strings/Strings.Help.ja-JP.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+
+    <!--  Version  -->
+    <Grid
+      Grid.Row="0"
+      Margin="18 10 20 0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+
+      <TextBox
+        Grid.Column="0"
+        x:Name="VersionTextBox"
+        HorizontalAlignment="Left"
+        AcceptsReturn="True"
+        BorderThickness="0"
+        FontWeight="DemiBold"
+        IsReadOnly="True"
+        Text="{Binding VersionInfo, Mode=OneWay}"
+        TextWrapping="NoWrap" />
+
+      <StackPanel
+        Grid.Column="1"
+        Margin="10 0 0 0">
+
+        <TextBox
+          HorizontalAlignment="Left"
+          HorizontalContentAlignment="Left"
+          Text="{Binding UTC, Mode=OneWay}"
+          BorderThickness="0"
+          FontWeight="DemiBold"
+          IsReadOnly="True" />
+
+        <TextBox
+          x:Name="LT"
+          HorizontalAlignment="Left"
+          HorizontalContentAlignment="Left"
+          Text="{Binding LocalTime, Mode=OneWay}"
+          BorderThickness="0"
+          FontWeight="DemiBold"
+          IsReadOnly="True" />
+
+        <TextBox
+          HorizontalAlignment="Left"
+          HorizontalContentAlignment="Left"
+          Text="{Binding EorzeaTime, Mode=OneWay}"
+          BorderThickness="0"
+          FontWeight="DemiBold"
+          IsReadOnly="True" />
+
+        <TextBox
+          Margin="0 5 0 0"
+          HorizontalAlignment="Left"
+          HorizontalContentAlignment="Left"
+          MaxWidth="{Binding ElementName=LT, Path=ActualWidth, Mode=OneWay}"
+          TextWrapping="WrapWithOverflow"
+          Text="{Binding Zone, Mode=OneWay}"
+          BorderThickness="0"
+          FontWeight="DemiBold"
+          IsReadOnly="True" />
+      </StackPanel>
+    </Grid>
+
+    <!--  Help Desk  -->
+    <DockPanel Grid.Row="1" Margin="10,5,10,10">
+
+      <!--  Buttons 1  -->
+      <StackPanel
+        Margin="0,0,50,0"
+        HorizontalAlignment="Left"
+        DockPanel.Dock="Left"
+        Orientation="Vertical">
+        <Button
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderBrush="Transparent"
+          Command="{Binding WikiCommand, Mode=OneWay}">
+          <StackPanel Orientation="Horizontal">
+            <Label
+              VerticalAlignment="Center"
+              fa:Awesome.Content="Github"
+              FontSize="30"
+              Foreground="{StaticResource MainColor}" />
+            <TextBlock
+              Margin="5,0,10,0"
+              VerticalAlignment="Center"
+              FontSize="20"
+              Foreground="{StaticResource MainColor}"
+              Text="{DynamicResource Help_GotoWiki}" />
+          </StackPanel>
+        </Button>
+
+        <Button
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderBrush="Transparent"
+          Command="{Binding LastestReleaseCommand, Mode=OneWay}">
+          <StackPanel Orientation="Horizontal">
+            <Label
+              VerticalAlignment="Center"
+              fa:Awesome.Content="Github"
+              FontSize="30"
+              Foreground="{StaticResource MainColor}" />
+            <TextBlock
+              Margin="5,0,10,0"
+              VerticalAlignment="Center"
+              FontSize="20"
+              Foreground="{StaticResource MainColor}"
+              Text="{DynamicResource Help_GotoLastestRelease}" />
+          </StackPanel>
+        </Button>
+
+        <Button
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderBrush="Transparent"
+          Command="{Binding IssuesCommand, Mode=OneWay}">
+          <StackPanel Orientation="Horizontal">
+            <Label
+              VerticalAlignment="Center"
+              fa:Awesome.Content="Github"
+              FontSize="30"
+              Foreground="{StaticResource MainColor}" />
+            <TextBlock
+              Margin="5,0,10,0"
+              VerticalAlignment="Center"
+              FontSize="20"
+              Foreground="{StaticResource MainColor}"
+              Text="{DynamicResource Help_GotoIssues}" />
+          </StackPanel>
+        </Button>
+
+        <Button
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderBrush="Transparent"
+          Command="{Binding UpdateCommand, Mode=OneWay}">
+          <StackPanel Orientation="Horizontal">
+            <Label
+              VerticalAlignment="Center"
+              fa:Awesome.Content="Download"
+              FontSize="30"
+              Foreground="{StaticResource MainColor}" />
+            <TextBlock
+              Margin="5,0,10,0"
+              VerticalAlignment="Center"
+              FontSize="20"
+              Foreground="{StaticResource MainColor}"
+              Text="{DynamicResource Help_Update}" />
+          </StackPanel>
+        </Button>
+
+        <CheckBox
+          Margin="8 5 0 0"
+          VerticalContentAlignment="Center"
+          Content="{DynamicResource Help_UsePreReleaase}"
+          IsChecked="{Binding UsePreRelease, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!--  Buttons 2  -->
+      <StackPanel
+        Margin="0,0,50,0"
+        HorizontalAlignment="Left"
+        DockPanel.Dock="Left"
+        Orientation="Vertical">
+        <Button
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderBrush="Transparent"
+          Command="{Binding OpenConfigCommand, Mode=OneWay}">
+          <StackPanel Orientation="Horizontal">
+            <Label
+              VerticalAlignment="Center"
+              fa:Awesome.Content="Cog"
+              FontSize="30"
+              Foreground="{StaticResource MainColor}" />
+            <TextBlock
+              Margin="5,0,10,0"
+              VerticalAlignment="Center"
+              FontSize="20"
+              Foreground="{StaticResource MainColor}"
+              Text="{DynamicResource Help_OpenConfig}" />
+          </StackPanel>
+        </Button>
+
+        <Button
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderBrush="Transparent"
+          Command="{Binding ReloadConfigCommand, Mode=OneWay}"
+          Visibility="{Binding AvailableReloadConfigAction, Mode=OneWay, Converter={StaticResource BoolToCollapsedConverter}}">
+          <StackPanel Orientation="Horizontal">
+            <Label
+              VerticalAlignment="Center"
+              fa:Awesome.Content="Refresh"
+              FontSize="30"
+              Foreground="{StaticResource MainColor}" />
+            <TextBlock
+              Margin="5,0,10,0"
+              VerticalAlignment="Center"
+              FontSize="20"
+              Foreground="{StaticResource MainColor}"
+              Text="{DynamicResource Help_ReloadConfig}" />
+          </StackPanel>
+        </Button>
+      </StackPanel>
+
+      <!--  Buttons 3  -->
+      <StackPanel
+        Margin="0,0,50,0"
+        HorizontalAlignment="Left"
+        DockPanel.Dock="Left"
+        Orientation="Vertical">
+        <Button
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderBrush="Transparent"
+          Command="{Binding OpenPluginLogCommand, Mode=OneWay}">
+          <StackPanel Orientation="Horizontal">
+            <Label
+              VerticalAlignment="Center"
+              fa:Awesome.Content="FileTextOutline"
+              FontSize="30"
+              Foreground="{StaticResource MainColor}" />
+            <TextBlock
+              Margin="5,0,10,0"
+              VerticalAlignment="Center"
+              FontSize="20"
+              Foreground="{StaticResource MainColor}"
+              Text="{DynamicResource Help_OpenPluginLog}" />
+          </StackPanel>
+        </Button>
+
+        <Button
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderBrush="Transparent"
+          Command="{Binding OpenACTLogCommand, Mode=OneWay}">
+          <StackPanel Orientation="Horizontal">
+            <Label
+              VerticalAlignment="Center"
+              fa:Awesome.Content="FileTextOutline"
+              FontSize="30"
+              Foreground="{StaticResource MainColor}" />
+            <TextBlock
+              Margin="5,0,10,0"
+              VerticalAlignment="Center"
+              FontSize="20"
+              Foreground="{StaticResource MainColor}"
+              Text="{DynamicResource Help_OpenACTLog}" />
+          </StackPanel>
+        </Button>
+
+        <Button
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderBrush="Transparent"
+          Command="{Binding SaveSupportInfoCommand, Mode=OneWay}">
+          <StackPanel Orientation="Horizontal">
+            <Label
+              VerticalAlignment="Center"
+              fa:Awesome.Content="FloppyOutline"
+              FontSize="30"
+              Foreground="DarkRed" />
+            <TextBlock
+              Margin="5,0,10,0"
+              VerticalAlignment="Center"
+              FontSize="20"
+              FontWeight="DemiBold"
+              Foreground="DarkRed"
+              Text="{DynamicResource Help_SaveSupportInfo}" />
+            <fa:ImageAwesome
+              Width="40"
+              Margin="10,0,0,0"
+              Foreground="DarkRed"
+              Icon="Refresh"
+              Spin="True"
+              SpinDuration="3"
+              Visibility="{Binding Wait, Mode=OneWay, Converter={StaticResource BoolToCollapsedConverter}}" />
+          </StackPanel>
+        </Button>
+
+        <Button
+          Visibility="Collapsed"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderBrush="Transparent"
+          Command="{Binding ShowDebugWindowCommand, Mode=OneWay}">
+          <TextBlock
+            Margin="5 0 10 0"
+            VerticalAlignment="Center"
+            FontSize="20"
+            Text="Show Debug Window" />
+        </Button>
+      </StackPanel>
+    </DockPanel>
+
+    <!--  Buttons Bottom  -->
+    <StackPanel
+      Grid.Row="2"
+      Margin="10"
+      Orientation="Horizontal">
+
+      <Button
+        HorizontalAlignment="Left"
+        Background="Transparent"
+        BorderBrush="Transparent"
+        Command="{Binding ContactDiscordCommand, Mode=OneWay}">
+        <StackPanel Orientation="Horizontal">
+          <Label
+            VerticalAlignment="Center"
+            fa:Awesome.Content="Commenting"
+            FontSize="30"
+            Foreground="{StaticResource MainColor}" />
+          <TextBlock
+            Margin="5,0,10,0"
+            VerticalAlignment="Center"
+            FontSize="20"
+            Foreground="{StaticResource MainColor}"
+            Text="{DynamicResource Help_ContactToAnoyetta}" />
+        </StackPanel>
+      </Button>
+
+      <Button
+        Margin="30 0 0 0"
+        HorizontalAlignment="Left"
+        Background="Transparent"
+        BorderBrush="Transparent"
+        Command="{Binding ContactTwitterCommand, Mode=OneWay}">
+        <StackPanel Orientation="Horizontal">
+          <Label
+            VerticalAlignment="Center"
+            fa:Awesome.Content="Twitter"
+            FontSize="30"
+            Foreground="{StaticResource MainColor}" />
+          <TextBlock
+            Margin="5,0,10,0"
+            VerticalAlignment="Center"
+            FontSize="20"
+            Foreground="{StaticResource MainColor}"
+            Text="{DynamicResource Help_ContactToAnoyettaTwitter}" />
+        </StackPanel>
+      </Button>
+
+      <TextBox BorderThickness="0" Margin="30 0 0 0" FontSize="14" IsReadOnly="True" VerticalAlignment="Center">
+        mailto: anoyetta@gmail.com
+      </TextBox>
+    </StackPanel>
+
+    <!--  Log  -->
+    <TextBox
+      x:Name="LogTextBox"
+      Grid.Row="3"
+      Margin="0,20,0,0"
+      AcceptsReturn="True"
+      BorderThickness="0"
+      HorizontalScrollBarVisibility="Auto"
+      IsReadOnly="True"
+      Text="{Binding Log, Mode=OneWay}"
+      TextChanged="LogTextChanged"
+      TextWrapping="NoWrap"
+      VerticalScrollBarVisibility="Visible" />
+  </Grid>
+</UserControl>

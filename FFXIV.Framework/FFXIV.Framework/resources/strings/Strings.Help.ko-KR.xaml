@@ -1,0 +1,22 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+  <!--  Resources Strings in English  -->
+  <system:String x:Key="Help_GotoWiki">Wiki를 본다</system:String>
+  <system:String x:Key="Help_GotoLastestRelease">최신 자료를 확인한다</system:String>
+  <system:String x:Key="Help_GotoIssues">과제 목록을 확인한다</system:String>
+  <system:String x:Key="Help_Update">Update</system:String>
+  <system:String x:Key="Help_UsePreReleaase">Use Pre-Release</system:String>
+
+  <system:String x:Key="Help_ContactToAnoyetta">DISCORD 포럼에 참석한다</system:String>
+  <system:String x:Key="Help_ContactToAnoyettaTwitter">Twitter 로 연락한다</system:String>
+
+  <system:String x:Key="Help_OpenConfig">Config파일을 열기</system:String>
+  <system:String x:Key="Help_ReloadConfig">Config파일을 불러오기</system:String>
+
+  <system:String x:Key="Help_OpenPluginLog">플러그인의 로그를 열기</system:String>
+  <system:String x:Key="Help_OpenACTLog">ACT본체의 로그를 열기</system:String>
+  <system:String x:Key="Help_SaveSupportInfo">지원 정보를 저장한다</system:String>
+</ResourceDictionary>

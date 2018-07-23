@@ -1,0 +1,151 @@
+<UserControl
+  x:Class="FFXIV.Framework.Dialog.Views.FontDialogContent"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+  xmlns:local="clr-namespace:FFXIV.Framework.Dialog.Views"
+  FontFamily="Arial, メイリオ"
+  FontSize="16"
+  SnapsToDevicePixels="True"
+  Background="White"
+  Width="1024"
+  Height="480"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Auto"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <local:StringToDoubleConverter x:Key="S2DConverter" />
+      <local:FontFamilyToNameConverter x:Key="FontFamilyToNameConverter" />
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.Resources>
+      <DataTemplate x:Key="fontFamilyData">
+        <Label
+          Content="{Binding Converter={StaticResource FontFamilyToNameConverter}, Mode=OneWay}"
+          FontFamily="{Binding Source}"
+          FontSize="16.5"
+          Height="26"
+          Margin="0"
+          Padding="0"
+          VerticalAlignment="Center"
+          VerticalContentAlignment="Center" />
+      </DataTemplate>
+
+      <DataTemplate DataType="{x:Type FamilyTypeface}">
+        <WrapPanel>
+          <TextBlock Text="{Binding Style, Mode=OneWay}" />
+          <TextBlock Text="-" />
+          <TextBlock Text="{Binding Weight, Mode=OneWay}" />
+          <TextBlock Text="-" />
+          <TextBlock Text="{Binding Stretch, Mode=OneWay}" />
+        </WrapPanel>
+      </DataTemplate>
+
+      <CollectionViewSource Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" x:Key="familyCollection">
+        <CollectionViewSource.SortDescriptions>
+          <scm:SortDescription PropertyName="Source" Direction="Ascending" />
+        </CollectionViewSource.SortDescriptions>
+      </CollectionViewSource>
+    </Grid.Resources>
+
+    <Grid DataContext="{StaticResource familyCollection}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="320" />
+        <ColumnDefinition Width="270" />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+
+      <Grid Grid.Column="0">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Content="Font Family" Padding="0" Margin="6" FontWeight="ExtraBold" />
+
+        <ListBox 
+          Grid.Row="1"
+          Padding="0" Margin="6"
+          x:Name="FontFamilyListBox"
+          Background="Transparent"
+          ItemsSource="{Binding}"
+          Height="435"
+          ItemTemplate="{StaticResource fontFamilyData}">
+        </ListBox>
+      </Grid>
+            
+      <Grid Grid.Column="1">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0">
+          <Label Content="Font Size" Padding="0" Margin="6" FontWeight="ExtraBold" />
+          <TextBox
+            x:Name="FontSizeTextBox"
+            Text="10.5"
+            Padding="0"
+            Margin="6"
+            TextAlignment="Right"
+            Width="70"
+            FontSize="18"
+            Height="30"
+            HorizontalContentAlignment="Right"
+            VerticalContentAlignment="Center"
+            HorizontalAlignment="Left" />
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+          </Grid.RowDefinitions>
+          <Label Grid.Row="0" Content="Font Style" Padding="0" Margin="6" FontWeight="ExtraBold" />
+          <ListBox 
+            Grid.Row="1"
+            Padding="0" Margin="6"
+            x:Name="FontStyleListBox"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            ItemsSource="{Binding FamilyTypefaces, Mode=OneWay}">
+          </ListBox>
+        </Grid>
+      </Grid>
+
+      <Grid Grid.Column="2">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        
+        <Label
+          Grid.Row="0"
+          Content="Preview" Padding="0" Margin="6" FontWeight="ExtraBold" />
+
+        <TextBox
+          Grid.Row="1"
+          x:Name="PreviewTextBlock"
+          Padding="0" Margin="6"
+          IsTabStop="False"
+          FontSize="{Binding Text, ElementName=FontSizeTextBox}"
+          FontFamily="{Binding Source, Source={StaticResource familyCollection}}"
+          FontWeight="{Binding SelectedItem.Weight, ElementName=FontStyleListBox}"
+          FontStretch="{Binding SelectedItem.Stretch, ElementName=FontStyleListBox}"
+          FontStyle="{Binding SelectedItem.Style, ElementName=FontStyleListBox}"
+          TextAlignment="Center" TextWrapping="Wrap"
+          IsReadOnly="True"
+          Text="0123456789&#10;abcdefghijklmnopqrstuvwxyz&#10;ABCDEFGHIJKLMNOPQRSTUVWXYZ&#10;&#10;あのイーハトーヴォの&#10;すきとおった風、&#10;夏でも底に冷たさをもつ青いそら、&#10;うつくしい森で飾られたモリーオ市、&#10;郊外のぎらぎらひかる草の波。">
+          <TextBox.Foreground>
+            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowTextColorKey}}" />
+          </TextBox.Foreground>
+        </TextBox>
+      </Grid>
+    </Grid>
+  </Grid>
+</UserControl>

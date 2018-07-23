@@ -1,6 +1,3 @@
-[submodule "FFXIV.Framework"]
-	path = FFXIV.Framework
-	url = https://github.com/anoyetta/FFXIV.Framework.git
 [submodule "ACT.TTSYukkuri"]
 	path = ACT.TTSYukkuri
 	url = https://github.com/anoyetta/ACT.TTSYukkuri.git

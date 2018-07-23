@@ -1,0 +1,54 @@
+<UserControl
+  x:Class="FFXIV.Framework.WPF.Controls.RichProgressBar"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:FFXIV.Framework.WPF.Controls"
+  mc:Ignorable="d"
+  d:DesignHeight="10" d:DesignWidth="200">
+
+  <Grid
+    RenderTransformOrigin="0.5 0.5">
+    <Grid.RenderTransform>
+      <RotateTransform
+        x:Name="BaseRotate"
+        Angle="0" />
+    </Grid.RenderTransform>
+    <Rectangle
+      x:Name="BackBar"
+      Fill="Black"
+      RadiusX="2.5" RadiusY="2.5" />
+
+    <Rectangle
+      x:Name="ForeBar"
+      Fill="White"
+      RadiusX="2.5" RadiusY="2.5">
+
+      <Rectangle.Effect>
+        <DropShadowEffect
+          x:Name="BarEffect"
+          Opacity="0.99"
+          Direction="0"
+          ShadowDepth="0"
+          RenderingBias="Performance"
+          BlurRadius="12"
+          Color="{Binding ElementName=ForeBar, Path=Fill.Color, Mode=OneWay}" />
+      </Rectangle.Effect>
+
+      <Rectangle.RenderTransform>
+        <ScaleTransform
+          x:Name="ForeBarScale"
+          ScaleX="0.4" />
+      </Rectangle.RenderTransform>
+    </Rectangle>
+
+    <Rectangle
+      x:Name="StrokeBar"
+      HorizontalAlignment="Left"
+      Stroke="Red"
+      StrokeThickness="1.0"
+      RadiusX="2.0" RadiusY="2.0">
+    </Rectangle>
+  </Grid>
+</UserControl>
