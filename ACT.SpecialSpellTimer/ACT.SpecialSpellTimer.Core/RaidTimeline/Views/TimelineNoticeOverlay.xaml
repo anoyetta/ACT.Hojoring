@@ -1,0 +1,72 @@
+<Window
+  x:Class="ACT.SpecialSpellTimer.RaidTimeline.Views.TimelineNoticeOverlay"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:controls="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.RaidTimeline.Views"
+  xmlns:tl="clr-namespace:ACT.SpecialSpellTimer.RaidTimeline"
+  mc:Ignorable="d"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.EdgeMode="Unspecified"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  Topmost="True"
+  WindowStyle="None"
+  AllowsTransparency="True"
+  ShowInTaskbar="False"
+  ResizeMode="CanResizeWithGrip"
+  Background="#01000000"
+  Left="{Binding Path=Config.NoticeLeft, Mode=TwoWay}"
+  Top="{Binding Path=Config.NoticeTop, Mode=TwoWay}"
+  Width="{Binding Path=Config.NoticeWidth, Mode=TwoWay}"
+  Height="{Binding Path=Config.NoticeHeight, Mode=TwoWay}"
+  d:DataContext="{d:DesignInstance Type=local:TimelineNoticeOverlay}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}"
+  Title="Timeline Notice">
+
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../Resources/Styles/TimelineNoticeOverlayResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Grid Style="{DynamicResource BaseGrid}">
+
+    <!-- 背景用ボーダー-->
+    <Border Style="{DynamicResource BaseBorder}" />
+
+    <!-- コンテンツ用グリッド -->
+    <Grid Style="{DynamicResource ContentsGrid}">
+      <ItemsControl
+        Style="{DynamicResource NoticesControl}"
+        ItemContainerStyle="{DynamicResource NoticeContainer}"
+        ItemsSource="{Binding Path=NoticeList, Mode=OneWay}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate DataType="{x:Type tl:TimelineVisualNoticeModel}">
+            <DockPanel>
+              <!-- アイコン -->
+              <Image Style="{DynamicResource Icon}" />
+
+              <!-- 通知のテキスト -->
+              <controls:LightOutlineTextBlock Style="{DynamicResource NoticeText}" />
+
+              <!-- スタック数 -->
+              <controls:LightOutlineTextBlock Style="{DynamicResource StackText}" />
+
+              <!-- カウンタ -->
+              <controls:LightOutlineTextBlock Style="{DynamicResource DurationText}" />
+            </DockPanel>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </Grid>
+    <!-- コンテンツ用グリッド end -->
+  </Grid>
+</Window>

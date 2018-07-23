@@ -1,0 +1,184 @@
+<UserControl
+  x:Class="ACT.SpecialSpellTimer.Views.SpellControl"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.Views"
+  xmlns:ctrl="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  xmlns:model="clr-namespace:ACT.SpecialSpellTimer.Models"
+  d:DesignHeight="32"
+  d:DesignWidth="300"
+  d:DataContext="{d:DesignInstance Type=model:Spell}"
+  Background="Transparent"
+  RenderOptions.BitmapScalingMode="Fant"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.EdgeMode="Unspecified"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  mc:Ignorable="d">
+
+  <UserControl.Resources>
+    <local:ColorBrightnessConverter x:Key="ColorConv" />
+    <local:BrushBrightnessConverter x:Key="BrushConv" />
+    <local:BarBackgroundConverter x:Key="BarBackConv" />
+  </UserControl.Resources>
+
+  <UserControl.ContextMenu>
+    <ContextMenu>
+      <MenuItem Header="Test" Click="TestMenuItem_Click" />
+    </ContextMenu>
+  </UserControl.ContextMenu>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+
+    <Canvas
+      Name="ProgressBarCanvas"
+      Grid.Row="1"
+      Grid.Column="0"
+      Grid.ColumnSpan="3"
+      Margin="0,2,0,10"
+      VerticalAlignment="Top"
+      Width="{Binding ElementName=BarBackRectangle, Path=Width, Mode=OneWay}"
+      Height="{Binding ElementName=BarBackRectangle, Path=Height, Mode=OneWay}">
+
+      <Rectangle
+        x:Name="BarBackRectangle"
+        RadiusX="2"
+        RadiusY="2"
+        Height="{Binding ElementName=BarRectangle, Path=Height, Mode=OneWay}"
+        Fill="{Binding ElementName=BarRectangle, Path=Fill, Converter={StaticResource BarBackConv}, Mode=OneWay}" />
+
+      <Canvas ClipToBounds="False">
+        <Canvas.Effect>
+          <DropShadowEffect
+            x:Name="BarEffect"
+            BlurRadius="11"
+            RenderingBias="Performance"
+            ShadowDepth="0">
+          </DropShadowEffect>
+        </Canvas.Effect>
+        <Canvas x:Name="BarCanvas">
+          <Canvas.RenderTransform>
+            <ScaleTransform
+              x:Name="BarScale"
+              CenterX="1.0"
+              ScaleX="0.0"
+              ScaleY="1.0" />
+          </Canvas.RenderTransform>
+
+          <Rectangle
+            x:Name="BarRectangle"
+            RadiusX="2"
+            RadiusY="2"
+            Fill="Transparent" />
+        </Canvas>
+      </Canvas>
+
+      <Rectangle
+        x:Name="BarOutlineRectangle"
+        StrokeThickness="1"
+        RadiusX="2"
+        RadiusY="2"
+        Height="{Binding ElementName=BarRectangle, Path=Height, Mode=OneWay}"
+        Width="{Binding ElementName=BarRectangle, Path=Width, Mode=OneWay}" />
+    </Canvas>
+
+    <DockPanel
+      x:Name="SpellIconPanel"
+      Grid.Column="0"
+      Grid.Row="0"
+      Panel.ZIndex="-1"
+      Background="Black">
+      <ctrl:FantImage
+        x:Name="SpellIconImage"
+        RenderOptions.BitmapScalingMode="Fant"
+        RenderOptions.ClearTypeHint="Enabled"
+        RenderOptions.EdgeMode="Unspecified" />
+    </DockPanel>
+
+    <DockPanel
+      Grid.Row="0"
+      Grid.Column="1"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Bottom"
+      Visibility="{Binding ElementName=SpellTitleTextBlock, Path=Visibility, Mode=OneWay}">
+
+      <ctrl:LightOutlineTextBlock
+        x:Name="SpellTitleTextBlock"
+        Padding="2 0 0 0"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Top"
+        Fill="AliceBlue"
+        Stroke="Blue"
+        Text="Sample Spell"
+        TextWrapping="Wrap" />
+    </DockPanel>
+
+    <Viewbox
+      x:Name="RecastTimePanel"
+      RenderOptions.BitmapScalingMode="Fant"
+      RenderOptions.ClearTypeHint="Enabled"
+      RenderOptions.EdgeMode="Unspecified"
+      Grid.Row="0"
+      Grid.Column="2"
+      HorizontalAlignment="{Binding CounterAlignment, Mode=OneWay}"
+      VerticalAlignment="Bottom"
+      Stretch="Uniform"
+      StretchDirection="DownOnly">
+
+      <ctrl:LightOutlineTextBlock
+        x:Name="RecastTimeTextBlock"
+        RenderOptions.BitmapScalingMode="Fant"
+        RenderOptions.ClearTypeHint="Enabled"
+        RenderOptions.EdgeMode="Unspecified"
+        Margin="0,0,3,0"
+        HorizontalAlignment="{Binding CounterAlignment, Mode=OneWay}"
+        VerticalAlignment="Top"
+        Fill="AliceBlue"
+        Stroke="Blue"
+        Text="3.0"
+        TextAlignment="Right"
+        TextWrapping="NoWrap" />
+    </Viewbox>
+
+    <Viewbox
+      x:Name="RecastTimePanelOnIcon"
+      Visibility="Collapsed"
+      Grid.Row="0"
+      Grid.Column="0"
+      Height="{Binding ElementName=SpellIconImage, Path=Height, Mode=OneWay}"
+      Width="{Binding ElementName=SpellIconImage, Path=Width, Mode=OneWay}"
+      RenderOptions.BitmapScalingMode="Fant"
+      RenderOptions.ClearTypeHint="Enabled"
+      RenderOptions.EdgeMode="Unspecified"
+      Stretch="Uniform"
+      StretchDirection="DownOnly">
+
+      <ctrl:LightOutlineTextBlock
+        RenderOptions.BitmapScalingMode="Fant"
+        RenderOptions.ClearTypeHint="Enabled"
+        RenderOptions.EdgeMode="Unspecified"
+        Margin="5 0 5 0"
+        Opacity="0.99"
+        Fill="{Binding ElementName=RecastTimeTextBlock, Path=Fill, Mode=OneWay}"
+        Stroke="{Binding ElementName=RecastTimeTextBlock, Path=Stroke, Mode=OneWay}"
+        Text="{Binding ElementName=RecastTimeTextBlock, Path=Text, Mode=OneWay}"
+        FontFamily="{Binding ElementName=RecastTimeTextBlock, Path=FontFamily, Mode=OneWay}"
+        FontSize="{Binding ElementName=RecastTimeTextBlock, Path=FontSize, Mode=OneWay}"
+        FontStyle="{Binding ElementName=RecastTimeTextBlock, Path=FontStyle, Mode=OneWay}"
+        FontWeight="{Binding ElementName=RecastTimeTextBlock, Path=FontWeight, Mode=OneWay}"
+        FontStretch="{Binding ElementName=RecastTimeTextBlock, Path=FontStretch, Mode=OneWay}" />
+    </Viewbox>
+  </Grid>
+</UserControl>

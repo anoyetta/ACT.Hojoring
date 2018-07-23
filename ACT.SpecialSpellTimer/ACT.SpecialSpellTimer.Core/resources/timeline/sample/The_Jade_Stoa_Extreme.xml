@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<timeline>
+  <name>極白虎征魂戦</name>
+  <rev>rev1</rev>
+  <description>
+  </description>
+  <zone>The Jade Stoa (Extreme)</zone>
+  <locale>JA</locale>
+  <entry>PHASE1</entry>
+  <start>オオオオオ……この衝動、もはや止められん！</start>
+
+  <s name="PHASE1">
+    <a time="006" text="風雷波動" sync="白虎は「風雷波動」を唱えた。" notice="次は、波動。" icon="AllRangeAttack.png" />
+    <a time="012" text="天雷掌" sync="白虎は「天雷掌」の構え。" notice="次は、てんらいしょう。" icon="HardAttack.png" />
+    <a time="022" text="呪縛雷" sync="白虎は「呪縛雷」の構え。" icon="DamageShare.png" />
+    <a time="054" sync="吹けよ、荒れよ、我がアラミタマ！" />
+    <a time="055" text="無間地獄" sync="白虎は「無間地獄」の構え。" />
+    <a time="060" text="風雷波動" sync="白虎は「風雷波動」を唱えた。" notice="次は、波動。" icon="AllRangeAttack.png" />
+    <a time="067" text="祟り風" sync="白虎の「祟り風」" />
+    <a time="072" text="雷火一閃" sync="白虎は「雷火一閃」を唱えた。" />
+
+    <t sync="駆けろ、我が半身ッ！ 歯向かう者どもに、牙と爪を突き立ててやれ！" goto="PHASE2" />
+  </s>
+
+  <s name="PHASE2">
+    <a time="002" text="半獣舞踏" sync="白虎の「半獣舞踏」" />
+    <a time="012" text="風雷波動" sync="白虎は「風雷波動」を唱えた。" notice="次は、波動。" icon="AllRangeAttack.png" />
+    <a time="017" text="鉄爪斬" sync="白帝の「鉄爪斬」" notice="次は、てっそうざん。" icon="Attack.png" />
+    <a time="022" text="天雷掌" sync="白虎は「天雷掌」の構え。" notice="次は、てんらいしょう。" icon="HardAttack.png" />
+    <a time="023" text="鉄爪斬" sync="白帝の「鉄爪斬」" notice="次は、てっそうざん。" icon="Attack.png" />
+    <a time="033" text="遠雷" sync="白虎は「遠雷」を唱えた。" />
+    <a time="036" text="白帝衝" sync="白帝の「白帝衝」" />
+    <a time="037" text="雷火一閃" sync="白帝は「雷火一閃」を唱えた。" />
+    <a time="042" text="風雷波動" sync="白虎は「風雷波動」を唱えた。" notice="次は、波動。" icon="AllRangeAttack.png" />
+    <a time="052" sync="白帝は「雷轟」の構え。" />
+    <a time="073" text="雷轟" sync="白帝の「雷轟」" icon="HardAllRangeAttack.png" />
+
+    <a time="075" sync="震天動地の力を、見せてやろうッ！" />
+    <a time="080" sync="これぞ、アラミタマよ！" />
+    <a time="100" sync="我が憤怒は、無間の矢の如く……逃れてみせよ！" />
+
+    <a time="150" text="落下中..." />
+
+    <a time="152" sync="さあ、余興は終いぞ！" />
+    <a time="172" sync="塵芥と消えるがよい！" />
+
+    <a time="180" text="究極履行.." />
+
+    <t sync="ほう……凌いで見せたか…… ならば、全力を以て応えよう！" goto="PHASE3-1" />
+  </s>
+
+  <s name="PHASE3-1">
+    <a time="010" text="天雷掌" sync="白虎は「天雷掌」の構え。" notice="次は、てんらいしょう。" icon="HardAttack.png" />
+    <a time="020" sync="天つ雷よ、焼き払え！" />
+    <a time="021" text="天つ雷" sync="白虎の「天つ雷」" />
+    <a time="022" text="呪縛雷x2" icon="DamageShare.png" />
+    <a time="039" text="旋体脚" sync="白虎は「旋体脚」の構え。" notice="次は、せんたいきゃく。" />
+    <a time="060" sync="吹けよ、荒れよ、我がアラミタマ！" />
+    <a time="062" text="無間地獄" sync="白虎は「無間地獄」の構え。" />
+    <a time="067" text="風雷波動" notice="次は、波動。" icon="AllRangeAttack.png" />
+    <a time="075" sync="天つ風よ、吹き荒べ！" />
+    <a time="076" text="爆弾低気圧" sync="白虎の「爆弾低気圧」" />
+    <a time="082" text="祟り風" sync="白虎の「祟り風」" />
+    <a time="086" text="雷火一閃" sync="白虎は「雷火一閃」を唱えた。" />
+    <a time="095" text="雷火一閃" sync="白虎は「雷火一閃」を唱えた。" />
+
+    <t sync="駆けろ、我が半身ッ！ 歯向かう者どもに、牙と爪を突き立ててやれ！" goto="PAHSE3-2" />
+  </s>
+
+  <s name="PAHSE3-2">
+    <a time="002" text="半獣舞踏" sync="白虎の「半獣舞踏」" />
+    <a time="017" text="遠雷" sync="白虎は「遠雷」を唱えた。" />
+    <a time="020" text="白帝衝" sync="白帝の「白帝衝」" />
+    <a time="022" text="雷火一閃" />
+    <a time="023" text="遠雷" sync="白虎は「遠雷」を唱えた。" />
+    <a time="027" text="雷火一閃" />
+    <a time="038" text="天雷掌" sync="白虎は「天雷掌」の構え。" notice="次は、てんらいしょう。" icon="HardAttack.png" />
+    <a time="042" text="鉄爪斬" sync="白帝の「鉄爪斬」" icon="Attack.png" />
+    <a time="058" text="風雷波動" notice="次は、波動。" icon="AllRangeAttack.png" />
+
+    <a time="052" sync="白帝は「雷轟」の構え。" />
+    <t time="072" sync="さあ、余興は終いぞ！" goto="FINAL" />
+    <a time="073" text="雷轟" sync="白帝の「雷轟」" icon="HardAllRangeAttack.png" />
+  </s>
+
+  <s name="FINAL">
+    <a time="009" text="雷火一閃" sync="白虎は「雷火一閃」を唱えた。"/>
+    <a time="024" text="風雷波動" notice="次は、波動。" icon="AllRangeAttack.png" />
+    <a time="038" sync="天つ風よ、吹き荒べ！" />
+    <a time="039" text="爆弾低気圧" sync="白虎の「爆弾低気圧」"/>
+    <a time="041" text="天つ雷" sync="白虎の「天つ雷」"/>
+    <a time="042" sync="天つ雷よ、焼き払え！" />
+
+    <a time="045" text="呪縛雷x2" icon="DamageShare.png" />
+    <a time="069" text="旋体脚" sync="白虎は「旋体脚」の構え。" notice="次は、せんたいきゃく。" />
+    <a time="083" text="天雷掌" sync="白虎は「天雷掌」の構え。" notice="次は、てんらいしょう。" icon="HardAttack.png" />
+    <a time="093" text="風雷波動" notice="次は、波動。" icon="AllRangeAttack.png" />
+    <a time="105" text="遠雷" sync="白虎は「遠雷」を唱えた。"/>
+    <a time="112" text="天雷掌" sync="白虎は「天雷掌」の構え。" notice="次は、てんらいしょう。" icon="HardAttack.png" />
+
+    <a time="124" sync="吹けよ、荒れよ、我がアラミタマ！" />
+    <a time="130" text="無間地獄" sync="白虎は「無間地獄」の構え。"/>
+    <a time="131" text="風雷波動" notice="次は、波動。" icon="AllRangeAttack.png" />
+    <a time="139" sync="天つ風よ、吹き荒べ！" />
+    <a time="140" text="爆弾低気圧" sync="白虎の「爆弾低気圧」"/>
+    <a time="146" text="祟り風" sync="白虎の「祟り風」"/>
+    <a time="151" text="雷火一閃" />
+    <a time="155" text="雷火一閃" />
+    <a time="175" text="風雷波動" notice="次は、波動。" icon="AllRangeAttack.png" />
+
+    <a time="183" sync="この力……やはり、本物か！？" />
+    <a time="187" sync="天つ雷よ、焼き払え！" />
+    <a time="188" text="天つ雷" sync="白虎の「天つ雷」"/>
+    <a time="194" text="呪縛雷x2" icon="DamageShare.png" />
+    <a time="213" text="旋体脚" sync="白虎は「旋体脚」の構え。" notice="次は、せんたいきゃく。" />
+
+    <a time="228" sync="塵芥と消えるがよい！" />
+    <a time="228" text="風雷波動x2" notice="次は、波動。" icon="HardAllRangeAttack.png" />
+
+    <a time="234" sync="この力……やはり、本物か！？" />
+    <a time="234" text="風雷波動x2" notice="次は、波動。" icon="HardAllRangeAttack.png" />
+
+    <a time="237" sync="これぞ、アラミタマよ！" />
+    <a time="244" text="風雷波動(WIPE)"  notice="次は、時間切れ。" icon="Wipeout.png" />
+  </s>
+</timeline>

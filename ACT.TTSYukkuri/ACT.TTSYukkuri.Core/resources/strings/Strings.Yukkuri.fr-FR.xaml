@@ -1,0 +1,121 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+  <!-- Resources Strings in English -->
+  <system:String x:Key="UILanguage">UI Language (* requires restart)</system:String>
+  <system:String x:Key="FFXIVLanguage">FFXIV Language (* requires restart)</system:String>
+
+  <system:String x:Key="General_TTSType">TTS Type</system:String>
+  <system:String x:Key="General_SyncPlayback">Force Sync Playback</system:String>
+  <system:String x:Key="General_SyncPlaybackDesc">All sounds are played back synchronously. Override SPESPE etc settings.</system:String>
+  <system:String x:Key="General_ClearCache">Clear tts cache on exit.</system:String>
+  <system:String x:Key="General_OpenCacheDirectory">Open cache directory</system:String>
+  <system:String x:Key="General_ClearCacheNow">Clear tts cache right now</system:String>
+  <system:String x:Key="General_WaveVolume">Master Vol.</system:String>
+  <system:String x:Key="General_Test">Preview</system:String>
+  <system:String x:Key="General_TestTTS">It's fine today.</system:String>
+  <system:String x:Key="General_PlayMethod">Playback Method</system:String>
+  <system:String x:Key="General_MainPlayDevice">Main Playback Device</system:String>
+  <system:String x:Key="General_SubPlayDevice">Sub Playback Device</system:String>
+  <system:String x:Key="General_EnabledSubPlayDevice">Use Sub Playback Device</system:String>
+
+  <system:String x:Key="Yukkuri_Preset">Preset</system:String>
+  <system:String x:Key="Yukkuri_BaseVoice">Base Voice</system:String>
+  <system:String x:Key="Yukkuri_Speed">Speed</system:String>
+  <system:String x:Key="Yukkuri_Volume">Volume</system:String>
+  <system:String x:Key="Yukkuri_Pitch">Pitch</system:String>
+  <system:String x:Key="Yukkuri_Accent">Accent</system:String>
+  <system:String x:Key="Yukkuri_LMD">LMD</system:String>
+  <system:String x:Key="Yukkuri_FSC">FSC</system:String>
+  <system:String x:Key="Yukkuri_KanjiTranslation">KANJI Translation</system:String>
+  <system:String x:Key="Yukkuri_KanjiTranslationIME">Use IME</system:String>
+  <system:String x:Key="Yukkuri_KanjiTranslationKanji2Koe">Use AqKanji2Koe</system:String>
+  <system:String x:Key="Yukkuri_Discription" xml:space="preserve">
+This software uses AquesTalk provided by AQUEST Corporation. AQUEST Corporation all rights reserved to AquesTalk.
+For use for commercial purposes, a license to use the library is required.</system:String>
+  <system:String x:Key="Yukkuri_YukkuriVer">AquesTalk10 Win Ver.1.0</system:String>
+  <system:String x:Key="Yukkuri_Kanji2KoeVer">AqKanji2Koe Win Ver.2.0</system:String>
+  <system:String x:Key="Yukkuri_Reference">AquesTalk Voice Text Reference</system:String>
+  <system:String x:Key="Yukkuri_EditDictionary">Edit User dictionary</system:String>
+
+  <system:String x:Key="Sasara_Cast">Cast</system:String>
+  <system:String x:Key="Sasara_Emotions">Emotions</system:String>
+  <system:String x:Key="Sasara_General">General</system:String>
+  <system:String x:Key="Sasara_Gain">Gain</system:String>
+  <system:String x:Key="Sasara_Onryo">Volume</system:String>
+  <system:String x:Key="Sasara_Hayasa">Speed</system:String>
+  <system:String x:Key="Sasara_Takasa">Pitch</system:String>
+  <system:String x:Key="Sasara_Seishitsu">Alpha</system:String>
+  <system:String x:Key="Sasara_Yokuyo">Tone Scale</system:String>
+
+  <system:String x:Key="OJT_Voices">Voice</system:String>
+  <system:String x:Key="OJT_Gain">Gain</system:String>
+  <system:String x:Key="OJT_Volume">-g Volume (dB)</system:String>
+  <system:String x:Key="OJT_AllPass">-a Tone</system:String>
+  <system:String x:Key="OJT_PostFilter">-b Postfiltering coefficient</system:String>
+  <system:String x:Key="OJT_Rate">-r Speed rate</system:String>
+  <system:String x:Key="OJT_HalfTone">-fm Addtional half-tone (pitch)</system:String>
+  <system:String x:Key="OJT_UnVoice">-u Voiced/Unvoiced threshold</system:String>
+  <system:String x:Key="OJT_Accent">-jm Weight</system:String>
+  <system:String x:Key="OJT_Weight">-jf Intonation</system:String>
+  <system:String x:Key="OJT_SetRecommend">Set recommended values</system:String>
+
+  <system:String x:Key="Hoya_APIKey">API Key</system:String>
+  <system:String x:Key="Hoya_Speaker">Speaker</system:String>
+  <system:String x:Key="Hoya_Emotion">Emotion</system:String>
+  <system:String x:Key="Hoya_EmotionLevel">Emotion Level</system:String>
+  <system:String x:Key="Hoya_Volume">Volume</system:String>
+  <system:String x:Key="Hoya_Speed">Speed</system:String>
+  <system:String x:Key="Hoya_Pitch">Pitch</system:String>
+  <system:String x:Key="Hoya_Discription1">
+    You use the speech synthesis web service provided by HOYA Corporation.
+  </system:String>
+  <system:String x:Key="Hoya_DiscriptionRegister">Register for free use</system:String>
+  <system:String x:Key="Hoya_Discription2">
+    ,After API key will be issued. Please set the API key and use it.
+  </system:String>
+
+  <system:String x:Key="Boyomi_Server">Boyomichan Host</system:String>
+  <system:String x:Key="Boyomi_Port">Boyomichan Port</system:String>
+  <system:String x:Key="Boyomi_PortDefault">*default 50001</system:String>
+
+  <system:String x:Key="Voiceroid_ExitVoiceroid">Shutdown VOICEROID at the end of ACT</system:String>
+  <system:String x:Key="Voiceroid_DirectSpeak">Voice directly without generating WAVE</system:String>
+
+  <system:String x:Key="SAPI5_Voices">Voice</system:String>
+  <system:String x:Key="SAPI5_Volume">Volume</system:String>
+  <system:String x:Key="SAPI5_Rate">Rate</system:String>
+  <system:String x:Key="SAPI5_Pitch">Pitch</system:String>
+
+  <system:String x:Key="Polly_Region">Region</system:String>
+  <system:String x:Key="Polly_AccessKey">Access Key</system:String>
+  <system:String x:Key="Polly_SecretKey">Secret Key</system:String>
+
+  <system:String x:Key="SA_Enabled">Alert Enabled</system:String>
+  <system:String x:Key="SA_Threshold">Alert Threshold</system:String>
+  <system:String x:Key="SA_TTSFormat">Text to Alert</system:String>
+  <system:String x:Key="SA_AlertTarget">Alert Targets</system:String>
+
+  <system:String x:Key="SA_Discription" xml:space="preserve">
+* Reference for Text to Alert
+&lt;pcname&gt;  Job + PC's initial
+&lt;hp&gt;      HP value
+&lt;hpp&gt;     HP rate (%)
+&lt;mp&gt;      MP value
+&lt;mpp&gt;     MP rate (%)
+&lt;tp&gt;      TP value
+&lt;tpp&gt;     TP rate (%)
+
+* Example
+&lt;pcname&gt;,HP&lt;hpp&gt;.
+→ Monk D,HP40%.
+
+&lt;pcname&gt;,MP&lt;mpp&gt;.
+→ White Mage T,MP30%.
+
+&lt;pcname&gt;,TP&lt;tpp&gt;.
+→ Ninja P,TP20%.
+  </system:String>
+</ResourceDictionary>

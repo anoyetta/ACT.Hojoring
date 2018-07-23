@@ -1,0 +1,321 @@
+<UserControl
+  x:Class="ACT.SpecialSpellTimer.Config.Views.TimelineAnalyzerView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.Config.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:resources="clr-namespace:ACT.SpecialSpellTimer.resources"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:vm="clr-namespace:ACT.SpecialSpellTimer.Config.ViewModels"
+  d:DataContext="{d:DesignInstance Type=local:TimelineAnalyzerView}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}"
+  d:DesignWidth="1280"
+  Background="White"
+  FontFamily="{DynamicResource UIFont}"
+  FontSize="{DynamicResource UIFontSize}"
+  FontWeight="{DynamicResource UIFontWeight}"
+  FontStyle="{DynamicResource UIFontStyle}"
+  FontStretch="{DynamicResource UIFontStretch}"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.EdgeMode="Unspecified"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  IsTabStop="False"
+  Focusable="False"
+  mc:Ignorable="d">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <Style TargetType="Label">
+        <Setter Property="Padding" Value="0" />
+      </Style>
+
+      <Style TargetType="CheckBox">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+      </Style>
+
+      <Style TargetType="TextBox">
+        <EventSetter Event="MouseDoubleClick" Handler="TextBoxOnGotFocus" />
+        <EventSetter Event="GotKeyboardFocus" Handler="TextBoxOnGotFocus" />
+        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="TextBoxSelect" />
+        <Style.Triggers>
+          <Trigger Property="IsReadOnly" Value="True">
+            <Setter Property="Foreground" Value="Silver" />
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+
+      <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
+
+      <fwcnv:BoolToCollapsedConverter x:Key="CollapsedConverter" />
+      <fwcnv:BoolToCollapsedNegativeConverter x:Key="CollapsedNegativeConverter" />
+      <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../resources/strings/Strings.SpeSpe.ja-JP.xaml" />
+        <wpf:DesignTimeResourceDictionary Source="../../resources/styles/ConfigViewResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid Margin="8">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <!-- Cofig Area -->
+    <StackPanel Grid.Row="0">
+      <CheckBox Margin="0 8 0 0" Content="{DynamicResource Timeline_AutoCombatAnalyze}" IsChecked="{Binding Path=RootConfig.AutoCombatLogAnalyze, Mode=TwoWay}" Checked="AutoCombatLogAnalyze_Checked" Unchecked="AutoCombatLogAnalyzex_Unchecked" />
+      <CheckBox Margin="0 8 0 0" Content="{DynamicResource Timeline_AutoCombatSave}" IsChecked="{Binding Path=RootConfig.AutoCombatLogSave, Mode=TwoWay}" />
+
+      <StackPanel Visibility="{Binding Path=RootConfig.AutoCombatLogSave, Mode=OneWay, Converter={StaticResource CollapsedConverter}}">
+        <Label Margin="0 8 0 0" Content="{DynamicResource Timeline_AutoCombatSaveDirectory}" />
+        <TextBox Margin="0 3 0 0" Width="450" Text="{Binding Path=RootConfig.CombatLogSaveDirectory, Mode=TwoWay}" HorizontalAlignment="Left" />
+
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Margin="0 5 0 0" HorizontalAlignment="Left">
+            <Hyperlink Command="{Binding BrowseLogDirectoryCommand}">
+              <TextBlock Text="{DynamicResource Options_Browse}" />
+            </Hyperlink>
+          </TextBlock>
+
+          <TextBlock Margin="15 5 0 0" HorizontalAlignment="Left">
+            <Hyperlink Command="{Binding OpenLogCommand}">
+              <TextBlock Text="Open" />
+            </Hyperlink>
+          </TextBlock>
+        </StackPanel>
+      </StackPanel>
+    </StackPanel>
+    <!-- Cofig Area end -->
+
+    <!-- Combat Log Area -->
+    <Label Margin="0 20 0 0" Grid.Row="1" Content="{Binding Zone, Mode=OneWay}" ContentStringFormat="{}ZONE: {0}" />
+
+    <DataGrid
+      x:Name="CombatLogDataGrid"
+      Grid.Row="1"
+      Margin="0 50 0 0"
+      BorderThickness="0"
+      AutoGenerateColumns="False"
+      IsReadOnly="True"
+      Background="Transparent"
+      HorizontalGridLinesBrush="Transparent"
+      VerticalGridLinesBrush="Transparent"
+      HorizontalAlignment="Stretch"
+      HeadersVisibility="All"
+      Focusable="False"
+      VirtualizingPanel.IsVirtualizing="True"
+      VirtualizingPanel.VirtualizationMode="Recycling"
+      ClipboardCopyMode="ExcludeHeader"
+      ItemsSource="{Binding Path=CombatLogs, Mode=OneWay}">
+
+      <DataGrid.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="{DynamicResource Timeline_ThisIsOrigin}"  Command="{Binding SetOriginCommand, Mode=OneWay}" />
+          <MenuItem Header="{DynamicResource Timeline_TotalSecoundsFormat}" IsCheckable="true" IsChecked="{Binding Path=RootConfig.TimelineTotalSecoundsFormat, Mode=TwoWay}" Command="{Binding ChangeSecondsFormatCommand, Mode=OneWay}" />
+          <Separator />
+          <MenuItem Header="{DynamicResource Common_Copy}" InputGestureText="Ctrl+C" Command="{Binding Path=CopyCommand, Mode=OneWay}" />
+        </ContextMenu>
+      </DataGrid.ContextMenu>
+
+      <DataGrid.CellStyle>
+        <Style TargetType="DataGridCell">
+          <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+          <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter Property="Background" Value="Transparent" />
+              <Setter Property="Foreground" Value="Black" />
+              <Setter Property="BorderThickness" Value="0" />
+            </Trigger>
+            <Trigger Property="IsFocused" Value="True">
+              <Setter Property="BorderThickness" Value="1 1 1 1" />
+              <Setter Property="BorderBrush" Value="Chocolate" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </DataGrid.CellStyle>
+
+      <DataGrid.RowStyle>
+        <Style TargetType="DataGridRow">
+          <Setter Property="Foreground" Value="{Binding Foreground, Mode=OneWay}" />
+          <Setter Property="FontWeight" Value="{Binding FontWeight, Mode=OneWay}" />
+
+          <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter Property="Background" Value="AntiqueWhite" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </DataGrid.RowStyle>
+
+      <DataGrid.RowHeaderStyle>
+        <Style TargetType="DataGridRowHeader">
+          <Setter Property="Width" Value="14" />
+        </Style>
+      </DataGrid.RowHeaderStyle>
+
+      <DataGrid.Columns>
+        <DataGridTemplateColumn
+          IsReadOnly="True"
+          SortMemberPath="No"
+          Header="No"
+          ClipboardContentBinding="{Binding No, Mode=OneWay}"
+          MinWidth="10">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <TextBlock
+                Padding="5 0 10 0"
+                TextAlignment="Right"
+                Text="{Binding No, StringFormat=N0, Mode=OneWay}" />
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+        <DataGridTemplateColumn
+          IsReadOnly="True"
+          SortMemberPath="TimeStampElapted"
+          Header="Time"
+          ClipboardContentBinding="{Binding TimeStampElapted, Mode=OneWay}"
+          Width="76">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock Padding="5 0 0 0" Text="*" Visibility="{Binding IsOrigin, Converter={StaticResource HiddenConverter}, Mode=OneWay}" />
+                <TextBlock
+                  Padding="3 0 10 0"
+                  TextAlignment="Right"
+                  Text="{Binding TimeStampElaptedString, Mode=OneWay}" />
+              </StackPanel>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+        <DataGridTemplateColumn
+          IsReadOnly="True"
+          Header="Activity Type"
+          ClipboardContentBinding="{Binding LogTypeName, Mode=OneWay}"
+          MinWidth="130">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <Grid>
+                <Border Margin="1.1 0 -5 0" BorderThickness="0 0 0 1" BorderBrush="{Binding BackgroundLine, Mode=OneWay}">
+                  <Label />
+                </Border>
+                <StackPanel Orientation="Horizontal">
+                  <Rectangle
+                    Margin="1 0 0 -0.3"
+                    Width="10"
+                    RadiusX="2"
+                    RadiusY="2"
+                    Fill="{Binding Background, Mode=OneWay}" />
+                  <TextBlock
+                    Padding="3 0 0 0"
+                    Text="{Binding LogTypeName, Mode=OneWay}" />
+                </StackPanel>
+              </Grid>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+        <DataGridTemplateColumn
+          IsReadOnly="True"
+          SortMemberPath="Actor"
+          Header="Actor"
+          ClipboardContentBinding="{Binding Actor, Mode=OneWay}"
+          MinWidth="130">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <Border Margin="0 0 -5 0" BorderThickness="0 0 0 1" BorderBrush="{Binding BackgroundLine, Mode=OneWay}">
+                <TextBlock
+                  Padding="5 0 20 0"
+                  Text="{Binding Actor, Mode=OneWay}" />
+              </Border>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+        <DataGridTemplateColumn
+          IsReadOnly="True"
+          Header="HP"
+          ClipboardContentBinding="{Binding HPRate, Mode=OneWay}"
+          MinWidth="60">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <Border Margin="0 0 -5 0" BorderThickness="0 0 0 1" BorderBrush="{Binding BackgroundLine, Mode=OneWay}">
+                <TextBlock
+                  Padding="5 0 10 0"
+                  Text="{Binding HPRateText, Mode=OneWay}"
+                  TextAlignment="Right" />
+              </Border>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+        <DataGridTemplateColumn
+          IsReadOnly="True"
+          Header="Activity"
+          ClipboardContentBinding="{Binding Activity, Mode=OneWay}"
+          MinWidth="300">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <Border Margin="0 0 -5 0" BorderThickness="0 0 0 1" BorderBrush="{Binding BackgroundLine, Mode=OneWay}">
+                <TextBlock
+                  Padding="5 0 20 0"
+                  Text="{Binding Activity, Mode=OneWay}" />
+              </Border>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+        <DataGridTemplateColumn
+          IsReadOnly="True"
+          Header="Log"
+          MinWidth="200"
+          ClipboardContentBinding="{Binding RawWithoutTimestamp, Mode=OneWay}"
+          Width="*">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <Border BorderThickness="0 0 0 1" BorderBrush="{Binding BackgroundLine, Mode=OneWay}">
+                <TextBlock
+                  Padding="5 0 0 0"
+                  Text="{Binding RawWithoutTimestamp, Mode=OneWay}"
+                  TextWrapping="Wrap" />
+              </Border>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+      </DataGrid.Columns>
+    </DataGrid>
+    <!-- Combat Log Area end -->
+
+    <!-- Button Area -->
+    <Grid Grid.Row="2" Margin="0 10 0 2">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+
+      <DockPanel Grid.Column="0">
+        <Button DockPanel.Dock="Left" Content="{DynamicResource Timeline_ImportCombatLog}" HorizontalAlignment="Left" BorderThickness="0" Background="Transparent" Command="{Binding ImportCombatLogCommand, Mode=OneWay}" Padding="2" />
+      </DockPanel>
+
+      <DockPanel Grid.Column="1">
+        <Button DockPanel.Dock="Right" Content="{DynamicResource Timeline_SaveToSpreadsheet}" HorizontalAlignment="Right" BorderThickness="0" Background="Transparent" Command="{Binding SaveToSpreadsheetCommand, Mode=OneWay}" Padding="2" Margin="15 0 0 0" />
+        <Button DockPanel.Dock="Right" Content="{DynamicResource Timeline_SaveToDraftTimeline}" HorizontalAlignment="Right" BorderThickness="0" Background="Transparent" Command="{Binding SaveDraftTimelineCommand, Mode=OneWay}" Padding="2" Margin="15 0 0 0" />
+        <Button DockPanel.Dock="Right" Content="{DynamicResource Timeline_SaveToTestLog}" HorizontalAlignment="Right" BorderThickness="0" Background="Transparent" Command="{Binding SaveTestLogCommand, Mode=OneWay}" Padding="2" Margin="15 0 0 0" />
+      </DockPanel>
+    </Grid>
+    <!-- Button Area end -->
+  </Grid>
+</UserControl>

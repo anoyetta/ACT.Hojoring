@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<timeline>
+  <name>次元の狭間オメガ零式：シグマ編1</name>
+  <rev>rev3</rev>
+  <description>
+    シグマ1層向けのタイムラインです。
+    既存のタイムラインをスペスペたいむに変換するとこのような感じになると思います。
+
+    designed by Hojoring Forum
+    https://discord.gg/n6Mut3F
+  </description>
+  <zone>Sigmascape V1.0 (Savage)</zone>
+  <locale>JA</locale>
+  <entry>前半フェーズ</entry>
+  <start>0039:戦闘開始！</start>
+
+  <default target-element="Activity" target-attr="notice-d" value="Both" />
+  <default target-element="Activity" target-attr="notice-o" value="-5" />
+
+  <!-- 重要なアクティビティを通知するトリガ begin -->
+  <t text="魔霊撃\n ➜ ${_pc}" sync="starts using 魔霊撃 on [pc]" notice="まれーげき">
+    <v-notice 
+      duration="4" 
+      icon="HardAttack.png" />
+  </t>
+
+  <t text="念力" sync="未練のゴーストは「念力」の構え。" notice="念力">
+    <v-notice
+      duration="4"
+      icon="KnockBack.png" />
+  </t>
+  
+  <t text="自分にマーカー" sync="1B:.{8}:[mex]:" notice="自分にマーカー">
+    <v-notice 
+      duration="5" 
+      duration-visible="false"
+      icon="Marker.png" />
+  </t>
+  
+  <t text="マーカー\n ➜ ${_nex}" sync="1B:.{8}:[nex]:">
+    <v-notice 
+      duration="5" 
+      duration-visible="false"
+      style="NOTICE_NORMAL"
+      icon="Marker.png" />
+  </t>
+  
+  <t text="自分にマーキング" sync="[mex]に「マーキング」の効果。" notice="自分にマーキング">
+    <v-notice 
+      duration="5" 
+      duration-visible="false" 
+      icon="Marker.png" />
+  </t>
+
+  <t text="マーキング\n ➜ ${_nex}" sync="[nex]に「マーキング」の効果。">
+    <v-notice 
+      duration="5" 
+      duration-visible="false" 
+      style="NOTICE_NORMAL" 
+      icon="Marker.png" />
+  </t>
+  <!-- 重要なアクティビティを通知するトリガ end -->
+
+  <s name="前半フェーズ">
+    <a time="12"  text="固定ゴーストポップ" />
+    <a time="28"  text="セイントビーム" sync="魔列車の「セイントビーム」" icon="Marker.png" />
+    <a time="30"  text="魔界の汽笛(飛)" sync="魔列車は「魔界の汽笛」の構え。"   notice="ノックバックゴースト" icon="KnockBack.png" />
+    <a time="37"  text="念力"           sync="未練のゴーストは「念力」の構え。" icon="KnockBack.png" />
+    <a time="47"  text="魔霊撃"         sync="魔列車は「魔霊撃」の構え。"       notice="次は、まれーげき" icon="HardAttack.png" />
+    <a time="56"  text="追突"           sync="魔列車は「追突」の構え。"         notice="次は、追突。" icon="KnockBack.png" />
+    <a time="67"  text="酸性雨"         sync="魔列車は「酸性雨」の構え。"       notice="次は、酸性雨。" icon="AllRangeAttack.png" />
+    <a time="78"  text="魔界の汽笛(横)" sync="魔列車は「魔界の汽笛」の構え。"   notice="横からゴースト" icon="Attention.png" />
+    <a time="99"  text="魔界の前照灯"   sync="魔列車は「魔界の前照灯」の構え。" notice="次は、ビーム。" icon="DamageShare.png" />
+    <a time="114" text="魔界の汽笛(追)" sync="魔列車は「魔界の汽笛」の構え。"   notice="追跡ゴースト" icon="StackAOE.png" />
+    <a time="134" text="セイントビーム" sync="魔列車の「セイントビーム」" icon="Marker.png" />
+    <a time="140" text="魔界の光(MT+1)" sync="に「マーキング」の効果。"         notice="スイッチ" icon="Marker.png" />
+    <a time="147" text="魔霊撃"         sync="魔列車は「魔霊撃」の構え。"       notice="次は、まれーげき。" icon="HardAttack.png" />
+    <a time="154" text="酸性雨"         sync="魔列車は「酸性雨」の構え。"       notice="次は、酸性雨。" goto="後半待機フェーズ" icon="AllRangeAttack.png" />
+  </s>
+
+  <s name="後半待機フェーズ">
+    <a time="100" text="後半まで待機1" />
+    <a time="200" text="後半まで待機2" />
+    <a time="300" text="後半まで待機3" />
+    <a time="400" text="後半まで待機4" />
+    <t sync="魔列車は「魔界の前照灯」の構え。" goto="後半フェーズ" />
+  </s>
+
+  <s name="後半フェーズ">
+    <a time="000" text="魔界の光(ヒラ)" sync="に「マーキング」の効果。" icon="Marker.png" />
+    <a time="018" text="魔霊撃" sync="魔列車は「魔霊撃」の構え。" notice="次は、まれーげき。" icon="HardAttack.png" />
+    <a time="030" text="魔界の汽笛(追)" sync="魔列車は「魔界の汽笛」の構え。" notice="追跡ゴースト" icon="StackAOE.png" />
+    <a time="047" text="セイントビーム" sync="魔列車の「セイントビーム」" icon="Marker.png" />
+    <a time="053" text="魔界の汽笛(飛)" sync="魔列車は「魔界の汽笛」の構え。" notice="ノックバックゴースト" icon="KnockBack.png" />
+    <a time="060" text="念力" sync="未練のゴーストは「念力」の構え。" icon="KnockBack.png" />
+    <a time="062" text="魔界の前照灯" sync="魔列車は「魔界の前照灯」の構え。" notice="次は、ビーム。" icon="DamageShare.png" />
+    <a time="077" text="追突" sync="魔列車は「追突」の構え。" notice="次は、追突。" icon="KnockBack.png" />
+
+    <a time="085" text="固定ゴーストポップ" />
+    <a time="096" text="セイントビーム" sync="魔列車の「セイントビーム」" icon="Marker.png" />
+    <a time="102" text="魔界の汽笛(横)" sync="魔列車は「魔界の汽笛」の構え。" notice="横からゴースト" icon="Attention.png" />
+    <a time="106" text="魔界の前照灯" sync="魔列車は「魔界の前照灯」の構え。" notice="次は、ビーム。" icon="DamageShare.png" />
+    <a time="113" text="魔界の光(x4)" icon="Marker.png" />
+    <a time="119" text="魔界の汽笛(追)" sync="魔列車は「魔界の汽笛」の構え。" notice="追跡ゴースト" icon="StackAOE.png" />
+    <a time="136" text="セイントビーム" sync="魔列車の「セイントビーム」" icon="Marker.png" />
+    <a time="138" text="魔界の光(MT+1)" sync="に「マーキング」の効果。" notice="スイッチ" icon="Marker.png" />
+    <a time="145" text="魔霊撃" sync="魔列車は「魔霊撃」の構え。" notice="次は、まれーげき。" icon="HardAttack.png" />
+    <a time="152" text="酸性雨" sync="魔列車は「酸性雨」の構え。" notice="次は、酸性雨。" icon="AllRangeAttack.png" />
+    <a time="165" text="魔界の前照灯" sync="魔列車は「魔界の前照灯」の構え。" notice="次は、ビーム。" icon="DamageShare.png" />
+    <a time="173" text="酸性雨" sync="魔列車は「酸性雨」の構え。" notice="次は、酸性雨。" icon="AllRangeAttack.png" />
+    <a time="190" text="魔界の汽笛(追)" sync="魔列車は「魔界の汽笛」の構え。" notice="追跡ゴースト" icon="StackAOE.png" />
+
+    <a time="192" text="固定ゴーストポップ" />
+    <a time="211" text="魔界の光(MT+1)" sync="に「マーキング」の効果。" notice="スイッチ" icon="Marker.png" />
+    <a time="211" text="酸性雨" sync="魔列車は「酸性雨」の構え。" notice="次は、酸性雨。" icon="AllRangeAttack.png" />
+    <a time="218" text="魔霊撃" sync="魔列車は「魔霊撃」の構え。" notice="次は、まれーげき。" icon="HardAttack.png" />
+    <a time="233" text="魔界の汽笛(飛)" sync="魔列車は「魔界の汽笛」の構え。" notice="ノックバックゴースト" icon="KnockBack.png" />
+    <a time="242" text="魔界の前照灯" sync="魔列車は「魔界の前照灯」の構え。" notice="次は、ビーム。" icon="DamageShare.png" />
+    <a time="255" text="追突" sync="魔列車は「追突」の構え。" notice="次は、追突。" icon="KnockBack.png" />
+    <a time="266" text="酸性雨" sync="魔列車は「酸性雨」の構え。" notice="次は、酸性雨。" icon="AllRangeAttack.png" />
+    
+    <a time="277" text="固定ゴーストポップ" />
+    <a time="283" text="魔界の汽笛(横)" sync="魔列車は「魔界の汽笛」の構え。" notice="横からゴースト" icon="Attention.png" />
+    <a time="287" text="魔界の前照灯" sync="魔列車は「魔界の前照灯」の構え。" notice="次は、ビーム。" icon="DamageShare.png" />
+    <a time="300" text="魔界の光(x4)" icon="Marker.png" />
+    <a time="304" text="時間切れ" sync="魔列車の「セイントビーム」" icon="Timeout.png" />
+  </s>
+</timeline>

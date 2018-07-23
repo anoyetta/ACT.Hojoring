@@ -1,0 +1,1087 @@
+2015-12-25 10:17  uratec
+
+	* mecab/src/dictionary.cpp: add CR code checker to dict compiler
+
+2015-12-23 17:27  uratec
+
+	* njd_set_long_vowel/njd_set_long_vowel.c: remove compile error in
+	  long vowel estimator
+
+2015-12-23 13:18  uratec
+
+	* mecab-naist-jdic/naist-jdic.csv: update dict.
+
+2015-12-23 12:54  uratec
+
+	* COPYING, NEWS, README, configure.ac, bin/open_jtalk.c,
+	  jpcommon/jpcommon.c, jpcommon/jpcommon.h,
+	  jpcommon/jpcommon_label.c, jpcommon/jpcommon_node.c,
+	  jpcommon/jpcommon_rule_ascii_for_euc_jp.h,
+	  jpcommon/jpcommon_rule_ascii_for_shift_jis.h,
+	  jpcommon/jpcommon_rule_ascii_for_utf_8.h,
+	  jpcommon/jpcommon_rule_euc_jp.h,
+	  jpcommon/jpcommon_rule_shift_jis.h,
+	  jpcommon/jpcommon_rule_utf_8.h, mecab/COPYING,
+	  mecab/src/common.h, mecab/src/dictionary.cpp, mecab/src/eval.cpp,
+	  mecab/src/iconv_utils.cpp, mecab/src/iconv_utils.h,
+	  mecab/src/libmecab.cpp, mecab/src/mecab.cpp, mecab/src/mecab.h,
+	  mecab/src/param.cpp, mecab/src/string_buffer.h,
+	  mecab/src/thread.h, mecab/src/utils.cpp, mecab/src/winmain.h,
+	  mecab2njd/mecab2njd.c, mecab2njd/mecab2njd.h, njd/njd.c,
+	  njd/njd.h, njd/njd_node.c, njd2jpcommon/njd2jpcommon.c,
+	  njd2jpcommon/njd2jpcommon.h,
+	  njd2jpcommon/njd2jpcommon_rule_ascii_for_euc_jp.h,
+	  njd2jpcommon/njd2jpcommon_rule_ascii_for_shift_jis.h,
+	  njd2jpcommon/njd2jpcommon_rule_ascii_for_utf_8.h,
+	  njd2jpcommon/njd2jpcommon_rule_euc_jp.h,
+	  njd2jpcommon/njd2jpcommon_rule_shift_jis.h,
+	  njd2jpcommon/njd2jpcommon_rule_utf_8.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase.c,
+	  njd_set_accent_phrase/njd_set_accent_phrase.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_ascii_for_euc_jp.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_ascii_for_shift_jis.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_ascii_for_utf_8.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_euc_jp.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_shift_jis.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_utf_8.h,
+	  njd_set_accent_type/njd_set_accent_type.c,
+	  njd_set_accent_type/njd_set_accent_type.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_ascii_for_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_ascii_for_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_ascii_for_utf_8.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_utf_8.h,
+	  njd_set_digit/njd_set_digit.c, njd_set_digit/njd_set_digit.h,
+	  njd_set_digit/njd_set_digit_rule_ascii_for_euc_jp.h,
+	  njd_set_digit/njd_set_digit_rule_ascii_for_shift_jis.h,
+	  njd_set_digit/njd_set_digit_rule_ascii_for_utf_8.h,
+	  njd_set_digit/njd_set_digit_rule_euc_jp.h,
+	  njd_set_digit/njd_set_digit_rule_shift_jis.h,
+	  njd_set_digit/njd_set_digit_rule_utf_8.h,
+	  njd_set_long_vowel/njd_set_long_vowel.c,
+	  njd_set_long_vowel/njd_set_long_vowel.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_ascii_for_euc_jp.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_ascii_for_shift_jis.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_ascii_for_utf_8.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_euc_jp.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_shift_jis.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_utf_8.h,
+	  njd_set_pronunciation/njd_set_pronunciation.c,
+	  njd_set_pronunciation/njd_set_pronunciation.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_ascii_for_euc_jp.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_ascii_for_shift_jis.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_ascii_for_utf_8.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_euc_jp.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_shift_jis.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_utf_8.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.c,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_ascii_for_euc_jp.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_ascii_for_shift_jis.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_ascii_for_utf_8.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_euc_jp.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_shift_jis.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_utf_8.h,
+	  text2mecab/text2mecab.c, text2mecab/text2mecab.h,
+	  text2mecab/text2mecab_rule_ascii_for_euc_jp.h,
+	  text2mecab/text2mecab_rule_ascii_for_shift_jis.h,
+	  text2mecab/text2mecab_rule_ascii_for_utf_8.h,
+	  text2mecab/text2mecab_rule_euc_jp.h,
+	  text2mecab/text2mecab_rule_shift_jis.h,
+	  text2mecab/text2mecab_rule_utf_8.h: update copyright. modify
+	  digit rules. assume unknown input as pause.
+
+2015-12-23 12:21  uratec
+
+	* mecab-naist-jdic/: COPYING, Makefile.am, Makefile.mak, char.def,
+	  feature.def, left-id.def, naist-jdic.csv, pos-id.def,
+	  rewrite.def, right-id.def, unk.def: change dictionary from EUC-JP
+	  to UTF-8
+
+2014-12-30 13:58  uratec
+
+	* mecab-naist-jdic/char.def: Modify byte sequence in dictionary:
+	  suggested by Open JTalk users.
+
+2014-12-25 19:13  uratec
+
+	* NEWS: update news
+
+2014-12-22 13:45  uratec
+
+	* mecab/src/utils.cpp: remove stdint.h for Windows.
+
+2014-12-22 11:08  uratec
+
+	* jpcommon/jpcommon_rule_ascii_for_euc_jp.h,
+	  jpcommon/jpcommon_rule_ascii_for_shift_jis.h,
+	  jpcommon/jpcommon_rule_ascii_for_utf_8.h,
+	  jpcommon/jpcommon_rule_euc_jp.h,
+	  jpcommon/jpcommon_rule_shift_jis.h,
+	  jpcommon/jpcommon_rule_utf_8.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_ascii_for_euc_jp.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_ascii_for_shift_jis.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_ascii_for_utf_8.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_euc_jp.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_shift_jis.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_utf_8.h: remove
+	  mora 'tye'
+
+2014-12-11 16:06  uratec
+
+	* NEWS, bin/open_jtalk.c, mecab/src/Makefile.am,
+	  mecab/src/char_property.h, mecab/src/dictionary.cpp,
+	  mecab/src/dictionary.h, mecab/src/dictionary_compiler.cpp,
+	  mecab/src/dictionary_generator.cpp, mecab/src/feature_index.cpp,
+	  mecab/src/learner.cpp, mecab/src/learner_tagger.cpp,
+	  mecab/src/libmecab.cpp, mecab/src/mecab.h, mecab/src/mmap.h,
+	  mecab/src/string_buffer.h, mecab/src/tagger.cpp,
+	  mecab/src/thread.h, mecab/src/tokenizer.cpp,
+	  mecab/src/tokenizer.h, mecab/src/utils.cpp,
+	  mecab/src/viterbi.cpp, mecab/src/viterbi.h,
+	  mecab/src/viterbisub.h, mecab/src/winmain.h: update MeCab to
+	  0.996
+
+2014-12-11 15:00  uratec
+
+	* NEWS, bin/open_jtalk.c: add volume option
+
+2014-12-11 14:24  uratec
+
+	* mecab-naist-jdic/naist-jdic.csv: update dictionary.
+
+2014-12-11 14:12  uratec
+
+	* COPYING, NEWS, README, configure.ac, bin/Makefile.am,
+	  bin/open_jtalk.c, jpcommon/Makefile.am, jpcommon/jpcommon.c,
+	  jpcommon/jpcommon.h, jpcommon/jpcommon_label.c,
+	  jpcommon/jpcommon_node.c,
+	  jpcommon/jpcommon_rule_ascii_for_euc_jp.h,
+	  jpcommon/jpcommon_rule_ascii_for_shift_jis.h,
+	  jpcommon/jpcommon_rule_ascii_for_utf_8.h,
+	  jpcommon/jpcommon_rule_euc_jp.h,
+	  jpcommon/jpcommon_rule_shift_jis.h,
+	  jpcommon/jpcommon_rule_utf_8.h, mecab/COPYING, mecab/config.h.in,
+	  mecab/src/Makefile.am, mecab/src/common.h, mecab/src/eval.cpp,
+	  mecab/src/iconv_utils.cpp, mecab/src/iconv_utils.h,
+	  mecab/src/libmecab.cpp, mecab/src/mecab.cpp, mecab/src/mecab.h,
+	  mecab/src/param.cpp, mecab/src/string_buffer.h,
+	  mecab/src/thread.h, mecab/src/utils.cpp, mecab/src/winmain.h,
+	  mecab-naist-jdic/COPYING, mecab2njd/Makefile.am,
+	  mecab2njd/mecab2njd.c, mecab2njd/mecab2njd.h, njd/Makefile.am,
+	  njd/njd.c, njd/njd.h, njd/njd_node.c, njd2jpcommon/Makefile.am,
+	  njd2jpcommon/njd2jpcommon.c, njd2jpcommon/njd2jpcommon.h,
+	  njd2jpcommon/njd2jpcommon_rule_ascii_for_euc_jp.h,
+	  njd2jpcommon/njd2jpcommon_rule_ascii_for_shift_jis.h,
+	  njd2jpcommon/njd2jpcommon_rule_ascii_for_utf_8.h,
+	  njd2jpcommon/njd2jpcommon_rule_euc_jp.h,
+	  njd2jpcommon/njd2jpcommon_rule_shift_jis.h,
+	  njd2jpcommon/njd2jpcommon_rule_utf_8.h,
+	  njd_set_accent_phrase/Makefile.am,
+	  njd_set_accent_phrase/njd_set_accent_phrase.c,
+	  njd_set_accent_phrase/njd_set_accent_phrase.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_ascii_for_euc_jp.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_ascii_for_shift_jis.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_ascii_for_utf_8.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_euc_jp.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_shift_jis.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_utf_8.h,
+	  njd_set_accent_type/Makefile.am,
+	  njd_set_accent_type/njd_set_accent_type.c,
+	  njd_set_accent_type/njd_set_accent_type.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_ascii_for_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_ascii_for_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_ascii_for_utf_8.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_utf_8.h,
+	  njd_set_long_vowel/Makefile.am,
+	  njd_set_long_vowel/njd_set_long_vowel.c,
+	  njd_set_long_vowel/njd_set_long_vowel.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_ascii_for_euc_jp.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_ascii_for_shift_jis.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_ascii_for_utf_8.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_euc_jp.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_shift_jis.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_utf_8.h,
+	  text2mecab/Makefile.am, text2mecab/text2mecab.c,
+	  text2mecab/text2mecab.h,
+	  text2mecab/text2mecab_rule_ascii_for_euc_jp.h,
+	  text2mecab/text2mecab_rule_ascii_for_shift_jis.h,
+	  text2mecab/text2mecab_rule_ascii_for_utf_8.h,
+	  text2mecab/text2mecab_rule_euc_jp.h,
+	  text2mecab/text2mecab_rule_shift_jis.h,
+	  text2mecab/text2mecab_rule_utf_8.h: remove some bugs
+
+2014-12-11 14:09  uratec
+
+	* njd_set_pronunciation/: Makefile.am, njd_set_pronunciation.c,
+	  njd_set_pronunciation.h,
+	  njd_set_pronunciation_rule_ascii_for_euc_jp.h,
+	  njd_set_pronunciation_rule_ascii_for_shift_jis.h,
+	  njd_set_pronunciation_rule_ascii_for_utf_8.h,
+	  njd_set_pronunciation_rule_euc_jp.h,
+	  njd_set_pronunciation_rule_shift_jis.h,
+	  njd_set_pronunciation_rule_utf_8.h: assume unknown word as
+	  fillter
+
+2014-12-11 14:06  uratec
+
+	* njd_set_unvoiced_vowel/: Makefile.am, njd_set_unvoiced_vowel.c,
+	  njd_set_unvoiced_vowel.h,
+	  njd_set_unvoiced_vowel_rule_ascii_for_euc_jp.h,
+	  njd_set_unvoiced_vowel_rule_ascii_for_shift_jis.h,
+	  njd_set_unvoiced_vowel_rule_ascii_for_utf_8.h,
+	  njd_set_unvoiced_vowel_rule_euc_jp.h,
+	  njd_set_unvoiced_vowel_rule_shift_jis.h,
+	  njd_set_unvoiced_vowel_rule_utf_8.h: modify unvoicing rules
+
+2014-12-11 14:04  uratec
+
+	* njd_set_digit/: Makefile.am, njd_set_digit.c, njd_set_digit.h,
+	  njd_set_digit_rule_ascii_for_euc_jp.h,
+	  njd_set_digit_rule_ascii_for_shift_jis.h,
+	  njd_set_digit_rule_ascii_for_utf_8.h,
+	  njd_set_digit_rule_euc_jp.h, njd_set_digit_rule_shift_jis.h,
+	  njd_set_digit_rule_utf_8.h: modify digit rules
+
+2013-12-30 16:52  uratec
+
+	* jpcommon/jpcommon_label.c: Fix label maker for Gentoo Linux:
+	  suggested by Mearo and Koichi Akabe.
+
+2013-12-23 17:03  uratec
+
+	* configure.ac, bin/Makefile.am: Modify audio compiler option for
+	  audio devices.
+
+2013-12-17 13:02  uratec
+
+	* mecab/src/param.cpp: Add ctype.h for android-ndk.
+
+2013-12-11 15:46  uratec
+
+	* configure.ac: Update configure.ac for version 1.07.
+
+2013-12-11 15:33  uratec
+
+	* COPYING, NEWS, README, bin/open_jtalk.c, jpcommon/jpcommon.c,
+	  jpcommon/jpcommon.h, jpcommon/jpcommon_label.c,
+	  jpcommon/jpcommon_node.c,
+	  jpcommon/jpcommon_rule_ascii_for_euc_jp.h,
+	  jpcommon/jpcommon_rule_ascii_for_shift_jis.h,
+	  jpcommon/jpcommon_rule_ascii_for_utf_8.h,
+	  jpcommon/jpcommon_rule_euc_jp.h,
+	  jpcommon/jpcommon_rule_shift_jis.h,
+	  jpcommon/jpcommon_rule_utf_8.h, mecab/COPYING,
+	  mecab/src/common.h, mecab/src/iconv_utils.cpp,
+	  mecab/src/iconv_utils.h, mecab/src/libmecab.cpp,
+	  mecab/src/mecab.cpp, mecab/src/mecab.h, mecab/src/param.cpp,
+	  mecab/src/thread.h, mecab/src/utils.cpp, mecab/src/winmain.h,
+	  mecab-naist-jdic/COPYING, mecab2njd/mecab2njd.c,
+	  mecab2njd/mecab2njd.h, njd/njd.c, njd/njd.h, njd/njd_node.c,
+	  njd2jpcommon/njd2jpcommon.c, njd2jpcommon/njd2jpcommon.h,
+	  njd2jpcommon/njd2jpcommon_rule_ascii_for_euc_jp.h,
+	  njd2jpcommon/njd2jpcommon_rule_ascii_for_shift_jis.h,
+	  njd2jpcommon/njd2jpcommon_rule_ascii_for_utf_8.h,
+	  njd2jpcommon/njd2jpcommon_rule_euc_jp.h,
+	  njd2jpcommon/njd2jpcommon_rule_shift_jis.h,
+	  njd2jpcommon/njd2jpcommon_rule_utf_8.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase.c,
+	  njd_set_accent_phrase/njd_set_accent_phrase.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_ascii_for_euc_jp.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_ascii_for_shift_jis.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_ascii_for_utf_8.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_euc_jp.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_shift_jis.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_utf_8.h,
+	  njd_set_accent_type/njd_set_accent_type.c,
+	  njd_set_accent_type/njd_set_accent_type.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_ascii_for_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_ascii_for_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_ascii_for_utf_8.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_utf_8.h,
+	  njd_set_digit/njd_set_digit.c, njd_set_digit/njd_set_digit.h,
+	  njd_set_digit/njd_set_digit_rule_ascii_for_euc_jp.h,
+	  njd_set_digit/njd_set_digit_rule_ascii_for_shift_jis.h,
+	  njd_set_digit/njd_set_digit_rule_ascii_for_utf_8.h,
+	  njd_set_digit/njd_set_digit_rule_euc_jp.h,
+	  njd_set_digit/njd_set_digit_rule_shift_jis.h,
+	  njd_set_digit/njd_set_digit_rule_utf_8.h,
+	  njd_set_long_vowel/njd_set_long_vowel.c,
+	  njd_set_long_vowel/njd_set_long_vowel.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_ascii_for_euc_jp.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_ascii_for_shift_jis.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_ascii_for_utf_8.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_euc_jp.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_shift_jis.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_utf_8.h,
+	  njd_set_pronunciation/njd_set_pronunciation.c,
+	  njd_set_pronunciation/njd_set_pronunciation.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_ascii_for_euc_jp.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_ascii_for_shift_jis.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_ascii_for_utf_8.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_euc_jp.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_shift_jis.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_utf_8.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.c,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_ascii_for_euc_jp.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_ascii_for_shift_jis.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_ascii_for_utf_8.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_euc_jp.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_shift_jis.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_utf_8.h,
+	  text2mecab/text2mecab.c, text2mecab/text2mecab.h,
+	  text2mecab/text2mecab_rule_ascii_for_euc_jp.h,
+	  text2mecab/text2mecab_rule_ascii_for_shift_jis.h,
+	  text2mecab/text2mecab_rule_ascii_for_utf_8.h,
+	  text2mecab/text2mecab_rule_euc_jp.h,
+	  text2mecab/text2mecab_rule_shift_jis.h,
+	  text2mecab/text2mecab_rule_utf_8.h: Update documents for version
+	  1.07.
+
+2013-12-11 14:52  uratec
+
+	* njd2jpcommon/Makefile.am, njd2jpcommon/njd2jpcommon.c,
+	  njd2jpcommon/njd2jpcommon_rule_ascii_for_euc_jp.h,
+	  njd2jpcommon/njd2jpcommon_rule_ascii_for_shift_jis.h,
+	  njd2jpcommon/njd2jpcommon_rule_ascii_for_utf_8.h,
+	  njd_set_accent_phrase/Makefile.am,
+	  njd_set_accent_phrase/njd_set_accent_phrase.c,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_ascii_for_euc_jp.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_ascii_for_shift_jis.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_ascii_for_utf_8.h,
+	  njd_set_accent_type/Makefile.am,
+	  njd_set_accent_type/njd_set_accent_type.c,
+	  njd_set_accent_type/njd_set_accent_type_rule_ascii_for_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_ascii_for_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_ascii_for_utf_8.h,
+	  njd_set_digit/Makefile.am, njd_set_digit/njd_set_digit.c,
+	  njd_set_digit/njd_set_digit_rule_ascii_for_euc_jp.h,
+	  njd_set_digit/njd_set_digit_rule_ascii_for_shift_jis.h,
+	  njd_set_digit/njd_set_digit_rule_ascii_for_utf_8.h,
+	  jpcommon/Makefile.am, jpcommon/jpcommon_label.c,
+	  jpcommon/jpcommon_rule_ascii_for_euc_jp.h,
+	  jpcommon/jpcommon_rule_ascii_for_shift_jis.h,
+	  njd_set_long_vowel/Makefile.am,
+	  njd_set_long_vowel/njd_set_long_vowel.c,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_ascii_for_euc_jp.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_ascii_for_shift_jis.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_ascii_for_utf_8.h,
+	  njd_set_pronunciation/Makefile.am,
+	  njd_set_pronunciation/njd_set_pronunciation.c,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_ascii_for_euc_jp.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_ascii_for_shift_jis.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_ascii_for_utf_8.h,
+	  njd_set_unvoiced_vowel/Makefile.am,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.c,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_ascii_for_euc_jp.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_ascii_for_shift_jis.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_ascii_for_utf_8.h,
+	  text2mecab/Makefile.am, text2mecab/text2mecab.c,
+	  text2mecab/text2mecab_rule_ascii_for_euc_jp.h,
+	  text2mecab/text2mecab_rule_ascii_for_shift_jis.h,
+	  text2mecab/text2mecab_rule_ascii_for_utf_8.h,
+	  jpcommon/jpcommon_rule_ascii_for_utf_8.h: Add ASCII header for no
+	  multibyte environment.
+
+2013-12-11 14:46  uratec
+
+	* njd_set_digit/: njd_set_digit.c, njd_set_digit_rule_euc_jp.h,
+	  njd_set_digit_rule_shift_jis.h, njd_set_digit_rule_utf_8.h: Add
+	  pronunciation rules for digit.
+
+2013-12-11 14:26  uratec
+
+	* mecab-naist-jdic/naist-jdic.csv: Update dictionary.
+
+2013-12-11 14:20  uratec
+
+	* mecab/src/mecab.cpp: Small optimization.
+
+2013-09-10 10:08  uratec
+
+	* njd2jpcommon/: njd2jpcommon_rule_euc_jp.h,
+	  njd2jpcommon_rule_shift_jis.h, njd2jpcommon_rule_utf_8.h: Modify
+	  noun table for label generation.
+
+2013-09-10 10:05  uratec
+
+	* njd/njd_node.c: Fix a bug in loading word information.
+
+2012-12-24 17:16  uratec
+
+	* bin/open_jtalk.c: Add -r option description into help message.
+
+2012-12-23 21:25  uratec
+
+	* bin/open_jtalk.c: Revise source comment.
+
+2012-12-21 14:49  uratec
+
+	* COPYING, NEWS, README, configure.ac, mecab2njd/mecab2njd.c,
+	  mecab2njd/mecab2njd.h, njd2jpcommon/njd2jpcommon.h,
+	  njd2jpcommon/njd2jpcommon_rule_euc_jp.h,
+	  njd2jpcommon/njd2jpcommon_rule_shift_jis.h,
+	  njd2jpcommon/njd2jpcommon_rule_utf_8.h,
+	  njd_set_accent_type/njd_set_accent_type.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_utf_8.h,
+	  text2mecab/text2mecab.c, text2mecab/text2mecab.h,
+	  text2mecab/text2mecab_rule_euc_jp.h,
+	  text2mecab/text2mecab_rule_shift_jis.h,
+	  text2mecab/text2mecab_rule_utf_8.h: Update all documents to 1.06.
+
+2012-12-21 14:45  uratec
+
+	* bin/open_jtalk.c: Fix lange of postfiltering coefficient.
+
+2012-12-21 14:44  uratec
+
+	* mecab-naist-jdic/naist-jdic.csv: Remove debug words in
+	  dictionary.
+
+2012-12-21 14:06  uratec
+
+	* njd2jpcommon/njd2jpcommon.c,
+	  njd_set_accent_type/njd_set_accent_type.c,
+	  njd_set_digit/njd_set_digit.c,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.c: Change constant
+	  strings from *char to const *char.
+
+2012-12-21 14:03  uratec
+
+	* bin/open_jtalk.c: Support new HTS voice format.
+
+2012-12-21 14:00  uratec
+
+	* njd_set_long_vowel/: njd_set_long_vowel.c, njd_set_long_vowel.h,
+	  njd_set_long_vowel_rule_euc_jp.h,
+	  njd_set_long_vowel_rule_shift_jis.h,
+	  njd_set_long_vowel_rule_utf_8.h: Fix a tiny bug of long vowel
+	  estimator.
+
+2012-12-21 13:55  uratec
+
+	* njd_set_accent_phrase/: njd_set_accent_phrase.c,
+	  njd_set_accent_phrase_rule_euc_jp.h,
+	  njd_set_accent_phrase_rule_shift_jis.h,
+	  njd_set_accent_phrase_rule_utf_8.h: Add some accent phrasing
+	  rules.
+
+2012-12-21 13:37  uratec
+
+	* mecab-naist-jdic/COPYING, mecab-naist-jdic/naist-jdic.csv,
+	  njd/Makefile.am, njd/njd.c, njd/njd.h, njd/njd_node.c,
+	  njd/njd_rule_euc_jp.h, njd/njd_rule_shift_jis.h,
+	  njd/njd_rule_utf_8.h: Update dictionary and change
+	  accent-chained-word defintion.
+
+2012-12-21 13:29  uratec
+
+	* jpcommon/: jpcommon.c, jpcommon.h, jpcommon_label.c,
+	  jpcommon_node.c, jpcommon_rule_euc_jp.h,
+	  jpcommon_rule_shift_jis.h, jpcommon_rule_utf_8.h: Set limits for
+	  some contexts in the label generator.
+
+2012-12-21 13:26  uratec
+
+	* njd_set_pronunciation/: njd_set_pronunciation.c,
+	  njd_set_pronunciation.h, njd_set_pronunciation_rule_euc_jp.h,
+	  njd_set_pronunciation_rule_shift_jis.h,
+	  njd_set_pronunciation_rule_utf_8.h: Add a new pronunciation rule
+	  for the tail of the interrogative sentence.
+
+2012-12-21 13:22  uratec
+
+	* mecab/src/: common.h, mecab.cpp, mecab.h, mmap.h, utils.cpp:
+	  Change MeCab functions from void to boolean.
+
+2012-12-21 13:11  uratec
+
+	* ChangeLog: Remove ChangeLog from CVS.
+
+2012-06-12 00:35  uratec
+
+	* njd_set_unvoiced_vowel/: njd_set_unvoiced_vowel.c,
+	  njd_set_unvoiced_vowel.h, njd_set_unvoiced_vowel_rule_euc_jp.h,
+	  njd_set_unvoiced_vowel_rule_shift_jis.h,
+	  njd_set_unvoiced_vowel_rule_utf_8.h: add new unvoice rule.
+
+2012-06-12 00:28  uratec
+
+	* mecab/: COPYING, src/Makefile.am, src/char_property.cpp,
+	  src/char_property.h, src/common.h, src/connector.cpp,
+	  src/connector.h, src/context_id.cpp, src/darts.h,
+	  src/dictionary.cpp, src/dictionary.h,
+	  src/dictionary_compiler.cpp, src/dictionary_generator.cpp,
+	  src/dictionary_rewriter.cpp, src/eval.cpp, src/feature_index.cpp,
+	  src/feature_index.h, src/freelist.h, src/iconv_utils.cpp,
+	  src/iconv_utils.h, src/lbfgs.cpp, src/lbfgs.h, src/learner.cpp,
+	  src/learner_node.h, src/learner_tagger.cpp, src/learner_tagger.h,
+	  src/libmecab.cpp, src/mecab-dict-index.cpp, src/mecab.cpp,
+	  src/mecab.h, src/mempool.h, src/mmap.h, src/mutex.h,
+	  src/nbest_generator.cpp, src/nbest_generator.h, src/param.cpp,
+	  src/scoped_ptr.h, src/stream_wrapper.h, src/string_buffer.cpp,
+	  src/tagger.cpp, src/thread.h, src/tokenizer.cpp, src/tokenizer.h,
+	  src/ucs.h, src/utils.cpp, src/utils.h, src/viterbi.cpp,
+	  src/viterbi.h, src/viterbisub.h, src/winmain.h, src/writer.cpp,
+	  src/writer.h: update MeCab to version 0.994.
+
+2012-05-29 09:20  uratec
+
+	* njd_set_digit/: njd_set_digit.c, njd_set_digit.h,
+	  njd_set_digit_rule_euc_jp.h, njd_set_digit_rule_shift_jis.h,
+	  njd_set_digit_rule_utf_8.h: fix a small bug: some numeral
+	  classifier cannot be observable.
+
+2012-05-29 09:13  uratec
+
+	* njd_set_accent_phrase/: njd_set_accent_phrase.c,
+	  njd_set_accent_phrase.h, njd_set_accent_phrase_rule_euc_jp.h,
+	  njd_set_accent_phrase_rule_shift_jis.h,
+	  njd_set_accent_phrase_rule_utf_8.h: fix a small bug in accent
+	  phrasing.
+
+2012-01-05 11:29  uratec
+
+	* mecab-naist-jdic/naist-jdic.csv,
+	  njd_set_pronunciation/njd_set_pronunciation.c,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_euc_jp.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_shift_jis.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_utf_8.h: Fix a
+	  bug reported by Shinsuke Irie: wrong pronunciation of auxiliary
+	  verb
+
+2011-12-28 16:03  uratec
+
+	* ChangeLog, jpcommon/jpcommon_label.c: Fix a bug suggested by
+	  Shinsuke Irie: Fix segmentation fault by long vowel symbol
+
+2011-12-24 17:52  uratec
+
+	* ChangeLog, bin/open_jtalk.c: Fix version number.
+
+2011-12-20 23:48  uratec
+
+	* AUTHORS, ChangeLog, README: Fix documents.
+
+2011-12-20 16:51  uratec
+
+	* ChangeLog, NEWS, README, configure.ac: Update documents to
+	  version 1.05
+
+2011-12-20 15:05  uratec
+
+	* njd_set_digit/: njd_set_digit.c, njd_set_digit_rule_euc_jp.h,
+	  njd_set_digit_rule_shift_jis.h, njd_set_digit_rule_utf_8.h:
+	  Modify rule after a decimal point.
+
+2011-12-20 13:59  uratec
+
+	* njd_set_accent_type/njd_set_accent_type.c: Modify accent type
+	  detection.
+
+2011-12-20 13:49  uratec
+
+	* jpcommon/: jpcommon_rule_euc_jp.h, jpcommon_rule_shift_jis.h,
+	  jpcommon_rule_utf_8.h: Add new moras.
+
+2011-12-20 13:48  uratec
+
+	* jpcommon/jpcommon_label.c: Fix bugs in label generation.
+
+2011-12-20 13:46  uratec
+
+	* mecab-naist-jdic/naist-jdic.csv: add new words to dictionary
+
+2011-07-07 11:20  uratec
+
+	* ChangeLog, NEWS, README, configure.ac, bin/open_jtalk.c: update
+	  all documents.
+
+2011-07-07 11:19  uratec
+
+	* mecab-naist-jdic/naist-jdic.csv: Modify dictionary.
+
+2011-05-09 22:38  uratec
+
+	* ChangeLog, bin/open_jtalk.c: Fix a bug suggested by Shinsuke
+	  Irie: small buffer size for UTF-8.
+
+2011-05-09 17:18  uratec
+
+	* ChangeLog, bin/open_jtalk.c, jpcommon/jpcommon_label.c,
+	  njd_set_accent_type/njd_set_accent_type.c,
+	  njd_set_digit/njd_set_digit.c: Fix some bugs suggested by
+	  Shinsuke Irie: Fix segmentation fault by long vowel symbol or
+	  digit.
+
+2011-04-29 14:07  uratec
+
+	* ChangeLog, NEWS, README, configure.ac,
+	  mecab-naist-jdic/naist-jdic.csv: Modify dictionary.  Update
+	  documents.
+
+2011-04-22 11:26  uratec
+
+	* ChangeLog, njd_set_accent_phrase/njd_set_accent_phrase.c,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_euc_jp.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_shift_jis.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_utf_8.h: add new
+	  rule for accent phrasing.
+
+2011-04-19 08:42  uratec
+
+	* ChangeLog, mecab-naist-jdic/naist-jdic.csv: Modify dictionary.
+
+2011-04-12 10:32  uratec
+
+	* ChangeLog, mecab-naist-jdic/naist-jdic.csv: Update dictionary.
+
+2011-03-07 08:26  uratec
+
+	* ChangeLog, jpcommon/jpcommon_label.c: Fix a serious bug in accent
+	  estimation.
+
+2011-03-07 08:25  uratec
+
+	* mecab-naist-jdic/naist-jdic.csv: Update dictionary.
+
+2011-03-03 10:18  uratec
+
+	* COPYING, ChangeLog, README, configure.ac, bin/open_jtalk.c,
+	  jpcommon/jpcommon.c, jpcommon/jpcommon.h,
+	  jpcommon/jpcommon_label.c, jpcommon/jpcommon_node.c,
+	  jpcommon/jpcommon_rule_euc_jp.h,
+	  jpcommon/jpcommon_rule_shift_jis.h,
+	  jpcommon/jpcommon_rule_utf_8.h, mecab/COPYING,
+	  mecab/src/common.h, mecab/src/dictionary_compiler.cpp,
+	  mecab/src/dictionary_rewriter.cpp, mecab/src/iconv_utils.cpp,
+	  mecab/src/iconv_utils.h, mecab/src/libmecab.cpp,
+	  mecab/src/mecab.h, mecab/src/mempool.h, mecab/src/mutex.h,
+	  mecab/src/param.cpp, mecab/src/utils.cpp, mecab/src/viterbi.cpp,
+	  mecab-naist-jdic/COPYING, mecab2njd/mecab2njd.c,
+	  mecab2njd/mecab2njd.h, njd/njd.c, njd/njd.h, njd/njd_node.c,
+	  njd/njd_rule_euc_jp.h, njd/njd_rule_shift_jis.h,
+	  njd/njd_rule_utf_8.h, njd2jpcommon/njd2jpcommon.c,
+	  njd2jpcommon/njd2jpcommon.h,
+	  njd2jpcommon/njd2jpcommon_rule_euc_jp.h,
+	  njd2jpcommon/njd2jpcommon_rule_shift_jis.h,
+	  njd2jpcommon/njd2jpcommon_rule_utf_8.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase.c,
+	  njd_set_accent_phrase/njd_set_accent_phrase.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_euc_jp.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_shift_jis.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_utf_8.h,
+	  njd_set_accent_type/njd_set_accent_type.c,
+	  njd_set_accent_type/njd_set_accent_type.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_utf_8.h,
+	  njd_set_digit/njd_set_digit.c, njd_set_digit/njd_set_digit.h,
+	  njd_set_digit/njd_set_digit_rule_euc_jp.h,
+	  njd_set_digit/njd_set_digit_rule_shift_jis.h,
+	  njd_set_digit/njd_set_digit_rule_utf_8.h,
+	  njd_set_long_vowel/njd_set_long_vowel.c,
+	  njd_set_long_vowel/njd_set_long_vowel.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_euc_jp.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_shift_jis.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_utf_8.h,
+	  njd_set_pronunciation/njd_set_pronunciation.c,
+	  njd_set_pronunciation/njd_set_pronunciation.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_euc_jp.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_shift_jis.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_utf_8.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.c,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_euc_jp.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_shift_jis.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_utf_8.h,
+	  text2mecab/text2mecab.c, text2mecab/text2mecab.h,
+	  text2mecab/text2mecab_rule_euc_jp.h,
+	  text2mecab/text2mecab_rule_shift_jis.h,
+	  text2mecab/text2mecab_rule_utf_8.h: Fix a serious bug in label
+	  maker for accent type.  Update all copyright year.  Fix some tiny
+	  bugs.
+
+2010-12-18 18:13  uratec
+
+	* ChangeLog, text2mecab/text2mecab_rule_shift_jis.h: change return
+	  code to CR+LF for text2mecab_rule_shift_jis.h
+
+2010-12-18 17:01  uratec
+
+	* ChangeLog, bin/open_jtalk.c: Modify help message.
+
+2010-12-18 16:49  uratec
+
+	* ChangeLog, README: update readme.
+
+2010-12-14 00:44  uratec
+
+	* ChangeLog, mecab-naist-jdic/naist-jdic.csv: update dictionary.
+
+2010-12-13 23:23  uratec
+
+	* ChangeLog, README: Update README.
+
+2010-12-13 12:29  uratec
+
+	* ChangeLog, njd_set_accent_type/njd_set_accent_type.c: Fix bugs
+	  for NULL string in njd_set_accent_type function.
+
+2010-12-12 21:52  uratec
+
+	* AUTHORS, COPYING, ChangeLog, README, bin/open_jtalk.c,
+	  jpcommon/jpcommon.c, jpcommon/jpcommon.h,
+	  jpcommon/jpcommon_label.c, jpcommon/jpcommon_node.c,
+	  jpcommon/jpcommon_rule_euc_jp.h,
+	  jpcommon/jpcommon_rule_shift_jis.h,
+	  jpcommon/jpcommon_rule_utf_8.h, mecab/COPYING,
+	  mecab/src/common.h, mecab/src/dictionary_compiler.cpp,
+	  mecab/src/dictionary_rewriter.cpp, mecab/src/iconv_utils.cpp,
+	  mecab/src/iconv_utils.h, mecab/src/libmecab.cpp,
+	  mecab/src/mecab.h, mecab/src/mutex.h, mecab/src/param.cpp,
+	  mecab/src/utils.cpp, mecab/src/viterbi.cpp,
+	  mecab-naist-jdic/COPYING, mecab2njd/mecab2njd.c,
+	  mecab2njd/mecab2njd.h, njd/njd.c, njd/njd.h, njd/njd_node.c,
+	  njd/njd_rule_euc_jp.h, njd/njd_rule_shift_jis.h,
+	  njd/njd_rule_utf_8.h, njd2jpcommon/njd2jpcommon.c,
+	  njd2jpcommon/njd2jpcommon.h,
+	  njd2jpcommon/njd2jpcommon_rule_euc_jp.h,
+	  njd2jpcommon/njd2jpcommon_rule_shift_jis.h,
+	  njd2jpcommon/njd2jpcommon_rule_utf_8.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase.c,
+	  njd_set_accent_phrase/njd_set_accent_phrase.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_euc_jp.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_shift_jis.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_utf_8.h,
+	  njd_set_accent_type/njd_set_accent_type.c,
+	  njd_set_accent_type/njd_set_accent_type.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_utf_8.h,
+	  njd_set_digit/njd_set_digit.c, njd_set_digit/njd_set_digit.h,
+	  njd_set_digit/njd_set_digit_rule_euc_jp.h,
+	  njd_set_digit/njd_set_digit_rule_shift_jis.h,
+	  njd_set_digit/njd_set_digit_rule_utf_8.h,
+	  njd_set_long_vowel/njd_set_long_vowel.c,
+	  njd_set_long_vowel/njd_set_long_vowel.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_euc_jp.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_shift_jis.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_utf_8.h,
+	  njd_set_pronunciation/njd_set_pronunciation.c,
+	  njd_set_pronunciation/njd_set_pronunciation.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_euc_jp.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_shift_jis.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_utf_8.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.c,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_euc_jp.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_shift_jis.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_utf_8.h,
+	  text2mecab/text2mecab.c, text2mecab/text2mecab.h,
+	  text2mecab/text2mecab_rule_euc_jp.h,
+	  text2mecab/text2mecab_rule_shift_jis.h,
+	  text2mecab/text2mecab_rule_utf_8.h: Update all documents.
+
+2010-12-12 17:44  uratec
+
+	* COPYING, ChangeLog, README: update documents.
+
+2010-12-12 17:31  uratec
+
+	* AUTHORS, COPYING, ChangeLog, README: Update documents.
+
+2010-12-10 19:00  uratec
+
+	* ChangeLog, NEWS, mecab-naist-jdic/naist-jdic.csv: update
+	  dictionary.
+
+2010-12-10 18:58  uratec
+
+	* njd_set_accent_type/njd_set_accent_type.c,
+	  njd_set_accent_type/njd_set_accent_type_rule_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_utf_8.h,
+	  njd_set_digit/njd_set_digit.c,
+	  njd_set_digit/njd_set_digit_rule_euc_jp.h,
+	  njd_set_digit/njd_set_digit_rule_shift_jis.h,
+	  njd_set_digit/njd_set_digit_rule_utf_8.h: Re-make pron & accent
+	  estimation for digit.
+
+2010-12-10 18:57  uratec
+
+	* bin/open_jtalk.c: Add low-pass filter stream.
+
+2010-11-19 16:14  uratec
+
+	* ChangeLog, mecab/src/mecab.cpp: Remove warning for gcc in Cygwin.
+
+2010-10-15 21:01  uratec
+
+	* ChangeLog, mecab/src/dictionary_compiler.cpp,
+	  mecab/src/libmecab.cpp, mecab/src/mecab.h, mecab/src/param.cpp,
+	  mecab/src/utils.cpp: Remove code about DLL.
+
+2010-10-15 15:16  uratec
+
+	* ChangeLog, bin/Makefile.am, mecab/src/libmecab.cpp: remove code
+	  about DLL.
+
+2010-10-15 14:38  uratec
+
+	* ChangeLog, NEWS, README, configure.ac, bin/open_jtalk.c,
+	  jpcommon/jpcommon.c, jpcommon/jpcommon.h,
+	  jpcommon/jpcommon_label.c, jpcommon/jpcommon_node.c,
+	  jpcommon/jpcommon_rule_euc_jp.h,
+	  jpcommon/jpcommon_rule_shift_jis.h,
+	  jpcommon/jpcommon_rule_utf_8.h, mecab/src/mecab.h,
+	  mecab2njd/mecab2njd.c, mecab2njd/mecab2njd.h, njd/njd.c,
+	  njd/njd.h, njd/njd_node.c, njd/njd_rule_euc_jp.h,
+	  njd/njd_rule_shift_jis.h, njd/njd_rule_utf_8.h,
+	  njd2jpcommon/njd2jpcommon.c, njd2jpcommon/njd2jpcommon.h,
+	  njd2jpcommon/njd2jpcommon_rule_euc_jp.h,
+	  njd2jpcommon/njd2jpcommon_rule_shift_jis.h,
+	  njd2jpcommon/njd2jpcommon_rule_utf_8.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase.c,
+	  njd_set_accent_phrase/njd_set_accent_phrase.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_euc_jp.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_shift_jis.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_utf_8.h,
+	  njd_set_accent_type/njd_set_accent_type.c,
+	  njd_set_accent_type/njd_set_accent_type.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_utf_8.h,
+	  njd_set_digit/njd_set_digit.c, njd_set_digit/njd_set_digit.h,
+	  njd_set_digit/njd_set_digit_rule_euc_jp.h,
+	  njd_set_digit/njd_set_digit_rule_shift_jis.h,
+	  njd_set_digit/njd_set_digit_rule_utf_8.h,
+	  njd_set_long_vowel/njd_set_long_vowel.c,
+	  njd_set_long_vowel/njd_set_long_vowel.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_euc_jp.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_shift_jis.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_utf_8.h,
+	  njd_set_pronunciation/njd_set_pronunciation.c,
+	  njd_set_pronunciation/njd_set_pronunciation.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_euc_jp.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_shift_jis.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_utf_8.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.c,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_euc_jp.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_shift_jis.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_utf_8.h,
+	  text2mecab/text2mecab.c, text2mecab/text2mecab.h,
+	  text2mecab/text2mecab_rule_euc_jp.h,
+	  text2mecab/text2mecab_rule_shift_jis.h,
+	  text2mecab/text2mecab_rule_utf_8.h: Support C++ compiler.  Update
+	  all documents for version 1.02.
+
+2010-10-13 00:47  uratec
+
+	* ChangeLog, bin/.cvsignore, njd/njd.c, njd/njd.h, njd/njd_node.c,
+	  njd_set_digit/njd_set_digit.c,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_euc_jp.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_shift_jis.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_utf_8.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.c: Fix a bug for
+	  digit.  Add njd_load functions.
+
+2010-06-08 18:48  uratec
+
+	* ChangeLog, Makefile.am, Makefile.mak, bin/Makefile.am,
+	  bin/Makefile.mak, jpcommon/Makefile.am, jpcommon/Makefile.mak,
+	  mecab/Makefile.am, mecab/Makefile.mak, mecab/src/Makefile.am,
+	  mecab/src/Makefile.mak, mecab/src/dictionary_rewriter.cpp,
+	  mecab/src/viterbi.cpp, mecab-naist-jdic/Makefile.am,
+	  mecab-naist-jdic/Makefile.mak, mecab2njd/Makefile.am,
+	  mecab2njd/Makefile.mak, njd/Makefile.am, njd/Makefile.mak,
+	  njd2jpcommon/Makefile.am, njd2jpcommon/Makefile.mak,
+	  njd_set_accent_phrase/Makefile.am,
+	  njd_set_accent_phrase/Makefile.mak,
+	  njd_set_accent_type/Makefile.am,
+	  njd_set_accent_type/Makefile.mak, njd_set_digit/Makefile.am,
+	  njd_set_digit/Makefile.mak, njd_set_long_vowel/Makefile.am,
+	  njd_set_long_vowel/Makefile.mak,
+	  njd_set_pronunciation/Makefile.am,
+	  njd_set_pronunciation/Makefile.mak,
+	  njd_set_unvoiced_vowel/Makefile.am,
+	  njd_set_unvoiced_vowel/Makefile.mak, text2mecab/Makefile.am,
+	  text2mecab/Makefile.mak: add Makefile.mak for Visual studio
+	  compile.
+
+2010-04-27 11:26  uratec
+
+	* COPYING, ChangeLog, NEWS, README, configure.ac, bin/open_jtalk.c,
+	  jpcommon/jpcommon.c, jpcommon/jpcommon.h,
+	  jpcommon/jpcommon_label.c, jpcommon/jpcommon_node.c,
+	  jpcommon/jpcommon_rule_euc_jp.h,
+	  jpcommon/jpcommon_rule_shift_jis.h,
+	  jpcommon/jpcommon_rule_utf_8.h, mecab/COPYING, mecab/config.h.in,
+	  mecab/src/common.h, mecab/src/dictionary_compiler.cpp,
+	  mecab/src/iconv_utils.cpp, mecab/src/iconv_utils.h,
+	  mecab/src/mecab.h, mecab/src/mutex.h, mecab/src/param.cpp,
+	  mecab/src/utils.cpp, mecab-naist-jdic/COPYING,
+	  mecab2njd/mecab2njd.c, mecab2njd/mecab2njd.h, njd/njd.c,
+	  njd/njd.h, njd/njd_node.c, njd/njd_rule_euc_jp.h,
+	  njd/njd_rule_shift_jis.h, njd/njd_rule_utf_8.h,
+	  njd2jpcommon/njd2jpcommon.c, njd2jpcommon/njd2jpcommon.h,
+	  njd2jpcommon/njd2jpcommon_rule_euc_jp.h,
+	  njd2jpcommon/njd2jpcommon_rule_shift_jis.h,
+	  njd2jpcommon/njd2jpcommon_rule_utf_8.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase.c,
+	  njd_set_accent_phrase/njd_set_accent_phrase.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_euc_jp.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_shift_jis.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_utf_8.h,
+	  njd_set_accent_type/njd_set_accent_type.c,
+	  njd_set_accent_type/njd_set_accent_type.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_utf_8.h,
+	  njd_set_digit/njd_set_digit.c, njd_set_digit/njd_set_digit.h,
+	  njd_set_digit/njd_set_digit_rule_euc_jp.h,
+	  njd_set_digit/njd_set_digit_rule_shift_jis.h,
+	  njd_set_digit/njd_set_digit_rule_utf_8.h,
+	  njd_set_long_vowel/njd_set_long_vowel.c,
+	  njd_set_long_vowel/njd_set_long_vowel.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_euc_jp.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_shift_jis.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_utf_8.h,
+	  njd_set_pronunciation/njd_set_pronunciation.c,
+	  njd_set_pronunciation/njd_set_pronunciation.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_euc_jp.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_shift_jis.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_utf_8.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.c,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_euc_jp.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_shift_jis.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_utf_8.h,
+	  text2mecab/text2mecab.c, text2mecab/text2mecab.h,
+	  text2mecab/text2mecab_rule_euc_jp.h,
+	  text2mecab/text2mecab_rule_shift_jis.h,
+	  text2mecab/text2mecab_rule_utf_8.h: Remove HAVE_PTHREAD_H option.
+	  Remove DLL setting for Windows machines.  Update all
+	  descriptions for version 1.01.
+
+2010-01-25 14:03  uratec
+
+	* ChangeLog, bin/open_jtalk.c: Fix a typo in help message.
+
+2009-12-25 00:16  uratec
+
+	* ChangeLog, configure.ac, bin/Makefile.am: Marge patch code by
+	  Daisuke Saito of Tokyo University: Edit compile option for Mac
+	  OS.
+
+2009-12-21 13:44  uratec
+
+	* ChangeLog, bin/open_jtalk.c: add log option to help message.
+
+2009-12-17 01:01  uratec
+
+	* .cvsignore, AUTHORS, COPYING, ChangeLog, INSTALL, Makefile.am,
+	  NEWS, README, configure.ac, bin/.cvsignore, bin/Makefile.am,
+	  bin/open_jtalk.c, config/.cvsignore, jpcommon/.cvsignore,
+	  jpcommon/Makefile.am, jpcommon/jpcommon.c, jpcommon/jpcommon.h,
+	  jpcommon/jpcommon_label.c, jpcommon/jpcommon_node.c,
+	  jpcommon/jpcommon_rule_euc_jp.h,
+	  jpcommon/jpcommon_rule_shift_jis.h,
+	  jpcommon/jpcommon_rule_utf_8.h, mecab/.cvsignore, mecab/COPYING,
+	  mecab/Makefile.am, mecab/config.h.in, mecab/src/.cvsignore,
+	  mecab/src/Makefile.am, mecab/src/char_property.cpp,
+	  mecab/src/char_property.h, mecab/src/common.h,
+	  mecab/src/connector.cpp, mecab/src/connector.h,
+	  mecab/src/context_id.cpp, mecab/src/context_id.h,
+	  mecab/src/darts.h, mecab/src/dictionary.cpp,
+	  mecab/src/dictionary.h, mecab/src/dictionary_compiler.cpp,
+	  mecab/src/dictionary_generator.cpp,
+	  mecab/src/dictionary_rewriter.cpp,
+	  mecab/src/dictionary_rewriter.h, mecab/src/eval.cpp,
+	  mecab/src/feature_index.cpp, mecab/src/feature_index.h,
+	  mecab/src/freelist.h, mecab/src/iconv_utils.cpp,
+	  mecab/src/iconv_utils.h, mecab/src/lbfgs.cpp, mecab/src/lbfgs.h,
+	  mecab/src/learner.cpp, mecab/src/learner_node.h,
+	  mecab/src/learner_tagger.cpp, mecab/src/learner_tagger.h,
+	  mecab/src/libmecab.cpp, mecab/src/mecab-dict-index.cpp,
+	  mecab/src/mecab.cpp, mecab/src/mecab.h, mecab/src/mempool.h,
+	  mecab/src/mmap.h, mecab/src/mutex.h,
+	  mecab/src/nbest_generator.cpp, mecab/src/nbest_generator.h,
+	  mecab/src/param.cpp, mecab/src/param.h, mecab/src/scoped_ptr.h,
+	  mecab/src/stream_wrapper.h, mecab/src/string_buffer.cpp,
+	  mecab/src/string_buffer.h, mecab/src/tagger.cpp,
+	  mecab/src/thread.h, mecab/src/tokenizer.cpp,
+	  mecab/src/tokenizer.h, mecab/src/ucs.h, mecab/src/ucstable.h,
+	  mecab/src/utils.cpp, mecab/src/utils.h, mecab/src/viterbi.cpp,
+	  mecab/src/viterbi.h, mecab/src/viterbisub.h,
+	  mecab/src/writer.cpp, mecab/src/writer.h,
+	  mecab-naist-jdic/.cvsignore, mecab-naist-jdic/COPYING,
+	  mecab-naist-jdic/Makefile.am, mecab-naist-jdic/char.def,
+	  mecab-naist-jdic/feature.def, mecab-naist-jdic/left-id.def,
+	  mecab-naist-jdic/matrix.def, mecab-naist-jdic/naist-jdic.csv,
+	  mecab-naist-jdic/pos-id.def, mecab-naist-jdic/rewrite.def,
+	  mecab-naist-jdic/right-id.def, mecab-naist-jdic/unk.def,
+	  mecab2njd/.cvsignore, mecab2njd/Makefile.am,
+	  mecab2njd/mecab2njd.c, mecab2njd/mecab2njd.h, njd/.cvsignore,
+	  njd/Makefile.am, njd/njd.c, njd/njd.h, njd/njd_node.c,
+	  njd/njd_rule_euc_jp.h, njd/njd_rule_shift_jis.h,
+	  njd/njd_rule_utf_8.h, njd2jpcommon/.cvsignore,
+	  njd2jpcommon/Makefile.am, njd2jpcommon/njd2jpcommon.c,
+	  njd2jpcommon/njd2jpcommon.h,
+	  njd2jpcommon/njd2jpcommon_rule_euc_jp.h,
+	  njd2jpcommon/njd2jpcommon_rule_shift_jis.h,
+	  njd2jpcommon/njd2jpcommon_rule_utf_8.h,
+	  njd_set_accent_phrase/.cvsignore,
+	  njd_set_accent_phrase/Makefile.am,
+	  njd_set_accent_phrase/njd_set_accent_phrase.c,
+	  njd_set_accent_phrase/njd_set_accent_phrase.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_euc_jp.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_shift_jis.h,
+	  njd_set_accent_phrase/njd_set_accent_phrase_rule_utf_8.h,
+	  njd_set_accent_type/.cvsignore, njd_set_accent_type/Makefile.am,
+	  njd_set_accent_type/njd_set_accent_type.c,
+	  njd_set_accent_type/njd_set_accent_type.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_euc_jp.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_shift_jis.h,
+	  njd_set_accent_type/njd_set_accent_type_rule_utf_8.h,
+	  njd_set_digit/.cvsignore, njd_set_digit/Makefile.am,
+	  njd_set_digit/njd_set_digit.c, njd_set_digit/njd_set_digit.h,
+	  njd_set_digit/njd_set_digit_rule_euc_jp.h,
+	  njd_set_digit/njd_set_digit_rule_shift_jis.h,
+	  njd_set_digit/njd_set_digit_rule_utf_8.h,
+	  njd_set_long_vowel/.cvsignore, njd_set_long_vowel/Makefile.am,
+	  njd_set_long_vowel/njd_set_long_vowel.c,
+	  njd_set_long_vowel/njd_set_long_vowel.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_euc_jp.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_shift_jis.h,
+	  njd_set_long_vowel/njd_set_long_vowel_rule_utf_8.h,
+	  njd_set_pronunciation/.cvsignore,
+	  njd_set_pronunciation/Makefile.am,
+	  njd_set_pronunciation/njd_set_pronunciation.c,
+	  njd_set_pronunciation/njd_set_pronunciation.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_euc_jp.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_shift_jis.h,
+	  njd_set_pronunciation/njd_set_pronunciation_rule_utf_8.h,
+	  njd_set_unvoiced_vowel/.cvsignore,
+	  njd_set_unvoiced_vowel/Makefile.am,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.c,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_euc_jp.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_shift_jis.h,
+	  njd_set_unvoiced_vowel/njd_set_unvoiced_vowel_rule_utf_8.h,
+	  text2mecab/.cvsignore, text2mecab/Makefile.am,
+	  text2mecab/text2mecab.c, text2mecab/text2mecab.h,
+	  text2mecab/text2mecab_rule_euc_jp.h,
+	  text2mecab/text2mecab_rule_shift_jis.h,
+	  text2mecab/text2mecab_rule_utf_8.h: Initialize Open JTalk version
+	  1.00
+

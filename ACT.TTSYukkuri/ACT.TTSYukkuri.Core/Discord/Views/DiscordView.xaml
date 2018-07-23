@@ -1,0 +1,245 @@
+<UserControl
+  x:Class="ACT.TTSYukkuri.Discord.Views.DiscordView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ACT.TTSYukkuri.Discord.Views"
+  xmlns:vm="clr-namespace:ACT.TTSYukkuri.Discord.ViewModels"
+  xmlns:cv="clr-namespace:ACT.TTSYukkuri.Discord.Converters"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  mc:Ignorable="d"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  Background="White"
+  FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
+  FontSize="17"
+  Margin="0"
+  d:DesignWidth="1024"
+  d:DataContext="{d:DesignInstance Type=vm:DiscordViewModel, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+  <UserControl.Resources>
+    <cv:BoolConverter x:Key="BoolConverter" />
+    <fwcnv:BoolToCollapsedConverter x:Key="VisibilityConverter" />
+    <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+  </UserControl.Resources>
+
+  <Border
+    Margin="3"
+    BorderBrush="Violet"
+    BorderThickness="2"
+    CornerRadius="2"
+    Padding="8">
+
+    <ScrollViewer
+      Margin="0"
+      Focusable="False"
+      IsTabStop="False"
+      VerticalScrollBarVisibility="Disabled"
+      HorizontalScrollBarVisibility="Disabled">
+
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+          Grid.Row="0"
+          Panel.ZIndex="1"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Top"
+          Margin="0 2 0 0">
+          <Hyperlink Click="HowToUse_Click">How to Use</Hyperlink>
+        </TextBlock>
+
+        <StackPanel Grid.Row="0">
+          <Label
+            Margin="0 0 0 0"
+            Content="Token" />
+          <TextBox
+            Height="30"
+            VerticalContentAlignment="Center"
+            IsReadOnly="{Binding Model.IsConnected, Mode=OneWay}"
+            Text="{Binding Config.Token, Mode=TwoWay}"
+            HorizontalAlignment="Left"
+            Width="600">
+            <TextBox.Style>
+              <Style TargetType="TextBox">
+                <Setter Property="Foreground" Value="Black" />
+                <Style.Triggers>
+                  <Trigger Property="IsReadOnly" Value="True">
+                    <Setter Property="Foreground" Value="DimGray" />
+                  </Trigger>
+                </Style.Triggers>
+              </Style>
+            </TextBox.Style>
+          </TextBox>
+
+          <StackPanel Margin="0 2 0 0" Orientation="Horizontal">
+            <TextBlock Margin="2 0 0 0">
+              <Hyperlink
+                Command="{Binding ConnectCommand, Mode=OneWay}"
+                IsEnabled="{Binding Model.IsConnected, Converter={StaticResource BoolConverter}, Mode=OneWay}">
+                <TextBlock Name="ConnectLink" Text="Connect" />
+              </Hyperlink>
+            </TextBlock>
+
+            <TextBlock Margin="15 0 0 0">
+              <Hyperlink
+                Command="{Binding DisconnectCommand, Mode=OneWay}"
+                IsEnabled="{Binding Model.IsConnected, Mode=OneWay}">
+                <TextBlock Name="DisconnectLink" Text="Disconnect" />
+              </Hyperlink>
+            </TextBlock>
+          </StackPanel>
+
+          <StackPanel Margin="0 10 0 0" Orientation="Horizontal">
+            <Label Content="Server" />
+            <Label
+              Margin="10 0 0 2"
+              VerticalAlignment="Bottom"
+              FontSize="10"
+              FontStyle="Italic"
+              Content="Connected!"
+              Foreground="DarkBlue"
+              Visibility="{Binding Model.IsConnected, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
+          </StackPanel>
+          <TextBox
+            MinHeight="30"
+            Padding="0 2 0 2"
+            IsReadOnly="True"
+            Text="{Binding Model.AvailableGuildsText, Mode=OneWay}"
+            TextWrapping="NoWrap"
+            Foreground="DimGray"
+            Width="600"
+            HorizontalAlignment="Left" />
+
+          <StackPanel Margin="0 10 0 0" Orientation="Horizontal">
+            <Label Content="Text Channel" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <ComboBox
+              Width="500"
+              Height="30"
+              VerticalContentAlignment="Center"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Center"
+              ItemsSource="{Binding Model.TextChannels, Mode=OneWay}"
+              SelectedItem="{Binding Model.SelectedTextChannel, Mode=TwoWay}">
+              <ComboBox.ItemTemplate>
+                <DataTemplate>
+                  <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="[" />
+                    <TextBlock Text="{Binding ServerName}" />
+                    <TextBlock Text="] " />
+                    <TextBlock Text="{Binding Name}" />
+                  </StackPanel>
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+            <Button
+              Margin="20 0 0 0"
+              Padding="15 0"
+              Command="{Binding PingCommand, Mode=OneWay}"
+              Content="Ping!">
+            </Button>
+          </StackPanel>
+
+          <StackPanel Margin="0 10 0 0" Orientation="Horizontal">
+            <Label Content="Voice Channel" />
+            <Label
+              Margin="10 0 0 2"
+              VerticalAlignment="Bottom"
+              FontSize="10"
+              FontStyle="Italic"
+              Content="Joined!"
+              Foreground="DarkBlue"
+              Visibility="{Binding Model.IsJoinedVoiceChannel, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
+          </StackPanel>
+          <ComboBox
+            Width="600"
+            Height="30"
+            VerticalContentAlignment="Center"
+            HorizontalAlignment="Left"
+            ItemsSource="{Binding Model.VoiceChannels, Mode=OneWay}"
+            SelectedItem="{Binding Model.SelectedVoiceChannel, Mode=TwoWay}"
+            IsReadOnly="{Binding Model.IsJoinedVoiceChannel, Mode=OneWay}"
+            IsHitTestVisible="{Binding Model.IsJoinedVoiceChannel, Converter={StaticResource BoolConverter}, Mode=OneWay}"
+            IsTabStop="{Binding Model.IsJoinedVoiceChannel, Converter={StaticResource BoolConverter}, Mode=OneWay}">
+            <ComboBox.Style>
+              <Style TargetType="ComboBox">
+                <Style.Triggers>
+                  <Trigger Property="IsReadOnly" Value="True">
+                    <Setter Property="Foreground" Value="DimGray" />
+                  </Trigger>
+                  <Trigger Property="IsReadOnly" Value="False">
+                    <Setter Property="Foreground" Value="Black" />
+                  </Trigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="[" />
+                  <TextBlock Text="{Binding ServerName}" />
+                  <TextBlock Text="] " />
+                  <TextBlock Text="{Binding Name}" />
+                </StackPanel>
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+
+          <StackPanel Margin="0 2 0 0" Orientation="Horizontal">
+            <TextBlock Margin="2 0 0 0">
+              <Hyperlink
+                Command="{Binding JoinCommand, Mode=OneWay}"
+                IsEnabled="{Binding Model.IsJoinedVoiceChannel, Converter={StaticResource BoolConverter}, Mode=OneWay}">
+                <TextBlock Name="JoinVoiceChannelLink">Join</TextBlock>
+              </Hyperlink>
+            </TextBlock>
+
+            <TextBlock Margin="15 0 0 0">
+              <Hyperlink
+                Command="{Binding LeaveCommand, Mode=OneWay}"
+                IsEnabled="{Binding Model.IsJoinedVoiceChannel, Mode=OneWay}">
+                <TextBlock Name="LeaveTextVoiceLink">Leave</TextBlock>
+              </Hyperlink>
+            </TextBlock>
+          </StackPanel>
+
+          <CheckBox
+            Margin="0 15 0 0"
+            Content="Auto join"
+            VerticalAlignment="Center"
+            VerticalContentAlignment="Center"
+            IsChecked="{Binding Config.AutoJoin, Mode=TwoWay}" />
+
+          <TextBlock Margin="2 20 0 0">
+            <Hyperlink Command="{Binding OpenHelperCommand, Mode=OneWay}">
+              <TextBlock Text="Permission Helper" />
+            </Hyperlink>
+          </TextBlock>
+        </StackPanel>
+
+        <ScrollViewer
+          Grid.Row="1"
+          Margin="0 20 0 0">
+          <TextBox
+            IsReadOnly="True"
+            BorderThickness="0"
+            TextWrapping="NoWrap"
+            Text="{Binding Model.Log, Mode=OneWay}" />
+        </ScrollViewer>
+      </Grid>
+    </ScrollViewer>
+  </Border>
+</UserControl>

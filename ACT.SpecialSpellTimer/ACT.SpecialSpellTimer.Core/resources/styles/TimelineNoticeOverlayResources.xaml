@@ -1,0 +1,154 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  xmlns:views="clr-namespace:ACT.SpecialSpellTimer.RaidTimeline.Views"
+  xmlns:timeline="clr-namespace:ACT.SpecialSpellTimer.RaidTimeline">
+
+  <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+
+  <!-- 最も外側のグリッド -->
+  <Style x:Key="BaseGrid" TargetType="Grid">
+    <Setter Property="Opacity" Value="{Binding Path=Config.OverlayOpacity, Mode=OneWay}" />
+    <Setter Property="LayoutTransform">
+      <Setter.Value>
+        <ScaleTransform
+          ScaleX="{Binding Path=Config.OverlayScale, Mode=OneWay}"
+          ScaleY="{Binding Path=Config.OverlayScale, Mode=OneWay}" />
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- 背景用のボーダー -->
+  <Style x:Key="BaseBorder" TargetType="Border">
+    <Setter Property="Panel.ZIndex" Value="-1" />
+    <Setter Property="Margin" Value="8" />
+    <Setter Property="BorderBrush" Value="Gainsboro" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Background" Value="#01000000" />
+    <Setter Property="Opacity" Value="0.001" />
+    <Setter Property="CornerRadius" Value="6" />
+    <!--
+    <Setter Property="Effect">
+      <Setter.Value>
+        <DropShadowEffect
+          BlurRadius="0"
+          Direction="0"
+          ShadowDepth="0"
+          Color="White" />
+      </Setter.Value>
+    </Setter>
+    -->
+  </Style>
+
+  <!-- コンテンツ用のグリッド -->
+  <Style x:Key="ContentsGrid" TargetType="Grid">
+    <Setter Property="Margin" Value="16" />
+  </Style>
+
+  <!-- 通知ItemsControl -->
+  <Style x:Key="NoticesControl" TargetType="ItemsControl">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="AlternationCount" Value="999" />
+    <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />
+    <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
+  </Style>
+
+  <!-- 通知ItemsControlのコンテンツプレゼンタ -->
+  <Style x:Key="NoticeContainer" TargetType="ContentPresenter">
+    <Setter Property="Margin" Value="0 0 0 10" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <!--
+    <Style.Triggers>
+      <DataTrigger Binding="{Binding Path=IsVisible, Mode=OneWay}" Value="False">
+        <Setter Property="Visibility" Value="Collapsed" />
+      </DataTrigger>
+    </Style.Triggers>
+    -->
+  </Style>
+
+  <!-- アイコン -->
+  <Style x:Key="Icon" TargetType="Image">
+    <Setter Property="DockPanel.Dock" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Margin" Value="0 0 5 0" />
+    <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+    <Setter Property="Source" Value="{Binding Path=IconImage, Mode=OneWay}" />
+    <Setter Property="Height" Value="{Binding Path=StyleModel.IconSize, Mode=OneWay}" />
+    <Setter Property="Width" Value="{Binding Path=StyleModel.IconSize, Mode=OneWay}" />
+    <Setter Property="Visibility" Value="{Binding Path=ExistsIcon, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+  </Style>
+
+  <!-- 通知テキスト -->
+  <Style x:Key="NoticeText" TargetType="controls:LightOutlineTextBlock">
+    <Setter Property="DockPanel.Dock" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Text" Value="{Binding Path=TextToDisplay, Mode=OneWay}" />
+    <Setter Property="FontFamily" Value="{Binding Path=StyleModel.Font.FontFamily, Mode=OneWay}" />
+    <Setter Property="FontWeight" Value="{Binding Path=StyleModel.Font.Weight, Mode=OneWay}" />
+    <Setter Property="FontStyle" Value="{Binding Path=StyleModel.Font.Style, Mode=OneWay}" />
+    <Setter Property="FontStretch" Value="{Binding Path=StyleModel.Font.Stretch, Mode=OneWay}" />
+    <Setter Property="FontSize" Value="{Binding Path=StyleModel.Font.Size, Mode=OneWay}" />
+    <Setter Property="Fill" Value="{Binding Path=StyleModel.ColorBrush, Mode=OneWay}" />
+    <Setter Property="Stroke" Value="{Binding Path=StyleModel.OutlineColorBrush, Mode=OneWay}" />
+    <Setter Property="StrokeThickness" Value="{Binding Path=StyleModel.Font.OutlineThickness, Mode=OneWay}" />
+    <Setter Property="BlurRadius" Value="{Binding Path=StyleModel.Font.BlurRadius, Mode=OneWay}" />
+    <Setter Property="BlurOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="StrokeOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+  </Style>
+
+  <!-- スタック数テキスト -->
+  <Style x:Key="StackText" TargetType="controls:LightOutlineTextBlock">
+    <Setter Property="DockPanel.Dock" Value="Left" />
+    <Setter Property="Margin" Value="10 0 5 0" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Text" Value="{Binding Path=Stack, Mode=OneWay}" />
+    <Setter Property="FontFamily" Value="{Binding Path=StyleModel.Font.FontFamily, Mode=OneWay}" />
+    <Setter Property="FontWeight" Value="{Binding Path=StyleModel.Font.Weight, Mode=OneWay}" />
+    <Setter Property="FontStyle" Value="{Binding Path=StyleModel.Font.Style, Mode=OneWay}" />
+    <Setter Property="FontStretch" Value="{Binding Path=StyleModel.Font.Stretch, Mode=OneWay}" />
+    <Setter Property="FontSize" Value="{Binding Path=StyleModel.Font.Size, Mode=OneWay}" />
+    <Setter Property="Fill" Value="{Binding Path=StyleModel.ColorBrush, Mode=OneWay}" />
+    <Setter Property="Stroke" Value="{Binding Path=StyleModel.OutlineColorBrush, Mode=OneWay}" />
+    <Setter Property="StrokeThickness" Value="{Binding Path=StyleModel.Font.OutlineThickness, Mode=OneWay}" />
+    <Setter Property="BlurRadius" Value="{Binding Path=StyleModel.Font.BlurRadius, Mode=OneWay}" />
+    <Setter Property="BlurOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="StrokeOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="Visibility" Value="{Binding Path=StackVisible, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+  </Style>
+
+  <!-- カウンタテキスト -->
+  <Style x:Key="DurationText" TargetType="controls:LightOutlineTextBlock">
+    <Setter Property="DockPanel.Dock" Value="Right" />
+    <Setter Property="Margin" Value="10 0 5 0" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="TextAlignment" Value="Right" />
+    <Setter Property="Text" Value="{Binding Path=DurationToDisplay, Mode=OneWay, StringFormat=N0}" />
+    <Setter Property="FontFamily" Value="{Binding Path=StyleModel.Font.FontFamily, Mode=OneWay}" />
+    <Setter Property="FontWeight" Value="{Binding Path=StyleModel.Font.Weight, Mode=OneWay}" />
+    <Setter Property="FontStyle" Value="{Binding Path=StyleModel.Font.Style, Mode=OneWay}" />
+    <Setter Property="FontStretch" Value="{Binding Path=StyleModel.Font.Stretch, Mode=OneWay}" />
+    <Setter Property="FontSize" Value="{Binding Path=StyleModel.Font.Size, Mode=OneWay}" />
+    <Setter Property="Fill" Value="{Binding Path=StyleModel.ColorBrush, Mode=OneWay}" />
+    <Setter Property="Stroke" Value="{Binding Path=StyleModel.OutlineColorBrush, Mode=OneWay}" />
+    <Setter Property="StrokeThickness" Value="{Binding Path=StyleModel.Font.OutlineThickness, Mode=OneWay}" />
+    <Setter Property="BlurRadius" Value="{Binding Path=StyleModel.Font.BlurRadius, Mode=OneWay}" />
+    <Setter Property="BlurOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="StrokeOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="Visibility" Value="{Binding Path=DurationVisible, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+    <Setter Property="LayoutTransform">
+      <Setter.Value>
+        <ScaleTransform
+          ScaleX="0.9"
+          ScaleY="0.9"
+          CenterX="0.5"
+          CenterY="0.5" />
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

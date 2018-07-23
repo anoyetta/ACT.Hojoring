@@ -1,0 +1,99 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+  <!--  Resources Strings in English  -->
+  <system:String x:Key="UILanguage">UI 언어 (* 재시작 필요)</system:String>
+  <system:String x:Key="FFXIVLanguage">FFXIV 언어 (* 재시작 필요)</system:String>
+
+  <system:String x:Key="GeneralConfig_ClickThrough">클릭 무시</system:String>
+  <system:String x:Key="GeneralConfig_Opacity">불투명도</system:String>
+  <system:String x:Key="GeneralConfig_LogPollingRate">로그 감시빈도 (msec)</system:String>
+  <system:String x:Key="GeneralConfig_OverlayRefreshRate">오버레이 재생빈도 (msec)</system:String>
+  <system:String x:Key="GeneralConfig_AnimationMaxFPS">애니메이션 프레임 속도</system:String>
+  <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">글자 윤곽선 비율</system:String>
+  <system:String x:Key="GeneralConfig_TextBlurGain">글자 흐림 비율</system:String>
+  <system:String x:Key="GeneralConfig_Sound">사운드</system:String>
+  <system:String x:Key="GeneralConfig_UseNAudio">NAudio에서 WAVE사운드를 재생하는(권장)</system:String>
+  <system:String x:Key="GeneralConfig_WaveVolume">Wave볼륨</system:String>
+  <system:String x:Key="GeneralConfig_TTSDestination">TTS 재생장치</system:String>
+
+  <system:String x:Key="Common_Visible">표시하는</system:String>
+  <system:String x:Key="Common_Location">위치</system:String>
+  <system:String x:Key="Common_Font">폰트</system:String>
+  <system:String x:Key="Common_FillColor">글자색</system:String>
+  <system:String x:Key="Common_StrokeColor">윤곽색</system:String>
+  <system:String x:Key="Common_Add">추가</system:String>
+  <system:String x:Key="Common_Change">변경</system:String>
+  <system:String x:Key="Common_Delete">삭제</system:String>
+  <system:String x:Key="Common_TTS">TTS를 사용하는</system:String>
+  <system:String x:Key="Common_TestMode">테스트 모드(항상 표시하는)</system:String>
+
+  <system:String x:Key="Target_UserHoverTarget">호버 타겟을 사용</system:String>
+
+  <system:String x:Key="HP_HPLocation">HP 위치</system:String>
+  <system:String x:Key="HP_BarLocation">바 위치</system:String>
+  <system:String x:Key="HP_VisibleHPBar">HP 바 보이기</system:String>
+  <system:String x:Key="HP_HPValueOnHPBar">HP바에 HP값 표기</system:String>
+  <system:String x:Key="HP_HPBarStrokeColor">HP바 윤곽색</system:String>
+  <system:String x:Key="HP_LinkBarStrokeColorToBarColor">바의 윤곽색을 바 색상에 동조시키다</system:String>
+  <system:String x:Key="HP_LinkTextFillColorToBarColor">글자색을 바 색상에 동조시키다</system:String>
+  <system:String x:Key="HP_LinkTextStrokeColorToBarColor">글자의 윤곽색을 바 색상에 동조시키다</system:String>
+  <system:String x:Key="HP_HPBarSize">HP 바 크기</system:String>
+
+  <system:String x:Key="Action_VisibleActionName">액션 이름 표시</system:String>
+  <system:String x:Key="Action_VisibleRemainOfCasting">캐스팅의 남은 시간표시</system:String>
+  <system:String x:Key="Action_VisibleRemainAsInteger">정수로</system:String>
+  <system:String x:Key="Action_VisibleRateOfCasting">캐스팅 진행율 표시</system:String>
+  <system:String x:Key="Action_DummyActionName">더미 액션 이름</system:String>
+  <system:String x:Key="Action_CastingBar">캐스팅 바</system:String>
+  <system:String x:Key="Action_CastingBarStrokeColor">캐스팅바 윤곽색</system:String>
+  <system:String x:Key="Action_LinkBarStrokeColorToBarColor">바의 윤곽색을 바 색상에 동조시키다</system:String>
+  <system:String x:Key="Action_CastingBarSize">캐스팅바 크기</system:String>
+  <system:String x:Key="Action_CircleStyle">원형 스타일</system:String>
+  <system:String x:Key="Action_RotateCCW">회전을 반시계 방향으로</system:String>
+  <system:String x:Key="Action_Sound">사운드</system:String>
+  <system:String x:Key="Action_WaveSound">Wave 사운드 파일</system:String>
+
+  <system:String x:Key="BOSS_BossThreshold">파티의 최대 HP평균치에 대해서 보스로서 인식하는 단역의 최대 HP의 임계 값</system:String>
+  <system:String x:Key="BOSS_BossVSTargetHideBoss">검출한 BOSS와 Target이 같은 대상이라면 BOSS를 표시하지 않는</system:String>
+  <system:String x:Key="BOSS_BossVSFTHideBoss">검출한 BOSS와 Focus Target이 같은 대상이라면 BOSS를 표시하지 않는</system:String>
+  <system:String x:Key="BOSS_BossVSToTHideBoss">검출한 BOSS와 Target of Target이 같은 대상이라면 BOSS를 표시하지 않는</system:String>
+
+  <system:String x:Key="MPTicker_VisibleCounter">카운터 보기</system:String>
+  <system:String x:Key="MPTicker_Bar">바</system:String>
+  <system:String x:Key="MPTicker_BarStrokeColor">바 윤곽색</system:String>
+  <system:String x:Key="MPTicker_LinkBarStrokeColorToBarColor">바의 윤곽색을 바 색상에 동조시키다</system:String>
+  <system:String x:Key="MPTicker_BarSize">바 크기</system:String>
+  <system:String x:Key="MPTicker_CircleStyle">원형 스타일</system:String>
+  <system:String x:Key="MPTicker_RotateCCW">회전을 반시계 방향으로</system:String>
+  <system:String x:Key="MPTicker_SwapBarAndText">바와 텍스트 위치를 교체</system:String>
+  <system:String x:Key="MPTicker_ExplationTimeForDisplay1">MP의 변화가 없이 아래의 초수가 경과하면 숨깁니다 (sec)</system:String>
+  <system:String x:Key="MPTicker_ExplationTimeForDisplay2">※0이면 무한, 항상 표시합니다</system:String>
+  <system:String x:Key="MPTicker_TargetJobs">자신이 아래의 직업 때 표시하는</system:String>
+
+  <system:String x:Key="MobList_VisibleMePosition">자신의 좌표 표시</system:String>
+  <system:String x:Key="MobList_SimpleView">Simple View</system:String>
+  <system:String x:Key="MobList_VisibleZPosition">Z축 표시</system:String>
+  <system:String x:Key="MobList_DirectionOrigin">Origin of Direction</system:String>
+  <system:String x:Key="MobList_DirectionOriginDescription">To use "Me" or "Camera", FFXIV_MemoryReader is required.</system:String>
+  <system:String x:Key="MobList_OpenTargetMobList">대상 몹 리스트를 열기</system:String>
+  <system:String x:Key="MobList_ReloadTargetMobList">대상 몹 리스트를 다시 불러오기</system:String>
+  <system:String x:Key="MobList_CountOfDisplay">개요</system:String>
+  <system:String x:Key="MobList_NotifyByTTS">TTS로 알림</system:String>
+  <system:String x:Key="MobList_Me">자신의 폰트</system:String>
+  <system:String x:Key="MobList_MobFont">몹 폰트</system:String>
+  <system:String x:Key="MobList_MobEXColor">몹 EX 색</system:String>
+  <system:String x:Key="MobList_MobSColor">몹 S 색</system:String>
+  <system:String x:Key="MobList_MobAColor">몹 A 색</system:String>
+  <system:String x:Key="MobList_MobBColor">몹 B 색</system:String>
+  <system:String x:Key="MobList_MobOtherColor">몹 Other 색</system:String>
+
+  <system:String x:Key="Help_GotoLastestRelease">GitHub의 최종 릴리스를 확인 합니다</system:String>
+  <system:String x:Key="Help_ContactToAnoyetta">anoyetta의 Discord의 포럼 참여</system:String>
+  <system:String x:Key="Help_OpenConfig">구성 파일을 열기</system:String>
+  <system:String x:Key="Help_ReloadConfig">구성 파일을 다시불러오기</system:String>
+  <system:String x:Key="Help_ReloadViews">구성 파일을 보기</system:String>
+  <system:String x:Key="Help_OpenLog">로그 열기</system:String>
+</ResourceDictionary>

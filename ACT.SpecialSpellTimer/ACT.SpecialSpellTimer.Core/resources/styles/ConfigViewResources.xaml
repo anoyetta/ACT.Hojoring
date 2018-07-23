@@ -1,0 +1,25 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+  <FontFamily x:Key="UIFont">
+    Consolas, Yu Gothic UI, Meiryo UI
+  </FontFamily>
+
+  <system:Double x:Key="UIFontSize">
+    17
+  </system:Double>
+
+  <FontWeight x:Key="UIFontWeight">
+    Normal
+  </FontWeight>
+
+  <FontStyle x:Key="UIFontStyle">
+    Normal
+  </FontStyle>
+
+  <FontStretch x:Key="UIFontStretch">
+    Normal
+  </FontStretch>
+</ResourceDictionary>

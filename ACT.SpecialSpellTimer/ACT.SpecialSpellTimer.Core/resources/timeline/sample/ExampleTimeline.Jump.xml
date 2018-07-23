@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<timeline>
+  <name>極白虎征魂戦 サンプル (ジャンプ版)</name>
+  <rev>rev2</rev>
+  <description>
+    ジャンプステートメントのテスト用
+    goto, call 及び t, t+load の動作確認用です。
+    実用向けではありません。
+  </description>
+  <zone>The Jade Stoa (Dummy)</zone>
+  <locale>JA</locale>
+
+  <!--
+  <a time="00:00" sync="オオオオオ……この衝動、もはや止められん！" call="フェーズ1" />
+  <a time="01:26" sync="駆けろ、我が半身ッ！ 歯向かう者どもに、牙と爪を突き立ててやれ！" call="フェーズ2" />
+  <a time="04:28" sync="ほう……凌いで見せたか…… ならば、全力を以て応えよう！" goto="最終フェーズ" />
+  -->
+  <t name="to Phase1" sync="オオオオオ……この衝動、もはや止められん！">
+    <load target="フェーズ1" truncate="true" />
+    <load target="フェーズ2" />
+    <load target="最終フェーズ" />
+  </t>
+
+  <!--
+  <t name="to Phase2" sync="駆けろ、我が半身ッ！ 歯向かう者どもに、牙と爪を突き立ててやれ！">
+    <load target="フェーズ2" />
+  </t>
+  -->
+
+  <!--
+  <t name="to Phase Final" sync="ならば、全力を以て応えよう！">
+    <load target="最終フェーズ" />
+  </t>
+  -->
+
+  <!-- i-notice の実験 -->
+  <t sync="は「天雷掌」の構え" text="天雷掌\n ➜タンク">
+  </t>
+
+  <s name="フェーズ1">
+    <a time="00:06" text="P1風雷波動" notice="次は、風雷波動。" />
+    <a time="00:12" text="P1天雷掌" notice="次は、天雷掌。">
+      <i-notice
+        image="Sample.png" />
+    </a>
+    <a time="00:22" text="P1呪縛雷" notice="次は、呪縛雷。">
+      <v-notice
+        text="呪縛雷"
+        duration="4" 
+        icon="HardAttack.png" />
+    </a>
+    <a time="00:27" sync="捉えたぞ！　叩きのめしてくれるわ！" />
+    <a enabled="false" time="00:29" text="Marker:003E" sync="1B:(?&lt;pcid&gt;.{8}):&lt;PC&gt;:0000:0000:003E:0000:0000:0000:" />
+    <a time="00:29" text="P1乾坤一擲" notice="次は、乾坤一擲。" />
+    <a time="00:37" text="P1呪縛雷" notice="次は、呪縛雷。" />
+    <a time="00:37" sync="まだだッ！　これで終いと思うなよ！" />
+    <a enabled="false" time="00:39" text="Marker:003E" sync="1B:(?&lt;pcid&gt;.{8}):&lt;PC&gt;:0000:0000:003E:0000:0000:0000:" />
+    <a time="00:39" text="P1乾坤一擲" notice="次は、乾坤一擲。" />
+    <a time="00:54" sync="P1吹けよ、荒れよ、我がアラミタマ！" />
+    <a time="00:55" text="P1無間地獄" notice="次は、無間地獄。" />
+    <a time="01:00" text="P1風雷波動" notice="次は、風雷波動。" />
+    <a time="01:07" text="P1祟り風" notice="次は、祟り風。" />
+    <a time="01:12" text="P1雷火一閃" notice="次は、雷火一閃。" />
+  </s>
+
+  <s name="フェーズ2">
+    <a time="00:02" text="P2半獣舞踏" notice="次は、半獣舞踏。" />
+    <a time="00:12" text="P2風雷波動" notice="次は、風雷波動。" />
+    <a time="00:17" text="P2鉄爪斬" notice="次は、鉄爪斬。" />
+    <a time="00:22" text="P2天雷掌" notice="次は、天雷掌。" />
+    <a time="00:23" text="P2鉄爪斬" notice="次は、鉄爪斬。" />
+    <a time="00:33" text="P2遠雷" notice="次は、遠雷。" />
+    <a time="00:36" text="P2白帝衝" notice="次は、白帝衝。" />
+    <a time="00:37" text="P2雷火一閃" notice="次は、雷火一閃。" />
+    <a time="00:41" text="P2風雷波動" notice="次は、風雷波動。" />
+    <a time="00:49" text="P2雷声" notice="次は、雷声。" />
+    <a time="00:51" text="P2雷轟" notice="次は、雷轟。" />
+    <a time="00:52" text="P2Add 荒魂" notice="次は、荒魂。" />
+    <a time="01:12" text="P2雷轟" notice="次は、雷轟。" />
+  </s>
+
+  <s name="最終フェーズ">
+    <a time="00:00" text="P3天雷掌" notice="次は、天雷掌。" />
+    <a time="00:10" sync="天つ雷よ、焼き払え！" />
+    <a time="00:11" text="P3天つ雷" notice="次は、天つ雷。" />
+    <a time="00:12" text="P3呪縛雷" notice="次は、呪縛雷。" />
+    <a time="00:17" sync="捉えたぞ！　叩きのめしてくれるわ！" />
+    <a time="00:19" text="P3乾坤一擲" notice="次は、乾坤一擲。" />
+    <a time="00:27" text="P3呪縛雷" notice="次は、呪縛雷。" />
+    <a time="00:28" sync="まだだッ！　これで終いと思うなよ！" />
+    <a time="00:29" text="P3乾坤一擲" notice="次は、乾坤一擲。" />
+    <a time="00:36" text="P3旋体脚" notice="次は、旋体脚。" />
+    <a time="00:50" sync="吹けよ、荒れよ、我がアラミタマ！" />
+    <a time="00:52" text="P3無間地獄" notice="次は、無間地獄。" />
+    <a time="00:57" text="P3風雷波動" notice="次は、風雷波動。" />
+    <a time="01:05" sync="天つ風よ、吹き荒べ！" />
+    <a time="01:06" text="P3爆弾低気圧" sync="白虎の「爆弾低気圧」" notice="次は、爆弾低気圧。" />
+    <a time="01:12" text="P3祟り風" notice="次は、祟り風。" />
+    <a time="01:16" text="P3雷火一閃" notice="次は、雷火一閃。" />
+    <a time="01:25" text="P3雷火一閃" notice="次は、雷火一閃。" />
+    <a time="01:34" sync="駆けろ、我が半身ッ！ 歯向かう者どもに、牙と爪を突き立ててやれ！" />
+    <a time="01:36" text="P3半獣舞踏" notice="次は、半獣舞踏。" />
+    <a time="01:51" text="P3遠雷" notice="次は、遠雷。" />
+    <a time="01:54" text="P3白帝衝" notice="次は、白帝衝。" />
+    <a time="01:56" text="P3雷火一閃" notice="次は、雷火一閃。" />
+    <a time="01:59" text="P3遠雷" notice="次は、遠雷。" />
+    <a time="02:04" text="P3雷火一閃" notice="次は、雷火一閃。" />
+    <a time="02:12" text="P3天雷掌" notice="次は、天雷掌。" />
+    <a time="02:16" text="P3鉄爪斬" notice="次は、鉄爪斬。" />
+    <a time="02:24" text="P3雷声" notice="次は、雷声。" />
+    <a time="02:26" text="P3雷轟" notice="次は、雷轟。" />
+    <a time="02:32" text="P3風雷波動" notice="次は、風雷波動。" />
+    <a time="02:46" sync="さあ、余興は終いぞ！" />
+    <a time="02:47" text="P3雷轟" notice="次は、雷轟。" />
+    <a time="02:55" text="P3雷火一閃" notice="次は、雷火一閃。" />
+    <a time="03:10" text="P3風雷波動" notice="次は、風雷波動。" />
+    <a time="03:24" sync="天つ風よ、吹き荒べ！" />
+    <a time="03:25" text="P3爆弾低気圧" notice="次は、爆弾低気圧。" />
+    <a time="03:27" text="P3天つ雷" notice="次は、天つ雷。" />
+    <a time="03:28" sync="天つ雷よ、焼き払え！" />
+    <a time="03:31" text="P3呪縛雷" notice="次は、呪縛雷。" />
+    <a time="03:36" sync="捉えたぞ！　叩きのめしてくれるわ！" />
+    <a time="03:37" text="P3乾坤一擲" notice="次は、乾坤一擲。" />
+    <a time="03:46" text="P3呪縛雷" notice="次は、呪縛雷。" />
+    <a time="03:46" sync="まだだッ！　これで終いと思うなよ！" />
+    <a time="03:47" text="P3乾坤一擲" notice="次は、乾坤一擲。" />
+    <a time="03:55" text="P3旋体脚" notice="次は、旋体脚。" />
+    <a time="04:09" text="P3天雷掌" notice="次は、天雷掌。" />
+    <a time="04:19" text="P3風雷波動" notice="次は、風雷波動。" />
+    <a time="04:31" text="P3遠雷" notice="次は、遠雷。" />
+    <a time="04:38" text="P3天雷掌" notice="次は、天雷掌。" />
+    <a time="04:50" sync="吹けよ、荒れよ、我がアラミタマ！" />
+    <a time="04:52" text="P3無間地獄" notice="次は、無間地獄。" />
+    <a time="04:57" text="P3風雷波動" notice="次は、風雷波動。" />
+    <a time="05:05" sync="天つ風よ、吹き荒べ！" />
+    <a time="05:06" text="P3爆弾低気圧" notice="次は、爆弾低気圧。" />
+    <a time="05:12" text="P3祟り風" notice="次は、祟り風。" />
+    <a time="05:17" text="P3雷火一閃" notice="次は、雷火一閃。" />
+    <a time="05:26" text="P3雷火一閃" notice="次は、雷火一閃。" />
+    <a time="05:41" text="P3風雷波動" notice="次は、風雷波動。" />
+    <a time="05:53" sync="天つ雷よ、焼き払え！" />
+    <a time="05:54" text="P3天つ雷" notice="次は、天つ雷。" />
+    <a time="05:55" text="P3呪縛雷" notice="次は、呪縛雷。" />
+    <a time="06:00" sync="捉えたぞ！　叩きのめしてくれるわ！" />
+    <a time="06:02" text="P3乾坤一擲" notice="次は、乾坤一擲。" />
+    <a time="06:10" sync="まだだッ！　これで終いと思うなよ！" />
+    <a time="06:10" text="P3呪縛雷" notice="次は、呪縛雷。" />
+    <a time="06:11" text="P3乾坤一擲" notice="次は、乾坤一擲。" />
+    <a time="06:19" text="P3旋体脚" notice="次は、旋体脚。" />
+    <a time="06:34" sync="塵芥と消えるがよい！" />
+    <a time="06:34" text="P3風雷波動" notice="次は、風雷波動。" />
+  </s>
+</timeline>

@@ -1,0 +1,259 @@
+<UserControl
+  x:Class="ACT.TTSYukkuri.Config.Views.YukkuriConfigView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:vm="clr-namespace:ACT.TTSYukkuri.Config.ViewModels"
+  xmlns:resources="clr-namespace:ACT.TTSYukkuri.resources"
+  xmlns:yukkuri="clr-namespace:ACT.TTSYukkuri.Yukkuri"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.TTSYukkuri.Config.Views"
+  mc:Ignorable="d"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  Background="White"
+  FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
+  FontSize="17"
+  d:DesignWidth="600"
+  d:DataContext="{d:DesignInstance Type=vm:YukkuriConfigViewModel, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
+      <fwcnv:BoolToCollapsedConverter x:Key="VisibilityConverter" />
+      <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+
+      <ObjectDataProvider
+        x:Key="AQBaseVoicesEnumlator"
+        MethodName="GetValues"
+        ObjectType="{x:Type system:Enum}">
+        <ObjectDataProvider.MethodParameters>
+          <x:Type TypeName="yukkuri:AQBaseVoices" />
+        </ObjectDataProvider.MethodParameters>
+      </ObjectDataProvider>
+
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../resources/strings/Strings.Yukkuri.ja-JP.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <ScrollViewer
+    HorizontalScrollBarVisibility="Disabled"
+    VerticalScrollBarVisibility="Auto">
+
+    <StackPanel Orientation="Vertical">
+      <Label Content="{DynamicResource Yukkuri_Preset}" />
+      <ComboBox
+        x:Name="PresetsComboBox"
+        HorizontalAlignment="Left"
+        MinWidth="350"
+        ItemsSource="{Binding Presets, Mode=OneWay}"
+        DisplayMemberPath="Display"
+        SelectedValuePath="Key"
+        SelectedValue="{Binding Config.Preset, Mode=TwoWay}">
+      </ComboBox>
+
+      <Label Margin="0 10 0 0" Content="{DynamicResource Yukkuri_BaseVoice}" />
+      <ComboBox
+        HorizontalAlignment="Left"
+        MinWidth="150"
+        ItemsSource="{Binding Source={StaticResource AQBaseVoicesEnumlator}, Mode=OneWay}"
+        SelectedItem="{Binding Config.BaseVoice, Mode=TwoWay}">
+      </ComboBox>
+
+      <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="100"
+          Content="{DynamicResource Yukkuri_Speed}" />
+        <Label
+          Margin="5 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=SpeedSlider, Path=Value, Mode=OneWay, StringFormat=N0}" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="SpeedSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="1"
+          LargeChange="1"
+          Minimum="50" Maximum="300"
+          Width="250"
+          Value="{Binding Config.Speed, Mode=TwoWay}" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="100"
+          Content="{DynamicResource Yukkuri_Volume}" />
+        <Label
+          Margin="5 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=VolumeSlider, Path=Value, Mode=OneWay, StringFormat=N0}" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="VolumeSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="1"
+          LargeChange="1"
+          Minimum="0" Maximum="300"
+          Width="250"
+          Value="{Binding Config.Volume, Mode=TwoWay}" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="100"
+          Content="{DynamicResource Yukkuri_Pitch}" />
+        <Label
+          Margin="5 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=PitchSlider, Path=Value, Mode=OneWay, StringFormat=N0}" />
+        <Slider
+          Margin="5 0 0 0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Width="250"
+          x:Name="PitchSlider"
+          SmallChange="1"
+          LargeChange="1"
+          Minimum="0" Maximum="300"
+          Value="{Binding Config.Pitch, Mode=TwoWay}" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="100"
+          Content="{DynamicResource Yukkuri_Accent}" />
+        <Label
+          Margin="5 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=AccentSlider, Path=Value, Mode=OneWay, StringFormat=N0}" />
+        <Slider
+          Margin="5 0 0 0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Width="250"
+          x:Name="AccentSlider"
+          SmallChange="1"
+          LargeChange="1"
+          Minimum="0" Maximum="200"
+          Value="{Binding Config.Accent, Mode=TwoWay}" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="100"
+          Content="{DynamicResource Yukkuri_LMD}" />
+        <Label
+          Margin="5 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=LMDSlider, Path=Value, Mode=OneWay, StringFormat=N0}" />
+        <Slider
+          Margin="5 0 0 0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Width="250"
+          x:Name="LMDSlider"
+          SmallChange="1"
+          LargeChange="1"
+          Minimum="0" Maximum="200"
+          Value="{Binding Config.LMD, Mode=TwoWay}" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="100"
+          Content="{DynamicResource Yukkuri_FSC}" />
+        <Label
+          Margin="5 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=FSCSlider, Path=Value, Mode=OneWay, StringFormat=N0}" />
+        <Slider
+          Margin="5 0 0 0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Width="250"
+          x:Name="FSCSlider"
+          SmallChange="1"
+          LargeChange="1"
+          Minimum="50" Maximum="200"
+          Value="{Binding Config.FSC, Mode=TwoWay}" />
+      </StackPanel>
+
+      <Label
+        Margin="0 5 0 0"
+        Content="{DynamicResource Yukkuri_KanjiTranslation}" />
+      <StackPanel Orientation="Horizontal">
+        <RadioButton
+          Margin="5 0 0 0"
+          VerticalContentAlignment="Center"
+          Content="{DynamicResource Yukkuri_KanjiTranslationIME}"
+          IsChecked="{Binding Config.UseIME, Mode=TwoWay}" />
+        <RadioButton
+          Margin="20 0 0 0"
+          VerticalContentAlignment="Center"
+          Content="{DynamicResource Yukkuri_KanjiTranslationKanji2Koe}"
+          IsChecked="{Binding Config.UseKanji2Koe, Mode=TwoWay}" />
+      </StackPanel>
+
+      <TextBlock Margin="5 15 0 0" HorizontalAlignment="Left">
+        <Hyperlink
+          NavigateUri="https://www.a-quest.com/archive/manual/siyo_onseikigou.pdf"
+          ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=NavigateUri, Mode=OneWay}"
+          RequestNavigate="OnRequestNavigate">
+          <TextBlock Text="{DynamicResource Yukkuri_Reference}" />
+        </Hyperlink>
+      </TextBlock>
+
+      <TextBlock Margin="5 5 0 0" HorizontalAlignment="Left">
+        <Hyperlink Command="{Binding OpenUserDictionaryEditorCommand, Mode=OneWay}">
+          <TextBlock Text="{DynamicResource Yukkuri_EditDictionary}" />
+        </Hyperlink>
+      </TextBlock>
+
+      <TextBlock
+        Margin="5 20 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource Yukkuri_Discription}" />
+
+      <TextBlock
+        Margin="5 10 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource Yukkuri_YukkuriVer}" />
+      <TextBlock
+        Margin="5 0 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource Yukkuri_Kanji2KoeVer}" />
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

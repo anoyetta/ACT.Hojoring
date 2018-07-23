@@ -1,0 +1,309 @@
+<Window
+  x:Class="ACT.SpecialSpellTimer.Views.POSView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.Views"
+  xmlns:cnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:ctrl="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  mc:Ignorable="d"
+  Title="POS"
+  WindowStyle="None"
+  AllowsTransparency="True"
+  Background="Transparent"
+  ShowInTaskbar="False"
+  SizeToContent="WidthAndHeight"
+  TextOptions.TextFormattingMode="Ideal"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.BitmapScalingMode="Fant"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.EdgeMode="Unspecified"
+  FontFamily="Arial"
+  FontWeight="Black"
+  FontSize="16"
+  Topmost="True"
+  Top="{Binding Config.POSViewY, Mode=TwoWay}"
+  Left="{Binding Config.POSViewX, Mode=TwoWay}"
+  d:DataContext="{d:DesignInstance Type=local:POSViewModel, IsDesignTimeCreatable=True}">
+
+  <Window.Resources>
+    <cnv:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter" />
+  </Window.Resources>
+
+  <Grid
+    x:Name="BaseGrid"
+    Margin="10"
+    Background="#01FFFFFF">
+
+    <Grid.LayoutTransform>
+      <ScaleTransform
+        ScaleX="{Binding Config.POSViewScale, Mode=OneWay}"
+        ScaleY="{Binding Config.POSViewScale, Mode=OneWay}" />
+    </Grid.LayoutTransform>
+
+    <StackPanel
+      Orientation="Vertical">
+
+      <DockPanel VerticalAlignment="Center">
+        <ctrl:LightOutlineTextBlock
+          Margin="0 1 0 0"
+          VerticalAlignment="Center"
+          Text="X"
+          Fill="Red"
+          Stroke="White"
+          StrokeThickness="3"
+          BlurRadius="0"
+          FontSize="10" />
+
+        <ctrl:LightOutlineTextBlock
+          x:Name="XText"
+          Width="70"
+          HorizontalContentAlignment="Right"
+          VerticalAlignment="Center"
+          Text="999.99"
+          Fill="White"
+          Stroke="#e2041b"
+          StrokeThickness="2"
+          BlurRadius="0" />
+      </DockPanel>
+
+      <DockPanel VerticalAlignment="Center">
+        <ctrl:LightOutlineTextBlock
+          Margin="0 1 0 0"
+          VerticalAlignment="Center"
+          Text="Y"
+          Fill="Green"
+          Stroke="White"
+          StrokeThickness="3"
+          BlurRadius="0"
+          FontSize="10" />
+
+        <ctrl:LightOutlineTextBlock
+          x:Name="YText"
+          Width="70"
+          HorizontalContentAlignment="Right"
+          VerticalAlignment="Center"
+          Text="999.99"
+          Fill="White"
+          Stroke="#82ae46"
+          StrokeThickness="2"
+          BlurRadius="0" />
+      </DockPanel>
+
+      <DockPanel VerticalAlignment="Center">
+        <ctrl:LightOutlineTextBlock
+          Margin="0 1 0 0"
+          VerticalAlignment="Center"
+          Text="Z"
+          Fill="Blue"
+          Stroke="White"
+          StrokeThickness="3"
+          BlurRadius="0"
+          FontSize="10" />
+
+        <ctrl:LightOutlineTextBlock
+          x:Name="ZText"
+          Width="70"
+          HorizontalContentAlignment="Right"
+          VerticalAlignment="Center"
+          Text="999.99"
+          Fill="White"
+          Stroke="#0095d9"
+          StrokeThickness="2"
+          BlurRadius="0" />
+      </DockPanel>
+
+      <StackPanel
+        x:Name="DebugInfoPanel"
+        Visibility="{Binding Config.POSViewVisibleDebugInfo, Mode=OneWay, Converter={StaticResource BoolToCollapsedConverter}}"
+        Margin="0 5 0 0">
+
+        <StackPanel.Resources>
+          <Style x:Key="DebugInfo" TargetType="ctrl:LightOutlineTextBlock">
+            <Setter Property="FontFamily" Value="Arial" />
+            <Setter Property="FontWeight" Value="Black" />
+            <Setter Property="Fill" Value="White" />
+            <Setter Property="Stroke" Value="Navy" />
+            <Setter Property="StrokeThickness" Value="1" />
+          </Style>
+        </StackPanel.Resources>
+
+        <ctrl:LightOutlineTextBlock
+          Style="{StaticResource DebugInfo}"
+          Text="POS Raw"
+          FontSize="7" />
+
+        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
+          <ctrl:LightOutlineTextBlock
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            Text="X"
+            FontSize="6" />
+          <ctrl:LightOutlineTextBlock
+            x:Name="XRaw"
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            HorizontalAlignment="Right"
+            Text="999.99"
+            FontSize="10" />
+        </DockPanel>
+
+        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
+          <ctrl:LightOutlineTextBlock
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            Text="Y"
+            FontSize="6" />
+          <ctrl:LightOutlineTextBlock
+            x:Name="YRaw"
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            HorizontalAlignment="Right"
+            Text="999.99"
+            FontSize="10" />
+        </DockPanel>
+
+        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
+          <ctrl:LightOutlineTextBlock
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            Text="Z"
+            FontSize="6" />
+          <ctrl:LightOutlineTextBlock
+            x:Name="ZRaw"
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            HorizontalAlignment="Right"
+            Text="999.99"
+            FontSize="10" />
+        </DockPanel>
+
+        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
+          <ctrl:LightOutlineTextBlock
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            Text="head"
+            FontSize="6" />
+          <ctrl:LightOutlineTextBlock
+            x:Name="Head"
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            HorizontalAlignment="Right"
+            Text="999.99"
+            FontSize="10" />
+        </DockPanel>
+
+        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
+          <ctrl:LightOutlineTextBlock
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            Text="head(d)"
+            FontSize="6" />
+          <ctrl:LightOutlineTextBlock
+            x:Name="HeadDegree"
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            HorizontalAlignment="Right"
+            Text="999.99"
+            FontSize="10" />
+        </DockPanel>
+
+        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
+          <ctrl:LightOutlineTextBlock
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            Text="⬆"
+            FontSize="15"
+            RenderTransformOrigin="0.5 0.5">
+            <ctrl:LightOutlineTextBlock.RenderTransform>
+              <RotateTransform Angle="{Binding HeadDegree, Mode=OneWay}" />
+            </ctrl:LightOutlineTextBlock.RenderTransform>
+          </ctrl:LightOutlineTextBlock>
+        </DockPanel>
+
+        <ctrl:LightOutlineTextBlock
+          Margin="0 8 0 0"
+          Style="{StaticResource DebugInfo}"
+          Text="Camera"
+          FontSize="7" />
+
+        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
+          <ctrl:LightOutlineTextBlock
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            Text="mode"
+            FontSize="6" />
+          <ctrl:LightOutlineTextBlock
+            x:Name="CameraMode"
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            HorizontalAlignment="Right"
+            Text="0"
+            FontSize="10" />
+        </DockPanel>
+
+        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
+          <ctrl:LightOutlineTextBlock
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            Text="head"
+            FontSize="6" />
+          <ctrl:LightOutlineTextBlock
+            x:Name="CameraHead"
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            HorizontalAlignment="Right"
+            Text="0"
+            FontSize="10" />
+        </DockPanel>
+
+        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
+          <ctrl:LightOutlineTextBlock
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            Text="head(d)"
+            FontSize="6" />
+          <ctrl:LightOutlineTextBlock
+            x:Name="CameraHeadDegree"
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            HorizontalAlignment="Right"
+            Text="0"
+            FontSize="10" />
+        </DockPanel>
+
+        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
+          <ctrl:LightOutlineTextBlock
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            Text="⬆"
+            FontSize="15"
+            RenderTransformOrigin="0.5 0.5">
+            <ctrl:LightOutlineTextBlock.RenderTransform>
+              <RotateTransform Angle="{Binding CameraDegree, Mode=OneWay}" />
+            </ctrl:LightOutlineTextBlock.RenderTransform>
+          </ctrl:LightOutlineTextBlock>
+        </DockPanel>
+
+        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
+          <ctrl:LightOutlineTextBlock
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            Text="altitude"
+            FontSize="6" />
+          <ctrl:LightOutlineTextBlock
+            x:Name="CameraAlt"
+            VerticalAlignment="Center"
+            Style="{StaticResource DebugInfo}"
+            HorizontalAlignment="Right"
+            Text="0"
+            FontSize="10" />
+        </DockPanel>
+      </StackPanel>
+    </StackPanel>
+  </Grid>
+</Window>

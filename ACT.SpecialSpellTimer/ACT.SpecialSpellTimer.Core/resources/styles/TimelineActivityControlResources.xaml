@@ -1,0 +1,230 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  xmlns:views="clr-namespace:ACT.SpecialSpellTimer.RaidTimeline.Views"
+  xmlns:timeline="clr-namespace:ACT.SpecialSpellTimer.RaidTimeline">
+
+  <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+
+  <Style x:Key="BasePanel" TargetType="StackPanel">
+  </Style>
+
+  <Style x:Key="BarStyleGrid" TargetType="Grid">
+    <Setter Property="Visibility" Value="{Binding Path=StyleModel.IsBarStyle, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+  </Style>
+
+  <Style x:Key="BarGrid" TargetType="Grid">
+    <Setter Property="Grid.Column" Value="1" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <Style x:Key="Icon" TargetType="Image">
+    <Setter Property="Grid.Column" Value="0" />
+    <Setter Property="Margin" Value="0 0 5 0" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+    <Setter Property="Source" Value="{Binding Path=IconImage, Mode=OneWay}" />
+    <Setter Property="Height" Value="{Binding Path=StyleModel.IconSize, Mode=OneWay}" />
+    <Setter Property="Width" Value="{Binding Path=StyleModel.IconSize, Mode=OneWay}" />
+    <Setter Property="Visibility" Value="{Binding Path=ExistsIcon, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+  </Style>
+
+  <Style x:Key="ActivityTextPanel" TargetType="StackPanel">
+    <Setter Property="Grid.Row" Value="0" />
+    <Setter Property="Grid.Column" Value="0" />
+    <Setter Property="Margin" Value="0 0 40 0" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <Style x:Key="ActivityText" TargetType="controls:LightOutlineTextBlock">
+    <Setter Property="Text" Value="{Binding Path=Text, Mode=OneWay}" />
+    <Setter Property="FontFamily" Value="{Binding Path=StyleModel.Font.FontFamily, Mode=OneWay}" />
+    <Setter Property="FontWeight" Value="{Binding Path=StyleModel.Font.Weight, Mode=OneWay}" />
+    <Setter Property="FontStyle" Value="{Binding Path=StyleModel.Font.Style, Mode=OneWay}" />
+    <Setter Property="FontStretch" Value="{Binding Path=StyleModel.Font.Stretch, Mode=OneWay}" />
+    <Setter Property="FontSize" Value="{Binding Path=StyleModel.Font.Size, Mode=OneWay}" />
+    <Setter Property="Fill" Value="{Binding Path=StyleModel.ColorBrush, Mode=OneWay}" />
+    <Setter Property="Stroke" Value="{Binding Path=StyleModel.OutlineColorBrush, Mode=OneWay}" />
+    <Setter Property="StrokeThickness" Value="{Binding Path=StyleModel.Font.OutlineThickness, Mode=OneWay}" />
+    <Setter Property="BlurRadius" Value="{Binding Path=StyleModel.Font.BlurRadius, Mode=OneWay}" />
+    <Setter Property="BlurOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="StrokeOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+  </Style>
+
+  <Style x:Key="JumpDestinationText" TargetType="controls:LightOutlineTextBlock">
+    <Setter Property="Margin" Value="10 0 0 0" />
+    <Setter Property="Text" Value="{Binding Path=JumpDestination, StringFormat=➜ {0}, Mode=OneWay}" />
+    <Setter Property="FontFamily" Value="{Binding Path=StyleModel.Font.FontFamily, Mode=OneWay}" />
+    <Setter Property="FontWeight" Value="{Binding Path=StyleModel.Font.Weight, Mode=OneWay}" />
+    <Setter Property="FontStyle" Value="{Binding Path=StyleModel.Font.Style, Mode=OneWay}" />
+    <Setter Property="FontStretch" Value="{Binding Path=StyleModel.Font.Stretch, Mode=OneWay}" />
+    <Setter Property="FontSize" Value="{Binding Path=StyleModel.Font.Size, Mode=OneWay}" />
+    <Setter Property="Fill" Value="{Binding Path=StyleModel.ColorBrush, Mode=OneWay}" />
+    <Setter Property="Stroke" Value="{Binding Path=StyleModel.OutlineColorBrush, Mode=OneWay}" />
+    <Setter Property="StrokeThickness" Value="{Binding Path=StyleModel.Font.OutlineThickness, Mode=OneWay}" />
+    <Setter Property="BlurRadius" Value="{Binding Path=StyleModel.Font.BlurRadius, Mode=OneWay}" />
+    <Setter Property="BlurOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="StrokeOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="LayoutTransform">
+      <Setter.Value>
+        <ScaleTransform
+          ScaleX="0.75"
+          ScaleY="0.75" />
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <DataTrigger Binding="{Binding Path=JumpDestination, Mode=OneWay}" Value="">
+        <Setter Property="Visibility" Value="Collapsed" />
+      </DataTrigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="Bar" TargetType="controls:RichProgressBar">
+    <Setter Property="Grid.Row" Value="1" />
+    <Setter Property="Grid.Column" Value="0" />
+    <Setter Property="Grid.ColumnSpan" Value="2" />
+    <Setter Property="Margin" Value="0 1 0 0" />
+    <Setter Property="IsStrokeBackground" Value="False" />
+    <Setter Property="Fill" Value="{Binding Path=StyleModel.BarColorBrush, Mode=OneWay}" />
+    <Setter Property="Stroke" Value="{Binding Path=StyleModel.BarColorBrush, Mode=OneWay}" />
+    <Setter Property="Height" Value="{Binding Path=StyleModel.BarHeight, Mode=OneWay}" />
+    <Setter Property="Progress" Value="{Binding Path=Progress, Mode=OneWay}" />
+    <Setter Property="BlurOpacity" Value="0" />
+    <Setter Property="BlurRadius" Value="0" />
+    <Style.Triggers>
+      <Trigger Property="Progress" Value="0">
+        <Setter Property="Visibility" Value="Hidden" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="CounterText" TargetType="controls:LightOutlineTextBlock">
+    <Setter Property="Grid.Row" Value="0" />
+    <Setter Property="Grid.Column" Value="1" />
+    <Setter Property="Margin" Value="0 0 2 0" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="HorizontalAlignment" Value="Right" />
+    <Setter Property="Text" Value="{Binding Path=RemainTimeText, Mode=OneWay}" />
+    <Setter Property="FontFamily" Value="{Binding Path=StyleModel.Font.FontFamily, Mode=OneWay}" />
+    <Setter Property="FontWeight" Value="{Binding Path=StyleModel.Font.Weight, Mode=OneWay}" />
+    <Setter Property="FontStyle" Value="{Binding Path=StyleModel.Font.Style, Mode=OneWay}" />
+    <Setter Property="FontStretch" Value="{Binding Path=StyleModel.Font.Stretch, Mode=OneWay}" />
+    <Setter Property="FontSize" Value="{Binding Path=StyleModel.Font.Size, Mode=OneWay}" />
+    <Setter Property="Fill" Value="{Binding Path=StyleModel.ColorBrush, Mode=OneWay}" />
+    <Setter Property="Stroke" Value="{Binding Path=StyleModel.OutlineColorBrush, Mode=OneWay}" />
+    <Setter Property="StrokeThickness" Value="{Binding Path=StyleModel.Font.OutlineThickness, Mode=OneWay}" />
+    <Setter Property="BlurRadius" Value="{Binding Path=StyleModel.Font.BlurRadius, Mode=OneWay}" />
+    <Setter Property="BlurOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="StrokeOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+  </Style>
+
+  <Style x:Key="CircleStyleGrid" TargetType="Grid">
+    <Setter Property="Visibility" Value="{Binding Path=StyleModel.IsCircleStyle, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+  </Style>
+
+  <Style x:Key="CircleGrid" TargetType="Grid">
+    <Setter Property="Grid.Column" Value="2" />
+  </Style>
+
+  <Style x:Key="IconCircle" TargetType="Image">
+    <Setter Property="Grid.Column" Value="0" />
+    <Setter Property="Margin" Value="0 0 5 0" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+    <Setter Property="Source" Value="{Binding Path=IconImage, Mode=OneWay}" />
+    <Setter Property="Height" Value="{Binding Path=StyleModel.IconSize, Mode=OneWay}" />
+    <Setter Property="Width" Value="{Binding Path=StyleModel.IconSize, Mode=OneWay}" />
+    <Setter Property="Visibility" Value="{Binding Path=ExistsIcon, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+  </Style>
+
+  <Style x:Key="ActivityTextPanelCircle" TargetType="StackPanel">
+    <Setter Property="Grid.Column" Value="1" />
+    <Setter Property="Margin" Value="0 0 40 0" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <Style x:Key="ActivityTextCircle" TargetType="controls:LightOutlineTextBlock">
+    <Setter Property="Text" Value="{Binding Path=Text, Mode=OneWay}" />
+    <Setter Property="FontFamily" Value="{Binding Path=StyleModel.Font.FontFamily, Mode=OneWay}" />
+    <Setter Property="FontWeight" Value="{Binding Path=StyleModel.Font.Weight, Mode=OneWay}" />
+    <Setter Property="FontStyle" Value="{Binding Path=StyleModel.Font.Style, Mode=OneWay}" />
+    <Setter Property="FontStretch" Value="{Binding Path=StyleModel.Font.Stretch, Mode=OneWay}" />
+    <Setter Property="FontSize" Value="{Binding Path=StyleModel.Font.Size, Mode=OneWay}" />
+    <Setter Property="Fill" Value="{Binding Path=StyleModel.ColorBrush, Mode=OneWay}" />
+    <Setter Property="Stroke" Value="{Binding Path=StyleModel.OutlineColorBrush, Mode=OneWay}" />
+    <Setter Property="StrokeThickness" Value="{Binding Path=StyleModel.Font.OutlineThickness, Mode=OneWay}" />
+    <Setter Property="BlurRadius" Value="{Binding Path=StyleModel.Font.BlurRadius, Mode=OneWay}" />
+    <Setter Property="BlurOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="StrokeOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+  </Style>
+
+  <Style x:Key="JumpDestinationTextCircle" TargetType="controls:LightOutlineTextBlock">
+    <Setter Property="Margin" Value="20 0 0 0" />
+    <Setter Property="Text" Value="{Binding Path=JumpDestination, StringFormat=➡ {0}, Mode=OneWay}" />
+    <Setter Property="FontFamily" Value="{Binding Path=StyleModel.Font.FontFamily, Mode=OneWay}" />
+    <Setter Property="FontWeight" Value="{Binding Path=StyleModel.Font.Weight, Mode=OneWay}" />
+    <Setter Property="FontStyle" Value="{Binding Path=StyleModel.Font.Style, Mode=OneWay}" />
+    <Setter Property="FontStretch" Value="{Binding Path=StyleModel.Font.Stretch, Mode=OneWay}" />
+    <Setter Property="FontSize" Value="{Binding Path=StyleModel.Font.Size, Mode=OneWay}" />
+    <Setter Property="Fill" Value="{Binding Path=StyleModel.ColorBrush, Mode=OneWay}" />
+    <Setter Property="Stroke" Value="{Binding Path=StyleModel.OutlineColorBrush, Mode=OneWay}" />
+    <Setter Property="StrokeThickness" Value="{Binding Path=StyleModel.Font.OutlineThickness, Mode=OneWay}" />
+    <Setter Property="BlurRadius" Value="{Binding Path=StyleModel.Font.BlurRadius, Mode=OneWay}" />
+    <Setter Property="BlurOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="StrokeOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="LayoutTransform">
+      <Setter.Value>
+        <ScaleTransform
+          ScaleX="0.75"
+          ScaleY="0.75" />
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <DataTrigger Binding="{Binding Path=JumpDestination, Mode=OneWay}" Value="">
+        <Setter Property="Visibility" Value="Collapsed" />
+      </DataTrigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="Circle" TargetType="controls:ProgressCircle">
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Fill" Value="{Binding Path=StyleModel.BarColorBrush, Mode=OneWay}" />
+    <Setter Property="Stroke" Value="Transparent" />
+    <Setter Property="Thickness" Value="{Binding Path=StyleModel.BarHeight, Mode=OneWay}" />
+    <Setter Property="Radius" Value="{Binding ElementName=CounterTextCircle, Path=ActualHeight, Mode=OneWay}" />
+    <Setter Property="Progress" Value="{Binding Path=Progress, Mode=OneWay}" />
+    <Setter Property="IsCCW" Value="True" />
+    <Setter Property="BlurOpacity" Value="0" />
+    <Setter Property="BlurRadius" Value="0" />
+    <Style.Triggers>
+      <Trigger Property="Progress" Value="0">
+        <Setter Property="Visibility" Value="Hidden" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="CounterTextCircle" TargetType="controls:LightOutlineTextBlock">
+    <Setter Property="Margin" Value="0 0 2 0" />
+    <Setter Property="TextAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="Text" Value="{Binding Path=RemainTimeText, Mode=OneWay}" />
+    <Setter Property="FontFamily" Value="{Binding Path=StyleModel.Font.FontFamily, Mode=OneWay}" />
+    <Setter Property="FontWeight" Value="{Binding Path=StyleModel.Font.Weight, Mode=OneWay}" />
+    <Setter Property="FontStyle" Value="{Binding Path=StyleModel.Font.Style, Mode=OneWay}" />
+    <Setter Property="FontStretch" Value="{Binding Path=StyleModel.Font.Stretch, Mode=OneWay}" />
+    <Setter Property="FontSize" Value="{Binding Path=StyleModel.Font.Size, Mode=OneWay}" />
+    <Setter Property="Fill" Value="{Binding Path=StyleModel.ColorBrush, Mode=OneWay}" />
+    <Setter Property="Stroke" Value="{Binding Path=StyleModel.OutlineColorBrush, Mode=OneWay}" />
+    <Setter Property="StrokeThickness" Value="{Binding Path=StyleModel.Font.OutlineThickness, Mode=OneWay}" />
+    <Setter Property="BlurRadius" Value="{Binding Path=StyleModel.Font.BlurRadius, Mode=OneWay}" />
+    <Setter Property="BlurOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+    <Setter Property="StrokeOpacity" Value="{Binding Path=StyleModel.OutlineColor.ScA, Mode=OneWay}" />
+  </Style>
+</ResourceDictionary>

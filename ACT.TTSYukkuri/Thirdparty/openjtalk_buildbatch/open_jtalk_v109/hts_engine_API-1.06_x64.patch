@@ -1,0 +1,12 @@
+diff -ru hts_engine_API_original/lib/HTS_audio.c hts_engine_API/lib/HTS_audio.c
+--- hts_engine_API_original/lib/HTS_audio.c	2011-12-20 11:11:29 +0900
++++ hts_engine_API/lib/HTS_audio.c	2012-04-18 22:47:19 +0900
+@@ -164,7 +164,7 @@
+    audio->waveformatex.nBlockAlign = AUDIO_CHANNEL * audio->waveformatex.wBitsPerSample / 8;
+    audio->waveformatex.nAvgBytesPerSec = sampling_rate * audio->waveformatex.nBlockAlign;
+    /* open */
+-   error = waveOutOpen(&audio->hwaveout, WAVE_MAPPER, &audio->waveformatex, (DWORD) HTS_Audio_callback_function, (DWORD) audio, CALLBACK_FUNCTION);
++   error = waveOutOpen(&audio->hwaveout, WAVE_MAPPER, &audio->waveformatex, (DWORD_PTR) HTS_Audio_callback_function, (DWORD_PTR) audio, CALLBACK_FUNCTION);
+    if (error != MMSYSERR_NOERROR)
+       HTS_error(0, "hts_engine: Failed to open your output audio device to play waveform.\n");
+ 

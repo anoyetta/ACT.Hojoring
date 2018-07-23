@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.SpecialSpellTimer.Core", "ACT.SpecialSpellTimer.Core\ACT.SpecialSpellTimer.Core.csproj", "{EA12D333-F0ED-4524-8BAD-B986B0137EA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XIVDBDownloader", "XIVDBDownloader\XIVDBDownloader.csproj", "{C3FA9195-3381-4622-97EB-D0E1CA7C8B14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFXIV.Framework", "..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj", "{22EBF8A4-EED1-4CD1-99EB-99665163A315}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{E2873F90-2125-4C9D-ABCD-CF4DBDD6ECE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.SpecialSpellTimer", "ACT.SpecialSpellTimer\ACT.SpecialSpellTimer.csproj", "{CCF72089-92FA-4AFB-BDE7-869CA0E394F9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C3FA9195-3381-4622-97EB-D0E1CA7C8B14} = {C3FA9195-3381-4622-97EB-D0E1CA7C8B14}
+		{22EBF8A4-EED1-4CD1-99EB-99665163A315} = {22EBF8A4-EED1-4CD1-99EB-99665163A315}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "deploy", "deploy\deploy.csproj", "{9F031C94-8011-408E-B916-19C484EA95FF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C3FA9195-3381-4622-97EB-D0E1CA7C8B14} = {C3FA9195-3381-4622-97EB-D0E1CA7C8B14}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA12D333-F0ED-4524-8BAD-B986B0137EA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA12D333-F0ED-4524-8BAD-B986B0137EA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA12D333-F0ED-4524-8BAD-B986B0137EA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA12D333-F0ED-4524-8BAD-B986B0137EA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3FA9195-3381-4622-97EB-D0E1CA7C8B14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3FA9195-3381-4622-97EB-D0E1CA7C8B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3FA9195-3381-4622-97EB-D0E1CA7C8B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3FA9195-3381-4622-97EB-D0E1CA7C8B14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22EBF8A4-EED1-4CD1-99EB-99665163A315}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22EBF8A4-EED1-4CD1-99EB-99665163A315}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22EBF8A4-EED1-4CD1-99EB-99665163A315}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22EBF8A4-EED1-4CD1-99EB-99665163A315}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCF72089-92FA-4AFB-BDE7-869CA0E394F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCF72089-92FA-4AFB-BDE7-869CA0E394F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCF72089-92FA-4AFB-BDE7-869CA0E394F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCF72089-92FA-4AFB-BDE7-869CA0E394F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F031C94-8011-408E-B916-19C484EA95FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F031C94-8011-408E-B916-19C484EA95FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F031C94-8011-408E-B916-19C484EA95FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F031C94-8011-408E-B916-19C484EA95FF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{22EBF8A4-EED1-4CD1-99EB-99665163A315} = {E2873F90-2125-4C9D-ABCD-CF4DBDD6ECE7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {32BB6EC1-12B3-4408-AE6B-AF2190C8F2FE}
+	EndGlobalSection
+EndGlobal

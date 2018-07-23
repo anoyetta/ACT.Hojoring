@@ -1,0 +1,267 @@
+<Window
+  x:Class="ACT.UltraScouter.Views.ActionView"
+  Title="TargetActionView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="clr-namespace:ACT.UltraScouter.Views"
+  xmlns:cnv="clr-namespace:ACT.UltraScouter.Views.Converters"
+  xmlns:vm="clr-namespace:ACT.UltraScouter.ViewModels"
+  xmlns:ctrl="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:debug="debug-mode"
+  mc:Ignorable="d"
+  AllowsTransparency="True"
+  ShowInTaskbar="False"
+  SizeToContent="WidthAndHeight"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  Topmost="True"
+  WindowStyle="None"
+  Background="Transparent"
+  Left="{Binding Path=Config.Location.X, Mode=TwoWay}"
+  Top="{Binding Path=Config.Location.Y, Mode=TwoWay}"
+  d:DataContext="{d:DesignInstance Type=vm:ActionViewModel, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+  <Window.Resources>
+    <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />
+    <fwcnv:SolidColorBrushToColorConverter x:Key="BrushToColorConverter" />
+    <fwcnv:BoolToCollapsedConverter x:Key="BoolToVisibilityConverter" />
+    <fwcnv:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
+    <fwcnv:AddConverter x:Key="AddConverter" />
+    <fwcnv:MultipleConverter x:Key="MultipleConverter" />
+    <fwcnv:ThicknessToMarginConverter x:Key="ThicknessToMarginConverter" />
+
+    <cnv:StrokeThicknessToBlurRadiusConverter x:Key="StrokeThicknessToBlurRadiusConverter" />
+  </Window.Resources>
+
+  <Grid>
+    <!-- Square Style Grid -->
+    <Grid
+      x:Name="SquareStyle"
+      Visibility="{Binding Config.IsSquareStyle, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+
+      <Grid
+        Margin="13"
+        Visibility="{Binding Model.IsCasting, Converter={StaticResource BoolToHiddenConverter}, Mode=OneWay}">
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <!--バーの領域確保用の透明ラベル -->
+        <Label
+          Grid.Row="1" Grid.Column="0"
+          Margin="0 3 0 3"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Top"
+          Height="{Binding Config.ProgressBar.Height, Mode=OneWay}"
+          Width="{Binding Config.ProgressBar.Width, Mode=OneWay}"
+          Visibility="Hidden" />
+
+        <!--バー -->
+        <StackPanel
+          Grid.Row="1"
+          Grid.Column="0">
+          <ctrl:RichProgressBar
+            x:Name="Bar"
+            Margin="0 4 0 0"
+            VerticalAlignment="Top"
+            Visibility="{Binding Config.IsSquareStyle, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+            Height="{Binding Config.ProgressBar.Height, Mode=OneWay}"
+            Width="{Binding Config.ProgressBar.Width, Mode=OneWay}"
+            Fill="{Binding ProgressBarForeColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+            Stroke="{Binding ProgressBarStrokeColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+            IsStrokeBackground="False" />
+        </StackPanel>
+
+        <!--テキスト -->
+        <DockPanel Grid.Row="0" Grid.Column="0">
+
+          <!-- スキル名 -->
+          <ctrl:LightOutlineTextBlock
+            DockPanel.Dock="Left"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Margin="2 0 15 0"
+            x:Name="ActionTextBlock"
+            Fill="{Binding Path=Config.DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+            Stroke="{Binding Path=Config.DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+            StrokeThickness="{Binding Path=Config.DisplayText.Font.OutlineThickness, Mode=OneWay}"
+            Text="{Binding Model.CastSkillName, Mode=OneWay}"
+            FontFamily="{Binding Path=Config.DisplayText.Font.FontFamily, Mode=OneWay}"
+            FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay}"
+            FontStretch="{Binding Path=Config.DisplayText.Font.Stretch, Mode=OneWay}"
+            FontWeight="{Binding Path=Config.DisplayText.Font.Weight, Mode=OneWay}"
+            FontStyle="{Binding Path=Config.DisplayText.Font.Style, Mode=OneWay}"
+            Visibility="{Binding Config.CastingActionNameVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+            BlurRadius="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}"
+            BlurOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
+            StrokeOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
+            TextWrapping="NoWrap" />
+
+          <Grid
+            DockPanel.Dock="Right"
+            VerticalAlignment="Bottom">
+            <Grid.RowDefinitions>
+              <RowDefinition />
+              <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <!-- 残り秒数 -->
+            <ctrl:LightOutlineTextBlock
+              Grid.Row="0"
+              HorizontalAlignment="Right"
+              Margin="0 0 2 0"
+              x:Name="RemainTextBlock"
+              Fill="{Binding ElementName=ActionTextBlock, Path=Fill, Mode=OneWay}"
+              Stroke="{Binding ElementName=ActionTextBlock, Path=Stroke, Mode=OneWay}"
+              StrokeThickness="{Binding ElementName=ActionTextBlock, Path=StrokeThickness, Mode=OneWay}"
+              FontFamily="{Binding ElementName=ActionTextBlock, Path=FontFamily, Mode=OneWay}"
+              FontStretch="{Binding ElementName=ActionTextBlock, Path=FontStretch, Mode=OneWay}"
+              FontWeight="{Binding ElementName=ActionTextBlock, Path=FontWeight, Mode=OneWay}"
+              FontStyle="{Binding ElementName=ActionTextBlock, Path=FontStyle, Mode=OneWay}"
+              Text="{Binding CastingRemainText, Mode=OneWay}"
+              FontSize="{Binding CounterFontSize, Mode=OneWay}"
+              Visibility="{Binding Config.CastingRemainVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+              BlurRadius="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}"
+              BlurOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
+              StrokeOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
+              TextWrapping="NoWrap" />
+
+            <!-- 進捗率 -->
+            <ctrl:LightOutlineTextBlock
+              Grid.Row="1"
+              HorizontalAlignment="Right"
+              Margin="0 0 2 0"
+              x:Name="RateTextBlock"
+              Fill="{Binding ElementName=ActionTextBlock, Path=Fill, Mode=OneWay}"
+              Stroke="{Binding ElementName=ActionTextBlock, Path=Stroke, Mode=OneWay}"
+              StrokeThickness="{Binding ElementName=ActionTextBlock, Path=StrokeThickness, Mode=OneWay}"
+              FontFamily="{Binding ElementName=ActionTextBlock, Path=FontFamily, Mode=OneWay}"
+              FontStretch="{Binding ElementName=ActionTextBlock, Path=FontStretch, Mode=OneWay}"
+              FontWeight="{Binding ElementName=ActionTextBlock, Path=FontWeight, Mode=OneWay}"
+              FontStyle="{Binding ElementName=ActionTextBlock, Path=FontStyle, Mode=OneWay}"
+              Text="{Binding CastingProgressRateToDisplay, Mode=OneWay, StringFormat=N0}"
+              FontSize="{Binding CounterFontSize, Mode=OneWay}"
+              Visibility="{Binding Config.CastingRateVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+              BlurRadius="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}"
+              BlurOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
+              StrokeOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
+              TextWrapping="NoWrap" />
+          </Grid>
+        </DockPanel>
+      </Grid>
+    </Grid>
+    <!-- end Square Style Grid -->
+
+    <!-- Circle Style Grid -->
+    <Grid
+      x:Name="CircleStyle"
+      Margin="16"
+      Visibility="{Binding Config.IsCircleStyle, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+
+      <Grid
+        Visibility="{Binding Model.IsCasting, Converter={StaticResource BoolToHiddenConverter}, Mode=OneWay}">
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+          <!-- プログレスサークル -->
+          <ctrl:ProgressCircle
+            Canvas.ZIndex="-10"
+            x:Name="Circle"
+            Visibility="{Binding Config.IsCircleStyle, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+            Fill="{Binding ProgressBarForeColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+            Stroke="{Binding ProgressBarStrokeColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+            Radius="{Binding Config.ProgressBar.Width, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.5}"
+            Thickness="{Binding Config.ProgressBar.Height, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.8}"
+            Progress="{Binding ElementName=Bar, Path=Progress, Mode=OneWay}"
+            IsCCW="{Binding Config.IsCircleReverse, Mode=OneWay}" />
+        </Grid>
+
+        <StackPanel
+          Orientation="Vertical"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Margin="0 0 0 0">
+
+          <!-- 領域確保用の透明ラベル -->
+          <Label
+            Margin="0 0 0 0"
+            HorizontalAlignment="Center"
+            Height="0"
+            Width="600"
+            Visibility="Hidden" />
+
+          <!-- スキル名 -->
+          <ctrl:LightOutlineTextBlock
+            Canvas.ZIndex="0"
+            HorizontalAlignment="Center"
+            Margin="0 0 0 0"
+            Fill="{Binding ElementName=ActionTextBlock, Path=Fill, Mode=OneWay}"
+            Stroke="{Binding ElementName=ActionTextBlock, Path=Stroke, Mode=OneWay}"
+            StrokeThickness="{Binding ElementName=ActionTextBlock, Path=StrokeThickness, Mode=OneWay}"
+            FontFamily="{Binding ElementName=ActionTextBlock, Path=FontFamily, Mode=OneWay}"
+            FontSize="{Binding ElementName=ActionTextBlock, Path=FontSize, Mode=OneWay}"
+            FontStretch="{Binding ElementName=ActionTextBlock, Path=FontStretch, Mode=OneWay}"
+            FontWeight="{Binding ElementName=ActionTextBlock, Path=FontWeight, Mode=OneWay}"
+            FontStyle="{Binding ElementName=ActionTextBlock, Path=FontStyle, Mode=OneWay}"
+            Text="{Binding ElementName=ActionTextBlock, Path=Text, Mode=OneWay}"
+            Visibility="{Binding ElementName=ActionTextBlock, Path=Visibility, Mode=OneWay}"
+            BlurRadius="{Binding ElementName=ActionTextBlock, Path=BlurRadius, Mode=OneWay}"
+            BlurOpacity="{Binding ElementName=ActionTextBlock, Path=BlurOpacity, Mode=OneWay}"
+            StrokeOpacity="{Binding ElementName=ActionTextBlock, Path=StrokeOpacity, Mode=OneWay}"
+            TextWrapping="NoWrap" />
+
+          <!-- 残り秒数 -->
+          <ctrl:LightOutlineTextBlock
+            Canvas.ZIndex="0"
+            HorizontalAlignment="Center"
+            Margin="0 0 0 0"
+            Fill="{Binding ElementName=RemainTextBlock, Path=Fill, Mode=OneWay}"
+            Stroke="{Binding ElementName=RemainTextBlock, Path=Stroke, Mode=OneWay}"
+            StrokeThickness="{Binding ElementName=RemainTextBlock, Path=StrokeThickness, Mode=OneWay}"
+            FontFamily="{Binding ElementName=RemainTextBlock, Path=FontFamily, Mode=OneWay}"
+            FontSize="{Binding ElementName=RemainTextBlock, Path=FontSize, Mode=OneWay}"
+            FontStretch="{Binding ElementName=RemainTextBlock, Path=FontStretch, Mode=OneWay}"
+            FontWeight="{Binding ElementName=RemainTextBlock, Path=FontWeight, Mode=OneWay}"
+            FontStyle="{Binding ElementName=RemainTextBlock, Path=FontStyle, Mode=OneWay}"
+            Text="{Binding ElementName=RemainTextBlock, Path=Text, Mode=OneWay}"
+            Visibility="{Binding ElementName=RemainTextBlock, Path=Visibility, Mode=OneWay}"
+            BlurRadius="{Binding ElementName=RemainTextBlock, Path=BlurRadius, Mode=OneWay}"
+            BlurOpacity="{Binding ElementName=RemainTextBlock, Path=BlurOpacity, Mode=OneWay}"
+            StrokeOpacity="{Binding ElementName=RemainTextBlock, Path=StrokeOpacity, Mode=OneWay}"
+            TextWrapping="NoWrap" />
+
+          <!-- 進捗率 -->
+          <ctrl:LightOutlineTextBlock
+            Canvas.ZIndex="0"
+            HorizontalAlignment="Center"
+            Margin="0 0 0 0"
+            Fill="{Binding ElementName=RateTextBlock, Path=Fill, Mode=OneWay}"
+            Stroke="{Binding ElementName=RateTextBlock, Path=Stroke, Mode=OneWay}"
+            StrokeThickness="{Binding ElementName=RateTextBlock, Path=StrokeThickness, Mode=OneWay}"
+            FontFamily="{Binding ElementName=RateTextBlock, Path=FontFamily, Mode=OneWay}"
+            FontSize="{Binding ElementName=RateTextBlock, Path=FontSize, Mode=OneWay}"
+            FontStretch="{Binding ElementName=RateTextBlock, Path=FontStretch, Mode=OneWay}"
+            FontWeight="{Binding ElementName=RateTextBlock, Path=FontWeight, Mode=OneWay}"
+            FontStyle="{Binding ElementName=RateTextBlock, Path=FontStyle, Mode=OneWay}"
+            Text="{Binding ElementName=RateTextBlock, Path=Text, Mode=OneWay}"
+            Visibility="{Binding ElementName=RateTextBlock, Path=Visibility, Mode=OneWay}"
+            BlurRadius="{Binding ElementName=RateTextBlock, Path=BlurRadius, Mode=OneWay}"
+            BlurOpacity="{Binding ElementName=RateTextBlock, Path=BlurOpacity, Mode=OneWay}"
+            StrokeOpacity="{Binding ElementName=RateTextBlock, Path=StrokeOpacity, Mode=OneWay}"
+            TextWrapping="NoWrap" />
+        </StackPanel>
+      </Grid>
+    </Grid>
+    <!-- end Circle Style Grid -->
+  </Grid>
+</Window>

@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<timeline>
+  <name>次元の狭間オメガ零式：シグマ編3</name>
+  <rev>rev5</rev>
+  <description>
+    シグマ3層向けの実用可能なタイムラインです。
+    notice, notice-o などは自分の好みに合せて使用してください。
+
+    designed by Hojoring Forum
+    https://discord.gg/n6Mut3F
+  </description>
+  <zone>Sigmascape V3.0 (Savage)</zone>
+  <locale>JA</locale>
+  <entry>開幕</entry>
+  <start>戦闘開始！</start>
+
+  <default target-element="Activity" target-attr="notice-d" value="Both" />
+  <default target-element="Activity" target-attr="notice-o" value="-5" />
+  
+  <!-- 重要なアクティビティを通知するトリガ begin -->
+  <t text="アームハンマー\n ➜ ${_pc}" sync="starts using アームハンマー on [pc]" notice="アームハンマー">
+    <v-notice 
+      duration="4" 
+      icon="HardAttack.png" />
+  </t>
+  <!-- 重要なアクティビティを通知するトリガ end -->
+
+  <s name="開幕">
+    <a time="7" text="魔導レーザー" sync="「魔導レーザー」の構え" notice="次はレーザー" icon="避ける.png" />
+    <a time="16" text="アームハンマー" notice="次はアームハンマー" icon="単体強攻撃.png" />
+    <a time="24" text="アトミックレイ" sync="「アトミックレイ」の構え" notice="次はアトミックレイ" icon="離れる.png" />
+    <a time="41" text="ミサイル" sync="の「ミサイル」" icon="マーカー.png" />
+    <a time="44" text="分岐ローディング" sync="は「ローディング」の構え。" notice="次はロード" icon="分岐.png" />
+    <a time="54" text="分岐待ち" icon="分岐.png" />
+
+    <t text="分岐＞ダダルマー" sync="の「衝撃波」" notice="ダダルマ">
+      <load target="ダダルマスタート" truncate="true" />
+      <load target="ウィルス" />
+      <load target="エアフォースペースト" />
+    </t>
+
+    <t text="分岐＞ビブリオタフ" sync="「ローディング：デーモン」の構え" notice="ビブリオ">
+      <load target="ビブリオタフスタート" truncate="true" />
+      <load target="ウィルス" />
+      <load target="オルトロスペースト" />
+    </t>
+  </s>
+
+  <s name="ダダルマスタート">
+    <a time="0" text="「衝撃波」" sync="の「衝撃波」" notice-o="0" icon="ノックバック.png" />
+    <a time="3" text="ローディング：ミサイル" sync="「ローディング：ミサイル」の構え" icon="避ける.png" />
+    <a time="13" text="チャクラバースト" notice="次はチャクラバースト" icon="散開A.png" />
+    <a time="20" text="実体化プログラム(ダダルマ)" sync="「実体化プログラム」の構え" notice="次はダダルマー" />
+    <a time="22" text="ダダルマー" />
+    <a time="33" text="魔導レーザー" notice="次はレーザー" icon="避ける.png" />
+    <a time="37" text="オーラキャノン" notice="次はオーラキャノン、西へ" />
+    <a time="47" text="オーラキャノン" notice="次はオーラキャノン、西へ" />
+    <a time="49" text="アームハンマー" sync="「アームハンマー」の構え" notice="次はアームハンマー" icon="単体強攻撃.png" />
+    <a time="66" text="ミサイル" sync="の「ミサイル」" icon="マーカー.png" />
+    <a time="71" text="魔導レーザー" sync="「魔導レーザー」の構え" notice="次はレーザー" />
+    <a time="78" text="スキップ・ローディング(図書館)" sync="「スキップ・ローディング」の構え" notice="次は図書館" />
+    <a time="86" text="ローディング：デーモン" sync="「ローディング：デーモン」の構え" />
+    <a time="96" text="リバース・ローディング(エア)" notice="次はエアフォース" />
+    <a time="104" text="拡散レーザー" sync="ガーディアンの「拡散レーザー」" notice="次は拡散レーザー、離れる" icon="離れる.png" />
+    <a time="107" text="プログラム・コピー(エア)" sync="「プログラム・コピー」の構え" notice="次はエアフォース" />
+    <a time="115" text="ローディング：ミサイル" sync="「ローディング：ミサイル」の構え" />
+    <a time="125" text="実体化プログラム(エア)" sync="「実体化プログラム」の構え" />
+    <a time="127" text="エアフォース" />
+    <a time="140" text="爆弾設置" sync="「爆弾設置」の構え" notice="次は爆弾設置" icon="爆弾.png" />
+    <a time="141" text="拡散レーザー(エア)" notice="次は拡散レーザー、離れる" icon="避ける.png" />
+    <a time="150" text="アームハンマー" sync="「アームハンマー」の構え" notice="次はアームハンマー" icon="単体強攻撃.png" />
+    <a time="159" text="魔導レーザー" sync="「魔導レーザー」の構え" notice="次はレーザー" icon="避ける.png" />
+    <a time="165" text="ローディング(タコ)" notice="次はオルトロス" icon="散開A.png" />
+    <a time="183" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="193" text="ローディング：たこあし" sync="「ローディング：たこあし」の構え" notice="次はたこあし" icon="重ね捨て.png" />
+    <a time="200" text="たこあし" sync="の「たこあし」" />
+    <a time="205" text="実体化プログラム(タコ南東)" sync="「実体化プログラム」の構え" />
+    <a time="207" text="オルトロス" />
+    <a time="215" text="ストンスキン" notice="次はストンスキン" />
+    <a time="224" text="チェーンガン" notice="次はチェーンガン" icon="避ける.png" />
+    <a time="227" text="メインカノン" sync="「メインカノン」の構え" />
+    <a time="241" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体強攻撃.png" />
+    <a time="248" text="スキップ・ローディング(ウィルス)" notice="次はウィルス" icon="散開A.png" />
+  </s>
+
+  <s name="ビブリオタフスタート">
+    <a time="0" text="ビブリオタフ→ダダルマー" sync="「ローディング：デーモン」の構え。" />
+    <a time="10" text="スキップ・ローディング" sync="「スキップ・ローディング」の構え" />
+    <a time="22" text="ローディング：ミサイル" sync="「ローディング：ミサイル」の構え" />
+    <a time="31" text="チャクラバースト" notice="次はチャクラバースト" icon="散開A.png" />
+    <a time="39" text="実体化プログラム(ダダルマ)" sync="「実体化プログラム」の構え" notice="だだるまくるよ" />
+    <a time="41" text="ダダルマー" />
+    <a time="52" text="魔導レーザー" sync="「魔導レーザー」の構え" notice="次はレーザー" icon="避ける.png" />
+    <a time="56" text="オーラキャノン" notice="次はオーラキャノン、西へ" />
+    <a time="66" text="オーラキャノン" notice="次はオーラキャノン、西へ" />
+    <a time="68" text="アームハンマー" sync="「アームハンマー」の構え" notice="次はアームハンマー" icon="単体強攻撃.png" />
+    <a time="85" text="ミサイル" sync="の「ミサイル」" icon="マーカー.png" />
+    <a time="90" text="魔導レーザー" sync="「魔導レーザー」の構え" notice="次はレーザー" icon="避ける.png" />
+    <a time="96" text="リバース・ローディング(タコ)" notice="次はオルトロス" icon="散開A.png" />
+    <a time="107" text="プログラム・コピー(オルトロス)" />
+    <a time="115" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="125" text="ローディング：たこあし" sync="「ローディング：たこあし」の構え" notice="次はたこあし" icon="重ね捨て.png" />
+    <a time="132" text="たこあし" sync="の「たこあし」" />
+    <a time="137" text="実体化プログラム(タコ北東)" sync="「実体化プログラム」の構え" />
+    <a time="139" text="タコ" />
+    <a time="147" text="ストンスキン" notice="次はストンスキン" />
+    <a time="156" text="チェーンガン" notice="次はチェーンガン" icon="避ける.png" />
+    <a time="159" text="メインカノン" sync="「メインカノン」の構え" />
+    <a time="173" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="180" text="ローディング(エア)" notice="次はエアフォース" />
+    <a time="188" text="拡散レーザー" sync="ガーディアンの「拡散レーザー」" notice="次は拡散レーザー、離れる" icon="離れる.png" />
+    <a time="200" text="ローディング：ミサイル" sync="「ローディング：ミサイル」の構え" icon="避ける.png" />
+    <a time="210" text="実体化プログラム(エア)" sync="「実体化プログラム」の構え" />
+    <a time="212" text="エアフォース" />
+    <a time="225" text="爆弾設置" sync="「爆弾設置」の構え" icon="爆弾.png" />
+    <a time="226" text="拡散レーザー(エア)" notice="次は拡散レーザー、離れる" />
+    <a time="235" text="アームハンマー" sync="「アームハンマー」の構え" notice="次はアームハンマー" icon="単体強攻撃.png" />
+    <a time="243" text="魔導レーザー" sync="「魔導レーザー」の構え" notice="次はレーザー" icon="避ける.png" />
+    <a time="250" text="スキップ・ローディング(ウィルス)" sync="「スキップ・ローディング」の構え。" notice="次はウィルス" icon="散開A.png" />
+  </s>
+
+  <s name="ウィルス">
+    <a time="0" text="スキップ・ローディング(ウィルス)" icon="ペア処理.png" />
+    <a time="27" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="56" text="ミサイル" sync="の「ミサイル」" icon="マーカー.png" />
+    <a time="39" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="62" text="ウィルス兵器" sync="「ウィルス兵器」の構え" notice="次はウィルス兵器" />
+    <a time="68" text="魔導レーザー" sync="「魔導レーザー」の構え" notice="次はレーザー" icon="避ける.png" />
+    <a time="82" text="チェーンガン" notice="次はチェーンガン" icon="避ける.png" />
+    <a time="85" text="メインカノン" sync="「メインカノン」の構え" />
+    <a time="90" text="動体レーダー" notice="次は動体レーダー、移動禁止" icon="移動禁止.png" />
+    <a time="95" text="アームハンマー" sync="「アームハンマー」の構え" notice="次はアームハンマー" icon="単体強攻撃.png" />
+    <a time="103" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="110" text="プログラム・ペースト" sync="「プログラム・ペースト」の構え" />
+    <a time="105" text="ペースト確認" icon="注意.png" />
+  </s>
+
+  <s name="エアフォースペースト">
+    <a time="0" text="エアフォースペースト" />
+    <a time="9" text="拡散レーザー" sync="ガーディアンの「拡散レーザー」" notice="次は拡散レーザー、離れる" icon="離れる.png" />
+    <a time="11" text="動体レーダー" notice="次は動体レーダー、移動禁止" icon="移動禁止.png" />
+    <a time="16" text="拡散プラズマ" sync="拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="26" text="実体化プログラム(エア)" sync="「実体化プログラム」の構え" />
+    <a time="29" text="エアフォースPOP" />
+    <a time="33" text="爆弾設置" sync="「爆弾設置」の構え" notice="次は爆弾設置" icon="爆弾.png" />
+    <a time="44" text="拡散レーザー(エア)" notice="次は拡散レーザー、離れる" icon="避ける.png" />
+    <a time="47" text="アームハンマー" sync="「アームハンマー」の構え" notice="次はアームハンマー" icon="単体強攻撃.png" />
+    <a time="55" text="拡散プラズマ" sync="拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="64" text="分岐ローディング" icon="分岐.png" />
+    <a time="74" text="分岐待ち" icon="分岐.png" />
+
+    <t text="分岐>ダダルマー" sync="の「衝撃波」">
+      <load target="ダダルマ→ビブリオタフ" truncate="true" />
+      <load target="最終オルトロス" />
+    </t>
+
+    <t text="分岐>ビブリオタフ" sync="「ローディング：デーモン」の構え">
+      <load target="ビブリオタフ→ダダルマ" truncate="true" />
+      <load target="最終オルトロス" />
+    </t>
+  </s>
+
+  <s name="オルトロスペースト">
+    <a time="0" text="たこすみ" icon="散開A.png" />
+    <a time="10" text="ローディング：たこあし" icon="重ね捨て.png" />
+    <a time="15" text="爆弾設置" sync="「爆弾設置」の構え" notice="次は爆弾設置、たこあし、アトミック" icon="爆弾.png" />
+    <a time="17" text="たこあし" icon="避ける.png" />
+    <a time="21" text="アトミックレイ" sync="「アトミックレイ」の構え" icon="離れる.png" />
+    <a time="29" text="魔導レーザー" sync="「魔導レーザー」の構え" notice="次はレーザー" icon="避ける.png" />
+    <a time="37" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="47" text="実体化プログラム(タコ南西)" sync="「実体化プログラム」の構え" />
+    <a time="49" text="タコ" />
+    <a time="53" text="ローディング：ミサイル" sync="「ローディング：ミサイル」の構え" icon="避ける.png" />
+    <a time="57" text="ストンスキン" notice="次はストンスキン" />
+    <a time="65" text="チェーンガン" notice="次はチェーンガン" icon="避ける.png" />
+    <a time="68" text="メインカノン" />
+    <a time="80" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="88" text="分岐ローディング" icon="分岐.png" />
+    <a time="98" text="分岐待ち" icon="分岐.png" />
+
+    <t text="分岐>ダダルマー" sync="の「衝撃波」">
+      <load target="ダダルマ→ビブリオタフ" truncate="true" />
+      <load target="最終エアフォース" />
+    </t>
+
+    <t text="分岐>ビブリオタフ" sync="「ローディング：デーモン」の構え">
+      <load target="ビブリオタフ→ダダルマ" truncate="true" />
+      <load target="最終エアフォース" />
+    </t>
+  </s>
+
+  <s name="ビブリオタフ→ダダルマ">
+    <a time="0" text="ビブリオタフ→ダダルマ" />
+    <a time="6" text="動体レーダー" notice="次は動体レーダー、移動禁止" icon="移動禁止.png" />
+    <a time="18" text="実体化プログラム(ビブリ)" sync="「実体化プログラム」の構え" />
+    <a time="20" text="ビブリオタフPOP" />
+    <a time="25" text="拡散プラズマ" notice="次は全体範囲3連続" icon="全体攻撃.png" />
+    <a time="32" text="拡散プラズマ" icon="全体攻撃.png" />
+    <a time="38" text="拡散プラズマ" icon="全体攻撃.png" />
+    <a time="52" text="ミサイル" sync="の「ミサイル」" icon="マーカー.png" />
+    <a time="57" text="魔導レーザー" sync="「魔導レーザー」の構え" notice="次はレーザー" icon="避ける.png" />
+    <a time="65" text="拡散プラズマ" sync="「拡散プラズマ」の構え。" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="75" text="リバース・ローディング(ダダルマ)" notice="次はダダルマー" />
+    <a time="84" text="衝撃波" sync="の「衝撃波」" icon="ノックバック.png" />
+    <a time="87" text="動体レーダー" notice="次は動体レーダー、移動禁止" icon="移動禁止.png" />
+    <a time="90" text="ローディング：ミサイル" sync="「ローディング：ミサイル」の構え" icon="避ける.png" />
+    <a time="96" text="アトミックレイ" sync="「アトミックレイ」の構え" notice="次はアトミックレイ" icon="離れる.png" />
+    <a time="104" text="チャクラバースト" icon="散開A.png" />
+    <a time="120" text="ミサイル" sync="の「ミサイル」" icon="マーカー.png" />
+    <a time="121" text="魔導レーザー" sync="「魔導レーザー」の構え" notice="次はレーザー" icon="避ける.png" />
+    <a time="129" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="140" text="分岐ローディング" icon="分岐.png" />
+  </s>
+
+  <s name="ダダルマ→ビブリオタフ">
+    <a time="0" text="ダダルマ→ビブリオタフ" />
+    <a time="3" text="動体レーダー" notice="次は動体レーダー、移動禁止" icon="移動禁止.png" />
+    <a time="6" text="ローディング：ミサイル" sync="「ローディング：ミサイル」の構え" icon="避ける.png" />
+    <a time="12" text="アトミックレイ" sync="「アトミックレイ」の構え" notice="次はアトミックレイ" icon="離れる.png" />
+    <a time="20" text="チャクラバースト" notice="次はチャクラバースト" icon="散開A.png" />
+    <a time="36" text="ミサイル" sync="の「ミサイル」" icon="マーカー.png" />
+    <a time="37" text="魔導レーザー" sync="「魔導レーザー」の構え" notice="次はレーザー" icon="避ける.png" />
+    <a time="45" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="55" text="リバース・ローディング(ビブリ)" notice="次は図書館" />
+    <a time="60" text="ローディング：デーモン" sync="「ローディング：デーモン」の構え" />
+    <a time="66" text="動体レーダー" notice="次は動体レーダー、移動禁止" icon="移動禁止.png" />
+    <a time="78" text="実体化プログラム(ビブリ)" sync="「実体化プログラム」の構え" notice="ビブちゃんわくよ、LBの準備" />
+    <a time="80" text="ビブリオタフPOP" />
+    <a time="85" text="拡散プラズマ" notice="次は全体範囲3連続" icon="全体攻撃.png" />
+    <a time="92" text="拡散プラズマ" icon="全体攻撃.png" />
+    <a time="98" text="拡散プラズマ" icon="全体攻撃.png" />
+    <a time="112" text="ミサイル" sync="の「ミサイル」" icon="マーカー.png" />
+    <a time="117" text="魔導レーザー" sync="「魔導レーザー」の構え" notice="次はレーザー" icon="避ける.png" />
+    <a time="125" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="136" text="分岐ローディング" icon="分岐.png" />
+  </s>
+
+  <s name="最終オルトロス">
+    <a time="0" text="最終オルトロス北東" />
+    <a time="0" text="ローディング(タコ)" sync="「ローディング」の構え" />
+    <a time="10" text="ローディング：たこあし" sync="「ローディング：たこあし」の構え" notice="次はたこあし" icon="重ね捨て.png" />
+    <a time="16" text="爆弾設置" sync="「爆弾設置」の構え" notice="次は爆弾設置" icon="爆弾.png" />
+    <a time="18" text="たこあし" sync="の「たこあし」" icon="避ける.png" />
+    <a time="22" text="アトミックレイ" sync="「アトミックレイ」の構え" notice="次はアトミック、レーザー、プラズマ" icon="離れる.png" />
+    <a time="30" text="魔導レーザー" notice="次はレーザー" icon="避ける.png" />
+    <a time="39" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="50" text="実体化プログラム(タコ北東)" sync="「実体化プログラム」の構え" />
+    <a time="52" text="オルトロス" />
+    <a time="56" text="ローディング：ミサイル" sync="「ローディング：ミサイル」の構え" />
+    <a time="60" text="ストンスキン" notice="次はストンスキン" />
+    <a time="69" text="チェーンガン" notice="次はチェーンガン" icon="避ける.png" />
+    <a time="72" text="メインカノン" />
+    <a time="82" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" icon="全体攻撃.png" />
+    <a time="92" text="抹殺プログラム" notice="次で時間切れ" />
+    <a time="102" text="時間切れ" icon="時間切れ.png" />
+  </s>
+
+  <s name="最終エアフォース">
+    <a time="0" text="最終エアフォース" />
+    <a time="0" text="ローディング(エア)" sync="「ローディング」の構え" />
+    <a time="8" text="拡散レーザー" sync="ガーディアンの「拡散レーザー」"  notice="次は拡散レーザー、離れる" icon="離れる.png" />
+    <a time="11" text="動体レーダー" notice="次は動体レーダー、移動禁止" icon="移動禁止.png" />
+    <a time="15" text="拡散プラズマ" sync="「拡散プラズマ」の構え。" notice="全体範囲まで5秒" notice-o="-5" icon="全体攻撃.png" />
+    <a time="25" text="実体化プログラム(エア)" sync="「実体化プログラム」の構え" />
+    <a time="28" text="エアフォースPOP" />
+    <a time="32" text="爆弾設置" sync="「爆弾設置」の構え" notice="次は爆弾設置" icon="爆弾.png" />
+    <a time="43" text="拡散レーザー(エア)" notice="次は拡散レーザー、離れる" icon="避ける.png" />
+    <a time="46" text="アームハンマー" sync="「アームハンマー」の構え" notice="次はアームハンマー" icon="単体強攻撃.png" />
+    <a time="54" text="拡散プラズマ" sync="「拡散プラズマ」の構え" notice="全体範囲まで5秒" notice-o="-5" icon="全体攻撃.png" />
+    <a time="64" text="抹殺プログラム" notice="次で時間切れ" />
+    <a time="74" text="時間切れ" icon="時間切れ.png" />
+  </s>
+</timeline>

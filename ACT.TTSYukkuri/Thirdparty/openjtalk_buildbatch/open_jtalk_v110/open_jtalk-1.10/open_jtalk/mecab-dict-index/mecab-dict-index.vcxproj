@@ -1,0 +1,908 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_EUC_JP|Win32">
+      <Configuration>Debug_EUC_JP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_EUC_JP|x64">
+      <Configuration>Debug_EUC_JP</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_UTF_8|Win32">
+      <Configuration>Debug_UTF_8</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_UTF_8|x64">
+      <Configuration>Debug_UTF_8</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_EUC_JP|Win32">
+      <Configuration>Release_EUC_JP</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_EUC_JP|x64">
+      <Configuration>Release_EUC_JP</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_UTF_8|Win32">
+      <Configuration>Release_UTF_8</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_UTF_8|x64">
+      <Configuration>Release_UTF_8</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4F6BA5B1-F6F5-4ED2-B6FD-18E49CD22163}</ProjectGuid>
+    <RootNamespace>mecabdictindex</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_EUC_JP|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_UTF_8|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_EUC_JP|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_UTF_8|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_EUC_JP|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_UTF_8|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_EUC_JP|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_UTF_8|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_EUC_JP|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_UTF_8|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_EUC_JP|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_UTF_8|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_EUC_JP|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_UTF_8|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_EUC_JP|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_UTF_8|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_UTF_8|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_UTF_8|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_EUC_JP|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_EUC_JP|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_UTF_8|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_UTF_8|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_EUC_JP|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_EUC_JP|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(OutDir)mecab.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)"
+set DICDIR=dic
+set OPENJTALK_INSTALLDIR=c:\open_jtalk
+for /F "tokens=1,2 delims==" %25%25a in (build.info) do (
+if "%25%25a"=="DICDIR" set DICDIR=%25%25b
+if "%25%25a"=="OPENJTALK_INSTALLDIR" set OPENJTALK_INSTALLDIR=%25%25b
+)
+cd "$(SolutionDir)mecab-naist-jdic"
+if $(Configuration)==Release "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Debug "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Release_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Debug_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Release_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if $(Configuration)==Debug_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if not exist "%25OPENJTALK_INSTALLDIR%25" md "%25OPENJTALK_INSTALLDIR%25"
+cd "%25OPENJTALK_INSTALLDIR%25"
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd "$(SolutionDir).."
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd ..
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(OutDir)mecab.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)"
+set DICDIR=dic
+set OPENJTALK_INSTALLDIR=c:\open_jtalk
+for /F "tokens=1,2 delims==" %25%25a in (build.info) do (
+if "%25%25a"=="DICDIR" set DICDIR=%25%25b
+if "%25%25a"=="OPENJTALK_INSTALLDIR" set OPENJTALK_INSTALLDIR=%25%25b
+)
+cd "$(SolutionDir)mecab-naist-jdic"
+if $(Configuration)==Release "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Debug "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Release_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Debug_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Release_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if $(Configuration)==Debug_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if not exist "%25OPENJTALK_INSTALLDIR%25" md "%25OPENJTALK_INSTALLDIR%25"
+cd "%25OPENJTALK_INSTALLDIR%25"
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd "$(SolutionDir).."
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd ..
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(OutDir)mecab.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)"
+set DICDIR=dic
+set OPENJTALK_INSTALLDIR=c:\open_jtalk
+for /F "tokens=1,2 delims==" %25%25a in (build.info) do (
+if "%25%25a"=="DICDIR" set DICDIR=%25%25b
+if "%25%25a"=="OPENJTALK_INSTALLDIR" set OPENJTALK_INSTALLDIR=%25%25b
+)
+cd "$(SolutionDir)mecab-naist-jdic"
+if $(Configuration)==Release "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Debug "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Release_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Debug_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Release_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if $(Configuration)==Debug_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if not exist "%25OPENJTALK_INSTALLDIR%25" md "%25OPENJTALK_INSTALLDIR%25"
+cd "%25OPENJTALK_INSTALLDIR%25"
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd "$(SolutionDir).."
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd ..
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(OutDir)mecab.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)"
+set DICDIR=dic
+set OPENJTALK_INSTALLDIR=c:\open_jtalk
+for /F "tokens=1,2 delims==" %25%25a in (build.info) do (
+if "%25%25a"=="DICDIR" set DICDIR=%25%25b
+if "%25%25a"=="OPENJTALK_INSTALLDIR" set OPENJTALK_INSTALLDIR=%25%25b
+)
+cd "$(SolutionDir)mecab-naist-jdic"
+if $(Configuration)==Release "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Debug "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Release_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Debug_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Release_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if $(Configuration)==Debug_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if not exist "%25OPENJTALK_INSTALLDIR%25" md "%25OPENJTALK_INSTALLDIR%25"
+cd "%25OPENJTALK_INSTALLDIR%25"
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd "$(SolutionDir).."
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd ..
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_UTF_8|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(OutDir)mecab.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)"
+set DICDIR=dic
+set OPENJTALK_INSTALLDIR=c:\open_jtalk
+for /F "tokens=1,2 delims==" %25%25a in (build.info) do (
+if "%25%25a"=="DICDIR" set DICDIR=%25%25b
+if "%25%25a"=="OPENJTALK_INSTALLDIR" set OPENJTALK_INSTALLDIR=%25%25b
+)
+cd "$(SolutionDir)mecab-naist-jdic"
+if $(Configuration)==Release "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Debug "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Release_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Debug_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Release_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if $(Configuration)==Debug_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if not exist "%25OPENJTALK_INSTALLDIR%25" md "%25OPENJTALK_INSTALLDIR%25"
+cd "%25OPENJTALK_INSTALLDIR%25"
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd "$(SolutionDir).."
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd ..
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_UTF_8|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(OutDir)mecab.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)"
+set DICDIR=dic
+set OPENJTALK_INSTALLDIR=c:\open_jtalk
+for /F "tokens=1,2 delims==" %25%25a in (build.info) do (
+if "%25%25a"=="DICDIR" set DICDIR=%25%25b
+if "%25%25a"=="OPENJTALK_INSTALLDIR" set OPENJTALK_INSTALLDIR=%25%25b
+)
+cd "$(SolutionDir)mecab-naist-jdic"
+if $(Configuration)==Release "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Debug "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Release_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Debug_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Release_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if $(Configuration)==Debug_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if not exist "%25OPENJTALK_INSTALLDIR%25" md "%25OPENJTALK_INSTALLDIR%25"
+cd "%25OPENJTALK_INSTALLDIR%25"
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd "$(SolutionDir).."
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd ..
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_EUC_JP|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(OutDir)mecab.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)"
+set DICDIR=dic
+set OPENJTALK_INSTALLDIR=c:\open_jtalk
+for /F "tokens=1,2 delims==" %25%25a in (build.info) do (
+if "%25%25a"=="DICDIR" set DICDIR=%25%25b
+if "%25%25a"=="OPENJTALK_INSTALLDIR" set OPENJTALK_INSTALLDIR=%25%25b
+)
+cd "$(SolutionDir)mecab-naist-jdic"
+if $(Configuration)==Release "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Debug "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Release_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Debug_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Release_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if $(Configuration)==Debug_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if not exist "%25OPENJTALK_INSTALLDIR%25" md "%25OPENJTALK_INSTALLDIR%25"
+cd "%25OPENJTALK_INSTALLDIR%25"
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd "$(SolutionDir).."
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd ..
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_EUC_JP|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(OutDir)mecab.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)"
+set DICDIR=dic
+set OPENJTALK_INSTALLDIR=c:\open_jtalk
+for /F "tokens=1,2 delims==" %25%25a in (build.info) do (
+if "%25%25a"=="DICDIR" set DICDIR=%25%25b
+if "%25%25a"=="OPENJTALK_INSTALLDIR" set OPENJTALK_INSTALLDIR=%25%25b
+)
+cd "$(SolutionDir)mecab-naist-jdic"
+if $(Configuration)==Release "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Debug "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Release_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Debug_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Release_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if $(Configuration)==Debug_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if not exist "%25OPENJTALK_INSTALLDIR%25" md "%25OPENJTALK_INSTALLDIR%25"
+cd "%25OPENJTALK_INSTALLDIR%25"
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd "$(SolutionDir).."
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd ..
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_UTF_8|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(OutDir)mecab.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)"
+set DICDIR=dic
+set OPENJTALK_INSTALLDIR=c:\open_jtalk
+for /F "tokens=1,2 delims==" %25%25a in (build.info) do (
+if "%25%25a"=="DICDIR" set DICDIR=%25%25b
+if "%25%25a"=="OPENJTALK_INSTALLDIR" set OPENJTALK_INSTALLDIR=%25%25b
+)
+cd "$(SolutionDir)mecab-naist-jdic"
+if $(Configuration)==Release "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Debug "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Release_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Debug_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Release_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if $(Configuration)==Debug_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if not exist "%25OPENJTALK_INSTALLDIR%25" md "%25OPENJTALK_INSTALLDIR%25"
+cd "%25OPENJTALK_INSTALLDIR%25"
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd "$(SolutionDir).."
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd ..
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_UTF_8|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(OutDir)mecab.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)"
+set DICDIR=dic
+set OPENJTALK_INSTALLDIR=c:\open_jtalk
+for /F "tokens=1,2 delims==" %25%25a in (build.info) do (
+if "%25%25a"=="DICDIR" set DICDIR=%25%25b
+if "%25%25a"=="OPENJTALK_INSTALLDIR" set OPENJTALK_INSTALLDIR=%25%25b
+)
+cd "$(SolutionDir)mecab-naist-jdic"
+if $(Configuration)==Release "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Debug "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Release_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Debug_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Release_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if $(Configuration)==Debug_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if not exist "%25OPENJTALK_INSTALLDIR%25" md "%25OPENJTALK_INSTALLDIR%25"
+cd "%25OPENJTALK_INSTALLDIR%25"
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd "$(SolutionDir).."
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd ..
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_EUC_JP|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(OutDir)mecab.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)"
+set DICDIR=dic
+set OPENJTALK_INSTALLDIR=c:\open_jtalk
+for /F "tokens=1,2 delims==" %25%25a in (build.info) do (
+if "%25%25a"=="DICDIR" set DICDIR=%25%25b
+if "%25%25a"=="OPENJTALK_INSTALLDIR" set OPENJTALK_INSTALLDIR=%25%25b
+)
+cd "$(SolutionDir)mecab-naist-jdic"
+if $(Configuration)==Release "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Debug "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Release_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Debug_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Release_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if $(Configuration)==Debug_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if not exist "%25OPENJTALK_INSTALLDIR%25" md "%25OPENJTALK_INSTALLDIR%25"
+cd "%25OPENJTALK_INSTALLDIR%25"
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd "$(SolutionDir).."
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd ..
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_EUC_JP|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(OutDir)mecab.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>cd "$(SolutionDir)"
+set DICDIR=dic
+set OPENJTALK_INSTALLDIR=c:\open_jtalk
+for /F "tokens=1,2 delims==" %25%25a in (build.info) do (
+if "%25%25a"=="DICDIR" set DICDIR=%25%25b
+if "%25%25a"=="OPENJTALK_INSTALLDIR" set OPENJTALK_INSTALLDIR=%25%25b
+)
+cd "$(SolutionDir)mecab-naist-jdic"
+if $(Configuration)==Release "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Debug "$(TargetPath)" -d . -o . -f EUC_JP -t SHIFT_JIS
+if $(Configuration)==Release_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Debug_UTF_8 "$(TargetPath)" -d . -o . -f EUC_JP -t UTF_8
+if $(Configuration)==Release_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if $(Configuration)==Debug_EUC_JP "$(TargetPath)" -d . -o . -f EUC_JP -t EUC_JP
+if not exist "%25OPENJTALK_INSTALLDIR%25" md "%25OPENJTALK_INSTALLDIR%25"
+cd "%25OPENJTALK_INSTALLDIR%25"
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd "$(SolutionDir).."
+if not exist "%25DICDIR%25" md "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\char.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\matrix.bin" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\sys.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\unk.dic" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\left-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\right-id.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\rewrite.def" "%25DICDIR%25"
+copy "$(SolutionDir)mecab-naist-jdic\pos-id.def" "%25DICDIR%25"
+cd ..
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\mecab\src\mecab-dict-index.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\mecab\src\mecab.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\mecab\mecab.vcxproj">
+      <Project>{34dcb3dd-7c0d-404e-b7f1-7d561f98a109}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

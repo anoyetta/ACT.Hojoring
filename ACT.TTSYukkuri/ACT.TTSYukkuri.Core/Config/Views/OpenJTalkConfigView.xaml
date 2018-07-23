@@ -1,0 +1,289 @@
+<UserControl
+  x:Class="ACT.TTSYukkuri.Config.Views.OpenJTalkConfigView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:vm="clr-namespace:ACT.TTSYukkuri.Config.ViewModels"
+  xmlns:resources="clr-namespace:ACT.TTSYukkuri.resources"
+  xmlns:yukkuri="clr-namespace:ACT.TTSYukkuri.Yukkuri"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.TTSYukkuri.Config.Views"
+  mc:Ignorable="d"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  Background="White"
+  FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
+  FontSize="17"
+  d:DesignWidth="600"
+  d:DataContext="{d:DesignInstance Type=vm:OpenJTalkConfigViewModel, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
+      <fwcnv:BoolToCollapsedConverter x:Key="VisibilityConverter" />
+      <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../resources/strings/Strings.Yukkuri.ja-JP.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <ScrollViewer
+    HorizontalScrollBarVisibility="Disabled"
+    VerticalScrollBarVisibility="Auto">
+    <StackPanel Orientation="Vertical">
+      <Label Content="{DynamicResource OJT_Voices}" />
+      <ComboBox
+        HorizontalAlignment="Left"
+        MinWidth="350"
+        ItemsSource="{Binding Voices, Mode=OneWay}"
+        DisplayMemberPath="Name"
+        SelectedValuePath="Value"
+        SelectedValue="{Binding Config.Voice, Mode=TwoWay}">
+      </ComboBox>
+
+      <!-- Gain -->
+      <Label
+        Margin="5 10 0 0"
+        MinWidth="100"
+        Padding="0"
+        Content="{DynamicResource OJT_Gain}" />
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=GainSlider, Path=Value, Mode=OneWay}"
+          ContentStringFormat="N2" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="GainSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="0.01"
+          LargeChange="0.01"
+          Minimum="0" Maximum="4.00"
+          Width="250"
+          Value="{Binding Config.Gain, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!-- Volume -->
+      <Label
+        Margin="5 10 0 0"
+        MinWidth="100"
+        Padding="0"
+        Content="{DynamicResource OJT_Volume}" />
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=VolumeSlider, Path=Value, Mode=OneWay}"
+          ContentStringFormat="N2" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="VolumeSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="0.01"
+          LargeChange="0.01"
+          Minimum="0" Maximum="8.00"
+          Width="250"
+          Value="{Binding Config.Volume, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!-- AllPass -->
+      <Label
+        Margin="5 10 0 0"
+        MinWidth="100"
+        Padding="0"
+        Content="{DynamicResource OJT_AllPass}" />
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=AllPassSlider, Path=Value, Mode=OneWay}"
+          ContentStringFormat="N2" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="AllPassSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="0.01"
+          LargeChange="0.01"
+          Minimum="0" Maximum="1.00"
+          Width="250"
+          Value="{Binding Config.AllPass, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!-- PostFilter -->
+      <Label
+        Margin="5 10 0 0"
+        MinWidth="100"
+        Padding="0"
+        Content="{DynamicResource OJT_PostFilter}" />
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=PostFilterSlider, Path=Value, Mode=OneWay}"
+          ContentStringFormat="N2" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="PostFilterSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="0.01"
+          LargeChange="0.01"
+          Minimum="0" Maximum="1.00"
+          Width="250"
+          Value="{Binding Config.PostFilter, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!-- Rate -->
+      <Label
+        Margin="5 10 0 0"
+        MinWidth="100"
+        Padding="0"
+        Content="{DynamicResource OJT_Rate}" />
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=RateSlider, Path=Value, Mode=OneWay}"
+          ContentStringFormat="N2" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="RateSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="0.01"
+          LargeChange="0.01"
+          Minimum="0" Maximum="2.00"
+          Width="250"
+          Value="{Binding Config.Rate, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!-- HalfTone -->
+      <Label
+        Margin="5 10 0 0"
+        MinWidth="100"
+        Padding="0"
+        Content="{DynamicResource OJT_HalfTone}" />
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=HalfToneSlider, Path=Value, Mode=OneWay}"
+          ContentStringFormat="N1" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="HalfToneSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="0.10"
+          LargeChange="0.10"
+          Minimum="-20.0" Maximum="20.0"
+          Width="250"
+          Value="{Binding Config.HalfTone, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!-- UnVoice -->
+      <Label
+        Margin="5 10 0 0"
+        MinWidth="100"
+        Padding="0"
+        Content="{DynamicResource OJT_UnVoice}" />
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=UnVoiceSlider, Path=Value, Mode=OneWay}"
+          ContentStringFormat="N2" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="UnVoiceSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="0.01"
+          LargeChange="0.01"
+          Minimum="0" Maximum="1.00"
+          Width="250"
+          Value="{Binding Config.UnVoice, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!-- Accent -->
+      <Label
+        Margin="5 10 0 0"
+        MinWidth="100"
+        Padding="0"
+        Content="{DynamicResource OJT_Accent}" />
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=AccentSlider, Path=Value, Mode=OneWay}"
+          ContentStringFormat="N2" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="AccentSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="0.01"
+          LargeChange="0.01"
+          Minimum="0" Maximum="2.00"
+          Width="250"
+          Value="{Binding Config.Accent, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!-- Weight -->
+      <Label
+        Margin="5 10 0 0"
+        MinWidth="100"
+        Padding="0"
+        Content="{DynamicResource OJT_Weight}" />
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=WeightSlider, Path=Value, Mode=OneWay}"
+          ContentStringFormat="N2" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="WeightSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="0.01"
+          LargeChange="0.01"
+          Minimum="0" Maximum="2.00"
+          Width="250"
+          Value="{Binding Config.Weight, Mode=TwoWay}" />
+      </StackPanel>
+
+      <TextBlock Margin="5 15 0 0" HorizontalAlignment="Left">
+        <Hyperlink
+          Command="{Binding SetRecommendCommand, Mode=OneWay}">
+          <TextBlock Text="{DynamicResource OJT_SetRecommend}" />
+        </Hyperlink>
+      </TextBlock>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

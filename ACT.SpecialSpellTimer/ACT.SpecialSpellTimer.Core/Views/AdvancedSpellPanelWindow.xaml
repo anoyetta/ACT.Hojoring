@@ -1,0 +1,125 @@
+<Window
+  x:Class="ACT.SpecialSpellTimer.Views.AdvancedSpellPanelWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:model="clr-namespace:ACT.SpecialSpellTimer.Config.Models"
+  xmlns:triggerModel="clr-namespace:ACT.SpecialSpellTimer.Models"
+  xmlns:resources="clr-namespace:ACT.SpecialSpellTimer.resources"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:vm="clr-namespace:ACT.SpecialSpellTimer.Config.ViewModels"
+  xmlns:fa="http://schemas.fontawesome.io/icons/"
+  d:DataContext="{d:DesignInstance Type=local:AdvancedSpellPanelWindow}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.EdgeMode="Unspecified"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  mc:Ignorable="d"
+  Opacity="0"
+  Topmost="True"
+  ResizeMode="NoResize"
+  ShowInTaskbar="False"
+  WindowStyle="None"
+  AllowsTransparency="True"
+  Background="Transparent"
+  Title="Advanced Spell Panel"
+  Left="{Binding Path=Panel.Left, Mode=TwoWay}"
+  Top="{Binding Path=Panel.Top, Mode=TwoWay}"
+  Width="{Binding Path=Panel.Width, Mode=TwoWay}"
+  Height="{Binding Path=Panel.Height, Mode=TwoWay}"
+  d:DesignWidth="640" d:DesignHeight="480">
+
+  <Window.Resources>
+    <fwcnv:BoolToCollapsedConverter x:Key="VisibilityConverter" />
+    <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+  </Window.Resources>
+
+  <Grid x:Name="BaseGrid">
+
+    <!-- レイアウトガイド用グリッド -->
+    <Grid
+      x:Name="GuidGrid"
+      Panel.ZIndex="-1"
+      Visibility="{Binding Path=Panel.IsAdvancedDesignMode, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+      <Border
+        CornerRadius="8"
+        BorderThickness="3"
+        BorderBrush="OrangeRed"
+        Background="#01000000">
+        <Grid x:Name="GuidRulerGrid">
+          <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+          </Grid.RowDefinitions>
+
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+
+          <!--
+          <Label Grid.ColumnSpan="4" Content="Hello Advanced Spell Panel !" Foreground="Red" />
+          -->
+        </Grid>
+      </Border>
+    </Grid>
+    <!-- レイアウトガイド用グリッド end -->
+
+    <!-- スペル配置グリッド -->
+    <Grid>
+      <Border
+        Panel.ZIndex="-2"
+        CornerRadius="8"
+        Background="{Binding Path=Panel.BackgroundBrush, Mode=OneWay}">
+      </Border>
+
+      <ItemsControl
+        x:Name="SpellsControl"
+        BorderThickness="0"
+        ItemsSource="{Binding ActiveSpellView, Mode=OneWay}">
+
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <local:SpellControl
+              DataContext="{Binding}"
+              Visibility="{Binding Visibility, Mode=OneWay}"
+              Opacity="0"
+              Loaded="SpellControl_Loaded" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+        <ItemsControl.ItemContainerStyle>
+          <Style>
+            <Setter Property="Canvas.Top" Value="{Binding Path=Top, Mode=OneWay}" />
+            <Setter Property="Canvas.Left" Value="{Binding Path=Left, Mode=OneWay}" />
+            <Setter Property="Panel.ZIndex" Value="{Binding Path=DisplayNo, Mode=OneWay}" />
+          </Style>
+        </ItemsControl.ItemContainerStyle>
+      </ItemsControl>
+    </Grid>
+    <!-- スペル配置グリッド end -->
+  </Grid>
+</Window>

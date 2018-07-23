@@ -1,0 +1,99 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+  <!-- Resources Strings in Japanese -->
+  <system:String x:Key="UILanguage">UI Language (* requires restart)</system:String>
+  <system:String x:Key="FFXIVLanguage">FFXIV Language (* requires restart)</system:String>
+
+  <system:String x:Key="GeneralConfig_ClickThrough">クリックスルー</system:String>
+  <system:String x:Key="GeneralConfig_Opacity">不透明度</system:String>
+  <system:String x:Key="GeneralConfig_LogPollingRate">メモリの監視間隔 (msec)</system:String>
+  <system:String x:Key="GeneralConfig_OverlayRefreshRate">オーバーレイの描画間隔 (msec)</system:String>
+  <system:String x:Key="GeneralConfig_AnimationMaxFPS">アニメーションの最大FPS</system:String>
+  <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">テキストのアウトライン増幅率</system:String>
+  <system:String x:Key="GeneralConfig_TextBlurGain">テキストのブラー増幅率</system:String>
+  <system:String x:Key="GeneralConfig_Sound">サウンド</system:String>
+  <system:String x:Key="GeneralConfig_UseNAudio">NAudioでWAVEサウンドを再生する (推奨)</system:String>
+  <system:String x:Key="GeneralConfig_WaveVolume">WAVEボリューム</system:String>
+  <system:String x:Key="GeneralConfig_TTSDestination">TTSの再生先</system:String>
+
+  <system:String x:Key="Common_Visible">表示する</system:String>
+  <system:String x:Key="Common_Location">ロケーション</system:String>
+  <system:String x:Key="Common_Font">フォント</system:String>
+  <system:String x:Key="Common_FillColor">塗りつぶし(内側)のカラー</system:String>
+  <system:String x:Key="Common_StrokeColor">アウトラインのカラー</system:String>
+  <system:String x:Key="Common_Add">追加</system:String>
+  <system:String x:Key="Common_Change">変更</system:String>
+  <system:String x:Key="Common_Delete">削除</system:String>
+  <system:String x:Key="Common_TTS">TTSを使用する</system:String>
+  <system:String x:Key="Common_TestMode">テストモード (常に表示する)</system:String>
+
+  <system:String x:Key="Target_UserHoverTarget">ホバーターゲットを使用する</system:String>
+
+  <system:String x:Key="HP_HPLocation">HPのロケーション</system:String>
+  <system:String x:Key="HP_BarLocation">HPバーのロケーション</system:String>
+  <system:String x:Key="HP_VisibleHPBar">HPバーを表示する</system:String>
+  <system:String x:Key="HP_HPValueOnHPBar">HPの値をHPバーに重ねて表示する</system:String>
+  <system:String x:Key="HP_HPBarStrokeColor">HPバーのアウトラインのカラー</system:String>
+  <system:String x:Key="HP_LinkBarStrokeColorToBarColor">バーのアウトラインのカラーをバー本体のカラーに同調させる</system:String>
+  <system:String x:Key="HP_LinkTextFillColorToBarColor">テキストの本体のカラーをバーのカラーに同調させる</system:String>
+  <system:String x:Key="HP_LinkTextStrokeColorToBarColor">テキストのアウトラインのカラーをバーのカラーに同調させる</system:String>
+  <system:String x:Key="HP_HPBarSize">HPバーのサイズ</system:String>
+
+  <system:String x:Key="Action_VisibleActionName">アクション名を表示する</system:String>
+  <system:String x:Key="Action_VisibleRemainOfCasting">キャストの残り時間を表示する</system:String>
+  <system:String x:Key="Action_VisibleRemainAsInteger">整数で表示する</system:String>
+  <system:String x:Key="Action_VisibleRateOfCasting">キャストの進捗率を表示する</system:String>
+  <system:String x:Key="Action_DummyActionName">ダミーアクション名 (位置調整向け)</system:String>
+  <system:String x:Key="Action_CastingBar">キャストバー</system:String>
+  <system:String x:Key="Action_CastingBarStrokeColor">キャストバーのアウトラインのカラー</system:String>
+  <system:String x:Key="Action_LinkBarStrokeColorToBarColor">バーのアウトラインのカラーをバー本体のカラーに同調させる</system:String>
+  <system:String x:Key="Action_CastingBarSize">キャストバーのサイズ</system:String>
+  <system:String x:Key="Action_CircleStyle">サークルスタイル</system:String>
+  <system:String x:Key="Action_RotateCCW">回転を反時計周りにする</system:String>
+  <system:String x:Key="Action_Sound">サウンド</system:String>
+  <system:String x:Key="Action_WaveSound">WAVEサウンドファイル</system:String>
+
+  <system:String x:Key="BOSS_BossThreshold">パーティの最大HP平均値に対してボスとして認識するモブの最大HPのしきい値 (%)</system:String>
+  <system:String x:Key="BOSS_BossVSTargetHideBoss">検出したBOSSとTargetが同じ対象ならばBOSSを表示しない</system:String>
+  <system:String x:Key="BOSS_BossVSFTHideBoss">検出したBOSSとFocus Targetが同じ対象ならばBOSSを表示しない</system:String>
+  <system:String x:Key="BOSS_BossVSToTHideBoss">検出したBOSSとTarget of Targetが同じ対象ならばBOSSを表示しない</system:String>
+
+  <system:String x:Key="MPTicker_VisibleCounter">カウンターを表示する</system:String>
+  <system:String x:Key="MPTicker_Bar">バー</system:String>
+  <system:String x:Key="MPTicker_BarStrokeColor">バーのアウトラインのカラー</system:String>
+  <system:String x:Key="MPTicker_LinkBarStrokeColorToBarColor">バーのアウトラインのカラーをバー本体のカラーに同調させる</system:String>
+  <system:String x:Key="MPTicker_BarSize">バーのサイズ</system:String>
+  <system:String x:Key="MPTicker_CircleStyle">サークルスタイル</system:String>
+  <system:String x:Key="MPTicker_RotateCCW">回転を反時計周りにする</system:String>
+  <system:String x:Key="MPTicker_SwapBarAndText">バーとテキストの位置を入れ替える</system:String>
+  <system:String x:Key="MPTicker_ExplationTimeForDisplay1">MPの変化がなくなり下記の秒数が経過したら非表示にする (sec)</system:String>
+  <system:String x:Key="MPTicker_ExplationTimeForDisplay2">※0で無限。常に表示されます</system:String>
+  <system:String x:Key="MPTicker_TargetJobs">自分が下記のジョブのとき表示する</system:String>
+
+  <system:String x:Key="MobList_VisibleMePosition">自分の座標を表示する</system:String>
+  <system:String x:Key="MobList_SimpleView">シンプル表示にする</system:String>
+  <system:String x:Key="MobList_VisibleZPosition">Z軸を表示する</system:String>
+  <system:String x:Key="MobList_DirectionOrigin">方向表示の基準</system:String>
+  <system:String x:Key="MobList_DirectionOriginDescription">Me, Camera を使用する場合は FFXIV_MemoryReader が必要になります。</system:String>
+  <system:String x:Key="MobList_OpenTargetMobList">対象モブリストを開く</system:String>
+  <system:String x:Key="MobList_ReloadTargetMobList">対象モブリストをリロードする</system:String>
+  <system:String x:Key="MobList_CountOfDisplay">モブの表示件数</system:String>
+  <system:String x:Key="MobList_NotifyByTTS">TTSで通知する</system:String>
+  <system:String x:Key="MobList_Me">自分のフォント</system:String>
+  <system:String x:Key="MobList_MobFont">モブのフォント</system:String>
+  <system:String x:Key="MobList_MobEXColor">モブEX のカラー</system:String>
+  <system:String x:Key="MobList_MobSColor">モブS のカラー</system:String>
+  <system:String x:Key="MobList_MobAColor">モブA のカラー</system:String>
+  <system:String x:Key="MobList_MobBColor">モブB のカラー</system:String>
+  <system:String x:Key="MobList_MobOtherColor">その他のモブ のカラー</system:String>
+
+  <system:String x:Key="Help_GotoLastestRelease">GitHubの最終リリースを確認する</system:String>
+  <system:String x:Key="Help_ContactToAnoyetta">Discordのフォーラムに参加する</system:String>
+  <system:String x:Key="Help_OpenConfig">Configファイルを開く</system:String>
+  <system:String x:Key="Help_ReloadConfig">Configファイルをリロードする</system:String>
+  <system:String x:Key="Help_ReloadViews">オーバーレイをリロードする</system:String>
+  <system:String x:Key="Help_OpenLog">ログファイルを開く</system:String>
+</ResourceDictionary>

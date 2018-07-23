@@ -1,0 +1,36 @@
+<Window
+  x:Class="ACT.SpecialSpellTimer.Views.TickerWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.Views"
+  DataContext="{Binding RelativeSource={RelativeSource self}}"
+  Left="{Binding Ticker.Left, Mode=TwoWay}"
+  Top="{Binding Ticker.Top, Mode=TwoWay}"
+  Title="Ticker"
+  AllowsTransparency="True"
+  Background="Transparent"
+  ShowInTaskbar="False"
+  SizeToContent="WidthAndHeight"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.ClearTypeHint="Auto"
+  RenderOptions.EdgeMode="Unspecified"
+  TextOptions.TextFormattingMode="Ideal"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  Topmost="True"
+  WindowStyle="None">
+
+  <Grid Name="BackgroundColorGrid">
+    <Canvas Margin="0 0 0 0">
+      <Rectangle
+        x:Name="BaseColorRectangle"
+        Width="{Binding ActualWidth, ElementName=BackgroundColorGrid}"
+        Height="{Binding ActualHeight, ElementName=BackgroundColorGrid}"
+        Margin="0 0 0 0"
+        RadiusX="8"
+        RadiusY="8" />
+    </Canvas>
+
+    <local:TickerControl x:Name="TickerControl" />
+  </Grid>
+</Window>

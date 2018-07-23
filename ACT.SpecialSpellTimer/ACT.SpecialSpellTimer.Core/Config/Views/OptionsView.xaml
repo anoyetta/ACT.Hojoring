@@ -1,0 +1,108 @@
+<UserControl
+  x:Class="ACT.SpecialSpellTimer.Config.Views.OptionsView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.Config.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:resources="clr-namespace:ACT.SpecialSpellTimer.resources"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:vm="clr-namespace:ACT.SpecialSpellTimer.Config.ViewModels"
+  d:DataContext="{d:DesignInstance Type=local:OptionsView, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}"
+  d:DesignWidth="1280"
+  Background="White"
+  FontFamily="{DynamicResource UIFont}"
+  FontSize="{DynamicResource UIFontSize}"
+  FontWeight="{DynamicResource UIFontWeight}"
+  FontStyle="{DynamicResource UIFontStyle}"
+  FontStretch="{DynamicResource UIFontStretch}"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.EdgeMode="Unspecified"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  IsTabStop="False"
+  Focusable="False"
+  mc:Ignorable="d">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
+
+      <fwcnv:BoolToCollapsedConverter x:Key="CollapsedConverter" />
+      <fwcnv:BoolToCollapsedNegativeConverter x:Key="CollapsedNegativeConverter" />
+      <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+
+      <Style x:Key="MenuStyle" TargetType="{x:Type TreeViewItem}">
+        <Setter Property="Padding" Value="5 10 10 10" />
+        <Style.Resources>
+          <Style TargetType="{x:Type Border}">
+            <Setter Property="Grid.ColumnSpan" Value="2" />
+          </Style>
+        </Style.Resources>
+      </Style>
+
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../resources/strings/Strings.SpeSpe.ja-JP.xaml" />
+        <wpf:DesignTimeResourceDictionary Source="../../resources/styles/ConfigViewResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" MinWidth="340" />
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+
+    <!--  スプリッタ  -->
+    <GridSplitter
+      Grid.Column="1"
+      Width="3"
+      IsTabStop="False"
+      HorizontalAlignment="Center"
+      Background="GhostWhite" />
+
+    <!-- メニューツリー -->
+    <TreeView
+      Grid.Column="0"
+      x:Name="MenuTreeView"
+      Margin="5 8 0 8"
+      BorderThickness="0"
+      ItemContainerStyle="{DynamicResource MenuStyle}"
+      SelectedItemChanged="TreeView_SelectedItemChanged">
+      <TreeViewItem Header="Language" TabIndex="0" />
+      <TreeViewItem Header="{DynamicResource Common_General}" TabIndex="1" x:Name="StartingTab" />
+      <TreeViewItem Header="{DynamicResource Options_Visual}" TabIndex="2" />
+      <TreeViewItem Header="{DynamicResource Options_Trigger}" TabIndex="3" />
+      <TreeViewItem Header="{DynamicResource Options_Log}" TabIndex="4" />
+      <TreeViewItem Header="{DynamicResource Options_TTSDictionary}" TabIndex="5" />
+      <TreeViewItem Header="{DynamicResource Common_Misc}" TabIndex="6" />
+    </TreeView>
+
+    <!-- コンテンツ領域 -->
+    <Grid Grid.Column="2" Margin="5 0 0 0">
+      <ScrollViewer
+        HorizontalScrollBarVisibility="Auto"
+        VerticalScrollBarVisibility="Auto"
+        Padding="5 10 5 10">
+        <Grid>
+          <local:OptionsLanguageView x:Name="LanguageView" Visibility="Collapsed" />
+          <local:OptionsGeneralView x:Name="GeneralView" Visibility="Collapsed" />
+          <local:OptionsVisualView x:Name="VisualView" Visibility="Collapsed" />
+          <local:OptionsTriggerView x:Name="TriggerView" Visibility="Collapsed" />
+          <local:OptionsLogView x:Name="LogView" Visibility="Collapsed" />
+          <local:OptionsTTSDictionaryView x:Name="TTSDictionaryView" Visibility="Collapsed" />
+          <local:OptionsMiscView x:Name="MiscView" Visibility="Collapsed" />
+        </Grid>
+      </ScrollViewer>
+    </Grid>
+  </Grid>
+</UserControl>

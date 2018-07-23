@@ -1,0 +1,24 @@
+diff -ru open_jtalk_original/mecab/src/feature_index.cpp open_jtalk/mecab/src/feature_index.cpp
+--- open_jtalk_original/mecab/src/feature_index.cpp	2011-02-07 17:43:42 +0900
++++ open_jtalk/mecab/src/feature_index.cpp	2012-04-18 22:51:06 +0900
+@@ -307,7 +307,7 @@
+               if (!r) goto NEXT;
+               os_ << r;
+             } break;
+-            case 't':  os_ << (size_t)path->rnode->char_type;     break;
++            case 't':  os_ << (unsigned int)path->rnode->char_type;     break;
+             case 'u':  os_ << ufeature; break;
+             default:
+               CHECK_FALSE(false) << "unkonwn meta char: " <<  *p;
+diff -ru open_jtalk_original/mecab/src/writer.cpp open_jtalk/mecab/src/writer.cpp
+--- open_jtalk_original/mecab/src/writer.cpp	2011-02-07 17:43:42 +0900
++++ open_jtalk/mecab/src/writer.cpp	2012-04-16 21:54:31 +0900
+@@ -232,7 +232,7 @@
+             // input sentence
+           case 'S': os->write(sentence, std::strlen(sentence)); break;
+             // sentence length
+-          case 'L': *os << std::strlen(sentence); break;
++          case 'L': *os << (unsigned int)std::strlen(sentence); break;
+             // morph
+           case 'm': os->write(node->surface, node->length); break;
+           case 'M': os->write(reinterpret_cast<const char *>
