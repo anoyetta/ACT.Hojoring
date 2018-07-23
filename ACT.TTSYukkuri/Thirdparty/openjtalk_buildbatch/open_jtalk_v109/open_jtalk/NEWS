@@ -1,0 +1,64 @@
+Version 1.09:
+ * change default charset from EUC-JP to UTF-8.
+ * add long vowels to dictionary instead of njd_set_long_vowel function.
+ * modify digit rules.
+ * assume unknown input as pause.
+ * update dictionary.
+ * fix some bugs.
+
+Version 1.08:
+ * add '-g' option for changing volume.
+ * modify digit rules.
+ * modify unvoicing rules.
+ * assume unknown words as filler.
+ * update dictionary.
+ * update MeCab to version 0.996.
+ * fix some bugs.
+
+Version 1.07:
+ * add ASCII header for no multibyte environment.
+ * add pronunciation rules for digit.
+ * update dictionary.
+ * fix some bugs.
+
+Version 1.06:
+ * support new HTS voice format.
+ * add some accent phrasing rules.
+ * add some unvoice rules.
+ * set limits for some contexts in the label generator.
+ * update dictionary.
+ * update MeCab to version 0.994.
+ * fix some bugs.
+
+Version 1.05:
+ * modify pronunciation rule after a decimal point.
+ * modify accent type detection.
+ * add new moras and new words.
+ * fix some bugs.
+
+Version 1.04:
+ * fix some bugs.
+ * modify dictionary.
+
+Version 1.03:
+ * fix serious bugs in accent estimation and label maker.
+ * add new rule for accent phrasing.
+ * modify dictionary.
+
+Version 1.02:
+ * add makefiles for nmake of VC.
+ * support C++ compiler.
+ * add low-pass filter stream.
+ * re-make pronunciation and accent estimation for digit.
+ * add loading function for NJD.
+ * modify dictionary.
+ * bug fixes.
+
+Version 1.01:
+ * add '-z' option to control audio buffer size.
+ * remove PTHREAD flag.
+ * remove ICONV flag for windows compile.
+ * fix bugs and typos.
+
+Version 1.00:
+ * released in SourceForge.

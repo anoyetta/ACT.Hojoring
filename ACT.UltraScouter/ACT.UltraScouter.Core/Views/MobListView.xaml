@@ -1,0 +1,595 @@
+<Window
+  x:Class="ACT.UltraScouter.Views.MobListView"
+  Title="MobListView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="clr-namespace:ACT.UltraScouter.Views"
+  xmlns:cnv="clr-namespace:ACT.UltraScouter.Views.Converters"
+  xmlns:vm="clr-namespace:ACT.UltraScouter.ViewModels"
+  xmlns:model="clr-namespace:ACT.UltraScouter.Models"
+  xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+  xmlns:fa="http://schemas.fontawesome.io/icons/"
+  xmlns:ctrl="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  mc:Ignorable="d"
+  AllowsTransparency="True"
+  ShowInTaskbar="False"
+  SizeToContent="WidthAndHeight"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  UseLayoutRounding="True"
+  Topmost="True"
+  WindowStyle="None"
+  Background="Transparent"
+  Left="{Binding Path=Config.Location.X, Mode=TwoWay}"
+  Top="{Binding Path=Config.Location.Y, Mode=TwoWay}"
+  d:DataContext="{d:DesignInstance Type=vm:MobListViewModel, IsDesignTimeCreatable=True}">
+
+  <Window.Resources>
+    <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />
+    <fwcnv:BoolToCollapsedConverter x:Key="BoolToVisibilityConverter" />
+    <fwcnv:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
+    <fwcnv:MultipleConverter x:Key="MultipleConverter" />
+    <cnv:StrokeThicknessToBlurRadiusConverter x:Key="StrokeThicknessToBlurRadiusConverter" />
+
+    <CollectionViewSource
+      x:Key="MobListSource"
+      x:Name="MobListSource"
+      Source="{Binding Model.MobList, Mode=OneWay}"
+      IsLiveSortingRequested="True"
+      IsLiveFilteringRequested="True"
+      Filter="CollectionViewSource_Filter">
+      <CollectionViewSource.SortDescriptions>
+        <scm:SortDescription PropertyName="Index" Direction="Ascending" />
+      </CollectionViewSource.SortDescriptions>
+      <CollectionViewSource.LiveFilteringProperties>
+        Visible
+      </CollectionViewSource.LiveFilteringProperties>
+    </CollectionViewSource>
+  </Window.Resources>
+
+  <!-- Base Panel -->
+  <StackPanel
+    Orientation="Vertical"
+    Margin="10">
+
+    <!-- Me Panel -->
+    <StackPanel
+      x:Name="MePanel"
+      Orientation="Horizontal"
+      Margin="2 0 0 0"
+      Visibility="{Binding Config.VisibleMe, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+
+      <ctrl:LightOutlineTextBlock
+        x:Name="MeXTextBlock"
+        ClipToBounds="False"
+        Margin="0 0 10 0"
+        Text="{Binding Path=Model.MeXonMap, Mode=OneWay, StringFormat=X:{0:N1}}"
+        Fill="{Binding Config.MeDisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+        Stroke="{Binding Config.MeDisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+        StrokeThickness="{Binding Config.MeDisplayText.Font.OutlineThickness, Mode=OneWay}"
+        Tag="{Binding Config.MeDisplayText.Font, Mode=OneWay}"
+        FontFamily="{Binding Path=Config.MeDisplayText.Font.FontFamily, Mode=OneWay}"
+        FontSize="{Binding Path=Config.MeDisplayText.Font.Size, Mode=OneWay}"
+        FontStretch="{Binding Path=Config.MeDisplayText.Font.Stretch, Mode=OneWay}"
+        FontWeight="{Binding Path=Config.MeDisplayText.Font.Weight, Mode=OneWay}"
+        FontStyle="{Binding Path=Config.MeDisplayText.Font.Style, Mode=OneWay}"
+        BlurRadius="{Binding Path=Config.MeDisplayText.Font.BlurRadius, Mode=OneWay}"
+        BlurOpacity="{Binding Path=Config.MeDisplayText.OutlineColor.ScA, Mode=OneWay}"
+        StrokeOpacity="{Binding Path=Config.MeDisplayText.OutlineColor.ScA, Mode=OneWay}"
+        TextWrapping="NoWrap" />
+
+      <ctrl:LightOutlineTextBlock
+        x:Name="MeYTextBlock"
+        ClipToBounds="False"
+        Margin="0 0 10 0"
+        Text="{Binding Path=Model.MeYonMap, Mode=OneWay, StringFormat=Y:{0:N1}}"
+        Fill="{Binding Config.MeDisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+        Stroke="{Binding Config.MeDisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+        StrokeThickness="{Binding Config.MeDisplayText.Font.OutlineThickness, Mode=OneWay}"
+        Tag="{Binding Config.MeDisplayText.Font, Mode=OneWay}"
+        FontFamily="{Binding Path=Config.MeDisplayText.Font.FontFamily, Mode=OneWay}"
+        FontSize="{Binding Path=Config.MeDisplayText.Font.Size, Mode=OneWay}"
+        FontStretch="{Binding Path=Config.MeDisplayText.Font.Stretch, Mode=OneWay}"
+        FontWeight="{Binding Path=Config.MeDisplayText.Font.Weight, Mode=OneWay}"
+        FontStyle="{Binding Path=Config.MeDisplayText.Font.Style, Mode=OneWay}"
+        BlurRadius="{Binding Path=Config.MeDisplayText.Font.BlurRadius, Mode=OneWay}"
+        BlurOpacity="{Binding Path=Config.MeDisplayText.OutlineColor.ScA, Mode=OneWay}"
+        StrokeOpacity="{Binding Path=Config.MeDisplayText.OutlineColor.ScA, Mode=OneWay}"
+        TextWrapping="NoWrap" />
+
+      <ctrl:LightOutlineTextBlock
+        x:Name="MeZTextBlock"
+        ClipToBounds="False"
+        Margin="0 0 10 0"
+        Text="{Binding Path=Model.MeZonMap, Mode=OneWay, StringFormat=Z:{0:N1}}"
+        Fill="{Binding Config.MeDisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+        Stroke="{Binding Config.MeDisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+        StrokeThickness="{Binding Config.MeDisplayText.Font.OutlineThickness, Mode=OneWay}"
+        Tag="{Binding Config.MeDisplayText.Font, Mode=OneWay}"
+        FontFamily="{Binding Path=Config.MeDisplayText.Font.FontFamily, Mode=OneWay}"
+        FontSize="{Binding Path=Config.MeDisplayText.Font.Size, Mode=OneWay}"
+        FontStretch="{Binding Path=Config.MeDisplayText.Font.Stretch, Mode=OneWay}"
+        FontWeight="{Binding Path=Config.MeDisplayText.Font.Weight, Mode=OneWay}"
+        FontStyle="{Binding Path=Config.MeDisplayText.Font.Style, Mode=OneWay}"
+        BlurRadius="{Binding Path=Config.MeDisplayText.Font.BlurRadius, Mode=OneWay}"
+        BlurOpacity="{Binding Path=Config.MeDisplayText.OutlineColor.ScA, Mode=OneWay}"
+        StrokeOpacity="{Binding Path=Config.MeDisplayText.OutlineColor.ScA, Mode=OneWay}"
+        TextWrapping="NoWrap" />
+    </StackPanel>
+    <!-- Me Panel -->
+
+    <ItemsControl
+      x:Name="MobList"
+      ItemsSource="{Binding Source={StaticResource MobListSource}}"
+      BorderThickness="0"
+      BorderBrush="Transparent"
+      Background="Transparent"
+      Focusable="False"
+      Padding="0"
+      Margin="3 0 0 0">
+
+      <ItemsControl.ItemTemplate>
+        <DataTemplate DataType="{x:Type model:MobInfo}">
+          <Grid>
+            <!-- Simple Mode start -->
+            <Grid
+              Margin="0 10 0 0"
+              Visibility="{Binding Path=Config.IsSimple, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+
+              <StackPanel Orientation="Horizontal">
+                <StackPanel>
+                  <!-- Direction -->
+                  <DockPanel
+                    RenderTransformOrigin="0.5 0.5">
+                    <DockPanel.RenderTransform>
+                      <RotateTransform
+                        Angle="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OriginAngle, Mode=OneWay}" />
+                    </DockPanel.RenderTransform>
+
+                    <ctrl:LightOutlineTextBlock
+                      HorizontalAlignment="Center"
+                      Text="{Binding Path=ArrowByFontAwesome, Mode=OneWay}"
+                      Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                      Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                      StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.1}"
+                      Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                      FontFamily="{Binding Path=FontAwesome, Mode=OneWay}"
+                      FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=2.0}"
+                      BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                      BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                      StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                      RenderTransformOrigin="0.5 0.5">
+                      <ctrl:LightOutlineTextBlock.RenderTransform>
+                        <RotateTransform Angle="{Binding Path=DirectionAngle, Mode=OneWay}" />
+                      </ctrl:LightOutlineTextBlock.RenderTransform>
+                    </ctrl:LightOutlineTextBlock>
+                  </DockPanel>
+
+                  <Grid>
+                    <!-- Distance -->
+                    <ctrl:LightOutlineTextBlock
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom"
+                      Text="{Binding Distance, Mode=OneWay, StringFormat={} {0:N1}m}"
+                      Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                      Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                      StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay}"
+                      Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                      FontFamily="{Binding Path=DisplayText.Font.FontFamily, Mode=OneWay}"
+                      FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}"
+                      FontStretch="{Binding Path=DisplayText.Font.Stretch, Mode=OneWay}"
+                      FontWeight="{Binding Path=DisplayText.Font.Weight, Mode=OneWay}"
+                      FontStyle="{Binding Path=DisplayText.Font.Style, Mode=OneWay}"
+                      BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                      BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                      StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+
+                    <!-- Distance (DUMMY) -->
+                    <ctrl:LightOutlineTextBlock
+                      Text="{Binding Distance, Mode=OneWay, StringFormat={} {0:000.0}m}"
+                      Visibility="Hidden"
+                      Margin="{Binding ElementName=DistanceTextBlock, Path=Margin, Mode=OneWay}"
+                      VerticalAlignment="{Binding ElementName=DistanceTextBlock, Path=VerticalAlignment, Mode=OneWay}"
+                      Fill="{Binding ElementName=DistanceTextBlock, Path=Fill, Mode=OneWay}"
+                      Stroke="{Binding ElementName=DistanceTextBlock, Path=Stroke, Mode=OneWay}"
+                      StrokeThickness="{Binding ElementName=DistanceTextBlock, Path=StrokeThickness, Mode=OneWay}"
+                      Tag="{Binding ElementName=DistanceTextBlock, Path=Tag, Mode=OneWay}"
+                      FontFamily="{Binding ElementName=DistanceTextBlock, Path=FontFamily, Mode=OneWay}"
+                      FontSize="{Binding ElementName=DistanceTextBlock, Path=FontSize, Mode=OneWay}"
+                      FontStretch="{Binding ElementName=DistanceTextBlock, Path=FontStretch, Mode=OneWay}"
+                      FontWeight="{Binding ElementName=DistanceTextBlock, Path=FontWeight, Mode=OneWay}"
+                      FontStyle="{Binding ElementName=DistanceTextBlock, Path=FontStyle, Mode=OneWay}"
+                      TextAlignment="{Binding ElementName=DistanceTextBlock, Path=TextAlignment, Mode=OneWay}"
+                      TextWrapping="{Binding ElementName=DistanceTextBlock, Path=TextWrapping, Mode=OneWay}"
+                      BlurRadius="{Binding ElementName=DistanceTextBlock, Path=BlurRadius, Mode=OneWay}"
+                      BlurOpacity="{Binding ElementName=DistanceTextBlock, Path=BlurOpacity, Mode=OneWay}"
+                      StrokeOpacity="{Binding ElementName=DistanceTextBlock, Path=StrokeOpacity, Mode=OneWay}" />
+                  </Grid>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+                  <!-- Name -->
+                  <ctrl:LightOutlineTextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="0 0 0 0"
+                    Text="{Binding Name, Mode=OneWay}"
+                    Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay}"
+                    Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                    FontFamily="{Binding Path=DisplayText.Font.FontFamily, Mode=OneWay}"
+                    FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.0}"
+                    FontStretch="{Binding Path=DisplayText.Font.Stretch, Mode=OneWay}"
+                    FontWeight="{Binding Path=DisplayText.Font.Weight, Mode=OneWay}"
+                    FontStyle="{Binding Path=DisplayText.Font.Style, Mode=OneWay}"
+                    BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                    BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    TextWrapping="NoWrap" />
+
+                  <!-- Rank -->
+                  <ctrl:LightOutlineTextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="10 0 0 0"
+                    Text="{Binding Rank, Mode=OneWay}"
+                    Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay}"
+                    Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                    FontFamily="{Binding Path=DisplayText.Font.FontFamily, Mode=OneWay}"
+                    FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}"
+                    FontStretch="{Binding Path=DisplayText.Font.Stretch, Mode=OneWay}"
+                    FontWeight="{Binding Path=DisplayText.Font.Weight, Mode=OneWay}"
+                    FontStyle="{Binding Path=DisplayText.Font.Style, Mode=OneWay}"
+                    BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                    BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    TextWrapping="NoWrap" />
+
+                  <!-- Count -->
+                  <ctrl:LightOutlineTextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="10 0 0 0"
+                    Text="{Binding Path=DuplicateCountText, Mode=OneWay}"
+                    Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay}"
+                    Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                    FontFamily="{Binding Path=DisplayText.Font.FontFamily, Mode=OneWay}"
+                    FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}"
+                    FontStretch="{Binding Path=DisplayText.Font.Stretch, Mode=OneWay}"
+                    FontWeight="{Binding Path=DisplayText.Font.Weight, Mode=OneWay}"
+                    FontStyle="{Binding Path=DisplayText.Font.Style, Mode=OneWay}"
+                    BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                    BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    TextWrapping="NoWrap" />
+                </StackPanel>
+              </StackPanel>
+            </Grid>
+            <!-- Simple Mode end -->
+
+            <!-- Normal Mode (Detail Mode) start -->
+            <DockPanel
+              Margin="0 10 0 0"
+              Visibility="{Binding Path=Config.IsNotSimple, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+
+              <Grid DockPanel.Dock="Left">
+                <Grid.RowDefinitions>
+                  <RowDefinition />
+                  <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" MinWidth="{Binding ElementName=DirectionTextBlock, Path=ActualWidth, Mode=OneWay}">
+                  <!-- Name -->
+                  <ctrl:LightOutlineTextBlock
+                    x:Name="NameTextBlock"
+                    Margin="0 0 0 0"
+                    Text="{Binding Name, Mode=OneWay}"
+                    Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay}"
+                    Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                    FontFamily="{Binding Path=DisplayText.Font.FontFamily, Mode=OneWay}"
+                    FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.3}"
+                    FontStretch="{Binding Path=DisplayText.Font.Stretch, Mode=OneWay}"
+                    FontWeight="{Binding Path=DisplayText.Font.Weight, Mode=OneWay}"
+                    FontStyle="{Binding Path=DisplayText.Font.Style, Mode=OneWay}"
+                    BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                    BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    TextWrapping="NoWrap" />
+
+                  <!-- Rank -->
+                  <ctrl:LightOutlineTextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    x:Name="RankTextBlock"
+                    Margin="10 0 0 0"
+                    Text="{Binding Rank, Mode=OneWay}"
+                    Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay}"
+                    Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                    FontFamily="{Binding Path=DisplayText.Font.FontFamily, Mode=OneWay}"
+                    FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}"
+                    FontStretch="{Binding Path=DisplayText.Font.Stretch, Mode=OneWay}"
+                    FontWeight="{Binding Path=DisplayText.Font.Weight, Mode=OneWay}"
+                    FontStyle="{Binding Path=DisplayText.Font.Style, Mode=OneWay}"
+                    BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                    BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    TextWrapping="NoWrap" />
+
+                  <!-- Count -->
+                  <ctrl:LightOutlineTextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    x:Name="CountTextBlock"
+                    Margin="10 0 0 0"
+                    Text="{Binding Path=DuplicateCountText, Mode=OneWay}"
+                    Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay}"
+                    Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                    FontFamily="{Binding Path=DisplayText.Font.FontFamily, Mode=OneWay}"
+                    FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}"
+                    FontStretch="{Binding Path=DisplayText.Font.Stretch, Mode=OneWay}"
+                    FontWeight="{Binding Path=DisplayText.Font.Weight, Mode=OneWay}"
+                    FontStyle="{Binding Path=DisplayText.Font.Style, Mode=OneWay}"
+                    BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                    BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    TextWrapping="NoWrap" />
+                </StackPanel>
+
+                <!-- POS X -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Bottom">
+                  <ctrl:LightOutlineTextBlock
+                    x:Name="XTextBlock"
+                    Margin="0 0 8 0"
+                    Text="{Binding XonMap, Mode=OneWay, StringFormat=X:{0:N1}}"
+                    Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay}"
+                    Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                    FontFamily="{Binding Path=DisplayText.Font.FontFamily, Mode=OneWay}"
+                    FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay}"
+                    FontStretch="{Binding Path=DisplayText.Font.Stretch, Mode=OneWay}"
+                    FontWeight="{Binding Path=DisplayText.Font.Weight, Mode=OneWay}"
+                    FontStyle="{Binding Path=DisplayText.Font.Style, Mode=OneWay}"
+                    BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                    BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    TextWrapping="NoWrap" />
+
+                  <!-- POS Y -->
+                  <ctrl:LightOutlineTextBlock
+                    x:Name="YTextBlock"
+                    Margin="0 0 8 0"
+                    Text="{Binding YonMap, Mode=OneWay, StringFormat=Y:{0:N1}}"
+                    Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay}"
+                    Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                    FontFamily="{Binding Path=DisplayText.Font.FontFamily, Mode=OneWay}"
+                    FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay}"
+                    FontStretch="{Binding Path=DisplayText.Font.Stretch, Mode=OneWay}"
+                    FontWeight="{Binding Path=DisplayText.Font.Weight, Mode=OneWay}"
+                    FontStyle="{Binding Path=DisplayText.Font.Style, Mode=OneWay}"
+                    BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                    BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    TextWrapping="NoWrap" />
+
+                  <!-- POS Z -->
+                  <ctrl:LightOutlineTextBlock
+                    x:Name="ZTextBlock"
+                    Margin="0 0 8 0"
+                    Text="{Binding ZonMap, Mode=OneWay, StringFormat=Z:{0:N1}}"
+                    Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay}"
+                    Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                    FontFamily="{Binding Path=DisplayText.Font.FontFamily, Mode=OneWay}"
+                    FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay}"
+                    FontStretch="{Binding Path=DisplayText.Font.Stretch, Mode=OneWay}"
+                    FontWeight="{Binding Path=DisplayText.Font.Weight, Mode=OneWay}"
+                    FontStyle="{Binding Path=DisplayText.Font.Style, Mode=OneWay}"
+                    Visibility="{Binding Path=DataContext.Config.VisibleZ, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                    BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                    BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    TextWrapping="NoWrap" />
+                </StackPanel>
+              </Grid>
+
+              <Grid DockPanel.Dock="Right" HorizontalAlignment="Right">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom">
+                  <!-- ICON -->
+                  <Grid
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Visibility="{Binding IsNear, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+
+                    <ctrl:LightOutlineTextBlock
+                      x:Name="Asterisk"
+                      Visibility="{Binding IsNear, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                      Text="{Binding Path=Asterisk, Mode=OneWay}"
+                      Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                      Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                      StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay}"
+                      Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                      FontFamily="{Binding Path=FontAwesome, Mode=OneWay}"
+                      FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.2}"
+                      RenderTransformOrigin="0.5 0.5"
+                      BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                      BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                      StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}">
+
+                      <ctrl:LightOutlineTextBlock.RenderTransform>
+                        <RotateTransform />
+                      </ctrl:LightOutlineTextBlock.RenderTransform>
+
+                      <ctrl:LightOutlineTextBlock.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                          <BeginStoryboard>
+                            <Storyboard Timeline.DesiredFrameRate="15">
+                              <DoubleAnimation
+                                Storyboard.TargetProperty="(ctrl:OutlineTextBlock.RenderTransform).(RotateTransform.Angle)"
+                                From="0"
+                                To="360"
+                                Duration="0:0:2"
+                                RepeatBehavior="Forever" />
+                            </Storyboard>
+                          </BeginStoryboard>
+                        </EventTrigger>
+                      </ctrl:LightOutlineTextBlock.Triggers>
+                    </ctrl:LightOutlineTextBlock>
+                  </Grid>
+
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition />
+                      <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Distance -->
+                    <ctrl:LightOutlineTextBlock
+                      x:Name="DistanceTextBlock"
+                      Grid.Column="0"
+                      Margin="1 0 1 -1"
+                      VerticalAlignment="Bottom"
+                      Text="{Binding Distance, Mode=OneWay, StringFormat={} {0:N1}m}"
+                      Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                      Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                      StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay}"
+                      Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                      FontFamily="{Binding Path=DisplayText.Font.FontFamily, Mode=OneWay}"
+                      FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.2}"
+                      FontStretch="{Binding Path=DisplayText.Font.Stretch, Mode=OneWay}"
+                      FontWeight="{Binding Path=DisplayText.Font.Weight, Mode=OneWay}"
+                      FontStyle="{Binding Path=DisplayText.Font.Style, Mode=OneWay}"
+                      BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                      BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                      StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                      TextAlignment="Right"
+                      TextWrapping="NoWrap" />
+
+                    <!-- Distance (DUMMY) -->
+                    <ctrl:LightOutlineTextBlock
+                      Grid.Column="0"
+                      Text="{Binding Distance, Mode=OneWay, StringFormat={} {0:000.0}m}"
+                      Visibility="Hidden"
+                      Margin="{Binding ElementName=DistanceTextBlock, Path=Margin, Mode=OneWay}"
+                      VerticalAlignment="{Binding ElementName=DistanceTextBlock, Path=VerticalAlignment, Mode=OneWay}"
+                      Fill="{Binding ElementName=DistanceTextBlock, Path=Fill, Mode=OneWay}"
+                      Stroke="{Binding ElementName=DistanceTextBlock, Path=Stroke, Mode=OneWay}"
+                      StrokeThickness="{Binding ElementName=DistanceTextBlock, Path=StrokeThickness, Mode=OneWay}"
+                      Tag="{Binding ElementName=DistanceTextBlock, Path=Tag, Mode=OneWay}"
+                      FontFamily="{Binding ElementName=DistanceTextBlock, Path=FontFamily, Mode=OneWay}"
+                      FontSize="{Binding ElementName=DistanceTextBlock, Path=FontSize, Mode=OneWay}"
+                      FontStretch="{Binding ElementName=DistanceTextBlock, Path=FontStretch, Mode=OneWay}"
+                      FontWeight="{Binding ElementName=DistanceTextBlock, Path=FontWeight, Mode=OneWay}"
+                      FontStyle="{Binding ElementName=DistanceTextBlock, Path=FontStyle, Mode=OneWay}"
+                      TextAlignment="{Binding ElementName=DistanceTextBlock, Path=TextAlignment, Mode=OneWay}"
+                      TextWrapping="{Binding ElementName=DistanceTextBlock, Path=TextWrapping, Mode=OneWay}"
+                      BlurRadius="{Binding ElementName=DistanceTextBlock, Path=BlurRadius, Mode=OneWay}"
+                      BlurOpacity="{Binding ElementName=DistanceTextBlock, Path=BlurOpacity, Mode=OneWay}"
+                      StrokeOpacity="{Binding ElementName=DistanceTextBlock, Path=StrokeOpacity, Mode=OneWay}" />
+
+                    <!-- Up/Down -->
+                    <ctrl:LightOutlineTextBlock
+                      Grid.Column="1"
+                      Text="{Binding TargetHeight, Mode=OneWay}"
+                      Margin="1 2 0 0"
+                      VerticalAlignment="Top"
+                      Fill="{Binding ElementName=DistanceTextBlock, Path=Fill, Mode=OneWay}"
+                      Stroke="{Binding ElementName=DistanceTextBlock, Path=Stroke, Mode=OneWay}"
+                      StrokeThickness="{Binding ElementName=DistanceTextBlock, Path=StrokeThickness, Mode=OneWay}"
+                      Tag="{Binding ElementName=DistanceTextBlock, Path=Tag, Mode=OneWay}"
+                      FontFamily="{Binding Path=FontAwesome, Mode=OneWay}"
+                      FontSize="{Binding ElementName=DistanceTextBlock, Path=FontSize, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}"
+                      BlurRadius="{Binding ElementName=DistanceTextBlock, Path=BlurRadius, Mode=OneWay}"
+                      BlurOpacity="{Binding ElementName=DistanceTextBlock, Path=BlurOpacity, Mode=OneWay}"
+                      StrokeOpacity="{Binding ElementName=DistanceTextBlock, Path=StrokeOpacity, Mode=OneWay}"
+                      TextAlignment="Left" />
+
+                    <!-- Up/Down (DUMMY) -->
+                    <ctrl:LightOutlineTextBlock
+                      Grid.Column="1"
+                      Text="{Binding High, Mode=OneWay}"
+                      Visibility="Hidden"
+                      Margin="1 2 0 0"
+                      VerticalAlignment="Top"
+                      Fill="{Binding ElementName=DistanceTextBlock, Path=Fill, Mode=OneWay}"
+                      Stroke="{Binding ElementName=DistanceTextBlock, Path=Stroke, Mode=OneWay}"
+                      StrokeThickness="{Binding ElementName=DistanceTextBlock, Path=StrokeThickness, Mode=OneWay}"
+                      Tag="{Binding ElementName=DistanceTextBlock, Path=Tag, Mode=OneWay}"
+                      FontFamily="{Binding Path=FontAwesome, Mode=OneWay}"
+                      FontSize="{Binding ElementName=DistanceTextBlock, Path=FontSize, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}"
+                      BlurRadius="{Binding ElementName=DistanceTextBlock, Path=BlurRadius, Mode=OneWay}"
+                      BlurOpacity="{Binding ElementName=DistanceTextBlock, Path=BlurOpacity, Mode=OneWay}"
+                      StrokeOpacity="{Binding ElementName=DistanceTextBlock, Path=StrokeOpacity, Mode=OneWay}"
+                      TextAlignment="Left" />
+                  </Grid>
+                </StackPanel>
+
+                <DockPanel
+                  Grid.Column="1"
+                  RenderTransformOrigin="0.5 0.5">
+                  <DockPanel.RenderTransform>
+                    <RotateTransform
+                      Angle="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OriginAngle, Mode=OneWay}" />
+                  </DockPanel.RenderTransform>
+
+                  <ctrl:LightOutlineTextBlock
+                    x:Name="DirectionTextBlock"
+                    Text="{Binding Path=ArrowByFontAwesome, Mode=OneWay}"
+                    Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+                    StrokeThickness="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.3}"
+                    Tag="{Binding DisplayText.Font, Mode=OneWay}"
+                    FontFamily="{Binding Path=FontAwesome, Mode=OneWay}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=2.3}"
+                    BlurRadius="{Binding Path=DisplayText.Font.BlurRadius, Mode=OneWay}"
+                    BlurOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    StrokeOpacity="{Binding Path=DisplayText.OutlineColor.ScA, Mode=OneWay}"
+                    RenderTransformOrigin="0.5 0.5">
+                    <ctrl:LightOutlineTextBlock.RenderTransform>
+                      <RotateTransform Angle="{Binding Path=DirectionAngle, Mode=OneWay}" />
+                    </ctrl:LightOutlineTextBlock.RenderTransform>
+                  </ctrl:LightOutlineTextBlock>
+                </DockPanel>
+
+                <TextBlock
+                Grid.Column="1"
+                Visibility="Hidden"
+                Width="{Binding ElementName=DirectionTextBlock, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.5}" />
+              </Grid>
+            </DockPanel>
+            <!-- Normal Mode (Detail Mode) end -->
+          </Grid>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </StackPanel>
+  <!-- Base Panel -->
+</Window>

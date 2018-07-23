@@ -1,0 +1,53 @@
+<Window
+  x:Class="ACT.UltraScouter.Views.NameView"
+  Title="TargetNameView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="clr-namespace:ACT.UltraScouter.Views"
+  xmlns:cnv="clr-namespace:ACT.UltraScouter.Views.Converters"
+  xmlns:vm="clr-namespace:ACT.UltraScouter.ViewModels"
+  xmlns:ctrl="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:debug="debug-mode"
+  mc:Ignorable="d"
+  AllowsTransparency="True"
+  Background="Transparent"
+  ShowInTaskbar="False"
+  SizeToContent="WidthAndHeight"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  Topmost="True"
+  WindowStyle="None"
+  Left="{Binding Path=Config.Location.X, Mode=TwoWay}"
+  Top="{Binding Path=Config.Location.Y, Mode=TwoWay}"
+  d:DataContext="{d:DesignInstance Type=vm:NameViewModel, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+  <Window.Resources>
+    <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />
+    <cnv:StrokeThicknessToBlurRadiusConverter x:Key="StrokeThicknessToBlurRadiusConverter" />
+  </Window.Resources>
+
+  <ctrl:LightOutlineTextBlock
+    x:Name="TargetNameTextBlock"
+    Margin="8,0,10,0"
+    Fill="{Binding Path=Config.DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+    Stroke="{Binding Path=Config.DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+    StrokeThickness="{Binding Path=Config.DisplayText.Font.OutlineThickness, Mode=OneWay}"
+    Text="{Binding Path=Model.Name, Mode=OneWay}"
+    FontFamily="{Binding Path=Config.DisplayText.Font.FontFamily, Mode=OneWay}"
+    FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay}"
+    FontStretch="{Binding Path=Config.DisplayText.Font.Stretch, Mode=OneWay}"
+    FontWeight="{Binding Path=Config.DisplayText.Font.Weight, Mode=OneWay}"
+    FontStyle="{Binding Path=Config.DisplayText.Font.Style, Mode=OneWay}"
+    BlurRadius="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}"
+    BlurOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
+    StrokeOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
+    TextWrapping="NoWrap" />
+</Window>

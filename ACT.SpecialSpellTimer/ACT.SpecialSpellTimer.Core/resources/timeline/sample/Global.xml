@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<timeline>
+  <name>グローバルトリガ</name>
+  <rev>rev1</rev>
+  <description>
+    ゾーンに依存せず常に使用するトリガを定義する。
+    スペルやテロップで定義しても同等の機能が得られるがスペスペたいむの通知オーバーレイでまとめて運用した人向け。
+
+    designed by Hojoring Forum
+    https://discord.gg/n6Mut3F
+  </description>
+  <zone>{GLOBAL}</zone>
+  <locale>JA</locale>
+
+  <!-- 初期設定では無効にしてあります -->
+  <default target-element="Trigger" target-attr="enabled" value="false" />
+
+  <!-- 重要なアクティビティを通知するトリガ begin -->
+  <!--
+  マーカー、マーキングなどはゾーンを問わずに出現するためグローバルゾーンとして定義する。
+  スペル、テロップで定義しても同等であるがスペスペたいむの通知オーバーレイでまとめて運用したい人向け。
+  -->
+  <t text="自分にマーカー" sync="1B:.{8}:[mex]:" notice="自分にマーカー">
+    <v-notice
+      duration="5"
+      duration-visible="false"
+      icon="Marker.png" />
+  </t>
+
+  <t text="マーカー\n ➜ ${_nex}" sync="1B:.{8}:[nex]:">
+    <v-notice
+      duration="5"
+      duration-visible="false"
+      style="NOTICE_NORMAL"
+      icon="Marker.png" />
+  </t>
+
+  <t text="自分にマーキング" sync="[mex]に「マーキング」の効果。" notice="自分にマーキング">
+    <v-notice
+      duration="5"
+      duration-visible="false"
+      icon="Marker.png" />
+  </t>
+
+  <t text="マーキング\n ➜ ${_nex}" sync="[nex]に「マーキング」の効果。">
+    <v-notice
+      duration="5"
+      duration-visible="false"
+      style="NOTICE_NORMAL"
+      icon="Marker.png" />
+  </t>
+  <!-- 重要なアクティビティを通知するトリガ end -->
+</timeline>

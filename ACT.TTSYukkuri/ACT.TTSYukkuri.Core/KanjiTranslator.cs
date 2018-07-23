@@ -1,0 +1,152 @@
+using System;
+using System.Runtime.InteropServices;
+using FFXIV.Framework.Common;
+using NLog;
+
+namespace ACT.TTSYukkuri
+{
+    /// <summary>
+    /// 漢字翻訳
+    /// </summary>
+    public class KanjiTranslator : IDisposable
+    {
+        #region Logger
+
+        private Logger Logger => AppLog.DefaultLogger;
+
+        #endregion Logger
+
+        /// <summary>
+        /// ロックオブジェクト
+        /// </summary>
+        private static object lockObject = new object();
+
+        /// <summary>
+        /// シングルトンinstance
+        /// </summary>
+        private static KanjiTranslator instance;
+
+        /// <summary>
+        /// シングルトンinstance
+        /// </summary>
+        public static KanjiTranslator Default
+        {
+            get
+            {
+                lock (lockObject)
+                {
+                    if (instance == null)
+                    {
+                        instance = new KanjiTranslator();
+                    }
+                }
+
+                return instance;
+            }
+        }
+
+        /// <summary>
+        /// IFE言語オブジェクト
+        /// </summary>
+        public IFELanguage IFELang
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 初期化する
+        /// </summary>
+        public void Initialize()
+        {
+            lock (lockObject)
+            {
+                if (this.IFELang == null)
+                {
+                    this.IFELang = Activator.CreateInstance(Type.GetTypeFromProgID("MSIME.Japan")) as IFELanguage;
+
+                    if (this.IFELang == null)
+                    {
+                        this.Logger.Error("IFELANG IME initialize faild.");
+                    }
+                    else
+                    {
+                        var hr = this.IFELang.Open();
+                        if (hr != 0)
+                        {
+                            this.Logger.Error("IFELANG IME connection faild.");
+                            this.IFELang = null;
+                        }
+
+                        this.Logger.Trace("IFELANG IME Connected.");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 読みがなを取得する
+        /// </summary>
+        /// <param name="text">変換対象のテキスト</param>
+        /// <returns>読みがなに変換したテキスト</returns>
+        public string GetPhonetic(
+            string text)
+        {
+            var yomigana = text;
+
+            var ifelang = this.IFELang;
+
+            if (ifelang != null)
+            {
+                string t;
+                var hr = ifelang.GetPhonetic(text, 1, -1, out t);
+                if (hr != 0)
+                {
+                    this.Logger.Error($"IFELANG IME translate to phonetic faild. text={text}");
+                    return yomigana;
+                }
+
+                yomigana = t;
+            }
+            else
+            {
+                this.Logger.Error($"IFELANG IME not ready. text={text}");
+            }
+
+            return yomigana;
+        }
+
+        /// <summary>
+        /// Dispose
+        /// </summary>
+        public void Dispose()
+        {
+            if (this.IFELang != null)
+            {
+                this.IFELang.Close();
+                this.IFELang = null;
+            }
+        }
+    }
+
+    /// <summary>
+    /// IFELanguage Interface
+    /// </summary>
+    [ComImport]
+    [Guid("019F7152-E6DB-11d0-83C3-00C04FDDB82E")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    public interface IFELanguage
+    {
+        int Open();
+
+        int Close();
+
+        int GetJMorphResult(uint dwRequest, uint dwCMode, int cwchInput, [MarshalAs(UnmanagedType.LPWStr)] string pwchInput, IntPtr pfCInfo, out object ppResult);
+
+        int GetConversionModeCaps(ref uint pdwCaps);
+
+        int GetPhonetic([MarshalAs(UnmanagedType.BStr)] string @string, int start, int length, [MarshalAs(UnmanagedType.BStr)] out string result);
+
+        int GetConversion([MarshalAs(UnmanagedType.BStr)] string @string, int start, int length, [MarshalAs(UnmanagedType.BStr)] out string result);
+    }
+}

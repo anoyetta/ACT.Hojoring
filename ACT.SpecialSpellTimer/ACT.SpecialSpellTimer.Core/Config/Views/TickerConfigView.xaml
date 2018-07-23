@@ -1,0 +1,631 @@
+<UserControl
+  x:Class="ACT.SpecialSpellTimer.Config.Views.TickerConfigView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.Config.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:model="clr-namespace:ACT.SpecialSpellTimer.Config.Models"
+  xmlns:triggerModel="clr-namespace:ACT.SpecialSpellTimer.Models"
+  xmlns:resources="clr-namespace:ACT.SpecialSpellTimer.resources"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:vm="clr-namespace:ACT.SpecialSpellTimer.Config.ViewModels"
+  xmlns:fa="http://schemas.fontawesome.io/icons/"
+  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+  d:DataContext="{d:DesignInstance Type=vm:TickerConfigViewModel}"
+  d:DesignWidth="800"
+  Background="White"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}"
+  FontFamily="{DynamicResource UIFont}"
+  FontSize="{DynamicResource UIFontSize}"
+  FontWeight="{DynamicResource UIFontWeight}"
+  FontStyle="{DynamicResource UIFontStyle}"
+  FontStretch="{DynamicResource UIFontStretch}"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.EdgeMode="Unspecified"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  IsTabStop="False"
+  Focusable="False"
+  mc:Ignorable="d">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <Style TargetType="Label">
+        <Setter Property="Padding" Value="0" />
+      </Style>
+
+      <Style TargetType="CheckBox">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+      </Style>
+
+      <Style TargetType="TextBox">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="30" />
+        <EventSetter Event="MouseDoubleClick" Handler="TextBoxOnGotFocus" />
+        <EventSetter Event="GotKeyboardFocus" Handler="TextBoxOnGotFocus" />
+        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="TextBoxSelect" />
+        <Style.Triggers>
+          <Trigger Property="IsReadOnly" Value="True">
+            <Setter Property="Foreground" Value="Silver" />
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+
+      <Style TargetType="ComboBox">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="30" />
+      </Style>
+
+      <Style TargetType="xctk:DoubleUpDown">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="MinHeight" Value="27" />
+      </Style>
+
+      <Style TargetType="xctk:IntegerUpDown">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="MinHeight" Value="27" />
+      </Style>
+
+      <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
+
+      <fwcnv:BoolToCollapsedConverter x:Key="VisibilityConverter" />
+      <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../resources/strings/Strings.SpeSpe.ja-JP.xaml" />
+        <wpf:DesignTimeResourceDictionary Source="../../resources/styles/ConfigViewResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <TabControl Grid.Row="0" BorderThickness="0" Margin="2 2 0 0" SelectionChanged="TabControl_SelectionChanged">
+
+      <!-- General タブ start -->
+      <TabItem Header="General" Padding="20 2 20 2">
+        <ScrollViewer
+          x:Name="BaseScrollViewer"
+          HorizontalScrollBarVisibility="Auto"
+          VerticalScrollBarVisibility="Auto"
+          Margin="5"
+          Padding="0 0 0 20">
+          <StackPanel>
+            <!-- Name -->
+            <Label Content="{DynamicResource Ticker_Name}" />
+            <TextBox Text="{Binding Model.Title, Mode=TwoWay}" />
+
+            <!-- Tags =>> -->
+            <StackPanel x:Name="TagPanel">
+              <ItemsControl
+                Margin="0 5 0 4"
+                ItemsSource="{Binding Tags, Mode=OneWay}">
+
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate DataType="{x:Type triggerModel:ItemTags}">
+                    <Border Margin="1" Padding="1" CornerRadius="2" BorderThickness="1" BorderBrush="Orange">
+                      <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding Tag.Name, Mode=OneWay}" FontSize="14" Margin="2 0 0 0" />
+                        <Button
+                          Content="X"
+                          Margin="5 0 2 0"
+                          Command="{Binding RemoveTagCommand, Mode=OneWay}"
+                          CommandParameter="{Binding}"
+                          Foreground="LightGray"
+                          Background="Transparent"
+                          BorderBrush="Transparent"
+                          BorderThickness="0"
+                          FontSize="12"
+                          VerticalAlignment="Center"
+                          VerticalContentAlignment="Center"
+                          HorizontalContentAlignment="Center" />
+                      </StackPanel>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+
+              <TextBlock Margin="2 0 0 0">
+                <Hyperlink
+                  Command="{Binding AddTagsCommand, Mode=OneWay}"
+                  CommandParameter="{Binding Model.Guid, Mode=OneWay}">
+                  <TextBlock Text="{DynamicResource Common_AddTags}" FontSize="14" />
+                </Hyperlink>
+              </TextBlock>
+            </StackPanel>
+            <!-- <<= Tags  -->
+
+            <!-- Message -->
+            <Label Margin="0 15 0 0" Content="{DynamicResource Ticker_Message}" />
+            <TextBox Text="{Binding Model.Message, Mode=TwoWay}" />
+            <StackPanel Margin="5 5 0 0">
+              <Label Content="{DynamicResource Ticker_MessageDiscription1}" FontSize="11" />
+              <Label Content="{DynamicResource Ticker_MessageDiscription2}" FontSize="11" />
+              <Label Content="{DynamicResource Ticker_MessageDiscription3}" FontSize="11" />
+              <Label Content="{DynamicResource Ticker_MessageDiscription4}" FontSize="11" />
+            </StackPanel>
+
+            <!-- マッチングワード -->
+            <Label Margin="0 15 0 0" Content="{DynamicResource Spell_TextToMatch}" />
+            <TextBox Text="{Binding Model.Keyword, Mode=TwoWay}" />
+
+            <!-- 非表示にするマッチングワード -->
+            <Label Margin="0 15 0 0" Content="{DynamicResource Ticker_TextToMatchToHide}" />
+            <TextBox Text="{Binding Model.KeywordToHide, Mode=TwoWay}" />
+
+            <!-- Use Regex -->
+            <CheckBox Margin="0 10 0 0" Content="{DynamicResource Spell_UserRegex}" IsChecked="{Binding Model.RegexEnabled}" />
+
+            <!-- Display Time -->
+            <Label Margin="0 15 0 0" Content="{DynamicResource Ticker_DisplayTime1}" />
+            <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
+              <xctk:DoubleUpDown Value="{Binding Model.Delay, Mode=TwoWay}" FormatString="F2" MinWidth="90" Increment="1" />
+              <Label Content="{DynamicResource Ticker_DisplayTime2}" VerticalAlignment="Center" Margin="0 0 10 0" />
+              <xctk:DoubleUpDown Value="{Binding Model.DisplayTime, Mode=TwoWay}" FormatString="F2" MinWidth="90" Increment="1" />
+              <Label Content="{DynamicResource Ticker_DisplayTime3}" VerticalAlignment="Center" Margin="5 0 0 0" />
+            </StackPanel>
+
+            <!-- メッセージの追加表示 -->
+            <CheckBox Margin="0 15 0 0" Content="{DynamicResource Ticker_AddMessages}" IsChecked="{Binding Model.AddMessageEnabled}" />
+
+            <!-- プログレスバー -->
+            <CheckBox Margin="0 5 0 0" Content="{DynamicResource Ticker_VisibleProgressBar}" IsChecked="{Binding Model.ProgressBarEnabled}" />
+
+            <!-- Location -->
+            <Label Margin="0 15 0 0" Content="{DynamicResource Common_Location}" />
+            <StackPanel Orientation="Horizontal">
+              <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
+              <xctk:DoubleUpDown Value="{Binding Model.Left, Mode=TwoWay}" FormatString="F0" MinWidth="75" Increment="1" />
+              <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
+              <xctk:DoubleUpDown Value="{Binding Model.Top, Mode=TwoWay}" FormatString="F0" MinWidth="75" Increment="1" />
+            </StackPanel>
+
+            <!-- Jobフィルタ start -->
+            <Expander Margin="0 20 0 0" Expanded="FilterExpander_Expanded">
+              <Expander.Header>
+                <StackPanel Orientation="Horizontal">
+                  <Label Content="{DynamicResource Trigger_JobFilter}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+                  <Label Margin="20 0 0 0" Content="filtered!" FontSize="14" VerticalAlignment="Center" VerticalContentAlignment="Center" Foreground="Crimson" FontStyle="Italic" FontWeight="Black" Visibility="{Binding IsJobFiltered, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+                </StackPanel>
+              </Expander.Header>
+
+              <Grid>
+
+                <TextBlock Margin="0 3 0 5">
+                  <Hyperlink
+                    Command="{Binding ClearJobFilterCommand, Mode=OneWay}">
+                    <TextBlock Text="{DynamicResource Trigger_ClearFilter}" />
+                  </Hyperlink>
+                </TextBlock>
+
+                <ListView
+                  Margin="0 30 0 0"
+                  BorderThickness="0"
+                  ItemsSource="{Binding JobSelectors, Mode=OneWay}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                  Height="200">
+                  <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                  </ListView.ItemContainerStyle>
+                  <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <WrapPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                  </ListView.ItemsPanel>
+                  <ListView.ItemTemplate>
+                    <DataTemplate>
+                      <CheckBox
+                        Margin="0 2 20 2"
+                        FontSize="15"
+                        Content="{Binding Text, Mode=OneWay}"
+                        IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                    </DataTemplate>
+                  </ListView.ItemTemplate>
+                </ListView>
+              </Grid>
+            </Expander>
+            <!-- Jobフィルタ end -->
+
+            <!-- Zoneフィルタ start -->
+            <Expander Margin="0 10 0 0" Expanded="FilterExpander_Expanded">
+              <Expander.Header>
+                <StackPanel Orientation="Horizontal">
+                  <Label Content="{DynamicResource Trigger_ZoneFilter}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+                  <Label Margin="20 0 0 0" Content="filtered!" FontSize="14" VerticalAlignment="Center" VerticalContentAlignment="Center" Foreground="Crimson" FontStyle="Italic" FontWeight="Black" Visibility="{Binding IsZoneFiltered, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+                </StackPanel>
+              </Expander.Header>
+
+              <Grid>
+                <TextBlock Margin="0 3 0 5">
+                  <Hyperlink
+                    Command="{Binding ClearZoneFilterCommand, Mode=OneWay}">
+                    <TextBlock Text="{DynamicResource Trigger_ClearFilter}" />
+                  </Hyperlink>
+                </TextBlock>
+
+                <ListView
+                  Margin="0 30 0 0"
+                  BorderThickness="0"
+                  ItemsSource="{Binding ZoneSelectors, Mode=OneWay}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                  Height="400">
+                  <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                  </ListView.ItemContainerStyle>
+                  <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <WrapPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                  </ListView.ItemsPanel>
+                  <ListView.ItemTemplate>
+                    <DataTemplate>
+                      <CheckBox
+                        Margin="0 2 20 2"
+                        FontSize="15"
+                        Content="{Binding Name, Mode=OneWay}"
+                        IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                    </DataTemplate>
+                  </ListView.ItemTemplate>
+                </ListView>
+              </Grid>
+            </Expander>
+            <!-- Zoneフィルタ end -->
+
+            <!-- Preconditionフィルタ start -->
+            <Expander Margin="0 10 0 0" Expanded="FilterExpander_Expanded">
+              <Expander.Header>
+                <StackPanel Orientation="Horizontal">
+                  <Label Content="{DynamicResource Trigger_Preconditions}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+                  <Label Margin="20 0 0 0" Content="filtered!" FontSize="14" VerticalAlignment="Center" VerticalContentAlignment="Center" Foreground="Crimson" FontStyle="Italic" FontWeight="Black" Visibility="{Binding PreconditionSelectors.IsFiltered, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+                </StackPanel>
+              </Expander.Header>
+
+              <Grid>
+                <TextBlock Margin="0 3 0 5">
+                  <Hyperlink
+                    Command="{Binding ClearPreconditionsCommand, Mode=OneWay}">
+                    <TextBlock Text="{DynamicResource Trigger_ClearFilter}" />
+                  </Hyperlink>
+                </TextBlock>
+
+                <Grid Margin="0 35 0 0">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                  </Grid.RowDefinitions>
+
+                  <!-- 稼働スペル -->
+                  <StackPanel Grid.Row="0" Grid.Column="0">
+                    <Label Content="{DynamicResource Trigger_ForMustStartRunningSpell}" />
+                    <ListView
+                      BorderThickness="0"
+                      Margin="0 5 0 0"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingPanel.VirtualizationMode="Recycling"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      Height="250"
+                      ItemsSource="{Binding PreconditionSelectors.ActiveSpells, Mode=OneWay}">
+                      <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                          <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                      </ListView.ItemContainerStyle>
+                      <ListView.ItemTemplate>
+                        <DataTemplate>
+                          <CheckBox
+                            Margin="2 0 10 0"
+                            Content="{Binding Text, Mode=OneWay}"
+                            IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                            FontSize="15" />
+                        </DataTemplate>
+                      </ListView.ItemTemplate>
+                    </ListView>
+                  </StackPanel>
+
+                  <!-- 非稼働スペル -->
+                  <StackPanel Grid.Row="0" Grid.Column="1" Margin="10 0 0 0">
+                    <Label Content="{DynamicResource Trigger_ForMustStartStoppingSpell}" />
+                    <ListView
+                      BorderThickness="0"
+                      Margin="0 5 0 0"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingPanel.VirtualizationMode="Recycling"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      Height="250"
+                      ItemsSource="{Binding PreconditionSelectors.InactiveSpells, Mode=OneWay}">
+                      <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                          <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                      </ListView.ItemContainerStyle>
+                      <ListView.ItemTemplate>
+                        <DataTemplate>
+                          <CheckBox
+                            Margin="2 0 10 0"
+                            Content="{Binding Text, Mode=OneWay}"
+                            IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                            FontSize="15" />
+                        </DataTemplate>
+                      </ListView.ItemTemplate>
+                    </ListView>
+                  </StackPanel>
+
+                  <!-- 稼働テロップ -->
+                  <StackPanel Grid.Row="1" Grid.Column="0" Margin="0 10 0 0">
+                    <Label Content="{DynamicResource Trigger_ForMustStartRunningTicker}" />
+                    <ListView
+                      BorderThickness="0"
+                      Margin="0 5 0 0"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingPanel.VirtualizationMode="Recycling"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      Height="250"
+                      ItemsSource="{Binding PreconditionSelectors.ActiveTickers, Mode=OneWay}">
+                      <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                          <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                      </ListView.ItemContainerStyle>
+                      <ListView.ItemTemplate>
+                        <DataTemplate>
+                          <CheckBox
+                            Margin="2 0 10 0"
+                            Content="{Binding Text, Mode=OneWay}"
+                            IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                            FontSize="15" />
+                        </DataTemplate>
+                      </ListView.ItemTemplate>
+                    </ListView>
+                  </StackPanel>
+
+                  <!-- 非稼働テロップ -->
+                  <StackPanel Grid.Row="1" Grid.Column="1" Margin="10 10 0 0">
+                    <Label Content="{DynamicResource Trigger_ForMustStartStoppingTicker}" />
+                    <ListView
+                      BorderThickness="0"
+                      Margin="0 5 0 0"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingPanel.VirtualizationMode="Recycling"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      Height="250"
+                      ItemsSource="{Binding PreconditionSelectors.InactiveTickers, Mode=OneWay}">
+                      <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                          <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                      </ListView.ItemContainerStyle>
+                      <ListView.ItemTemplate>
+                        <DataTemplate>
+                          <CheckBox
+                            Margin="2 0 10 0"
+                            Content="{Binding Text, Mode=OneWay}"
+                            IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                            FontSize="15" />
+                        </DataTemplate>
+                      </ListView.ItemTemplate>
+                    </ListView>
+                  </StackPanel>
+                </Grid>
+              </Grid>
+            </Expander>
+            <!-- Preconditionフィルタ end -->
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+      <!-- General タブ end -->
+
+      <!-- Visual タブ start -->
+      <TabItem x:Name="VisualTab" Header="Visual" Padding="20 2 20 2">
+        <ScrollViewer
+          HorizontalScrollBarVisibility="Auto"
+          VerticalScrollBarVisibility="Auto"
+          Margin="5"
+          Padding="0 0 0 20">
+
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Visualタブの左側 -->
+            <StackPanel Grid.Column="0" Margin="0 0 90 0">
+              <!-- 全般 -->
+              <Label Content="{DynamicResource Common_General}" FontSize="20" FontWeight="Bold" />
+              <StackPanel Margin="10 0 0 0">
+                <!-- Location -->
+                <Label Margin="0 5 0 0" Content="{DynamicResource Common_Location}" />
+                <StackPanel Orientation="Horizontal">
+                  <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
+                  <TextBox TextAlignment="Right" Text="{Binding Model.Left, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+                  <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
+                  <TextBox TextAlignment="Right" Text="{Binding Model.Top, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+                </StackPanel>
+
+                <!-- プログレスバー -->
+                <CheckBox Margin="0 15 0 0" Content="{DynamicResource Ticker_VisibleProgressBar}" IsChecked="{Binding Model.ProgressBarEnabled}" />
+              </StackPanel>
+
+              <!-- フォント -->
+              <Label Margin="0 20 0 0" Content="{DynamicResource Common_Font}" FontSize="20" FontWeight="Bold" />
+              <StackPanel Margin="10 0 0 0">
+                <TextBlock HorizontalAlignment="Left">
+                  <Hyperlink Command="{Binding ChangeFontCommand}">
+                    <TextBlock Text="{Binding Model.Font.DisplayText}" />
+                  </Hyperlink>
+                </TextBlock>
+
+                <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
+                  <Hyperlink Command="{Binding ChangeFontColorCommand}">
+                    <TextBlock Text="{DynamicResource Common_FillColor}" />
+                  </Hyperlink>
+                </TextBlock>
+
+                <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
+                  <Hyperlink Command="{Binding ChangeFontOutlineColorCommand}">
+                    <TextBlock Text="{DynamicResource Common_StrokeColor}" />
+                  </Hyperlink>
+                </TextBlock>
+              </StackPanel>
+
+              <!-- 背景色 -->
+              <Label Margin="0 20 0 0" Content="{DynamicResource Common_Background}" FontSize="20" FontWeight="Bold" />
+              <StackPanel Margin="10 0 0 0">
+                <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
+                  <Hyperlink Command="{Binding ChangeBackgroundColorCommand}">
+                    <TextBlock Text="{DynamicResource Common_FillColor}" />
+                  </Hyperlink>
+                </TextBlock>
+              </StackPanel>
+            </StackPanel>
+            <!-- Visualタブの左側 end -->
+          </Grid>
+        </ScrollViewer>
+      </TabItem>
+      <!-- Visual タブ end -->
+
+      <!-- Notice タブ start -->
+      <TabItem Header="Notice"  Padding="20 2 20 2">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+
+          <ScrollViewer
+            Grid.Row="0"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto"
+            Margin="5"
+            Padding="0 0 0 20">
+
+            <WrapPanel Orientation="Horizontal">
+              <!-- Match start -->
+              <StackPanel Margin="0 0 50 40" VerticalAlignment="Top">
+                <Label Content="{DynamicResource Ticker_NoticeOnMatch}" FontSize="20" FontWeight="Bold" />
+                <StackPanel Margin="5 10 0 0" Width="450">
+                  <Label DockPanel.Dock="Left" Content="WAVE" />
+                  <DockPanel>
+                    <ComboBox
+                      DockPanel.Dock="Left"
+                      HorizontalAlignment="Left"
+                      Width="415"
+                      ItemsSource="{x:Static vm:SpellConfigViewModel.WaveList}"
+                      DisplayMemberPath="Name"
+                      SelectedValuePath="FullPath"
+                      SelectedValue="{Binding Model.MatchSound, Mode=TwoWay}" />
+                    <Button DockPanel.Dock="Right" Content="♪" HorizontalAlignment="Right" Width="28" FontWeight="Black" Command="{Binding TestWave1Command}" />
+                  </DockPanel>
+                  <Label Margin="0 10 0 0" Content="TTS" />
+                  <DockPanel>
+                    <TextBox DockPanel.Dock="Left" Width="415" HorizontalAlignment="Left" Text="{Binding Model.MatchTextToSpeak, Mode=TwoWay}" />
+                    <Button DockPanel.Dock="Right" Content="▶" HorizontalAlignment="Right" Width="28" FontWeight="Black" FontSize="11"  Command="{Binding TestTTS1Command}" />
+                  </DockPanel>
+                  <StackPanel Visibility="{Binding Model.MatchAdvancedConfig.Available, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+                    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Spell_UseAdvancedNotice}" IsChecked="{Binding Model.MatchAdvancedConfig.IsEnabled, Mode=TwoWay}" />
+                    <StackPanel Margin="0 5 0 0" Visibility="{Binding Model.MatchAdvancedConfig.IsEnabled, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+                      <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToMainPlaybackDevice}" IsChecked="{Binding Model.MatchAdvancedConfig.ToMainDevice, Mode=TwoWay}" />
+                      <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToSubPlaybackDevice}" IsChecked="{Binding Model.MatchAdvancedConfig.ToSubDevice, Mode=TwoWay}" />
+                      <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToDicordTextChannel}" IsChecked="{Binding Model.MatchAdvancedConfig.ToDicordTextChat, Mode=TwoWay}" />
+                    </StackPanel>
+                  </StackPanel>
+                </StackPanel>
+              </StackPanel>
+              <!-- Match end -->
+
+              <!-- Delay start -->
+              <StackPanel Margin="0 0 50 40" VerticalAlignment="Top">
+                <Label Content="{DynamicResource Ticker_NoticeOnDelay}" FontSize="20" FontWeight="Bold" />
+                <StackPanel Margin="5 10 0 0" Width="450">
+                  <Label Content="WAVE" />
+                  <DockPanel>
+                    <ComboBox
+                      DockPanel.Dock="Left"
+                      HorizontalAlignment="Left"
+                      Width="415"
+                      ItemsSource="{x:Static vm:SpellConfigViewModel.WaveList}"
+                      DisplayMemberPath="Name"
+                      SelectedValuePath="FullPath"
+                      SelectedValue="{Binding Model.DelaySound, Mode=TwoWay}" />
+                    <Button DockPanel.Dock="Right" Content="♪" HorizontalAlignment="Right" Width="28" FontWeight="Black" Command="{Binding TestWave2Command}" />
+                  </DockPanel>
+                  <Label Margin="0 10 0 0" Content="TTS" />
+                  <DockPanel>
+                    <TextBox DockPanel.Dock="Left" HorizontalAlignment="Left" Width="415" Text="{Binding Model.DelayTextToSpeak, Mode=TwoWay}" />
+                    <Button DockPanel.Dock="Right" Content="▶" HorizontalAlignment="Right" Width="28" FontWeight="Black" FontSize="11"  Command="{Binding TestTTS2Command}" />
+                  </DockPanel>
+                  <StackPanel Visibility="{Binding Model.DelayAdvancedConfig.Available, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+                    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Spell_UseAdvancedNotice}" IsChecked="{Binding Model.DelayAdvancedConfig.IsEnabled, Mode=TwoWay}" />
+                    <StackPanel Margin="0 5 0 0" Visibility="{Binding Model.DelayAdvancedConfig.IsEnabled, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+                      <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToMainPlaybackDevice}" IsChecked="{Binding Model.DelayAdvancedConfig.ToMainDevice, Mode=TwoWay}" />
+                      <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToSubPlaybackDevice}" IsChecked="{Binding Model.DelayAdvancedConfig.ToSubDevice, Mode=TwoWay}" />
+                      <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToDicordTextChannel}" IsChecked="{Binding Model.DelayAdvancedConfig.ToDicordTextChat, Mode=TwoWay}" />
+                    </StackPanel>
+                  </StackPanel>
+                </StackPanel>
+              </StackPanel>
+              <!-- Delay end -->
+            </WrapPanel>
+          </ScrollViewer>
+
+          <StackPanel Margin="5" Grid.Row="1" Orientation="Horizontal">
+            <CheckBox Content="{DynamicResource Spell_UseSequencialTTS}" IsChecked="{Binding Model.IsSequentialTTS, Mode=TwoWay}" HorizontalAlignment="Center" />
+            <TextBlock Margin="15 0 0 0" HorizontalAlignment="Center">
+              <Hyperlink Command="{Binding TestSequencialTTSCommand, Mode=OneWay}">
+                <TextBlock Text="{DynamicResource Spell_TestSequencialTTS}" />
+              </Hyperlink>
+            </TextBlock>
+          </StackPanel>
+        </Grid>
+      </TabItem>
+      <!-- Notice タブ end -->
+    </TabControl>
+
+    <!-- Bottom Buttons start -->
+    <DockPanel Grid.Row="1">
+      <TextBlock Margin="5 5 0 5" DockPanel.Dock="Left">
+        <Hyperlink Command="{Binding SimulateMatchCommand, Mode=OneWay}">
+          <TextBlock Text="{DynamicResource Trigger_SimulateMatch}" />
+        </Hyperlink>
+      </TextBlock>
+
+      <TextBlock Margin="0 5 5 5" DockPanel.Dock="Right" HorizontalAlignment="Right">
+        <Hyperlink Command="{Binding CopyConfigCommand, Mode=OneWay}">
+          <TextBlock Text="{DynamicResource Copy_Copy}" />
+        </Hyperlink>
+      </TextBlock>
+    </DockPanel>
+    <!-- Bottom Buttons end -->
+  </Grid>
+</UserControl>

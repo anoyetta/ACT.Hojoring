@@ -1,0 +1,92 @@
+<Controls:MetroWindow
+  x:Class="XIVDBDownloader.MainWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="clr-namespace:XIVDBDownloader"
+  xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+  xmlns:vm="clr-namespace:XIVDBDownloader.ViewModels"
+  xmlns:constants="clr-namespace:XIVDBDownloader.Constants"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  mc:Ignorable="d"
+  Title="XIVDB Downloader"
+  GlowBrush="{DynamicResource AccentColorBrush}"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  ResizeMode="CanResizeWithGrip"
+  SaveWindowPosition="False"
+  WindowStartupLocation="CenterScreen"
+  Icon="Download.ico"
+  ShowIconOnTitleBar="True"
+  Width="800"
+  Height="450">
+
+  <Window.DataContext>
+    <vm:MainWindowViewModel />
+  </Window.DataContext>
+
+  <Window.Resources>
+    <ObjectDataProvider
+      x:Key="LanguageEnumKey"
+      MethodName="GetValues"
+      ObjectType="{x:Type global:Locales}">
+      <ObjectDataProvider.MethodParameters>
+        <x:Type TypeName="global:Locales" />
+      </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+
+    <ObjectDataProvider
+      x:Key="DataModelsEnumKey"
+      MethodName="GetValues"
+      ObjectType="{x:Type constants:DataModels}">
+      <ObjectDataProvider.MethodParameters>
+        <x:Type TypeName="constants:DataModels" />
+      </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+  </Window.Resources>
+
+  <DockPanel>
+    <StackPanel DockPanel.Dock="Top" Orientation="Vertical" VerticalAlignment="Top">
+      <Label Content="Language" Margin="5" />
+      <ComboBox
+        Margin="5"
+        ItemsSource="{Binding Source={StaticResource LanguageEnumKey}}"
+        SelectedItem="{Binding Language, Mode=TwoWay}" />
+
+      <Label Content="Data" Margin="5" />
+      <ComboBox
+        Margin="5"
+        ItemsSource="{Binding Source={StaticResource DataModelsEnumKey}}"
+        SelectedItem="{Binding DataModel, Mode=TwoWay}" />
+
+      <Label Content="Save directory" Margin="5" />
+      <TextBox
+        Margin="5"
+        Text="{Binding SaveDirectory, Mode=TwoWay}" />
+    </StackPanel>
+
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Vertical" VerticalAlignment="Bottom">
+      <ScrollViewer
+        Name="MessagesScrollViewer"
+        Margin="5"
+        Height="120">
+        <TextBox
+          TextWrapping="NoWrap"
+          IsReadOnly="True"
+          BorderThickness="0"
+          Text="{Binding Messages, Mode=OneWay}" />
+      </ScrollViewer>
+
+      <Button
+        Content="Download"
+        Margin="5"
+        Command="{Binding DownloadCommand}"
+        IsEnabled="{Binding IsEnabledDownload}" />
+    </StackPanel>
+  </DockPanel>
+</Controls:MetroWindow>

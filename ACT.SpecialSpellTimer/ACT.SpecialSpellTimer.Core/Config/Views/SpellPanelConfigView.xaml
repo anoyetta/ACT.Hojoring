@@ -1,0 +1,421 @@
+<UserControl
+  x:Class="ACT.SpecialSpellTimer.Config.Views.SpellPanelConfigView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.Config.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:model="clr-namespace:ACT.SpecialSpellTimer.Config.Models"
+  xmlns:triggerModel="clr-namespace:ACT.SpecialSpellTimer.Models"
+  xmlns:resources="clr-namespace:ACT.SpecialSpellTimer.resources"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:vm="clr-namespace:ACT.SpecialSpellTimer.Config.ViewModels"
+  xmlns:fa="http://schemas.fontawesome.io/icons/"
+  xmlns:cnv="clr-namespace:ACT.SpecialSpellTimer.Config.Converters"
+  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+  d:DataContext="{d:DesignInstance Type=vm:SpellPanelConfigViewModel, IsDesignTimeCreatable=True}"
+  d:DesignWidth="800"
+  Background="White"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}"
+  FontFamily="{DynamicResource UIFont}"
+  FontSize="{DynamicResource UIFontSize}"
+  FontWeight="{DynamicResource UIFontWeight}"
+  FontStyle="{DynamicResource UIFontStyle}"
+  FontStretch="{DynamicResource UIFontStretch}"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.EdgeMode="Unspecified"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  IsTabStop="False"
+  Focusable="False"
+  mc:Ignorable="d">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <Style TargetType="Label">
+        <Setter Property="Padding" Value="0" />
+      </Style>
+
+      <Style TargetType="CheckBox">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+      </Style>
+
+      <Style TargetType="TextBox">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="30" />
+        <EventSetter Event="MouseDoubleClick" Handler="TextBoxOnGotFocus" />
+        <EventSetter Event="GotKeyboardFocus" Handler="TextBoxOnGotFocus" />
+        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="TextBoxSelect" />
+        <Style.Triggers>
+          <Trigger Property="IsReadOnly" Value="True">
+            <Setter Property="Foreground" Value="Silver" />
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+
+      <Style TargetType="RichTextBox">
+        <EventSetter Event="MouseDoubleClick" Handler="TextBoxOnGotFocus" />
+        <EventSetter Event="GotKeyboardFocus" Handler="TextBoxOnGotFocus" />
+        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="TextBoxSelect" />
+        <Style.Triggers>
+          <Trigger Property="IsReadOnly" Value="True">
+            <Setter Property="Foreground" Value="Silver" />
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+
+      <Style TargetType="ComboBox">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="30" />
+      </Style>
+
+      <Style TargetType="xctk:DoubleUpDown">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="MinHeight" Value="27" />
+      </Style>
+
+      <Style TargetType="xctk:IntegerUpDown">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="MinHeight" Value="27" />
+      </Style>
+
+      <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
+
+      <fwcnv:BoolToCollapsedConverter x:Key="VisibilityConverter" />
+      <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+      <cnv:SpellOrdersConverter x:Key="SpellOrdersConverter" />
+
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../resources/strings/Strings.SpeSpe.ja-JP.xaml" />
+        <wpf:DesignTimeResourceDictionary Source="../../resources/styles/ConfigViewResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <TabControl BorderThickness="0" Margin="2 2 0 0">
+    <!-- 全般タブ -->
+    <TabItem Header="General" Padding="20 2 20 2">
+      <ScrollViewer
+        Margin="5"
+        HorizontalScrollBarVisibility="Auto"
+        VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+          <!-- Name -->
+          <Label Content="{DynamicResource SpellPanel_Name}" />
+          <TextBox Text="{Binding Model.PanelName, Mode=TwoWay}" IsReadOnly="{Binding IsPreset, Mode=OneWay}" />
+
+          <!-- Tags =>> -->
+          <StackPanel x:Name="TagPanel">
+            <ItemsControl
+              Margin="0 5 0 4"
+              ItemsSource="{Binding Tags, Mode=OneWay}">
+
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+
+              <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type triggerModel:ItemTags}">
+                  <Border Margin="1" Padding="1" CornerRadius="2" BorderThickness="1" BorderBrush="Orange">
+                    <StackPanel Orientation="Horizontal">
+                      <Label Content="{Binding Tag.Name, Mode=OneWay}" FontSize="14" Margin="2 0 0 0" />
+                      <Button
+                        Content="X"
+                        Margin="5 0 2 0"
+                        Command="{Binding RemoveTagCommand, Mode=OneWay}"
+                        CommandParameter="{Binding}"
+                        Foreground="LightGray"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        FontSize="12"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Center" />
+                    </StackPanel>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock Margin="2 0 0 0">
+          <Hyperlink
+            Command="{Binding AddTagsCommand, Mode=OneWay}"
+            CommandParameter="{Binding Model.ID, Mode=OneWay}">
+            <TextBlock Text="{DynamicResource Common_AddTags}" FontSize="14" />
+          </Hyperlink>
+        </TextBlock>
+          </StackPanel>
+          <!-- <<= Tags  -->
+
+          <!-- Location -->
+          <Label Margin="0 20 0 0" Content="{DynamicResource Common_Location}" />
+          <StackPanel Orientation="Horizontal">
+            <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
+            <xctk:DoubleUpDown Value="{Binding Model.Left, Mode=TwoWay}" FormatString="F0" MinWidth="75" Increment="1" IsReadOnly="{Binding Model.Locked, Mode=OneWay}" />
+            <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
+            <xctk:DoubleUpDown Value="{Binding Model.Top, Mode=TwoWay}" FormatString="F0" MinWidth="75" Increment="1" IsReadOnly="{Binding Model.Locked, Mode=OneWay}" />
+            <CheckBox Margin="10 0 5 0" IsChecked="{Binding Model.Locked, Mode=TwoWay}" Content="Lock" />
+          </StackPanel>
+
+          <!-- Margin -->
+          <Label Margin="0 10 0 0" Content="{DynamicResource SpellPanel_Margin}" />
+          <StackPanel Orientation="Horizontal">
+            <xctk:DoubleUpDown Value="{Binding Model.Margin, Mode=TwoWay}" FormatString="F0" MinWidth="75" Increment="1" />
+          </StackPanel>
+
+          <!-- HorizontalLayout -->
+          <CheckBox Margin="0 20 0 0" IsChecked="{Binding Model.Horizontal, Mode=TwoWay}" Content="{DynamicResource SpellPanel_HorizontalLayout}" />
+
+          <!-- FixLayout -->
+          <Label Margin="0 20 0 0" Content="{DynamicResource SpellPanel_SortOrder}" />
+          <ComboBox
+            HorizontalAlignment="Left"
+            MinWidth="370"
+            SelectedValue="{Binding Model.SortOrder, Mode=TwoWay, Converter={StaticResource SpellOrdersConverter}}"
+            SelectedValuePath="Tag">
+            <ComboBoxItem Tag="1" Content="{DynamicResource SpellPanel_SortOrdersSortRecastTimeASC}" />
+            <ComboBoxItem Tag="2" Content="{DynamicResource SpellPanel_SortOrdersSortRecastTimeDESC}" />
+            <ComboBoxItem Tag="3" Content="{DynamicResource SpellPanel_SortOrdersSortPriority}" />
+            <ComboBoxItem Tag="4" Content="{DynamicResource SpellPanel_SortOrdersSortMatchTime}" />
+            <ComboBoxItem Tag="5" Content="{DynamicResource SpellPanel_SortOrdersFixed}" />
+          </ComboBox>
+        </StackPanel>
+      </ScrollViewer>
+    </TabItem>
+    <!-- 全般タブ end -->
+
+    <!-- Visualタブ -->
+    <TabItem Header="Visual" Padding="20 2 20 2">
+      <ScrollViewer
+        HorizontalScrollBarVisibility="Auto"
+        VerticalScrollBarVisibility="Auto"
+        Margin="5"
+        Padding="0 0 0 20">
+
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+
+          <StackPanel Margin="0 0 0 20" Grid.Row="0" Grid.ColumnSpan="2">
+            <StackPanel.Resources>
+              <Style TargetType="Label">
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="FontWeight" Value="Normal" />
+                <Setter Property="Foreground" Value="OrangeRed" />
+              </Style>
+            </StackPanel.Resources>
+            <Label Content="{DynamicResource SpellPanel_VisualWarning1}" />
+            <Label Content="{DynamicResource SpellPanel_VisualWarning2}" />
+            <Label Content="{DynamicResource SpellPanel_VisualWarning3}" />
+          </StackPanel>
+
+          <!-- Visualタブの左側 -->
+          <StackPanel Grid.Row="1" Grid.Column="0" Margin="0 0 90 0">
+            <!-- フォント -->
+            <Label Content="{DynamicResource Common_Font}" FontSize="20" FontWeight="Bold" />
+            <StackPanel Margin="10 0 0 0">
+              <TextBlock HorizontalAlignment="Left">
+                  <Hyperlink Command="{Binding ChangeFontCommand}">
+                    <TextBlock Text="{Binding FontName, Mode=OneWay}" />
+                  </Hyperlink>
+                </TextBlock>
+
+              <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
+                  <Hyperlink Command="{Binding ChangeFontColorCommand}">
+                    <TextBlock Text="{DynamicResource Common_FillColor}" />
+                  </Hyperlink>
+                </TextBlock>
+
+              <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
+                  <Hyperlink Command="{Binding ChangeFontOutlineColorCommand}">
+                    <TextBlock Text="{DynamicResource Common_StrokeColor}" />
+                  </Hyperlink>
+                </TextBlock>
+
+              <TextBlock Margin="0 8 0 0" HorizontalAlignment="Left">
+                  <Hyperlink Command="{Binding ChangeWarningFontColorCommand}">
+                    <TextBlock Text="{DynamicResource Common_WarningFillColor}" />
+                  </Hyperlink>
+                </TextBlock>
+
+              <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
+                  <Hyperlink Command="{Binding ChangeWarningFontOutlineColorCommand}">
+                    <TextBlock Text="{DynamicResource Common_WarningStrokeColor}" />
+                  </Hyperlink>
+                </TextBlock>
+
+              <!-- Warning -->
+              <StackPanel Orientation="Horizontal" Margin="0 15 0 0">
+                <xctk:DoubleUpDown Value="{Binding FirstSpell.WarningTime, Mode=TwoWay}" FormatString="F2" MinWidth="90" Increment="1" VerticalAlignment="Center" />
+                <Label VerticalAlignment="Center" Margin="5 0 0 0" MaxWidth="300">
+                  <TextBlock TextWrapping="WrapWithOverflow" Text="{DynamicResource Spell_WarningTime}" />
+                </Label>
+              </StackPanel>
+              <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_WarningTimeChangeFontColor}" IsChecked="{Binding FirstSpell.ChangeFontColorsWhenWarning}" />
+            </StackPanel>
+
+            <!-- プログレスバー -->
+            <Label Margin="0 20 0 0" Content="{DynamicResource Common_ProgressBar}" FontSize="20" FontWeight="Bold" />
+            <StackPanel Margin="10 0 0 0">
+              <CheckBox Margin="0 5 0 5" Content="{DynamicResource Common_IsReverseProgressBar}" IsChecked="{Binding FirstSpell.IsReverse, Mode=TwoWay}" />
+
+              <StackPanel Margin="0 8 0 8" Orientation="Horizontal">
+                <TextBlock Margin="6 0 5 0" Text="W" VerticalAlignment="Center" />
+                <xctk:DoubleUpDown Value="{Binding FirstSpell.BarWidth, Mode=TwoWay}" Increment="1" MinWidth="80" />
+                <TextBlock Margin="10 0 5 0" Text="H" VerticalAlignment="Center" />
+                <xctk:DoubleUpDown Value="{Binding FirstSpell.BarHeight, Mode=TwoWay}" Increment="1" MinWidth="80" />
+              </StackPanel>
+
+              <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
+                  <Hyperlink Command="{Binding ChangeBarColorCommand}">
+                    <TextBlock Text="{DynamicResource Common_FillColor}" />
+                  </Hyperlink>
+                </TextBlock>
+
+              <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
+                  <Hyperlink Command="{Binding ChangeBarOutlineColorCommand}">
+                    <TextBlock Text="{DynamicResource Common_StrokeColor}" />
+                  </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+
+            <!-- 背景色 -->
+            <Label Margin="0 20 0 0" Content="{DynamicResource Common_Background}" FontSize="20" FontWeight="Bold" />
+            <StackPanel Margin="10 0 0 0">
+              <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
+                  <Hyperlink Command="{Binding ChangeBackgroundColorCommand}">
+                    <TextBlock Text="{DynamicResource Common_FillColor}" />
+                  </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+          </StackPanel>
+          <!-- Visualタブの左側 end -->
+
+          <!-- Visualタブの右側 -->
+          <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 0 40 0">
+            <!-- アイコン -->
+            <Label Margin="0 0 0 0" Content="{DynamicResource Common_Icon}" FontSize="20" FontWeight="Bold" />
+            <StackPanel Margin="10 0 0 0">
+              <StackPanel Margin="0 8 0 8" Orientation="Horizontal">
+                <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="6">
+                  <Image Source="{Binding FirstSpell.SpellIconFullPath, Mode=OneWay}" Height="72" Width="72" />
+                </Border>
+                <StackPanel VerticalAlignment="Bottom">
+                  <TextBlock Margin="10 0 0 10" HorizontalAlignment="Left">
+                      <Hyperlink Command="{Binding SelectIconCommand, Mode=OneWay}">
+                        <TextBlock Text="{DynamicResource Common_SelectIcon}" />
+                      </Hyperlink>
+                    </TextBlock>
+
+                  <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="10 0 5 2" Text="Size" VerticalAlignment="Bottom" />
+                    <xctk:DoubleUpDown Value="{Binding FirstSpell.SpellIconSize, Mode=TwoWay}" Increment="1" MinWidth="65" VerticalAlignment="Bottom" />
+                  </StackPanel>
+                </StackPanel>
+              </StackPanel>
+
+              <CheckBox Margin="0 0 0 0" Content="{DynamicResource Common_HideSpellName}" IsChecked="{Binding FirstSpell.HideSpellName, Mode=TwoWay}" />
+              <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_RecastTimeOverIcon}" IsChecked="{Binding FirstSpell.OverlapRecastTime, Mode=TwoWay}" />
+              <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_ToDarkBetweenRecast}" IsChecked="{Binding FirstSpell.ReduceIconBrightness, Mode=TwoWay}" />
+            </StackPanel>
+
+            <!-- その他 -->
+            <Label Margin="0 20 0 0" Content="{DynamicResource Common_Misc}" FontSize="20" FontWeight="Bold" />
+            <StackPanel Margin="10 0 0 0">
+              <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_VisibleSpell}" IsChecked="{Binding FirstSpell.ProgressBarVisible, Mode=TwoWay}" ToolTip="{DynamicResource Common_VisibleSpellDiscription}" />
+              <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_HideCounter}" IsChecked="{Binding FirstSpell.HideCounter, Mode=TwoWay}" />
+              <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_DontHide}" IsChecked="{Binding FirstSpell.DontHide, Mode=TwoWay}" />
+            </StackPanel>
+          </StackPanel>
+        </Grid>
+      </ScrollViewer>
+    </TabItem>
+    <!-- Visualタブ end -->
+
+    <!-- Advanced Layoutタブ -->
+    <TabItem Header="Advanced Layout" Padding="20 2 20 2">
+      <ScrollViewer
+        HorizontalScrollBarVisibility="Auto"
+        VerticalScrollBarVisibility="Auto"
+        Margin="5"
+        Padding="0 0 0 20">
+        <StackPanel>
+          <CheckBox Margin="0 15 0 0" Content="{DynamicResource SpellPanel_EnabledAdvancedLayouyt}" IsChecked="{Binding Path=Model.EnabledAdvancedLayout, Mode=TwoWay}" />
+
+          <StackPanel
+            Visibility="{Binding Path=Model.EnabledAdvancedLayout, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+            <CheckBox Margin="0 20 0 0" Content="{DynamicResource SpellPanel_AdvancedDesignMode}" IsChecked="{Binding Path=Model.IsAdvancedDesignMode, Mode=TwoWay}" />
+
+            <!-- パネルのレイアウト -->
+            <Label Margin="0 20 0 0" Content="{DynamicResource SpellPanel_PanelLauout}" FontSize="18" FontWeight="Bold" />
+            <StackPanel Margin="10 5 0 0">
+              <!-- Location -->
+              <Label Content="{DynamicResource Common_Location}" />
+              <StackPanel Orientation="Horizontal">
+                <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
+                <TextBox TextAlignment="Right" Text="{Binding Model.Left, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+                <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
+                <TextBox TextAlignment="Right" Text="{Binding Model.Top, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+              </StackPanel>
+
+              <!-- Size -->
+              <Label Margin="0 15 0 0" Content="{DynamicResource Common_Size}" />
+              <StackPanel Orientation="Horizontal">
+                <Label Margin="0 0 5 0" Content="W" VerticalAlignment="Center" />
+                <TextBox TextAlignment="Right" Text="{Binding Model.Width, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+                <Label Margin="10 0 5 0" Content="H" VerticalAlignment="Center" />
+                <TextBox TextAlignment="Right" Text="{Binding Model.Height, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+              </StackPanel>
+
+              <TextBlock Margin="0 15 0 0" HorizontalAlignment="Left">
+                <Hyperlink Command="{Binding ChangeAdvancedBackgroundColorCommand}">
+                  <TextBlock Text="{DynamicResource SpellPanel_BackgroundColor}" />
+                </Hyperlink>
+              </TextBlock>
+            </StackPanel>
+            <!-- パネルのレイアウト end -->
+
+            <!-- スペルのレイアウト -->
+            <Label Margin="0 20 0 0" Content="{DynamicResource SpellPanel_SpellsLayout}" FontSize="18" FontWeight="Bold" />
+            <ItemsControl
+              Margin="5 10 0 0"
+              BorderThickness="0"
+              ItemsSource="{Binding Path=Model.Spells, Mode=OneWay}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type triggerModel:Spell}">
+                  <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                    <TextBlock Text="{Binding Path=SpellTitle, Mode=OneWay}" Width="340" Margin="0 0 20 0" />
+                    <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
+                    <xctk:DoubleUpDown Value="{Binding Path=Left, Mode=TwoWay}" Width="80" />
+                    <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
+                    <xctk:DoubleUpDown Value="{Binding Path=Top, Mode=TwoWay}" Width="80" />
+                  </StackPanel>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <!-- スペルのレイアウト end -->
+          </StackPanel>
+          <!-- Advanced 設定 end -->
+        </StackPanel>
+      </ScrollViewer>
+    </TabItem>
+    <!-- Advanced Layoutタブ end -->
+  </TabControl>
+</UserControl>

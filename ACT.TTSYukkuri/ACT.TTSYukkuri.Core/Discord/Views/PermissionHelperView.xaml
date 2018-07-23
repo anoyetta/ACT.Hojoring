@@ -1,0 +1,74 @@
+<Window
+  x:Class="ACT.TTSYukkuri.Discord.Views.PermissionHelperView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="clr-namespace:ACT.TTSYukkuri.Discord.Views"
+  xmlns:fa="http://schemas.fontawesome.io/icons/"
+  mc:Ignorable="d"
+  Title="DISCORD Permission Helper"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  Background="White"
+  FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
+  FontSize="17"
+  ResizeMode="CanMinimize"
+  WindowStartupLocation="CenterScreen"
+  SizeToContent="WidthAndHeight"
+  FocusManager.FocusedElement="{Binding ElementName=ClientIDTextBox, Mode=OneWay}">
+
+  <StackPanel Margin="10">
+    <Label Content="Client ID" Margin="0 0 0 0" />
+    <TextBox
+      x:Name="ClientIDTextBox"
+      VerticalContentAlignment="Center"
+      Height="30"
+      Width="400"
+      MaxLength="18"
+      TextChanged="ClientIDTextBox_TextChanged" />
+
+    <TextBox
+      Margin="0 5 0 0"
+      FontSize="13"
+      Foreground="DimGray"
+      x:Name="PermissionUrlTextBox"
+      BorderThickness="0"
+      IsReadOnly="True"
+      TextWrapping="Wrap"
+      MaxWidth="400" />
+
+    <DockPanel Margin="0 10 0 0">
+      <TextBlock
+        DockPanel.Dock="Left"
+        Margin="5 0 0 8"
+        VerticalAlignment="Bottom">
+        <Hyperlink
+          NavigateUri="https://discordapp.com/developers/applications/me"
+          ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=NavigateUri, Mode=OneWay}"
+          RequestNavigate="MyApps_RequestNavigate">
+          <TextBlock Text="My Apps" />
+        </Hyperlink>
+      </TextBlock>
+
+      <Button
+        x:Name="GrantButton"
+        DockPanel.Dock="Right"
+        Background="Transparent"
+        BorderBrush="Transparent"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Bottom"
+        Click="GrantButton_Click"
+        Foreground="Green">
+        <StackPanel Orientation="Horizontal">
+          <Label fa:Awesome.Content="SignIn" VerticalAlignment="Center" Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Path=Foreground, Mode=OneWay}"  FontSize="20" />
+          <TextBlock Text="GRANT PERMISSION" Margin="5 0 5 0" VerticalAlignment="Center" Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Path=Foreground, Mode=OneWay}" FontSize="20" FontWeight="DemiBold" />
+        </StackPanel>
+      </Button>
+    </DockPanel>
+  </StackPanel>
+</Window>

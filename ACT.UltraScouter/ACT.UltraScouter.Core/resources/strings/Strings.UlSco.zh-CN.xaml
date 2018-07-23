@@ -1,0 +1,99 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+  <!--  Resources Strings in English  -->
+  <system:String x:Key="UILanguage">插件语言 (*需要重启)</system:String>
+  <system:String x:Key="FFXIVLanguage">游戏语言 (*需要重启)</system:String>
+
+  <system:String x:Key="GeneralConfig_ClickThrough">点击穿透</system:String>
+  <system:String x:Key="GeneralConfig_Opacity">不透明度</system:String>
+  <system:String x:Key="GeneralConfig_LogPollingRate">扫描日志间隔 (毫秒)</system:String>
+  <system:String x:Key="GeneralConfig_OverlayRefreshRate">界面刷新间隔 (毫秒)</system:String>
+  <system:String x:Key="GeneralConfig_AnimationMaxFPS">动画FPS</system:String>
+  <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">文字轮廓大小比率</system:String>
+  <system:String x:Key="GeneralConfig_TextBlurGain">文字模糊比率</system:String>
+  <system:String x:Key="GeneralConfig_Sound">声音</system:String>
+  <system:String x:Key="GeneralConfig_UseNAudio">使用NAudio播放(推荐)</system:String>
+  <system:String x:Key="GeneralConfig_WaveVolume">音量</system:String>
+  <system:String x:Key="GeneralConfig_TTSDestination">TTS播放设备</system:String>
+
+  <system:String x:Key="Common_Visible">显示</system:String>
+  <system:String x:Key="Common_Location">位置</system:String>
+  <system:String x:Key="Common_Font">字体</system:String>
+  <system:String x:Key="Common_FillColor">填充色</system:String>
+  <system:String x:Key="Common_StrokeColor">轮廓色</system:String>
+  <system:String x:Key="Common_Add">添加</system:String>
+  <system:String x:Key="Common_Change">变更</system:String>
+  <system:String x:Key="Common_Delete">删除</system:String>
+  <system:String x:Key="Common_TTS">文字转语音(TTS)</system:String>
+  <system:String x:Key="Common_TestMode">测试模式(总是显示)</system:String>
+
+  <system:String x:Key="Target_UserHoverTarget">使用悬停目标</system:String>
+
+  <system:String x:Key="HP_HPLocation">HP位置</system:String>
+  <system:String x:Key="HP_BarLocation">条位置</system:String>
+  <system:String x:Key="HP_VisibleHPBar">显示HP条</system:String>
+  <system:String x:Key="HP_HPValueOnHPBar">在HP条上显示数值</system:String>
+  <system:String x:Key="HP_HPBarStrokeColor">HP条轮廓色</system:String>
+  <system:String x:Key="HP_LinkBarStrokeColorToBarColor">关联'条轮廓颜色' &lt;- '条颜色'</system:String>
+  <system:String x:Key="HP_LinkTextFillColorToBarColor">关联'文字填充色' &lt;- '条颜色'</system:String>
+  <system:String x:Key="HP_LinkTextStrokeColorToBarColor">关联'文字轮廓色' &lt;- '条颜色'</system:String>
+  <system:String x:Key="HP_HPBarSize">HP条大小</system:String>
+
+  <system:String x:Key="Action_VisibleActionName">显示技能名</system:String>
+  <system:String x:Key="Action_VisibleRemainOfCasting">显示剩余时间</system:String>
+  <system:String x:Key="Action_VisibleRemainAsInteger">整数显示</system:String>
+  <system:String x:Key="Action_VisibleRateOfCasting">现实读条进度</system:String>
+  <system:String x:Key="Action_DummyActionName">测试用技能名</system:String>
+  <system:String x:Key="Action_CastingBar">咏唱</system:String>
+  <system:String x:Key="Action_CastingBarStrokeColor">咏唱条轮廓颜色</system:String>
+  <system:String x:Key="Action_LinkBarStrokeColorToBarColor">关联'条轮廓颜色' &lt;- '条颜色'</system:String>
+  <system:String x:Key="Action_CastingBarSize">咏唱条大小</system:String>
+  <system:String x:Key="Action_CircleStyle">圆形样式</system:String>
+  <system:String x:Key="Action_RotateCCW">逆时针</system:String>
+  <system:String x:Key="Action_Sound">声音</system:String>
+  <system:String x:Key="Action_WaveSound">提示音</system:String>
+
+  <system:String x:Key="BOSS_BossThreshold">'BOSS HP'除以'队伍平均HP.'最小值</system:String>
+  <system:String x:Key="BOSS_BossVSTargetHideBoss">BOSS='目标'时隐藏</system:String>
+  <system:String x:Key="BOSS_BossVSFTHideBoss">BOSS='焦点'时隐藏</system:String>
+  <system:String x:Key="BOSS_BossVSToTHideBoss">BOSS='目标的目标'时隐藏</system:String>
+
+  <system:String x:Key="MPTicker_VisibleCounter">显示值</system:String>
+  <system:String x:Key="MPTicker_Bar">条</system:String>
+  <system:String x:Key="MPTicker_BarStrokeColor">条轮廓颜色</system:String>
+  <system:String x:Key="MPTicker_LinkBarStrokeColorToBarColor">关联'条轮廓颜色' &lt;- '条颜色'</system:String>
+  <system:String x:Key="MPTicker_BarSize">条大小</system:String>
+  <system:String x:Key="MPTicker_CircleStyle">圆形样式</system:String>
+  <system:String x:Key="MPTicker_RotateCCW">逆时针</system:String>
+  <system:String x:Key="MPTicker_SwapBarAndText">交换条与文字位置</system:String>
+  <system:String x:Key="MPTicker_ExplationTimeForDisplay1">闲置时显示 (秒)</system:String>
+  <system:String x:Key="MPTicker_ExplationTimeForDisplay2">* =0时一直显示</system:String>
+  <system:String x:Key="MPTicker_TargetJobs">角色过滤</system:String>
+
+  <system:String x:Key="MobList_VisibleMePosition">显示玩家位置</system:String>
+  <system:String x:Key="MobList_SimpleView">简单显示</system:String>
+  <system:String x:Key="MobList_VisibleZPosition">显示Z轴位置</system:String>
+  <system:String x:Key="MobList_DirectionOrigin">方向显示</system:String>
+  <system:String x:Key="MobList_DirectionOriginDescription">要使用"角色"或"视角", FFXIV_MemoryReader需要保持启动.</system:String>
+  <system:String x:Key="MobList_OpenTargetMobList">打开狩猎怪列表</system:String>
+  <system:String x:Key="MobList_ReloadTargetMobList">重载狩猎怪列表</system:String>
+  <system:String x:Key="MobList_CountOfDisplay">最大显示数量</system:String>
+  <system:String x:Key="MobList_NotifyByTTS">用TTS提示</system:String>
+  <system:String x:Key="MobList_Me">角色</system:String>
+  <system:String x:Key="MobList_MobFont">怪物字体</system:String>
+  <system:String x:Key="MobList_MobEXColor">EX级颜色</system:String>
+  <system:String x:Key="MobList_MobSColor">S级颜色</system:String>
+  <system:String x:Key="MobList_MobAColor">A级颜色</system:String>
+  <system:String x:Key="MobList_MobBColor">B级颜色</system:String>
+  <system:String x:Key="MobList_MobOtherColor">其他颜色</system:String>
+
+  <system:String x:Key="Help_GotoLastestRelease">显示GitHub上最新版本</system:String>
+  <system:String x:Key="Help_ContactToAnoyetta">在DISCORD(DNS污染中)联系作者</system:String>
+  <system:String x:Key="Help_OpenConfig">打开配置</system:String>
+  <system:String x:Key="Help_ReloadConfig">重载配置</system:String>
+  <system:String x:Key="Help_ReloadViews">重载显示</system:String>
+  <system:String x:Key="Help_OpenLog">打开日志</system:String>
+</ResourceDictionary>

@@ -1,0 +1,152 @@
+<UserControl
+  x:Class="ACT.TTSYukkuri.Config.Views.VoiceroidConfigView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:vm="clr-namespace:ACT.TTSYukkuri.Config.ViewModels"
+  xmlns:resources="clr-namespace:ACT.TTSYukkuri.resources"
+  xmlns:yukkuri="clr-namespace:ACT.TTSYukkuri.Yukkuri"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.TTSYukkuri.Config.Views"
+  xmlns:fa="http://schemas.fontawesome.io/icons/"
+  mc:Ignorable="d"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  Background="White"
+  FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
+  FontSize="17"
+  d:DesignWidth="600"
+  d:DataContext="{d:DesignInstance Type=vm:VoiceroidConfigViewModel, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
+      <fwcnv:BoolToCollapsedConverter x:Key="VisibilityConverter" />
+      <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../resources/strings/Strings.Yukkuri.ja-JP.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <ScrollViewer
+    HorizontalScrollBarVisibility="Disabled"
+    VerticalScrollBarVisibility="Auto">
+
+    <StackPanel Orientation="Vertical">
+      <ListView
+        ItemsSource="{Binding Config.Voiceroids, Mode=OneWay}"
+        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+        BorderThickness="0"
+        SelectedValuePath="Id"
+        SelectedValue="{Binding Config.SelectedVoiceroidId, Mode=TwoWay}">
+
+        <ListView.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel />
+          </ItemsPanelTemplate>
+        </ListView.ItemsPanel>
+
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <DockPanel
+              Margin="5 0 15 0"
+              MinWidth="200">
+
+              <RadioButton
+                DockPanel.Dock="Left"
+                VerticalAlignment="Center"
+                IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Path=IsSelected, Mode=OneWay}" />
+
+              <StackPanel Orientation="Vertical">
+                <Label
+                  DockPanel.Dock="Left"
+                  FontSize="20"
+                  Padding="5 5 5 0"
+                  VerticalAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  Content="{Binding Name, Mode=OneWay}" />
+                <Label
+                  Visibility="{Binding IsFound, Mode=OneWay, Converter={StaticResource HiddenConverter}}"
+                  Margin="0 0 0 0"
+                  Padding="5 0 0 0"
+                  Content="found"
+                  Foreground="Navy"
+                  FontWeight="Black"
+                  FontSize="10" />
+              </StackPanel>
+
+              <Button
+                DockPanel.Dock="Right"
+                HorizontalAlignment="Right"
+                Background="Transparent"
+                BorderThickness="0"
+                Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight, Mode=OneWay}"
+                fa:Awesome.Content="PowerOff"
+                Command="{Binding PowerCommand, Mode=OneWay}"
+                CommandParameter="{Binding}">
+
+                <Button.Style>
+                  <Style>
+                    <Style.Triggers>
+
+                      <DataTrigger Binding="{Binding InnerProcess.IsRunning}" Value="True">
+                        <Setter Property="Button.Foreground" Value="ForestGreen" />
+                        <Setter Property="Button.Effect">
+                          <Setter.Value>
+                            <DropShadowEffect
+                              Opacity="0.7"
+                              ShadowDepth="0"
+                              Direction="0"
+                              BlurRadius="2"
+                              Color="ForestGreen">
+                            </DropShadowEffect>
+                          </Setter.Value>
+                        </Setter>
+                      </DataTrigger>
+
+                      <DataTrigger Binding="{Binding InnerProcess.IsRunning}" Value="False">
+                        <Setter Property="Button.Foreground" Value="LightGray" />
+                        <Setter Property="Button.Effect">
+                          <Setter.Value>
+                            <DropShadowEffect Opacity="0" />
+                          </Setter.Value>
+                        </Setter>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </Button.Style>
+              </Button>
+              <!-- end power button -->
+            </DockPanel>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+      <!-- end VOICEROID ListView -->
+
+      <CheckBox
+        Content="{DynamicResource Voiceroid_ExitVoiceroid}"
+        VerticalContentAlignment="Center"
+        Margin="10 15 0 0"
+        IsChecked="{Binding Config.ExitVoiceroidWhenExit, Mode=TwoWay}" />
+
+      <CheckBox
+        Content="{DynamicResource Voiceroid_DirectSpeak}"
+        VerticalContentAlignment="Center"
+        Margin="10 5 0 0"
+        IsChecked="{Binding Config.DirectSpeak, Mode=TwoWay}" />
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

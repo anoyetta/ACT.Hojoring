@@ -1,0 +1,266 @@
+<UserControl
+  x:Class="ACT.TTSYukkuri.Config.Views.GeneralView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:vm="clr-namespace:ACT.TTSYukkuri.Config.ViewModels"
+  xmlns:resources="clr-namespace:ACT.TTSYukkuri.resources"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.TTSYukkuri.Config.Views"
+  xmlns:fa="http://schemas.fontawesome.io/icons/"
+  mc:Ignorable="d"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  Background="White"
+  FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
+  FontSize="17"
+  Margin="0"
+  Focusable="False"
+  d:DesignHeight="600" d:DesignWidth="1024"
+  d:DataContext="{d:DesignInstance Type=vm:GeneralViewModel, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
+      <fwcnv:BoolToCollapsedConverter x:Key="VisibilityConverter" />
+      <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+
+      <ObjectDataProvider
+        x:Key="LocalesEnumlator"
+        MethodName="GetValues"
+        ObjectType="{x:Type system:Enum}">
+        <ObjectDataProvider.MethodParameters>
+          <x:Type TypeName="global:Locales" />
+        </ObjectDataProvider.MethodParameters>
+      </ObjectDataProvider>
+
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../resources/strings/Strings.Yukkuri.ja-JP.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <ScrollViewer
+    VerticalScrollBarVisibility="Disabled"
+    HorizontalScrollBarVisibility="Disabled">
+
+    <DockPanel Margin="3">
+      <DockPanel DockPanel.Dock="Left" MinWidth="500">
+        <Border
+          DockPanel.Dock="Top"
+          BorderThickness="2"
+          BorderBrush="Orange"
+          CornerRadius="2"
+          Padding="8">
+
+          <DockPanel>
+            <StackPanel Orientation="Vertical" DockPanel.Dock="Left">
+              <Label
+                Margin="0 0 0 0"
+                Content="{DynamicResource UILanguage}" />
+              <ComboBox
+                HorizontalAlignment="Left"
+                MinWidth="200"
+                ItemsSource="{Binding Source={x:Static global:LocalesExtensions.Enums}}"
+                DisplayMemberPath="Text"
+                SelectedValuePath="Value"
+                SelectedValue="{Binding Path=Config.UILocale, Mode=TwoWay}">
+              </ComboBox>
+
+              <Label
+                Visibility="Collapsed"
+                Margin="0 10 0 0"
+                Content="{DynamicResource FFXIVLanguage}" />
+              <ComboBox
+                Visibility="Collapsed"
+                HorizontalAlignment="Left"
+                MinWidth="200"
+                ItemsSource="{Binding Source={x:Static global:LocalesExtensions.Enums}}"
+                DisplayMemberPath="Text"
+                SelectedValuePath="Value"
+                SelectedValue="{Binding Path=Config.FFXIVLocale, Mode=TwoWay}">
+              </ComboBox>
+
+              <Label
+                Margin="0 10 0 0"
+                Content="{DynamicResource General_TTSType}" />
+              <ComboBox
+                x:Name="TTSTypesComboBox"
+                HorizontalAlignment="Left"
+                ItemsSource="{Binding TTSTypes, Mode=OneWay}"
+                DisplayMemberPath="Display"
+                SelectedValuePath="Value"
+                SelectedValue="{Binding Config.TTS, Mode=TwoWay}"
+                MinWidth="300">
+              </ComboBox>
+
+              <CheckBox
+                Margin="0 10 0 0"
+                Content="{DynamicResource General_ClearCache}"
+                IsChecked="{Binding Config.WaveCacheClearEnable, Mode=TwoWay}" />
+
+              <TextBlock Margin="0 5 0 0">
+                <Hyperlink
+                  Command="{Binding OpenCacheFolderCommand, Mode=OneWay}">
+                  <TextBlock Text="{DynamicResource General_OpenCacheDirectory}" />
+                </Hyperlink>
+              </TextBlock>
+
+              <TextBlock Margin="0 5 0 0">
+                <Hyperlink
+                  Command="{Binding ClearCacheCommand, Mode=OneWay}">
+                  <TextBlock Text="{DynamicResource General_ClearCacheNow}" />
+                </Hyperlink>
+              </TextBlock>
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" DockPanel.Dock="Right" HorizontalAlignment="Right">
+              <Label
+                Margin="0 0 0 0"
+                HorizontalAlignment="Center"
+                Content="{DynamicResource General_WaveVolume}" />
+              <Slider
+                x:Name="WaveVolumeSlider"
+                Orientation="Vertical"
+                HorizontalAlignment="Center"
+                Height="155"
+                Minimum="0"
+                Maximum="100"
+                SmallChange="1"
+                LargeChange="1"
+                TickFrequency="1"
+                Value="{Binding Config.WaveVolume, Mode=TwoWay}" />
+              <Label
+                HorizontalAlignment="Center"
+                Content="{Binding ElementName=WaveVolumeSlider, Path=Value, Mode=OneWay, StringFormat=N0}" />
+            </StackPanel>
+          </DockPanel>
+        </Border>
+
+        <Border
+          Margin="0 10 0 0"
+          DockPanel.Dock="Top"
+          BorderThickness="2"
+          BorderBrush="OrangeRed"
+          CornerRadius="2"
+          Padding="8">
+          <StackPanel Orientation="Vertical">
+            <Label Content="{DynamicResource General_Test}" />
+            <StackPanel Orientation="Horizontal">
+              <TextBox
+                x:Name="TestTextBox"
+                Width="450"
+                VerticalContentAlignment="Center"
+                Text="{DynamicResource General_TestTTS}" />
+              <Border
+                BorderBrush="DarkGray"
+                BorderThickness="1"
+                CornerRadius="4"
+                Margin="5 0 0 0">
+                <Button
+                  FontFamily="{StaticResource FontAwesome}"
+                  Padding="10 3"
+                  VerticalAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  Background="Transparent"
+                  BorderThickness="0"
+                  fa:Awesome.Content="CommentingOutline"
+                  Command="{Binding PlayTTSCommand, Mode=OneWay}"
+                  CommandParameter="{Binding ElementName=TestTextBox, Path=Text, Mode=OneWay}" />
+              </Border>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <Border
+          Margin="0 10 0 0"
+          DockPanel.Dock="Top"
+          BorderThickness="2"
+          BorderBrush="DarkSeaGreen"
+          CornerRadius="2"
+          Padding="8">
+          <ScrollViewer
+            Focusable="False"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Vertical">
+              <Label
+                Content="{DynamicResource General_PlayMethod}" />
+              <ComboBox
+                HorizontalAlignment="Left"
+                MinWidth="250"
+                ItemsSource="{Binding Players, Mode=OneWay}"
+                SelectedValuePath="Value"
+                DisplayMemberPath="Text"
+                SelectedValue="{Binding Config.Player, Mode=TwoWay}"
+                SelectionChanged="PlayMethodOnSelectionChanged" />
+              <TextBlock
+                Margin="0 4 0 0"
+                Text="* 16bit - 44.1kHz" FontSize="15" />
+
+              <CheckBox
+                Margin="0 10 0 0"
+                HorizontalAlignment="Left"
+                VerticalContentAlignment="Center"
+                Visibility="{Binding Config.SyncPlaybackVisibility, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
+                IsChecked="{Binding Config.IsSyncPlayback, Mode=TwoWay}"
+                Content="{DynamicResource General_SyncPlayback}"
+                ToolTip="{DynamicResource General_SyncPlaybackDesc}" />
+
+              <Label
+                Margin="0 10 0 0"
+                Content="{DynamicResource General_MainPlayDevice}" />
+              <ComboBox
+                ItemsSource="{Binding Config.PlayDevices, Mode=OneWay}"
+                Width="550"
+                Margin="0 0 5 0"
+                DisplayMemberPath="Name"
+                SelectedValuePath="ID"
+                SelectedValue="{Binding Config.MainDeviceID, Mode=TwoWay}" />
+
+              <CheckBox
+                x:Name="SubDeviceCheckBox"
+                Margin="0 15 0 0"
+                HorizontalAlignment="Left"
+                Content="{DynamicResource General_EnabledSubPlayDevice}"
+                IsChecked="{Binding Config.EnabledSubDevice, Mode=TwoWay}" />
+
+              <Label
+                Margin="0 5 0 0"
+                Content="{DynamicResource General_SubPlayDevice}"
+                Visibility="{Binding ElementName=SubDeviceCheckBox, Path=IsChecked, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+              <ComboBox
+                Visibility="{Binding ElementName=SubDeviceCheckBox, Path=IsChecked, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
+                ItemsSource="{Binding Config.PlayDevices, Mode=OneWay}"
+                Width="550"
+                Margin="0 0 5 0"
+                DisplayMemberPath="Name"
+                SelectedValuePath="ID"
+                SelectedValue="{Binding Config.SubDeviceID, Mode=TwoWay}" />
+            </StackPanel>
+          </ScrollViewer>
+        </Border>
+      </DockPanel>
+
+      <Border
+        Margin="10 0 0 0"
+        DockPanel.Dock="Right"
+        BorderThickness="2"
+        BorderBrush="CornflowerBlue"
+        CornerRadius="2"
+        Padding="8">
+        <Grid x:Name="ContentGrid" />
+      </Border>
+    </DockPanel>
+  </ScrollViewer>
+</UserControl>

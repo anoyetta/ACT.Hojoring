@@ -1,0 +1,100 @@
+<UserControl
+  x:Class="ACT.SpecialSpellTimer.RaidTimeline.Views.TimelineActivityControl"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.RaidTimeline.Views"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:controls="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  mc:Ignorable="d"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  Background="Transparent"
+  d:DataContext="{x:Static local:TimelineActivityControl.DummyActivity}">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../Resources/Styles/TimelineActivityControlResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <StackPanel
+    Style="{DynamicResource BasePanel}">
+
+    <!-- Barスタイル -->
+    <Grid Style="{DynamicResource BarStyleGrid}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+
+      <!-- アイコン -->
+      <Image Style="{DynamicResource Icon}" />
+
+      <Grid Style="{DynamicResource BarGrid}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <StackPanel Style="{DynamicResource ActivityTextPanel}">
+          <!-- アクティビティのテキスト -->
+          <controls:LightOutlineTextBlock Style="{DynamicResource ActivityText}" />
+
+          <!-- ジャンプ先のテキスト -->
+          <controls:LightOutlineTextBlock Style="{DynamicResource JumpDestinationText}" />
+        </StackPanel>
+
+        <!-- プログレスバー -->
+        <controls:RichProgressBar Style="{DynamicResource Bar}" />
+
+        <!-- カウンター -->
+        <controls:LightOutlineTextBlock Style="{DynamicResource CounterText}" />
+      </Grid>
+    </Grid>
+    <!-- Barスタイル end -->
+
+    <!-- Circleスタイル -->
+    <Grid Style="{DynamicResource CircleStyleGrid}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+
+      <!-- アイコン -->
+      <Image Style="{DynamicResource IconCircle}" />
+
+      <StackPanel Style="{DynamicResource ActivityTextPanelCircle}">
+        <!-- アクティビティのテキスト -->
+        <controls:LightOutlineTextBlock Style="{DynamicResource ActivityTextCircle}" />
+
+        <!-- ジャンプ先のテキスト -->
+        <controls:LightOutlineTextBlock Style="{DynamicResource JumpDestinationTextCircle}" />
+      </StackPanel>
+
+      <Grid Style="{DynamicResource CircleGrid}">
+        <!-- プログレスサークル -->
+        <controls:ProgressCircle Style="{DynamicResource Circle}" />
+
+        <!-- カウンター -->
+        <controls:LightOutlineTextBlock
+          x:Name="CounterTextCircle"
+          Style="{DynamicResource CounterTextCircle}" />
+      </Grid>
+    </Grid>
+    <!-- Circleスタイル end -->
+  </StackPanel>
+</UserControl>

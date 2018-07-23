@@ -1,0 +1,243 @@
+<Page
+  x:Class="ACT.UltraScouter.Config.UI.Views.TargetActionConfigView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:vm="clr-namespace:ACT.UltraScouter.Config.UI.ViewModels"
+  xmlns:fw="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.UltraScouter.Config.UI.Views"
+  xmlns:mainv="clr-namespace:ACT.UltraScouter.Views"
+  xmlns:cnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  mc:Ignorable="d"
+  Title="TargetActionConfigView"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  Background="White"
+  FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
+  FontSize="17"
+  d:DesignWidth="1024"
+  d:DataContext="{d:DesignInstance Type=vm:TargetConfigViewModel}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+  <Page.Resources>
+    <ResourceDictionary>
+      <Style TargetType="CheckBox">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+      </Style>
+
+      <cnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />
+      <cnv:BoolToCollapsedConverter x:Key="BoolToVisibilityConverter" />
+
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../../resources/strings/Strings.UlSco.en-US.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Page.Resources>
+
+  <ScrollViewer>
+    <StackPanel Margin="20">
+      <CheckBox
+        Margin="0 0 0 0"
+        Content="{DynamicResource Common_Visible}"
+        IsChecked="{Binding Action.Visible, Mode=TwoWay}" />
+      <CheckBox
+        Margin="0 10 0 0"
+        Content="{DynamicResource Action_VisibleActionName}"
+        IsChecked="{Binding Action.CastingActionNameVisible, Mode=TwoWay}" />
+      <StackPanel Margin="0 5 0 0" Orientation="Horizontal">
+        <CheckBox
+          Content="{DynamicResource Action_VisibleRemainOfCasting}"
+          IsChecked="{Binding Action.CastingRemainVisible, Mode=TwoWay}"
+          Command="{Binding RefreshActionCommand, Mode=OneWay}" />
+        <CheckBox
+          Margin="20 0 0 0"
+          Content="{DynamicResource Action_VisibleRemainAsInteger}"
+          IsChecked="{Binding Action.CastingRemainInInteger, Mode=TwoWay}"
+          Visibility="{Binding Action.CastingRemainVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+          Command="{Binding RefreshActionCommand, Mode=OneWay}" />
+      </StackPanel>
+      <CheckBox
+        Margin="0 5 0 0"
+        Content="{DynamicResource Action_VisibleRateOfCasting}"
+        IsChecked="{Binding Action.CastingRateVisible, Mode=TwoWay}"
+        Command="{Binding RefreshActionCommand, Mode=OneWay}" />
+
+      <Label
+        Margin="0 15 0 0"
+        Content="{DynamicResource Action_DummyActionName}" />
+      <StackPanel Orientation="Horizontal">
+        <TextBox Margin="4,0,0,0" Text="{Binding DummyAction, Mode=TwoWay}" Width="200" HorizontalAlignment="Left" />
+        <Button Margin="8 0 0 0" Content="RESET" Width="80" HorizontalAlignment="Left" Command="{Binding DummyActionResetCommand}" />
+      </StackPanel>
+
+      <Label
+        Margin="0 20 0 0"
+        Content="{DynamicResource Common_Location}" />
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
+        <TextBox Margin="0 0 0 0" TextAlignment="Right" Text="{Binding Action.Location.X, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+        <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
+        <TextBox Margin="0 0 0 0" TextAlignment="Right" Text="{Binding Action.Location.Y, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+      </StackPanel>
+
+      <Label
+        Margin="0 20 0 0"
+        Content="{DynamicResource Common_Font}" />
+
+      <TextBlock Margin="7,0,0,0" FontWeight="Bold">
+        <Hyperlink
+          Command="{Binding TargetActionDisplayTextFontCommand}"
+          CommandParameter="{Binding Action.DisplayText.Font}">
+          <TextBlock Text="{Binding Action.DisplayText.Font.DisplayText}" />
+        </Hyperlink>
+      </TextBlock>
+
+      <TextBlock Margin="7,8,0,0" FontWeight="Bold">
+        <Hyperlink
+          Command="{Binding TargetActionDisplayTextColorCommand}"
+          CommandParameter="{Binding Action.DisplayText.Color}">
+          <TextBlock Text="{DynamicResource Common_FillColor}" />
+        </Hyperlink>
+      </TextBlock>
+
+      <TextBlock Margin="7,0,0,0" FontWeight="Bold">
+        <Hyperlink
+          Command="{Binding TargetActionDisplayTextOutlineColorCommand}"
+          CommandParameter="{Binding Action.DisplayText.OutlineColor}">
+          <TextBlock Text="{DynamicResource Common_StrokeColor}" />
+        </Hyperlink>
+      </TextBlock>
+
+      <!-- バー -->
+      <Label
+        Margin="0 20 0 0"
+        Content="{DynamicResource Action_CastingBar}" />
+
+      <ListView
+        Margin="0 10 0 0"
+        ItemsSource="{Binding Action.ProgressBar.ColorRange}"
+        BorderThickness="0"
+        HorizontalAlignment="Left">
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <StackPanel Orientation="Horizontal">
+              <TextBox Margin="0 0 0 0" TextAlignment="Right" Width="60" Text="{Binding Min, Mode=TwoWay}" />
+              <TextBlock Margin="3 0 3 0" Text="-" />
+              <TextBox Margin="5 0 0 0" TextAlignment="Right" Width="60" Text="{Binding Max, Mode=TwoWay}" />
+
+              <Border
+                Margin="10 0 0 0"
+                Padding="20 2 20 2"
+                Background="{Binding Color, Converter={StaticResource ColorToBrushConverter}}">
+                <TextBlock>
+                  <Hyperlink
+                    Command="{Binding ChangeColorCommand, Mode=OneWay}"
+                    CommandParameter="{Binding}">
+                    <TextBlock Text="{DynamicResource Common_Change}" Foreground="White" FontSize="15" />
+                  </Hyperlink>
+                </TextBlock>
+              </Border>
+
+              <TextBlock Margin="40 0 0 0">
+                <Hyperlink
+                  Command="{Binding DeleteColorCommand, Mode=OneWay}"
+                  CommandParameter="{Binding ID, Mode=OneWay}">
+                  <TextBlock Text="{DynamicResource Common_Delete}" />
+                </Hyperlink>
+              </TextBlock>
+            </StackPanel>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+
+      <TextBlock Margin="8 0 0 0">
+        <Hyperlink Command="{Binding TargetActionBarAddCommand}">
+          <TextBlock Text="{DynamicResource Common_Add}" />
+        </Hyperlink>
+      </TextBlock>
+
+      <Label
+        Margin="0 15 0 0"
+        Content="{DynamicResource Action_CastingBarStrokeColor}" />
+      <Border
+        Margin="5 0 0 0"
+        HorizontalAlignment="Left"
+        Width="100"
+        Height="30"
+        Background="{Binding Action.ProgressBar.OutlineColor, Converter={StaticResource ColorToBrushConverter}}">
+        <TextBlock
+          VerticalAlignment="Center"
+          HorizontalAlignment="Center">
+          <Hyperlink
+            Command="{Binding TargetActionProgressBarOutlineColorCommand}"
+            CommandParameter="{Binding Action.ProgressBar.OutlineColor}">
+            <TextBlock Text="{DynamicResource Common_Change}" Foreground="White" FontSize="15" />
+          </Hyperlink>
+        </TextBlock>
+      </Border>
+
+      <CheckBox
+        Margin="0 5 0 0"
+        Content="{DynamicResource Action_LinkBarStrokeColorToBarColor}"
+        IsChecked="{Binding Action.ProgressBar.LinkOutlineColor, Mode=TwoWay}"
+        Command="{Binding RefreshActionCommand, Mode=OneWay}" />
+
+      <Label
+        Margin="0 20 0 0"
+        Content="{DynamicResource Action_CastingBarSize}" />
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Margin="6 0 5 0" Text="W" VerticalAlignment="Center" />
+        <TextBox Margin="0,0,0,0" TextAlignment="Right" Text="{Binding Action.ProgressBar.Width, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+        <TextBlock Margin="10 0 5 0" Text="H" VerticalAlignment="Center" />
+        <TextBox Margin="0,0,0,0" TextAlignment="Right" Text="{Binding Action.ProgressBar.Height, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+      </StackPanel>
+
+      <StackPanel Margin="0 15 0 0" Orientation="Horizontal">
+        <CheckBox
+          Margin="0 0 0 0"
+          Content="{DynamicResource Action_CircleStyle}"
+          IsChecked="{Binding Action.UseCircle, Mode=TwoWay}" />
+        <CheckBox
+          Margin="25 0 0 0"
+          Content="{DynamicResource Action_RotateCCW}"
+          Visibility="{Binding Action.UseCircle, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+          IsChecked="{Binding Action.IsCircleReverse, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!-- サウンド -->
+      <Label
+        Margin="0 20 0 0"
+        Content="{DynamicResource Action_Sound}" />
+
+      <CheckBox
+        Margin="0 5 0 0"
+        Content="{DynamicResource Action_WaveSound}"
+        IsChecked="{Binding Action.WaveSoundEnabled, Mode=TwoWay}" />
+      <StackPanel Margin="0 5 0 0" Orientation="Horizontal">
+        <TextBox
+          Margin="0 0 0 0"
+          Text="{Binding Action.WaveFile, Mode=TwoWay}"
+          HorizontalAlignment="Left"
+          Width="700" />
+        <TextBlock Margin="10 0 0 0">
+          <Hyperlink Command="{Binding OpenFileDialogActionCommand}">...</Hyperlink>
+        </TextBlock>
+        <TextBlock Margin="10 0 0 0">
+          <Hyperlink Command="{Binding PlaySoundActionCommand}">▶</Hyperlink>
+        </TextBlock>
+      </StackPanel>
+
+      <CheckBox
+        Margin="0 15 0 0"
+        Content="{DynamicResource Common_TTS}"
+        IsChecked="{Binding Action.TTSEnabled, Mode=TwoWay}" />
+    </StackPanel>
+  </ScrollViewer>
+</Page>

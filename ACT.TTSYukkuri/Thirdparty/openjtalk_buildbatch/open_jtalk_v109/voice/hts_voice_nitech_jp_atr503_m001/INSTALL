@@ -1,0 +1,12 @@
+Installation Instructions
+*************************
+
+1. After unpacking the tar.gz file, cd to the HTS voice directory.
+
+2. Run engine with appropriate options.
+
+   % hts_engine -m nitech_jp_atr503_m001.htsvoice \
+     -ow output.wav input.lab
+
+   % open_jtalk -m nitech_jp_atr503_m001.htsvoice \
+     -ow output.wav -x dic_dir input.txt

@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F20B280B-35B9-4462-A71E-E187CC2A60E7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ACT.TTSYukkuri</RootNamespace>
+    <AssemblyName>ACT.TTSYukkuri</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ACT.Hojoring.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Advanced Combat Tracker">
+      <HintPath>..\..\ACTv3\Advanced Combat Tracker.exe</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ISpeak.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ACT.TTSYukkuri.Core\ACT.TTSYukkuri.Core.csproj">
+      <Project>{9a615561-6cec-4857-870f-88f6ff07764c}</Project>
+      <Name>ACT.TTSYukkuri.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework.TTS.Common\FFXIV.Framework.TTS.Common.csproj">
+      <Project>{18ce9b28-4f0b-45d1-ae3f-14f3982f0e59}</Project>
+      <Name>FFXIV.Framework.TTS.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework.TTS.Server\FFXIV.Framework.TTS.Server.csproj">
+      <Project>{4cb004be-8162-4601-8f98-162d4f1c0fa1}</Project>
+      <Name>FFXIV.Framework.TTS.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
+      <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>
+      <Name>FFXIV.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FontAwesome.WPF">
+      <Version>4.7.0.9</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.Config">
+      <Version>4.4.12</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.StructuredEvents">
+      <Version>0.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="ReactiveProperty">
+      <Version>4.2.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ACT.Hojoring.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

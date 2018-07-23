@@ -1,0 +1,108 @@
+<UserControl
+  x:Class="ACT.SpecialSpellTimer.Config.Views.OptionsLogView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.Config.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:resources="clr-namespace:ACT.SpecialSpellTimer.resources"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:vm="clr-namespace:ACT.SpecialSpellTimer.Config.ViewModels"
+  xmlns:fa="http://schemas.fontawesome.io/icons/"
+  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+  d:DataContext="{d:DesignInstance Type=local:OptionsLogView}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}"
+  d:DesignWidth="1000"
+  Background="White"
+  FontFamily="{DynamicResource UIFont}"
+  FontSize="{DynamicResource UIFontSize}"
+  FontWeight="{DynamicResource UIFontWeight}"
+  FontStyle="{DynamicResource UIFontStyle}"
+  FontStretch="{DynamicResource UIFontStretch}"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.EdgeMode="Unspecified"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  IsTabStop="False"
+  Focusable="False"
+  mc:Ignorable="d">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
+
+      <fwcnv:BoolToCollapsedConverter x:Key="CollapsedConverter" />
+      <fwcnv:BoolToCollapsedNegativeConverter x:Key="CollapsedNegativeConverter" />
+      <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+
+      <Style TargetType="Label">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+      </Style>
+
+      <Style TargetType="CheckBox">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+      </Style>
+
+      <Style TargetType="{x:Type xctk:IntegerUpDown}">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+      </Style>
+
+      <Style TargetType="{x:Type xctk:DoubleUpDown}">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+      </Style>
+
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../resources/strings/Strings.SpeSpe.ja-JP.xaml" />
+        <wpf:DesignTimeResourceDictionary Source="../../resources/styles/ConfigViewResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <StackPanel>
+    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_VisibleLPS}" IsChecked="{Binding Config.LPSViewVisible, Mode=TwoWay}" />
+
+    <Label Margin="0 15 0 3" Content="{DynamicResource Options_LPSOverlayScale}" />
+    <xctk:DoubleUpDown Value="{Binding Config.LPSViewScale, Mode=TwoWay}" MinWidth="80" FormatString="F2" Increment="0.01" />
+
+    <!-- Location -->
+    <Label Margin="0 15 0 3" Content="{DynamicResource Options_LPSOverlayLocation}" />
+    <StackPanel Orientation="Horizontal">
+      <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
+      <xctk:DoubleUpDown Value="{Binding Config.LPSViewX, Mode=TwoWay}" FormatString="F0" MinWidth="75" Increment="1" />
+      <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
+      <xctk:DoubleUpDown Value="{Binding Config.LPSViewY, Mode=TwoWay}" FormatString="F0" MinWidth="75" Increment="1" />
+    </StackPanel>
+
+    <CheckBox Margin="0 25 0 0" Content="{DynamicResource Options_EnabledLog}" IsChecked="{Binding Config.SaveLogEnabled, Mode=TwoWay}" />
+
+    <StackPanel Visibility="{Binding Config.SaveLogEnabled, Mode=OneWay, Converter={StaticResource CollapsedConverter}}">
+      <Label Margin="0 20 0 0" Content="{DynamicResource Options_LogDirectory}" />
+      <TextBox Text="{Binding Config.SaveLogDirectory, Mode=TwoWay}" Width="550" HorizontalAlignment="Left" />
+
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Margin="0 5 0 0" HorizontalAlignment="Left">
+          <Hyperlink Command="{Binding BrowseLogDirectoryCommand}">
+            <TextBlock Text="{DynamicResource Options_Browse}" />
+          </Hyperlink>
+        </TextBlock>
+
+        <TextBlock Margin="15 5 0 0" HorizontalAlignment="Left">
+          <Hyperlink Command="{Binding OpenLogCommand}">
+            <TextBlock Text="Open" />
+          </Hyperlink>
+        </TextBlock>
+      </StackPanel>
+    </StackPanel>
+  </StackPanel>
+</UserControl>

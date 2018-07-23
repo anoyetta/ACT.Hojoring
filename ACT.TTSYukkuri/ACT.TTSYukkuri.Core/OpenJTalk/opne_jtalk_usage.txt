@@ -1,0 +1,45 @@
+The Japanese TTS System "Open JTalk"
+Version 1.08 (http://open-jtalk.sourceforge.net/)
+Copyright (C) 2008-2014 Nagoya Institute of Technology
+All rights reserved.
+
+The HMM-Based Speech Synthesis Engine "hts_engine API"
+Version 1.09 (http://hts-engine.sourceforge.net/)
+Copyright (C) 2001-2014 Nagoya Institute of Technology
+              2001-2008 Tokyo Institute of Technology
+All rights reserved.
+
+Yet Another Part-of-Speech and Morphological Analyzer "Mecab"
+Version 0.996 (http://mecab.sourceforge.net/)
+Copyright (C) 2001-2008 Taku Kudo
+              2004-2008 Nippon Telegraph and Telephone Corporation
+All rights reserved.
+
+NAIST Japanese Dictionary
+Version 0.6.1-20090630 (http://naist-jdic.sourceforge.jp/)
+Copyright (C) 2009 Nara Institute of Science and Technology
+All rights reserved.
+
+open_jtalk - The Japanese TTS system "Open JTalk"
+
+  usage:
+       open_jtalk [ options ] [ infile ]
+  options:                                                                   [  def][ min-- max]
+    -x  dir        : dictionary directory                                    [  N/A]
+    -m  htsvoice   : HTS voice files                                         [  N/A]
+    -ow s          : filename of output wav audio (generated speech)         [  N/A]
+    -ot s          : filename of output trace information                    [  N/A]
+    -s  i          : sampling frequency                                      [ auto][   1--    ]
+    -p  i          : frame period (point)                                    [ auto][   1--    ]
+    -a  f          : all-pass constant                                       [ auto][ 0.0-- 1.0]  声質 0.55
+    -b  f          : postfiltering coefficient                               [  0.0][ 0.0-- 1.0]
+    -r  f          : speech speed rate                                       [  1.0][ 0.0--    ]
+    -fm f          : additional half-tone                                    [  0.0][    --    ]  音高 0.00
+    -u  f          : voiced/unvoiced threshold                               [  0.5][ 0.0-- 1.0]  抑揚 0.5
+    -jm f          : weight of GV for spectrum                               [  1.0][ 0.0--    ]
+    -jf f          : weight of GV for log F0                                 [  1.0][ 0.0--    ]  声量 
+    -g  f          : volume (dB)                                             [  0.0][    --    ]
+    -z  i          : audio buffer size (if i==0, turn off)                   [    0][   0--    ]
+  infile:
+    text file                                                                [stdin]
+

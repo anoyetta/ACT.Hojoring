@@ -1,0 +1,488 @@
+<UserControl
+  x:Class="ACT.SpecialSpellTimer.Config.Views.TriggersView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.Config.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:model="clr-namespace:ACT.SpecialSpellTimer.Config.Models"
+  xmlns:triggerModel="clr-namespace:ACT.SpecialSpellTimer.Models"
+  xmlns:resources="clr-namespace:ACT.SpecialSpellTimer.resources"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:vm="clr-namespace:ACT.SpecialSpellTimer.Config.ViewModels"
+  xmlns:fa="http://schemas.fontawesome.io/icons/"
+  d:DataContext="{d:DesignInstance Type=vm:TriggersViewModel, IsDesignTimeCreatable=True}"
+  d:DesignWidth="1280"
+  d:DesignHeight="800"
+  Background="White"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}"
+  FontFamily="{DynamicResource UIFont}"
+  FontSize="{DynamicResource UIFontSize}"
+  FontWeight="{DynamicResource UIFontWeight}"
+  FontStyle="{DynamicResource UIFontStyle}"
+  FontStretch="{DynamicResource UIFontStretch}"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.EdgeMode="Unspecified"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  mc:Ignorable="d"
+  IsTabStop="False"
+  Focusable="False"
+  Padding="0 3 3 3">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
+
+      <fwcnv:BoolToCollapsedConverter x:Key="CollapsedConverter" />
+      <fwcnv:BoolToCollapsedNegativeConverter x:Key="CollapsedNegativeConverter" />
+      <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../resources/strings/Strings.SpeSpe.ja-JP.xaml" />
+        <wpf:DesignTimeResourceDictionary Source="../../resources/styles/ConfigViewResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" MinWidth="200" />
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="80*" />
+    </Grid.ColumnDefinitions>
+
+    <!--  スプリッタ  -->
+    <GridSplitter
+      Grid.Column="1"
+      Width="3"
+      IsTabStop="False"
+      HorizontalAlignment="Center"
+      Background="GhostWhite" />
+
+    <!--  ツリー  -->
+    <Grid Name="TriggersTreePanel" Grid.Column="0">
+      <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <!-- ツリーグリッドのリソース -->
+      <Grid.Resources>
+        <!-- 切替タブのアイコンサイズ -->
+        <system:Double x:Key="TabIconSize">20</system:Double>
+
+        <Style TargetType="TreeViewItem">
+          <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+          <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+          <Setter Property="Padding" Value="5 1 5 1" />
+        </Style>
+
+        <Style TargetType="Button">
+          <Setter Property="IsTabStop" Value="False" />
+        </Style>
+
+        <!-- スペルパネルのテンプレ -->
+        <HierarchicalDataTemplate
+          DataType="{x:Type triggerModel:SpellPanel}"
+          ItemsSource="{Binding Children, Mode=OneWay}">
+
+          <HierarchicalDataTemplate.Resources>
+            <Style TargetType="TextBlock">
+              <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style TargetType="CheckBox">
+              <Setter Property="VerticalAlignment" Value="Center" />
+              <Setter Property="VerticalContentAlignment" Value="Center" />
+              <Setter Property="IsTabStop" Value="False" />
+              <Setter Property="Margin" Value="0 0 5 0" />
+            </Style>
+
+            <Style TargetType="fa:ImageAwesome">
+              <Setter Property="VerticalAlignment" Value="Center" />
+              <Setter Property="Height" Value="17" />
+              <Setter Property="Width" Value="17" />
+              <Setter Property="Margin" Value="0 0 4 0" />
+              <Setter Property="Foreground" Value="DarkViolet" />
+            </Style>
+          </HierarchicalDataTemplate.Resources>
+
+          <StackPanel Orientation="Horizontal" ContextMenuService.Placement="MousePoint">
+
+            <!-- スペルパネルのコンテキストメニュー -->
+            <StackPanel.ContextMenu>
+              <ContextMenu Loaded="ContextMenu_Loaded">
+                <MenuItem Header="{DynamicResource Common_CreateNew}">
+                  <MenuItem Header="{DynamicResource Common_SpellPanel}" Command="{Binding CreateNewSpellPanelCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                  <MenuItem Header="{DynamicResource Common_Spell}" Command="{Binding CreateNewSpellCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                </MenuItem>
+                <MenuItem Header="{DynamicResource Common_Delete}" Command="{Binding DeleteCommand, Mode=OneWay}" CommandParameter="{Binding}" InputGestureText="Delete" />
+                <Separator />
+                <MenuItem Header="{DynamicResource Common_Tag}" x:Name="TagMenu" />
+                <Separator />
+                <MenuItem Header="{DynamicResource Data_Import}" Command="{Binding ImportCommand, Mode=OneWay}" CommandParameter="{Binding}" ToolTip="{DynamicResource Data_ImportSpellsToSpellPanel}" />
+                <MenuItem Header="{DynamicResource Data_Export}" Command="{Binding ExportCommand, Mode=OneWay}" CommandParameter="{Binding}" ToolTip="{DynamicResource Data_ExportSpellsFromPanel}" />
+              </ContextMenu>
+            </StackPanel.ContextMenu>
+
+            <!-- Designモードボタン -->
+            <Button HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" BorderThickness="0" Margin="0 0 5 0" Command="{Binding DesignModeCommand}" CommandParameter="{Binding}" ToolTip="{DynamicResource Tree_DesignModeDescription}">
+              <Button.Content>
+                <Grid>
+                  <fa:FontAwesome Icon="Wrench" Visibility="{Binding IsDesignMode, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" Foreground="OrangeRed" />
+                  <fa:FontAwesome Icon="Wrench" Visibility="{Binding IsDesignMode, Mode=OneWay, Converter={StaticResource CollapsedNegativeConverter}}" Foreground="DimGray" />
+                </Grid>
+              </Button.Content>
+            </Button>
+
+            <CheckBox IsChecked="{Binding Enabled, Mode=TwoWay}" ToolTip="{DynamicResource Tree_EnabledDescription}" Command="{Binding ChangeEnabledCommand}" CommandParameter="{Binding}" />
+            <fa:ImageAwesome Icon="ThList" />
+            <TextBlock Text="{Binding DisplayText, Mode=OneWay}" />
+          </StackPanel>
+        </HierarchicalDataTemplate>
+        <!-- スペルパネルのテンプレ end -->
+
+        <!-- スペルのテンプレ -->
+        <HierarchicalDataTemplate
+          DataType="{x:Type triggerModel:Spell}"
+          ItemsSource="{Binding Children, Mode=OneWay}">
+
+          <HierarchicalDataTemplate.Resources>
+            <Style TargetType="TextBlock">
+              <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style TargetType="CheckBox">
+              <Setter Property="VerticalAlignment" Value="Center" />
+              <Setter Property="VerticalContentAlignment" Value="Center" />
+              <Setter Property="IsTabStop" Value="False" />
+              <Setter Property="Margin" Value="0 0 5 0" />
+            </Style>
+
+            <Style TargetType="fa:ImageAwesome">
+              <Setter Property="VerticalAlignment" Value="Center" />
+              <Setter Property="Height" Value="17" />
+              <Setter Property="Width" Value="17" />
+              <Setter Property="Margin" Value="0 0 4 0" />
+              <Setter Property="Foreground" Value="MediumBlue" />
+            </Style>
+          </HierarchicalDataTemplate.Resources>
+
+          <StackPanel Orientation="Horizontal" ContextMenuService.Placement="MousePoint">
+
+            <!-- スペルのコンテキストメニュー -->
+            <StackPanel.ContextMenu>
+              <ContextMenu Loaded="ContextMenu_Loaded">
+                <MenuItem Header="{DynamicResource Common_CreateSimilarNew}" Command="{Binding CreateNewSpellCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                <MenuItem Header="{DynamicResource Common_Delete}" Command="{Binding DeleteCommand, Mode=OneWay}" CommandParameter="{Binding}" InputGestureText="Delete" />
+                <Separator />
+                <MenuItem Header="{DynamicResource Common_Tag}" x:Name="TagMenu" />
+                <Separator />
+                <MenuItem Header="{DynamicResource Common_SpellPanel}" x:Name="PanelMenu" />
+                <Separator />
+                <MenuItem Header="{DynamicResource Data_Export}" Command="{Binding ExportCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+              </ContextMenu>
+            </StackPanel.ContextMenu>
+
+            <!-- Designモードボタン -->
+            <Button HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" BorderThickness="0" Margin="0 0 5 0" Command="{Binding DesignModeCommand}" CommandParameter="{Binding}" ToolTip="{DynamicResource Tree_DesignModeDescription}">
+              <Button.Content>
+                <Grid>
+                  <fa:FontAwesome Icon="Wrench" Visibility="{Binding IsDesignMode, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" Foreground="OrangeRed" />
+                  <fa:FontAwesome Icon="Wrench" Visibility="{Binding IsDesignMode, Mode=OneWay, Converter={StaticResource CollapsedNegativeConverter}}" Foreground="DimGray" />
+                </Grid>
+              </Button.Content>
+            </Button>
+
+            <CheckBox IsChecked="{Binding Enabled, Mode=TwoWay}" ToolTip="{DynamicResource Tree_EnabledDescription}" Command="{Binding ChangeEnabledCommand}" CommandParameter="{Binding}" />
+            <fa:ImageAwesome Icon="Magic" />
+            <TextBlock Text="{Binding DisplayText, Mode=OneWay}" />
+          </StackPanel>
+        </HierarchicalDataTemplate>
+        <!-- スペルのテンプレ end -->
+
+        <!-- テロップのテンプレ -->
+        <HierarchicalDataTemplate
+          DataType="{x:Type triggerModel:Ticker}"
+          ItemsSource="{Binding Children, Mode=OneWay}">
+
+          <HierarchicalDataTemplate.Resources>
+            <Style TargetType="TextBlock">
+              <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style TargetType="CheckBox">
+              <Setter Property="VerticalAlignment" Value="Center" />
+              <Setter Property="VerticalContentAlignment" Value="Center" />
+              <Setter Property="IsTabStop" Value="False" />
+              <Setter Property="Margin" Value="0 0 5 0" />
+            </Style>
+
+            <Style TargetType="fa:ImageAwesome">
+              <Setter Property="VerticalAlignment" Value="Center" />
+              <Setter Property="Height" Value="17" />
+              <Setter Property="Width" Value="17" />
+              <Setter Property="Margin" Value="0 0 4 0" />
+              <Setter Property="Foreground" Value="OliveDrab" />
+            </Style>
+          </HierarchicalDataTemplate.Resources>
+
+          <StackPanel Orientation="Horizontal" ContextMenuService.Placement="MousePoint">
+
+            <!-- テロップのコンテキストメニュー -->
+            <StackPanel.ContextMenu>
+              <ContextMenu Loaded="ContextMenu_Loaded">
+                <MenuItem Header="{DynamicResource Common_CreateSimilarNew}" Command="{Binding CreateNewTickerCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                <MenuItem Header="{DynamicResource Common_Delete}" Command="{Binding DeleteCommand, Mode=OneWay}" CommandParameter="{Binding}" InputGestureText="Delete" />
+                <Separator />
+                <MenuItem Header="{DynamicResource Common_Tag}" x:Name="TagMenu" />
+                <Separator />
+                <MenuItem Header="{DynamicResource Data_Export}" Command="{Binding ExportCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+              </ContextMenu>
+            </StackPanel.ContextMenu>
+
+            <!-- Designモードボタン -->
+            <Button HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" BorderThickness="0" Margin="0 0 5 0" Command="{Binding DesignModeCommand}" CommandParameter="{Binding}" ToolTip="{DynamicResource Tree_DesignModeDescription}">
+              <Button.Content>
+                <Grid>
+                  <fa:FontAwesome Icon="Wrench" Visibility="{Binding IsDesignMode, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" Foreground="OrangeRed" />
+                  <fa:FontAwesome Icon="Wrench" Visibility="{Binding IsDesignMode, Mode=OneWay, Converter={StaticResource CollapsedNegativeConverter}}" Foreground="DimGray" />
+                </Grid>
+              </Button.Content>
+            </Button>
+
+            <CheckBox IsChecked="{Binding Enabled, Mode=TwoWay}" ToolTip="{DynamicResource Tree_EnabledDescription}" Command="{Binding ChangeEnabledCommand}" CommandParameter="{Binding}" />
+            <fa:ImageAwesome Icon="Comment" />
+            <TextBlock Text="{Binding DisplayText, Mode=OneWay}" />
+          </StackPanel>
+        </HierarchicalDataTemplate>
+        <!-- テロップのテンプレ end -->
+
+        <!-- タグのテンプレ -->
+        <HierarchicalDataTemplate
+          DataType="{x:Type triggerModel:Tag}"
+          ItemsSource="{Binding Children, Mode=OneWay}">
+
+          <HierarchicalDataTemplate.Resources>
+            <Style TargetType="TextBlock">
+              <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style TargetType="CheckBox">
+              <Setter Property="VerticalAlignment" Value="Center" />
+              <Setter Property="VerticalContentAlignment" Value="Center" />
+              <Setter Property="IsTabStop" Value="False" />
+              <Setter Property="Margin" Value="0 0 5 0" />
+            </Style>
+
+            <Style TargetType="fa:ImageAwesome">
+              <Setter Property="VerticalAlignment" Value="Center" />
+              <Setter Property="Height" Value="17" />
+              <Setter Property="Width" Value="17" />
+              <Setter Property="Margin" Value="0 0 4 0" />
+              <Setter Property="Foreground" Value="Orange" />
+            </Style>
+          </HierarchicalDataTemplate.Resources>
+
+          <StackPanel Orientation="Horizontal" ContextMenuService.Placement="MousePoint">
+
+            <!-- タグのコンテキストメニュー -->
+            <StackPanel.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="{DynamicResource Common_CreateNewTag}" Command="{Binding CreateNewTagCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                <Separator />
+                <MenuItem Header="{DynamicResource Common_CreateNew}">
+                  <MenuItem Header="{DynamicResource Common_SpellPanel}" Command="{Binding CreateNewSpellPanelCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                  <MenuItem Header="{DynamicResource Common_Ticker}" Command="{Binding CreateNewTickerCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                </MenuItem>
+                <MenuItem Header="{DynamicResource Common_Rename}" Command="{Binding RenameCommand, Mode=OneWay}" CommandParameter="{Binding}" InputGestureText="F2" />
+                <MenuItem Header="{DynamicResource Common_Delete}" Command="{Binding DeleteCommand, Mode=OneWay}" CommandParameter="{Binding}" InputGestureText="Delete" />
+                <Separator />
+                <MenuItem Header="{DynamicResource AddToTag_AddToTag}" Command="{Binding AddToTagCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                <Separator />
+                <MenuItem Header="{DynamicResource Data_Import}" Command="{Binding ImportCommand, Mode=OneWay}" CommandParameter="{Binding}" ToolTip="{DynamicResource Data_ImportToTag}" />
+                <MenuItem Header="{DynamicResource Data_Export}" Command="{Binding ExportCommand, Mode=OneWay}" CommandParameter="{Binding}" ToolTip="{DynamicResource Data_ExportFromTag}" />
+              </ContextMenu>
+            </StackPanel.ContextMenu>
+
+            <!-- Designモードボタン -->
+            <Button HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" BorderThickness="0" Margin="0 0 5 0" Command="{Binding DesignModeCommand}" CommandParameter="{Binding}" ToolTip="{DynamicResource Tree_DesignModeDescription}">
+              <Button.Content>
+                <Grid>
+                  <fa:FontAwesome Icon="Wrench" Visibility="{Binding IsDesignMode, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" Foreground="OrangeRed" />
+                  <fa:FontAwesome Icon="Wrench" Visibility="{Binding IsDesignMode, Mode=OneWay, Converter={StaticResource CollapsedNegativeConverter}}" Foreground="DimGray" />
+                </Grid>
+              </Button.Content>
+            </Button>
+
+            <CheckBox IsChecked="{Binding Enabled, Mode=TwoWay}" ToolTip="{DynamicResource Tree_EnabledDescription}" Command="{Binding ChangeEnabledCommand}" CommandParameter="{Binding}" />
+            <fa:ImageAwesome Icon="Tag" />
+            <TextBlock Text="{Binding Name, Mode=OneWay}" Visibility="{Binding IsInViewMode, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" />
+            <TextBox Text="{Binding Name, Mode=OneWay}" Tag="{Binding}" MinWidth="120" Visibility="{Binding IsInEditMode, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" LostFocus="RenameTextBoxOnLostFocus" KeyDown="RenameTextBoxOnKeyDown" IsVisibleChanged="RenameTextBoxOnIsVisibleChanged" />
+          </StackPanel>
+        </HierarchicalDataTemplate>
+        <!-- タグのテンプレ end -->
+      </Grid.Resources>
+      <!-- ツリーグリッドのリソース end -->
+
+      <!-- ●ツリー切替タブ -->
+      <TabControl
+        Margin="0"
+        Padding="0"
+        Grid.Row="0"
+        TabStripPlacement="Left">
+
+        <!-- タグで管理タブ -->
+        <TabItem Height="60">
+          <TabItem.Header>
+            <fa:ImageAwesome Icon="Tag" Height="{StaticResource TabIconSize}" Foreground="Orange" ToolTip="{DynamicResource Common_ManageOnTags}" />
+          </TabItem.Header>
+
+          <!-- タグツリー -->
+          <TreeView
+            Name="TagsTreeView"
+            BorderThickness="0"
+            Padding="0 0 40 0"
+            DataContext="{Binding TagsTreeRoot, Mode=OneWay}"
+            ItemsSource="{Binding Children, Mode=OneWay}">
+
+            <!-- タグツリーのメニュー -->
+            <TreeView.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="{DynamicResource Common_CreateNewTag}" Command="{Binding CreateNewTagCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                <Separator />
+                <MenuItem Header="{DynamicResource Common_CreateNew}">
+                  <MenuItem Header="{DynamicResource Common_SpellPanel}" Command="{Binding CreateNewSpellPanelCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                  <MenuItem Header="{DynamicResource Common_Spell}" Command="{Binding CreateNewSpellCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                  <MenuItem Header="{DynamicResource Common_Ticker}" Command="{Binding CreateNewTickerCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="{DynamicResource Data_Import}" Command="{Binding ImportCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+              </ContextMenu>
+            </TreeView.ContextMenu>
+          </TreeView>
+        </TabItem>
+        <!-- タグで管理タブ end -->
+
+        <!-- すべてのスペルタブ -->
+        <TabItem Height="60">
+          <TabItem.Header>
+            <fa:ImageAwesome Icon="Magic" Height="{StaticResource TabIconSize}" Foreground="MediumBlue" ToolTip="{DynamicResource Common_AllSpells}" />
+          </TabItem.Header>
+
+          <!-- スペルツリー -->
+          <TreeView
+            Name="SpellsTreeView"
+            BorderThickness="0"
+            Padding="0 0 40 0"
+            DataContext="{Binding SpellsTreeRoot, Mode=OneWay}"
+            ItemsSource="{Binding Children, Mode=OneWay}">
+
+            <!-- スペルツリーのメニュー -->
+            <TreeView.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="{DynamicResource Common_CreateNewSpellPanel}" Command="{Binding CreateNewSpellPanelCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                <MenuItem Header="{DynamicResource Common_CreateNewSpell}" Command="{Binding CreateNewSpellCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                <Separator />
+                <MenuItem Header="{DynamicResource Data_Import}" Command="{Binding ImportCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                <MenuItem Header="{DynamicResource Data_Export}" Command="{Binding ExportCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+              </ContextMenu>
+            </TreeView.ContextMenu>
+          </TreeView>
+          <!-- スペルツリー end -->
+        </TabItem>
+        <!-- すべてのスペルタブ end -->
+
+        <!-- すべてのテロップタブ -->
+        <TabItem Height="60">
+          <TabItem.Header>
+            <fa:ImageAwesome Icon="Comment" Height="{StaticResource TabIconSize}" Foreground="OliveDrab" ToolTip="{DynamicResource Common_AllTickers}" />
+          </TabItem.Header>
+
+          <!-- テロップツリー -->
+          <TreeView
+            Name="TickersTreeView"
+            BorderThickness="0"
+            Padding="0 0 40 0"
+            DataContext="{Binding TickersTreeRoot, Mode=OneWay}"
+            ItemsSource="{Binding Children, Mode=OneWay}">
+
+            <!-- テロップツリーのメニュー -->
+            <TreeView.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="{DynamicResource Common_CreateNewTicker}" Command="{Binding CreateNewTickerCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                <Separator />
+                <MenuItem Header="{DynamicResource Data_Import}" Command="{Binding ImportCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                <MenuItem Header="{DynamicResource Data_Export}" Command="{Binding ExportCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+              </ContextMenu>
+            </TreeView.ContextMenu>
+          </TreeView>
+          <!-- テロップツリー end -->
+        </TabItem>
+        <!-- すべてのテロップタブ end -->
+      </TabControl>
+      <!-- ●ツリー切替タブ end -->
+
+      <StackPanel
+        Grid.Row="1"
+        Margin="42 0 5 -4"
+        Orientation="Horizontal">
+        <!-- デザインモード -->
+        <CheckBox
+          Padding="5"
+          Content="{DynamicResource Tree_LayoutGrid}"
+          FontWeight="Bold"
+          Foreground="OrangeRed"
+          VerticalAlignment="Bottom"
+          VerticalContentAlignment="Center"
+          IsChecked="{Binding RootConfig.VisibleDesignGrid, Mode=TwoWay}"
+          ToolTip="{DynamicResource Tree_DesignGridDescription}" />
+
+        <!-- クリックスルー -->
+        <CheckBox
+          Margin="20 0 0 0"
+          Padding="5"
+          Content="{DynamicResource Tree_Clickthrough}"
+          FontWeight="Bold"
+          Foreground="RoyalBlue"
+          VerticalAlignment="Bottom"
+          VerticalContentAlignment="Center"
+          IsChecked="{Binding RootConfig.ClickThroughEnabled, Mode=TwoWay}" />
+
+        <!-- シミュレータ -->
+        <Button
+          Margin="20 0 0 0"
+          Background="Transparent"
+          BorderThickness="0"
+          Padding="5"
+          Content="{DynamicResource TriggerTester_OpenSimulator}"
+          FontWeight="Bold"
+          Foreground="#69821b"
+          VerticalAlignment="Bottom"
+          VerticalContentAlignment="Center"
+          Click="OpenSimulatorButton_Click" />
+      </StackPanel>
+    </Grid>
+
+    <Border
+      x:Name="ContentBorder"
+      Grid.Column="2"
+      Margin="3 0 0 0"
+      BorderThickness="2"
+      CornerRadius="2"
+      BorderBrush="Transparent">
+      <Grid>
+        <local:SpellPanelConfigView x:Name="SpellPanelView" Visibility="Collapsed" />
+        <local:SpellConfigView x:Name="SpellView" Visibility="Collapsed" />
+        <local:TickerConfigView x:Name="TickerView" Visibility="Collapsed" />
+      </Grid>
+    </Border>
+  </Grid>
+</UserControl>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<timeline>
+  <name>次元の狭間オメガ零式：シグマ編2</name>
+  <rev>rev5</rev>
+  <description>
+    シグマ2層向けの実用可能なタイムラインです。
+    notice, notice-o などは自分の好みに合せて使用してください。
+
+    designed by Hojoring Forum
+    https://discord.gg/n6Mut3F
+  </description>
+  <zone>Sigmascape V2.0 (Savage)</zone>
+  <locale>JA</locale>
+  <entry>フェーズ１(青)</entry>
+  <start>こいつは久しぶりに良い絵だわい……。 誰にも邪魔はさせんぞ！！</start>
+
+  <default target-element="Activity" target-attr="notice-d" value="Both" />
+  <default target-element="Activity" target-attr="notice-o" value="-5" />
+
+  <!-- 重要なアクティビティを通知するトリガ begin -->
+  <t text="デモニックシアー\n ➜ ${_pc}" sync="starts using デモニックシアー on [pc]" notice="シアー">
+    <v-notice 
+      duration="4" 
+      icon="HardAttack.png" />
+  </t>
+
+  <t text="ポルターガイスト" sync="の「ポルターガイスト」" notice="ポルターガイスト">
+    <v-notice 
+      duration="15"
+      duration-visible="false"
+      icon="Attention.png" />
+  </t>
+
+  <t text="女神の誘惑" sync="は「女神の誘惑」の構え。" notice="誘惑">
+    <v-notice 
+      duration="5" 
+      icon="Eye.png" />
+  </t>
+
+  <t text="死の口づけ\n ➜ ${_pc}" sync="1A:[pc] gains the effect of 死の口づけ" notice="口づけ">
+    <v-notice 
+      duration="10" 
+      style="NOTICE_NORMAL" 
+      icon="Marker.png" />
+  </t>
+
+  <t text="子守歌" sync="は「子守歌」の構え。" notice="子守歌">
+    <v-notice 
+      duration="6" 
+      icon="Explosion.png" />
+  </t>
+  <!-- 重要なアクティビティを通知するトリガ end -->
+
+  <s name="フェーズ１(青)">
+    <a time="5" text="デモニックハウル" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="16" text="デモニックシアー" sync="「デモニックシアー」の構え" notice="次は、シアー。" icon="単体攻撃.png" />
+    
+    <a time="30" text="絵画憑依(青)" sync="チャダルヌーク・デーモン starts using 絵画憑依" />
+    <a time="49" text="フラッシュファイア" />
+    <a time="56" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="50" text="フラッシュウィンド" />
+    <a time="68" text="ポルターガイスト" sync="「ポルターガイスト」の構え" />
+    <a time="75" text="デモニックシアー" sync="「デモニックシアー」の構え" notice="次は、シアー。" icon="単体攻撃.png" />
+    <a time="79" text="女神の誘惑" sync="「女神の誘惑」の構え。" icon="視線.png" />
+    <a time="83" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="89" text="デモニックペイン" sync="「デモニックペイン」の構え" notice="次は、ペイン。" icon="ペア処理.png" />
+    <a time="104" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" />
+    <a time="112" text="憑依解除" sync="チャダルヌーク・デーモン starts using 憑依解除" goto="フェーズ２(ピンク)" />
+  </s>
+
+  <s name="フェーズ２(ピンク)">
+    <a time="5" text="絵画憑依(H2ピンク)" sync="チャダルヌーク・デーモン starts using 絵画憑依" />
+    <a time="18" text="AOE捨てる" sync="貴様らなど、まとめて吹き飛ばしてくれるわ！" notice-o="0" icon="重ね捨て.png" />
+    <a time="24" text="デモニックシアー" sync="「デモニックシアー」の構え" notice="次は、シアー。" icon="単体攻撃.png" />
+    <a time="34" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="38" text="フェザーランス" sync="「フェザーランス」の構え" icon="爆発系.png" />
+    <a time="41" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="59" text="死の口づけ" notice="次は、死の口づけ。" icon="マーカー.png" />
+    <a time="68" text="ポルターガイスト" sync="「ポルターガイスト」の構え" />
+    <a time="68" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="78" text="デモニックシアー" sync="「デモニックシアー」の構え" notice="次は、シアー。" icon="単体攻撃.png" />
+    <a time="79" text="女神の誘惑" sync="「女神の誘惑」の構え。" icon="視線.png" />
+    <a time="83" text="デモニックストーム" sync="の「デモニックストーム」" notice="次は、頭割り。" notice-o="-1" icon="頭割り.png" />
+    <a time="89" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="102" text="憑依解除" sync="チャダルヌーク・デーモン starts using 憑依解除" goto="フェーズ３(青黒)" />
+  </s>
+
+  <s name="フェーズ３(青黒)">
+    <a time="5" text="絵画憑依(青→黒)" sync="チャダルヌーク・デーモン starts using 絵画憑依" />
+    <a time="20" text="ファイア＆地震" />
+    <a time="26" text="フラッシュレイン" sync="の「フラッシュレイン」" notice="次は、フラッシュレイン。" />
+    <a time="30" text="実体化" sync="「実体化」の構え" />
+    <a time="40" text="デモニックペイン" sync="「デモニックペイン」の構え" notice="次は、ペイン。" icon="ペア処理.png" />
+    <a time="46" text="子守唄" sync="「子守唄」の構え" notice="次は、こもりうた。" notice-o="-5" icon="注意.png" />
+    <a time="56" text="デモニックハウル" icon="全体攻撃.png" />
+    <a time="62" text="デモニックハウル" icon="全体攻撃.png" />
+    <a time="68" text="デモニックシアー" sync="「デモニックシアー」の構え" notice="次は、シアー。" icon="単体攻撃.png" />
+    <a time="82" text="デモニックストーン" sync="の「デモニックストーン」" notice-o="-6" />
+    <a time="94" text="死の口づけ" notice="次は、死の口づけ。" icon="マーカー.png" />
+    <a time="95" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="114" text="憑依解除" sync="チャダルヌーク・デーモン starts using 憑依解除" goto="フェーズ４(黄)" />
+  </s>
+
+  <s name="フェーズ４(黄)">
+    <a time="5" text="絵画憑依(黄ピンク)" sync="チャダルヌーク・デーモン starts using 絵画憑依" notice-o="0" />
+    <a time="15" text="デモニックタイフーン" icon="重ね捨て.png" />
+    <a time="15" text="デモニックウェーブ" sync="「デモニックウェーブ」の構え" />
+    <a time="20" text="H2→ピンク" />
+    <a time="25" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="31" text="フェザーランス" sync="「フェザーランス」の構え" icon="爆発系.png" />
+    <a time="35" text="実体化" sync="は「実体化」の構え" />
+    <a time="44" text="小円→A" icon="Aマーカー.png" />
+    <a time="45" sync="の「デモニックスパウト」" />
+    <a time="49" text="小円→B" icon="Bマーカー.png" />
+    <a time="52" text="デモニックストーム" sync="の「デモニックストーム」" notice="次は、頭割り。" icon="頭割り.png" />
+    <a time="66" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="76" text="デモニックペイン" sync="「デモニックペイン」の構え" notice="次は、ペイン。" icon="ペア処理.png" />
+    <a time="87" text="死の口づけ" notice="次は、死の口づけ。" />
+    <a time="88" text="フラッシュレイン" sync="「フラッシュレイン」の構え" notice="次は、フラッシュレイン。" />
+    <a time="95" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="110" text="デモニックシアー" sync="「デモニックシアー」の構え" notice="次は、シアー。" icon="単体攻撃.png" />
+    <a time="121" text="憑依解除" sync="チャダルヌーク・デーモン starts using 憑依解除" goto="フェーズ５(青黒)" />
+  </s>
+
+  <s name="フェーズ５(青黒)">
+    <a time="5" text="絵画憑依(青→黒)" sync="チャダルヌーク・デーモン starts using 絵画憑依" />
+    <a time="20" text="ファイア＆地震" />
+    <a time="25" text="フラッシュウィンド" />
+    <a time="28" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="38" text="デモニックシアー" sync="「デモニックシアー」の構え" notice="次は、シアー。" icon="単体攻撃.png" />
+    <a time="46" text="実体化" sync="「実体化」の構え" />
+    <a time="53" text="ポルターガイスト" sync="「ポルターガイスト」の構え" />
+    <a time="64" text="デモニックストーン" sync="の「デモニックストーン」" notice-o="-6" />
+    <a time="69" text="女神の誘惑" sync="「女神の誘惑」の構え。" icon="視線.png" />
+    <a time="70" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="77" text="デモニックシアー" sync="「デモニックシアー」の構え" notice="次は、シアー。" icon="単体攻撃.png" />
+    <a time="87" text="デモニックペイン" sync="「デモニックペイン」の構え" notice="次は、ペイン。" icon="ペア処理.png" />
+    <a time="97" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="107" text="憑依解除" sync="チャダルヌーク・デーモン starts using 憑依解除" goto="フェーズ６(黄ピンク)" />
+  </s>
+
+  <s name="フェーズ６(黄ピンク)">
+    <a time="5" text="絵画憑依(黄ピンク)" sync="チャダルヌーク・デーモン starts using 絵画憑依" notice-o="0" />
+    <a time="20" text="デモニックタイフーン" icon="重ね捨て.png" />
+    <a time="20" text="デモニックウェーブ" sync="「デモニックウェーブ」の構え" />
+    <a time="25" text="H2→ピンク" />
+    <a time="31" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="37" text="フェザーランス" sync="「フェザーランス」の構え" icon="爆発系.png" />
+    <a time="41" text="実体化" sync="「実体化」の構え" />
+    <a time="48" text="デモニックハウル" sync="「デモニックハウル」の構え" notice="次は、ハウル。" icon="全体攻撃.png" />
+    <a time="58" text="時間切れ" />
+  </s>
+</timeline>

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<timeline>
+  <name>極ツクヨミ討滅戦</name>
+  <rev>rev1</rev>
+  <description>
+    極ツクヨミ討滅戦向けのスペスペたいむ定義です。
+  </description>
+  <zone>Castrum Fluminis,The Minstrel's Ballad: Tsukuyomi's Pain</zone>
+  <locale>JA</locale>
+  <entry>ENTRY</entry>
+  <start>0039:戦闘開始！</start>
+
+  <t text="自分にマーカ" sync="(1B:.{8}:[mex]:|[mex]に「マーキング」の効果。)" notice="自分にマーカー。">
+    <v-notice
+      duration="5"
+      duration-visible="false"
+      order="-10"
+      icon="Marker.png" />
+  </t>
+
+  <t text="なぶり殺し\n ➜ ${_pc}" sync="starts using なぶり殺し on [pc]" notice="なぶり殺し。">
+    <v-notice
+      icon="HardAttack.png"
+      duration="4"
+      duration-visible="false" />
+  </t>
+
+  <t text="➔銃" sync="14:(2BBC|2BE4):ツクヨミ" notice="頭割り。">
+    <v-notice
+      icon="DamageShare.png"
+      duration="4"
+      duration-visible="false"
+      order="-1" />
+  </t>
+
+  <t text="➔槍" sync="14:(2BBD|2BE5):ツクヨミ" notice="散開。">
+    <v-notice
+      icon="Leave.png"
+      duration="4"
+      duration-visible="false"
+      order="-1" />
+  </t>
+
+  <t text="月刀右近\n ➔ 左後ろへ" sync="ツクヨミは「月刀右近」の構え。" notice="左後ろえー。">
+    <v-notice
+      icon="West.png"
+      duration="3"
+      duration-visible="false"
+      order="-1" />
+  </t>
+
+  <t text="月刀左近\n ➔ 右後ろへ" sync="ツクヨミは「月刀左近」の構え。" notice="右後ろえー。">
+    <v-notice
+      icon="East.png"
+      duration="3"
+      duration-visible="false"
+      order="-1" />
+  </t>
+
+  <t text="●満月\n ➔ 黒へ" sync="[mex]に「満月下」の効果。">
+    <v-notice
+      sync-to-hide="[mex]に「新月下」の効果。"
+      duration-visible="false"
+      duration="12"
+      stack-visible="true"
+      order="-3" />
+  </t>
+
+  <t text="○新月\n ➔ 白へ" sync="[mex]に「新月下」の効果。">
+    <v-notice
+      sync-to-hide="[mex]に「満月下」の効果。"
+      duration-visible="false"
+      duration="12"
+      stack-visible="true"
+      order="-3" />
+  </t>
+
+  <t sync="increments stacks of ●満月 to 4." notice="黒へ移動するー。" />
+  <t sync="increments stacks of ○新月 to 4." notice="白へ移動するー。" />
+
+  <t text="●満月流➔ 外" sync="満月の魔力がツクヨミを満たす" notice="外側えー。">
+    <v-notice
+      icon="SpreadB.png"
+      duration="8"
+      duration-visible="false"
+      order="-2" />
+  </t>
+
+  <t text="◎新月流➔ 内" sync="新月の魔力がツクヨミを焦がす" notice="内側えー。">
+    <v-notice
+      icon="Stack.png"
+      duration="8"
+      duration-visible="false"
+      order="-2" />
+  </t>
+
+  @* 極のときのみアクティビティを展開する *@
+  @if (Model.InZone("The Minstrel's Ballad: Tsukuyomi's Pain")) {
+
+  var notice_sekkan = "次は、せっかん。";
+  var notice_sekkan2 = "次は、せっかん2回。";
+  var notice_kigae = "次は、きがえ。";
+  var notice_zentai = "次は、全体攻撃。";
+  var notice_tukuyomi = "次は、つくよみ。";
+  var notice_inseki = "次は、隕石マーカー。";
+  var notice_zashiki = "次は、座敷あそび。";
+  var notice_getto = "次は、げっとう。";
+  var notice_ryoran = "次は、げっかりょうらん。";
+  var notice_hagetsu = "次は、はげつ。";
+  var notice_naburi = "次は、なぶり殺し。";
+
+  var origin = 0;
+
+  <s name="ENTRY">
+    @* このフェーズの基点秒数 0 *@
+    @{ origin = 0; }
+
+    <a time="@(001 - origin)" sync="夜の悉、愉しもうじゃないか！" />
+    <a time="@(012 - origin)" text="折檻" sync="ツクヨミは「折檻」の構え。" notice="@(notice_sekkan)" icon="AllRangeAttack.png" />
+    <a time="@(022 - origin)" text="宵の早替え" sync="ツクヨミは「宵の早替え」の構え。" notice="@(notice_kigae)" />
+    <a time="@(039 - origin)" text="宵の早替え" sync="ツクヨミは「宵の早替え」の構え。" notice="@(notice_kigae)" />
+    <a time="@(064 - origin)" text="折檻" sync="ツクヨミは「折檻」の構え。" notice="@(notice_sekkan)" icon="AllRangeAttack.png" />
+    <a time="@(076 - origin)" text="月下彼岸花" sync="ツクヨミは「月下彼岸花」の構え。" notice="@(notice_zentai)" icon="HardAllRangeAttack.png" goto="P2 雑魚" />
+  </s>
+
+  <s name="P2 雑魚">
+    @* このフェーズの基点秒数 76 *@
+    @{ origin = 76; }
+
+    <a time="060" text="雑魚フェーズ..." />
+    <a time="120" text="雑魚フェーズ..." />
+
+    <a time="@(216 - origin)" sync="…………そうかい。 でもね……もう遅いのさ……。" />
+    <a time="@(221 - origin)" sync="ここに咲きたる月下美人は、我が身を送る彼岸花……！" />
+    <a time="@(226 - origin)" text="月下彼岸花" sync="ツクヨミは「月下彼岸花」の構え。" notice="@(notice_zentai)" icon="HardAllRangeAttack.png" goto="P3 月の欠片" />
+  </s>
+
+  <s name="P3 月の欠片">
+    @* このフェーズの基点秒数 222 *@
+    @{ origin = 222; }
+
+    <a time="@(232 - origin)" sync="彼岸花、闇の現に、咲き示す……。" />
+
+    <a time="@(242 - origin)" text="極の月読 " sync="ツクヨミは「極の月読 」の構え。" notice="@(notice_tukuyomi)" />
+    <a time="@(249 - origin)" text="百月光" />
+    <a time="@(266 - origin)" text="月の欠片" sync="ツクヨミの「月の欠片」" />
+    <a time="@(267 - origin)" text="宵の早替え" sync="ツクヨミは「宵の早替え」の構え。" notice="@(notice_kigae)" />
+    <a time="@(279 - origin)" text="隕石マーカー" notice="@(notice_inseki)" icon="Marker.png" />
+    <a time="@(290 - origin)" text="月時雨" sync="ツクヨミは「月時雨」の構え。" />
+    <a time="@(295 - origin)" text="百月光" />
+    <a time="@(307 - origin)" text="残月" sync="ツクヨミの「残月」" />
+    <a time="@(315 - origin)" text="月下美人/月天心" sync="ツクヨミは「(月下美人|月天心)」の構え。" notice="@(notice_zentai)" />
+
+    <a time="@(331 - origin)" text="折檻" sync="ツクヨミは「折檻」の構え。" notice="@(notice_sekkan)" icon="AllRangeAttack.png" />
+    <a time="@(338 - origin)" text="座敷遊び" sync="ツクヨミは「座敷遊び」の構え。" notice="@(notice_zashiki)" />
+    <a time="@(347 - origin)" text="宵の早替え" sync="ツクヨミは「宵の早替え」の構え。" notice="@(notice_kigae)" />
+    <a time="@(372 - origin)" text="なぶり殺し" sync="ツクヨミは「なぶり殺し」の構え。" notice="@(notice_naburi)" icon="HardAttack.png" />
+
+    <a time="@(385 - origin)" text="極の月読 " sync="ツクヨミは「極の月読 」の構え。" notice="@(notice_tukuyomi)" />
+    <a time="@(392 - origin)" text="百月光" />
+    <a time="@(409 - origin)" text="月の欠片" sync="ツクヨミの「月の欠片」" />
+    <a time="@(410 - origin)" text="宵の早替え" sync="ツクヨミは「宵の早替え」の構え。" notice="@(notice_kigae)" />
+    <a time="@(422 - origin)" text="隕石マーカー" notice="@(notice_inseki)" icon="Marker.png" />
+    <a time="@(433 - origin)" text="月時雨" sync="ツクヨミは「月時雨」の構え。" />
+    <a time="@(446 - origin)" text="百月光" />
+    <a time="@(450 - origin)" text="残月" sync="ツクヨミの「残月」" />
+    <a time="@(458 - origin)" text="月下美人/月天心" sync="ツクヨミは「(月下美人|月天心)」の構え。" notice="@(notice_zentai)" goto="FINAL" />
+  </s>
+
+  <s name="FINAL">
+    @* このフェーズの基点秒数 458 *@
+    @{ origin = 458; }
+
+    <a time="@(472 - origin)" sync="嗚呼、まだ、あたしは…………。" />
+    <a time="@(478 - origin)" sync="まだ終われやしないッ！ この穢れた両の手で、成すべきことがあるのだから！" />
+
+    <a time="@(479 - origin)" text="黄泉の舞" sync="ツクヨミの「黄泉の舞」" notice="@(notice_zentai)" icon="HardAllRangeAttack.png" />
+
+    <a time="@(490 - origin)" text="月刀" sync="ツクヨミは「月刀(右近|左近)」の構え。" sync-s="-6" sync-e="6" notice="@(notice_getto)" icon="Avoid.png" />
+    <a time="@(504 - origin)" text="月刀" sync="ツクヨミは「月刀(右近|左近)」の構え。" sync-s="-6" sync-e="6" notice="@(notice_getto)" icon="Avoid.png" />
+    <a time="@(516 - origin)" text="折檻" sync="ツクヨミは「折檻」の構え。" notice="@(notice_sekkan)" icon="AllRangeAttack.png" />
+
+    <a time="@(520 - origin)" name="LOOP" />
+
+    <a time="@(522 - origin)" text="座敷遊び" sync="03:Added new combatant 舞扇" sync-e="0" notice="@(notice_zashiki)" />
+    <a time="@(527 - origin)" text="月下繚乱" sync="ツクヨミは「月下繚乱」の構え。" notice="@(notice_ryoran)" icon="TargetAOE.png" />
+    <a time="@(540 - origin)" text="月刀" sync="ツクヨミは「月刀(右近|左近)」の構え。" notice="@(notice_getto)" icon="Avoid.png" />
+    <a time="@(550 - origin)" text="なぶり殺し" sync="ツクヨミは「なぶり殺し」の構え。" notice="@(notice_naburi)" icon="HardAttack.png" />
+
+    <a time="@(560 - origin)" text="座敷遊び" sync="03:Added new combatant 舞扇" sync-e="0" notice="@(notice_zashiki)" />
+    <a time="@(563 - origin)" text="破月" notice="@(notice_hagetsu)" icon="Marker.png" />
+    <a time="@(573 - origin)" text="月刀" sync="ツクヨミは「月刀(右近|左近)」の構え。" notice="@(notice_getto)" icon="Avoid.png" />
+    <a time="@(583 - origin)" text="折檻 x2" notice="@(notice_sekkan2)" icon="AllRangeAttack.png" />
+
+    <a time="@(594 - origin)" text="LOOPの終わり" goto="LOOP" />
+
+    <a time="9999" text="END" />
+  </s>
+  }
+</timeline>
