@@ -109,6 +109,7 @@ namespace FFXIV.Framework.FFXIVHelper
         public string NameEN { get; set; } = string.Empty;
         public string NameFR { get; set; } = string.Empty;
         public string NameJA { get; set; } = string.Empty;
+        public string NameCN { get; set; } = string.Empty;
         public Roles Role { get; set; } = Roles.Unknown;
 
         public string GetName(
@@ -120,6 +121,11 @@ namespace FFXIV.Framework.FFXIVHelper
                 case Locales.JA: return this.NameJA;
                 case Locales.FR: return this.NameFR;
                 case Locales.DE: return this.NameDE;
+
+                case Locales.TW:
+                case Locales.CN:
+                    return this.NameCN;
+
                 default: return this.NameEN;
             }
         }
