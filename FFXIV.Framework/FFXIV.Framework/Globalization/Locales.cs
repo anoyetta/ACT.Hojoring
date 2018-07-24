@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using FFXIV.Framework.Common;
 
 namespace FFXIV.Framework.Globalization
 {
@@ -45,6 +47,39 @@ namespace FFXIV.Framework.Globalization
 
                 return list;
             }
+        }
+
+        public static Uri GetUri(
+            this Locales locale,
+            string baseFileName)
+        {
+            const string Direcotry = @"resources\strings";
+
+            var uri = default(Uri);
+            var localeName = locale.ToText();
+
+            // TWの場合はCNに置き換える
+            if (locale == Locales.TW)
+            {
+                localeName = Locales.CN.ToText();
+            }
+
+            var fileName = string.Format(baseFileName, locale.ToText());
+
+            var file = Path.Combine(DirectoryHelper.FindSubDirectory(Direcotry), fileName);
+            if (!File.Exists(file))
+            {
+                // 言語リソースが存在しない場合はENを適用する
+                fileName = string.Format(baseFileName, Locales.EN.ToText());
+                file = Path.Combine(DirectoryHelper.FindSubDirectory(Direcotry), fileName);
+            }
+
+            if (File.Exists(file))
+            {
+                uri = new Uri(file, UriKind.Absolute);
+            }
+
+            return uri;
         }
     }
 
