@@ -353,7 +353,7 @@
     <Content Include="resources\icon\Common\StarRed.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Common\StartBlue.png">
+    <Content Include="resources\icon\Common\StarBlue.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\icon\Common\TurnL.png">
