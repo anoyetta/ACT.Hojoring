@@ -1,283 +1,283 @@
 ID,NameEn,Name
-1,The Thousand Maws Of Toto-Rak,ÍĞÍĞ¡¤À­¿ËÇ§Óü
-2,The Tam-Tara Deepcroft,ËşÄ·¡¤ËşÀ­Ä¹Ô°
-3,Copperbell Mines,·âËø¿ÓµÀÍ­ÁåÍ­É½
-4,Sastasha,ÌìÈ»Òªº¦É³Ë¹ËşÏÄÈÜ¶´
-5,The Aurum Vale,¶¾Îí¶´¿ß»Æ½ğ¹È
-6,Haukke Manor,ÃûÃÅ¸®Û¡¾²Óï×¯Ô°
-7,Halatali,Ä§ÊŞÁìÓòÈÕÓ°µØĞŞÁ¶Ëù
-8,Brayflox's Longstop,ĞİÑøÊ¤µØ²¼À×¸£Âå¿ËË¹Ò°ÓªµØ
-9,The Sunken Temple Of Qarn,¹Å´úÒÅ¼£¿¦¶÷ÂñÃ»Ê¥ÌÃ
-10,The Wanderer's Palace,ÉñÁéÊ¥Óò·ÅÀËÉñ¹ÅÉñµî
-11,The Stone Vigil,¶ÔÁú³ÇÈûÊ¯ÎÀËş
-12,Cutter's Cry,Á÷É³ÃÔ¹¬éÔÃù¶´
-13,Dzemael Darkhold,É½ÖĞÕ½ÏßÔóÃ·¶ûÒªÈû
-14,Amdapor Keep,Ğ°½Ì×¤µØÎŞÏŞ³Ç¹Å±¤
-15,Castrum Meridianum,µÛ¹úÄÏ·½±¤ÍâÎ§¼¤Õ½
-16,The Praetorium,ÌìÄ»Ä§µ¼³Ç×îÖÕ¾öÕ½
-17,Pharos Sirius,Áìº½Ã÷µÆÌìÀÇĞÇµÆËş
-18,Copperbell Mines (Hard),É§ÂÒ¿ÓµÀÍ­ÁåÍ­É½
-19,Haukke Manor (Hard),¶ñÁé¸®Û¡¾²Óï×¯Ô°
-20,Brayflox's Longstop (Hard),·×ÕùÒªµØ²¼À×¸£Âå¿ËË¹Ò°ÓªµØ
-21,Halatali (Hard),½£¶·ÁìÓòÈÕÓ°µØĞŞÁ¶Ëù
-22,The Lost City Of Amdapor,¸¯»µÒÅ¼£ÎŞÏŞ³ÇÊĞ½Ö¹Å¼£
-23,Hullbreaker Isle,²Æ±¦´«ËµÆÆ½¢µº
-24,The Tam-Tara Deepcroft (Hard),*ËşÄ·¡¤ËşÀ­Ä¹Ô° Hard*
-25,The Stone Vigil (Hard),¼¤Õ½³ÇÈûÊ¯ÎÀËş
-26,The Sunken Temple Of Qarn (Hard),ËÕĞÑÒÅ¼£¿¦¶÷ÂñÃ»Ê¥ÌÃ
-27,Snowcloak,ÁİÙı¶´ÌìÅûÑ©´ó±ù±Ú
-28,Sastasha (Hard),Äæ×ªÒªº¦É³Ë¹ËşÏÄÈÜ¶´
-29,Amdapor Keep (Hard),Ğ°ÄîÑıµØÎŞÏŞ³Ç¹Å±¤
-30,The Wanderer's Palace (Hard),Îä×°Ê¥Óò·ÅÀËÉñ¹ÅÉñµî
-31,The Great Gubal Library,Ñ§Ê¶±¦¿âåÈ°ÍÀÕ»ÃÏëÍ¼Êé¹İ
-32,The Keeper Of The Lake,»ÃÁú²Ğº¡ÃÜÔ¼Ö®Ëş
-33,Neverreap,¿ÕÖĞÉñÓò²»»ñµº
-34,The Vault,Ê¥½ÌÖĞÊàÒÁĞŞ¼ÓµÂ½Ì»ÊÌü
-35,The Fractal Continuum,²©ÎïÕ½½¢ÎŞÏŞ»ØÀÈ
-36,The Dusk Vigil,±ùÑ©·Ï±¤ÄºÎÀËş
-37,Sohm Al,ÌìÉ½¾ø¶¥Ë÷Ä·°¢¶ûÁé·å
-38,The Aetherochemical Research Facility,ÑªÕ½²Ôñ·Ä§¿ÆÑ§ÑĞ¾¿Ëù
-39,The Aery,Ğ°ÁúÍõ×ùÁú³²Éñµî
-40,Pharos Sirius (Hard),µØÂöÁéµÆÌìÀÇĞÇµÆËş
-41,Saint Mocianne's Arboretum,²İÄ¾Í¥Ô°Ê¥ÜÔÏÄÄÈÖ²ÎïÔ°
-42,The Lost City Of Amdapor (Hard),ÉñÊ¥ÒÅ¼£ÎŞÏŞ³ÇÊĞ½Ö¹Å¼£
-43,The Antitower,ĞÇº£¿Õ¼äµßµ¹Ëş
-44,Sohr Khai,ÌìÁú¹¬µîÒä×ï¹¬
-45,Hullbreaker Isle (Hard),ºÚÎĞ´«ËµÆÆ½¢µº
-46,Xelphatol,ÏÕ¾şÏ¿¹ÈÈû¶û·¨ÌØ¶ûÏª¹È
-47,The Great Gubal Library (Hard),ÃØ±¾±¦¿âåÈ°ÍÀÕ»ÃÏëÍ¼Êé¹İ
-48,Baelsar's Wall,¼áÀÎÌú±Ú°Í°£Èø³¤³Ç
-49,Sohm Al (Hard),ÌìÉ½Éî¾³Ë÷Ä·°¢¶ûÁé·å
-50,Shisui Of The Violet Tides,º£µ×¹¬µî×ÏË®¹¬
-51,The Temple Of The Fist,ĞŞĞĞ¹ÅÉ²ĞÇµ¼ËÂ
-52,The Sirensong Sea,Æ¯Á÷º£ÓòÑı¸èº£
-53,Bardam's Mettle,ÊÔÁ¶ĞĞÂ·°Í¶ù´ïÄ¾°ÔµÀ
-54,Doma Castle,½â·Å¾öÕ½¶àÂêÍõ³Ç
-55,Castrum Abania,¾ŞÅÚÒªÈûµÛ¹ú°×É½±¤
-56,Ala Mhigo,÷éÕ½ºìÁ«°¢À­Ã×¸ñ
-57,Kugane Castle,¶ñµ³¹Â³Ç»Æ½ğ¸ó
-58,The Drowned City Of Skalla,³ÁÃ»ÉñµîË¹¿¨À­ÒÅ¼£
-59,Hells' Lid,ºìÓñ»ğÉ½ÓüÖ®¸Ç
-60,The Fractal Continuum (Hard),·è¿ñÕ½½¢ÎŞÏŞ»ØÀÈ
-61,The Swallow's Compass,*4.3 4ÈË±¾*
-5001,A Spectacle For The Ages,ËÄ¹úÁªºÏ¾üÑİ
-5002,A Bloody Reunion,À×¹ÅÀ­¡¤·¶¡¤ĞİÖøË¹×·»÷Õ½
-5003,One Life For One World,½»²øµÄËŞÃü
-5004,The Carteneau Flats: Heliodrome,¼Ó¶ûÌáÅµÆ½Ô­ÔâÓöÕ½
-5005,It's Probably A Trap,ÓãµÀÏÖÉí£¡
-5006,In Thal's Name,´ó»á¿ªÊ¼
-5007,With Heart And Steel,µÖÓùÖ®Á¦
-5008,Naadam,ÄÇ´ïÄ½
-5009,Blood On The Deck,º£¶¼Â·ÈËÉíÊ×Òì
-5010,The Face Of True Evil,¼«¶ñÖ®ÈËÄ¾¿İ
-5011,Matsuba Mayhem,ËÉÒ¶ÃÅÍâÖ®±ä
-5012,The Battle On Bekko,¾öÕ½¹ê¼×µº
-5013,Curious Gorge Meets His Match,Ô­³õµÄÕ½Ê¿
-5014,Our Unsung Heroes,´©Ô½Ê±¿ÕµÄÙíÔ¸
-5015,The Heart Of The Problem,È¼ÉÕ°É¸ß¼ª
-5016,Darkwing Dragon,ÆáºÚµÄ¾ŞÁú
-5017,The Resonant,ÓÚÀï°ºÈÈµÄÃØ²ß
-5018,Raising The Sword,ÎªÁË¸üÇ¿
-5019,The Orphans And The Broken Blade,Ò£Ô¶µÄã¿ã½
-5020,Our Compromise,ÔÙ´ÎÏà¼û
-5021,Blood Dragoon,ºìÑªÖ®ÁúÆïÊ¿
-5022,When Clans Collide,Ó°ÒşÈÌ·¨Ìù
-5023,Interdimensional Rift,Ê±¿ÕÏÁ·ìÍâÔµ
-5024,Return Of The Bull,Ó¢ĞÛ¹éÀ´
-5025,Emissary Of The Dawn,Êï¹âÎ¢Ã÷
-10001,Basic Training: Enemy Parties,Íê³É¼¯ÍÅÕ½ÑµÁ·£¡
-10002,Under The Armor,ÌÖ·¥áİáåËÀÁé£¡
-10003,Basic Training: Enemy Strongholds,Í»ÆÆËùÓĞ¹ØÃÅ£¬ÌÖ·¥×îÉî´¦µÄµĞÈË£¡
-10004,Hero On The Half Shell,²¶»ñ½ğ±Ò¹ê£¡
-10005,Pulling Poison Posies,Çı³ı¾ç¶¾Ñı»¨£¡
-10006,Stinging Back,ÏûÃğ¶ñÍ½ÍÅ»ï¼ÄÉú·äÍÅ£¡
-10007,All's Well That Ends In The Well,ÌÖ·¥ÃÎ»ÃÖ®²¼À­ÆæÏ£°Â£¡
-10008,Flicking Sticks And Taking Names,»÷À£¸ç²¼ÁÖÕ¨µ¯¾üÍÅ£¡
-10009,More Than A Feeler,ÌÖ·¥ÎÛÈ¾Ô´Í·Ä§½ç»¨£¡
-10010,Annoy The Void,ÌÖ·¥¿ÓµÀÖĞ³öÏÖµÄÑıÒì£¡
-10011,Shadow And Claw,×¢ÒâÎŞµĞµÄ¾ìÊô£¬ÌÖ·¥´óĞÍÑıÒì£¡
-10012,Long Live The Queen,ÌÖ·¥±¬µ¯¹ÖµÄÅ®Íõ£¡
-10013,Ward Up,¼ßÃğÌØÊâÕóĞÍµÄÑıÒì£¡
-10014,Solemn Trinity,ÖÆÖ¹Èı·½»ìÕ½µÄ¾ŞÈË×å£¬ÊØ×¡ÒÅÎï£¡
-15001,Avoid Area Of Effect Attacks,¶ã±Ü·¶Î§¹¥»÷
-15002,Execute A Combo To Increase Enmity,ÕÆÎÕ³ğºŞÁ¬»÷
-15003,Execute A Combo In Battle,¿ØÖÆµĞÈËµÄ³ğºŞ
-15004,Accrue Enmity From Multiple Targets,¿ØÖÆ¶à¸öµĞÈËµÄ³ğºŞ
-15005,Engage Multiple Targets,ÊµÕ½¿ØÖÆ¶à¸öµĞÈËµÄ³ğºŞ
-15006,Execute A Ranged Attack To Increase Enmity,¿ØÖÆÔ¶´¦µĞÈËµÄ³ğºŞ
-15007,Engage Enemy Reinforcements,ÁôĞÄÔöÔ®µÄµĞÈË
-15008,Assist Allies In Defeating A Target,ÅäºÏ·À»¤Ö°Òµ´òµ¹µ¥¸öµĞÈË
-15009,Defeat An Occupied Target,ÅäºÏ·À»¤Ö°Òµ´òµ¹¶à¸öµĞÈË
-15010,Avoid Engaged Targets,¶ã±Ü·¶Î§¹¥»÷µÄÍ¬Ê±½øĞĞÕ½¶·
-15011,Engage Enemy Reinforcements,ÁôĞÄÔöÔ®µÄµĞÈË
-15012,Interact With The Battlefield,Áé»îÔËÓÃ³¡µØ»ú¹Ø
-15013,Heal An Ally,ÖÎÁÆ·À»¤Ö°Òµ
-15014,Heal Multiple Allies,ÖÎÁÆĞ¡¶Ó¶ÓÔ±
-15015,Avoid Engaged Targets,¶ã±Ü·¶Î§¹¥»÷µÄÍ¬Ê±½øĞĞÕ½¶·
-15016,Final Exercise,×îÖÕÑµÁ·
-20001,The Bowl Of Embers,ÒÁ¸¥ÀûÌØÌÖ·¥Õ½
-20002,The Navel,Ì©Ì¹ÌÖ·¥Õ½
-20003,The Howling Eye,åÈÂ¥ÂŞÌÖ·¥Õ½
-20004,The Bowl Of Embers (Hard),ÒÁ¸¥ÀûÌØ¼ßÃğÕ½
-20005,The Navel (Hard),Ì©Ì¹¼ßÃğÕ½
-20006,The Howling Eye (Hard),åÈÂ¥ÂŞ¼ßÃğÕ½
-20007,Cape Westwind,ÀïËşÌá¶÷Ç¿¹¥Õ½
-20008,The Bowl Of Embers (Extreme),ÒÁ¸¥ÀûÌØ¼ßéêÕ½
-20009,The Navel (Extreme),Ì©Ì¹¼ßéêÕ½
-20010,The Howling Eye (Extreme),åÈÂ¥ÂŞ¼ßéêÕ½
-20011,Thornmarch (Hard),Äª¹ÅÁ¦ÏÍÍõ¼ßÃğÕ½
-20012,Thornmarch (Extreme),Äª¹ÅÁ¦ÏÍÍõ¼ßéêÕ½
-20013,The Minstrel's Ballad: Ultima's Bane,¾¿¼«Éñ±øÆÆ»µ×÷Õ½
-20014,Special Event I,»î¶¯ÌôÕ½1
-20015,Special Event II,»î¶¯ÌôÕ½2
-20016,Special Event III,»î¶¯ÌôÕ½3
-20017,The Whorleater (Hard),ÀûÎ¬ÑÇÉ£¼ßÃğÕ½
-20018,The Whorleater (Extreme),ÀûÎ¬ÑÇÉ£¼ßéêÕ½
-20019,A Relic Reborn: The Chimera,ËÀ»¯ÆæÃÀÀ­ÌÖ·¥Õ½
-20020,A Relic Reborn: The Hydra,º£µÂÀ­ÌÖ·¥Õ½
-20021,Battle On The Big Bridge,´óÇÅÉÏµÄ¾ö¶·
-20022,The Striking Tree (Hard),À­Ä·¼ßÃğÕ½
-20023,The Striking Tree (Extreme),À­Ä·¼ßéêÕ½
-20024,Akh Afah Amphitheatre (Hard),Ï£Íß¼ßÃğÕ½
-20025,Akh Afah Amphitheatre (Extreme),Ï£Íß¼ßéêÕ½
-20026,The Dragon's Neck,°¬Âê¼ªÄÈ±­¶·¼¼´ó»á¾öÈü
-20027,Urth's Fount,°Â¶¡¼ßÃğÕ½
-20028,The Steps Of Faith,»Ê¶¼ÒÁĞŞ¼ÓµÂ±£ÎÀÕ½
-20029,The Chrysalis,ÄÇ²¼ÀïÑÇÀÕË¹ÌÖ·¥Õ½
-20030,Battle In The Big Keep,ÎŞÏŞ³ÇµÄËÀ¶·
-20031,Thok Ast Thok (Hard),ÂŞ²¨ÄÇ¼ßÃğÕ½
-20032,Thok Ast Thok (Extreme),ÂŞ²¨ÄÇ¼ßéêÕ½
-20033,The Limitless Blue (Hard),ÙÂË¹Âó¼ßÃğÕ½
-20034,The Limitless Blue (Extreme),ÙÂË¹Âó¼ßéêÕ½
-20035,The Singularity Reactor,Ô²×ÀÆïÊ¿¼ßÃğÕ½
-20036,The Minstrel's Ballad: Thordan's Reign,Ô²×ÀÆïÊ¿»ÃÏë¼ßÃğÕ½
-20037,Containment Bay S1T7,Èø·ÆÂåÌØ¼ßÃğÕ½
-20038,Containment Bay S1T7 (Extreme),Èø·ÆÂåÌØ¼ßéêÕ½
-20039,The Final Steps Of Faith,ÄáµÂ»ô¸ñÕ÷ÁúÕ½
-20040,The Minstrel's Ballad: Nidhogg's Rage,ÄáµÂ»ô¸ñ´«ÆæÕ÷ÁúÕ½
-20041,Containment Bay P1T6,Ë÷·Ææ«¼ßÃğÕ½
-20042,Containment Bay P1T6 (Extreme),Ë÷·Ææ«¼ßéêÕ½
-20043,Containment Bay Z1T9,×æ¶ûÍğ¼ßÃğÕ½
-20044,Containment Bay Z1T9 (Extreme),×æ¶ûÍğ¼ßéêÕ½
-20045,The Royal Menagerie,ÉñÁú¼ßÃğÕ½
-20046,The Pool Of Tribute,Ğë×ôÖ®ÄĞ¼ßÃğÕ½
-20047,The Pool Of Tribute (Extreme),Ğë×ôÖ®ÄĞ¼ßéêÕ½
-20048,Emanation,¼ªÏéÌìÅ®¼ßÃğÕ½
-20049,Emanation (Extreme),¼ªÏéÌìÅ®¼ßéêÕ½
-20050,The Minstrel's Ballad: Shinryu's Domain,ÉñÁúÃÎ»Ã¼ßÃğÕ½
-20051,The Jade Stoa,°×»¢Õò»êÕ½
-20052,The Jade Stoa (Extreme),°×»¢Ê«»êÕ½
-20055,Castrum Fluminis,µÛ¹úºÓÅÏ±¤
-20056,The Minstrel's Ballad: Tsukuyomi's Pain,*ÔÂÉñ*
-25001,The Haunted Manor,ÍöÁé¸®Û¡ÄÖ¹í×¯Ô°
-25002,The Valentione's Ceremony,Á¼ÔµÒÇÊ½
-30001,The Labyrinth Of The Ancients,Ë®¾§Ëş ¹Å´úÈËÃÔ¹¬
-30002,The Binding Coil Of Bahamut - Turn 1,°Í¹şÄ·ÌØ´óÃÔ¹¬ åâåËÖ®ÕÂ1
-30003,The Binding Coil Of Bahamut - Turn 2,°Í¹şÄ·ÌØ´óÃÔ¹¬ åâåËÖ®ÕÂ2
-30004,The Binding Coil Of Bahamut - Turn 3,°Í¹şÄ·ÌØ´óÃÔ¹¬ åâåËÖ®ÕÂ3
-30005,The Binding Coil Of Bahamut - Turn 4,°Í¹şÄ·ÌØ´óÃÔ¹¬ åâåËÖ®ÕÂ4
-30006,The Binding Coil Of Bahamut - Turn 5,°Í¹şÄ·ÌØ´óÃÔ¹¬ åâåËÖ®ÕÂ5
-30007,The Second Coil Of Bahamut - Turn 1,°Í¹şÄ·ÌØ´óÃÔ¹¬ ÈëÇÖÖ®ÕÂ1
-30008,The Second Coil Of Bahamut - Turn 2,°Í¹şÄ·ÌØ´óÃÔ¹¬ ÈëÇÖÖ®ÕÂ2
-30009,The Second Coil Of Bahamut - Turn 3,°Í¹şÄ·ÌØ´óÃÔ¹¬ ÈëÇÖÖ®ÕÂ3
-30010,The Second Coil Of Bahamut - Turn 4,°Í¹şÄ·ÌØ´óÃÔ¹¬ ÈëÇÖÖ®ÕÂ4
-30011,Syrcus Tower,Ë®¾§Ëş Ï£¶û¿ÆË¹Ëş
-30012,The Second Coil Of Bahamut (Savage) - Turn 1,°Í¹şÄ·ÌØÁãÊ½´óÃÔ¹¬ ÈëÇÖÖ®ÕÂ1
-30013,The Second Coil Of Bahamut (Savage) - Turn 2,°Í¹şÄ·ÌØÁãÊ½´óÃÔ¹¬ ÈëÇÖÖ®ÕÂ2
-30014,The Second Coil Of Bahamut (Savage) - Turn 3,°Í¹şÄ·ÌØÁãÊ½´óÃÔ¹¬ ÈëÇÖÖ®ÕÂ3
-30015,The Second Coil Of Bahamut (Savage) - Turn 4,°Í¹şÄ·ÌØÁãÊ½´óÃÔ¹¬ ÈëÇÖÖ®ÕÂ4
-30016,The Final Coil Of Bahamut - Turn 1,°Í¹şÄ·ÌØ´óÃÔ¹¬ ÕæÔ´Ö®ÕÂ1
-30017,The Final Coil Of Bahamut - Turn 2,°Í¹şÄ·ÌØ´óÃÔ¹¬ ÕæÔ´Ö®ÕÂ2
-30018,The Final Coil Of Bahamut - Turn 3,°Í¹şÄ·ÌØ´óÃÔ¹¬ ÕæÔ´Ö®ÕÂ3
-30019,The Final Coil Of Bahamut - Turn 4,°Í¹şÄ·ÌØ´óÃÔ¹¬ ÕæÔ´Ö®ÕÂ4
-30020,The World Of Darkness,Ë®¾§Ëş °µÖ®ÊÀ½ç
-30021,Alexander - The Fist Of The Father,ÑÇÀúÉ½´ó»úÉñ³Ç Æô¶¯Ö®ÕÂ1
-30022,Alexander - The Cuff Of The Father,ÑÇÀúÉ½´ó»úÉñ³Ç Æô¶¯Ö®ÕÂ2
-30023,Alexander - The Arm Of The Father,ÑÇÀúÉ½´ó»úÉñ³Ç Æô¶¯Ö®ÕÂ3
-30024,Alexander - The Burden Of The Father,ÑÇÀúÉ½´ó»úÉñ³Ç Æô¶¯Ö®ÕÂ4
-30025,Alexander - The Fist Of The Father (Savage),ÑÇÀúÉ½´óÁãÊ½»úÉñ³Ç Æô¶¯Ö®ÕÂ1
-30026,Alexander - The Cuff Of The Father (Savage),ÑÇÀúÉ½´óÁãÊ½»úÉñ³Ç Æô¶¯Ö®ÕÂ2
-30027,Alexander - The Arm Of The Father (Savage),ÑÇÀúÉ½´óÁãÊ½»úÉñ³Ç Æô¶¯Ö®ÕÂ3
-30028,Alexander - The Burden Of The Father (Savage),ÑÇÀúÉ½´óÁãÊ½»úÉñ³Ç Æô¶¯Ö®ÕÂ4
-30029,The Void Ark,Ä§º½´¬ĞéÎŞ·½ÖÛ
-30030,Alexander - The Fist Of The Son,ÑÇÀúÉ½´ó»úÉñ³Ç ÂÉ¶¯Ö®ÕÂ1
-30031,Alexander - The Cuff Of The Son,ÑÇÀúÉ½´ó»úÉñ³Ç ÂÉ¶¯Ö®ÕÂ2
-30032,Alexander - The Arm Of The Son,ÑÇÀúÉ½´ó»úÉñ³Ç ÂÉ¶¯Ö®ÕÂ3
-30033,Alexander - The Burden Of The Son,ÑÇÀúÉ½´ó»úÉñ³Ç ÂÉ¶¯Ö®ÕÂ4
-30034,Alexander - The Fist Of The Son (Savage),ÑÇÀúÉ½´óÁãÊ½»úÉñ³Ç ÂÉ¶¯Ö®ÕÂ1
-30035,Alexander - The Cuff Of The Son (Savage),ÑÇÀúÉ½´óÁãÊ½»úÉñ³Ç ÂÉ¶¯Ö®ÕÂ2
-30036,Alexander - The Arm Of The Son (Savage),ÑÇÀúÉ½´óÁãÊ½»úÉñ³Ç ÂÉ¶¯Ö®ÕÂ3
-30037,Alexander - The Burden Of The Son (Savage),ÑÇÀúÉ½´óÁãÊ½»úÉñ³Ç ÂÉ¶¯Ö®ÕÂ4
-30038,The Weeping City Of Mhach,½û¼É³Ç°îÂê¹ş
-30039,Alexander - The Eyes Of The Creator,ÑÇÀúÉ½´ó»úÉñ³Ç Ìì¶¯Ö®ÕÂ1
-30040,Alexander - The Breath Of The Creator,ÑÇÀúÉ½´ó»úÉñ³Ç Ìì¶¯Ö®ÕÂ2
-30041,Alexander - The Heart Of The Creator,ÑÇÀúÉ½´ó»úÉñ³Ç Ìì¶¯Ö®ÕÂ3
-30042,Alexander - The Soul Of The Creator,ÑÇÀúÉ½´ó»úÉñ³Ç Ìì¶¯Ö®ÕÂ4
-30043,Alexander - The Eyes Of The Creator (Savage),ÑÇÀúÉ½´óÁãÊ½»úÉñ³Ç Ìì¶¯Ö®ÕÂ1
-30044,Alexander - The Breath Of The Creator (Savage),ÑÇÀúÉ½´óÁãÊ½»úÉñ³Ç Ìì¶¯Ö®ÕÂ2
-30045,Alexander - The Heart Of The Creator (Savage),ÑÇÀúÉ½´óÁãÊ½»úÉñ³Ç Ìì¶¯Ö®ÕÂ3
-30046,Alexander - The Soul Of The Creator (Savage),ÑÇÀúÉ½´óÁãÊ½»úÉñ³Ç Ìì¶¯Ö®ÕÂ4
-30047,Dun Scaith,Ó°Ö®¹ú
-30049,Deltascape V1.0,Å·Ã×ÇÑÊ±¿ÕÏÁ·ì µÂ¶ûËş»Ã¾³1
-30050,Deltascape V2.0,Å·Ã×ÇÑÊ±¿ÕÏÁ·ì µÂ¶ûËş»Ã¾³2
-30051,Deltascape V3.0,Å·Ã×ÇÑÊ±¿ÕÏÁ·ì µÂ¶ûËş»Ã¾³3
-30052,Deltascape V4.0,Å·Ã×ÇÑÊ±¿ÕÏÁ·ì µÂ¶ûËş»Ã¾³4
-30053,Deltascape V1.0 (Savage),Å·Ã×ÇÑÁãÊ½Ê±¿ÕÏÁ·ì µÂ¶ûËş»Ã¾³1
-30054,Deltascape V2.0 (Savage),Å·Ã×ÇÑÁãÊ½Ê±¿ÕÏÁ·ì µÂ¶ûËş»Ã¾³2
-30055,Deltascape V3.0 (Savage),Å·Ã×ÇÑÁãÊ½Ê±¿ÕÏÁ·ì µÂ¶ûËş»Ã¾³3
-30056,Deltascape V4.0 (Savage),Å·Ã×ÇÑÁãÊ½Ê±¿ÕÏÁ·ì µÂ¶ûËş»Ã¾³4
-30057,The Unending Coil Of Bahamut (Ultimate),°Í¹şÄ·ÌØ¾ø¾³Õ½
-30058,The Royal City Of Rabanastre,Ê§ÂäÖ®¶¼À­°ÍÄÉË¹Ëş
-30059,Sigmascape V1.0,Å·Ã×ÇÑÊ±¿ÕÏÁ·ì Î÷¸ñÂê»Ã¾³1
-30060,Sigmascape V2.0,Å·Ã×ÇÑÊ±¿ÕÏÁ·ì Î÷¸ñÂê»Ã¾³2
-30061,Sigmascape V3.0,Å·Ã×ÇÑÊ±¿ÕÏÁ·ì Î÷¸ñÂê»Ã¾³3
-30062,Sigmascape V4.0,Å·Ã×ÇÑÊ±¿ÕÏÁ·ì Î÷¸ñÂê»Ã¾³4
-30063,Sigmascape V1.0 (Savage),Å·Ã×ÇÑÁãÊ½Ê±¿ÕÏÁ·ì Î÷¸ñÂê»Ã¾³1
-30064,Sigmascape V2.0 (Savage),Å·Ã×ÇÑÁãÊ½Ê±¿ÕÏÁ·ì Î÷¸ñÂê»Ã¾³2
-30065,Sigmascape V3.0 (Savage),Å·Ã×ÇÑÁãÊ½Ê±¿ÕÏÁ·ì Î÷¸ñÂê»Ã¾³3
-30066,Sigmascape V4.0 (Savage),Å·Ã×ÇÑÁãÊ½Ê±¿ÕÏÁ·ì Î÷¸ñÂê»Ã¾³4
-30067,The Weapon's Refrain (Ultimate),*¾¿¼«Éñ±ø¾ø¾³Õ½*
-30068,The Ridorana Lighthouse,*4.3 24ÈË±¾*
-40001,The Fold,ÈºÀÇÀ§¶·
-40008,The Feast (4 On 4 - Training),ÈºÀÇÊ¢Ñç (4¶Ô4 / Á·Ï°Èü)
-40010,The Feast (4 On 4 - Ranked),ÈºÀÇÊ¢Ñç (4¶Ô4 / ¶ÎÎ»Èü)
-40012,The Feast (4 on 4 - Light Party),¡ïÈºÀÇÊ¢Ñç (4¶Ô4 / ¹Ì¶¨¶Ó×¨ÓÃ)
-40014,The Feast (Custom Match - Feasting Grounds),ÈºÀÇÊ¢Ñç (ÀÇÓüÑİÏ°³¡£º×Ô¶¨Èü)
-40016,The Feast (4 On 4 - Training),ÈºÀÇÊ¢Ñç (4¶Ô4 / Á·Ï°Èü)
-40018,The Feast (4 On 4 - Ranked),ÈºÀÇÊ¢Ñç (4¶Ô4 / ¶ÎÎ»Èü)
-40021,The Feast (Custom Match - Lichenweed),ÈºÀÇÊ¢Ñç (µØÒÂ¹¬ÑİÏ°³¡£º×Ô¶¨Èü)
-40022,The Feast (Team Ranked),ÈºÀÇÊ¢Ñç (Õ½¶Ó¶ÎÎ»Èü)
-40023,The Feast (Ranked),ÈºÀÇÊ¢Ñç (¶ÎÎ»Èü)
-40024,The Feast (Training),ÈºÀÇÊ¢Ñç (Á·Ï°Èü)
-40025,The Feast (Custom Match - Crystal Tower),ÈºÀÇÊ¢Ñç (Ë®¾§ËşÑİÏ°³¡£º×Ô¶¨Èü)
-40026,The Feast (Team Custom Match - Crystal Tower),ÈºÀÇÊ¢Ñç (Ë®¾§ËşÑİÏ°³¡£ºÕ½¶Ó×Ô¶¨Èü)
-50001,The Borderland Ruins (Secure),ÖÜ±ßÒÅ¼£Èº (ÕóµØÕ½)
-50004,Seal Rock (Seize),³¾·âÃØÑÒ (Õù¶áÕ½)
-50005,The Fields Of Glory (Shatter),ÈÙÓşÒ° (Ëé±ùÕ½)
-51001,Astragalos,¾à¹ÇÑĞ¾¿Ëù (»ú¶¯Õ½)
-55001,The Aquapolis,Ë®³Ç±¦Îï¿â
-55002,The Lost Canals Of Uznair,ÔËºÓ±¦Îï¿â
-55003,The Hidden Canals Of Uznair,ÔËºÓ±¦Îï¿âÉî²ã
-60001,The Palace Of The Dead (Floors 1-10),ËÀÕß¹¬µî µØÏÂ1¡«10²ã
-60002,The Palace Of The Dead (Floors 11-20),ËÀÕß¹¬µî µØÏÂ11¡«20²ã
-60003,The Palace Of The Dead (Floors 21-30),ËÀÕß¹¬µî µØÏÂ21¡«30²ã
-60004,The Palace Of The Dead (Floors 31-40),ËÀÕß¹¬µî µØÏÂ31¡«40²ã
-60005,The Palace Of The Dead (Floors 41-50),ËÀÕß¹¬µî µØÏÂ41¡«50²ã
-60006,The Palace Of The Dead (Floors 51-60),ËÀÕß¹¬µî µØÏÂ51¡«60²ã
-60007,The Palace Of The Dead (Floors 61-70),ËÀÕß¹¬µî µØÏÂ61¡«70²ã
-60008,The Palace Of The Dead (Floors 71-80),ËÀÕß¹¬µî µØÏÂ71¡«80²ã
-60009,The Palace Of The Dead (Floors 81-90),ËÀÕß¹¬µî µØÏÂ81¡«90²ã
-60010,The Palace Of The Dead (Floors 91-100),ËÀÕß¹¬µî µØÏÂ91¡«100²ã
-60011,The Palace Of The Dead (Floors 101-110),ËÀÕß¹¬µî µØÏÂ101¡«110²ã
-60012,The Palace Of The Dead (Floors 111-120),ËÀÕß¹¬µî µØÏÂ111¡«120²ã
-60013,The Palace Of The Dead (Floors 121-130),ËÀÕß¹¬µî µØÏÂ121¡«130²ã
-60014,The Palace Of The Dead (Floors 131-140),ËÀÕß¹¬µî µØÏÂ131¡«140²ã
-60015,The Palace Of The Dead (Floors 141-150),ËÀÕß¹¬µî µØÏÂ141¡«150²ã
-60016,The Palace Of The Dead (Floors 151-160),ËÀÕß¹¬µî µØÏÂ151¡«160²ã
-60017,The Palace Of The Dead (Floors 161-170),ËÀÕß¹¬µî µØÏÂ161¡«170²ã
-60018,The Palace Of The Dead (Floors 171-180),ËÀÕß¹¬µî µØÏÂ171¡«180²ã
-60019,The Palace Of The Dead (Floors 181-190),ËÀÕß¹¬µî µØÏÂ181¡«190²ã
-60020,The Palace Of The Dead (Floors 191-200),ËÀÕß¹¬µî µØÏÂ191¡«200²ã
+1,The Thousand Maws Of Toto-Rak,æ‰˜æ‰˜Â·æ‹‰å…‹åƒç‹±
+2,The Tam-Tara Deepcroft,å¡”å§†Â·å¡”æ‹‰å¢“å›­
+3,Copperbell Mines,å°é”å‘é“é“œé“ƒé“œå±±
+4,Sastasha,å¤©ç„¶è¦å®³æ²™æ–¯å¡”å¤æº¶æ´
+5,The Aurum Vale,æ¯’é›¾æ´çªŸé»„é‡‘è°·
+6,Haukke Manor,åé—¨åºœé‚¸é™è¯­åº„å›­
+7,Halatali,é­”å…½é¢†åŸŸæ—¥å½±åœ°ä¿®ç‚¼æ‰€
+8,Brayflox's Longstop,ä¼‘å…»èƒœåœ°å¸ƒé›·ç¦æ´›å…‹æ–¯é‡è¥åœ°
+9,The Sunken Temple Of Qarn,å¤ä»£é—è¿¹å–€æ©åŸ‹æ²¡åœ£å ‚
+10,The Wanderer's Palace,ç¥çµåœ£åŸŸæ”¾æµªç¥å¤ç¥æ®¿
+11,The Stone Vigil,å¯¹é¾™åŸå¡çŸ³å«å¡”
+12,Cutter's Cry,æµæ²™è¿·å®«æ¨µé¸£æ´
+13,Dzemael Darkhold,å±±ä¸­æˆ˜çº¿æ³½æ¢…å°”è¦å¡
+14,Amdapor Keep,é‚ªæ•™é©»åœ°æ— é™åŸå¤å ¡
+15,Castrum Meridianum,å¸å›½å—æ–¹å ¡å¤–å›´æ¿€æˆ˜
+16,The Praetorium,å¤©å¹•é­”å¯¼åŸæœ€ç»ˆå†³æˆ˜
+17,Pharos Sirius,é¢†èˆªæ˜ç¯å¤©ç‹¼æ˜Ÿç¯å¡”
+18,Copperbell Mines (Hard),éªšä¹±å‘é“é“œé“ƒé“œå±±
+19,Haukke Manor (Hard),æ¶çµåºœé‚¸é™è¯­åº„å›­
+20,Brayflox's Longstop (Hard),çº·äº‰è¦åœ°å¸ƒé›·ç¦æ´›å…‹æ–¯é‡è¥åœ°
+21,Halatali (Hard),å‰‘æ–—é¢†åŸŸæ—¥å½±åœ°ä¿®ç‚¼æ‰€
+22,The Lost City Of Amdapor,è…åé—è¿¹æ— é™åŸå¸‚è¡—å¤è¿¹
+23,Hullbreaker Isle,è´¢å®ä¼ è¯´ç ´èˆ°å²›
+24,The Tam-Tara Deepcroft (Hard),æƒ¨å‰§çµæ®¿å¡”å§†Â·å¡”æ‹‰å¢“å›­
+25,The Stone Vigil (Hard),æ¿€æˆ˜åŸå¡çŸ³å«å¡”
+26,The Sunken Temple Of Qarn (Hard),è‹é†’é—è¿¹å–€æ©åŸ‹æ²¡åœ£å ‚
+27,Snowcloak,å‡›å†½æ´å¤©æŠ«é›ªå¤§å†°å£
+28,Sastasha (Hard),é€†è½¬è¦å®³æ²™æ–¯å¡”å¤æº¶æ´
+29,Amdapor Keep (Hard),é‚ªå¿µå¦–åœ°æ— é™åŸå¤å ¡
+30,The Wanderer's Palace (Hard),æ­¦è£…åœ£åŸŸæ”¾æµªç¥å¤ç¥æ®¿
+31,The Great Gubal Library,å­¦è¯†å®åº“è¿¦å·´å‹’å¹»æƒ³å›¾ä¹¦é¦†
+32,The Keeper Of The Lake,å¹»é¾™æ®‹éª¸å¯†çº¦ä¹‹å¡”
+33,Neverreap,ç©ºä¸­ç¥åŸŸä¸è·å²›
+34,The Vault,åœ£æ•™ä¸­æ¢ä¼Šä¿®åŠ å¾·æ•™çš‡å…
+35,The Fractal Continuum,åšç‰©æˆ˜èˆ°æ— é™å›å»Š
+36,The Dusk Vigil,å†°é›ªåºŸå ¡æš®å«å¡”
+37,Sohm Al,å¤©å±±ç»é¡¶ç´¢å§†é˜¿å°”çµå³°
+38,The Aetherochemical Research Facility,è¡€æˆ˜è‹ç©¹é­”ç§‘å­¦ç ”ç©¶æ‰€
+39,The Aery,é‚ªé¾™ç‹åº§é¾™å·¢ç¥æ®¿
+40,Pharos Sirius (Hard),åœ°è„‰çµç¯å¤©ç‹¼æ˜Ÿç¯å¡”
+41,Saint Mocianne's Arboretum,è‰æœ¨åº­å›­åœ£èŒ‰å¤å¨œæ¤ç‰©å›­
+42,The Lost City Of Amdapor (Hard),ç¥åœ£é—è¿¹æ— é™åŸå¸‚è¡—å¤è¿¹
+43,The Antitower,æ˜Ÿæµ·ç©ºé—´é¢ å€’å¡”
+44,Sohr Khai,å¤©é¾™å®«æ®¿å¿†ç½ªå®«
+45,Hullbreaker Isle (Hard),é»‘æ¶¡ä¼ è¯´ç ´èˆ°å²›
+46,Xelphatol,é™©å³»å³¡è°·å¡å°”æ³•ç‰¹å°”æºªè°·
+47,The Great Gubal Library (Hard),ç§˜æœ¬å®åº“è¿¦å·´å‹’å¹»æƒ³å›¾ä¹¦é¦†
+48,Baelsar's Wall,åšç‰¢é“å£å·´åŸƒè¨é•¿åŸ
+49,Sohm Al (Hard),å¤©å±±æ·±å¢ƒç´¢å§†é˜¿å°”çµå³°
+50,Shisui Of The Violet Tides,æµ·åº•å®«æ®¿ç´«æ°´å®«
+51,The Temple Of The Fist,ä¿®è¡Œå¤åˆ¹æ˜Ÿå¯¼å¯º
+52,The Sirensong Sea,æ¼‚æµæµ·åŸŸå¦–æ­Œæµ·
+53,Bardam's Mettle,è¯•ç‚¼è¡Œè·¯å·´å„¿è¾¾æœ¨éœ¸é“
+54,Doma Castle,è§£æ”¾å†³æˆ˜å¤šç›ç‹åŸ
+55,Castrum Abania,å·¨ç‚®è¦å¡å¸å›½ç™½å±±å ¡
+56,Ala Mhigo,é–æˆ˜çº¢è²é˜¿æ‹‰ç±³æ ¼
+57,Kugane Castle,æ¶å…šå­¤åŸé»„é‡‘é˜
+58,The Drowned City Of Skalla,æ²‰æ²¡ç¥æ®¿æ–¯å¡æ‹‰é—è¿¹
+59,Hells' Lid,çº¢ç‰ç«å±±ç‹±ä¹‹ç›–
+60,The Fractal Continuum (Hard),ç–¯ç‹‚æˆ˜èˆ°æ— é™å›å»Š
+61,The Swallow's Compass,*4.3 4äººæœ¬*
+5001,A Spectacle For The Ages,å››å›½è”åˆå†›æ¼”
+5002,A Bloody Reunion,é›·å¤æ‹‰Â·èŒƒÂ·ä¼‘è‘—æ–¯è¿½å‡»æˆ˜
+5003,One Life For One World,äº¤ç¼ çš„å®¿å‘½
+5004,The Carteneau Flats: Heliodrome,åŠ å°”æè¯ºå¹³åŸé­é‡æˆ˜
+5005,It's Probably A Trap,é±¼é“ç°èº«ï¼
+5006,In Thal's Name,å¤§ä¼šå¼€å§‹
+5007,With Heart And Steel,æŠµå¾¡ä¹‹åŠ›
+5008,Naadam,é‚£è¾¾æ…•
+5009,Blood On The Deck,æµ·éƒ½è·¯äººèº«é¦–å¼‚
+5010,The Face Of True Evil,ææ¶ä¹‹äººæœ¨æ¯
+5011,Matsuba Mayhem,æ¾å¶é—¨å¤–ä¹‹å˜
+5012,The Battle On Bekko,å†³æˆ˜é¾Ÿç”²å²›
+5013,Curious Gorge Meets His Match,åŸåˆçš„æˆ˜å£«
+5014,Our Unsung Heroes,ç©¿è¶Šæ—¶ç©ºçš„å¤™æ„¿
+5015,The Heart Of The Problem,ç‡ƒçƒ§å§é«˜å‰
+5016,Darkwing Dragon,æ¼†é»‘çš„å·¨é¾™
+5017,The Resonant,äºé‡Œæ˜‚çƒ­çš„ç§˜ç­–
+5018,Raising The Sword,ä¸ºäº†æ›´å¼º
+5019,The Orphans And The Broken Blade,é¥è¿œçš„æ†§æ†¬
+5020,Our Compromise,å†æ¬¡ç›¸è§
+5021,Blood Dragoon,çº¢è¡€ä¹‹é¾™éª‘å£«
+5022,When Clans Collide,å½±éšå¿æ³•è´´
+5023,Interdimensional Rift,æ—¶ç©ºç‹­ç¼å¤–ç¼˜
+5024,Return Of The Bull,è‹±é›„å½’æ¥
+5025,Emissary Of The Dawn,æ›™å…‰å¾®æ˜
+10001,Basic Training: Enemy Parties,å®Œæˆé›†å›¢æˆ˜è®­ç»ƒï¼
+10002,Under The Armor,è®¨ä¼å½·å¾¨æ­»çµï¼
+10003,Basic Training: Enemy Strongholds,çªç ´æ‰€æœ‰å…³é—¨ï¼Œè®¨ä¼æœ€æ·±å¤„çš„æ•Œäººï¼
+10004,Hero On The Half Shell,æ•è·é‡‘å¸é¾Ÿï¼
+10005,Pulling Poison Posies,é©±é™¤å‰§æ¯’å¦–èŠ±ï¼
+10006,Stinging Back,æ¶ˆç­æ¶å¾’å›¢ä¼™å¯„ç”Ÿèœ‚å›¢ï¼
+10007,All's Well That Ends In The Well,è®¨ä¼æ¢¦å¹»ä¹‹å¸ƒæ‹‰å¥‡å¸Œå¥¥ï¼
+10008,Flicking Sticks And Taking Names,å‡»æºƒå“¥å¸ƒæ—ç‚¸å¼¹å†›å›¢ï¼
+10009,More Than A Feeler,è®¨ä¼æ±¡æŸ“æºå¤´é­”ç•ŒèŠ±ï¼
+10010,Annoy The Void,è®¨ä¼å‘é“ä¸­å‡ºç°çš„å¦–å¼‚ï¼
+10011,Shadow And Claw,æ³¨æ„æ— æ•Œçš„çœ·å±ï¼Œè®¨ä¼å¤§å‹å¦–å¼‚ï¼
+10012,Long Live The Queen,è®¨ä¼çˆ†å¼¹æ€ªçš„å¥³ç‹ï¼
+10013,Ward Up,æ­¼ç­ç‰¹æ®Šé˜µå‹çš„å¦–å¼‚ï¼
+10014,Solemn Trinity,åˆ¶æ­¢ä¸‰æ–¹æ··æˆ˜çš„å·¨äººæ—ï¼Œå®ˆä½é—ç‰©ï¼
+15001,Avoid Area Of Effect Attacks,èº²é¿èŒƒå›´æ”»å‡»
+15002,Execute A Combo To Increase Enmity,æŒæ¡ä»‡æ¨è¿å‡»
+15003,Execute A Combo In Battle,æ§åˆ¶æ•Œäººçš„ä»‡æ¨
+15004,Accrue Enmity From Multiple Targets,æ§åˆ¶å¤šä¸ªæ•Œäººçš„ä»‡æ¨
+15005,Engage Multiple Targets,å®æˆ˜æ§åˆ¶å¤šä¸ªæ•Œäººçš„ä»‡æ¨
+15006,Execute A Ranged Attack To Increase Enmity,æ§åˆ¶è¿œå¤„æ•Œäººçš„ä»‡æ¨
+15007,Engage Enemy Reinforcements,ç•™å¿ƒå¢æ´çš„æ•Œäºº
+15008,Assist Allies In Defeating A Target,é…åˆé˜²æŠ¤èŒä¸šæ‰“å€’å•ä¸ªæ•Œäºº
+15009,Defeat An Occupied Target,é…åˆé˜²æŠ¤èŒä¸šæ‰“å€’å¤šä¸ªæ•Œäºº
+15010,Avoid Engaged Targets,èº²é¿èŒƒå›´æ”»å‡»çš„åŒæ—¶è¿›è¡Œæˆ˜æ–—
+15011,Engage Enemy Reinforcements,ç•™å¿ƒå¢æ´çš„æ•Œäºº
+15012,Interact With The Battlefield,çµæ´»è¿ç”¨åœºåœ°æœºå…³
+15013,Heal An Ally,æ²»ç–—é˜²æŠ¤èŒä¸š
+15014,Heal Multiple Allies,æ²»ç–—å°é˜Ÿé˜Ÿå‘˜
+15015,Avoid Engaged Targets,èº²é¿èŒƒå›´æ”»å‡»çš„åŒæ—¶è¿›è¡Œæˆ˜æ–—
+15016,Final Exercise,æœ€ç»ˆè®­ç»ƒ
+20001,The Bowl Of Embers,ä¼Šå¼—åˆ©ç‰¹è®¨ä¼æˆ˜
+20002,The Navel,æ³°å¦è®¨ä¼æˆ˜
+20003,The Howling Eye,è¿¦æ¥¼ç½—è®¨ä¼æˆ˜
+20004,The Bowl Of Embers (Hard),ä¼Šå¼—åˆ©ç‰¹æ­¼ç­æˆ˜
+20005,The Navel (Hard),æ³°å¦æ­¼ç­æˆ˜
+20006,The Howling Eye (Hard),è¿¦æ¥¼ç½—æ­¼ç­æˆ˜
+20007,Cape Westwind,é‡Œå¡”ææ©å¼ºæ”»æˆ˜
+20008,The Bowl Of Embers (Extreme),ä¼Šå¼—åˆ©ç‰¹æ­¼æ®›æˆ˜
+20009,The Navel (Extreme),æ³°å¦æ­¼æ®›æˆ˜
+20010,The Howling Eye (Extreme),è¿¦æ¥¼ç½—æ­¼æ®›æˆ˜
+20011,Thornmarch (Hard),è«å¤åŠ›è´¤ç‹æ­¼ç­æˆ˜
+20012,Thornmarch (Extreme),è«å¤åŠ›è´¤ç‹æ­¼æ®›æˆ˜
+20013,The Minstrel's Ballad: Ultima's Bane,ç©¶æç¥å…µç ´åä½œæˆ˜
+20014,Special Event I,æ´»åŠ¨æŒ‘æˆ˜1
+20015,Special Event II,æ´»åŠ¨æŒ‘æˆ˜2
+20016,Special Event III,æ´»åŠ¨æŒ‘æˆ˜3
+20017,The Whorleater (Hard),åˆ©ç»´äºšæ¡‘æ­¼ç­æˆ˜
+20018,The Whorleater (Extreme),åˆ©ç»´äºšæ¡‘æ­¼æ®›æˆ˜
+20019,A Relic Reborn: The Chimera,æ­»åŒ–å¥‡ç¾æ‹‰è®¨ä¼æˆ˜
+20020,A Relic Reborn: The Hydra,æµ·å¾·æ‹‰è®¨ä¼æˆ˜
+20021,Battle On The Big Bridge,å¤§æ¡¥ä¸Šçš„å†³æ–—
+20022,The Striking Tree (Hard),æ‹‰å§†æ­¼ç­æˆ˜
+20023,The Striking Tree (Extreme),æ‹‰å§†æ­¼æ®›æˆ˜
+20024,Akh Afah Amphitheatre (Hard),å¸Œç“¦æ­¼ç­æˆ˜
+20025,Akh Afah Amphitheatre (Extreme),å¸Œç“¦æ­¼æ®›æˆ˜
+20026,The Dragon's Neck,è‰¾ç›å‰å¨œæ¯æ–—æŠ€å¤§ä¼šå†³èµ›
+20027,Urth's Fount,å¥¥ä¸æ­¼ç­æˆ˜
+20028,The Steps Of Faith,çš‡éƒ½ä¼Šä¿®åŠ å¾·ä¿å«æˆ˜
+20029,The Chrysalis,é‚£å¸ƒé‡Œäºšå‹’æ–¯è®¨ä¼æˆ˜
+20030,Battle In The Big Keep,æ— é™åŸçš„æ­»æ–—
+20031,Thok Ast Thok (Hard),ç½—æ³¢é‚£æ­¼ç­æˆ˜
+20032,Thok Ast Thok (Extreme),ç½—æ³¢é‚£æ­¼æ®›æˆ˜
+20033,The Limitless Blue (Hard),ä¿¾æ–¯éº¦æ­¼ç­æˆ˜
+20034,The Limitless Blue (Extreme),ä¿¾æ–¯éº¦æ­¼æ®›æˆ˜
+20035,The Singularity Reactor,åœ†æ¡Œéª‘å£«æ­¼ç­æˆ˜
+20036,The Minstrel's Ballad: Thordan's Reign,åœ†æ¡Œéª‘å£«å¹»æƒ³æ­¼ç­æˆ˜
+20037,Containment Bay S1T7,è¨è²æ´›ç‰¹æ­¼ç­æˆ˜
+20038,Containment Bay S1T7 (Extreme),è¨è²æ´›ç‰¹æ­¼æ®›æˆ˜
+20039,The Final Steps Of Faith,å°¼å¾·éœæ ¼å¾é¾™æˆ˜
+20040,The Minstrel's Ballad: Nidhogg's Rage,å°¼å¾·éœæ ¼ä¼ å¥‡å¾é¾™æˆ˜
+20041,Containment Bay P1T6,ç´¢è²å¨…æ­¼ç­æˆ˜
+20042,Containment Bay P1T6 (Extreme),ç´¢è²å¨…æ­¼æ®›æˆ˜
+20043,Containment Bay Z1T9,ç¥–å°”å®›æ­¼ç­æˆ˜
+20044,Containment Bay Z1T9 (Extreme),ç¥–å°”å®›æ­¼æ®›æˆ˜
+20045,The Royal Menagerie,ç¥é¾™æ­¼ç­æˆ˜
+20046,The Pool Of Tribute,é¡»ä½ä¹‹ç”·æ­¼ç­æˆ˜
+20047,The Pool Of Tribute (Extreme),é¡»ä½ä¹‹ç”·æ­¼æ®›æˆ˜
+20048,Emanation,å‰ç¥¥å¤©å¥³æ­¼ç­æˆ˜
+20049,Emanation (Extreme),å‰ç¥¥å¤©å¥³æ­¼æ®›æˆ˜
+20050,The Minstrel's Ballad: Shinryu's Domain,ç¥é¾™æ¢¦å¹»æ­¼ç­æˆ˜
+20051,The Jade Stoa,ç™½è™é•‡é­‚æˆ˜
+20052,The Jade Stoa (Extreme),ç™½è™è¯—é­‚æˆ˜
+20055,Castrum Fluminis,å¸å›½æ²³ç•”å ¡
+20056,The Minstrel's Ballad: Tsukuyomi's Pain,*4.3æœˆç¥*
+25001,The Haunted Manor,äº¡çµåºœé‚¸é—¹é¬¼åº„å›­
+25002,The Valentione's Ceremony,è‰¯ç¼˜ä»ªå¼
+30001,The Labyrinth Of The Ancients,æ°´æ™¶å¡” å¤ä»£äººè¿·å®«
+30002,The Binding Coil Of Bahamut - Turn 1,å·´å“ˆå§†ç‰¹å¤§è¿·å®« é‚‚é€…ä¹‹ç« 1
+30003,The Binding Coil Of Bahamut - Turn 2,å·´å“ˆå§†ç‰¹å¤§è¿·å®« é‚‚é€…ä¹‹ç« 2
+30004,The Binding Coil Of Bahamut - Turn 3,å·´å“ˆå§†ç‰¹å¤§è¿·å®« é‚‚é€…ä¹‹ç« 3
+30005,The Binding Coil Of Bahamut - Turn 4,å·´å“ˆå§†ç‰¹å¤§è¿·å®« é‚‚é€…ä¹‹ç« 4
+30006,The Binding Coil Of Bahamut - Turn 5,å·´å“ˆå§†ç‰¹å¤§è¿·å®« é‚‚é€…ä¹‹ç« 5
+30007,The Second Coil Of Bahamut - Turn 1,å·´å“ˆå§†ç‰¹å¤§è¿·å®« å…¥ä¾µä¹‹ç« 1
+30008,The Second Coil Of Bahamut - Turn 2,å·´å“ˆå§†ç‰¹å¤§è¿·å®« å…¥ä¾µä¹‹ç« 2
+30009,The Second Coil Of Bahamut - Turn 3,å·´å“ˆå§†ç‰¹å¤§è¿·å®« å…¥ä¾µä¹‹ç« 3
+30010,The Second Coil Of Bahamut - Turn 4,å·´å“ˆå§†ç‰¹å¤§è¿·å®« å…¥ä¾µä¹‹ç« 4
+30011,Syrcus Tower,æ°´æ™¶å¡” å¸Œå°”ç§‘æ–¯å¡”
+30012,The Second Coil Of Bahamut (Savage) - Turn 1,å·´å“ˆå§†ç‰¹é›¶å¼å¤§è¿·å®« å…¥ä¾µä¹‹ç« 1
+30013,The Second Coil Of Bahamut (Savage) - Turn 2,å·´å“ˆå§†ç‰¹é›¶å¼å¤§è¿·å®« å…¥ä¾µä¹‹ç« 2
+30014,The Second Coil Of Bahamut (Savage) - Turn 3,å·´å“ˆå§†ç‰¹é›¶å¼å¤§è¿·å®« å…¥ä¾µä¹‹ç« 3
+30015,The Second Coil Of Bahamut (Savage) - Turn 4,å·´å“ˆå§†ç‰¹é›¶å¼å¤§è¿·å®« å…¥ä¾µä¹‹ç« 4
+30016,The Final Coil Of Bahamut - Turn 1,å·´å“ˆå§†ç‰¹å¤§è¿·å®« çœŸæºä¹‹ç« 1
+30017,The Final Coil Of Bahamut - Turn 2,å·´å“ˆå§†ç‰¹å¤§è¿·å®« çœŸæºä¹‹ç« 2
+30018,The Final Coil Of Bahamut - Turn 3,å·´å“ˆå§†ç‰¹å¤§è¿·å®« çœŸæºä¹‹ç« 3
+30019,The Final Coil Of Bahamut - Turn 4,å·´å“ˆå§†ç‰¹å¤§è¿·å®« çœŸæºä¹‹ç« 4
+30020,The World Of Darkness,æ°´æ™¶å¡” æš—ä¹‹ä¸–ç•Œ
+30021,Alexander - The Fist Of The Father,äºšå†å±±å¤§æœºç¥åŸ å¯åŠ¨ä¹‹ç« 1
+30022,Alexander - The Cuff Of The Father,äºšå†å±±å¤§æœºç¥åŸ å¯åŠ¨ä¹‹ç« 2
+30023,Alexander - The Arm Of The Father,äºšå†å±±å¤§æœºç¥åŸ å¯åŠ¨ä¹‹ç« 3
+30024,Alexander - The Burden Of The Father,äºšå†å±±å¤§æœºç¥åŸ å¯åŠ¨ä¹‹ç« 4
+30025,Alexander - The Fist Of The Father (Savage),äºšå†å±±å¤§é›¶å¼æœºç¥åŸ å¯åŠ¨ä¹‹ç« 1
+30026,Alexander - The Cuff Of The Father (Savage),äºšå†å±±å¤§é›¶å¼æœºç¥åŸ å¯åŠ¨ä¹‹ç« 2
+30027,Alexander - The Arm Of The Father (Savage),äºšå†å±±å¤§é›¶å¼æœºç¥åŸ å¯åŠ¨ä¹‹ç« 3
+30028,Alexander - The Burden Of The Father (Savage),äºšå†å±±å¤§é›¶å¼æœºç¥åŸ å¯åŠ¨ä¹‹ç« 4
+30029,The Void Ark,é­”èˆªèˆ¹è™šæ— æ–¹èˆŸ
+30030,Alexander - The Fist Of The Son,äºšå†å±±å¤§æœºç¥åŸ å¾‹åŠ¨ä¹‹ç« 1
+30031,Alexander - The Cuff Of The Son,äºšå†å±±å¤§æœºç¥åŸ å¾‹åŠ¨ä¹‹ç« 2
+30032,Alexander - The Arm Of The Son,äºšå†å±±å¤§æœºç¥åŸ å¾‹åŠ¨ä¹‹ç« 3
+30033,Alexander - The Burden Of The Son,äºšå†å±±å¤§æœºç¥åŸ å¾‹åŠ¨ä¹‹ç« 4
+30034,Alexander - The Fist Of The Son (Savage),äºšå†å±±å¤§é›¶å¼æœºç¥åŸ å¾‹åŠ¨ä¹‹ç« 1
+30035,Alexander - The Cuff Of The Son (Savage),äºšå†å±±å¤§é›¶å¼æœºç¥åŸ å¾‹åŠ¨ä¹‹ç« 2
+30036,Alexander - The Arm Of The Son (Savage),äºšå†å±±å¤§é›¶å¼æœºç¥åŸ å¾‹åŠ¨ä¹‹ç« 3
+30037,Alexander - The Burden Of The Son (Savage),äºšå†å±±å¤§é›¶å¼æœºç¥åŸ å¾‹åŠ¨ä¹‹ç« 4
+30038,The Weeping City Of Mhach,ç¦å¿ŒåŸé‚¦ç›å“ˆ
+30039,Alexander - The Eyes Of The Creator,äºšå†å±±å¤§æœºç¥åŸ å¤©åŠ¨ä¹‹ç« 1
+30040,Alexander - The Breath Of The Creator,äºšå†å±±å¤§æœºç¥åŸ å¤©åŠ¨ä¹‹ç« 2
+30041,Alexander - The Heart Of The Creator,äºšå†å±±å¤§æœºç¥åŸ å¤©åŠ¨ä¹‹ç« 3
+30042,Alexander - The Soul Of The Creator,äºšå†å±±å¤§æœºç¥åŸ å¤©åŠ¨ä¹‹ç« 4
+30043,Alexander - The Eyes Of The Creator (Savage),äºšå†å±±å¤§é›¶å¼æœºç¥åŸ å¤©åŠ¨ä¹‹ç« 1
+30044,Alexander - The Breath Of The Creator (Savage),äºšå†å±±å¤§é›¶å¼æœºç¥åŸ å¤©åŠ¨ä¹‹ç« 2
+30045,Alexander - The Heart Of The Creator (Savage),äºšå†å±±å¤§é›¶å¼æœºç¥åŸ å¤©åŠ¨ä¹‹ç« 3
+30046,Alexander - The Soul Of The Creator (Savage),äºšå†å±±å¤§é›¶å¼æœºç¥åŸ å¤©åŠ¨ä¹‹ç« 4
+30047,Dun Scaith,å½±ä¹‹å›½
+30049,Deltascape V1.0,æ¬§ç±³èŒ„æ—¶ç©ºç‹­ç¼ å¾·å°”å¡”å¹»å¢ƒ1
+30050,Deltascape V2.0,æ¬§ç±³èŒ„æ—¶ç©ºç‹­ç¼ å¾·å°”å¡”å¹»å¢ƒ2
+30051,Deltascape V3.0,æ¬§ç±³èŒ„æ—¶ç©ºç‹­ç¼ å¾·å°”å¡”å¹»å¢ƒ3
+30052,Deltascape V4.0,æ¬§ç±³èŒ„æ—¶ç©ºç‹­ç¼ å¾·å°”å¡”å¹»å¢ƒ4
+30053,Deltascape V1.0 (Savage),æ¬§ç±³èŒ„é›¶å¼æ—¶ç©ºç‹­ç¼ å¾·å°”å¡”å¹»å¢ƒ1
+30054,Deltascape V2.0 (Savage),æ¬§ç±³èŒ„é›¶å¼æ—¶ç©ºç‹­ç¼ å¾·å°”å¡”å¹»å¢ƒ2
+30055,Deltascape V3.0 (Savage),æ¬§ç±³èŒ„é›¶å¼æ—¶ç©ºç‹­ç¼ å¾·å°”å¡”å¹»å¢ƒ3
+30056,Deltascape V4.0 (Savage),æ¬§ç±³èŒ„é›¶å¼æ—¶ç©ºç‹­ç¼ å¾·å°”å¡”å¹»å¢ƒ4
+30057,The Unending Coil Of Bahamut (Ultimate),å·´å“ˆå§†ç‰¹ç»å¢ƒæˆ˜
+30058,The Royal City Of Rabanastre,å¤±è½ä¹‹éƒ½æ‹‰å·´çº³æ–¯å¡”
+30059,Sigmascape V1.0,æ¬§ç±³èŒ„æ—¶ç©ºç‹­ç¼ è¥¿æ ¼ç›å¹»å¢ƒ1
+30060,Sigmascape V2.0,æ¬§ç±³èŒ„æ—¶ç©ºç‹­ç¼ è¥¿æ ¼ç›å¹»å¢ƒ2
+30061,Sigmascape V3.0,æ¬§ç±³èŒ„æ—¶ç©ºç‹­ç¼ è¥¿æ ¼ç›å¹»å¢ƒ3
+30062,Sigmascape V4.0,æ¬§ç±³èŒ„æ—¶ç©ºç‹­ç¼ è¥¿æ ¼ç›å¹»å¢ƒ4
+30063,Sigmascape V1.0 (Savage),æ¬§ç±³èŒ„é›¶å¼æ—¶ç©ºç‹­ç¼ è¥¿æ ¼ç›å¹»å¢ƒ1
+30064,Sigmascape V2.0 (Savage),æ¬§ç±³èŒ„é›¶å¼æ—¶ç©ºç‹­ç¼ è¥¿æ ¼ç›å¹»å¢ƒ2
+30065,Sigmascape V3.0 (Savage),æ¬§ç±³èŒ„é›¶å¼æ—¶ç©ºç‹­ç¼ è¥¿æ ¼ç›å¹»å¢ƒ3
+30066,Sigmascape V4.0 (Savage),æ¬§ç±³èŒ„é›¶å¼æ—¶ç©ºç‹­ç¼ è¥¿æ ¼ç›å¹»å¢ƒ4
+30067,The Weapon's Refrain (Ultimate),*ç©¶æç¥å…µç»å¢ƒæˆ˜*
+30068,The Ridorana Lighthouse,*4.3 24äººæœ¬*
+40001,The Fold,ç¾¤ç‹¼å›°æ–—
+40008,The Feast (4 On 4 - Training),ç¾¤ç‹¼ç››å®´ (4å¯¹4 / ç»ƒä¹ èµ›)
+40010,The Feast (4 On 4 - Ranked),ç¾¤ç‹¼ç››å®´ (4å¯¹4 / æ®µä½èµ›)
+40012,The Feast (4 on 4 - Light Party),â˜…ç¾¤ç‹¼ç››å®´ (4å¯¹4 / å›ºå®šé˜Ÿä¸“ç”¨)
+40014,The Feast (Custom Match - Feasting Grounds),ç¾¤ç‹¼ç››å®´ (ç‹¼ç‹±æ¼”ä¹ åœºï¼šè‡ªå®šèµ›)
+40016,The Feast (4 On 4 - Training),ç¾¤ç‹¼ç››å®´ (4å¯¹4 / ç»ƒä¹ èµ›)
+40018,The Feast (4 On 4 - Ranked),ç¾¤ç‹¼ç››å®´ (4å¯¹4 / æ®µä½èµ›)
+40021,The Feast (Custom Match - Lichenweed),ç¾¤ç‹¼ç››å®´ (åœ°è¡£å®«æ¼”ä¹ åœºï¼šè‡ªå®šèµ›)
+40022,The Feast (Team Ranked),ç¾¤ç‹¼ç››å®´ (æˆ˜é˜Ÿæ®µä½èµ›)
+40023,The Feast (Ranked),ç¾¤ç‹¼ç››å®´ (æ®µä½èµ›)
+40024,The Feast (Training),ç¾¤ç‹¼ç››å®´ (ç»ƒä¹ èµ›)
+40025,The Feast (Custom Match - Crystal Tower),ç¾¤ç‹¼ç››å®´ (æ°´æ™¶å¡”æ¼”ä¹ åœºï¼šè‡ªå®šèµ›)
+40026,The Feast (Team Custom Match - Crystal Tower),ç¾¤ç‹¼ç››å®´ (æ°´æ™¶å¡”æ¼”ä¹ åœºï¼šæˆ˜é˜Ÿè‡ªå®šèµ›)
+50001,The Borderland Ruins (Secure),å‘¨è¾¹é—è¿¹ç¾¤ (é˜µåœ°æˆ˜)
+50004,Seal Rock (Seize),å°˜å°ç§˜å²© (äº‰å¤ºæˆ˜)
+50005,The Fields Of Glory (Shatter),è£èª‰é‡ (ç¢å†°æˆ˜)
+51001,Astragalos,è·éª¨ç ”ç©¶æ‰€ (æœºåŠ¨æˆ˜)
+55001,The Aquapolis,æ°´åŸå®ç‰©åº“
+55002,The Lost Canals Of Uznair,è¿æ²³å®ç‰©åº“
+55003,The Hidden Canals Of Uznair,è¿æ²³å®ç‰©åº“æ·±å±‚
+60001,The Palace Of The Dead (Floors 1-10),æ­»è€…å®«æ®¿ åœ°ä¸‹1ï½10å±‚
+60002,The Palace Of The Dead (Floors 11-20),æ­»è€…å®«æ®¿ åœ°ä¸‹11ï½20å±‚
+60003,The Palace Of The Dead (Floors 21-30),æ­»è€…å®«æ®¿ åœ°ä¸‹21ï½30å±‚
+60004,The Palace Of The Dead (Floors 31-40),æ­»è€…å®«æ®¿ åœ°ä¸‹31ï½40å±‚
+60005,The Palace Of The Dead (Floors 41-50),æ­»è€…å®«æ®¿ åœ°ä¸‹41ï½50å±‚
+60006,The Palace Of The Dead (Floors 51-60),æ­»è€…å®«æ®¿ åœ°ä¸‹51ï½60å±‚
+60007,The Palace Of The Dead (Floors 61-70),æ­»è€…å®«æ®¿ åœ°ä¸‹61ï½70å±‚
+60008,The Palace Of The Dead (Floors 71-80),æ­»è€…å®«æ®¿ åœ°ä¸‹71ï½80å±‚
+60009,The Palace Of The Dead (Floors 81-90),æ­»è€…å®«æ®¿ åœ°ä¸‹81ï½90å±‚
+60010,The Palace Of The Dead (Floors 91-100),æ­»è€…å®«æ®¿ åœ°ä¸‹91ï½100å±‚
+60011,The Palace Of The Dead (Floors 101-110),æ­»è€…å®«æ®¿ åœ°ä¸‹101ï½110å±‚
+60012,The Palace Of The Dead (Floors 111-120),æ­»è€…å®«æ®¿ åœ°ä¸‹111ï½120å±‚
+60013,The Palace Of The Dead (Floors 121-130),æ­»è€…å®«æ®¿ åœ°ä¸‹121ï½130å±‚
+60014,The Palace Of The Dead (Floors 131-140),æ­»è€…å®«æ®¿ åœ°ä¸‹131ï½140å±‚
+60015,The Palace Of The Dead (Floors 141-150),æ­»è€…å®«æ®¿ åœ°ä¸‹141ï½150å±‚
+60016,The Palace Of The Dead (Floors 151-160),æ­»è€…å®«æ®¿ åœ°ä¸‹151ï½160å±‚
+60017,The Palace Of The Dead (Floors 161-170),æ­»è€…å®«æ®¿ åœ°ä¸‹161ï½170å±‚
+60018,The Palace Of The Dead (Floors 171-180),æ­»è€…å®«æ®¿ åœ°ä¸‹171ï½180å±‚
+60019,The Palace Of The Dead (Floors 181-190),æ­»è€…å®«æ®¿ åœ°ä¸‹181ï½190å±‚
+60020,The Palace Of The Dead (Floors 191-200),æ­»è€…å®«æ®¿ åœ°ä¸‹191ï½200å±‚
 60021,Heaven-on-High (Floors 1-10),Heaven-on-High (Floors 1-10)
 60022,Heaven-on-High (Floors 11-20),Heaven-on-High (Floors 11-20)
 60023,Heaven-on-High (Floors 21-30),Heaven-on-High (Floors 21-30)
