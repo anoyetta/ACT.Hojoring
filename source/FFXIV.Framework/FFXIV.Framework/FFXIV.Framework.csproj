@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="Advanced Combat Tracker">
       <HintPath>..\..\ACTv3\Advanced Combat Tracker.exe</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="FFXIV_MemoryReader.Base">
       <HintPath>..\Thirdparty\FFXIV_MemoryReader.Base.dll</HintPath>
