@@ -29,15 +29,15 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public string AreaFile => Path.Combine(
             this.ResourcesDirectory + @"\xivdb",
-            $@"Instance.{this.FFXIVLocale.ToText()}.csv");
+            $@"Instance.{this.FFXIVLocale.ToResourcesName()}.csv");
 
         public string PlacenameFile => Path.Combine(
             this.ResourcesDirectory + @"\xivdb",
-            $@"Placename.{this.FFXIVLocale.ToText()}.csv");
+            $@"Placename.{this.FFXIVLocale.ToResourcesName()}.csv");
 
         public string SkillFile => Path.Combine(
             this.ResourcesDirectory + @"\xivdb",
-            $@"Action.{this.FFXIVLocale.ToText()}.csv");
+            $@"Action.{this.FFXIVLocale.ToResourcesName()}.csv");
 
         public string UserSkillFile => Path.Combine(
             this.ResourcesDirectory,

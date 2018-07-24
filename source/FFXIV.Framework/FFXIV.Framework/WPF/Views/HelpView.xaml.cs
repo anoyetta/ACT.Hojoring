@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using FFXIV.Framework.Common;
@@ -11,7 +9,8 @@ namespace FFXIV.Framework.WPF.Views
     /// <summary>
     /// HelpView.xaml の相互作用ロジック
     /// </summary>
-    public partial class HelpView : UserControl
+    public partial class HelpView :
+        UserControl
     {
         public HelpView()
         {
@@ -27,20 +26,11 @@ namespace FFXIV.Framework.WPF.Views
         public HelpViewModel ViewModel => this.DataContext as HelpViewModel;
 
         public void SetLocale(
-            Locales locale)
-        {
-            const string Direcotry = @"resources\strings";
-            var Resources = $"Strings.Help.{locale.ToText()}.xaml";
-
-            var file = Path.Combine(DirectoryHelper.FindSubDirectory(Direcotry), Resources);
-            if (File.Exists(file))
+            Locales locale) =>
+            this.Resources.MergedDictionaries.Add(new ResourceDictionary()
             {
-                this.Resources.MergedDictionaries.Add(new ResourceDictionary()
-                {
-                    Source = new Uri(file, UriKind.Absolute)
-                });
-            }
-        }
+                Source = locale.GetUri("Strings.Help.{0}.xaml")
+            });
 
         private void LogTextChanged(object sender, TextChangedEventArgs e)
         {
