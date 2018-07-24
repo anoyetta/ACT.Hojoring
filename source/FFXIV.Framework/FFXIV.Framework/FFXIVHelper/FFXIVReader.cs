@@ -135,34 +135,39 @@ namespace FFXIV.Framework.FFXIVHelper
             object sender,
             ElapsedEventArgs e)
         {
-            var plugin = ActGlobals.oFormActMain.ActPlugins
-                .FirstOrDefault(x =>
-                    x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"));
-
-            if (plugin == null)
+            try
             {
-                this.MemoryPlugin = null;
-                this.Core = null;
+                var plugin = ActGlobals.oFormActMain.ActPlugins
+                    .FirstOrDefault(x =>
+                        x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"));
 
-                WPFHelper.BeginInvoke(() => this.IsAvailable = false);
-
-                return;
-            }
-
-            if (this.MemoryPlugin == null)
-            {
-                this.MemoryPlugin = plugin.pluginObj as dynamic;
-                this.Core = this.MemoryPlugin?.Core;
-
-                if (this.MemoryPlugin != null &&
-                    this.Core != null)
+                if (plugin == null)
                 {
-                    WPFHelper.BeginInvoke(() => this.IsAvailable = true);
-                }
-                else
-                {
+                    this.MemoryPlugin = null;
+                    this.Core = null;
+
                     WPFHelper.BeginInvoke(() => this.IsAvailable = false);
+
+                    return;
                 }
+
+                if (this.MemoryPlugin == null)
+                {
+                    this.MemoryPlugin = plugin.pluginObj as dynamic;
+                }
+
+                if (this.Core == null)
+                {
+                    this.Core = this.MemoryPlugin?.Core;
+                }
+
+                WPFHelper.BeginInvoke(() =>
+                    this.IsAvailable =
+                        this.MemoryPlugin != null &&
+                        this.Core != null);
+            }
+            catch (Exception)
+            {
             }
         }
 
