@@ -1,0 +1,560 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9A615561-6CEC-4857-870F-88F6FF07764C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ACT.TTSYukkuri</RootNamespace>
+    <AssemblyName>ACT.TTSYukkuri.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Advanced Combat Tracker">
+      <HintPath>..\..\ACTv3\Advanced Combat Tracker.exe</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FFXIV_MemoryReader.Model">
+      <HintPath>..\..\FFXIV.Framework\Thirdparty\FFXIV_MemoryReader.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="RucheHome.Voiceroid">
+      <HintPath>..\Thirdparty\RucheHome.Voiceroid.dll</HintPath>
+    </Reference>
+    <Reference Include="RucheHomeLib">
+      <HintPath>..\Thirdparty\RucheHomeLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Speech" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Boyomichan\BoyomichanSpeechController.cs" />
+    <Compile Include="Config\DiscordSettings.cs" />
+    <Compile Include="Config\HOYAConfig.cs" />
+    <Compile Include="Config\JobsExtension.cs" />
+    <Compile Include="Config\OpenJTalkConfig.cs" />
+    <Compile Include="Config\PollyConfigs.cs" />
+    <Compile Include="Config\SAPI5Configs.cs" />
+    <Compile Include="Config\StatusAlertConfig.cs" />
+    <Compile Include="Config\SasaraComponent.cs" />
+    <Compile Include="Config\SasaraConfig.cs" />
+    <Compile Include="Config\Settings.cs" />
+    <Compile Include="Config\ViewModels\GeneralViewModel.cs" />
+    <Compile Include="Config\ViewModels\BoyomiConfigViewModel.cs" />
+    <Compile Include="Config\ViewModels\PollyConfigViewModel.cs" />
+    <Compile Include="Config\ViewModels\SAPI5ConfigViewModel.cs" />
+    <Compile Include="Config\ViewModels\VoiceroidConfigViewModel.cs" />
+    <Compile Include="Config\ViewModels\SasaraConfigViewModel.cs" />
+    <Compile Include="Config\ViewModels\HoyaConfigViewModel.cs" />
+    <Compile Include="Config\ViewModels\OpenJTalkConfigViewModel.cs" />
+    <Compile Include="Config\ViewModels\StatusAlertConfigViewModel.cs" />
+    <Compile Include="Config\ViewModels\YukkuriConfigViewModel.cs" />
+    <Compile Include="Config\Views\BoyomiConfigView.xaml.cs">
+      <DependentUpon>BoyomiConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\ConfigBaseView.xaml.cs">
+      <DependentUpon>ConfigBaseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\GeneralView.xaml.cs">
+      <DependentUpon>GeneralView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\HoyaConfigView.xaml.cs">
+      <DependentUpon>HoyaConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\PollyConfigView.xaml.cs">
+      <DependentUpon>PollyConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\SAPI5ConfigView.xaml.cs">
+      <DependentUpon>SAPI5ConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\OpenJTalkConfigView.xaml.cs">
+      <DependentUpon>OpenJTalkConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\SasaraConfigView.xaml.cs">
+      <DependentUpon>SasaraConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\StatusAlertConfigView.xaml.cs">
+      <DependentUpon>StatusAlertConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\VoiceroidConfigView.xaml.cs">
+      <DependentUpon>VoiceroidConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\YukkuriConfigView.xaml.cs">
+      <DependentUpon>YukkuriConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\AlertTarget.cs" />
+    <Compile Include="Config\VoiceroidConfig.cs" />
+    <Compile Include="Config\YukkuriConfig.cs" />
+    <Compile Include="Discord\Converters\BoolConverter.cs" />
+    <Compile Include="Discord\Models\DiscordClientModel.cs" />
+    <Compile Include="Discord\Models\DiscordNetModel.cs" />
+    <Compile Include="Discord\Models\DSharpPlusModel.cs" />
+    <Compile Include="Discord\Models\IDiscordClientModel.cs" />
+    <Compile Include="Discord\Models\WaveModel.cs" />
+    <Compile Include="Discord\ViewModels\DiscordViewModel.cs" />
+    <Compile Include="Discord\Views\DiscordView.xaml.cs">
+      <DependentUpon>DiscordView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Discord\Views\PermissionHelperView.xaml.cs">
+      <DependentUpon>PermissionHelperView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FFXIVWatcher.cs" />
+    <Compile Include="FFXIVWatcher.PartyWatcher.cs" />
+    <Compile Include="HOYA\HOYASpeechController.cs" />
+    <Compile Include="HOYA\VoiceTextWebAPI.Client\Emotion.cs" />
+    <Compile Include="HOYA\VoiceTextWebAPI.Client\EmotionLevel.cs" />
+    <Compile Include="HOYA\VoiceTextWebAPI.Client\Format.cs" />
+    <Compile Include="HOYA\VoiceTextWebAPI.Client\Speaker.cs" />
+    <Compile Include="HOYA\VoiceTextWebAPI.Client\VoiceTextClient.cs" />
+    <Compile Include="HOYA\VoiceTextWebAPI.Client\VoiceTextErrorResponse.cs" />
+    <Compile Include="HOYA\VoiceTextWebAPI.Client\VoiceTextException.cs" />
+    <Compile Include="ISpeachController.cs" />
+    <Compile Include="KanjiTranslator.cs" />
+    <Compile Include="OpenJTalk\OpenJTalkSpeechController.cs" />
+    <Compile Include="Polly\PollySpeechController.cs" />
+    <Compile Include="resources\ILocalizable.cs" />
+    <Compile Include="resources\LocalizeExtensions.cs" />
+    <Compile Include="SAPI5\SAPI5SpeechController.cs" />
+    <Compile Include="Sasara\SasaraSpeechController.cs" />
+    <Compile Include="SoundPlayerWrapper.cs" />
+    <Compile Include="SpeechController.cs" />
+    <Compile Include="StringExtension.cs" />
+    <Compile Include="TTSServer\TTSServerController.cs" />
+    <Compile Include="Voiceroid\VoiceroidSpeechController.cs" />
+    <Compile Include="Yukkuri\AquesTalkParam.cs" />
+    <Compile Include="Yukkuri\AquesTalk.cs" />
+    <Compile Include="Yukkuri\AqKanji2Koe.cs" />
+    <Compile Include="Yukkuri\YukkuriSpeechController.cs" />
+    <Compile Include="TTSType.cs" />
+    <Compile Include="PluginCore.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Yukkuri\AquesTalkDriver.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Yukkuri\aq_dic\GenUserDic.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="OpenJTalk\dic\char.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="OpenJTalk\dic\matrix.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="OpenJTalk\dic\sys.dic">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="OpenJTalk\dic\unk.dic">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="OpenJTalk\voice\man_m001.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="OpenJTalk\voice\mei_angry.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="OpenJTalk\voice\mei_bashful.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="OpenJTalk\voice\mei_happy.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="OpenJTalk\voice\mei_normal.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="OpenJTalk\voice\mei_sad.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="OpenJTalk\voice\tohoku-f01-angry.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\voice\tohoku-f01-happy.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\voice\tohoku-f01-neutral.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\voice\tohoku-f01-sad.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\voice\type-A.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\voice\type-B.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\voice\type-G.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\voice\type-T.htsvoice">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Yukkuri\AqKanji2Koe.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Yukkuri\aq_dic\aqdic.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Yukkuri\aq_dic\aq_user.dic">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Yukkuri\aq_dic\CREDITS">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Yukkuri\aq_dic\aq_dic files is here">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Yukkuri\aq_dic\posCostId_L.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Yukkuri\aq_dic\posCostId_M.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Yukkuri\aq_dic\posCostId_S.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Yukkuri\aq_dic\sample_src_userdic.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework.TTS.Common\FFXIV.Framework.TTS.Common.csproj">
+      <Project>{18ce9b28-4f0b-45d1-ae3f-14f3982f0e59}</Project>
+      <Name>FFXIV.Framework.TTS.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
+      <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>
+      <Name>FFXIV.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ffmpeg.exe" />
+    <Content Include="lib\libsodium.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\dic\left-id.def">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\dic\pos-id.def">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\dic\rewrite.def">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\dic\right-id.def">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\dic\user_dictionary.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\open_jtalk.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpenJTalk\opne_jtalk_usage.txt" />
+    <Content Include="lib\libopus.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Yukkuri\AquesTalk.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Yukkuri\AquesTalk.dll is here">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Config\Views\BoyomiConfigView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\ConfigBaseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\GeneralView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\HoyaConfigView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\PollyConfigView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\SAPI5ConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Config\Views\OpenJTalkConfigView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\SasaraConfigView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\StatusAlertConfigView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\VoiceroidConfigView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\YukkuriConfigView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Discord\Views\DiscordView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Discord\Views\PermissionHelperView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Content Include="resources\strings\Strings.Yukkuri.ko-KR.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\strings\Strings.Yukkuri.en-US.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\strings\Strings.Yukkuri.ja-JP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\strings\Strings.Yukkuri.zh-CN.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Config\Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.Core">
+      <Version>3.3.24.3</Version>
+    </PackageReference>
+    <PackageReference Include="AWSSDK.Polly">
+      <Version>3.3.5.3</Version>
+    </PackageReference>
+    <PackageReference Include="CommonServiceLocator">
+      <Version>2.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Discord.Net">
+      <Version>1.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="Discord.Net.Providers.WS4Net">
+      <Version>1.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="FontAwesome.WPF">
+      <Version>4.7.0.9</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection">
+      <Version>2.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.Platforms">
+      <Version>2.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Win32.Primitives">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="NAudio">
+      <Version>1.8.4</Version>
+    </PackageReference>
+    <PackageReference Include="NETStandard.Library">
+      <Version>2.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>10.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.Config">
+      <Version>4.4.12</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.StructuredEvents">
+      <Version>0.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="Prism.Wpf">
+      <Version>6.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="ReactiveProperty">
+      <Version>4.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.AppContext">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Concurrent">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Immutable">
+      <Version>1.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.ComponentModel">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Console">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Debug">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.DiagnosticSource">
+      <Version>4.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Tools">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Tracing">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Globalization">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Globalization.Calendars">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.Compression">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.Compression.ZipFile">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.FileSystem">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Linq.Expressions">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Http">
+      <Version>4.3.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Primitives">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Security">
+      <Version>4.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.ObjectModel">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.Extensions">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.Primitives">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Resources.ResourceManager">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Handles">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Numerics">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Algorithms">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.X509Certificates">
+      <Version>4.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encoding.Extensions">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Tasks">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.ReaderWriter">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XDocument">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="WebSocket4Net">
+      <Version>0.15.2</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
