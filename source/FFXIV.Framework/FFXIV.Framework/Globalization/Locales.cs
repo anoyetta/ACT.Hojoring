@@ -34,6 +34,7 @@ namespace FFXIV.Framework.Globalization
         public static string ToResourcesName(
             this Locales locale)
         {
+            // TWリソース名の場合はCNで代用する
             var name = locale.ToText();
             if (locale == Locales.TW)
             {
@@ -68,11 +69,10 @@ namespace FFXIV.Framework.Globalization
             const string Direcotry = @"resources\strings";
 
             var uri = default(Uri);
-            var localeName = locale.ToResourcesName();
 
-            var fileName = string.Format(baseFileName, localeName);
-
+            var fileName = string.Format(baseFileName, locale.ToResourcesName());
             var file = Path.Combine(DirectoryHelper.FindSubDirectory(Direcotry), fileName);
+
             if (!File.Exists(file))
             {
                 // 言語リソースが存在しない場合はENを適用する
