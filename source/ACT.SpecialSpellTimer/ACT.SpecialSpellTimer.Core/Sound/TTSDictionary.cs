@@ -29,7 +29,7 @@ namespace ACT.SpecialSpellTimer.Sound
 
         public string SourceFile => Path.Combine(
             this.ResourcesDirectory,
-            string.Format(SourceFileName, Settings.Default.UILocale.ToText()));
+            string.Format(SourceFileName, Settings.Default.UILocale.ToResourcesName()));
 
         private readonly object locker = new object();
         private readonly Dictionary<string, string> ttsDictionary = new Dictionary<string, string>();
