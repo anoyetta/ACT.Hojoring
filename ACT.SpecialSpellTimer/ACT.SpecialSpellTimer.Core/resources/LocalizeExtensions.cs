@@ -32,19 +32,10 @@ namespace ACT.SpecialSpellTimer.resources
 
         public static void ReloadLocaleDictionary<T>(
             this T element,
-            Locales locale) where T : FrameworkElement, ILocalizable
-        {
-            const string Direcotry = @"resources\strings";
-            var Resources = $"Strings.SpeSpe.{locale.ToText()}.xaml";
-
-            var file = Path.Combine(DirectoryHelper.FindSubDirectory(Direcotry), Resources);
-            if (File.Exists(file))
+            Locales locale) where T : FrameworkElement, ILocalizable =>
+            element.Resources.MergedDictionaries.Add(new ResourceDictionary()
             {
-                element.Resources.MergedDictionaries.Add(new ResourceDictionary()
-                {
-                    Source = new Uri(file, UriKind.Absolute)
-                });
-            }
-        }
+                Source = locale.GetUri("Strings.SpeSpe.{0}.xaml")
+            });
     }
 }
