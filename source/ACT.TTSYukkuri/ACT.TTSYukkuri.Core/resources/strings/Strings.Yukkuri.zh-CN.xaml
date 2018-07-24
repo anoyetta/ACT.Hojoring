@@ -81,8 +81,8 @@ For use for commercial purposes, a license to use the library is required.</syst
   <system:String x:Key="Boyomi_Port">Boyomichan Port</system:String>
   <system:String x:Key="Boyomi_PortDefault">*default 50001</system:String>
 
-  <system:String x:Key="Voiceroid_ExitVoiceroid">Shutdown VOICEROID at the end of ACT</system:String>
-  <system:String x:Key="Voiceroid_DirectSpeak">Voice directly without generating WAVE</system:String>
+  <system:String x:Key="Voiceroid_ExitVoiceroid">ACT关闭时关闭Voiceroid</system:String>
+  <system:String x:Key="Voiceroid_DirectSpeak">不缓存文件直接发音</system:String>
 
   <system:String x:Key="SAPI5_Voices">朗读者</system:String>
   <system:String x:Key="SAPI5_Volume">音量</system:String>
