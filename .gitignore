@@ -291,3 +291,5 @@ __pycache__/
 /*.bak
 /ACT.Hojoring.Common/*.bak
 /document
+/FFXIV.Framework/Thirdparty/*.DLL
+/FFXIV.Framework/Thirdparty/*.dll

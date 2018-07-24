@@ -12,7 +12,7 @@
   <system:String x:Key="General_SyncPlaybackDesc">所有声音按顺序播放,覆盖SST设置.</system:String>
   <system:String x:Key="General_ClearCache">退出时清空TTS缓存.</system:String>
   <system:String x:Key="General_OpenCacheDirectory">打开缓存文件夹</system:String>
-  <system:String x:Key="General_ClearCacheNow">立即清空TTS缓存/system:String>
+  <system:String x:Key="General_ClearCacheNow">立即清空TTS缓存</system:String>
   <system:String x:Key="General_WaveVolume">主音量.</system:String>
   <system:String x:Key="General_Test">试听</system:String>
   <system:String x:Key="General_TestTTS">达达图书飞机墨鱼，图书达达墨鱼飞机。P1达达P3飞机，P1图书P3墨鱼。问你墨鱼刷哪边？</system:String>
