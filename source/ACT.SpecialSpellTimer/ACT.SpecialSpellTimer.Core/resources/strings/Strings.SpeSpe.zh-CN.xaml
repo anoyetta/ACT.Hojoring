@@ -15,7 +15,7 @@
   <system:String x:Key="Common_Ticker">字幕</system:String>
   <system:String x:Key="Common_Tag">标签</system:String>
 
-  <system:String x:Key="Common_Location">Location</system:String>
+  <system:String x:Key="Common_Location">位置</system:String>
   <system:String x:Key="Common_AddTags">添加标签</system:String>
   <system:String x:Key="Common_OK">O K</system:String>
   <system:String x:Key="Common_Apply">应用</system:String>
@@ -105,7 +105,7 @@
   <system:String x:Key="Spell_TextToMatch">匹配内容</system:String>
   <system:String x:Key="Spell_UserRegex">使用正则</system:String>
   <system:String x:Key="Spell_RecastTime">复唱时间</system:String>
-  <system:String x:Key="Spell_UseHotbrRecastTime">Use Hotbar Recast Time</system:String>
+  <system:String x:Key="Spell_UseHotbrRecastTime">使用MemoryReader数据(不推荐)</system:String>
   <system:String x:Key="Spell_HotbarItemName">Name of Hotbar Item</system:String>
   <system:String x:Key="Spell_TextToExtend">匹配以延长</system:String>
   <system:String x:Key="Spell_Secounds">秒</system:String>
@@ -134,8 +134,8 @@
   <system:String x:Key="Ticker_Name">字幕名</system:String>
   <system:String x:Key="Ticker_Message">要显示的内容</system:String>
   <system:String x:Key="Ticker_MessageDiscription1">使用","换行</system:String>
-  <system:String x:Key="Ticker_MessageDiscription2">{COUNT} will be replaced by the number of seconds until the ticker completes.</system:String>
-  <system:String x:Key="Ticker_MessageDiscription3">{COUNT} :小数形式,如: 2.1</system:String>
+  <system:String x:Key="Ticker_MessageDiscription2">{COUNT} 会被替换为字幕剩余时间.</system:String>
+  <system:String x:Key="Ticker_MessageDiscription3">{COUNT} :显示小数,如: 2.1</system:String>
   <system:String x:Key="Ticker_MessageDiscription4">{COUNT0}:整数形式,如: 2</system:String>
   <system:String x:Key="Ticker_TextToMatch">匹配以显示</system:String>
   <system:String x:Key="Ticker_TextToMatchToHide">匹配以隐藏</system:String>
@@ -179,7 +179,7 @@
 
   <system:String x:Key="Options_TimeToHide">计时完成后N秒隐藏计时器 (秒)   * N=0时永远显示</system:String>
   <system:String x:Key="Options_WaitingTimeToSyncTTS">顺序播放TTS间隔时间 (毫秒)</system:String>
-  <system:String x:Key="Options_EnabledPartyPlaceholder">使用队伍顺序匹配.  *&lt;2&gt; - &lt;8&gt;,但不一定正确.</system:String>
+  <system:String x:Key="Options_EnabledPartyPlaceholder">使用队伍顺序匹配.  *&lt;2&gt;-&lt;8&gt;,但不一定正确.</system:String>
   <system:String x:Key="Options_EnabledNotifyDefaultSpellTimer">提示ACT的触发器</system:String>
   <system:String x:Key="Options_EnabledSimplyRegex">简化的正则式</system:String>
   <system:String x:Key="Options_EnabledRemoveTooltipSymbol">不显示Tooltip</system:String>
