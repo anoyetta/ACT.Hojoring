@@ -31,6 +31,19 @@ namespace FFXIV.Framework.Globalization
                 "zh-CN",
             }[(int)locale];
 
+        public static string ToResourcesName(
+            this Locales locale)
+        {
+            // TWリソース名の場合はCNで代用する
+            var name = locale.ToText();
+            if (locale == Locales.TW)
+            {
+                name = Locales.CN.ToText();
+            }
+
+            return name;
+        }
+
         public static IReadOnlyList<ValueAndText> Enums
         {
             get
@@ -56,17 +69,10 @@ namespace FFXIV.Framework.Globalization
             const string Direcotry = @"resources\strings";
 
             var uri = default(Uri);
-            var localeName = locale.ToText();
 
-            // TWの場合はCNに置き換える
-            if (locale == Locales.TW)
-            {
-                localeName = Locales.CN.ToText();
-            }
-
-            var fileName = string.Format(baseFileName, locale.ToText());
-
+            var fileName = string.Format(baseFileName, locale.ToResourcesName());
             var file = Path.Combine(DirectoryHelper.FindSubDirectory(Direcotry), fileName);
+
             if (!File.Exists(file))
             {
                 // 言語リソースが存在しない場合はENを適用する
