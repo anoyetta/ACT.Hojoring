@@ -188,7 +188,14 @@ namespace ACT.UltraScouter.ViewModels
 
         private void UpdateCurrentHPRateText()
         {
-            this.CurrentHPRateText = $"({this.Model.CurrentHPRate * 100.0d:N1}%)";
+            var rate = this.Model.CurrentHPRate * 100;
+            rate = Math.Ceiling(rate * 10) / 10;
+            if (rate > 100.0)
+            {
+                rate = 100.0;
+            }
+
+            this.CurrentHPRateText = $"({rate:N1}%)";
 
             // プログレスバーのカラーを取得する
             var color = this.Config.ProgressBar.AvailableColor(
