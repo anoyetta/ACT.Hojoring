@@ -286,11 +286,14 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
-/archives/*.7z
-/archives/*.zip
 /*.bak
-/ACT.Hojoring.Common/*.bak
+
+# ACT.Hojoring
 /document
+/ACT.Hojoring.Common/*.bak
+/source/archives/*.7z
+/source/archives/*.zip
 /source/FFXIV.Framework/Thirdparty/*.DLL
 /source/FFXIV.Framework/Thirdparty/*.dll
-/source/archives/*.7z
+/source/ACT.TTSYukkuri/ACT.TTSYukkuri.Core/Yukkuri/AquesTalkDriver.exe
+/source/ACT.TTSYukkuri/ACT.TTSYukkuri.Core/Yukkuri/AquesTalkDriver.dll
