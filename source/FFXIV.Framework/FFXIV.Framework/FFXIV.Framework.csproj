@@ -115,6 +115,7 @@
     <Compile Include="Dialog\Views\StringToDoubleConverter.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\FontExtensions.cs" />
+    <Compile Include="Extensions\NumericExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TimeSpanExtensions.cs" />
     <Compile Include="FFXIVHelper\Buff.cs" />
