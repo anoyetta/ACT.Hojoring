@@ -4,6 +4,7 @@ using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 
 namespace ACT.UltraScouter.ViewModels
 {
@@ -102,7 +103,7 @@ namespace ACT.UltraScouter.ViewModels
 
         private void UpdateCurrentHPRateText()
         {
-            this.CurrentHPRateText = $"({this.Model.CurrentHPRate * 100.0d:N1}%)";
+            this.CurrentHPRateText = $"({(this.Model.CurrentHPRate * 100).CeilingEx(1):N1}%)";
 
             // プログレスバーのカラーを取得する
             var color = this.Config.ProgressBar.AvailableColor(
