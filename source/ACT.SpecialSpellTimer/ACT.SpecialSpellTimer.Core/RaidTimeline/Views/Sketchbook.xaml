@@ -17,6 +17,7 @@
       Margin="10"
       Panel.ZIndex="-1"
       BorderThickness="1"
+      CornerRadius="8"
       BorderBrush="White"
       Background="Transparent">
       <Border.Effect>
@@ -29,7 +30,13 @@
     </Border>
 
     <Grid>
-      <TextBlock Text="ハローワールド" Foreground="White" FontWeight="Black" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <TextBlock
+        Text="ハローワールド"
+        Foreground="White"
+        FontWeight="Black"
+        FontSize="40"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center" />
     </Grid>
   </Grid>
 </Window>
