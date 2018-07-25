@@ -7,7 +7,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
-using ACT.UltraScouter.Common;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using Microsoft.VisualBasic.FileIO;
@@ -270,7 +269,7 @@ namespace ACT.UltraScouter.Config
         [XmlIgnore]
         public string MobListFile => Path.Combine(
             this.ResourcesDirectory,
-            string.Format(MobListFileName, Settings.Instance.FFXIVLocale.ToText()));
+            string.Format(MobListFileName, Settings.Instance.FFXIVLocale.ToResourcesName()));
 
         [XmlIgnore]
         private readonly Dictionary<string, (string Rank, double MaxDistance, bool TTSEnabled)> targetMobList = new Dictionary<string, (string Rank, double MaxDistance, bool TTSEnabled)>();

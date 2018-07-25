@@ -32,7 +32,7 @@ namespace ACT.UltraScouter.Common
 
         private string SourceFile => Path.Combine(
             this.ResourcesDirectory,
-            string.Format(SourceFileName, Settings.Instance.FFXIVLocale.ToText()));
+            string.Format(SourceFileName, Settings.Instance.FFXIVLocale.ToResourcesName()));
 
         private readonly object locker = new object();
         private readonly Dictionary<string, string> ttsDictionary = new Dictionary<string, string>();

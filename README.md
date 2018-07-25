@@ -4,10 +4,22 @@
 
 「補助輪」  
 Advanced Combat Tracker の FFXIV向けプラグインの詰合せです。  
-スペスペ・ウルスカ・TTSゆっくりをまとめたものです。これ自体が独立したプラグインではありません。
+スペスペ・ウルスカ・TTSゆっくりをまとめて「補助輪」 という名称でリリースしています。  
+
+#### [SpecialSpellTimer](https://github.com/anoyetta/ACT.Hojoring/wiki/SpecialSpellTimer)
+通称「スペスペ」  
+アビリティなどのリキャストを表示するためのプラグインです。基本的にログに対するトリガとして動作します。
+
+#### [UltraScouter](https://github.com/anoyetta/ACT.Hojoring/wiki/UltraScouter)
+通称「ウルスカ」  
+ターゲットのHPや距離、周囲のモブの検知などを行うプラグインです。リアルタイムにメモリ情報を読み取って表示などを行います。
+
+#### [TTSYukkuri](https://github.com/anoyetta/ACT.Hojoring/wiki/Yukkuri)
+通称「ゆっくり」  
+ACT本体のTTS機能をゆっくり実況などで有名な AquesTalk&trade; などに置き換えます。ほぼすべてのTTSエンジンを網羅しています。またTTSをDISCORD BOTを経由してDISCORDのボイスチャットとして通知することもできます。
 
 ## 最新リリース
-**[Lastest-release](https://github.com/anoyetta/ACT.Hojoring/releases/latest)**  
+### **[DOWNLOAD Lastest-Release](https://github.com/anoyetta/ACT.Hojoring/releases/latest)**
 [pre-releease](https://github.com/anoyetta/ACT.Hojoring/releases)
 
 ## インストール
@@ -80,6 +92,8 @@ ACT.SpecialSpellTimer.Tags.xml
 
 ## アップデート
 Help タブからアップデートしてください。  
+
+![how_to_update](https://github.com/anoyetta/ACT.Hojoring/blob/master/images/how_to_update.png?raw=true)
 
 自分で独自に編集しているから上書きしたくないファイがある場合は **update_hojoring.ps1** スクリプトを編集してください。
 ```powershell

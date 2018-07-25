@@ -974,7 +974,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // 開始・終了判定のキーワードを取得する
-            var keywords = CombatAnalyzer.Keywords.Where(x =>
+            var keywords = ConstantKeywords.Keywords.Where(x =>
                 x.Category == KewordTypes.TimelineStart ||
                 x.Category == KewordTypes.End);
 
