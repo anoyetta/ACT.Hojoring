@@ -11,19 +11,40 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public const string ImportLog = "00:0000:import";
         public static readonly string WipeoutLog = $"00:0000:{Wipeout}";
 
-        private static readonly Dictionary<Locales, (string CombatStartNow, IList<AnalyzeKeyword> Keywords, IDictionary<string, Regex> RegexDictinary)> AnalyzerDictionary
-            = new Dictionary<Locales, (string CombatStartNow, IList<AnalyzeKeyword> Keywords, IDictionary<string, Regex> RegexDictinary)>()
-        {
-            { Locales.JA, (CombatStartNowJA, KeywordsJA, AnalyzeRegexesJA) },
-            { Locales.EN, (CombatStartNowEN, KeywordsEN, AnalyzeRegexesEN) },
-            { Locales.FR, (CombatStartNowEN, KeywordsEN, AnalyzeRegexesEN) },
-            { Locales.DE, (CombatStartNowEN, KeywordsEN, AnalyzeRegexesEN) },
-            { Locales.TW, (CombatStartNowCN, KeywordsCN, AnalyzeRegexesCN) },
-            { Locales.CN, (CombatStartNowCN, KeywordsCN, AnalyzeRegexesCN) },
-            { Locales.KO, (CombatStartNowKO, KeywordsKO, AnalyzeRegexesKO) },
-        };
+        private static Dictionary<Locales, AnalyzerContainer> analyzerDictionary;
+
+        private static Dictionary<Locales, AnalyzerContainer> AnalyzerDictionary =>
+            analyzerDictionary ?? (analyzerDictionary = new Dictionary<Locales, AnalyzerContainer>()
+            {
+                { Locales.JA, new AnalyzerContainer(CombatStartNowJA, KeywordsJA, AnalyzeRegexesJA) },
+                { Locales.EN, new AnalyzerContainer(CombatStartNowEN, KeywordsEN, AnalyzeRegexesEN) },
+                { Locales.FR, new AnalyzerContainer(CombatStartNowEN, KeywordsEN, AnalyzeRegexesEN) },
+                { Locales.DE, new AnalyzerContainer(CombatStartNowEN, KeywordsEN, AnalyzeRegexesEN) },
+                { Locales.TW, new AnalyzerContainer(CombatStartNowCN, KeywordsCN, AnalyzeRegexesCN) },
+                { Locales.CN, new AnalyzerContainer(CombatStartNowCN, KeywordsCN, AnalyzeRegexesCN) },
+                { Locales.KO, new AnalyzerContainer(CombatStartNowKO, KeywordsKO, AnalyzeRegexesKO) },
+            });
 
         #region Common
+
+        public class AnalyzerContainer
+        {
+            public AnalyzerContainer(
+                string combatStartNow,
+                IList<AnalyzeKeyword> keywords,
+                IDictionary<string, Regex> regexDictinary)
+            {
+                this.CombatStartNow = combatStartNow;
+                this.Keywords = keywords;
+                this.RegexDictinary = regexDictinary;
+            }
+
+            public string CombatStartNow { get; set; }
+
+            public IList<AnalyzeKeyword> Keywords { get; set; }
+
+            public IDictionary<string, Regex> RegexDictinary { get; set; }
+        }
 
         public static Regex ActionRegex => AnalyzeRegexes[nameof(ActionRegex)];
 
