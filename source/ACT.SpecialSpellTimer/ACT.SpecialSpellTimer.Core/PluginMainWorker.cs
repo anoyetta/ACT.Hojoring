@@ -523,7 +523,7 @@ namespace ACT.SpecialSpellTimer
                     this.lastWipeOutDateTime = DateTime.Now;
 
                     // wipeoutログを発生させる
-                    LogParser.RaiseLog(DateTime.Now, CombatAnalyzer.Wipeout);
+                    LogParser.RaiseLog(DateTime.Now, ConstantKeywords.Wipeout);
 
                     ActInvoker.Invoke(() =>
                     {
