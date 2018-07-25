@@ -4,7 +4,19 @@
 
 「補助輪」  
 Advanced Combat Tracker の FFXIV向けプラグインの詰合せです。  
-スペスペ・ウルスカ・TTSゆっくりをまとめたものです。これ自体が独立したプラグインではありません。
+スペスペ・ウルスカ・TTSゆっくりをまとめて「補助輪」 という名称でリリースしています。  
+
+#### SpecialSpellTimer
+通称「スペスペ」  
+アビリティなどのリキャストを表示するためのプラグインです。基本的にログに対するトリガとして動作します。
+
+#### UltraScouter
+通称「ウルスカ」  
+ターゲットのHPや距離、周囲のモブの検知などを行うプラグインです。リアルタイムにメモリ情報を読み取って表示などを行います。
+
+#### TTSYukkuri
+通称「ゆっくり」  
+ACT本体のTTS機能をゆっくり実況などで有名な AquesTalk&trade; などに置き換えます。ほぼすべてのTTSエンジンを網羅しています。またTTSをDISCORD BOTを経由してDISCORDのボイスチャットとして通知することもできます。
 
 ## 最新リリース
 ### **[DOWNLOAD Lastest-Release](https://github.com/anoyetta/ACT.Hojoring/releases/latest)**
