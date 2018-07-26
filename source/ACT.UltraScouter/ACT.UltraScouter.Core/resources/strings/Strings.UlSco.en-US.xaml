@@ -11,6 +11,9 @@
   <system:String x:Key="GeneralConfig_Opacity">Opacity</system:String>
   <system:String x:Key="GeneralConfig_LogPollingRate">Log polling rate (msec)</system:String>
   <system:String x:Key="GeneralConfig_OverlayRefreshRate">Overlay refresh rate (msec)</system:String>
+  <system:String x:Key="GeneralConfig_LogPollingPriority">Log polling thread priority</system:String>
+  <system:String x:Key="GeneralConfig_OverlayRefreshPriority">Overlay refresh thread priority</system:String>
+  <system:String x:Key="GeneralConfig_RestartThreads">Restart threads</system:String>
   <system:String x:Key="GeneralConfig_AnimationMaxFPS">Animation frame rate</system:String>
   <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">Text stroke thickeness gain</system:String>
   <system:String x:Key="GeneralConfig_TextBlurGain">Text blur gain</system:String>
