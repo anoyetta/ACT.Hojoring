@@ -26,14 +26,31 @@
   WindowStyle="None"
   Left="{Binding Path=Config.TextLocation.X, Mode=TwoWay}"
   Top="{Binding Path=Config.TextLocation.Y, Mode=TwoWay}"
-  d:DataContext="{d:DesignInstance Type=vm:HPViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  d:DataContext="{d:DesignInstance Type=vm:HPViewModel, IsDesignTimeCreatable=True}">
 
   <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />
-    <fwcnv:BoolToCollapsedConverter x:Key="BoolToVisibilityConverter" />
-    <fwcnv:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
-    <cnv:StrokeThicknessToBlurRadiusConverter x:Key="StrokeThicknessToBlurRadiusConverter" />
+    <fwcnv:MultipleConverter x:Key="RateConverter" />
+    <cnv:ToTopMarginConverter x:Key="ToTopMarginConverter" />
+
+    <Style x:Key="HPText" TargetType="ctrl:LightOutlineTextBlock">
+      <Setter Property="Fill" Value="{Binding FontColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+      <Setter Property="Stroke" Value="{Binding FontStrokeColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+      <Setter Property="StrokeThickness" Value="{Binding Config.DisplayText.Font.OutlineThickness, Mode=OneWay}" />
+      <Setter Property="FontFamily" Value="{Binding Path=Config.DisplayText.Font.FontFamily, Mode=OneWay}" />
+      <Setter Property="FontSize" Value="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay}" />
+      <Setter Property="FontStretch" Value="{Binding Path=Config.DisplayText.Font.Stretch, Mode=OneWay}" />
+      <Setter Property="FontWeight" Value="{Binding Path=Config.DisplayText.Font.Weight, Mode=OneWay}" />
+      <Setter Property="FontStyle" Value="{Binding Path=Config.DisplayText.Font.Style, Mode=OneWay}" />
+      <Setter Property="BlurRadius" Value="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}" />
+      <Setter Property="BlurOpacity" Value="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+      <Setter Property="StrokeOpacity" Value="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="TextWrapping" Value="NoWrap" />
+      <Setter Property="ClipToBounds" Value="False" />
+    </Style>
   </Window.Resources>
 
   <Grid Margin="15">
@@ -52,43 +69,58 @@
       <StackPanel
         Orientation="Horizontal">
 
-        <ctrl:LightOutlineTextBlock
-          x:Name="HPTextBlock"
-          ClipToBounds="False"
-          Margin="0,0,10,0"
-          Visibility="{Binding HPVisible, Mode=OneWay}"
-          Fill="{Binding FontColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
-          Stroke="{Binding FontStrokeColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
-          StrokeThickness="{Binding Config.DisplayText.Font.OutlineThickness, Mode=OneWay}"
-          Text="{Binding Path=CurrentHPText, Mode=OneWay}"
-          FontFamily="{Binding Path=Config.DisplayText.Font.FontFamily, Mode=OneWay}"
-          FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay}"
-          FontStretch="{Binding Path=Config.DisplayText.Font.Stretch, Mode=OneWay}"
-          FontWeight="{Binding Path=Config.DisplayText.Font.Weight, Mode=OneWay}"
-          FontStyle="{Binding Path=Config.DisplayText.Font.Style, Mode=OneWay}"
-          BlurRadius="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}"
-          BlurOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
-          StrokeOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
-          TextWrapping="NoWrap" />
+        <StackPanel Margin="0 0 10 0" Visibility="{Binding HPVisible, Mode=OneWay}">
+          <!-- 通常表示 -->
+          <StackPanel Visibility="{Binding Config.IsHPValueNotCompact, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <ctrl:LightOutlineTextBlock
+              HorizontalAlignment="Right"
+              Text="{Binding Path=CurrentHPText, Mode=OneWay}"
+              Style="{DynamicResource HPText}" />
+          </StackPanel>
 
-        <ctrl:LightOutlineTextBlock
-          x:Name="HPRateTextBlock"
-          ClipToBounds="False"
-          Margin="0,0,16,0"
-          Visibility="{Binding HPRateVisible, Mode=OneWay}"
-          Fill="{Binding FontColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
-          Stroke="{Binding FontStrokeColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
-          StrokeThickness="{Binding Config.DisplayText.Font.OutlineThickness, Mode=OneWay}"
-          Text="{Binding Path=CurrentHPRateText, Mode=OneWay}"
-          FontFamily="{Binding Path=Config.DisplayText.Font.FontFamily, Mode=OneWay}"
-          FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay}"
-          FontStretch="{Binding Path=Config.DisplayText.Font.Stretch, Mode=OneWay}"
-          FontWeight="{Binding Path=Config.DisplayText.Font.Weight, Mode=OneWay}"
-          FontStyle="{Binding Path=Config.DisplayText.Font.Style, Mode=OneWay}"
-          BlurRadius="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}"
-          BlurOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
-          StrokeOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
-          TextWrapping="NoWrap" />
+          <!-- 切り下げ表示 -->
+          <StackPanel
+            Orientation="Horizontal"
+            HorizontalAlignment="Right"
+            Visibility="{Binding Config.IsHPValueCompact, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+
+            <ctrl:LightOutlineTextBlock
+              Text="{Binding CurrentHPUpperText, Mode=OneWay}"
+              Style="{DynamicResource HPText}" />
+            <ctrl:LightOutlineTextBlock
+              Text="{Binding CurrentHPBottomText, Mode=OneWay}"
+              Style="{DynamicResource HPText}"
+              VerticalAlignment="Top"
+              Margin="{Binding RelativeSource={RelativeSource Self}, Mode=OneWay, Path=FontSize, Converter={StaticResource ToTopMarginConverter}, ConverterParameter=0}"
+              FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource RateConverter}, ConverterParameter=0.5}" />
+            <ctrl:LightOutlineTextBlock
+              Text=" / "
+              Style="{DynamicResource HPText}"
+              FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource RateConverter}, ConverterParameter=0.9}" />
+            <ctrl:LightOutlineTextBlock
+              Text="{Binding MaxHPUpperText, Mode=OneWay}"
+              Style="{DynamicResource HPText}" />
+            <ctrl:LightOutlineTextBlock
+              Text="{Binding MaxHPBottomText, Mode=OneWay}"
+              Style="{DynamicResource HPText}"
+              VerticalAlignment="Top"
+              Margin="{Binding RelativeSource={RelativeSource Self}, Mode=OneWay, Path=FontSize, Converter={StaticResource ToTopMarginConverter}, ConverterParameter=0}"
+              FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource RateConverter}, ConverterParameter=0.5}" />
+          </StackPanel>
+        </StackPanel>
+
+        <StackPanel Margin="0 0 16 0" Visibility="{Binding HPRateVisible, Mode=OneWay}" VerticalAlignment="Center">
+          <ctrl:LightOutlineTextBlock
+            Text="{Binding Path=CurrentHPRateText, Mode=OneWay}"
+            Visibility="{Binding Config.IsHPValueNotCompact, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+            Style="{DynamicResource HPText}" />
+
+          <ctrl:LightOutlineTextBlock
+            Text="{Binding Path=CurrentHPRateText, Mode=OneWay}"
+            Visibility="{Binding Config.IsHPValueCompact, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+            Style="{DynamicResource HPText}"
+            FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource RateConverter}, ConverterParameter=0.8}" />
+        </StackPanel>
       </StackPanel>
     </Grid>
   </Grid>
