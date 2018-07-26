@@ -11,6 +11,9 @@
   <system:String x:Key="GeneralConfig_Opacity">불투명도</system:String>
   <system:String x:Key="GeneralConfig_LogPollingRate">로그 감시빈도 (msec)</system:String>
   <system:String x:Key="GeneralConfig_OverlayRefreshRate">오버레이 재생빈도 (msec)</system:String>
+  <system:String x:Key="GeneralConfig_LogPollingPriority">Log polling thread priority</system:String>
+  <system:String x:Key="GeneralConfig_OverlayRefreshPriority">Overlay refresh thread priority</system:String>
+  <system:String x:Key="GeneralConfig_RestartThreads">Restart threads</system:String>
   <system:String x:Key="GeneralConfig_AnimationMaxFPS">애니메이션 프레임 속도</system:String>
   <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">글자 윤곽선 비율</system:String>
   <system:String x:Key="GeneralConfig_TextBlurGain">글자 흐림 비율</system:String>

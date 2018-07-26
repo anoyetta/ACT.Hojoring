@@ -77,6 +77,7 @@
     <Compile Include="Common\BufferedWavePlayer.cs" />
     <Compile Include="Common\CommonHelper.cs" />
     <Compile Include="Common\Crypter.cs" />
+    <Compile Include="Common\Enumerator.cs" />
     <Compile Include="Common\XAudioPlayer.cs" />
     <Compile Include="Common\DirectoryHelper.cs" />
     <Compile Include="Common\EnvironmentHelper.cs" />
