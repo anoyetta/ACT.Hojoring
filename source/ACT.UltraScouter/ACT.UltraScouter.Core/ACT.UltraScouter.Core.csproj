@@ -152,6 +152,7 @@
     <Compile Include="ViewModels\HPBarViewModel.cs" />
     <Compile Include="ViewModels\MobListViewModel.cs" />
     <Compile Include="ViewModels\MPTickerViewModel.cs" />
+    <Compile Include="Views\Converters\ToTopMarginConverter.cs" />
     <Compile Include="Views\Converters\WidthToRadiusConverter.cs" />
     <Compile Include="Views\HPBarView.xaml.cs">
       <DependentUpon>HPBarView.xaml</DependentUpon>

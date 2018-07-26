@@ -36,6 +36,7 @@
   <system:String x:Key="HP_BarLocation">바 위치</system:String>
   <system:String x:Key="HP_VisibleHPBar">HP 바 보이기</system:String>
   <system:String x:Key="HP_HPValueOnHPBar">HP바에 HP값 표기</system:String>
+  <system:String x:Key="HP_HPValueCompact">Compact display of HP value</system:String>
   <system:String x:Key="HP_HPBarStrokeColor">HP바 윤곽색</system:String>
   <system:String x:Key="HP_LinkBarStrokeColorToBarColor">바의 윤곽색을 바 색상에 동조시키다</system:String>
   <system:String x:Key="HP_LinkTextFillColorToBarColor">글자색을 바 색상에 동조시키다</system:String>

@@ -47,6 +47,11 @@
         Content="{DynamicResource Common_Visible}"
         IsChecked="{Binding HP.Visible, Mode=TwoWay}" />
 
+      <CheckBox
+        Margin="0 5 0 0"
+        Content="{DynamicResource HP_HPValueCompact}"
+        IsChecked="{Binding HP.IsHPValueCompact, Mode=TwoWay}" />
+
       <Label
         Margin="0 20 0 0"
         Content="{DynamicResource HP_HPLocation}" />

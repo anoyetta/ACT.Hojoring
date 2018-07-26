@@ -36,6 +36,7 @@
   <system:String x:Key="HP_BarLocation">HPバーのロケーション</system:String>
   <system:String x:Key="HP_VisibleHPBar">HPバーを表示する</system:String>
   <system:String x:Key="HP_HPValueOnHPBar">HPの値をHPバーに重ねて表示する</system:String>
+  <system:String x:Key="HP_HPValueCompact">HPの値をコンパクト表示にする</system:String>
   <system:String x:Key="HP_HPBarStrokeColor">HPバーのアウトラインのカラー</system:String>
   <system:String x:Key="HP_LinkBarStrokeColorToBarColor">バーのアウトラインのカラーをバー本体のカラーに同調させる</system:String>
   <system:String x:Key="HP_LinkTextFillColorToBarColor">テキストの本体のカラーをバーのカラーに同調させる</system:String>

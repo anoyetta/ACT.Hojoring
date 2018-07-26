@@ -36,6 +36,7 @@
   <system:String x:Key="HP_BarLocation">Bar Location</system:String>
   <system:String x:Key="HP_VisibleHPBar">Visible HP bar</system:String>
   <system:String x:Key="HP_HPValueOnHPBar">Display HP value on HP bar</system:String>
+  <system:String x:Key="HP_HPValueCompact">Compact display of HP value</system:String>
   <system:String x:Key="HP_HPBarStrokeColor">HP bar stroke color</system:String>
   <system:String x:Key="HP_LinkBarStrokeColorToBarColor">Link 'Bar stroke color' &lt;- 'Bar color'</system:String>
   <system:String x:Key="HP_LinkTextFillColorToBarColor">Link 'Text fill color' &lt;- 'Bar color'</system:String>
