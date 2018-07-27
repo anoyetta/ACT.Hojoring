@@ -39,7 +39,7 @@
 
     <system:String x:Key="Common_VisibleSpell">显示计时器和进度条</system:String>
   <system:String x:Key="Common_VisibleSpellDiscription">关闭后仅有声音提示</system:String>
-  <system:String x:Key="Common_General">General</system:String>
+  <system:String x:Key="Common_General">整体</system:String>
   <system:String x:Key="Common_Font">字体</system:String>
   <system:String x:Key="Common_FillColor">填充颜色</system:String>
   <system:String x:Key="Common_StrokeColor">轮廓颜色</system:String>
@@ -150,14 +150,14 @@
 
   <system:String x:Key="Options_Visual">显示</system:String>
   <system:String x:Key="Options_Trigger">触发器</system:String>
-  <system:String x:Key="Options_Log">Log</system:String>
+  <system:String x:Key="Options_Log">日志</system:String>
   <system:String x:Key="Options_TTSDictionary">TTS字典</system:String>
 
-  <system:String x:Key="Options_OverlayEnabled">插件启用</system:String>
+  <system:String x:Key="Options_OverlayEnabled">启用插件</system:String>
   <system:String x:Key="Options_HideOverlayOnNonActive">不活动时隐藏插件</system:String>
   <system:String x:Key="Options_VisibleOverlayWithoutFFXIV">即使没有游戏进程也显示(debug)</system:String>
   <system:String x:Key="Options_Transparency">透明度</system:String>
-  <system:String x:Key="Options_LogPollingRate">Log读取间隔 (毫秒)</system:String>
+  <system:String x:Key="Options_LogPollingRate">日志读取间隔 (毫秒)</system:String>
   <system:String x:Key="Options_OverlayRefreshRate">刷新时间间隔 (毫秒)</system:String>
   <system:String x:Key="Options_AnimationMaxFPS">最大FPS</system:String>
   <system:String x:Key="Options_RenderOnlyCPU">仅使用CPU渲染</system:String>
@@ -184,15 +184,16 @@
   <system:String x:Key="Options_EnabledSimplyRegex">简化的正则式</system:String>
   <system:String x:Key="Options_EnabledRemoveTooltipSymbol">不显示Tooltip</system:String>
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">补全未知技能</system:String>
-  <system:String x:Key="Options_EnabledIgnoreDetailLogs">忽略15:或 16:开头Log</system:String>
+  <system:String x:Key="Options_EnabledIgnoreDamageLogs">忽略伤害和治疗日志</system:String>
+  <system:String x:Key="Options_EnabledIgnoreDetailLogs">忽略15:或 16:开头日志</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">检测 FC:开头数据 (不推荐)</system:String>
   <system:String x:Key="Options_ReadyText">正向计时器完成时显示文字 (默认: "Ready")</system:String>
   <system:String x:Key="Options_OverText">反向计时器完成时显示文字 (默认: "Over")</system:String>
 
-  <system:String x:Key="Options_VisibleLPS">显示Log密度界面 (LPS)</system:String>
+  <system:String x:Key="Options_VisibleLPS">显示日志密度界面 (LPS)</system:String>
   <system:String x:Key="Options_LPSOverlayScale">LPS界面大小</system:String>
   <system:String x:Key="Options_LPSOverlayLocation">LPS界面未知</system:String>
-  <system:String x:Key="Options_EnabledLog">保存Log</system:String>
+  <system:String x:Key="Options_EnabledLog">保存日志</system:String>
   <system:String x:Key="Options_LogDirectory">保存位置</system:String>
   <system:String x:Key="Options_Browse">浏览</system:String>
 
@@ -245,6 +246,7 @@
   <system:String x:Key="Timeline_Enable">启用</system:String>
   <system:String x:Key="Timeline_Folder">时间轴文件夹</system:String>
   <system:String x:Key="Timeline_Visual">SPESPE时间轴设置</system:String>
+  <system:String x:Key="Timeline_NotifyInterval">提醒间隔(毫秒)</system:String>
   <system:String x:Key="Timeline_OverlayVisible">显示界面</system:String>
   <system:String x:Key="Timeline_Opacity">不透明度</system:String>
   <system:String x:Key="Timeline_OverlayScale">界面大小</system:String>
@@ -264,7 +266,7 @@
   <system:String x:Key="Timeline_OpenResourcesDictionary">打开样式文件所在文件夹</system:String>
   <system:String x:Key="Timeline_ShowCompiledText">显示RazorEngine编译后文件</system:String>
 
-  <system:String x:Key="Timeline_IgnoreLogs">忽略以下类型Log</system:String>
+  <system:String x:Key="Timeline_IgnoreLogs">忽略以下类型日志</system:String>
 
   <system:String x:Key="TriggerTester_OpenSimulator">模拟器</system:String>
   <system:String x:Key="TriggerTester_Title">触发器模拟器</system:String>
