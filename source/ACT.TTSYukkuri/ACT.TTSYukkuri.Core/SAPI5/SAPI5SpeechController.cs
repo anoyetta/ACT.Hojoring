@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Speech.AudioFormat;
 using System.Speech.Synthesis;
 using ACT.TTSYukkuri.Config;
 
@@ -101,14 +101,10 @@ namespace ACT.TTSYukkuri.SAPI5
         {
         }
 
-        private readonly SpeechAudioFormatInfo WAVEFormat = new SpeechAudioFormatInfo(
-            32000,
-            AudioBitsPerSample.Sixteen,
-            AudioChannel.Mono);
-
         private InstalledVoice GetSynthesizer(
             string id)
-            => Synthesizers.FirstOrDefault(x => x.VoiceInfo.Id == id);
+            => Synthesizers.FirstOrDefault(x =>
+                string.Equals(x.VoiceInfo.Id, id, StringComparison.OrdinalIgnoreCase));
 
         /// <summary>
         /// テキストを読み上げる
@@ -138,24 +134,23 @@ namespace ACT.TTSYukkuri.SAPI5
                     using (var synth = new SpeechSynthesizer())
                     {
                         // VOICEを設定する
-                        if (synth.Voice.Id != this.Config.VoiceID)
+                        var voice = this.GetSynthesizer(this.Config.VoiceID);
+                        if (voice == null)
                         {
-                            var voice = this.GetSynthesizer(this.Config.VoiceID);
-                            if (voice == null)
-                            {
-                                return;
-                            }
-
-                            synth.SelectVoice(voice.VoiceInfo.Name);
+                            return;
                         }
+
+                        synth.SelectVoice(voice.VoiceInfo.Name);
 
                         synth.Rate = this.Config.Rate;
                         synth.Volume = this.Config.Volume;
 
                         // Promptを生成する
-                        var pb = new PromptBuilder();
+                        var pb = new PromptBuilder(voice.VoiceInfo.Culture);
+                        pb.StartVoice(voice.VoiceInfo);
                         pb.AppendSsmlMarkup(
                             $"<prosody pitch=\"{this.Config.Pitch.ToXML()}\">{text}</prosody>");
+                        pb.EndVoice();
 
                         synth.SetOutputToWaveStream(fs);
                         synth.Speak(pb);

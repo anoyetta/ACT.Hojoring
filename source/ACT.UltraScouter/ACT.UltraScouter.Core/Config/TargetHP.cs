@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
+using FFXIV.Framework.Common;
 using Prism.Mvvm;
 
 namespace ACT.UltraScouter.Config
@@ -15,6 +16,7 @@ namespace ACT.UltraScouter.Config
     {
         [XmlIgnore] private bool hpBarVisible;
         [XmlIgnore] private bool isHPValueOnHPBar;
+        [XmlIgnore] private bool isHPValueCompact;
         [XmlIgnore] private bool visible;
 
         /// <summary>
@@ -51,9 +53,29 @@ namespace ACT.UltraScouter.Config
         [DataMember]
         public bool IsHPValueOnHPBar
         {
-            get => this.isHPValueOnHPBar;
+            get => WPFHelper.IsDesignMode ? true : this.isHPValueOnHPBar;
             set => this.SetProperty(ref this.isHPValueOnHPBar, value);
         }
+
+        /// <summary>
+        /// HPの値をコンパクト表示にするか？
+        /// </summary>
+        [DataMember]
+        public bool IsHPValueCompact
+        {
+            get => WPFHelper.IsDesignMode ? true : this.isHPValueCompact;
+            set
+            {
+                if (this.SetProperty(ref this.isHPValueCompact, value))
+                {
+                    this.RaisePropertyChanged(nameof(IsHPValueNotCompact));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public bool IsHPValueNotCompact =>
+            WPFHelper.IsDesignMode ? true : !this.isHPValueCompact;
 
         /// <summary>
         /// フォントのメインカラーをバーのカラーに連動させる

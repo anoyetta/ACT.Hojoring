@@ -11,6 +11,9 @@
   <system:String x:Key="GeneralConfig_Opacity">不透明度</system:String>
   <system:String x:Key="GeneralConfig_LogPollingRate">メモリの監視間隔 (msec)</system:String>
   <system:String x:Key="GeneralConfig_OverlayRefreshRate">オーバーレイの描画間隔 (msec)</system:String>
+  <system:String x:Key="GeneralConfig_LogPollingPriority">メモリの監視の優先度</system:String>
+  <system:String x:Key="GeneralConfig_OverlayRefreshPriority">オーバーレイの描画の優先度</system:String>
+  <system:String x:Key="GeneralConfig_RestartThreads">スレッドを再起動する</system:String>
   <system:String x:Key="GeneralConfig_AnimationMaxFPS">アニメーションの最大FPS</system:String>
   <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">テキストのアウトライン増幅率</system:String>
   <system:String x:Key="GeneralConfig_TextBlurGain">テキストのブラー増幅率</system:String>
@@ -36,6 +39,7 @@
   <system:String x:Key="HP_BarLocation">HPバーのロケーション</system:String>
   <system:String x:Key="HP_VisibleHPBar">HPバーを表示する</system:String>
   <system:String x:Key="HP_HPValueOnHPBar">HPの値をHPバーに重ねて表示する</system:String>
+  <system:String x:Key="HP_HPValueCompact">HPの値をコンパクト表示にする</system:String>
   <system:String x:Key="HP_HPBarStrokeColor">HPバーのアウトラインのカラー</system:String>
   <system:String x:Key="HP_LinkBarStrokeColorToBarColor">バーのアウトラインのカラーをバー本体のカラーに同調させる</system:String>
   <system:String x:Key="HP_LinkTextFillColorToBarColor">テキストの本体のカラーをバーのカラーに同調させる</system:String>

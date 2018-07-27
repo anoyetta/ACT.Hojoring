@@ -11,6 +11,9 @@
   <system:String x:Key="GeneralConfig_Opacity">不透明度</system:String>
   <system:String x:Key="GeneralConfig_LogPollingRate">扫描日志间隔 (毫秒)</system:String>
   <system:String x:Key="GeneralConfig_OverlayRefreshRate">界面刷新间隔 (毫秒)</system:String>
+  <system:String x:Key="GeneralConfig_LogPollingPriority">Log polling thread priority</system:String>
+  <system:String x:Key="GeneralConfig_OverlayRefreshPriority">Overlay refresh thread priority</system:String>
+  <system:String x:Key="GeneralConfig_RestartThreads">Restart threads</system:String>
   <system:String x:Key="GeneralConfig_AnimationMaxFPS">动画FPS</system:String>
   <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">文字轮廓大小比率</system:String>
   <system:String x:Key="GeneralConfig_TextBlurGain">文字模糊比率</system:String>
@@ -36,6 +39,7 @@
   <system:String x:Key="HP_BarLocation">条位置</system:String>
   <system:String x:Key="HP_VisibleHPBar">显示HP条</system:String>
   <system:String x:Key="HP_HPValueOnHPBar">在HP条上显示数值</system:String>
+  <system:String x:Key="HP_HPValueCompact">Compact display of HP value</system:String>
   <system:String x:Key="HP_HPBarStrokeColor">HP条轮廓色</system:String>
   <system:String x:Key="HP_LinkBarStrokeColorToBarColor">关联'条轮廓颜色' &lt;- '条颜色'</system:String>
   <system:String x:Key="HP_LinkTextFillColorToBarColor">关联'文字填充色' &lt;- '条颜色'</system:String>

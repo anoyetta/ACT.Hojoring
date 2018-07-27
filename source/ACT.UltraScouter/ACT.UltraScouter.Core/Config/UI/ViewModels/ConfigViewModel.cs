@@ -1,9 +1,15 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Threading;
 using ACT.UltraScouter.Common;
 using ACT.UltraScouter.Config.UI.Views;
+using ACT.UltraScouter.Workers;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.WPF.Views;
+using Prism.Commands;
 using Prism.Mvvm;
 
 namespace ACT.UltraScouter.Config.UI.ViewModels
@@ -155,6 +161,12 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
         public Settings Config => Settings.Instance;
 
+        public static IEnumerable<ThreadPriority> ThreadPriorities
+            => Enumerator.GetThreadPriorities();
+
+        public static IEnumerable<DispatcherPriority> DispatcherPriorities
+            => Enumerator.GetDispatcherPriorities();
+
         public static IReadOnlyList<ValueAndText> TTSDeviceList
             => new List<ValueAndText>()
             {
@@ -162,6 +174,23 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                 new ValueAndText() { Value = TTSDevices.OnlyMain },
                 new ValueAndText() { Value = TTSDevices.OnlySub },
             };
+
+        private ICommand restartThreadsCommand;
+
+        public ICommand RestartThreadsCommand =>
+            this.restartThreadsCommand ?? (this.restartThreadsCommand = new DelegateCommand(async () =>
+            {
+                await WPFHelper.InvokeAsync(() =>
+                {
+                    MainWorker.Instance.RestartScanMemoryWorker();
+                    MainWorker.Instance.RestartRefreshViewWorker();
+                });
+
+                ModernMessageBox.ShowDialog(
+                    "\"ScanMemory\" and \"RefreshView\" restarted.\n" +
+                    "Applied new settings.",
+                    "ACT.UltraScouter");
+            }));
 
         public class ValueAndText
         {

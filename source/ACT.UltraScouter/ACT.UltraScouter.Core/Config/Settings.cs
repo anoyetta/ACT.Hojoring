@@ -8,8 +8,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 using ACT.UltraScouter.Common;
@@ -246,6 +248,8 @@ namespace ACT.UltraScouter.Config
         private Locales uiLocale;
         private Locales ffxivLocale;
         private int animationMaxFPS;
+        private ThreadPriority scanMemoryThreadPriority = ThreadPriority.Normal;
+        private DispatcherPriority uiThreadPriority = DispatcherPriority.Background;
 
         /// <summary>
         /// プラグインのUIのロケール
@@ -317,6 +321,26 @@ namespace ACT.UltraScouter.Config
         {
             get => this.animationMaxFPS;
             set => this.SetProperty(ref this.animationMaxFPS, value);
+        }
+
+        /// <summary>
+        /// メモリスキャンスレッドタイマの優先順位
+        /// </summary>
+        [DataMember(Order = 17)]
+        public ThreadPriority ScanMemoryThreadPriority
+        {
+            get => this.scanMemoryThreadPriority;
+            set => this.SetProperty(ref this.scanMemoryThreadPriority, value);
+        }
+
+        /// <summary>
+        /// UIスレッドタイマの優先順位
+        /// </summary>
+        [DataMember(Order = 17)]
+        public DispatcherPriority UIThreadPriority
+        {
+            get => this.uiThreadPriority;
+            set => this.SetProperty(ref this.uiThreadPriority, value);
         }
 
         /// <summary>
@@ -642,6 +666,8 @@ namespace ACT.UltraScouter.Config
             { nameof(Settings.ClickThrough), false },
             { nameof(Settings.PollingRate), 50 },
             { nameof(Settings.OverlayRefreshRate), 100 },
+            { nameof(Settings.ScanMemoryThreadPriority), ThreadPriority.Normal },
+            { nameof(Settings.UIThreadPriority), DispatcherPriority.Background },
             { nameof(Settings.AnimationMaxFPS), 30 },
 
             #region Sounds
