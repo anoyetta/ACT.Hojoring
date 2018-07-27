@@ -69,7 +69,7 @@
       <StackPanel
         Orientation="Horizontal">
 
-        <StackPanel Margin="0 0 10 0" Visibility="{Binding HPVisible, Mode=OneWay}">
+        <StackPanel Margin="0 0 0 0" Visibility="{Binding HPVisible, Mode=OneWay}">
           <!-- 通常表示 -->
           <StackPanel Visibility="{Binding Config.IsHPValueNotCompact, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
             <ctrl:LightOutlineTextBlock
@@ -109,17 +109,27 @@
           </StackPanel>
         </StackPanel>
 
+        <!-- white space margin -->
+        <ctrl:LightOutlineTextBlock
+          Text="  "
+          Style="{DynamicResource HPText}" />
+
         <StackPanel Margin="0 0 16 0" Visibility="{Binding HPRateVisible, Mode=OneWay}" VerticalAlignment="Center">
           <ctrl:LightOutlineTextBlock
             Text="{Binding Path=CurrentHPRateText, Mode=OneWay}"
             Visibility="{Binding Config.IsHPValueNotCompact, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
             Style="{DynamicResource HPText}" />
 
-          <ctrl:LightOutlineTextBlock
-            Text="{Binding Path=CurrentHPRateText, Mode=OneWay}"
-            Visibility="{Binding Config.IsHPValueCompact, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
-            Style="{DynamicResource HPText}"
-            FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource RateConverter}, ConverterParameter=0.8}" />
+          <StackPanel Orientation="Horizontal" Visibility="{Binding Config.IsHPValueCompact, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <ctrl:LightOutlineTextBlock
+              Text="{Binding Path=CurrentHPRateText, Mode=OneWay}"
+              Style="{DynamicResource HPText}"
+              FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource RateConverter}, ConverterParameter=0.8}" />
+            <ctrl:LightOutlineTextBlock
+              Text=" %"
+              Style="{DynamicResource HPText}"
+              FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource RateConverter}, ConverterParameter=0.4}" />
+          </StackPanel>
         </StackPanel>
       </StackPanel>
     </Grid>
