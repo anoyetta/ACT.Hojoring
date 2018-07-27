@@ -39,7 +39,7 @@
   <system:String x:Key="HP_BarLocation">条位置</system:String>
   <system:String x:Key="HP_VisibleHPBar">显示HP条</system:String>
   <system:String x:Key="HP_HPValueOnHPBar">在HP条上显示数值</system:String>
-  <system:String x:Key="HP_HPValueCompact">Compact display of HP value</system:String>
+  <system:String x:Key="HP_HPValueCompact">HP值紧凑显示</system:String>
   <system:String x:Key="HP_HPBarStrokeColor">HP条轮廓色</system:String>
   <system:String x:Key="HP_LinkBarStrokeColorToBarColor">关联'条轮廓颜色' &lt;- '条颜色'</system:String>
   <system:String x:Key="HP_LinkTextFillColorToBarColor">关联'文字填充色' &lt;- '条颜色'</system:String>
