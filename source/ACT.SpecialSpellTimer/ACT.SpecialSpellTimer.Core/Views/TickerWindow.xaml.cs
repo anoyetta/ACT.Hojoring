@@ -136,11 +136,11 @@ namespace ACT.SpecialSpellTimer.Views
                 count = 0.0d;
             }
 
-            var countAsText = count.ToString("N1");
+            var countAsText = count.CeilingEx(1).ToString("N1");
             var displayTimeAsText = this.Ticker.DisplayTime.ToString("N1");
             countAsText = countAsText.PadLeft(displayTimeAsText.Length, '0');
 
-            var count0AsText = count.ToString("N0");
+            var count0AsText = count.CeilingEx().ToString("N0");
             var displayTime0AsText = this.Ticker.DisplayTime.ToString("N0");
             count0AsText = count0AsText.PadLeft(displayTime0AsText.Length, '0');
 

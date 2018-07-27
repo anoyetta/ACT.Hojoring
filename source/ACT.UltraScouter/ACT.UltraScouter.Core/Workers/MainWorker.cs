@@ -95,36 +95,11 @@ namespace ACT.UltraScouter.Workers
             MeInfoWorker.Instance.Start();
             MobListWorker.Instance.Start();
 
-            // メモリスキャンタスクを生成する
-            this.scanMemoryWorker = new ThreadWorker(() =>
-            {
-                try
-                {
-                    this.GetDataMethod?.Invoke();
-                }
-                catch (ThreadAbortException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    this.logger.Fatal(ex, "GetOverlayData error.");
-                }
-            },
-            Settings.Instance.PollingRate,
-            this.GetType().Name);
+            // メモリスキャンタスクを開始する
+            this.RestartScanMemoryWorker();
 
-            // Viewの更新タスクを生成する
-            this.refreshViewWorker = new DispatcherTimer(DispatcherPriority.Background)
-            {
-                Interval = TimeSpan.FromMilliseconds(Settings.Instance.OverlayRefreshRate)
-            };
-
-            this.refreshViewWorker.Tick += (x, y) => this.UpdateOverlayDataMethod?.Invoke();
-
-            // 開始する
-            this.scanMemoryWorker.Run();
-            this.refreshViewWorker.Start();
+            // Viewの更新タスクを開始する
+            this.RestartRefreshViewWorker();
 
             // すべてのビューを更新する
             this.RefreshAllViews();
@@ -154,6 +129,68 @@ namespace ACT.UltraScouter.Workers
             // 参照を開放する
             this.scanMemoryWorker = null;
             this.refreshViewWorker = null;
+        }
+
+        /// <summary>
+        /// メモリ監視スレッドを開始する
+        /// </summary>
+        public void RestartScanMemoryWorker()
+        {
+            lock (this)
+            {
+                if (this.scanMemoryWorker != null)
+                {
+                    this.scanMemoryWorker.Abort();
+                    this.scanMemoryWorker = null;
+                }
+
+                this.scanMemoryWorker = new ThreadWorker(() =>
+                {
+                    try
+                    {
+                        this.GetDataMethod?.Invoke();
+                    }
+                    catch (ThreadAbortException)
+                    {
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        this.logger.Fatal(ex, "GetOverlayData error.");
+                    }
+                },
+                Settings.Instance.PollingRate,
+                this.GetType().Name,
+                Settings.Instance.ScanMemoryThreadPriority);
+
+                // 開始する
+                this.scanMemoryWorker.Run();
+            }
+        }
+
+        /// <summary>
+        /// Viewの更新タイマをリスタートする
+        /// </summary>
+        public void RestartRefreshViewWorker()
+        {
+            lock (this)
+            {
+                if (this.refreshViewWorker != null)
+                {
+                    this.refreshViewWorker.Stop();
+                    this.refreshViewWorker = null;
+                }
+
+                this.refreshViewWorker = new DispatcherTimer(Settings.Instance.UIThreadPriority)
+                {
+                    Interval = TimeSpan.FromMilliseconds(Settings.Instance.OverlayRefreshRate)
+                };
+
+                this.refreshViewWorker.Tick += (x, y) => this.UpdateOverlayDataMethod?.Invoke();
+
+                // 開始する
+                this.refreshViewWorker.Start();
+            }
         }
 
         /// <summary>

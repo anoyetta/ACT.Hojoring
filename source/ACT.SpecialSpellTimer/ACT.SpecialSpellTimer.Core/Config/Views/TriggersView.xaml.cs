@@ -8,6 +8,7 @@ using ACT.SpecialSpellTimer.Config.Models;
 using ACT.SpecialSpellTimer.Config.ViewModels;
 using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.resources;
+using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 
 namespace ACT.SpecialSpellTimer.Config.Views
@@ -49,7 +50,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
         #region コンテンツエリアの切り替え
 
-        private void TriggersTreeViewOnSelectedItemChanged(
+        private async void TriggersTreeViewOnSelectedItemChanged(
             object sender,
             RoutedPropertyChangedEventArgs<object> e)
         {
@@ -57,7 +58,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
             if (treeView.IsLoaded)
             {
-                this.ShowContent(e.NewValue);
+                await WPFHelper.InvokeAsync(() => this.ShowContent(e.NewValue));
             }
         }
 
@@ -122,8 +123,8 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     }
 
                     this.ContentBorder.BorderBrush = new SolidColorBrush(Colors.MediumBlue);
-                    this.SpellPanelView.Visibility = Visibility.Collapsed;
                     this.SpellView.Visibility = Visibility.Visible;
+                    this.SpellPanelView.Visibility = Visibility.Collapsed;
                     this.TickerView.Visibility = Visibility.Collapsed;
                     break;
 
@@ -140,9 +141,9 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     }
 
                     this.ContentBorder.BorderBrush = new SolidColorBrush(Colors.OliveDrab);
+                    this.TickerView.Visibility = Visibility.Visible;
                     this.SpellPanelView.Visibility = Visibility.Collapsed;
                     this.SpellView.Visibility = Visibility.Collapsed;
-                    this.TickerView.Visibility = Visibility.Visible;
                     break;
 
                 default:

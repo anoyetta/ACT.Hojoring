@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -72,9 +73,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 remain = 0d;
             }
 
-            remain = Math.Ceiling(remain);
-
-            this.DurationToDisplay = remain;
+            this.DurationToDisplay = remain.CeilingEx();
         }
 
         [XmlAttribute(AttributeName = "duration")]

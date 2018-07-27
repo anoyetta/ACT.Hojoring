@@ -133,7 +133,7 @@ namespace ACT.UltraScouter.ViewModels
 
         private Stopwatch castingStopwatch = new Stopwatch();
 
-        private DispatcherTimer countdownTimer =
+        private readonly DispatcherTimer countdownTimer =
             new DispatcherTimer(DispatcherPriority.Normal);
 
         private float castDurationMax;

@@ -127,9 +127,13 @@ namespace ACT.SpecialSpellTimer.Views
             // リキャスト時間を描画する
             if (!this.Spell.HideCounter)
             {
+                var recastTimeToShow = Settings.Default.EnabledSpellTimerNoDecimal ?
+                    this.RecastTime.CeilingEx() :
+                    this.RecastTime.CeilingEx(1);
+
                 tb = this.RecastTimeTextBlock;
                 var recast = this.RecastTime > 0 ?
-                    this.RecastTime.ToString(RecastTimeFormat) :
+                    recastTimeToShow.ToString(RecastTimeFormat) :
                     this.Spell.IsReverse ? Settings.Default.OverText : Settings.Default.ReadyText;
 
                 if (tb.Text != recast) tb.Text = recast;

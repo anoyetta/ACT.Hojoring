@@ -4,6 +4,7 @@ using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 
 namespace ACT.UltraScouter.ViewModels
 {
@@ -21,6 +22,21 @@ namespace ACT.UltraScouter.ViewModels
         {
             this.config = config ?? Settings.Instance.TargetHP;
             this.model = model ?? TargetInfoModel.Instance;
+
+            if (WPFHelper.IsDesignMode)
+            {
+                this.config = new TargetHP();
+
+                this.FontColor = Colors.White;
+                this.FontStrokeColor = Colors.Red;
+                this.CurrentHPText = "123,456,789 / 123,456,789";
+                this.CurrentHPRateText = "(100.0%)";
+
+                this.CurrentHPUpperText = "123,456";
+                this.CurrentHPBottomText = " ,789";
+                this.MaxHPUpperText = "123,456";
+                this.MaxHPBottomText = " ,789";
+            }
 
             this.Initialize();
         }
@@ -46,11 +62,24 @@ namespace ACT.UltraScouter.ViewModels
 
         private string currentHPRateText;
         private string currentHPText;
+
+        private string currentHPUpperText;
+        private string currentHPBottomText;
+        private string maxHPUpperText;
+        private string maxHPBottomText;
+
         private Color fontColor;
         private Color fontStrokeColor;
 
-        public bool HPVisible => Settings.Instance.HPVisible;
-        public bool HPRateVisible => Settings.Instance.HPRateVisible;
+        public bool HPVisible =>
+            WPFHelper.IsDesignMode ?
+            true :
+            Settings.Instance.HPVisible;
+
+        public bool HPRateVisible =>
+            WPFHelper.IsDesignMode ?
+            true :
+            Settings.Instance.HPRateVisible;
 
         public string CurrentHPRateText
         {
@@ -62,6 +91,30 @@ namespace ACT.UltraScouter.ViewModels
         {
             get => this.currentHPText;
             set => this.SetProperty(ref this.currentHPText, value);
+        }
+
+        public string CurrentHPUpperText
+        {
+            get => this.currentHPUpperText;
+            set => this.SetProperty(ref this.currentHPUpperText, value);
+        }
+
+        public string CurrentHPBottomText
+        {
+            get => this.currentHPBottomText;
+            set => this.SetProperty(ref this.currentHPBottomText, value);
+        }
+
+        public string MaxHPUpperText
+        {
+            get => this.maxHPUpperText;
+            set => this.SetProperty(ref this.maxHPUpperText, value);
+        }
+
+        public string MaxHPBottomText
+        {
+            get => this.maxHPBottomText;
+            set => this.SetProperty(ref this.maxHPBottomText, value);
         }
 
         public Color FontColor
@@ -102,7 +155,15 @@ namespace ACT.UltraScouter.ViewModels
 
         private void UpdateCurrentHPRateText()
         {
-            this.CurrentHPRateText = $"({this.Model.CurrentHPRate * 100.0d:N1}%)";
+            if (this.Config.IsHPValueNotCompact)
+            {
+                this.CurrentHPRateText = $"({(this.Model.CurrentHPRate * 100).CeilingEx(1):N1}%)";
+            }
+
+            if (this.Config.IsHPValueCompact)
+            {
+                this.CurrentHPRateText = $"{(this.Model.CurrentHPRate * 100).CeilingEx(1):N1}";
+            }
 
             // プログレスバーのカラーを取得する
             var color = this.Config.ProgressBar.AvailableColor(
@@ -121,7 +182,21 @@ namespace ACT.UltraScouter.ViewModels
 
         private void UpdateCurrentHPText()
         {
-            this.CurrentHPText = $"{this.Model.CurrentHP:N0} / {this.Model.MaxHP:N0}";
+            if (this.Config.IsHPValueNotCompact)
+            {
+                this.CurrentHPText = $"{this.Model.CurrentHP:N0} / {this.Model.MaxHP:N0}";
+            }
+
+            if (this.Config.IsHPValueCompact)
+            {
+                var hp = HPViewModel.FormatHPText(this.Model.CurrentHP);
+                this.CurrentHPUpperText = hp.UpperPart;
+                this.CurrentHPBottomText = hp.BottomPart;
+
+                hp = HPViewModel.FormatHPText(this.Model.MaxHP);
+                this.MaxHPUpperText = hp.UpperPart;
+                this.MaxHPBottomText = hp.BottomPart;
+            }
 
             // プログレスバーのカラーを取得する
             var color = this.Config.ProgressBar.AvailableColor(
@@ -136,6 +211,26 @@ namespace ACT.UltraScouter.ViewModels
             this.FontStrokeColor = this.Config.LinkFontOutlineColorToBarColor ?
                 color :
                 this.Config.DisplayText.OutlineColor;
+        }
+
+        public static (string UpperPart, string BottomPart) FormatHPText(
+            double hpValue)
+        {
+            var result = default((string UpperPart, string BottomPart));
+
+            var hp = (long)hpValue;
+            if (hp < 10000)
+            {
+                result.UpperPart = hp.ToString("N0");
+                result.BottomPart = string.Empty;
+            }
+            else
+            {
+                result.UpperPart = (hp / 1000).ToString("N0");
+                result.BottomPart = " ," + (hp % 1000).ToString("000");
+            }
+
+            return result;
         }
     }
 }

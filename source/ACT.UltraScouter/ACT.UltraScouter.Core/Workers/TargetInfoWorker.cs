@@ -389,7 +389,7 @@ namespace ACT.UltraScouter.Workers
                     overlayVisible = true;
                 }
             }
-#if false
+#if true
 #if DEBUG
             // ダミーデータを表示する
             overlayVisible = true;
@@ -397,12 +397,15 @@ namespace ACT.UltraScouter.Workers
             if (string.IsNullOrWhiteSpace(this.Model.Name) ||
                 this.Model.Name.Contains("D:"))
             {
-                this.Model.Name = "D:ハリカルナッソス♥";
+                this.Model.Name = "DEBUG:ハリカルナッソス";
 
-                this.Model.MaxHP = 364789;
+                this.Model.MaxHP = (DateTime.Now.Minute % 2) == 0 ?
+                    3_647_895_124 :
+                    4871;
+
                 this.Model.CurrentHP =
                     this.Model.MaxHP *
-                    (10 - (DateTime.Now.Second % 10)) / 10;
+                    (30 - (DateTime.Now.Second % 30)) / 30;
 
                 this.Model.CurrentHPRate =
                     this.Model.CurrentHP /

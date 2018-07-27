@@ -466,9 +466,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 // ダメージ系の不要なログか？
-                if (LogBuffer.DamageLogPattern.IsMatch(log.logLine))
+                if (Settings.Default.IgnoreDamageLogs)
                 {
-                    continue;
+                    if (LogBuffer.DamageLogPattern.IsMatch(log.logLine))
+                    {
+                        continue;
+                    }
                 }
 
                 this.AnalyzeLogLine(log);

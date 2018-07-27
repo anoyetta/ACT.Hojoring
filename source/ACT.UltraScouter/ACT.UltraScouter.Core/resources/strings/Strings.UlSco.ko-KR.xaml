@@ -11,6 +11,9 @@
   <system:String x:Key="GeneralConfig_Opacity">불투명도</system:String>
   <system:String x:Key="GeneralConfig_LogPollingRate">로그 감시빈도 (msec)</system:String>
   <system:String x:Key="GeneralConfig_OverlayRefreshRate">오버레이 재생빈도 (msec)</system:String>
+  <system:String x:Key="GeneralConfig_LogPollingPriority">Log polling thread priority</system:String>
+  <system:String x:Key="GeneralConfig_OverlayRefreshPriority">Overlay refresh thread priority</system:String>
+  <system:String x:Key="GeneralConfig_RestartThreads">Restart threads</system:String>
   <system:String x:Key="GeneralConfig_AnimationMaxFPS">애니메이션 프레임 속도</system:String>
   <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">글자 윤곽선 비율</system:String>
   <system:String x:Key="GeneralConfig_TextBlurGain">글자 흐림 비율</system:String>
@@ -36,6 +39,7 @@
   <system:String x:Key="HP_BarLocation">바 위치</system:String>
   <system:String x:Key="HP_VisibleHPBar">HP 바 보이기</system:String>
   <system:String x:Key="HP_HPValueOnHPBar">HP바에 HP값 표기</system:String>
+  <system:String x:Key="HP_HPValueCompact">Compact display of HP value</system:String>
   <system:String x:Key="HP_HPBarStrokeColor">HP바 윤곽색</system:String>
   <system:String x:Key="HP_LinkBarStrokeColorToBarColor">바의 윤곽색을 바 색상에 동조시키다</system:String>
   <system:String x:Key="HP_LinkTextFillColorToBarColor">글자색을 바 색상에 동조시키다</system:String>
