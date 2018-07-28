@@ -235,7 +235,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     this.StoreLogPoller,
                     3 * 1000,
                     "CombatLog Analyer",
-                    ThreadPriority.BelowNormal);
+                    ThreadPriority.Lowest);
 
                 this.storeLogWorker.Run();
             }
@@ -452,6 +452,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     continue;
                 }
 
+                // 無効なログ？
+                if (ignores.Any(x => log.logLine.Contains(x.Keyword)))
+                {
+                    continue;
+                }
+
                 preLog = log.logLine;
 
                 logs.Add(log);
@@ -459,12 +465,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             foreach (var log in logs)
             {
-                // 無効なログ？
-                if (ignores.Any(x => log.logLine.Contains(x.Keyword)))
-                {
-                    continue;
-                }
-
                 // ダメージ系の不要なログか？
                 if (Settings.Default.IgnoreDamageLogs)
                 {
