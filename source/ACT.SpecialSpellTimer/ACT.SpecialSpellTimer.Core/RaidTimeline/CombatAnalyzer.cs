@@ -233,7 +233,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.storeLogWorker = new ThreadWorker(
                     this.StoreLogPoller,
-                    3 * 1000,
+                    100,
                     "CombatLog Analyer",
                     ThreadPriority.Lowest);
 
@@ -436,6 +436,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             if (this.logInfoQueue.IsEmpty)
             {
+                Thread.Sleep(TimeSpan.FromSeconds(1));
                 return;
             }
 
