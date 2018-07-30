@@ -73,21 +73,27 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 
 ##### Hojoring の設定ファイルあれこれ
 1. 格納場所  
-%APPDATA%\anoyetta\ACT  
+```
+%APPDATA%\anoyetta\ACT
+```  
 にすべて格納されています。よって、OSの再インストール等のときはこのディレクトリを丸ごとバックアップして再インストール後に配置しなおせば、再インストール前の設定を復元できます。
 
 2. 設定ファイル  
-ACT.SpecialSpellTimer.config  
-ACT.TTSYukkuri.config  
-ACT.UltraScouter.config  
+```
+ACT.SpecialSpellTimer.config
+ACT.TTSYukkuri.config
+ACT.UltraScouter.config
+```
 それぞれ、スペスペ・ゆっくり・ウルスカの設定ファイルです。  
 スペスペではトリガ以外のオプション関係の設定が保存されています。他のプラグインではプラグインそのものの設定が保存されています。  
 
 3. スペスペのトリガの設定ファイル  
-ACT.SpecialSpellTimer.Panels.xml  
-ACT.SpecialSpellTimer.Spells.xml  
-ACT.SpecialSpellTimer.Telops.xml  
-ACT.SpecialSpellTimer.Tags.xml  
+```
+ACT.SpecialSpellTimer.Panels.xml
+ACT.SpecialSpellTimer.Spells.xml
+ACT.SpecialSpellTimer.Telops.xml
+ACT.SpecialSpellTimer.Tags.xml
+```  
 スペスペの各種トリガの設定ファイルです。それぞれ、スペルパネル・スペル・テロップ・タグの設定ファイルになります。
 
 ## アップデート
@@ -125,8 +131,10 @@ $updateExclude = @(
 ![help](https://github.com/anoyetta/ACT.Hojoring/blob/master/images/help.png?raw=true)
 
 ##### 起動できないなどUIから取得できない場合は下記のフォルダから収集してください。
-%APPDATA%\Advanced Combat Tracker\Advanced Combat Tracker.log  
-%APPDATA%\anoyetta\ACT\logs\ACT.Hojoring.YYYY-MM-DD.log  
+```
+%APPDATA%\Advanced Combat Tracker\Advanced Combat Tracker.log
+%APPDATA%\anoyetta\ACT\logs\ACT.Hojoring.YYYY-MM-DD.log
+```
 
 ### スペルが動かない
 前述の情報に以下の情報も追加で必要になります。  
