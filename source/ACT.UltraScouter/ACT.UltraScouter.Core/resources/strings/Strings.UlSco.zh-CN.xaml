@@ -57,6 +57,7 @@
   <system:String x:Key="Action_CastingBarSize">咏唱条大小</system:String>
   <system:String x:Key="Action_CircleStyle">圆形样式</system:String>
   <system:String x:Key="Action_RotateCCW">逆时针</system:String>
+  <system:String x:Key="Action_CircleBlurRadius">Circle blur radius</system:String>
   <system:String x:Key="Action_Sound">声音</system:String>
   <system:String x:Key="Action_WaveSound">提示音</system:String>
 
