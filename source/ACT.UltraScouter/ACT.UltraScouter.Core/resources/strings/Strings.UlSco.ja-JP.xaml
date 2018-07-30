@@ -57,6 +57,7 @@
   <system:String x:Key="Action_CastingBarSize">キャストバーのサイズ</system:String>
   <system:String x:Key="Action_CircleStyle">サークルスタイル</system:String>
   <system:String x:Key="Action_RotateCCW">回転を反時計周りにする</system:String>
+  <system:String x:Key="Action_CircleBlurRadius">サークルのブラー半径</system:String>
   <system:String x:Key="Action_Sound">サウンド</system:String>
   <system:String x:Key="Action_WaveSound">WAVEサウンドファイル</system:String>
 

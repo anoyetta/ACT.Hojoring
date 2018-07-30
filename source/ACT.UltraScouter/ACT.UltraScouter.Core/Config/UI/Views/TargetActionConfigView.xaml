@@ -211,6 +211,17 @@
           IsChecked="{Binding Action.IsCircleReverse, Mode=TwoWay}" />
       </StackPanel>
 
+      <StackPanel
+        Margin="0 10 0 0"
+        Visibility="{Binding Action.UseCircle, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+        <Label Content="{DynamicResource Action_CircleBlurRadius}" />
+        <TextBox
+          Text="{Binding Action.CircleBlurRadius, Mode=TwoWay, StringFormat=N0}"
+          HorizontalAlignment="Left"
+          HorizontalContentAlignment="Right"
+          Width="60" />
+      </StackPanel>
+
       <!-- サウンド -->
       <Label
         Margin="0 20 0 0"

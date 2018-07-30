@@ -23,6 +23,7 @@ namespace ACT.UltraScouter.Config
         [XmlIgnore] private bool ttsEnabled;
         [XmlIgnore] private bool useCircle;
         [XmlIgnore] private bool isCircleReverse;
+        [XmlIgnore] private double circleBlurRadius = 14;
 
         /// <summary>
         /// 表示テキスト
@@ -150,6 +151,16 @@ namespace ACT.UltraScouter.Config
         {
             get => this.isCircleReverse;
             set => this.SetProperty(ref this.isCircleReverse, value);
+        }
+
+        /// <summary>
+        /// サークルモードのときのBlurラジアス
+        /// </summary>
+        [DataMember]
+        public double CircleBlurRadius
+        {
+            get => this.circleBlurRadius;
+            set => this.SetProperty(ref this.circleBlurRadius, value);
         }
     }
 }

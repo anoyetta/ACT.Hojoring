@@ -57,6 +57,7 @@
   <system:String x:Key="Action_CastingBarSize">캐스팅바 크기</system:String>
   <system:String x:Key="Action_CircleStyle">원형 스타일</system:String>
   <system:String x:Key="Action_RotateCCW">회전을 반시계 방향으로</system:String>
+  <system:String x:Key="Action_CircleBlurRadius">Circle blur radius</system:String>
   <system:String x:Key="Action_Sound">사운드</system:String>
   <system:String x:Key="Action_WaveSound">Wave 사운드 파일</system:String>
 

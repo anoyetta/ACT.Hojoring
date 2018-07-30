@@ -183,7 +183,8 @@
             Radius="{Binding Config.ProgressBar.Width, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.5}"
             Thickness="{Binding Config.ProgressBar.Height, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.8}"
             Progress="{Binding ElementName=Bar, Path=Progress, Mode=OneWay}"
-            IsCCW="{Binding Config.IsCircleReverse, Mode=OneWay}" />
+            IsCCW="{Binding Config.IsCircleReverse, Mode=OneWay}"
+            BlurRadius="{Binding Config.CircleBlurRadius, Mode=OneWay}" />
         </Grid>
 
         <StackPanel
