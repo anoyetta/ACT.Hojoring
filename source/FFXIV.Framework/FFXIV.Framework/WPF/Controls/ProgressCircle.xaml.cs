@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -413,6 +414,8 @@ namespace FFXIV.Framework.WPF.Controls
             var angle = !this.IsReverse ?
                 (360.1 * progress) - 90 :
                 (360.1 - (360.1 * progress)) - 90;
+
+            angle = Math.Round(angle, 1);
 
             // ForeCircleを描画する
             this.ForeCircle.StartAngle = -90;
