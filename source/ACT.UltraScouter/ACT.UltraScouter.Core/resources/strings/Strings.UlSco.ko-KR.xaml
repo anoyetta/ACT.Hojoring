@@ -80,8 +80,8 @@
   <system:String x:Key="MobList_VisibleMePosition">자신의 좌표 표시</system:String>
   <system:String x:Key="MobList_SimpleView">Simple View</system:String>
   <system:String x:Key="MobList_VisibleZPosition">Z축 표시</system:String>
-  <system:String x:Key="MobList_DirectionOrigin">Origin of Direction</system:String>
-  <system:String x:Key="MobList_DirectionOriginDescription">To use "Me" or "Camera", FFXIV_MemoryReader is required.</system:String>
+  <system:String x:Key="MobList_DirectionOrigin">방향 표시 기준</system:String>
+  <system:String x:Key="MobList_DirectionOriginDescription">Me, Camera를 사용하는 경우는 FFXIV_MemoryReader가 필요합니다.</system:String>
   <system:String x:Key="MobList_OpenTargetMobList">대상 몹 리스트를 열기</system:String>
   <system:String x:Key="MobList_ReloadTargetMobList">대상 몹 리스트를 다시 불러오기</system:String>
   <system:String x:Key="MobList_CountOfDisplay">개요</system:String>
