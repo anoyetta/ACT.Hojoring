@@ -1309,7 +1309,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         {
                             var r = false;
 
-                            if (con.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase))
+                            if (con.IsMatchName(x.Name))
                             {
                                 if (con.X == TimelineCombatantModel.InvalidPosition ||
                                     (con.X - con.Tolerance) <= x.PosXMap && x.PosXMap <= (con.X + con.Tolerance))
