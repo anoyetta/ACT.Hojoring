@@ -440,17 +440,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            var preLog = string.Empty;
-
+            var preLog = new string[3];
+            var preLogIndex = 0;
             var ignores = TimelineSettings.Instance.IgnoreLogTypes.Where(x => x.IsIgnore);
 
             var logs = new List<LogLineEventArgs>(this.logInfoQueue.Count);
 
             while (this.logInfoQueue.TryDequeue(out LogLineEventArgs log))
             {
-                if (preLog == log.logLine)
+                // 直前とまったく同じ行はカットする
+                if (preLog[0] == log.logLine ||
+                    preLog[1] == log.logLine ||
+                    preLog[2] == log.logLine)
                 {
                     continue;
+                }
+
+                preLog[preLogIndex++] = log.logLine;
+                if (preLogIndex >= 3)
+                {
+                    preLogIndex = 0;
                 }
 
                 // 無効なログ？
@@ -458,8 +467,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     continue;
                 }
-
-                preLog = log.logLine;
 
                 logs.Add(log);
             }
