@@ -34,8 +34,8 @@
   <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5 0.5">
     <StackPanel.RenderTransform>
       <ScaleTransform
-        ScaleX="2.0"
-        ScaleY="2.0" />
+        ScaleX="1.5"
+        ScaleY="1.5" />
     </StackPanel.RenderTransform>
 
     <Label x:Name="Dummy" Background="{Binding MainBrush, Mode=OneWay}" Visibility="Collapsed" />
