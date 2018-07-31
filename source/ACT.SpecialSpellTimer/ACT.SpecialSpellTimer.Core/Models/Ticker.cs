@@ -164,6 +164,14 @@ namespace ACT.SpecialSpellTimer.Models
 
         public string FontOutlineColor { get; set; } = Colors.OrangeRed.ToLegacy().ToHTML();
 
+        private double barBlurRadius = 14;
+
+        public double BarBlurRadius
+        {
+            get => this.barBlurRadius;
+            set => this.SetProperty(ref this.barBlurRadius, value);
+        }
+
         public int BackgroundAlpha { get; set; } = 0;
 
         public string BackgroundColor { get; set; } = Colors.Black.ToLegacy().ToHTML();
