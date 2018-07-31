@@ -20,11 +20,11 @@
   <system:String x:Key="Common_OK">O K</system:String>
   <system:String x:Key="Common_Apply">应用</system:String>
   <system:String x:Key="Common_Cancel">取消</system:String>
-    <system:String x:Key="Common_Clear">清除</system:String>
+  <system:String x:Key="Common_Clear">清除</system:String>
   <system:String x:Key="Common_Details">详细</system:String>
   <system:String x:Key="Common_ManageTags">管理标签</system:String>
 
-    <system:String x:Key="Common_CreateNew">新建</system:String>
+  <system:String x:Key="Common_CreateNew">新建</system:String>
   <system:String x:Key="Common_CreateSimilarNew">复制当前</system:String>
   <system:String x:Key="Common_CreateNewTag">创建新标签</system:String>
   <system:String x:Key="Common_CreateNewSpellPanel">创建新技能组</system:String>
@@ -37,12 +37,13 @@
   <system:String x:Key="Common_Copy">复制</system:String>
   <system:String x:Key="Common_AdvancedSettings">进阶设置</system:String>
 
-    <system:String x:Key="Common_VisibleSpell">显示计时器和进度条</system:String>
+  <system:String x:Key="Common_VisibleSpell">显示计时器和进度条</system:String>
   <system:String x:Key="Common_VisibleSpellDiscription">关闭后仅有声音提示</system:String>
   <system:String x:Key="Common_General">整体</system:String>
   <system:String x:Key="Common_Font">字体</system:String>
   <system:String x:Key="Common_FillColor">填充颜色</system:String>
   <system:String x:Key="Common_StrokeColor">轮廓颜色</system:String>
+  <system:String x:Key="Common_BlurRadius">Blur radius</system:String>
   <system:String x:Key="Common_WarningFillColor">填充颜色(报警)</system:String>
   <system:String x:Key="Common_WarningStrokeColor">轮廓颜色(报警)</system:String>
   <system:String x:Key="Common_ProgressBar">进度条</system:String>
@@ -74,8 +75,8 @@
   <system:String x:Key="Trigger_ClearFilter">清除过滤</system:String>
   <system:String x:Key="Trigger_ForMustStartRunningSpell">⚪必须在触发中的技能</system:String>
   <system:String x:Key="Trigger_ForMustStartStoppingSpell">✖必须未在触发的技能</system:String>
-    <system:String x:Key="Trigger_ForMustStartRunningTicker">⚪必须在触发中的字幕</system:String>
-    <system:String x:Key="Trigger_ForMustStartStoppingTicker">✖必须未在触发的字幕</system:String>
+  <system:String x:Key="Trigger_ForMustStartRunningTicker">⚪必须在触发中的字幕</system:String>
+  <system:String x:Key="Trigger_ForMustStartStoppingTicker">✖必须未在触发的字幕</system:String>
   <system:String x:Key="Trigger_SimulateMatch">测试</system:String>
 
   <system:String x:Key="SpellPanel_Name">技能组名</system:String>

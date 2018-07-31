@@ -282,6 +282,14 @@ namespace ACT.SpecialSpellTimer.Models
 
         public string BarOutlineColor { get; set; } = Colors.Navy.ToLegacy().ToHTML();
 
+        private double barBlurRadius = 11;
+
+        public double BarBlurRadius
+        {
+            get => this.barBlurRadius;
+            set => this.SetProperty(ref this.barBlurRadius, value);
+        }
+
         public string BackgroundColor { get; set; } = Colors.Black.ToLegacy().ToHTML();
 
         public int BackgroundAlpha { get; set; } = 0;
@@ -1016,6 +1024,7 @@ namespace ACT.SpecialSpellTimer.Models
             n.WarningFontOutlineColor = this.WarningFontOutlineColor;
             n.BarColor = this.BarColor;
             n.BarOutlineColor = this.BarOutlineColor;
+            n.BarBlurRadius = this.BarBlurRadius;
             n.DontHide = this.DontHide;
             n.HideSpellName = this.HideSpellName;
             n.WarningTime = this.WarningTime;
@@ -1088,6 +1097,7 @@ namespace ACT.SpecialSpellTimer.Models
             n.WarningFontOutlineColor = this.WarningFontOutlineColor;
             n.BarColor = this.BarColor;
             n.BarOutlineColor = this.BarOutlineColor;
+            n.BarBlurRadius = this.BarBlurRadius;
             n.BarWidth = this.BarWidth;
             n.BarHeight = this.BarHeight;
             n.BackgroundColor = this.BackgroundColor;

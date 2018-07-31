@@ -43,6 +43,7 @@
   <system:String x:Key="Common_Font">글꼴</system:String>
   <system:String x:Key="Common_FillColor">글자색</system:String>
   <system:String x:Key="Common_StrokeColor">외각선색</system:String>
+  <system:String x:Key="Common_BlurRadius">Blur radius</system:String>
   <system:String x:Key="Common_WarningFillColor">경고시 글자색</system:String>
   <system:String x:Key="Common_WarningStrokeColor">경고시 외곽선색</system:String>
   <system:String x:Key="Common_ProgressBar">진행 바</system:String>

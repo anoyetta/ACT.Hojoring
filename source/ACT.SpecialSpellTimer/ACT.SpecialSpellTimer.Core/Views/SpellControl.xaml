@@ -63,7 +63,7 @@
         <Canvas.Effect>
           <DropShadowEffect
             x:Name="BarEffect"
-            BlurRadius="11"
+            BlurRadius="{Binding BarBlurRadius, Mode=OneWay}"
             RenderingBias="Performance"
             ShadowDepth="0">
           </DropShadowEffect>
