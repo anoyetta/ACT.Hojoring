@@ -6,3 +6,4 @@
 *.dic filter=lfs diff=lfs merge=lfs -text
 *.def filter=lfs diff=lfs merge=lfs -text
 *.csv filter=lfs diff=lfs merge=lfs -text
+*.htsvoice filter=lfs diff=lfs merge=lfs -text
