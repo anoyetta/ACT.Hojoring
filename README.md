@@ -101,7 +101,7 @@ Help タブからアップデートしてください。
 
 ![how_to_update](https://github.com/anoyetta/ACT.Hojoring/blob/master/images/how_to_update.png?raw=true)
 
-自分で独自に編集しているから上書きしたくないファイがある場合は **update_hojoring.ps1** スクリプトを編集してください。
+自分で独自に編集しているから上書きしたくないファイルがある場合は **update_hojoring.ps1** スクリプトを編集してください。
 ```powershell
 # update_hojoring.ps1
 
