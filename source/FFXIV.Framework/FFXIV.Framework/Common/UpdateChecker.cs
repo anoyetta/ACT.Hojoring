@@ -441,6 +441,11 @@ namespace FFXIV.Framework.Common
                 supportWin7 = true;
                 Logger.Info($"*** Support Win7 ***");
             }
+#if false
+#if DEBUG
+            supportWin7 = true;
+#endif
+#endif
 
             Logger.Info($"*** .NET Framework v{dotNetVersion}, release {dotNetReleaseID} ***");
         }
@@ -471,6 +476,26 @@ namespace FFXIV.Framework.Common
                             $"{prompt1}\n{prompt2}",
                             "ACT.Hojoring"),
                         DispatcherPriority.Normal);
+                }
+            }
+            else
+            {
+                if (supportWin7)
+                {
+                    if (!shownWindowsIsOld)
+                    {
+                        shownWindowsIsOld = true;
+
+                        var prompt1 = "Windows 7 or 8 was allowed.";
+                        var prompt2 = "But, you should update to Windows 10.";
+                        var prompt3 = "https://www.microsoft.com/software-download/windows10";
+
+                        WPFHelper.BeginInvoke(
+                            () => ModernMessageBox.ShowDialog(
+                                $"{prompt1}\n{prompt2}\n\n{prompt3}",
+                                "ACT.Hojoring"),
+                            DispatcherPriority.Normal);
+                    }
                 }
             }
 
