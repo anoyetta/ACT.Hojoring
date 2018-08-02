@@ -319,7 +319,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 };
 
                 this.overlay.WindowStartupLocation = this.StartupLocation;
-                this.overlay.ChangeClickthrough(TimelineSettings.Instance.Clickthrough);
                 this.overlay.Show();
             }
         }

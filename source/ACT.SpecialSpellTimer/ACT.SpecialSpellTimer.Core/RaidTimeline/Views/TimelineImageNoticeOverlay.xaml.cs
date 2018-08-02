@@ -79,15 +79,21 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
             {
                 WPFHelper.Invoke(() =>
                 {
+                    this.IsClickthrough = this.Config.Clickthrough;
                     this.OverlayVisible = true;
                 },
-                DispatcherPriority.Background);
+                DispatcherPriority.Normal);
             }
         }
 
-        public void ChangeClickthrough(
+        public static void ChangeClickthrough(
             bool isClickthrough)
-            => this.IsClickthrough = isClickthrough;
+        {
+            if (designOverlay != null)
+            {
+                designOverlay.IsClickthrough = isClickthrough;
+            }
+        }
 
         public void CloseNotice()
         {
