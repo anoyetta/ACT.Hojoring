@@ -3,6 +3,8 @@
   <name>極白虎征魂戦</name>
   <rev>rev1</rev>
   <description>
+    極白虎征魂戦向けのスペスペたいむ定義です。
+    designed by anoyetta
   </description>
   <zone>The Jade Stoa (Extreme)</zone>
   <locale>JA</locale>
@@ -84,33 +86,33 @@
   </s>
 
   <s name="FINAL">
-    <a time="009" text="雷火一閃" sync="白虎は「雷火一閃」を唱えた。"/>
+    <a time="009" text="雷火一閃" sync="白虎は「雷火一閃」を唱えた。" />
     <a time="024" text="風雷波動" notice="次は、波動。" icon="AllRangeAttack.png" />
     <a time="038" sync="天つ風よ、吹き荒べ！" />
-    <a time="039" text="爆弾低気圧" sync="白虎の「爆弾低気圧」"/>
-    <a time="041" text="天つ雷" sync="白虎の「天つ雷」"/>
+    <a time="039" text="爆弾低気圧" sync="白虎の「爆弾低気圧」" />
+    <a time="041" text="天つ雷" sync="白虎の「天つ雷」" />
     <a time="042" sync="天つ雷よ、焼き払え！" />
 
     <a time="045" text="呪縛雷x2" icon="DamageShare.png" />
     <a time="069" text="旋体脚" sync="白虎は「旋体脚」の構え。" notice="次は、せんたいきゃく。" />
     <a time="083" text="天雷掌" sync="白虎は「天雷掌」の構え。" notice="次は、てんらいしょう。" icon="HardAttack.png" />
     <a time="093" text="風雷波動" notice="次は、波動。" icon="AllRangeAttack.png" />
-    <a time="105" text="遠雷" sync="白虎は「遠雷」を唱えた。"/>
+    <a time="105" text="遠雷" sync="白虎は「遠雷」を唱えた。" />
     <a time="112" text="天雷掌" sync="白虎は「天雷掌」の構え。" notice="次は、てんらいしょう。" icon="HardAttack.png" />
 
     <a time="124" sync="吹けよ、荒れよ、我がアラミタマ！" />
-    <a time="130" text="無間地獄" sync="白虎は「無間地獄」の構え。"/>
+    <a time="130" text="無間地獄" sync="白虎は「無間地獄」の構え。" />
     <a time="131" text="風雷波動" notice="次は、波動。" icon="AllRangeAttack.png" />
     <a time="139" sync="天つ風よ、吹き荒べ！" />
-    <a time="140" text="爆弾低気圧" sync="白虎の「爆弾低気圧」"/>
-    <a time="146" text="祟り風" sync="白虎の「祟り風」"/>
+    <a time="140" text="爆弾低気圧" sync="白虎の「爆弾低気圧」" />
+    <a time="146" text="祟り風" sync="白虎の「祟り風」" />
     <a time="151" text="雷火一閃" />
     <a time="155" text="雷火一閃" />
     <a time="175" text="風雷波動" notice="次は、波動。" icon="AllRangeAttack.png" />
 
     <a time="183" sync="この力……やはり、本物か！？" />
     <a time="187" sync="天つ雷よ、焼き払え！" />
-    <a time="188" text="天つ雷" sync="白虎の「天つ雷」"/>
+    <a time="188" text="天つ雷" sync="白虎の「天つ雷」" />
     <a time="194" text="呪縛雷x2" icon="DamageShare.png" />
     <a time="213" text="旋体脚" sync="白虎は「旋体脚」の構え。" notice="次は、せんたいきゃく。" />
 
