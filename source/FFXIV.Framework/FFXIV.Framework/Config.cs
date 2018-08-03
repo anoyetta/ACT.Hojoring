@@ -8,7 +8,7 @@ using Prism.Mvvm;
 namespace FFXIV.Framework
 {
     [Serializable]
-    [XmlType(TypeName = "FFXIV.Framework.Config")]
+    [XmlType(TypeName = "FFXIV.Framework")]
     public class Config :
         BindableBase
     {
