@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using FFXIV.Framework.FFXIVHelper;
 
@@ -91,6 +92,64 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public override TimelineElementTypes TimelineType => TimelineElementTypes.Combatant;
 
         public override IList<TimelineBase> Children => null;
+
+        [XmlAttribute(AttributeName = "name")]
+        public override string Name
+        {
+            get => this.name;
+            set
+            {
+                if (this.SetProperty(ref this.name, value))
+                {
+                    this.NameMatch = null;
+
+                    if (string.IsNullOrEmpty(this.name))
+                    {
+                        this.NameRegex = null;
+                    }
+                    else
+                    {
+                        this.NameRegex = new Regex(
+                            this.name,
+                            RegexOptions.Compiled |
+                            RegexOptions.IgnoreCase);
+                    }
+                }
+            }
+        }
+
+        private Regex nameRegex = null;
+
+        [XmlIgnore]
+        public Regex NameRegex
+        {
+            get => this.nameRegex;
+            private set => this.SetProperty(ref this.nameRegex, value);
+        }
+
+        private Match nameMatch = null;
+
+        [XmlIgnore]
+        public Match NameMatch
+
+        {
+            get => this.nameMatch;
+            set => this.SetProperty(ref this.nameMatch, value);
+        }
+
+        public bool IsMatchName(
+            string name)
+        {
+            this.NameMatch = null;
+
+            if (this.nameRegex == null)
+            {
+                return false;
+            }
+
+            this.NameMatch = this.nameRegex.Match(name);
+            return this.NameMatch.Success;
+        }
 
         /// <summary>
         /// 無効な座標を示す値

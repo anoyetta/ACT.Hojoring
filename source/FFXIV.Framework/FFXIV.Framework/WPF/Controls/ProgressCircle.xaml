@@ -58,7 +58,6 @@
       EndAngle="180">
       <local:Arc.Effect>
         <DropShadowEffect
-          Opacity="0.99"
           Direction="0"
           BlurRadius="14"
           ShadowDepth="0"

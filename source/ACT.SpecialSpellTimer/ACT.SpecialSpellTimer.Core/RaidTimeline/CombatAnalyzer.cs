@@ -233,9 +233,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.storeLogWorker = new ThreadWorker(
                     this.StoreLogPoller,
-                    3 * 1000,
+                    100,
                     "CombatLog Analyer",
-                    ThreadPriority.BelowNormal);
+                    ThreadPriority.Lowest);
 
                 this.storeLogWorker.Run();
             }
@@ -436,35 +436,43 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             if (this.logInfoQueue.IsEmpty)
             {
+                Thread.Sleep(TimeSpan.FromSeconds(1));
                 return;
             }
 
-            var preLog = string.Empty;
-
+            var preLog = new string[3];
+            var preLogIndex = 0;
             var ignores = TimelineSettings.Instance.IgnoreLogTypes.Where(x => x.IsIgnore);
 
             var logs = new List<LogLineEventArgs>(this.logInfoQueue.Count);
 
             while (this.logInfoQueue.TryDequeue(out LogLineEventArgs log))
             {
-                if (preLog == log.logLine)
+                // 直前とまったく同じ行はカットする
+                if (preLog[0] == log.logLine ||
+                    preLog[1] == log.logLine ||
+                    preLog[2] == log.logLine)
                 {
                     continue;
                 }
 
-                preLog = log.logLine;
+                preLog[preLogIndex++] = log.logLine;
+                if (preLogIndex >= 3)
+                {
+                    preLogIndex = 0;
+                }
 
-                logs.Add(log);
-            }
-
-            foreach (var log in logs)
-            {
                 // 無効なログ？
                 if (ignores.Any(x => log.logLine.Contains(x.Keyword)))
                 {
                     continue;
                 }
 
+                logs.Add(log);
+            }
+
+            foreach (var log in logs)
+            {
                 // ダメージ系の不要なログか？
                 if (Settings.Default.IgnoreDamageLogs)
                 {

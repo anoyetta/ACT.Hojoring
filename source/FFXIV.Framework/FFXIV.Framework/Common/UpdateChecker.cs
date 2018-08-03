@@ -398,7 +398,6 @@ namespace FFXIV.Framework.Common
 
         private const int Windows10BuildNo = 10240;
         private static int osBuildNo;
-        private static bool supportWin7 = false;
 
         private static void DumpEnvironment()
         {
@@ -430,6 +429,7 @@ namespace FFXIV.Framework.Common
 
             Logger.Info($"*** {productName} v{releaseId}, build {buildNo} ***");
 
+#if false
             // SUPPORT_WIN7 というファイルが存在する場合は
             // 強制的にWindows 7を許可する
             var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -441,18 +441,22 @@ namespace FFXIV.Framework.Common
                 supportWin7 = true;
                 Logger.Info($"*** Support Win7 ***");
             }
+#endif
 
             Logger.Info($"*** .NET Framework v{dotNetVersion}, release {dotNetReleaseID} ***");
         }
 
         public static bool IsWindows10Later =>
             osBuildNo >= Windows10BuildNo ||
-            supportWin7;
+            Config.Instance.SupportWin7;
 
         private static volatile bool shownWindowsIsOld = false;
 
         public static bool IsAvailableWindows()
         {
+            const string prompt1 = "Unsupported Operating System.";
+            const string prompt2 = "Windows 10 or Later is Required.";
+
             var result = IsWindows10Later;
 
             if (!result)
@@ -461,9 +465,6 @@ namespace FFXIV.Framework.Common
                 {
                     shownWindowsIsOld = true;
 
-                    var prompt1 = "Unsupported Operating System.";
-                    var prompt2 = "Windows 10 or Later is Required.";
-
                     Logger.Error($"{prompt1} {prompt2}");
 
                     WPFHelper.BeginInvoke(
@@ -471,6 +472,16 @@ namespace FFXIV.Framework.Common
                             $"{prompt1}\n{prompt2}",
                             "ACT.Hojoring"),
                         DispatcherPriority.Normal);
+                }
+            }
+
+            if (Config.Instance.SupportWin7)
+            {
+                if (!shownWindowsIsOld)
+                {
+                    shownWindowsIsOld = true;
+                    Logger.Warn($"{prompt1} {prompt2}");
+                    Logger.Warn($"Support Win7 manualy, but you better have update to Windows 10. https://www.microsoft.com/software-download/windows10");
                 }
             }
 

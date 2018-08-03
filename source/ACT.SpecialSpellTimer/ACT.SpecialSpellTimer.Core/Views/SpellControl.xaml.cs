@@ -127,7 +127,8 @@ namespace ACT.SpecialSpellTimer.Views
             // リキャスト時間を描画する
             if (!this.Spell.HideCounter)
             {
-                var recastTimeToShow = Settings.Default.EnabledSpellTimerNoDecimal ?
+                var recastTimeToShow = 0d;
+                recastTimeToShow = Settings.Default.EnabledSpellTimerNoDecimal ?
                     this.RecastTime.CeilingEx() :
                     this.RecastTime.CeilingEx(1);
 

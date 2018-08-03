@@ -158,14 +158,14 @@ namespace ACT.SpecialSpellTimer.Views
                 this.Ticker.DisplayTime <= 0)
             {
                 this.TickerControl.BarVisible = false;
+                this.TickerControl.BarHeight = 0;
             }
             else
             {
                 this.TickerControl.BarVisible = true;
+                this.TickerControl.BarHeight = 10;
+                this.TickerControl.BarBlurRadius = this.Ticker.BarBlurRadius;
             }
-
-            // プログレスバーを初期化する
-            this.TickerControl.BarHeight = 10;
         }
 
         #region Animation

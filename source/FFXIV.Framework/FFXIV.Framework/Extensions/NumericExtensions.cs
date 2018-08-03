@@ -13,5 +13,15 @@ namespace FFXIV.Framework.Extensions
             this float num,
             int decimals = 0) =>
             (float)(Math.Ceiling(num * Math.Pow(10, decimals)) / Math.Pow(10, decimals));
+
+        public static double TruncateEx(
+            this double num,
+            int decimals = 0) =>
+            Math.Truncate(num * Math.Pow(10, decimals)) / Math.Pow(10, decimals);
+
+        public static float TruncateEx(
+            this float num,
+            int decimals = 0) =>
+            (float)(Math.Truncate(num * Math.Pow(10, decimals)) / Math.Pow(10, decimals));
     }
 }

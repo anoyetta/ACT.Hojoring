@@ -43,6 +43,7 @@
   <system:String x:Key="Common_Font">フォント</system:String>
   <system:String x:Key="Common_FillColor">塗りつぶし(内側)のカラー</system:String>
   <system:String x:Key="Common_StrokeColor">アウトラインのカラー</system:String>
+  <system:String x:Key="Common_BlurRadius">ブラー半径</system:String>
   <system:String x:Key="Common_WarningFillColor">警告時の塗りつぶし(内側)のカラー</system:String>
   <system:String x:Key="Common_WarningStrokeColor">警告時のアウトラインのカラー</system:String>
   <system:String x:Key="Common_ProgressBar">プログレスバー</system:String>

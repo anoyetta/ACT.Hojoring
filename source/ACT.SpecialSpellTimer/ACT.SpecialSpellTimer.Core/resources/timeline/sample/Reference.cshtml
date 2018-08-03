@@ -544,8 +544,10 @@
     p-syncの条件となる combatant の座標を定義する。
   
   name :
-    string, 必須項目
-    対象とする combatant の名前。完全一致で判定する。
+    string(RegEx), 必須項目
+    対象とする combatant の名前。
+    正規表現であるため完全一致で判定する場合は文頭と文末を指定すること。
+    例) "^Naoki Yoshida$"
 
   X, Y, Z :
     float, 任意項目
@@ -631,6 +633,9 @@
 
 <!--
 変更履歴
+
+2018-07-31 rev16
+  * p-sync の combatant の name を単純な完全一致による文字列比較から正規表現に変更した
 
 2018-06-11 rev15
   * t タグの配下に Combatants の座標情報とマッチングする p-sync タグを追加した

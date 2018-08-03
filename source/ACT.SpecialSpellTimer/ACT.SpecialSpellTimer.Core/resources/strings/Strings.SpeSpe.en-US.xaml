@@ -43,6 +43,7 @@
   <system:String x:Key="Common_Font">Font</system:String>
   <system:String x:Key="Common_FillColor">Fill color</system:String>
   <system:String x:Key="Common_StrokeColor">Stroke color</system:String>
+  <system:String x:Key="Common_BlurRadius">Blur radius</system:String>
   <system:String x:Key="Common_WarningFillColor">Warning fill color</system:String>
   <system:String x:Key="Common_WarningStrokeColor">Warning stroke color</system:String>
   <system:String x:Key="Common_ProgressBar">Progress bar</system:String>

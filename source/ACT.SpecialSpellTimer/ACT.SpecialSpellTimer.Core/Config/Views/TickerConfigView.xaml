@@ -475,6 +475,11 @@
 
                 <!-- プログレスバー -->
                 <CheckBox Margin="0 15 0 0" Content="{DynamicResource Ticker_VisibleProgressBar}" IsChecked="{Binding Model.ProgressBarEnabled}" />
+
+                <StackPanel Orientation="Horizontal" Margin="0 6 0 0" Visibility="{Binding Model.ProgressBarEnabled, Converter={StaticResource VisibilityConverter}, Mode=OneWay}">
+                  <Label Content="{DynamicResource Common_BlurRadius}" VerticalAlignment="Center" Margin="0 0 7 0" />
+                  <xctk:DoubleUpDown Value="{Binding Model.BarBlurRadius, Mode=TwoWay}" Increment="1"  HorizontalAlignment="Left" Width="70" FormatString="N0" />
+                </StackPanel>
               </StackPanel>
 
               <!-- フォント -->
