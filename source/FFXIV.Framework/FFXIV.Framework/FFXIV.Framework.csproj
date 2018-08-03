@@ -95,6 +95,7 @@
     <Compile Include="Common\WaColors.cs" />
     <Compile Include="Common\WavePlayer.cs" />
     <Compile Include="Common\WPFHelper.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Dialog\ColorDialogResult.cs" />
     <Compile Include="Dialog\ColorDialogWrapper.cs" />
     <Compile Include="Dialog\FontDialogResult.cs" />
