@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -353,8 +354,20 @@ namespace FFXIV.Framework.WPF.Controls
         private void Render()
         {
             // エフェクトを設定する
-            (this.ForeCircle.Effect as DropShadowEffect).BlurRadius = this.BlurRadius;
-            (this.ForeCircle.Effect as DropShadowEffect).Opacity = this.Opacity;
+            var effect = this.ForeCircle.Effect as DropShadowEffect;
+            if (effect != null)
+            {
+                if (this.BlurRadius > 0)
+                {
+                    effect.BlurRadius = this.BlurRadius;
+                    effect.Opacity = this.Opacity;
+                }
+                else
+                {
+                    effect.BlurRadius = 0;
+                    effect.Opacity = 0;
+                }
+            }
 
             // 大きさを設定する
             this.ForeCircle.Radius = this.Radius;
@@ -413,6 +426,8 @@ namespace FFXIV.Framework.WPF.Controls
             var angle = !this.IsReverse ?
                 (360.1 * progress) - 90 :
                 (360.1 - (360.1 * progress)) - 90;
+
+            angle = Math.Round(angle, 1);
 
             // ForeCircleを描画する
             this.ForeCircle.StartAngle = -90;

@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ACT.SpecialSpellTimer.Config;
+using FFXIV.Framework.Common;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -17,11 +19,11 @@ namespace ACT.SpecialSpellTimer
 
         #endregion Singleton
 
-        private readonly double FlushInterval = 10000;
+        private readonly TimeSpan FlushInterval = TimeSpan.FromSeconds(10);
         private readonly Encoding UTF8Encoding = new UTF8Encoding(false);
         private readonly StringBuilder LogBuffer = new StringBuilder(128 * 5120);
 
-        private System.Timers.Timer worker;
+        private ThreadWorker worker;
 
         private string OutputDirectory => Settings.Default.SaveLogDirectory;
 
@@ -55,6 +57,7 @@ namespace ACT.SpecialSpellTimer
                     foreach (var log in logList)
                     {
                         this.LogBuffer.AppendLine(log.LogLine);
+                        Thread.Yield();
                     }
                 }
             }
@@ -70,19 +73,23 @@ namespace ACT.SpecialSpellTimer
                 this.LogBuffer.Clear();
             }
 
-            this.worker = new System.Timers.Timer();
-            this.worker.AutoReset = true;
-            this.worker.Interval = FlushInterval;
-            this.worker.Elapsed += (s, e) => this.Flush();
+            this.worker = new ThreadWorker(
+                this.Flush,
+                FlushInterval.TotalMilliseconds,
+                "CombatLogFlushWorker",
+                ThreadPriority.Lowest);
 
-            this.worker.Start();
+            this.worker.Run();
         }
 
         public void End()
         {
-            this.worker?.Stop();
-            this.worker?.Dispose();
-            this.worker = null;
+            if (this.worker != null)
+            {
+                this.worker.Abort();
+                this.worker = null;
+            }
+
             this.Flush();
         }
 

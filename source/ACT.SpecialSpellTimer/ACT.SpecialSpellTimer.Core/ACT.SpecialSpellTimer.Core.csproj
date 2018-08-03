@@ -877,22 +877,22 @@
     <Content Include="resources\timeline\sample\SampleInclude.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\timeline\sample\Sigmascape_V1.0_Savage.xml">
+    <Content Include="resources\timeline\sample\raids_Sigmascape_V1.0_Savage.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\timeline\sample\Sigmascape_V2.0_Savage.xml">
+    <Content Include="resources\timeline\sample\raids_Sigmascape_V2.0_Savage.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\timeline\sample\Sigmascape_V3.0_Savage.xml">
+    <Content Include="resources\timeline\sample\raids_Sigmascape_V3.0_Savage.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\timeline\sample\Sigmascape_V4.0_Savage.xml">
+    <Content Include="resources\timeline\sample\raids_Sigmascape_V4.0_Savage.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\timeline\sample\The_Jade_Stoa_Extreme.xml">
+    <Content Include="resources\timeline\sample\trials_The_Jade_Stoa_Extreme.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\timeline\sample\Tsukuyomi_Extreme.xml">
+    <Content Include="resources\timeline\sample\trials_Tsukuyomi_Extreme.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\timeline\wallpaper\biolike.png">

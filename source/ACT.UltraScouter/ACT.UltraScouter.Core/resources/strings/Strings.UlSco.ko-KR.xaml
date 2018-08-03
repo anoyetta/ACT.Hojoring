@@ -11,9 +11,9 @@
   <system:String x:Key="GeneralConfig_Opacity">불투명도</system:String>
   <system:String x:Key="GeneralConfig_LogPollingRate">로그 감시빈도 (msec)</system:String>
   <system:String x:Key="GeneralConfig_OverlayRefreshRate">오버레이 재생빈도 (msec)</system:String>
-  <system:String x:Key="GeneralConfig_LogPollingPriority">Log polling thread priority</system:String>
-  <system:String x:Key="GeneralConfig_OverlayRefreshPriority">Overlay refresh thread priority</system:String>
-  <system:String x:Key="GeneralConfig_RestartThreads">Restart threads</system:String>
+  <system:String x:Key="GeneralConfig_LogPollingPriority">메모리의 감시의 우선순위</system:String>
+  <system:String x:Key="GeneralConfig_OverlayRefreshPriority">오버레이 재생 우선순위</system:String>
+  <system:String x:Key="GeneralConfig_RestartThreads">스레드를 재시작 한다</system:String>
   <system:String x:Key="GeneralConfig_AnimationMaxFPS">애니메이션 프레임 속도</system:String>
   <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">글자 윤곽선 비율</system:String>
   <system:String x:Key="GeneralConfig_TextBlurGain">글자 흐림 비율</system:String>
@@ -38,8 +38,8 @@
   <system:String x:Key="HP_HPLocation">HP 위치</system:String>
   <system:String x:Key="HP_BarLocation">바 위치</system:String>
   <system:String x:Key="HP_VisibleHPBar">HP 바 보이기</system:String>
-  <system:String x:Key="HP_HPValueOnHPBar">HP바에 HP값 표기</system:String>
-  <system:String x:Key="HP_HPValueCompact">Compact display of HP value</system:String>
+  <system:String x:Key="HP_HPValueOnHPBar">HP값을 HP바에 표시</system:String>
+  <system:String x:Key="HP_HPValueCompact">HP값을 콤팩트하게</system:String>
   <system:String x:Key="HP_HPBarStrokeColor">HP바 윤곽색</system:String>
   <system:String x:Key="HP_LinkBarStrokeColorToBarColor">바의 윤곽색을 바 색상에 동조시키다</system:String>
   <system:String x:Key="HP_LinkTextFillColorToBarColor">글자색을 바 색상에 동조시키다</system:String>
@@ -57,6 +57,7 @@
   <system:String x:Key="Action_CastingBarSize">캐스팅바 크기</system:String>
   <system:String x:Key="Action_CircleStyle">원형 스타일</system:String>
   <system:String x:Key="Action_RotateCCW">회전을 반시계 방향으로</system:String>
+  <system:String x:Key="Action_CircleBlurRadius">Circle blur radius</system:String>
   <system:String x:Key="Action_Sound">사운드</system:String>
   <system:String x:Key="Action_WaveSound">Wave 사운드 파일</system:String>
 
@@ -78,10 +79,10 @@
   <system:String x:Key="MPTicker_TargetJobs">자신이 아래의 직업 때 표시하는</system:String>
 
   <system:String x:Key="MobList_VisibleMePosition">자신의 좌표 표시</system:String>
-  <system:String x:Key="MobList_SimpleView">Simple View</system:String>
+  <system:String x:Key="MobList_SimpleView">간략 하게 표시</system:String>
   <system:String x:Key="MobList_VisibleZPosition">Z축 표시</system:String>
-  <system:String x:Key="MobList_DirectionOrigin">Origin of Direction</system:String>
-  <system:String x:Key="MobList_DirectionOriginDescription">To use "Me" or "Camera", FFXIV_MemoryReader is required.</system:String>
+  <system:String x:Key="MobList_DirectionOrigin">방향 표시 기준</system:String>
+  <system:String x:Key="MobList_DirectionOriginDescription">Me, Camera를 사용하는 경우는 FFXIV_MemoryReader가 필요합니다.</system:String>
   <system:String x:Key="MobList_OpenTargetMobList">대상 몹 리스트를 열기</system:String>
   <system:String x:Key="MobList_ReloadTargetMobList">대상 몹 리스트를 다시 불러오기</system:String>
   <system:String x:Key="MobList_CountOfDisplay">개요</system:String>

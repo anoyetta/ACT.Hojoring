@@ -798,6 +798,13 @@ namespace ACT.SpecialSpellTimer.Models
         private object PlaceholderListSyncRoot =>
             ((ICollection)this.placeholderList)?.SyncRoot;
 
+        private readonly PlaceholderContainer[] IDPlaceholders = new[]
+        {
+            new PlaceholderContainer("<id>", "[0-9a-fA-F]+", PlaceholderTypes.Custom),
+            new PlaceholderContainer("<id4>", "[0-9a-fA-F]{4}", PlaceholderTypes.Custom),
+            new PlaceholderContainer("<id8>", "[0-9a-fA-F]{8}", PlaceholderTypes.Custom),
+        };
+
         public void RefreshPartyPlaceholders()
         {
             // PC名辞書を更新する
@@ -941,6 +948,10 @@ namespace ACT.SpecialSpellTimer.Models
             {
                 this.placeholderList.RemoveAll(x => x.Type == PlaceholderTypes.Party);
                 this.placeholderList.AddRange(newList);
+
+                // ついでにID系プレースホルダを登録する
+                var toAdds = IDPlaceholders.Where(x => !this.placeholderList.Any(y => y.Placeholder == x.Placeholder));
+                this.placeholderList.AddRange(toAdds);
             }
         }
 

@@ -13,7 +13,8 @@
   RenderOptions.EdgeMode="Unspecified"
   TextOptions.TextFormattingMode="Ideal"
   TextOptions.TextHintingMode="Animated"
-  TextOptions.TextRenderingMode="ClearType">
+  TextOptions.TextRenderingMode="ClearType"
+  DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneWay}">
 
   <UserControl.Resources>
     <local:ColorBrightnessConverter x:Key="ColorConv" />

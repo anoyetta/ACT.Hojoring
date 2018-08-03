@@ -57,6 +57,7 @@
   <system:String x:Key="Action_CastingBarSize">Casting bar size</system:String>
   <system:String x:Key="Action_CircleStyle">Circle style</system:String>
   <system:String x:Key="Action_RotateCCW">Rotate CCW</system:String>
+  <system:String x:Key="Action_CircleBlurRadius">Circle blur radius</system:String>
   <system:String x:Key="Action_Sound">Sound</system:String>
   <system:String x:Key="Action_WaveSound">Wave sound</system:String>
 

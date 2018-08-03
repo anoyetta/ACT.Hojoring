@@ -770,6 +770,7 @@ namespace ACT.UltraScouter.Config
                 TTSEnabled = false,
                 UseCircle = false,
                 IsCircleReverse = false,
+                CircleBlurRadius = 14,
                 DisplayText = new DisplayText()
                 {
                     Font = DefaultFont,
@@ -865,6 +866,7 @@ namespace ACT.UltraScouter.Config
                 TTSEnabled = false,
                 UseCircle = false,
                 IsCircleReverse = false,
+                CircleBlurRadius = 14,
                 DisplayText = new DisplayText()
                 {
                     Font = DefaultFont,
@@ -960,6 +962,7 @@ namespace ACT.UltraScouter.Config
                 TTSEnabled = false,
                 UseCircle = false,
                 IsCircleReverse = false,
+                CircleBlurRadius = 14,
                 DisplayText = new DisplayText()
                 {
                     Font = DefaultFont,
@@ -1055,6 +1058,7 @@ namespace ACT.UltraScouter.Config
                 TTSEnabled = false,
                 UseCircle = false,
                 IsCircleReverse = false,
+                CircleBlurRadius = 14,
                 DisplayText = new DisplayText()
                 {
                     Font = DefaultFont,
@@ -1097,6 +1101,7 @@ namespace ACT.UltraScouter.Config
                 TTSEnabled = false,
                 UseCircle = false,
                 IsCircleReverse = false,
+                CircleBlurRadius = 14,
                 DisplayText = new DisplayText()
                 {
                     Font = DefaultFont,

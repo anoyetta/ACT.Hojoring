@@ -613,6 +613,11 @@
                     <TextBlock Text="{DynamicResource Common_StrokeColor}" />
                   </Hyperlink>
                 </TextBlock>
+
+                <StackPanel Orientation="Horizontal" Margin="0 6 0 0">
+                  <Label Content="{DynamicResource Common_BlurRadius}" VerticalAlignment="Center" Margin="0 0 7 0" />
+                  <xctk:DoubleUpDown Value="{Binding Model.BarBlurRadius, Mode=TwoWay}" Increment="1"  HorizontalAlignment="Left" Width="70" FormatString="N0" />
+                </StackPanel>
               </StackPanel>
 
               <!-- 背景色 -->

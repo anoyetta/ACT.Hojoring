@@ -60,7 +60,7 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 これらの機能は FFXIV_MemoryReader を有効にするだけで拡張されます。
 
 ### 動作環境
-* Windows 10 以降
+* [Windows 10](https://www.microsoft.com/software-download/windows10) 以降
 * .NET Framework 4.7.1 以降
 
 ## 使い方
@@ -73,21 +73,27 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 
 ##### Hojoring の設定ファイルあれこれ
 1. 格納場所  
-%APPDATA%\anoyetta\ACT  
+```
+%APPDATA%\anoyetta\ACT
+```  
 にすべて格納されています。よって、OSの再インストール等のときはこのディレクトリを丸ごとバックアップして再インストール後に配置しなおせば、再インストール前の設定を復元できます。
 
 2. 設定ファイル  
-ACT.SpecialSpellTimer.config  
-ACT.TTSYukkuri.config  
-ACT.UltraScouter.config  
+```
+ACT.SpecialSpellTimer.config
+ACT.TTSYukkuri.config
+ACT.UltraScouter.config
+```
 それぞれ、スペスペ・ゆっくり・ウルスカの設定ファイルです。  
 スペスペではトリガ以外のオプション関係の設定が保存されています。他のプラグインではプラグインそのものの設定が保存されています。  
 
 3. スペスペのトリガの設定ファイル  
-ACT.SpecialSpellTimer.Panels.xml  
-ACT.SpecialSpellTimer.Spells.xml  
-ACT.SpecialSpellTimer.Telops.xml  
-ACT.SpecialSpellTimer.Tags.xml  
+```
+ACT.SpecialSpellTimer.Panels.xml
+ACT.SpecialSpellTimer.Spells.xml
+ACT.SpecialSpellTimer.Telops.xml
+ACT.SpecialSpellTimer.Tags.xml
+```  
 スペスペの各種トリガの設定ファイルです。それぞれ、スペルパネル・スペル・テロップ・タグの設定ファイルになります。
 
 ## アップデート
@@ -95,7 +101,7 @@ Help タブからアップデートしてください。
 
 ![how_to_update](https://github.com/anoyetta/ACT.Hojoring/blob/master/images/how_to_update.png?raw=true)
 
-自分で独自に編集しているから上書きしたくないファイがある場合は **update_hojoring.ps1** スクリプトを編集してください。
+自分で独自に編集しているから上書きしたくないファイルがある場合は **update_hojoring.ps1** スクリプトを編集してください。
 ```powershell
 # update_hojoring.ps1
 
@@ -125,8 +131,10 @@ $updateExclude = @(
 ![help](https://github.com/anoyetta/ACT.Hojoring/blob/master/images/help.png?raw=true)
 
 ##### 起動できないなどUIから取得できない場合は下記のフォルダから収集してください。
-%APPDATA%\Advanced Combat Tracker\Advanced Combat Tracker.log  
-%APPDATA%\anoyetta\ACT\logs\ACT.Hojoring.YYYY-MM-DD.log  
+```
+%APPDATA%\Advanced Combat Tracker\Advanced Combat Tracker.log
+%APPDATA%\anoyetta\ACT\logs\ACT.Hojoring.YYYY-MM-DD.log
+```
 
 ### スペルが動かない
 前述の情報に以下の情報も追加で必要になります。  

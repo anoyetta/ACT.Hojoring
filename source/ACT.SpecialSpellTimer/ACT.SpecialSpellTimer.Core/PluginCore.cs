@@ -158,7 +158,6 @@ namespace ACT.SpecialSpellTimer
                     if (Settings.Default.IsMinimizeOnStart)
                     {
                         ActGlobals.oFormActMain.WindowState = FormWindowState.Minimized;
-                        Application.DoEvents();
                     }
 
                     // HojoringのSplashを表示する

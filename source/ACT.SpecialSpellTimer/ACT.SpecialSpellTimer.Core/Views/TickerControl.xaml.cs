@@ -109,6 +109,18 @@ namespace ACT.SpecialSpellTimer.Views
             }
         }
 
+        public double BarBlurRadius
+        {
+            get => this.Bar.BlurRadius;
+            set
+            {
+                if (this.Bar.BlurRadius != value)
+                {
+                    this.Bar.BlurRadius = value;
+                }
+            }
+        }
+
         public bool BarVisible
         {
             get => this.Bar.Visibility == Visibility.Visible;
