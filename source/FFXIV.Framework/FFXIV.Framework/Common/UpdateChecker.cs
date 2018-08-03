@@ -481,7 +481,7 @@ namespace FFXIV.Framework.Common
                 {
                     shownWindowsIsOld = true;
                     Logger.Warn($"{prompt1} {prompt2}");
-                    Logger.Warn($"Support Win7 manualy, but you better have update to Windows 10. https://www.microsoft.com/software-download/windows10");
+                    Logger.Warn($"Support Win7 manualy, but you'd better update to Windows 10. https://www.microsoft.com/software-download/windows10");
                 }
             }
 
