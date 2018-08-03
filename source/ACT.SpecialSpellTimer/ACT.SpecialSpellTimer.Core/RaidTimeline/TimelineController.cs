@@ -1797,6 +1797,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.isNotifyExcuting = true;
 
+                var exists = false;
                 while (this.NotifyQueue.TryDequeue(out TimelineBase element))
                 {
                     switch (element)
@@ -1809,9 +1810,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             this.NotifyTrigger(tri);
                             break;
                     }
+
+                    exists = true;
                 }
 
-                this.notifyWorker.Interval = 0;
+                if (exists)
+                {
+                    this.notifyWorker.Interval = 0;
+                }
             }
             finally
             {
