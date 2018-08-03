@@ -129,8 +129,8 @@ namespace FFXIV.Framework.Common
             IDisposable
         {
             private const int Latency = 200;
-            private const int MultiplePlaybackCount = 4;
-            private const int BufferDurations = 20;
+            private static int MultiplePlaybackCount => Config.Instance.WasapiMultiplePlaybackCount;
+            private static TimeSpan BufferDurations => Config.Instance.WasapiLoopBufferDuration;
 
             private static readonly Dictionary<string, byte[]> WaveBuffer = new Dictionary<string, byte[]>(128);
 
@@ -162,7 +162,7 @@ namespace FFXIV.Framework.Common
                 {
                     var buffer = new BufferedWaveProvider(OutputFormat)
                     {
-                        BufferDuration = TimeSpan.FromSeconds(BufferDurations),
+                        BufferDuration = BufferDurations,
                         DiscardOnBufferOverflow = true,
                     };
 
@@ -172,7 +172,7 @@ namespace FFXIV.Framework.Common
                 // シンクロ再生用のバッファを追加しておく
                 list.Add(new BufferedWaveProvider(OutputFormat)
                 {
-                    BufferDuration = TimeSpan.FromSeconds(BufferDurations),
+                    BufferDuration = BufferDurations,
                     DiscardOnBufferOverflow = true,
                 });
 
