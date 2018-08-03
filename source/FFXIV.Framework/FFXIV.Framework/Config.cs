@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -87,28 +88,51 @@ namespace FFXIV.Framework
 
         #endregion Load & Save
 
-        private bool supportWin7 = false;
+        #region Default Values
 
+        private const bool SupportWin7Default = false;
+        private const int WasapiMultiplePlaybackCountDefault = 4;
+        private const double WasapiLoopBufferDurationDefault = 60;
+
+        #endregion Default Values
+
+        private bool supportWin7 = SupportWin7Default;
+
+        [DefaultValue(SupportWin7Default)]
         public bool SupportWin7
         {
             get => this.supportWin7;
             set => this.SetProperty(ref this.supportWin7, value);
         }
 
-        private int wasapiMultiplePlaybackCount = 4;
+        private int wasapiMultiplePlaybackCount = WasapiMultiplePlaybackCountDefault;
 
+        [DefaultValue(WasapiMultiplePlaybackCountDefault)]
         public int WasapiMultiplePlaybackCount
         {
             get => this.wasapiMultiplePlaybackCount;
             set => this.SetProperty(ref this.wasapiMultiplePlaybackCount, value);
         }
 
-        private TimeSpan wasapiLoopBufferDuration = TimeSpan.FromSeconds(60);
+        private TimeSpan wasapiLoopBufferDuration = TimeSpan.FromSeconds(WasapiLoopBufferDurationDefault);
 
-        public TimeSpan WasapiLoopBufferDuration
+        [XmlIgnore]
+        public TimeSpan WasapiLoopBufferDuration => this.wasapiLoopBufferDuration;
+
+        [XmlElement(ElementName = nameof(WasapiLoopBufferDuration))]
+        [DefaultValue(WasapiLoopBufferDurationDefault)]
+        public double WasapiLoopBufferDurationXML
         {
-            get => this.wasapiLoopBufferDuration;
-            set => this.SetProperty(ref this.wasapiLoopBufferDuration, value);
+            get => this.wasapiLoopBufferDuration.TotalSeconds;
+            set
+            {
+                if (this.wasapiLoopBufferDuration.TotalSeconds != value)
+                {
+                    this.wasapiLoopBufferDuration = TimeSpan.FromSeconds(value);
+                    this.RaisePropertyChanged();
+                    this.RaisePropertyChanged(nameof(WasapiLoopBufferDuration));
+                }
+            }
         }
     }
 }
