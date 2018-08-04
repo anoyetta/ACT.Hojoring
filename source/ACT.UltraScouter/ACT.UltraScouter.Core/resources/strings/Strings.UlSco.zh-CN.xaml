@@ -82,6 +82,7 @@
   <system:String x:Key="MobList_SimpleView">简单显示</system:String>
   <system:String x:Key="MobList_VisibleZPosition">显示Z轴位置</system:String>
   <system:String x:Key="MobList_DirectionOrigin">方向显示</system:String>
+  <system:String x:Key="MobList_DirectionAdjustmentAngle">Direction adjustment angle</system:String>
   <system:String x:Key="MobList_DirectionOriginDescription">要使用"角色"或"视角", FFXIV_MemoryReader需要保持启动.</system:String>
   <system:String x:Key="MobList_OpenTargetMobList">打开狩猎怪列表</system:String>
   <system:String x:Key="MobList_ReloadTargetMobList">重载狩猎怪列表</system:String>

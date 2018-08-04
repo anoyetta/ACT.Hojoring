@@ -82,6 +82,7 @@
   <system:String x:Key="MobList_SimpleView">シンプル表示にする</system:String>
   <system:String x:Key="MobList_VisibleZPosition">Z軸を表示する</system:String>
   <system:String x:Key="MobList_DirectionOrigin">方向表示の基準</system:String>
+  <system:String x:Key="MobList_DirectionAdjustmentAngle">方向の補正角度</system:String>
   <system:String x:Key="MobList_DirectionOriginDescription">Me, Camera を使用する場合は FFXIV_MemoryReader が必要になります。</system:String>
   <system:String x:Key="MobList_OpenTargetMobList">対象モブリストを開く</system:String>
   <system:String x:Key="MobList_ReloadTargetMobList">対象モブリストをリロードする</system:String>

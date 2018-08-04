@@ -69,32 +69,37 @@ namespace ACT.UltraScouter.ViewModels
                 return;
             }
 
+            var angle = 0d;
+
             if (!FFXIVReader.Instance.IsAvailable)
             {
-                this.OriginAngle = 0;
+                angle = 0;
             }
             else
             {
                 switch (this.Config.DirectionOrigin)
                 {
                     case DirectionOrigin.North:
-                        this.OriginAngle = 0;
+                        angle = 0;
                         break;
 
                     case DirectionOrigin.Me:
                         var player = FFXIVPlugin.Instance.GetPlayer();
                         if (player != null)
                         {
-                            this.OriginAngle = player.HeadingDegree * -1;
+                            angle = player.HeadingDegree * -1;
                         }
                         break;
 
                     case DirectionOrigin.Camera:
                         CameraInfo.Instance.Refresh();
-                        this.OriginAngle = CameraInfo.Instance.HeadingDegree * -1;
+                        angle = CameraInfo.Instance.HeadingDegree * -1;
                         break;
                 }
             }
+
+            // 補正角度を加算する
+            this.OriginAngle = angle + this.Config.DirectionAdjustmentAngle;
         }
     }
 }
