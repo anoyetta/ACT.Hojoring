@@ -82,6 +82,7 @@
   <system:String x:Key="MobList_SimpleView">Simple View</system:String>
   <system:String x:Key="MobList_VisibleZPosition">Visible Z position</system:String>
   <system:String x:Key="MobList_DirectionOrigin">Origin of Direction</system:String>
+  <system:String x:Key="MobList_DirectionAdjustmentAngle">Direction adjustment angle</system:String>
   <system:String x:Key="MobList_DirectionOriginDescription">To use "Me" or "Camera", FFXIV_MemoryReader is required.</system:String>
   <system:String x:Key="MobList_OpenTargetMobList">Open target mob list</system:String>
   <system:String x:Key="MobList_ReloadTargetMobList">Reload target mob list</system:String>
