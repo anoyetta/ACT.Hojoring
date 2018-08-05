@@ -389,7 +389,7 @@ namespace ACT.UltraScouter.Workers
                     overlayVisible = true;
                 }
             }
-#if true
+#if false
 #if DEBUG
             // ダミーデータを表示する
             overlayVisible = true;
