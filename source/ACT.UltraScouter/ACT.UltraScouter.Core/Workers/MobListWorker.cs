@@ -208,6 +208,7 @@ namespace ACT.UltraScouter.Workers
             var targets =
                 from x in combatants.AsParallel()
                 where
+                ((x.MaxHP <= 0) || (x.MaxHP > 0 && x.CurrentHP > 0)) &&
                 Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name)
                 select new MobInfo()
                 {
