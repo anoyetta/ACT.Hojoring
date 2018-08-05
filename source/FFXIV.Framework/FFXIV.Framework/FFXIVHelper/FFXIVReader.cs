@@ -11,7 +11,6 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using Prism.Mvvm;
-using TamanegiMage.FFXIV_MemoryReader.Core;
 using TamanegiMage.FFXIV_MemoryReader.Model;
 
 namespace FFXIV.Framework.FFXIVHelper
@@ -41,7 +40,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private dynamic MemoryPlugin { get; set; } = null;
 
-        private PluginCore Core { get; set; } = null;
+        private dynamic Core { get; set; } = null;
 
         private System.Timers.Timer timer = new System.Timers.Timer(5 * 1000);
 
@@ -135,39 +134,42 @@ namespace FFXIV.Framework.FFXIVHelper
             object sender,
             ElapsedEventArgs e)
         {
-            try
+            lock (this)
             {
-                var plugin = ActGlobals.oFormActMain.ActPlugins
-                    .FirstOrDefault(x =>
-                        x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"));
-
-                if (plugin == null)
+                try
                 {
-                    this.MemoryPlugin = null;
-                    this.Core = null;
+                    var plugin = ActGlobals.oFormActMain.ActPlugins
+                        .FirstOrDefault(x =>
+                            x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"));
 
-                    WPFHelper.BeginInvoke(() => this.IsAvailable = false);
+                    if (plugin == null)
+                    {
+                        this.MemoryPlugin = null;
+                        this.Core = null;
 
-                    return;
+                        WPFHelper.BeginInvoke(() => this.IsAvailable = false);
+
+                        return;
+                    }
+
+                    if (this.MemoryPlugin == null)
+                    {
+                        this.MemoryPlugin = plugin.pluginObj as dynamic;
+                    }
+
+                    if (this.Core == null)
+                    {
+                        this.Core = this.MemoryPlugin?.Core;
+                    }
+
+                    WPFHelper.BeginInvoke(() =>
+                        this.IsAvailable =
+                            this.MemoryPlugin != null &&
+                            this.Core != null);
                 }
-
-                if (this.MemoryPlugin == null)
+                catch (Exception)
                 {
-                    this.MemoryPlugin = plugin.pluginObj as dynamic;
                 }
-
-                if (this.Core == null)
-                {
-                    this.Core = this.MemoryPlugin?.Core;
-                }
-
-                WPFHelper.BeginInvoke(() =>
-                    this.IsAvailable =
-                        this.MemoryPlugin != null &&
-                        this.Core != null);
-            }
-            catch (Exception)
-            {
             }
         }
 
