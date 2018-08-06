@@ -6,6 +6,7 @@
   xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
   xmlns:vm="clr-namespace:ACT.UltraScouter.Config.UI.ViewModels"
   xmlns:fw="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ACT.UltraScouter.Config.UI.Views"
   mc:Ignorable="d"
@@ -62,15 +63,31 @@
         IsChecked="{Binding MobList.VisibleZ, Mode=TwoWay}"
         Visibility="{Binding MobList.IsNotSimple, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
 
-      <Label
-        Margin="0 5 0 0"
-        Content="{DynamicResource MobList_DirectionOrigin}" />
-      <ComboBox
-        ItemsSource="{Binding DirectionOrigins, Mode=OneWay}"
-        SelectedItem="{Binding MobList.DirectionOrigin, Mode=TwoWay}"
-        ToolTip="{DynamicResource MobList_DirectionOriginDescription}"
-        HorizontalAlignment="Left"
-        Width="120" />
+      <StackPanel Margin="0 5 0 0" Orientation="Horizontal">
+        <StackPanel>
+          <Label
+            Content="{DynamicResource MobList_DirectionOrigin}" />
+          <ComboBox
+            ItemsSource="{Binding DirectionOrigins, Mode=OneWay}"
+            SelectedItem="{Binding MobList.DirectionOrigin, Mode=TwoWay}"
+            ToolTip="{DynamicResource MobList_DirectionOriginDescription}"
+            HorizontalAlignment="Left"
+            Width="120" />
+        </StackPanel>
+
+        <StackPanel Margin="20 0 0 0">
+          <Label
+            Content="{DynamicResource MobList_DirectionAdjustmentAngle}" />
+          <xctk:DoubleUpDown
+            Value="{Binding MobList.DirectionAdjustmentAngle, Mode=TwoWay}"
+            FormatString="N0"
+            Increment="1"
+            Minimum="-360"
+            Maximum="360"
+            Width="85"
+            HorizontalAlignment="Left" />
+        </StackPanel>
+      </StackPanel>
 
       <CheckBox
         Margin="0 15 0 0"

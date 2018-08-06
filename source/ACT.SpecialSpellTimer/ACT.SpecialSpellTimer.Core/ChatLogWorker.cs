@@ -52,6 +52,8 @@ namespace ACT.SpecialSpellTimer
                     return;
                 }
 
+                Thread.Sleep(20);
+
                 lock (this.LogBuffer)
                 {
                     foreach (var log in logList)

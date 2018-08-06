@@ -11,7 +11,6 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using Prism.Mvvm;
-using TamanegiMage.FFXIV_MemoryReader.Core;
 using TamanegiMage.FFXIV_MemoryReader.Model;
 
 namespace FFXIV.Framework.FFXIVHelper
@@ -39,9 +38,15 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #endregion Singleton
 
+        #region Logger
+
+        private static NLog.Logger AppLogger => AppLog.DefaultLogger;
+
+        #endregion Logger
+
         private dynamic MemoryPlugin { get; set; } = null;
 
-        private PluginCore Core { get; set; } = null;
+        private dynamic Core { get; set; } = null;
 
         private System.Timers.Timer timer = new System.Timers.Timer(5 * 1000);
 
@@ -131,43 +136,65 @@ namespace FFXIV.Framework.FFXIVHelper
             this.timer.Start();
         }
 
+        private volatile bool logged = false;
+        private volatile bool loggedError = false;
+
         private void Timer_Elapsed(
             object sender,
             ElapsedEventArgs e)
         {
-            try
+            lock (this)
             {
-                var plugin = ActGlobals.oFormActMain.ActPlugins
-                    .FirstOrDefault(x =>
-                        x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"));
-
-                if (plugin == null)
+                try
                 {
-                    this.MemoryPlugin = null;
-                    this.Core = null;
+                    var plugin = ActGlobals.oFormActMain.ActPlugins
+                        .FirstOrDefault(x =>
+                            x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"));
 
-                    WPFHelper.BeginInvoke(() => this.IsAvailable = false);
+                    if (plugin == null)
+                    {
+                        this.MemoryPlugin = null;
+                        this.Core = null;
 
-                    return;
-                }
+                        WPFHelper.BeginInvoke(() => this.IsAvailable = false);
 
-                if (this.MemoryPlugin == null)
-                {
-                    this.MemoryPlugin = plugin.pluginObj as dynamic;
-                }
+                        return;
+                    }
 
-                if (this.Core == null)
-                {
-                    this.Core = this.MemoryPlugin?.Core;
-                }
+                    if (this.MemoryPlugin == null)
+                    {
+                        this.MemoryPlugin = plugin.pluginObj as dynamic;
+                    }
 
-                WPFHelper.BeginInvoke(() =>
-                    this.IsAvailable =
+                    if (this.Core == null)
+                    {
+                        this.Core = this.MemoryPlugin?.Core;
+                    }
+
+                    var result =
                         this.MemoryPlugin != null &&
-                        this.Core != null);
-            }
-            catch (Exception)
-            {
+                        this.Core != null;
+
+                    WPFHelper.BeginInvoke(() =>
+                        this.IsAvailable = result);
+
+                    if (result)
+                    {
+                        if (!logged)
+                        {
+                            logged = true;
+                            AppLogger.Info("FFXV_MemoryReader Availabled.");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (!loggedError)
+                    {
+                        loggedError = true;
+                        AppLogger.Error(ex, "Handled excption at attaching to FFXIV_MemoryReader.");
+                    }
+                }
             }
         }
 

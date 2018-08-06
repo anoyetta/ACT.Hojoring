@@ -53,6 +53,7 @@ namespace ACT.UltraScouter.Config
         [XmlIgnore] private bool visibleZ = true;
         [XmlIgnore] private bool visibleMe = true;
         [XmlIgnore] private DirectionOrigin directionOrigin = DirectionOrigin.North;
+        [XmlIgnore] private double directionAdjustmentAngle = 0;
         [XmlIgnore] private bool isSimple = false;
         [XmlIgnore] private int displayCount = 10;
         [XmlIgnore] private double nearDistance = 20;
@@ -117,6 +118,16 @@ namespace ACT.UltraScouter.Config
         {
             get => this.directionOrigin;
             set => this.SetProperty(ref this.directionOrigin, value);
+        }
+
+        /// <summary>
+        /// 方向の補正角度
+        /// </summary>
+        [DataMember]
+        public double DirectionAdjustmentAngle
+        {
+            get => this.directionAdjustmentAngle;
+            set => this.SetProperty(ref this.directionAdjustmentAngle, value);
         }
 
         /// <summary>
