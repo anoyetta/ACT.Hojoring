@@ -396,10 +396,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.Core">
-      <Version>3.3.24.3</Version>
+      <Version>3.3.24.6</Version>
     </PackageReference>
     <PackageReference Include="AWSSDK.Polly">
-      <Version>3.3.5.3</Version>
+      <Version>3.3.7.1</Version>
     </PackageReference>
     <PackageReference Include="CommonServiceLocator">
       <Version>2.0.1</Version>
