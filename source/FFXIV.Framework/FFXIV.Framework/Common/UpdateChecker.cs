@@ -447,8 +447,7 @@ namespace FFXIV.Framework.Common
         }
 
         public static bool IsWindows10Later =>
-            osBuildNo >= Windows10BuildNo ||
-            Config.Instance.SupportWin7;
+            osBuildNo >= Windows10BuildNo;
 
         private static volatile bool shownWindowsIsOld = false;
 
@@ -457,31 +456,37 @@ namespace FFXIV.Framework.Common
             const string prompt1 = "Unsupported Operating System.";
             const string prompt2 = "Windows 10 or Later is Required.";
 
-            var result = IsWindows10Later;
+            var result = false;
 
-            if (!result)
+            if (IsWindows10Later)
             {
-                if (!shownWindowsIsOld)
-                {
-                    shownWindowsIsOld = true;
-
-                    Logger.Error($"{prompt1} {prompt2}");
-
-                    WPFHelper.BeginInvoke(
-                        () => ModernMessageBox.ShowDialog(
-                            $"{prompt1}\n{prompt2}",
-                            "ACT.Hojoring"),
-                        DispatcherPriority.Normal);
-                }
+                result = true;
             }
-
-            if (Config.Instance.SupportWin7)
+            else
             {
-                if (!shownWindowsIsOld)
+                if (Config.Instance.SupportWin7)
                 {
-                    shownWindowsIsOld = true;
-                    Logger.Warn($"{prompt1} {prompt2}");
-                    Logger.Warn($"Support Win7 manualy, but you'd better update to Windows 10. https://www.microsoft.com/software-download/windows10");
+                    result = true;
+
+                    if (!shownWindowsIsOld)
+                    {
+                        shownWindowsIsOld = true;
+                        Logger.Warn($"{prompt1} {prompt2}");
+                        Logger.Warn($"Support Win7 manualy, but you'd better update to Windows 10. https://www.microsoft.com/software-download/windows10");
+                    }
+                }
+                else
+                {
+                    if (!shownWindowsIsOld)
+                    {
+                        shownWindowsIsOld = true;
+                        Logger.Error($"{prompt1} {prompt2}");
+                        WPFHelper.BeginInvoke(
+                            () => ModernMessageBox.ShowDialog(
+                                $"{prompt1}\n{prompt2}",
+                                "ACT.Hojoring"),
+                            DispatcherPriority.Normal);
+                    }
                 }
             }
 
