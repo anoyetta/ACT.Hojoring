@@ -38,6 +38,12 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #endregion Singleton
 
+        #region Logger
+
+        private static NLog.Logger AppLogger => AppLog.DefaultLogger;
+
+        #endregion Logger
+
         private dynamic MemoryPlugin { get; set; } = null;
 
         private dynamic Core { get; set; } = null;
@@ -130,6 +136,9 @@ namespace FFXIV.Framework.FFXIVHelper
             this.timer.Start();
         }
 
+        private volatile bool logged = false;
+        private volatile bool loggedError = false;
+
         private void Timer_Elapsed(
             object sender,
             ElapsedEventArgs e)
@@ -162,13 +171,29 @@ namespace FFXIV.Framework.FFXIVHelper
                         this.Core = this.MemoryPlugin?.Core;
                     }
 
+                    var result =
+                        this.MemoryPlugin != null &&
+                        this.Core != null;
+
                     WPFHelper.BeginInvoke(() =>
-                        this.IsAvailable =
-                            this.MemoryPlugin != null &&
-                            this.Core != null);
+                        this.IsAvailable = result);
+
+                    if (result)
+                    {
+                        if (!logged)
+                        {
+                            logged = true;
+                            AppLogger.Info("FFXV_MemoryReader Availabled.");
+                        }
+                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    if (!loggedError)
+                    {
+                        loggedError = true;
+                        AppLogger.Error(ex, "Handled excption at attaching to FFXIV_MemoryReader.");
+                    }
                 }
             }
         }
