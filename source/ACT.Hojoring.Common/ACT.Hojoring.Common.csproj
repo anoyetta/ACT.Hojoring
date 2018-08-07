@@ -82,7 +82,6 @@
     <Content Include="resources\xivdb\Placename.zh-CN.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="ACT.Hojoring.ico" />
     <Content Include="ACT.Hojoring.NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -90,9 +89,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Resource Include="resources\images\ACT.Hojoring_128.png" />
-    <Resource Include="resources\images\ACT.Hojoring_256.png" />
-    <Resource Include="resources\images\ACT.Hojoring_512.png" />
     <Content Include="resources\MobList.en-US.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
