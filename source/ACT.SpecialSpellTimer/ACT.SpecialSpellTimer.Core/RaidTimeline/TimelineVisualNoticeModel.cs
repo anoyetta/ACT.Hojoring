@@ -455,7 +455,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 foreach (Capture cap in g.Captures)
                 {
-                    combatant = FFXIVPlugin.Instance.GetCombatant(cap.Value);
+                    var c = FFXIVPlugin.Instance.GetCombatant(cap.Value);
+                    if (c != null)
+                    {
+                        combatant = c;
+                    }
                 }
             }
 
