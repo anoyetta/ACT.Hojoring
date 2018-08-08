@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
+using FFXIV.Framework.FFXIVHelper;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -410,6 +411,64 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public BitmapImage ThisIconImage => this.GetThisIconImage();
 
         #endregion IStylable
+
+        #region JobIcon
+
+        private bool? isJobIcon = null;
+
+        [XmlIgnore]
+        public bool? IsJobIcon
+        {
+            get => this.isJobIcon;
+            set => this.SetProperty(ref this.isJobIcon, value);
+        }
+
+        [XmlAttribute(AttributeName = "job-icon")]
+        public string IsJobIconXML
+        {
+            get => this.IsJobIcon?.ToString();
+            set => this.IsJobIcon = bool.TryParse(value, out var v) ? v : (bool?)null;
+        }
+
+        /// <summary>
+        /// ジョブアイコンを適用する
+        /// </summary>
+        public void SetJobIcon()
+        {
+            if (!this.isJobIcon ?? false)
+            {
+                return;
+            }
+
+            var tri = this.GetParent<TimelineTriggerModel>();
+            if (tri == null ||
+                tri.SyncMatch == null ||
+                !tri.SyncMatch.Success ||
+                tri.SyncMatch.Groups.Count < 1)
+            {
+                this.Icon = null;
+                return;
+            }
+
+            var combatant = default(Combatant);
+            foreach (Group g in tri.SyncMatch.Groups)
+            {
+                foreach (Capture cap in g.Captures)
+                {
+                    combatant = FFXIVPlugin.Instance.GetCombatant(cap.Value);
+                }
+            }
+
+            if (combatant == null)
+            {
+                this.Icon = null;
+                return;
+            }
+
+            this.Icon = $"{combatant.JobID.ToString()}.png";
+        }
+
+        #endregion JobIcon
 
         #region IClonable
 
