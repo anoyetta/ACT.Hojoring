@@ -7,12 +7,12 @@
 # Mob Name[TAB]Rank[TAB]Maximum Distance[TAB]TTSEnabled
 # 
 # ex. 1
-# Ixion 			EX
-# Salt and Light	S
-# Naoki Yoshida 	
+# Ixion             EX
+# Salt and Light    S
+# Naoki Yoshida     
 # 
 # ex. 2
-# Trap 				DD	30	false
+# Trap              DD  30  false
 # Notify traps within 30m, but don't TTS.
 #
 # # is comment line.
@@ -20,139 +20,139 @@
 
 # 4.0 STORM BLOOD
 ## Rank EX
-Ixion							EX
-Ginko							EX
-Kinko							EX
-Mikuzume						EX
-Tamamo-no-Gozen 				EX
+Ixion                           EX
+Ginko                           EX
+Kinko                           EX
+Mikuzume                        EX
+Tamamo-no-Gozen                 EX
 
 ## Rank S
-"Salt and Light"				S
-Gamma							S
-Orghana 						S
-Okina							S
-Udumbara						S
-"Bone Crawler"					S
+"Salt and Light"                S
+Gamma                           S
+Orghana                         S
+Okina                           S
+Udumbara                        S
+"Bone Crawler"                  S
 
 ## Rank A
-Orcus							A
-Erie							A
-Vochstein						A
-Aqrabuamelu 					A
-Mahisha							A
-Luminare						A
-"Funa Yurei"					A
-"Oni Yumemi"					A
-Gajasura						A
-Angada							A
-Girimekhala 					A
-Sum								A
+Orcus                           A
+Erie                            A
+Vochstein                       A
+Aqrabuamelu                     A
+Mahisha                         A
+Luminare                        A
+"Funa Yurei"                    A
+"Oni Yumemi"                    A
+Gajasura                        A
+Angada                          A
+Girimekhala                     A
+Sum                             A
 
 ## Rank B
-"Shadow-dweller Yamini"			B
-Ouzelum 						B
-Gwas-y-neidr					B
-Buccaboo						B
-Manes							B
-Kiwa							B
-"Gauki Strongblade"				B
-"Guhuo Niao"					B
-Deidar							B
-"Gyorai Quickstrike"			B
-Kurma							B
-Aswang							B
+"Shadow-dweller Yamini"         B
+Ouzelum                         B
+Gwas-y-neidr                    B
+Buccaboo                        B
+Manes                           B
+Kiwa                            B
+"Gauki Strongblade"             B
+"Guhuo Niao"                    B
+Deidar                          B
+"Gyorai Quickstrike"            B
+Kurma                           B
+Aswang                          B
 
 # 3.0 HEAVENSWARD
 ## Rank S
-Gandarewa						S
-Senmurv							S
-"The Pale Rider"				S
-Leucrotta						S
-"Bird of Paradise"				S
-"Kaiser Behemoth"				S
+Gandarewa                       S
+Senmurv                         S
+"The Pale Rider"                S
+Leucrotta                       S
+"Bird of Paradise"              S
+"Kaiser Behemoth"               S
 
 ## Rank A
-Mirka							A
-Lyuba							A
-Enkelados						A
-Sisiutl							A
-Bune							A
-Agathos							A
-Pylraster						A
-"Lord of the Wyverns"			A
-"Slipkinx Steeljoints"			A
-Stolas							A
-Campacti						A
-"Stench Blossom"				A
+Mirka                           A
+Lyuba                           A
+Enkelados                       A
+Sisiutl                         A
+Bune                            A
+Agathos                         A
+Pylraster                       A
+"Lord of the Wyverns"           A
+"Slipkinx Steeljoints"          A
+Stolas                          A
+Campacti                        A
+"Stench Blossom"                A
 
 ## Rank B
-Alteci							B
-Kreutzet						B
-Squonk							B
-"Sanu Vali of Dancing Wing"		B
-Scitalis						B
-"The Scarecrow"					B
-"Gnath Cometdrone"				B
-Thextera						B
-Pterygotus						B
-Gigantopithecus 				B
-Lycidas							B
-Omni							B
+Alteci                          B
+Kreutzet                        B
+Squonk                          B
+"Sanu Vali of Dancing Wing"     B
+Scitalis                        B
+"The Scarecrow"                 B
+"Gnath Cometdrone"              B
+Thextera                        B
+Pterygotus                      B
+Gigantopithecus                 B
+Lycidas                         B
+Omni                            B
 
 # 2.0 A REALM REBORN
 ## Rank S
-Croque-mitaine					S
-Croakadile						S
-"The Garlok"					S
-Bonnacon						S
-Nandi							S
-Chernobog						S
-Laideronnette					S
-Wulgaru							S
-Mindflayer						S
-"Thousand-cast Theda"			S
-"Zona Seeker"					S
-Brontes							S
-Lampalagua						S
-Nunyunuwi						S
-Minhocao						S
-Safat							S
-"Agrippa the Mighty"			S
+Croque-mitaine                  S
+Croakadile                      S
+"The Garlok"                    S
+Bonnacon                        S
+Nandi                           S
+Chernobog                       S
+Laideronnette                   S
+Wulgaru                         S
+Mindflayer                      S
+"Thousand-cast Theda"           S
+"Zona Seeker"                   S
+Brontes                         S
+Lampalagua                      S
+Nunyunuwi                       S
+Minhocao                        S
+Safat                           S
+"Agrippa the Mighty"            S
 
 ## Rank A
-"Vogaal Ja"						A
-Unktehi 						A
-Hellsclaw						A
-Nahn							A
-Marberry						A
-Cornu							A
-Forneus							A
-Melt							A
-"Ghede Ti Malice"				A
-Girtab							A
-Alectryon						A
-"Sabotender Bailarina"			A
-Maahes							A
-Zanig'oh						A
-"Dalvag's Final Flame"			A
-Marraco							A
-Kurrea							A
+"Vogaal Ja"                     A
+Unktehi                         A
+Hellsclaw                       A
+Nahn                            A
+Marberry                        A
+Cornu                           A
+Forneus                         A
+Melt                            A
+"Ghede Ti Malice"               A
+Girtab                          A
+Alectryon                       A
+"Sabotender Bailarina"          A
+Maahes                          A
+Zanig'oh                        A
+"Dalvag's Final Flame"          A
+Marraco                         A
+Kurrea                          A
 
 ## Rank B
-"Skogs Fru"						B
-Barbastelle						B
-"Bloody Mary"					B
-"Dark Helmet"					B
-Myradrosh						B
-Vuokho							B
-"White Joker"					B
-"Stinging Sophie"				B
-"Monarch Ogrefly"				B
-Phecda							B
-"Sewer Syrup"					B
-Ovjang							B
-Gatling							B
-"Albin the Ashen"				B
-"Flame Sergeant Dalvag"			B
-Naul							B
-"Leech King"					B
+"Skogs Fru"                     B
+Barbastelle                     B
+"Bloody Mary"                   B
+"Dark Helmet"                   B
+Myradrosh                       B
+Vuokho                          B
+"White Joker"                   B
+"Stinging Sophie"               B
+"Monarch Ogrefly"               B
+Phecda                          B
+"Sewer Syrup"                   B
+Ovjang                          B
+Gatling                         B
+"Albin the Ashen"               B
+"Flame Sergeant Dalvag"         B
+Naul                            B
+"Leech King"                    B
