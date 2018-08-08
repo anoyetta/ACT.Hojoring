@@ -31,6 +31,10 @@ namespace FFXIV.Framework.FFXIVHelper
             this.ResourcesDirectory + @"\xivdb",
             $@"Instance.{this.FFXIVLocale.ToResourcesName()}.csv");
 
+        public string AreaENFile => Path.Combine(
+            this.ResourcesDirectory + @"\xivdb",
+            $@"Instance.en-US.csv");
+
         public string PlacenameFile => Path.Combine(
             this.ResourcesDirectory + @"\xivdb",
             $@"Placename.{this.FFXIVLocale.ToResourcesName()}.csv");
@@ -47,6 +51,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #region Resources Lists
 
+        private readonly Dictionary<int, Area> areaENList = new Dictionary<int, Area>();
         private readonly List<Area> areaList = new List<Area>();
         private readonly List<Placename> placenameList = new List<Placename>();
         private readonly Dictionary<int, XIVDBAction> actionList = new Dictionary<int, XIVDBAction>();
@@ -97,7 +102,6 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             Task.WaitAll(
                 Task.Run(() => this.LoadArea()),
-                Task.Run(() => this.LoadPlacename()),
                 Task.Run(() => this.LoadAction()));
         }
 
@@ -108,29 +112,98 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
+            // 先にENリストをロードする
+            this.LoadAreaEN();
+
             this.areaList.Clear();
 
-            using (var sr = new StreamReader(this.AreaFile, new UTF8Encoding(false)))
+            // UTF-8 BOMあり
+            using (var sr = new StreamReader(this.AreaFile, new UTF8Encoding(true)))
+            using (var parser = new TextFieldParser(sr)
             {
-                // ヘッダを飛ばす
-                sr.ReadLine();
-
-                while (!sr.EndOfStream)
+                TextFieldType = FieldType.Delimited,
+                Delimiters = new[] { "," },
+                HasFieldsEnclosedInQuotes = true,
+                TrimWhiteSpace = true,
+                CommentTokens = new[] { "#" },
+            })
+            {
+                while (!parser.EndOfData)
                 {
-                    var line = sr.ReadLine();
+                    var fields = parser.ReadFields();
 
-                    var values = line.Split(',');
-                    if (values.Length >= 3)
+                    if (fields == null ||
+                        fields.Length < 5)
                     {
-                        var entry = new Area()
-                        {
-                            ID = int.Parse(values[0]),
-                            NameEn = values[1],
-                            Name = values[2]
-                        };
-
-                        this.areaList.Add(entry);
+                        continue;
                     }
+
+                    int id;
+                    if (!int.TryParse(fields[0], out id) ||
+                        string.IsNullOrEmpty(fields[4]))
+                    {
+                        continue;
+                    }
+
+                    var entry = new Area()
+                    {
+                        ID = id,
+                        NameEn = this.areaENList[id]?.Name ?? string.Empty,
+                        Name = fields[4]
+                    };
+
+                    this.areaList.Add(entry);
+                }
+            }
+
+            this.AppLogger.Trace($"XIVDB Area list loaded. {this.AreaFile}");
+        }
+
+        private void LoadAreaEN()
+        {
+            if (!File.Exists(this.AreaENFile))
+            {
+                return;
+            }
+
+            this.areaENList.Clear();
+
+            // UTF-8 BOMあり
+            using (var sr = new StreamReader(this.AreaENFile, new UTF8Encoding(true)))
+            using (var parser = new TextFieldParser(sr)
+            {
+                TextFieldType = FieldType.Delimited,
+                Delimiters = new[] { "," },
+                HasFieldsEnclosedInQuotes = true,
+                TrimWhiteSpace = true,
+                CommentTokens = new[] { "#" },
+            })
+            {
+                while (!parser.EndOfData)
+                {
+                    var fields = parser.ReadFields();
+
+                    if (fields == null ||
+                        fields.Length < 5)
+                    {
+                        continue;
+                    }
+
+                    int id;
+                    if (!int.TryParse(fields[0], out id) ||
+                        string.IsNullOrEmpty(fields[4]))
+                    {
+                        continue;
+                    }
+
+                    var entry = new Area()
+                    {
+                        ID = id,
+                        NameEn = fields[4],
+                        Name = fields[4]
+                    };
+
+                    this.areaENList[entry.ID] = entry;
                 }
             }
 
@@ -182,26 +255,41 @@ namespace FFXIV.Framework.FFXIVHelper
 
             this.actionList.Clear();
 
-            using (var sr = new StreamReader(this.SkillFile, new UTF8Encoding(false)))
+            // UTF-8 BOMあり
+            using (var sr = new StreamReader(this.SkillFile, new UTF8Encoding(true)))
+            using (var parser = new TextFieldParser(sr)
             {
-                // ヘッダを飛ばす
-                sr.ReadLine();
-
-                while (!sr.EndOfStream)
+                TextFieldType = FieldType.Delimited,
+                Delimiters = new[] { "," },
+                HasFieldsEnclosedInQuotes = true,
+                TrimWhiteSpace = true,
+                CommentTokens = new[] { "#" },
+            })
+            {
+                while (!parser.EndOfData)
                 {
-                    var line = sr.ReadLine();
+                    var fields = parser.ReadFields();
 
-                    var values = line.Split(',');
-                    if (values.Length >= 5)
+                    if (fields == null ||
+                        fields.Length < 2)
                     {
-                        var entry = new XIVDBAction()
-                        {
-                            ID = int.Parse(values[0]),
-                            Name = values[4]
-                        };
-
-                        this.actionList[entry.ID] = entry;
+                        continue;
                     }
+
+                    int id;
+                    if (!int.TryParse(fields[0], out id) ||
+                        string.IsNullOrEmpty(fields[1]))
+                    {
+                        continue;
+                    }
+
+                    var entry = new XIVDBAction()
+                    {
+                        ID = id,
+                        Name = fields[1]
+                    };
+
+                    this.actionList[entry.ID] = entry;
                 }
             }
 
