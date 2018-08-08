@@ -1157,6 +1157,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         foreach (var vnotice in vnotices)
                         {
                             vnotice.Timestamp = detectTime;
+
+                            // 自動ジョブアイコンをセットする
+                            vnotice.SetJobIcon();
                         }
                     }
 

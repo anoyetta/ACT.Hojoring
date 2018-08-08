@@ -746,6 +746,19 @@ namespace FFXIV.Framework.FFXIVHelper
         }
 
         /// <summary>
+        /// 名前に該当するCombatantを返す
+        /// </summary>
+        /// <param name="name">名前</param>
+        /// <returns>Combatant</returns>
+        public Combatant GetCombatant(
+            string name)
+            => this.GetCombatantList().FirstOrDefault(x =>
+                string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(x.NameFI, name, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(x.NameIF, name, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(x.NameII, name, StringComparison.OrdinalIgnoreCase));
+
+        /// <summary>
         /// パーティをロールで分類して取得する
         /// </summary>
         /// <returns>

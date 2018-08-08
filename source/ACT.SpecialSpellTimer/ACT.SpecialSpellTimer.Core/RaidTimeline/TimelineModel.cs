@@ -567,6 +567,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.VisualNotice, "DurationVisible", true),
             NewDefault(TimelineElementTypes.VisualNotice, "StackVisible", false),
             NewDefault(TimelineElementTypes.VisualNotice, "Order", 0),
+            NewDefault(TimelineElementTypes.VisualNotice, "IsJobIcon", false),
 
             // ImageNotice
             NewDefault(TimelineElementTypes.ImageNotice, "Enabled", true),
