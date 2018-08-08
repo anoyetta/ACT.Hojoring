@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<timeline>
+  <name>極リオレウス狩猟戦</name>
+  <rev>rev1</rev>
+  <description>
+    リオレウス狩猟戦向けのタイムラインです。
+    タイムラインといってもほぼランダム攻撃ですのでトリガの定義だけです。
+
+    designed by Hojoring Forum
+    https://discord.gg/n6Mut3F
+  </description>
+  <zone>the Great Hunt,the Great Hunt (Extreme),Unknown Zone (2F9),Unknown Zone (2Fa)</zone>
+  <locale>JA</locale>
+
+  <t text="自分にマーカー" sync="^1B:[id8]:[mex]:" notice="自分にマーカー">
+    <v-notice
+      duration="5"
+      duration-visible="false"
+      order="0"
+      job-icon="true" />
+  </t>
+
+  <t text="マーカー\n ➜ ${_nex}" sync="^1B:[id8]:[nex]:" notice="マーカー">
+    <v-notice
+      duration="5"
+      duration-visible="false"
+      order="0"
+      job-icon="true" />
+  </t>
+
+  <t sync="縄張りを荒らされ、野生の魔物たちが集まってきた！" notice="雑魚、ポップ" />
+  <t sync=":[EX] Added new combatant\. name=ガルラ" notice="ガルラ、ポップ" />
+</timeline>
