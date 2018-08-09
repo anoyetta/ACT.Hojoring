@@ -369,6 +369,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     this.toHide = false;
                     this.RemoveSyncToHide();
+                    this.overlay.Model = null;
                     this.overlay.Close();
                     this.overlay = null;
                 }
@@ -392,18 +393,20 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         [XmlIgnore]
-        public BitmapImage BitmapImage => GetBitmapImage(this.Image);
+        public BitmapSource BitmapImage => GetBitmapImage(this.Image);
 
         [XmlIgnore]
         public bool ExistsImage => this.BitmapImage != null;
 
-        private static readonly Dictionary<string, BitmapImage> ImageDictionary = new Dictionary<string, BitmapImage>();
+        private static readonly Dictionary<string, BitmapSource> ImageDictionary = new Dictionary<string, BitmapSource>();
 
-        private static BitmapImage GetBitmapImage(
+        private static BitmapSource GetBitmapImage(
             string image)
         {
             lock (ImageDictionary)
             {
+                image = image.ToLower();
+
                 if (ImageDictionary.ContainsKey(image))
                 {
                     return ImageDictionary[image];
@@ -430,17 +433,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return null;
                 }
 
-                var bmp = new BitmapImage();
-                bmp.BeginInit();
-                bmp.CacheOption = BitmapCacheOption.OnLoad;
-                bmp.CreateOptions = BitmapCreateOptions.None;
-                bmp.UriSource = new Uri(file);
-                bmp.EndInit();
-                bmp.Freeze();
+                var bitmap = default(WriteableBitmap);
+                using (var ms = new MemoryStream(File.ReadAllBytes(file)))
+                {
+                    bitmap = new WriteableBitmap(BitmapFrame.Create(ms));
+                }
 
-                ImageDictionary[image] = bmp;
+                ImageDictionary[image] = bitmap;
 
-                return bmp;
+                return bitmap;
             }
         }
 

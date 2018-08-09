@@ -216,7 +216,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public bool ExistsIcon => !string.IsNullOrEmpty(this.Icon);
 
         [XmlIgnore]
-        public BitmapImage IconImage =>
+        public BitmapSource IconImage =>
             string.IsNullOrEmpty(this.Icon) ?
             null :
             IconController.Instance.GetIconFile(this.Icon)?.CreateBitmapImage();
