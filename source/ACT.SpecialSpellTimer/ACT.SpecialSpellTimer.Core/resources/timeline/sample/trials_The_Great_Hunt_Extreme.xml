@@ -28,6 +28,21 @@
       job-icon="true" />
   </t>
 
-  <t sync="縄張りを荒らされ、野生の魔物たちが集まってきた！" notice="雑魚、ポップ" />
-  <t sync=":[EX] Added new combatant\. name=ガルラ" notice="ガルラ、ポップ" />
+  <t sync="^03:Added new combatant ステップ・シープ" notice="雑魚、ポップ">
+    <v-notice
+      text="雑魚"
+      duration="3"
+      duration-visible="false"
+      order="0"
+      icon="Check.png" />
+  </t>
+
+  <t sync="^03:Added new combatant ガルラ" notice="ガルラ、ポップ">
+    <v-notice
+      text="ガルラ"
+      duration="3"
+      duration-visible="false"
+      order="0"
+      icon="Check.png" />
+  </t>
 </timeline>
