@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <timeline>
   <name>極リオレウス狩猟戦</name>
-  <rev>rev1</rev>
+  <rev>rev2</rev>
   <description>
     リオレウス狩猟戦向けのタイムラインです。
     タイムラインといってもほぼランダム攻撃ですのでトリガの定義だけです。
@@ -28,12 +28,60 @@
       job-icon="true" />
   </t>
 
+  <!-- ファイアブレスはマーカと同時通知になるので不要かもしれない -->
+  <!--
+  <t sync="^14:2857:" notice="ファイアブレス">
+    <v-notice
+      text="ファイアブレス"
+      duration="3"
+      duration-visible="false"
+      order="1"
+      icon="Marker.png" />
+  </t>
+  -->
+
+  <t sync="^14:286A:" notice="アギト">
+    <v-notice
+      text="アギト"
+      duration="3"
+      duration-visible="false"
+      order="1"
+      icon="HardAttack.png" />
+  </t>
+
+  <t sync="^14:(2856|2861):" notice="突進">
+    <v-notice
+      text="突進"
+      duration="3"
+      duration-visible="false"
+      order="1"
+      icon="Arrow1.png" />
+  </t>
+
+  <t sync="^14:2859:" notice="リコイル">
+    <v-notice
+      text="フレイムリコイル"
+      duration="3"
+      duration-visible="false"
+      order="1"
+      icon="Fire.png" />
+  </t>
+
+  <t sync="^14:2863:" notice="スウィープ">
+    <v-notice
+      text="スウィーピングフレイム"
+      duration="3"
+      duration-visible="false"
+      order="1"
+      icon="Fire.png" />
+  </t>
+
   <t sync="^03:Added new combatant ステップ・シープ" notice="雑魚、ポップ">
     <v-notice
       text="雑魚"
       duration="3"
       duration-visible="false"
-      order="0"
+      order="2"
       icon="Check.png" />
   </t>
 
@@ -42,7 +90,7 @@
       text="ガルラ"
       duration="3"
       duration-visible="false"
-      order="0"
+      order="2"
       icon="Check.png" />
   </t>
 </timeline>
