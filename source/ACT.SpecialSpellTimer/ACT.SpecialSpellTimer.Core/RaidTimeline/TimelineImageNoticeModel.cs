@@ -367,6 +367,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 if (this.overlay != null)
                 {
+                    this.toHide = false;
+                    this.RemoveSyncToHide();
                     this.overlay.Close();
                     this.overlay = null;
                 }

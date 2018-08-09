@@ -1550,7 +1550,20 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.TimelineTimer.Stop();
                 this.LoadActivityLine();
 
+                // v-notice をクリアする
                 TimelineNoticeOverlay.NoticeView?.ClearNotice();
+
+                // i-notice をクリアする
+                this.Model.Walk((element) =>
+                {
+                    if (element is TimelineImageNoticeModel i)
+                    {
+                        i.CloseNotice();
+                    }
+                });
+
+                // 通知キューをクリアする
+                this.ClearNotifyQueue();
 
                 this.isRunning = false;
                 this.Status = TimelineStatus.Loaded;
@@ -1780,6 +1793,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     this.notifyWorker = null;
                 }
             }
+        }
+
+        private void ClearNotifyQueue()
+        {
+            while (this.NotifyQueue.TryDequeue(out TimelineBase q)) ;
         }
 
         private void DoNotify()
