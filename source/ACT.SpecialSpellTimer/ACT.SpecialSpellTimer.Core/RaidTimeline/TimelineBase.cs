@@ -171,9 +171,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         bool ExistsIcon { get; }
 
-        BitmapImage IconImage { get; }
+        BitmapSource IconImage { get; }
 
-        BitmapImage ThisIconImage { get; }
+        BitmapSource ThisIconImage { get; }
     }
 
     public static class IStylableEx
@@ -183,11 +183,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             !string.IsNullOrEmpty(element.Icon) ||
             !string.IsNullOrEmpty(element.StyleModel?.Icon);
 
-        public static BitmapImage GetIconImage(
+        public static BitmapSource GetIconImage(
             this IStylable element) =>
             element.ThisIconImage ?? element.StyleModel?.IconImage;
 
-        public static BitmapImage GetThisIconImage(
+        public static BitmapSource GetThisIconImage(
             this IStylable element) =>
             string.IsNullOrEmpty(element.Icon) ?
             null :
