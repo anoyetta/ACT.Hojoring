@@ -167,7 +167,7 @@ namespace ACT.SpecialSpellTimer
 
                 lock (this.LogBuffer)
                 {
-                    this.outputStream?.WriteLine(this.LogBuffer.ToString());
+                    this.outputStream?.Write(this.LogBuffer.ToString());
                     this.LogBuffer.Clear();
 
                     if (this.worker.Interval != FlushInterval.TotalMilliseconds)
