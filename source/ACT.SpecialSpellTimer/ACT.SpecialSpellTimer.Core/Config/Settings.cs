@@ -464,7 +464,8 @@ namespace ACT.SpecialSpellTimer.Config
                 {
                     if (!this.saveLogEnabled)
                     {
-                        ChatLogWorker.Instance.Flush();
+                        ChatLogWorker.Instance.Write();
+                        ChatLogWorker.Instance.Close();
                     }
                 }
             }
