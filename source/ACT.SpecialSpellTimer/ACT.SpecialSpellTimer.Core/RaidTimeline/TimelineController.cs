@@ -323,6 +323,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.Status = TimelineStatus.Unloaded;
                 this.AppLogger.Trace($"[TL] Timeline unloaded. name={this.Model.TimelineName}");
+
+                // GC
+                GC.Collect();
             }
         }
 
@@ -1568,6 +1571,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.isRunning = false;
                 this.Status = TimelineStatus.Loaded;
                 this.AppLogger.Trace($"{TLSymbol} Timeline stoped. name={this.Model.TimelineName}");
+
+                // GC
+                GC.Collect();
             }
         }
 
@@ -1789,7 +1795,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 if (this.notifyWorker != null)
                 {
                     this.notifyWorker.Abort();
-                    while (this.NotifyQueue.TryDequeue(out TimelineBase q)) ;
+                    this.ClearNotifyQueue();
                     this.notifyWorker = null;
                 }
             }
@@ -1797,7 +1803,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private void ClearNotifyQueue()
         {
-            while (this.NotifyQueue.TryDequeue(out TimelineBase q)) ;
+            while (this.NotifyQueue.TryDequeue(out TimelineBase q))
+            {
+                if (q is TimelineImageNoticeModel i)
+                {
+                    i.CloseNotice();
+                }
+            }
         }
 
         private void DoNotify()
