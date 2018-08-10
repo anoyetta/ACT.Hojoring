@@ -193,3 +193,29 @@
 アサグ                      EX
 スラビー                    EX
 エウレカの聖牛              EX
+
+# ディープダンジョン：アメノミハシラ
+イヌガミ                    DD
+コマイヌ                    DD
+センリ                      DD
+アメノ・トビザメ            DD    60    false
+アメノ・ヴァナラ            DD    60    false
+アメノ・ドグウ              DD    60    false
+アメノ・クロウサギ          DD    60    false
+アメノ・セキゾウ            DD    60    false
+アメノ・ミズミミズ          DD    60    false
+アメノ・ナーガ              DD    60    false
+アメノ・ドキュウ            DD    60    false
+アメノ・ジュボッコ          DD    60    false
+アメノ・テツキョジン        DD    60    false
+アメノ・モルボル            DD    60    false
+アメノ・チザクラ            DD    60    false
+アメノ・ガルラ              DD    60    false
+アメノ・シンゼイ            DD    60    false
+アメノ・ラセツ              DD    60    false
+アメノ・ヒョウガ            DD    60    false
+アメノ・ヒョウザン          DD    60    false
+アメノ・シロジシ            DD    60    false
+アメノ・ゴズ                DD    60    false
+アメノ・クビナシ            DD    60    false
+アメノ・テンマ              DD    60    false
