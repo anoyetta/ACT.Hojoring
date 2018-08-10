@@ -10,6 +10,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public const string Wipeout = "wipeout";
         public const string ImportLog = "00:0000:import";
         public static readonly string WipeoutLog = $"00:0000:{Wipeout}";
+        public static readonly string WipeoutLogEcho = $"00:0038:{Wipeout}";
 
         private static Dictionary<Locales, AnalyzerContainer> analyzerDictionary;
 
@@ -120,6 +121,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "の攻略を終了した。", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "ロットを行ってください。", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutLog, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "「", Category = KewordTypes.Action },
             new AnalyzeKeyword() { Keyword = "」", Category = KewordTypes.Action },
         };
@@ -212,6 +214,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "has ended.", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "Cast your lot.", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutLog, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "uses", Category = KewordTypes.Action },
         };
 
@@ -301,6 +304,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "공략을 종료했습니다.", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "입찰을 진행하십시오", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutLog, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "시전했습니다.", Category = KewordTypes.Action },
         };
 
@@ -392,6 +396,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "结束了", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "00:0839:请掷骰。", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutLog, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "发动了", Category = KewordTypes.Action },
         };
 
