@@ -119,7 +119,13 @@ namespace ACT.SpecialSpellTimer
                         }
                     }
 
-                    this.outputStream = new StreamWriter(this.OutputFile, true, this.UTF8Encoding);
+                    this.outputStream = new StreamWriter(
+                        new FileStream(
+                            this.OutputFile,
+                            FileMode.Append,
+                            FileAccess.Write,
+                            FileShare.Read),
+                        UTF8Encoding);
                 }
             }
         }
