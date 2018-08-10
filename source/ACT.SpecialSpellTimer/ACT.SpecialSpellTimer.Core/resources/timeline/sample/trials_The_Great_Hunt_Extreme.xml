@@ -40,7 +40,7 @@
   </t>
   -->
 
-  <t sync="^14:286A:" notice="アギト">
+  <t sync="^14:(286A|287A):" notice="アギト">
     <v-notice
       text="アギト"
       duration="3"
@@ -49,7 +49,7 @@
       icon="HardAttack.png" />
   </t>
 
-  <t sync="^14:(2856|2861):" notice="突進">
+  <t sync="^14:(2856|2861|286D|2878):" notice="突進">
     <v-notice
       text="突進"
       duration="3"
@@ -58,7 +58,7 @@
       icon="Arrow1.png" />
   </t>
 
-  <t sync="^14:2859:" notice="リコイル">
+  <t sync="^14:(2859|2870|285B):" notice="リコイル">
     <v-notice
       text="フレイムリコイル"
       duration="3"
@@ -67,7 +67,7 @@
       icon="Fire.png" />
   </t>
 
-  <t sync="^14:2863:" notice="スウィープ">
+  <t sync=":2879:スウィーピングフレイム" notice="スウィープ">
     <v-notice
       text="スウィーピングフレイム"
       duration="3"
