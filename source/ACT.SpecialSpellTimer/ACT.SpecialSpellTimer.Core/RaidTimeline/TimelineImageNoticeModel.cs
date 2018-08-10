@@ -28,8 +28,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #endregion TimelineBase
 
+        private static readonly List<TimelineImageNoticeModel> INoticeList = new List<TimelineImageNoticeModel>();
+
         public TimelineImageNoticeModel()
         {
+            lock (INoticeList)
+            {
+                INoticeList.Add(this);
+            }
+
             this.PropertyChanged += (s, e) =>
             {
                 switch (e.PropertyName)
@@ -50,6 +57,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         break;
                 }
             };
+        }
+
+        public static void Collect()
+        {
+            lock (INoticeList)
+            {
+                foreach (var i in INoticeList)
+                {
+                    i.CloseNotice();
+                }
+
+                INoticeList.Clear();
+            }
         }
 
         #region Left

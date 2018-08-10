@@ -1551,29 +1551,18 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 this.TimelineTimer.Stop();
-                this.LoadActivityLine();
 
-                // v-notice をクリアする
+                // リソースを開放する
                 TimelineNoticeOverlay.NoticeView?.ClearNotice();
-
-                // i-notice をクリアする
-                this.Model.Walk((element) =>
-                {
-                    if (element is TimelineImageNoticeModel i)
-                    {
-                        i.CloseNotice();
-                    }
-                });
-
-                // 通知キューをクリアする
+                TimelineImageNoticeModel.Collect();
                 this.ClearNotifyQueue();
+                GC.Collect();
+
+                this.LoadActivityLine();
 
                 this.isRunning = false;
                 this.Status = TimelineStatus.Loaded;
                 this.AppLogger.Trace($"{TLSymbol} Timeline stoped. name={this.Model.TimelineName}");
-
-                // GC
-                GC.Collect();
             }
         }
 
