@@ -1175,7 +1175,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
                     }
 
-                    this.NotifyQueue.Enqueue(toNotice);
+                    NotifyQueue.Enqueue(toNotice);
                 }
 
                 WPFHelper.BeginInvoke(() =>
@@ -1398,7 +1398,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
                     }
 
-                    this.NotifyQueue.Enqueue(toNotice);
+                    NotifyQueue.Enqueue(toNotice);
                 }
 
                 WPFHelper.BeginInvoke(() =>
@@ -1642,7 +1642,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     inotice.Timestamp = now;
                 }
 
-                this.NotifyQueue.Enqueue(act);
+                NotifyQueue.Enqueue(act);
             }
 
             // 表示を終了させる
@@ -1755,28 +1755,31 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         #region 通知に関するメソッド
 
         private static readonly object NoticeLocker = new object();
-        private readonly ConcurrentQueue<TimelineBase> NotifyQueue = new ConcurrentQueue<TimelineBase>();
+        private static readonly ConcurrentQueue<TimelineBase> NotifyQueue = new ConcurrentQueue<TimelineBase>();
 
+        private static readonly TimeSpan NotifySleepInterval = TimeSpan.FromSeconds(5);
         private static ThreadWorker notifyWorker;
-        private volatile bool isNotifyRunning = false;
-        private readonly TimeSpan NotifySleepInterval = TimeSpan.FromSeconds(5);
+        private static volatile bool isNotifyRunning = false;
 
         private void StartNotifyWorker()
         {
             lock (NoticeLocker)
             {
-                this.isNotifyRunning = true;
-
                 if (notifyWorker == null)
                 {
                     notifyWorker = new ThreadWorker(
-                        this.DoNotify,
-                        TimelineSettings.Instance.NotifyInterval,
+                        null,
+                        NotifySleepInterval.TotalMilliseconds,
                         "TimelineNotifyWorker",
                         TimelineSettings.Instance.NotifyThreadPriority);
 
                     notifyWorker.Run();
                 }
+
+                notifyWorker.DoWorkAction = this.DoNotify;
+                notifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
+
+                isNotifyRunning = true;
             }
         }
 
@@ -1784,14 +1787,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (NoticeLocker)
             {
-                this.isNotifyRunning = false;
+                isNotifyRunning = false;
+                notifyWorker.DoWorkAction = null;
+                notifyWorker.Interval = NotifySleepInterval.TotalMilliseconds;
                 this.ClearNotifyQueue();
             }
         }
 
         private void ClearNotifyQueue()
         {
-            while (this.NotifyQueue.TryDequeue(out TimelineBase q))
+            while (NotifyQueue.TryDequeue(out TimelineBase q))
             {
                 if (q is TimelineImageNoticeModel i)
                 {
@@ -1802,39 +1807,42 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private void DoNotify()
         {
-            if (!this.isNotifyRunning)
+            lock (NoticeLocker)
             {
-                notifyWorker.Interval = NotifySleepInterval.TotalMilliseconds;
-                return;
-            }
-
-            notifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
-
-            if (this.NotifyQueue.IsEmpty)
-            {
-                return;
-            }
-
-            var exists = false;
-            while (this.NotifyQueue.TryDequeue(out TimelineBase element))
-            {
-                switch (element)
+                if (!isNotifyRunning)
                 {
-                    case TimelineActivityModel act:
-                        this.NotifyActivity(act);
-                        break;
-
-                    case TimelineTriggerModel tri:
-                        this.NotifyTrigger(tri);
-                        break;
+                    notifyWorker.Interval = NotifySleepInterval.TotalMilliseconds;
+                    return;
                 }
 
-                exists = true;
-            }
+                notifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
 
-            if (exists)
-            {
-                notifyWorker.Interval = 0;
+                if (NotifyQueue.IsEmpty)
+                {
+                    return;
+                }
+
+                var exists = false;
+                while (NotifyQueue.TryDequeue(out TimelineBase element))
+                {
+                    switch (element)
+                    {
+                        case TimelineActivityModel act:
+                            this.NotifyActivity(act);
+                            break;
+
+                        case TimelineTriggerModel tri:
+                            this.NotifyTrigger(tri);
+                            break;
+                    }
+
+                    exists = true;
+                }
+
+                if (exists)
+                {
+                    notifyWorker.Interval = 0;
+                }
             }
         }
 
