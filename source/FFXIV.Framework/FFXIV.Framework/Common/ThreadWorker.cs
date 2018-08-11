@@ -42,6 +42,8 @@ namespace FFXIV.Framework.Common
 
         public ThreadPriority Priority { get; private set; }
 
+        public bool IsRunning { get; private set; }
+
         public static ThreadWorker Run(
             Action doWorkAction,
             double interval,
@@ -77,6 +79,8 @@ namespace FFXIV.Framework.Common
                 this.thread = null;
             }
 
+            this.IsRunning = false;
+
             Logger.Trace($"ThreadWorker - {this.Name} end.{(result ? " aborted" : string.Empty)}");
 
             return result;
@@ -90,6 +94,8 @@ namespace FFXIV.Framework.Common
             this.thread.IsBackground = true;
             this.thread.Priority = this.Priority;
             this.thread.Start();
+
+            this.IsRunning = true;
         }
 
         private void DoWorkLoop()

@@ -1755,29 +1755,28 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         #region 通知に関するメソッド
 
         private static readonly object NoticeLocker = new object();
+        private static readonly TimeSpan NotifySleepInterval = TimeSpan.FromSeconds(5);
         private static readonly ConcurrentQueue<TimelineBase> NotifyQueue = new ConcurrentQueue<TimelineBase>();
 
-        private static readonly TimeSpan NotifySleepInterval = TimeSpan.FromSeconds(5);
-        private static ThreadWorker notifyWorker;
+        private static readonly ThreadWorker NotifyWorker = new ThreadWorker(
+            null,
+            NotifySleepInterval.TotalMilliseconds,
+            "TimelineNotifyWorker",
+            TimelineSettings.Instance.NotifyThreadPriority);
+
         private static volatile bool isNotifyRunning = false;
 
         private void StartNotifyWorker()
         {
             lock (NoticeLocker)
             {
-                if (notifyWorker == null)
+                if (!NotifyWorker.IsRunning)
                 {
-                    notifyWorker = new ThreadWorker(
-                        null,
-                        NotifySleepInterval.TotalMilliseconds,
-                        "TimelineNotifyWorker",
-                        TimelineSettings.Instance.NotifyThreadPriority);
-
-                    notifyWorker.Run();
+                    NotifyWorker.Run();
                 }
 
-                notifyWorker.DoWorkAction = this.DoNotify;
-                notifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
+                NotifyWorker.DoWorkAction = this.DoNotify;
+                NotifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
 
                 isNotifyRunning = true;
             }
@@ -1788,8 +1787,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             lock (NoticeLocker)
             {
                 isNotifyRunning = false;
-                notifyWorker.DoWorkAction = null;
-                notifyWorker.Interval = NotifySleepInterval.TotalMilliseconds;
+                NotifyWorker.DoWorkAction = null;
+                NotifyWorker.Interval = NotifySleepInterval.TotalMilliseconds;
                 this.ClearNotifyQueue();
             }
         }
@@ -1811,11 +1810,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 if (!isNotifyRunning)
                 {
-                    notifyWorker.Interval = NotifySleepInterval.TotalMilliseconds;
+                    NotifyWorker.Interval = NotifySleepInterval.TotalMilliseconds;
                     return;
                 }
 
-                notifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
+                NotifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
 
                 if (NotifyQueue.IsEmpty)
                 {
@@ -1841,7 +1840,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (exists)
                 {
-                    notifyWorker.Interval = 0;
+                    NotifyWorker.Interval = 0;
                 }
             }
         }
