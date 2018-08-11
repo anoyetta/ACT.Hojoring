@@ -146,6 +146,8 @@ namespace ACT.SpecialSpellTimer
             GC.Collect();
         }
 
+        private DateTime lastFlushTimestamp = DateTime.MinValue;
+
         public void Write()
         {
             const double LongInterval = 10 * 1000;
@@ -169,6 +171,12 @@ namespace ACT.SpecialSpellTimer
                 {
                     this.outputStream?.Write(this.LogBuffer.ToString());
                     this.LogBuffer.Clear();
+
+                    if ((DateTime.Now - this.lastFlushTimestamp).TotalMinutes >= 15.0)
+                    {
+                        this.lastFlushTimestamp = DateTime.Now;
+                        this.outputStream?.Flush();
+                    }
 
                     if (this.worker.Interval != FlushInterval.TotalMilliseconds)
                     {
