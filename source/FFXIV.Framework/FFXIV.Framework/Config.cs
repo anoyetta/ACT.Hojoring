@@ -92,7 +92,7 @@ namespace FFXIV.Framework
 
         private const bool SupportWin7Default = false;
         private const int WasapiMultiplePlaybackCountDefault = 4;
-        private const double WasapiLoopBufferDurationDefault = 60;
+        private const double WasapiLoopBufferDurationDefault = 20;
 
         #endregion Default Values
 

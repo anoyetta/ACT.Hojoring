@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -114,6 +115,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             get => this.notifyInterval;
             set => this.SetProperty(ref this.notifyInterval, value);
+        }
+
+        private ThreadPriority notifyThreadPriority = ThreadPriority.BelowNormal;
+
+        public ThreadPriority NotifyThreadPriority
+        {
+            get => this.notifyThreadPriority;
+            set => this.SetProperty(ref this.notifyThreadPriority, value);
         }
 
         private double noticeTop = 10;

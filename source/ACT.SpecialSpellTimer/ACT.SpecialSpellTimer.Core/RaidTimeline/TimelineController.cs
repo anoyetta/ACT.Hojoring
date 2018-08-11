@@ -1759,34 +1759,34 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private ThreadWorker notifyWorker;
         private volatile bool isNotifyExcuting = false;
+        private volatile bool isNotifyRunning = false;
+        private readonly TimeSpan NotifySleepInterval = TimeSpan.FromSeconds(5);
 
         private void StartNotifyWorker()
         {
             lock (NoticeLocker)
             {
+                this.isNotifyRunning = true;
+
                 if (this.notifyWorker == null)
                 {
                     this.notifyWorker = new ThreadWorker(
                         this.DoNotify,
                         TimelineSettings.Instance.NotifyInterval,
                         "TimelineNotifyWorker",
-                        ThreadPriority.Normal);
+                        TimelineSettings.Instance.NotifyThreadPriority);
+
+                    this.notifyWorker.Run();
                 }
             }
-
-            this.notifyWorker.Run();
         }
 
         public void StopNotifyWorker()
         {
             lock (NoticeLocker)
             {
-                if (this.notifyWorker != null)
-                {
-                    this.notifyWorker.Abort();
-                    this.ClearNotifyQueue();
-                    this.notifyWorker = null;
-                }
+                this.isNotifyRunning = false;
+                this.ClearNotifyQueue();
             }
         }
 
@@ -1803,6 +1803,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private void DoNotify()
         {
+            if (!this.isNotifyRunning)
+            {
+                this.notifyWorker.Interval = NotifySleepInterval.TotalMilliseconds;
+                return;
+            }
+
             this.notifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
 
             if (this.NotifyQueue.IsEmpty)
