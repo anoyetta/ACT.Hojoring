@@ -1804,11 +1804,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             if (!this.isNotifyRunning)
             {
-                this.notifyWorker.Interval = NotifySleepInterval.TotalMilliseconds;
+                notifyWorker.Interval = NotifySleepInterval.TotalMilliseconds;
                 return;
             }
 
-            this.notifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
+            notifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
 
             if (this.NotifyQueue.IsEmpty)
             {
@@ -1834,7 +1834,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (exists)
             {
-                this.notifyWorker.Interval = 0;
+                notifyWorker.Interval = 0;
             }
         }
 
