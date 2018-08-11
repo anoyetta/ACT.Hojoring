@@ -1757,8 +1757,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static readonly object NoticeLocker = new object();
         private readonly ConcurrentQueue<TimelineBase> NotifyQueue = new ConcurrentQueue<TimelineBase>();
 
-        private ThreadWorker notifyWorker;
-        private volatile bool isNotifyExcuting = false;
+        private static ThreadWorker notifyWorker;
         private volatile bool isNotifyRunning = false;
         private readonly TimeSpan NotifySleepInterval = TimeSpan.FromSeconds(5);
 
@@ -1768,15 +1767,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 this.isNotifyRunning = true;
 
-                if (this.notifyWorker == null)
+                if (notifyWorker == null)
                 {
-                    this.notifyWorker = new ThreadWorker(
+                    notifyWorker = new ThreadWorker(
                         this.DoNotify,
                         TimelineSettings.Instance.NotifyInterval,
                         "TimelineNotifyWorker",
                         TimelineSettings.Instance.NotifyThreadPriority);
 
-                    this.notifyWorker.Run();
+                    notifyWorker.Run();
                 }
             }
         }
@@ -1816,40 +1815,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            try
+            var exists = false;
+            while (this.NotifyQueue.TryDequeue(out TimelineBase element))
             {
-                if (this.isNotifyExcuting)
+                switch (element)
                 {
-                    return;
+                    case TimelineActivityModel act:
+                        this.NotifyActivity(act);
+                        break;
+
+                    case TimelineTriggerModel tri:
+                        this.NotifyTrigger(tri);
+                        break;
                 }
 
-                this.isNotifyExcuting = true;
-
-                var exists = false;
-                while (this.NotifyQueue.TryDequeue(out TimelineBase element))
-                {
-                    switch (element)
-                    {
-                        case TimelineActivityModel act:
-                            this.NotifyActivity(act);
-                            break;
-
-                        case TimelineTriggerModel tri:
-                            this.NotifyTrigger(tri);
-                            break;
-                    }
-
-                    exists = true;
-                }
-
-                if (exists)
-                {
-                    this.notifyWorker.Interval = 0;
-                }
+                exists = true;
             }
-            finally
+
+            if (exists)
             {
-                this.isNotifyExcuting = false;
+                this.notifyWorker.Interval = 0;
             }
         }
 
