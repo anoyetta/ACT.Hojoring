@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config;
 using FFXIV.Framework.Common;
@@ -117,12 +118,28 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.notifyInterval, value);
         }
 
-        private ThreadPriority notifyThreadPriority = ThreadPriority.BelowNormal;
+        private double timelineRefreshInterval = 100;
+
+        public double TimelineRefreshInterval
+        {
+            get => this.timelineRefreshInterval;
+            set => this.SetProperty(ref this.timelineRefreshInterval, value);
+        }
+
+        private ThreadPriority notifyThreadPriority = ThreadPriority.Normal;
 
         public ThreadPriority NotifyThreadPriority
         {
             get => this.notifyThreadPriority;
             set => this.SetProperty(ref this.notifyThreadPriority, value);
+        }
+
+        private DispatcherPriority timelineThreadPriority = DispatcherPriority.Normal;
+
+        public DispatcherPriority TimelineThreadPriority
+        {
+            get => this.timelineThreadPriority;
+            set => this.SetProperty(ref this.timelineThreadPriority, value);
         }
 
         private double noticeTop = 10;

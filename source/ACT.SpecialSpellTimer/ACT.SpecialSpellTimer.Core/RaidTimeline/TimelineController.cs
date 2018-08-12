@@ -1524,7 +1524,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (this.TimelineTimer == null)
                 {
-                    this.TimelineTimer = new DispatcherTimer()
+                    this.TimelineTimer = new DispatcherTimer(
+                        TimelineSettings.Instance.TimelineThreadPriority)
                     {
                         Interval = TimeSpan.FromSeconds(0.02),
                     };
@@ -1607,6 +1608,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
+        private DateTime lastTimelineRefreshTimestamp = DateTime.MinValue;
+
         private void RefreshActivityLine()
         {
             if (this.CurrentTime == TimeSpan.Zero)
@@ -1615,7 +1618,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // 現在の時間を更新する
+            // アニメーションは毎回更新する
             TimelineActivityModel.CurrentTime = this.CurrentTime;
+
+            // タイムライン進行の主な処理は0.1秒ごととする
+            if ((DateTime.Now - this.lastTimelineRefreshTimestamp).TotalMilliseconds 
+                < TimelineSettings.Instance.TimelineRefreshInterval)
+            {
+                return;
+            }
+
+            this.lastTimelineRefreshTimestamp = DateTime.Now;
 
             // 通知を判定する
             var toNotify =
