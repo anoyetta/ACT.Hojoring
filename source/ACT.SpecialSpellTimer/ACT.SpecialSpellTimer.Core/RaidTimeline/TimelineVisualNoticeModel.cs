@@ -334,7 +334,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 this.timer = new DispatcherTimer(DispatcherPriority.Normal)
                 {
-                    Interval = TimeSpan.FromSeconds(0.25d)
+                    Interval = TimeSpan.FromSeconds(0.3d)
                 };
 
                 this.timer.Tick += (x, y) =>
