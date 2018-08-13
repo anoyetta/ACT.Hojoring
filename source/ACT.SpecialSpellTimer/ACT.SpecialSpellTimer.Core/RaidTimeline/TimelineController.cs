@@ -1527,7 +1527,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     this.TimelineTimer = new DispatcherTimer(
                         TimelineSettings.Instance.TimelineThreadPriority)
                     {
-                        Interval = TimeSpan.FromSeconds(0.02),
+                        Interval = TimeSpan.FromMilliseconds(
+                            TimelineSettings.Instance.ProgressBarRefreshInterval),
                     };
 
                     this.TimelineTimer.Tick += this.TimelineTimer_Tick;
