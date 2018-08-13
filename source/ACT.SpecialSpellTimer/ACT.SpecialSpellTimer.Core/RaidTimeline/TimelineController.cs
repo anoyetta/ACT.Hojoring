@@ -1618,13 +1618,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // 現在の時間を更新する
-            // アニメーションは毎回更新する
             TimelineActivityModel.CurrentTime = this.CurrentTime;
 
-            // タイムライン進行の主な処理は0.1秒ごととする
-            if ((DateTime.Now - this.lastTimelineRefreshTimestamp).TotalMilliseconds 
+            // タイムライン進行の時間が経っていない？
+            if ((DateTime.Now - this.lastTimelineRefreshTimestamp).TotalMilliseconds
                 < TimelineSettings.Instance.TimelineRefreshInterval)
             {
+                // プログレスバーだけ更新して抜ける
+                this.RefreshProgress();
                 return;
             }
 
@@ -1707,6 +1708,24 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             // 表示を更新する
             this.RefreshActivityLineVisibility();
+        }
+
+        public void RefreshProgress()
+        {
+            var toRefresh =
+                from x in this.ActivityLine
+                where
+                x.Enabled.GetValueOrDefault() &&
+                !string.IsNullOrEmpty(x.Text) &&
+                x.IsVisible
+                select
+                x;
+
+            foreach (var x in toRefresh)
+            {
+                x.RefreshProgress();
+                Thread.Yield();
+            }
         }
 
         public void RefreshActivityLineVisibility()
