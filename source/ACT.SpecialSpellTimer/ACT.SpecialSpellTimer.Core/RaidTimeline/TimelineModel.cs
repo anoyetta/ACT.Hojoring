@@ -739,21 +739,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.isActivitiesVisible, value);
         }
 
+        /// <summary>
+        /// Live更新するか？
+        /// </summary>
+        /// <remarks>
+        /// false設定では正しく動作しない
+        /// 現状ではtrue固定で運用すること
+        /// </remarks>
+        private const bool IsLive = true;
+
         public void StopLive()
         {
-            /*
-            this.ActivitySource.IsLiveFilteringRequested = false;
-            this.ActivitySource.IsLiveSortingRequested = false;
-            */
             this.IsActivitiesVisible = false;
         }
 
         public void ResumeLive()
         {
-            /*
-            this.ActivitySource.IsLiveFilteringRequested = true;
-            this.ActivitySource.IsLiveSortingRequested = true;
-            */
             this.IsActivitiesVisible = true;
         }
 
@@ -762,8 +763,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var cvs = new CollectionViewSource()
             {
                 Source = this.Controller.ActivityLine,
-                IsLiveSortingRequested = true,
-                IsLiveFilteringRequested = true,
+                IsLiveSortingRequested = IsLive,
+                IsLiveFilteringRequested = IsLive,
             };
 
             cvs.Filter += (x, y) =>
