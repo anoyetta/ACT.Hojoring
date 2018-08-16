@@ -1711,6 +1711,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             this.RefreshActivityLineVisibility();
         }
 
+        /// <summary>
+        /// プログレスバーの進捗状況だけ更新する
+        /// </summary>
         public void RefreshProgress()
         {
             var toRefresh =
@@ -1729,6 +1732,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
+        /// <summary>
+        /// アクティビティラインの表示を更新する
+        /// </summary>
         public void RefreshActivityLineVisibility()
         {
             var maxTime = this.CurrentTime.Add(TimeSpan.FromSeconds(
@@ -1775,13 +1781,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     x.IsVisible = true;
                     x.RefreshProgress();
                     count++;
+
+                    Thread.Yield();
                 }
                 else
                 {
                     x.IsVisible = false;
                 }
-
-                Thread.Yield();
             }
         }
 
