@@ -1780,6 +1780,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     x.IsVisible = false;
                 }
+
+                Thread.Yield();
             }
         }
 
