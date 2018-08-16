@@ -118,7 +118,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.notifyInterval, value);
         }
 
-        private double progressBarRefreshInterval = 40;
+        private double progressBarRefreshInterval = 50;
 
         public double ProgressBarRefreshInterval
         {
@@ -126,7 +126,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.progressBarRefreshInterval, value);
         }
 
-        private double timelineRefreshInterval = 100;
+        private double timelineRefreshInterval = 200;
 
         public double TimelineRefreshInterval
         {

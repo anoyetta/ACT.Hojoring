@@ -741,15 +741,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public void StopLive()
         {
+            /*
             this.ActivitySource.IsLiveFilteringRequested = false;
             this.ActivitySource.IsLiveSortingRequested = false;
+            */
             this.IsActivitiesVisible = false;
         }
 
         public void ResumeLive()
         {
+            /*
             this.ActivitySource.IsLiveFilteringRequested = true;
             this.ActivitySource.IsLiveSortingRequested = true;
+            */
             this.IsActivitiesVisible = true;
         }
 
