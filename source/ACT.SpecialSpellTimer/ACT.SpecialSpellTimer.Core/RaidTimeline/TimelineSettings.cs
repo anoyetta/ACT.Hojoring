@@ -110,6 +110,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.noticeLeft, Math.Round(value));
         }
 
+        private bool isTimelineLiveUpdate = false;
+
+        public bool IsTimelineLiveUpdate
+        {
+            get => this.isTimelineLiveUpdate;
+            set => this.SetProperty(ref this.isTimelineLiveUpdate, value);
+        }
+
         private double notifyInterval = 20;
 
         public double NotifyInterval

@@ -263,6 +263,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 CurrentController = this;
 
                 this.LoadActivityLine();
+                this.Model.RefreshActivitiesView();
 
                 if (!this.Model.IsGlobalZone)
                 {
@@ -299,6 +300,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.CurrentTime = TimeSpan.Zero;
                 this.ClearActivity();
+                this.Model.RefreshActivitiesView();
 
                 if (this.LogWorker != null)
                 {
@@ -1193,26 +1195,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             select
                             x).FirstOrDefault();
 
-                        try
+                        // jumpを判定する
+                        if (!this.CallActivity(active, tri.CallTarget))
                         {
-                            this.Model.StopLive();
-
-                            // jumpを判定する
-                            if (!this.CallActivity(active, tri.CallTarget))
+                            if (!this.GoToActivity(active, tri.GoToDestination))
                             {
-                                if (!this.GoToActivity(active, tri.GoToDestination))
-                                {
-                                    this.LoadSubs(tri);
-                                }
+                                this.LoadSubs(tri);
                             }
+                        }
 
-                            // ログを発生させる
-                            RaiseLog(tri);
-                        }
-                        finally
-                        {
-                            this.Model.ResumeLive();
-                        }
+                        // ログを発生させる
+                        RaiseLog(tri);
                     }
                 });
 
@@ -1416,26 +1409,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             select
                             x).FirstOrDefault();
 
-                        try
+                        // jumpを判定する
+                        if (!this.CallActivity(active, tri.CallTarget))
                         {
-                            this.Model.StopLive();
-
-                            // jumpを判定する
-                            if (!this.CallActivity(active, tri.CallTarget))
+                            if (!this.GoToActivity(active, tri.GoToDestination))
                             {
-                                if (!this.GoToActivity(active, tri.GoToDestination))
-                                {
-                                    this.LoadSubs(tri);
-                                }
+                                this.LoadSubs(tri);
                             }
+                        }
 
-                            // ログを発生させる
-                            RaiseLog(tri);
-                        }
-                        finally
-                        {
-                            this.Model.ResumeLive();
-                        }
+                        // ログを発生させる
+                        RaiseLog(tri);
                     }
                 });
             }
@@ -1561,6 +1545,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 GC.Collect();
 
                 this.LoadActivityLine();
+                this.Model.RefreshActivitiesView();
 
                 this.isRunning = false;
                 this.Status = TimelineStatus.Loaded;
@@ -1665,7 +1650,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 from x in this.ActivityLine
                 where
                 !x.IsDone &&
-                x.Time <= this.CurrentTime - TimeSpan.FromSeconds(1)
+                x.Time <=
+                    // カウント0の1秒後に消去する
+                    // 厳密には1秒にリフレッシュレートによるラグを考慮する
+                    this.CurrentTime -
+                    TimeSpan.FromSeconds(1) +
+                    TimeSpan.FromMilliseconds(TimelineSettings.Instance.TimelineRefreshInterval / 2)
                 orderby
                 x.Seq descending
                 select
@@ -1708,7 +1698,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // 表示を更新する
-            this.RefreshActivityLineVisibility();
+            if (this.RefreshActivityLineVisibility())
+            {
+                this.Model.RefreshActivitiesView();
+            }
         }
 
         /// <summary>
@@ -1735,8 +1728,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <summary>
         /// アクティビティラインの表示を更新する
         /// </summary>
-        public void RefreshActivityLineVisibility()
+        /// <returns>
+        /// is changed?</returns>
+        public bool RefreshActivityLineVisibility()
         {
+            var result = false;
+
             var maxTime = this.CurrentTime.Add(TimeSpan.FromSeconds(
                 TimelineSettings.Instance.ShowActivitiesTime));
 
@@ -1778,7 +1775,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         x.Scale = 1.0d;
                     }
 
-                    x.IsVisible = true;
+                    if (!x.IsVisible)
+                    {
+                        x.IsVisible = true;
+                        result = true;
+                    }
+
                     x.RefreshProgress();
                     count++;
 
@@ -1786,9 +1788,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
                 else
                 {
-                    x.IsVisible = false;
+                    if (x.IsVisible)
+                    {
+                        x.IsVisible = false;
+                        result = true;
+                    }
                 }
             }
+
+            return result;
         }
 
         #endregion 時間進行関係のスレッド
