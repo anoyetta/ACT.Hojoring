@@ -550,7 +550,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         this.Model.StopLive();
 
-                        // ジャンプ後のアクティビティを最初期化する
+                        // ジャンプ後のアクティビティを初期化する
                         foreach (var item in this.ActivityLine.Where(x =>
                             x.IsDone &&
                             x.Seq >= targetAct.Seq))
