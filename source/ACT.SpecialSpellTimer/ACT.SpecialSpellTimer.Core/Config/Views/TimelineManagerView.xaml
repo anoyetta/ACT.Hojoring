@@ -334,8 +334,7 @@
                   MinWidth="250"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  ItemsSource="{Binding Path=TimelineConfig.Styles, Mode=OneWay}"
-                  SelectedIndex="0">
+                  ItemsSource="{Binding Path=TimelineConfig.Styles, Mode=OneWay}">
 
                   <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
