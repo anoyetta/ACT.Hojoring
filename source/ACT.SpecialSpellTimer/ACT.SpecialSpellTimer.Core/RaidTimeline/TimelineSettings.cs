@@ -54,6 +54,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.designMode, value);
         }
 
+        private bool hideDesignINotice = false;
+
+        public bool HideDesignINotice
+        {
+            get => this.hideDesignINotice;
+            set => this.SetProperty(ref this.hideDesignINotice, value);
+        }
+
         private bool enabled = false;
 
         public bool Enabled

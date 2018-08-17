@@ -66,7 +66,7 @@
 
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="Auto" MinWidth="550" />
+      <ColumnDefinition Width="Auto" MinWidth="650" />
       <ColumnDefinition />
     </Grid.ColumnDefinitions>
 
@@ -133,7 +133,7 @@
                   Focusable="False"
                   ToolTip="{Binding Description, Mode=OneWay}">
 
-                  <StackPanel Margin="5 0 0 0" MaxWidth="300">
+                  <StackPanel Margin="5 0 0 0" MaxWidth="400">
                     <StackPanel Orientation="Horizontal">
                       <TextBlock Text="{Binding Path=Name, Mode=OneWay}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" MaxWidth="330" TextWrapping="WrapWithOverflow" />
                       <TextBlock Margin="15 0 0 0" Text="{Binding Path=Revision, Mode=OneWay}" FontSize="14" VerticalAlignment="Center" />
@@ -210,16 +210,15 @@
           <StackPanel>
             <CheckBox Margin="0 0 0 0" Content="{DynamicResource Timeline_OverlayVisible}" IsChecked="{Binding Path=TimelineConfig.OverlayVisible, Mode=TwoWay}" Command="{Binding ShowOverlayCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
             <CheckBox Margin="0 5 0 0" Content="{DynamicResource Tree_Clickthrough}" IsChecked="{Binding Path=TimelineConfig.Clickthrough, Mode=TwoWay}" Command="{Binding ClickthroughCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
-            <CheckBox Margin="0 5 0 0" Content="{DynamicResource Timeline_ShowDummyTimeline}" IsChecked="{Binding Path=TimelineConfig.DesignMode, Mode=TwoWay}" Foreground="Green" FontWeight="Bold" Command="{Binding ShowDummyOverlayCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
           </StackPanel>
 
           <StackPanel Margin="50 0 0 0">
-            <Label Margin="0 0 0 0" Content="{DynamicResource Timeline_NotifyInterval}" />
-            <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NotifyInterval, Mode=TwoWay}" FormatString="N0" Increment="1" Width="80" HorizontalAlignment="Left" Minimum="1" Maximum="500" />
+            <CheckBox Margin="0 0 0 0" Content="{DynamicResource Timeline_ShowDummyTimeline}" IsChecked="{Binding Path=TimelineConfig.DesignMode, Mode=TwoWay}" Foreground="Green" FontWeight="Bold" Command="{Binding ShowDummyOverlayCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
+            <CheckBox Margin="0 5 0 0" Content="{DynamicResource Timeline_HideINoticeDummy}" IsChecked="{Binding Path=TimelineConfig.HideDesignINotice, Mode=TwoWay}" Foreground="Green" FontSize="15" Command="{Binding HideDummyOverlayCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
           </StackPanel>
         </StackPanel>
 
-        <TabControl Margin="0 120 0 0">
+        <TabControl Margin="0 98 0 0">
           <TabItem Header="General" Padding="20 2 20 2">
             <!-- 見た目の左側 -->
             <ScrollViewer
@@ -239,6 +238,12 @@
                       <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
                       <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.Top, Mode=TwoWay}" Width="80" />
                     </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0 5 0 0" HorizontalAlignment="Left">
+                      <Label Margin="0 0 5 0" Content="W" VerticalAlignment="Center" />
+                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.Width, Mode=TwoWay}" Width="80" />
+                      <Label Margin="10 0 5 0" Content="H" VerticalAlignment="Center" />
+                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.Height, Mode=TwoWay}" Width="80" />
+                    </StackPanel>
                   </StackPanel>
 
                   <StackPanel Orientation="Vertical" Margin="45 0 0 0">
@@ -248,6 +253,12 @@
                       <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NoticeLeft, Mode=TwoWay}" Width="80" />
                       <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
                       <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NoticeTop, Mode=TwoWay}" Width="80" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0 5 0 0" HorizontalAlignment="Left">
+                      <Label Margin="0 0 5 0" Content="W" VerticalAlignment="Center" />
+                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NoticeWidth, Mode=TwoWay}" Width="80" />
+                      <Label Margin="10 0 5 0" Content="H" VerticalAlignment="Center" />
+                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NoticeHeight, Mode=TwoWay}" Width="80" />
                     </StackPanel>
                   </StackPanel>
                 </StackPanel>
@@ -472,6 +483,22 @@
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
+              </StackPanel>
+            </ScrollViewer>
+            <!-- 見た目の左側 end -->
+          </TabItem>
+
+          <TabItem Header="Options" Padding="20 2 20 2">
+            <!-- 見た目の左側 -->
+            <ScrollViewer
+              Margin="10 10 0 0"
+              Padding="0 0 40 0"
+              VerticalScrollBarVisibility="Auto"
+              HorizontalScrollBarVisibility="Disabled"
+              Focusable="False">
+              <StackPanel>
+                <Label Margin="0 0 0 0" Content="{DynamicResource Timeline_NotifyInterval}" />
+                <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NotifyInterval, Mode=TwoWay}" FormatString="N0" Increment="1" Width="80" HorizontalAlignment="Left" Minimum="1" Maximum="500" />
               </StackPanel>
             </ScrollViewer>
             <!-- 見た目の左側 end -->
