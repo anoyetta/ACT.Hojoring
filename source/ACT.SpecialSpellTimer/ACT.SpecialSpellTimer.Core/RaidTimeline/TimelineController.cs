@@ -1760,6 +1760,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     !x.IsDone &&
                     x.Time <= maxTime)
                 {
+                    x.RefreshProgress();
+
                     if (count == 0)
                     {
                         var sub = x.Parent as TimelineSubroutineModel;
@@ -1787,9 +1789,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         result = true;
                     }
 
-                    x.RefreshProgress();
                     count++;
-
                     Thread.Yield();
                 }
                 else
