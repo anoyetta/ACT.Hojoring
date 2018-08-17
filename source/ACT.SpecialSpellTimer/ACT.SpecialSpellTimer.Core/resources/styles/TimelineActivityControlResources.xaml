@@ -202,6 +202,7 @@
     <Setter Property="IsCCW" Value="True" />
     <Setter Property="BlurOpacity" Value="0" />
     <Setter Property="BlurRadius" Value="0" />
+    <Setter Property="Visibility" Value="{Binding Path=StyleModel.IsCircleStyle, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
     <Style.Triggers>
       <Trigger Property="Progress" Value="0">
         <Setter Property="Visibility" Value="Hidden" />

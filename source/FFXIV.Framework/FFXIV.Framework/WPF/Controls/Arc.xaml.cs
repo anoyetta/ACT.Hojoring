@@ -455,6 +455,11 @@ namespace FFXIV.Framework.WPF.Controls
         /// </summary>
         public void Render()
         {
+            if (this.Visibility == Visibility.Collapsed)
+            {
+                return;
+            }
+
             var start = this.StartAngle;
             var end = this.EndAngle;
 
