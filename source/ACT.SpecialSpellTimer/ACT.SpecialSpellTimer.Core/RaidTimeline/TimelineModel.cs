@@ -787,7 +787,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 WPFHelper.BeginInvoke(() =>
                 {
                     this.ActivityView?.Refresh();
-                }, DispatcherPriority.Background);
+                },
+                DispatcherPriority.Background);
             }
         }
 

@@ -170,11 +170,6 @@
     <Setter Property="Focusable" Value="False" />
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="AlternationCount" Value="999" />
-    <!-- コントロール生成の負荷を減らすために仮想化しない -->
-    <!--
-    <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />
-    <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
-    -->
     <Setter Property="Visibility" Value="{Binding Path=Model.IsActivitiesVisible, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
   </Style>
 
