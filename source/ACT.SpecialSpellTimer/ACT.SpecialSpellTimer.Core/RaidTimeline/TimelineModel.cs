@@ -783,7 +783,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             if (!TimelineSettings.Instance.IsTimelineLiveUpdate)
             {
-                this.ActivityView.Refresh();
+                this.ActivityView?.Refresh();
             }
         }
 
