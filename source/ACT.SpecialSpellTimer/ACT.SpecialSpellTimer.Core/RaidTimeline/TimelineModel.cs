@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config;
@@ -763,9 +764,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             };
 
             cvs.Filter += (x, y) =>
-                y.Accepted = (y.Item as TimelineActivityModel).IsVisible;
+                y.Accepted = !(y.Item as TimelineActivityModel).IsDone;
 
-            cvs.LiveFilteringProperties.Add(nameof(TimelineActivityModel.IsVisible));
+            cvs.LiveFilteringProperties.Add(nameof(TimelineActivityModel.IsDone));
 
             cvs.SortDescriptions.AddRange(new[]
             {
@@ -783,7 +784,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             if (!TimelineSettings.Instance.IsTimelineLiveUpdate)
             {
-                this.ActivityView?.Refresh();
+                WPFHelper.BeginInvoke(() =>
+                {
+                    this.ActivityView?.Refresh();
+                }, DispatcherPriority.Background);
             }
         }
 

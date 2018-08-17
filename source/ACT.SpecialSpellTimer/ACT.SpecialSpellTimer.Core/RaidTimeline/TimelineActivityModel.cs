@@ -378,16 +378,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var progress = 0d;
 
-            if (this.StyleModel?.BarHeight > 0)
+            var before = this.time - CurrentTime;
+            if (before.TotalSeconds <= progressStartTime)
             {
-                var before = this.time - CurrentTime;
-                if (before.TotalSeconds <= progressStartTime)
+                progress = (progressStartTime - before.TotalSeconds) / progressStartTime;
+                if (progress > 1)
                 {
-                    progress = (progressStartTime - before.TotalSeconds) / progressStartTime;
-                    if (progress > 1)
-                    {
-                        progress = 1;
-                    }
+                    progress = 1;
                 }
             }
 

@@ -353,6 +353,20 @@ namespace FFXIV.Framework.WPF.Controls
         /// </summary>
         private void Render()
         {
+            if (this.Visibility == Visibility.Collapsed)
+            {
+                return;
+            }
+
+            // 大きさを設定する
+            if (this.ForeCircle.Radius != this.Radius) this.ForeCircle.Radius = this.Radius;
+            if (this.ForeCircle.StrokeThickness != this.Thickness) this.ForeCircle.StrokeThickness = this.Thickness;
+
+            if (this.Visibility == Visibility.Hidden)
+            {
+                return;
+            }
+
             // エフェクトを設定する
             var effect = this.ForeCircle.Effect as DropShadowEffect;
             if (effect != null)
@@ -368,10 +382,6 @@ namespace FFXIV.Framework.WPF.Controls
                     effect.Opacity = 0;
                 }
             }
-
-            // 大きさを設定する
-            this.ForeCircle.Radius = this.Radius;
-            this.ForeCircle.StrokeThickness = this.Thickness;
 
             // 背景色と前景色を設定する
             if (this.Fill is SolidColorBrush fill)
@@ -414,9 +424,7 @@ namespace FFXIV.Framework.WPF.Controls
 
             var progress = this.Progress;
 
-            if (this.Visibility == Visibility.Collapsed ||
-                this.Visibility == Visibility.Hidden ||
-                this.Radius == 0 ||
+            if (this.Radius == 0 ||
                 this.Thickness == 0)
             {
                 progress = 0;

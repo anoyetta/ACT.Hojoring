@@ -1645,17 +1645,23 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 NotifyQueue.Enqueue(act);
             }
 
+            // カウントアップ後の消去までの猶予時間
+            // 1秒 - リフレッシュレートの補正値
+            var timeToHide =
+                TimeSpan.FromSeconds(1) -
+                TimeSpan.FromMilliseconds(TimelineSettings.Instance.TimelineRefreshInterval / 2);
+
+            if (timeToHide < TimeSpan.Zero)
+            {
+                timeToHide = TimeSpan.Zero;
+            }
+
             // 表示を終了させる
             var toDoneTop = (
                 from x in this.ActivityLine
                 where
                 !x.IsDone &&
-                x.Time <=
-                    // カウント0の1秒後に消去する
-                    // 厳密には1秒にリフレッシュレートによるラグを考慮する
-                    this.CurrentTime -
-                    TimeSpan.FromSeconds(1) +
-                    TimeSpan.FromMilliseconds(TimelineSettings.Instance.TimelineRefreshInterval / 2)
+                x.Time <= this.CurrentTime - timeToHide
                 orderby
                 x.Seq descending
                 select
