@@ -1037,7 +1037,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 // アクティビティ・トリガとマッチングする
+                foreach (var detector in detectors)
+                {
+                    detect(detector);
+                }
+
+                /*
                 detectors.AsParallel().ForAll(detector =>
+                {
+                    detect(detector);
+                });
+                */
+
+                void detect(TimelineBase detector)
                 {
                     switch (detector)
                     {
@@ -1063,7 +1075,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             }
                             break;
                     }
-                });
+                }
             });
 
             // アクティビティに対して判定する
