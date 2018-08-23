@@ -926,6 +926,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             return list;
         }
 
+        private static readonly TimelineActivityModel[] EmptyActivities = new TimelineActivityModel[0];
+        private static readonly TimelineTriggerModel[] EmptyTiggers = new TimelineTriggerModel[0];
+
         /// <summary>
         /// ログに対して判定する
         /// </summary>
@@ -948,7 +951,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         .Concat(TimelineImageNoticeModel.GetSyncToHideList())
 
                         // タイムラインスコープのトリガ
-                        .Concat(this.Model.IsGlobalZone ? null : (
+                        .Concat(this.Model.IsGlobalZone ? EmptyTiggers : (
                             from x in this.Model.Triggers
                             where
                             x.Enabled.GetValueOrDefault() &&
@@ -958,7 +961,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             x))
 
                         // 判定期間中のアクティビティ
-                        .Concat(this.Model.IsGlobalZone ? null : (
+                        .Concat(this.Model.IsGlobalZone ? EmptyActivities : (
                             from x in this.ActivityLine
                             where
                             x.Enabled.GetValueOrDefault() &&
@@ -971,7 +974,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             x))
 
                         // カレントサブルーチンのトリガを登録する
-                        .Concat(this.CurrentSubroutine == null ? null : (
+                        .Concat(this.CurrentSubroutine == null ? EmptyTiggers : (
                             from x in this.CurrentSubroutine.Triggers
                             where
                             x.Enabled.GetValueOrDefault() &&
@@ -1232,8 +1235,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 psyncs = (
                     from x in
                         TimelineManager.Instance.GlobalTriggers
-                        .Concat(!this.Model.IsGlobalZone ? this.Model.Triggers : null)
-                        .Concat(this.CurrentSubroutine?.Triggers)
+                        .Concat(!this.Model.IsGlobalZone ? this.Model.Triggers : EmptyTiggers)
+                        .Concat(this.CurrentSubroutine != null ? this.CurrentSubroutine.Triggers : EmptyTiggers)
                     where
                     x.IsAvailable() &&
                     x.IsPositionSyncAvailable
