@@ -150,6 +150,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.timelineRefreshInterval, value);
         }
 
+        private double psyncDetectInterval = 100;
+
+        public double PSyncDetectInterval
+        {
+            get => this.psyncDetectInterval;
+            set => this.SetProperty(ref this.psyncDetectInterval, value);
+        }
+
         private ThreadPriority notifyThreadPriority = ThreadPriority.Normal;
 
         public ThreadPriority NotifyThreadPriority
