@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.RaidTimeline.Views;
@@ -778,11 +779,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
+        private DateTime lastPSyncDetectTimestamp = DateTime.MinValue;
+
         private void DetectLogLoop()
         {
             while (this.isLogWorkerRunning)
             {
                 var isExistsLog = false;
+                var detectPSyncTask = default(Task);
 
                 try
                 {
@@ -793,7 +797,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
 
                     // P-Syncを判定する
-                    this.DetectPSyncTriggers();
+                    if ((DateTime.Now - this.lastPSyncDetectTimestamp).TotalMilliseconds
+                        > TimelineSettings.Instance.PSyncDetectInterval)
+                    {
+                        this.lastPSyncDetectTimestamp = DateTime.Now;
+                        detectPSyncTask = Task.Run(() => this.DetectPSyncTriggers());
+                    }
 
                     // 以後ログに対して判定する
                     if (this.logInfoQueue == null ||
@@ -831,6 +840,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         Thread.Sleep(TimeSpan.FromMilliseconds(Settings.Default.LogPollSleepInterval));
                     }
+
+                    detectPSyncTask?.Wait();
                 }
             }
         }
@@ -923,59 +934,53 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             IReadOnlyList<XIVLog> logs)
         {
             var detectTime = DateTime.Now;
-            var detectors = new List<TimelineBase>(64);
+            var detectors = default(TimelineBase[]);
 
             lock (this)
             {
-                // グローバルトリガを登録する
-                detectors.AddRange(TimelineManager.Instance.GlobalTriggers);
+                detectors = (
+                    from x in
+                        // グローバルトリガ
+                        TimelineManager.Instance.GlobalTriggers.Cast<TimelineBase>()
 
-                // ToHideトリガを登録する
-                detectors.AddRange(TimelineVisualNoticeModel.GetSyncToHideList());
-                detectors.AddRange(TimelineImageNoticeModel.GetSyncToHideList());
+                        // ToHideトリガ
+                        .Concat(TimelineVisualNoticeModel.GetSyncToHideList())
+                        .Concat(TimelineImageNoticeModel.GetSyncToHideList())
 
-                if (!this.Model.IsGlobalZone)
-                {
-                    // タイムラインスコープのトリガを登録する
-                    detectors.AddRange(
-                        from x in this.Model.Triggers
-                        where
-                        x.Enabled.GetValueOrDefault() &&
-                        !string.IsNullOrEmpty(x.SyncKeyword) &&
-                        x.SyncRegex != null
-                        select
-                        x);
+                        // タイムラインスコープのトリガ
+                        .Concat(this.Model.IsGlobalZone ? null : (
+                            from x in this.Model.Triggers
+                            where
+                            x.Enabled.GetValueOrDefault() &&
+                            !string.IsNullOrEmpty(x.SyncKeyword) &&
+                            x.SyncRegex != null
+                            select
+                            x))
 
-                    // 判定期間中のアクティビティを登録する
-                    var acts =
-                        from x in this.ActivityLine
-                        where
-                        x.Enabled.GetValueOrDefault() &&
-                        !string.IsNullOrEmpty(x.SyncKeyword) &&
-                        x.SyncRegex != null &&
-                        this.CurrentTime >= x.Time + TimeSpan.FromSeconds(x.SyncOffsetStart.Value) &&
-                        this.CurrentTime <= x.Time + TimeSpan.FromSeconds(x.SyncOffsetEnd.Value) &&
-                        !x.IsSynced
-                        select
-                        x;
+                        // 判定期間中のアクティビティ
+                        .Concat(this.Model.IsGlobalZone ? null : (
+                            from x in this.ActivityLine
+                            where
+                            x.Enabled.GetValueOrDefault() &&
+                            !string.IsNullOrEmpty(x.SyncKeyword) &&
+                            x.SyncRegex != null &&
+                            this.CurrentTime >= x.Time + TimeSpan.FromSeconds(x.SyncOffsetStart.Value) &&
+                            this.CurrentTime <= x.Time + TimeSpan.FromSeconds(x.SyncOffsetEnd.Value) &&
+                            !x.IsSynced
+                            select
+                            x))
 
-                    detectors.AddRange(acts);
-
-                    // カレントサブルーチンのトリガを登録する
-                    if (this.CurrentSubroutine != null)
-                    {
-                        var triggers =
+                        // カレントサブルーチンのトリガを登録する
+                        .Concat(this.CurrentSubroutine == null ? null : (
                             from x in this.CurrentSubroutine.Triggers
                             where
                             x.Enabled.GetValueOrDefault() &&
                             !string.IsNullOrEmpty(x.SyncKeyword) &&
                             x.SyncRegex != null
                             select
-                            x;
-
-                        detectors.AddRange(triggers);
-                    }
-                }
+                            x))
+                    select
+                    x).ToArray();
             }
 
             // 開始・終了判定のキーワードを取得する
@@ -1219,44 +1224,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private void DetectPSyncTriggers()
         {
             var detectTime = DateTime.Now;
-            var detectors = new List<TimelineTriggerModel>(64);
+            var psyncs = default(TimelineTriggerModel[]);
 
             lock (this)
             {
-                // グローバルトリガを登録する
-                detectors.AddRange(TimelineManager.Instance.GlobalTriggers);
-
-                if (!this.Model.IsGlobalZone)
-                {
-                    // タイムラインスコープのトリガを登録する
-                    detectors.AddRange(
-                        from x in this.Model.Triggers
-                        where
-                        x.IsAvailable() &&
-                        x.IsPositionSyncAvailable
-                        select
-                        x);
-
-                    // カレントサブルーチンのトリガを登録する
-                    if (this.CurrentSubroutine != null)
-                    {
-                        var triggers =
-                            from x in this.CurrentSubroutine.Triggers
-                            where
-                            x.IsAvailable() &&
-                            x.IsPositionSyncAvailable
-                            select
-                            x;
-
-                        detectors.AddRange(triggers);
-                    }
-                }
+                // P-Syncトリガを抽出する
+                psyncs = (
+                    from x in
+                        TimelineManager.Instance.GlobalTriggers
+                        .Concat(!this.Model.IsGlobalZone ? this.Model.Triggers : null)
+                        .Concat(this.CurrentSubroutine?.Triggers)
+                    where
+                    x.IsAvailable() &&
+                    x.IsPositionSyncAvailable
+                    select
+                    x).ToArray();
             }
-
-            // P-Syncトリガに対して判定する
-            var psyncs = detectors
-                .Where(x => x.IsPositionSyncAvailable)
-                .ToArray();
 
             if (!psyncs.Any())
             {
@@ -1271,128 +1254,137 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            psyncs.AsParallel().ForAll(tri => detectPSync(tri));
+            // P-Syncトリガに対して判定する
+#if false
+            // マルチスレッド版
+            psyncs.AsParallel().ForAll(tri =>
+            {
+                detectPSync(tri);
+            });
+#else
+            // シングルスレッド版
+            foreach (var tri in psyncs)
+            {
+                detectPSync(tri);
+            }
+#endif
 
             // P-Syncトリガに対して判定する
             void detectPSync(
                 TimelineTriggerModel tri)
             {
-                lock (tri)
+                var psync = tri.PositionSyncStatements
+                    .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
+                if (psync == null)
                 {
-                    var psync = tri.PositionSyncStatements
-                        .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
+                    return;
+                }
 
-                    if (psync == null)
+                if ((DateTime.Now - psync.LastSyncTimestamp).TotalSeconds <= psync.Interval)
+                {
+                    return;
+                }
+
+                var conditions = psync.Combatants
+                    .Where(x =>
+                        x.Enabled.GetValueOrDefault() &&
+                        !string.IsNullOrEmpty(x.Name));
+
+                if (!conditions.Any())
+                {
+                    return;
+                }
+
+                foreach (var con in conditions)
+                {
+                    var target = combatants.FirstOrDefault(x =>
                     {
-                        return;
-                    }
+                        var r = false;
 
-                    if ((DateTime.Now - psync.LastSyncTimestamp).TotalSeconds <= psync.Interval)
-                    {
-                        return;
-                    }
-
-                    var conditions = psync.Combatants
-                        .Where(x =>
-                            x.Enabled.GetValueOrDefault() &&
-                            !string.IsNullOrEmpty(x.Name));
-
-                    if (!conditions.Any())
-                    {
-                        return;
-                    }
-
-                    foreach (var con in conditions)
-                    {
-                        var target = combatants.FirstOrDefault(x =>
+                        if (con.IsMatchName(x.Name))
                         {
-                            var r = false;
-
-                            if (con.IsMatchName(x.Name))
+                            if (con.X == TimelineCombatantModel.InvalidPosition ||
+                                (con.X - con.Tolerance) <= x.PosXMap && x.PosXMap <= (con.X + con.Tolerance))
                             {
-                                if (con.X == TimelineCombatantModel.InvalidPosition ||
-                                    (con.X - con.Tolerance) <= x.PosXMap && x.PosXMap <= (con.X + con.Tolerance))
+                                if (con.Y == TimelineCombatantModel.InvalidPosition ||
+                                    (con.Y - con.Tolerance) <= x.PosYMap && x.PosYMap <= (con.Y + con.Tolerance))
                                 {
-                                    if (con.Y == TimelineCombatantModel.InvalidPosition ||
-                                        (con.Y - con.Tolerance) <= x.PosYMap && x.PosYMap <= (con.Y + con.Tolerance))
+                                    if (con.Z == TimelineCombatantModel.InvalidPosition ||
+                                        (con.Z - con.Tolerance) <= x.PosZMap && x.PosZMap <= (con.Z + con.Tolerance))
                                     {
-                                        if (con.Z == TimelineCombatantModel.InvalidPosition ||
-                                            (con.Z - con.Tolerance) <= x.PosZMap && x.PosZMap <= (con.Z + con.Tolerance))
-                                        {
-                                            r = true;
-                                        }
+                                        r = true;
                                     }
                                 }
                             }
+                        }
 
-                            return r;
-                        });
+                        return r;
+                    });
 
-                        con.ActualCombatant = target;
+                    con.ActualCombatant = target;
+                }
+
+                if (conditions.Count(x => x.ActualCombatant != null) <
+                    conditions.Count())
+                {
+                    return;
+                }
+
+                tri.TextReplaced = tri.Text ?? string.Empty;
+                tri.NoticeReplaced = tri.Notice ?? string.Empty;
+
+                var i = 1;
+                foreach (var con in conditions)
+                {
+                    string replace(string text)
+                    {
+                        text = text.Replace("{name" + i + "}", con.ActualCombatant.Name);
+                        text = text.Replace("{X" + i + "}", con.ActualCombatant.PosXMap.ToString("N1"));
+                        text = text.Replace("{Y" + i + "}", con.ActualCombatant.PosYMap.ToString("N1"));
+                        text = text.Replace("{Z" + i + "}", con.ActualCombatant.PosZMap.ToString("N1"));
+
+                        return text;
                     }
 
-                    if (conditions.Count(x => x.ActualCombatant != null) <
-                        conditions.Count())
+                    tri.TextReplaced = replace(tri.TextReplaced);
+                    tri.NoticeReplaced = replace(tri.NoticeReplaced);
+
+                    i++;
+                }
+
+                tri.MatchedCounter++;
+
+                if (tri.SyncCount.Value != 0)
+                {
+                    if (tri.SyncCount.Value != tri.MatchedCounter)
                     {
                         return;
                     }
-
-                    tri.TextReplaced = tri.Text ?? string.Empty;
-                    tri.NoticeReplaced = tri.Notice ?? string.Empty;
-
-                    var i = 1;
-                    foreach (var con in conditions)
-                    {
-                        string replace(string text)
-                        {
-                            text = text.Replace("{name" + i + "}", con.ActualCombatant.Name);
-                            text = text.Replace("{X" + i + "}", con.ActualCombatant.PosXMap.ToString("N1"));
-                            text = text.Replace("{Y" + i + "}", con.ActualCombatant.PosYMap.ToString("N1"));
-                            text = text.Replace("{Z" + i + "}", con.ActualCombatant.PosZMap.ToString("N1"));
-
-                            return text;
-                        }
-
-                        tri.TextReplaced = replace(tri.TextReplaced);
-                        tri.NoticeReplaced = replace(tri.NoticeReplaced);
-
-                        i++;
-                    }
-
-                    tri.MatchedCounter++;
-
-                    if (tri.SyncCount.Value != 0)
-                    {
-                        if (tri.SyncCount.Value != tri.MatchedCounter)
-                        {
-                            return;
-                        }
-                    }
-
-                    psync.LastSyncTimestamp = DateTime.Now;
-
-                    var toNotice = tri.Clone();
-
-                    var vnotices = toNotice.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
-                    if (vnotices.Any())
-                    {
-                        foreach (var vnotice in vnotices)
-                        {
-                            vnotice.Timestamp = detectTime;
-                        }
-                    }
-
-                    var inotices = toNotice.ImageNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
-                    if (inotices.Any())
-                    {
-                        foreach (var inotice in inotices)
-                        {
-                            inotice.Timestamp = detectTime;
-                        }
-                    }
-
-                    NotifyQueue.Enqueue(toNotice);
                 }
+
+                psync.LastSyncTimestamp = DateTime.Now;
+
+                var toNotice = tri.Clone();
+
+                var vnotices = toNotice.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
+                if (vnotices.Any())
+                {
+                    foreach (var vnotice in vnotices)
+                    {
+                        vnotice.Timestamp = detectTime;
+                    }
+                }
+
+                var inotices = toNotice.ImageNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
+                if (inotices.Any())
+                {
+                    foreach (var inotice in inotices)
+                    {
+                        inotice.Timestamp = detectTime;
+                    }
+                }
+
+                NotifyQueue.Enqueue(toNotice);
 
                 WPFHelper.BeginInvoke(() =>
                 {
