@@ -152,10 +152,6 @@ namespace ACT.UltraScouter.ViewModels
 
                     // HPバーを描画する
                     view.UpdateHPBar(this.Model.CurrentHPRate);
-
-                    // Topmostを設定し直す
-                    view.Topmost = false;
-                    view.Topmost = true;
                 }
             }
         }
