@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Threading;
 using ACT.UltraScouter.Common;
@@ -41,7 +42,7 @@ namespace ACT.UltraScouter.ViewModels
 
         public override void Initialize()
         {
-            this.countdownTimer.Interval = TimeSpan.FromMilliseconds(50);
+            this.countdownTimer.Interval = TimeSpan.FromMilliseconds(100);
 
             this.Model.Casting -= this.Model_Casting;
             this.countdownTimer.Tick -= this.CountdownTimer_Tick;
@@ -164,19 +165,23 @@ namespace ACT.UltraScouter.ViewModels
             this.CastingRemain = this.castDurationMax;
             this.CastingProgressRateToDisplay = 0;
 
+            // サウンド
+            Task.Run(() => this.PlaySound(args.CastSkillName));
+
             // カウントダウン
             this.RefreshCountdown();
 
-            // アニメーション開始
-            view.BeginAnimation(this.castDurationMax);
-
             // カウントダウンの開始
             this.castingStopwatch.Restart();
-            this.countdownTimer.Stop();
+            if (this.countdownTimer.IsEnabled)
+            {
+                this.countdownTimer.Stop();
+            }
+
             this.countdownTimer.Start();
 
-            // サウンド
-            this.PlaySound(args.CastSkillName);
+            // アニメーション開始
+            view.BeginAnimation(this.castDurationMax);
 
             var message =
                 $"{args.Actor} starts using {args.CastSkillName}. duration={args.CastDurationMax}, id={args.CastSkillID}";
