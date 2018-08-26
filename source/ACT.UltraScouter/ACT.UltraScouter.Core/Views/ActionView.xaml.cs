@@ -30,6 +30,9 @@ namespace ACT.UltraScouter.Views
 
             // 初期状態は透明（非表示）にしておく
             this.Opacity = 0;
+
+            // FPSを設定する
+            Storyboard.SetDesiredFrameRate(this.animation, Settings.Instance.AnimationMaxFPS);
         }
 
         /// <summary>オーバーレイとして表示状態</summary>
@@ -58,16 +61,12 @@ namespace ACT.UltraScouter.Views
         public void BeginAnimation(
             double durationFromSecconds)
         {
-            Storyboard.SetDesiredFrameRate(this.animation, Settings.Instance.AnimationMaxFPS);
             this.animation.Duration = TimeSpan.FromSeconds(durationFromSecconds);
 
             this.Bar.BeginAnimation(
                 RichProgressBar.ProgressProperty,
-                null);
-
-            this.Bar.BeginAnimation(
-                RichProgressBar.ProgressProperty,
-                this.animation);
+                this.animation,
+                HandoffBehavior.SnapshotAndReplace);
         }
 
         #endregion Animation
