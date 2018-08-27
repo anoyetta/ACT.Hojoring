@@ -29,6 +29,10 @@ namespace ACT.UltraScouter.Views
 
             // 初期状態は透明（非表示）にしておく
             this.Opacity = 0;
+
+            // FPSを制限する
+            Timeline.SetDesiredFrameRate(this.countdownAnimation, Settings.Instance.AnimationMaxFPS);
+            Timeline.SetDesiredFrameRate(this.barAnimation, Settings.Instance.AnimationMaxFPS);
         }
 
         /// <summary>オーバーレイとして表示状態</summary>
@@ -77,14 +81,10 @@ namespace ACT.UltraScouter.Views
 
         private void BeginCountdownAnimation()
         {
-            Timeline.SetDesiredFrameRate(this.countdownAnimation, Settings.Instance.AnimationMaxFPS);
-
             this.CounterLabel.BeginAnimation(
                 Label.WidthProperty,
-                null);
-            this.CounterLabel.BeginAnimation(
-                Label.WidthProperty,
-                this.countdownAnimation);
+                this.countdownAnimation,
+                HandoffBehavior.SnapshotAndReplace);
         }
 
         #endregion Countdown Animation
@@ -102,14 +102,10 @@ namespace ACT.UltraScouter.Views
 
         private void BeginBarAnimation()
         {
-            Timeline.SetDesiredFrameRate(this.barAnimation, Settings.Instance.AnimationMaxFPS);
-
             this.Bar.BeginAnimation(
                 RichProgressBar.ProgressProperty,
-                null);
-            this.Bar.BeginAnimation(
-                RichProgressBar.ProgressProperty,
-                this.barAnimation);
+                this.barAnimation,
+                HandoffBehavior.SnapshotAndReplace);
         }
 
         #endregion Bar Animation
