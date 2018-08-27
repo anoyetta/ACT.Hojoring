@@ -361,7 +361,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 var act = src.Clone();
                 act.Init(seq++);
-                act.RefreshProgress();
                 acts.Add(act);
             }
 
