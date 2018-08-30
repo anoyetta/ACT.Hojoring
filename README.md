@@ -60,8 +60,7 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 これらの機能は FFXIV_MemoryReader を有効にするだけで拡張されます。
 
 ### 動作環境
-* [Windows 10](https://www.microsoft.com/software-download/windows10) 以降  
-Windows 7/8/8.1 では原則的に動作しません
+* [Windows 10](https://www.microsoft.com/software-download/windows10) 以降（Windows 7/8/8.1 では原則的に動作しません）
 * .NET Framework 4.7.1 以降
 
 ## 使い方
