@@ -338,8 +338,10 @@ namespace ACT.SpecialSpellTimer.Models
                 select
                 x;
 
+            var prevSpells = default(Spell[]);
             lock (this.spellListLocker)
             {
+                prevSpells = this.spellList.ToArray();
                 this.spellList.Clear();
                 this.spellList.AddRange(query);
             }
@@ -370,6 +372,23 @@ namespace ACT.SpecialSpellTimer.Models
                 }
 
                 Thread.Sleep(1);
+            });
+
+            // 無効になったスペルを停止する
+            prevSpells?.Where(x => !this.spellList.Contains(x)).AsParallel().ForAll(spell =>
+            {
+                spell.MatchDateTime = DateTime.MinValue;
+                spell.UpdateDone = false;
+                spell.OverDone = false;
+                spell.BeforeDone = false;
+                spell.TimeupDone = false;
+                spell.CompleteScheduledTime = DateTime.MinValue;
+
+                spell.StartOverSoundTimer();
+                spell.StartBeforeSoundTimer();
+                spell.StartTimeupSoundTimer();
+
+                Thread.Yield();
             });
 
             this.RaiseTableChenged();
@@ -445,8 +464,10 @@ namespace ACT.SpecialSpellTimer.Models
                 select
                 x;
 
+            var prevSpells = default(Ticker[]);
             lock (this.tickerListLocker)
             {
+                prevSpells = this.tickerList.ToArray();
                 this.tickerList.Clear();
                 this.tickerList.AddRange(query);
             }
@@ -475,6 +496,18 @@ namespace ACT.SpecialSpellTimer.Models
                 }
 
                 Thread.Sleep(1);
+            });
+
+            // 無効になったスペルを停止する
+            prevSpells?.Where(x => !this.tickerList.Contains(x)).AsParallel().ForAll(spell =>
+            {
+                spell.MatchDateTime = DateTime.MinValue;
+                spell.Delayed = false;
+                spell.ForceHide = false;
+
+                spell.StartDelayedSoundTimer();
+
+                Thread.Yield();
             });
 
             this.RaiseTableChenged();
