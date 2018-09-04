@@ -312,13 +312,40 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     var selectedStyle = this.StyleListView.SelectedItem as TimelineStyle;
                     TimelineOverlay.ShowDesignOverlay(selectedStyle);
                     TimelineNoticeOverlay.ShowDesignOverlay(selectedStyle);
-                    TimelineImageNoticeOverlay.ShowDesignOverlay();
+
+                    if (!this.TimelineConfig.HideDesignINotice)
+                    {
+                        TimelineImageNoticeOverlay.ShowDesignOverlay();
+                    }
                 }
                 else
                 {
                     TimelineOverlay.HideDesignOverlay();
                     TimelineNoticeOverlay.HideDesignOverlay();
                     TimelineImageNoticeOverlay.HideDesignOverlay();
+                }
+            }));
+
+        private ICommand hideDummyOverlayCommand;
+
+        public ICommand HideDummyOverlayCommand =>
+            this.hideDummyOverlayCommand ?? (this.hideDummyOverlayCommand = new DelegateCommand<bool?>((isChecked) =>
+            {
+                if (!isChecked.HasValue)
+                {
+                    return;
+                }
+
+                if (isChecked.Value)
+                {
+                    TimelineImageNoticeOverlay.HideDesignOverlay();
+                }
+                else
+                {
+                    if (TimelineConfig.DesignMode)
+                    {
+                        TimelineImageNoticeOverlay.ShowDesignOverlay();
+                    }
                 }
             }));
 

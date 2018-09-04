@@ -244,6 +244,7 @@
   <system:String x:Key="Timeline_Location">位置 (タイムライン)</system:String>
   <system:String x:Key="Timeline_LocationNotice">位置 (通知)</system:String>
   <system:String x:Key="Timeline_ShowDummyTimeline">デザイン用のダミーを表示する</system:String>
+  <system:String x:Key="Timeline_HideINoticeDummy">i-noticeのダミーを表示しない</system:String>
   <system:String x:Key="Timeline_Enable">スペスペたいむ™ を使用する</system:String>
   <system:String x:Key="Timeline_Folder">タイムラインの参照フォルダ</system:String>
   <system:String x:Key="Timeline_Visual">スペスペたいむ™ の設定</system:String>

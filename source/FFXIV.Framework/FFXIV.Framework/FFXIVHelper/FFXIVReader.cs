@@ -151,7 +151,8 @@ namespace FFXIV.Framework.FFXIVHelper
                         .FirstOrDefault(x =>
                             x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"));
 
-                    if (plugin == null)
+                    if (!FFXIVPlugin.Instance.IsAvilableFFXIVPlugin ||
+                        plugin == null)
                     {
                         this.MemoryPlugin = null;
                         this.Core = null;

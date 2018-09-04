@@ -81,6 +81,8 @@ namespace FFXIV.Framework.FFXIVHelper
             set;
         } = Locales.JA;
 
+        internal bool IsAvilableFFXIVPlugin => this.plugin != null;
+
         public bool IsAvailable
         {
             get

@@ -5,9 +5,11 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config;
 using FFXIV.Framework.Common;
@@ -50,6 +52,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             get => this.designMode;
             set => this.SetProperty(ref this.designMode, value);
+        }
+
+        private bool hideDesignINotice = false;
+
+        public bool HideDesignINotice
+        {
+            get => this.hideDesignINotice;
+            set => this.SetProperty(ref this.hideDesignINotice, value);
         }
 
         private bool enabled = false;
@@ -108,12 +118,60 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.noticeLeft, Math.Round(value));
         }
 
+        private bool isTimelineLiveUpdate = false;
+
+        public bool IsTimelineLiveUpdate
+        {
+            get => this.isTimelineLiveUpdate;
+            set => this.SetProperty(ref this.isTimelineLiveUpdate, value);
+        }
+
         private double notifyInterval = 20;
 
         public double NotifyInterval
         {
             get => this.notifyInterval;
             set => this.SetProperty(ref this.notifyInterval, value);
+        }
+
+        private double progressBarRefreshInterval = 50;
+
+        public double ProgressBarRefreshInterval
+        {
+            get => this.progressBarRefreshInterval;
+            set => this.SetProperty(ref this.progressBarRefreshInterval, value);
+        }
+
+        private double timelineRefreshInterval = 200;
+
+        public double TimelineRefreshInterval
+        {
+            get => this.timelineRefreshInterval;
+            set => this.SetProperty(ref this.timelineRefreshInterval, value);
+        }
+
+        private double psyncDetectInterval = 100;
+
+        public double PSyncDetectInterval
+        {
+            get => this.psyncDetectInterval;
+            set => this.SetProperty(ref this.psyncDetectInterval, value);
+        }
+
+        private ThreadPriority notifyThreadPriority = ThreadPriority.Normal;
+
+        public ThreadPriority NotifyThreadPriority
+        {
+            get => this.notifyThreadPriority;
+            set => this.SetProperty(ref this.notifyThreadPriority, value);
+        }
+
+        private DispatcherPriority timelineThreadPriority = DispatcherPriority.Normal;
+
+        public DispatcherPriority TimelineThreadPriority
+        {
+            get => this.timelineThreadPriority;
+            set => this.SetProperty(ref this.timelineThreadPriority, value);
         }
 
         private double noticeTop = 10;

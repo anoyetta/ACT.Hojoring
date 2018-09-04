@@ -244,6 +244,7 @@
   <system:String x:Key="Timeline_Location">Location - Timeline</system:String>
   <system:String x:Key="Timeline_LocationNotice">Location - Notice</system:String>
   <system:String x:Key="Timeline_ShowDummyTimeline">Show dummy overlay for Design</system:String>
+  <system:String x:Key="Timeline_HideINoticeDummy">Hide i-notice dummy overlay</system:String>
   <system:String x:Key="Timeline_Enable">Use Timeline</system:String>
   <system:String x:Key="Timeline_Folder">Timelines folder</system:String>
   <system:String x:Key="Timeline_Visual">SPESPE Time Settings</system:String>

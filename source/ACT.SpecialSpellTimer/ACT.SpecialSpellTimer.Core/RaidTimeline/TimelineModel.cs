@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config;
@@ -742,19 +743,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public void StopLive()
         {
             this.IsActivitiesVisible = false;
-            /*
-            this.ActivitySource.IsLiveFilteringRequested = false;
-            this.ActivitySource.IsLiveSortingRequested = false;
-            */
         }
 
         public void ResumeLive()
         {
-            this.IsActivitiesVisible = true;
-            /*
-            this.ActivitySource.IsLiveFilteringRequested = true;
-            this.ActivitySource.IsLiveSortingRequested = true;
-            */
+            if (!this.IsActivitiesVisible)
+            {
+                this.RefreshActivitiesView();
+                this.IsActivitiesVisible = true;
+            }
         }
 
         private CollectionViewSource CreateActivityView()
@@ -762,14 +759,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var cvs = new CollectionViewSource()
             {
                 Source = this.Controller.ActivityLine,
-                IsLiveSortingRequested = true,
-                IsLiveFilteringRequested = true,
+                IsLiveSortingRequested = TimelineSettings.Instance.IsTimelineLiveUpdate,
+                IsLiveFilteringRequested = TimelineSettings.Instance.IsTimelineLiveUpdate,
             };
 
             cvs.Filter += (x, y) =>
-                y.Accepted = (y.Item as TimelineActivityModel).IsVisible;
+                y.Accepted = !(y.Item as TimelineActivityModel).IsDone;
 
-            cvs.LiveFilteringProperties.Add(nameof(TimelineActivityModel.IsVisible));
+            cvs.LiveFilteringProperties.Add(nameof(TimelineActivityModel.IsDone));
 
             cvs.SortDescriptions.AddRange(new[]
             {
@@ -781,6 +778,18 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             });
 
             return cvs;
+        }
+
+        public void RefreshActivitiesView()
+        {
+            if (!TimelineSettings.Instance.IsTimelineLiveUpdate)
+            {
+                WPFHelper.BeginInvoke(() =>
+                {
+                    this.ActivityView?.Refresh();
+                },
+                DispatcherPriority.Background);
+            }
         }
 
         #endregion To View

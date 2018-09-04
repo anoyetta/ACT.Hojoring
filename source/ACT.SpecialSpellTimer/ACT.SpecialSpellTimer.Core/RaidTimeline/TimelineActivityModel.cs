@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
@@ -326,10 +327,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public bool ExistsIcon => this.GetExistsIcon();
 
         [XmlIgnore]
-        public BitmapImage IconImage => this.GetIconImage();
+        public BitmapSource IconImage => this.GetIconImage();
 
         [XmlIgnore]
-        public BitmapImage ThisIconImage => this.GetThisIconImage();
+        public BitmapSource ThisIconImage => this.GetThisIconImage();
 
         public TimelineActivityModel Clone()
         {
@@ -368,27 +369,25 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 15 :
                 TimelineSettings.Instance.ShowProgressBarTime;
 
-            var remain = (this.time - CurrentTime).TotalSeconds;
-            if (remain < 0)
+            var remain = this.time - CurrentTime;
+            this.RemainTime = remain.TotalSeconds >= 0 ?
+                remain.TotalSeconds :
+                0;
+
+            if (remain.TotalSeconds <= progressStartTime)
             {
-                remain = 0;
-            }
-
-            this.RemainTime = remain;
-
-            var progress = 0d;
-
-            var before = this.time - CurrentTime;
-            if (before.TotalSeconds <= progressStartTime)
-            {
-                progress = (progressStartTime - before.TotalSeconds) / progressStartTime;
+                var progress = (progressStartTime - remain.TotalSeconds) / progressStartTime;
                 if (progress > 1)
                 {
                     progress = 1;
                 }
-            }
 
-            this.Progress = Math.Round(progress, 3);
+                if (progress > 0)
+                {
+                    this.Progress = progress.TruncateEx(3);
+                    this.IsProgressBarActive = true;
+                }
+            }
         }
 
         private double remainTime = 0;
@@ -423,6 +422,27 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             get => this.progress;
             set => this.SetProperty(ref this.progress, value);
         }
+
+        private bool isProgressBarActive = false;
+
+        [XmlIgnore]
+        public bool IsProgressBarActive
+        {
+            get => this.isProgressBarActive;
+            set
+            {
+                if (this.SetProperty(ref this.isProgressBarActive, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.ActualBarColorBrush));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public Brush ActualBarColorBrush =>
+            this.IsProgressBarActive ?
+            this.StyleModel?.BarColorBrush :
+            Brushes.Transparent;
 
         private int seq = 0;
 
@@ -523,6 +543,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             this.IsDone = false;
             this.IsNotified = false;
             this.IsSynced = false;
+            this.Progress = 0;
+            this.IsProgressBarActive = false;
         }
 
         #endregion 動作を制御するためのフィールド

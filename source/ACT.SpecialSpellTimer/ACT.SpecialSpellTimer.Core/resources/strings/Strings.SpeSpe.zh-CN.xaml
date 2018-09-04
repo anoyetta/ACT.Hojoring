@@ -244,6 +244,7 @@
   <system:String x:Key="Timeline_Location">位置(时间轴)</system:String>
   <system:String x:Key="Timeline_LocationNotice">位置(提醒)</system:String>
   <system:String x:Key="Timeline_ShowDummyTimeline">显示界面以方便调整</system:String>
+  <system:String x:Key="Timeline_HideINoticeDummy">Hide i-notice dummy overlay</system:String>
   <system:String x:Key="Timeline_Enable">启用</system:String>
   <system:String x:Key="Timeline_Folder">时间轴文件夹</system:String>
   <system:String x:Key="Timeline_Visual">SPESPE时间轴设置</system:String>

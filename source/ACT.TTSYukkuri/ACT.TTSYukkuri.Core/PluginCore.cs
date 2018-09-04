@@ -313,6 +313,7 @@ namespace ACT.TTSYukkuri
                     if (!UpdateChecker.IsAvailableDotNet() ||
                         !UpdateChecker.IsAvailableWindows())
                     {
+                        NotSupportedView.AddAndShow(pluginScreenSpace);
                         return;
                     }
 

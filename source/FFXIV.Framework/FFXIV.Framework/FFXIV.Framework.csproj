@@ -177,6 +177,9 @@
     <Compile Include="WPF\Views\ModernMessageBox.xaml.cs">
       <DependentUpon>ModernMessageBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WPF\Views\NotSupportedView.xaml.cs">
+      <DependentUpon>NotSupportedView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WPF\Views\OverlayExtensions.cs" />
     <Compile Include="WPF\Views\SandboxView.xaml.cs">
       <DependentUpon>SandboxView.xaml</DependentUpon>
@@ -253,6 +256,10 @@
     <Page Include="WPF\Views\ModernMessageBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WPF\Views\NotSupportedView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WPF\Views\SandboxView.xaml">
       <SubType>Designer</SubType>

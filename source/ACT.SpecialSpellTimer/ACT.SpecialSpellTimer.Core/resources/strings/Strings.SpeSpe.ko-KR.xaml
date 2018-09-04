@@ -244,6 +244,7 @@
   <system:String x:Key="Timeline_Location">위치 (타임 라인)</system:String>
   <system:String x:Key="Timeline_LocationNotice">위치 (알림)</system:String>
   <system:String x:Key="Timeline_ShowDummyTimeline">디자인의 더미를 표시</system:String>
+  <system:String x:Key="Timeline_HideINoticeDummy">Hide i-notice dummy overlay</system:String>
   <system:String x:Key="Timeline_Enable">스뻬스뻬 타임 ™ 를 사용하는</system:String>
   <system:String x:Key="Timeline_Folder">타임 라인의 참조 폴더</system:String>
   <system:String x:Key="Timeline_Visual">스뻬스뻬 타임 ™ 설정</system:String>

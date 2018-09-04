@@ -246,16 +246,16 @@ namespace ACT.SpecialSpellTimer.Image
 
             public override string ToString() => this.Name;
 
-            public BitmapImage BitmapImage => this.CreateBitmapImage();
+            public BitmapSource BitmapImage => this.CreateBitmapImage();
 
-            public BitmapImage CreateBitmapImage()
+            public BitmapSource CreateBitmapImage()
             {
                 if (!File.Exists(this.FullPath))
                 {
                     return null;
                 }
 
-                var img = default(BitmapImage);
+                var img = default(BitmapSource);
                 var path = this.FullPath.ToLower();
 
                 lock (iconDictionary)
@@ -266,13 +266,10 @@ namespace ACT.SpecialSpellTimer.Image
                     }
                     else
                     {
-                        img = new BitmapImage();
-                        img.BeginInit();
-                        img.CacheOption = BitmapCacheOption.OnLoad;
-                        img.CreateOptions = BitmapCreateOptions.None;
-                        img.UriSource = new Uri(path);
-                        img.EndInit();
-                        img.Freeze();
+                        using (var ms = new MemoryStream(File.ReadAllBytes(path)))
+                        {
+                            img = new WriteableBitmap(BitmapFrame.Create(ms));
+                        }
 
                         iconDictionary[path] = img;
                     }
@@ -292,7 +289,7 @@ namespace ACT.SpecialSpellTimer.Image
                 return string.Equals(this.FullPath, other.FullPath, StringComparison.OrdinalIgnoreCase);
             }
 
-            private static Dictionary<string, BitmapImage> iconDictionary = new Dictionary<string, BitmapImage>();
+            private static Dictionary<string, BitmapSource> iconDictionary = new Dictionary<string, BitmapSource>();
         }
     }
 }
