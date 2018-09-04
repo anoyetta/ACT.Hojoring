@@ -22,7 +22,7 @@ $updateExclude = @(
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev5'
+'* rev6'
 '* (c) anoyetta, 2018'
 '***************************************************'
 '* Start Update Hojoring'
@@ -40,11 +40,9 @@ if ($args.Length -gt 0) {
 }
 
 # Processを殺す
-$existACT = $FALSE
 $processes = Get-Process
 foreach ($p in $processes) {
     if ($p.Name -eq "Advanced Combat Tracker") {
-        $existACT = $TRUE
         Stop-Process -InputObject $p
         Start-Sleep -s 1
     }
@@ -79,10 +77,18 @@ if (Test-Path $updateDir) {
 
 ''
 '-> Execute Update.'
-$in = Read-Host "Are you sure? [Y] or [n]"
-if (!($in.ToUpper() -eq "Y")) {
-    exit
-}
+do {
+    $in = Read-Host "Are you sure? [Y] or [n]"
+    $in = $in.ToUpper()
+
+    if ($in -eq "Y") {
+        break;
+    }
+
+    if ($in -eq "N") {
+        exit
+    }
+} while ($TRUE)
 
 $7za = Get-Item ".\tools\7z\7za.exe"
 $archive = Get-Item ".\update\*.7z"

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.RaidTimeline.Views;
@@ -263,6 +264,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 CurrentController = this;
 
                 this.LoadActivityLine();
+                this.Model.RefreshActivitiesView();
 
                 if (!this.Model.IsGlobalZone)
                 {
@@ -299,6 +301,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.CurrentTime = TimeSpan.Zero;
                 this.ClearActivity();
+                this.Model.RefreshActivitiesView();
 
                 if (this.LogWorker != null)
                 {
@@ -323,6 +326,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.Status = TimelineStatus.Unloaded;
                 this.AppLogger.Trace($"[TL] Timeline unloaded. name={this.Model.TimelineName}");
+
+                // GC
+                GC.Collect();
             }
         }
 
@@ -355,7 +361,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 var act = src.Clone();
                 act.Init(seq++);
-                act.RefreshProgress();
                 acts.Add(act);
             }
 
@@ -547,7 +552,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         this.Model.StopLive();
 
-                        // ジャンプ後のアクティビティを最初期化する
+                        // ジャンプ後のアクティビティを初期化する
                         foreach (var item in this.ActivityLine.Where(x =>
                             x.IsDone &&
                             x.Seq >= targetAct.Seq))
@@ -773,11 +778,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
+        private DateTime lastPSyncDetectTimestamp = DateTime.MinValue;
+
         private void DetectLogLoop()
         {
             while (this.isLogWorkerRunning)
             {
                 var isExistsLog = false;
+                var detectPSyncTask = default(Task);
 
                 try
                 {
@@ -788,7 +796,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
 
                     // P-Syncを判定する
-                    this.DetectPSyncTriggers();
+                    if ((DateTime.Now - this.lastPSyncDetectTimestamp).TotalMilliseconds
+                        > TimelineSettings.Instance.PSyncDetectInterval)
+                    {
+                        this.lastPSyncDetectTimestamp = DateTime.Now;
+                        detectPSyncTask = Task.Run(() => this.DetectPSyncTriggers());
+                    }
 
                     // 以後ログに対して判定する
                     if (this.logInfoQueue == null ||
@@ -826,6 +839,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         Thread.Sleep(TimeSpan.FromMilliseconds(Settings.Default.LogPollSleepInterval));
                     }
+
+                    detectPSyncTask?.Wait();
                 }
             }
         }
@@ -910,6 +925,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             return list;
         }
 
+        private static readonly TimelineActivityModel[] EmptyActivities = new TimelineActivityModel[0];
+        private static readonly TimelineTriggerModel[] EmptyTiggers = new TimelineTriggerModel[0];
+
         /// <summary>
         /// ログに対して判定する
         /// </summary>
@@ -918,59 +936,53 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             IReadOnlyList<XIVLog> logs)
         {
             var detectTime = DateTime.Now;
-            var detectors = new List<TimelineBase>(64);
+            var detectors = default(TimelineBase[]);
 
             lock (this)
             {
-                // グローバルトリガを登録する
-                detectors.AddRange(TimelineManager.Instance.GlobalTriggers);
+                detectors = (
+                    from x in
+                        // グローバルトリガ
+                        TimelineManager.Instance.GlobalTriggers.Cast<TimelineBase>()
 
-                // ToHideトリガを登録する
-                detectors.AddRange(TimelineVisualNoticeModel.GetSyncToHideList());
-                detectors.AddRange(TimelineImageNoticeModel.GetSyncToHideList());
+                        // ToHideトリガ
+                        .Concat(TimelineVisualNoticeModel.GetSyncToHideList())
+                        .Concat(TimelineImageNoticeModel.GetSyncToHideList())
 
-                if (!this.Model.IsGlobalZone)
-                {
-                    // タイムラインスコープのトリガを登録する
-                    detectors.AddRange(
-                        from x in this.Model.Triggers
-                        where
-                        x.Enabled.GetValueOrDefault() &&
-                        !string.IsNullOrEmpty(x.SyncKeyword) &&
-                        x.SyncRegex != null
-                        select
-                        x);
+                        // タイムラインスコープのトリガ
+                        .Concat(this.Model.IsGlobalZone ? EmptyTiggers : (
+                            from x in this.Model.Triggers
+                            where
+                            x.Enabled.GetValueOrDefault() &&
+                            !string.IsNullOrEmpty(x.SyncKeyword) &&
+                            x.SyncRegex != null
+                            select
+                            x))
 
-                    // 判定期間中のアクティビティを登録する
-                    var acts =
-                        from x in this.ActivityLine
-                        where
-                        x.Enabled.GetValueOrDefault() &&
-                        !string.IsNullOrEmpty(x.SyncKeyword) &&
-                        x.SyncRegex != null &&
-                        this.CurrentTime >= x.Time + TimeSpan.FromSeconds(x.SyncOffsetStart.Value) &&
-                        this.CurrentTime <= x.Time + TimeSpan.FromSeconds(x.SyncOffsetEnd.Value) &&
-                        !x.IsSynced
-                        select
-                        x;
+                        // 判定期間中のアクティビティ
+                        .Concat(this.Model.IsGlobalZone ? EmptyActivities : (
+                            from x in this.ActivityLine
+                            where
+                            x.Enabled.GetValueOrDefault() &&
+                            !string.IsNullOrEmpty(x.SyncKeyword) &&
+                            x.SyncRegex != null &&
+                            this.CurrentTime >= x.Time + TimeSpan.FromSeconds(x.SyncOffsetStart.Value) &&
+                            this.CurrentTime <= x.Time + TimeSpan.FromSeconds(x.SyncOffsetEnd.Value) &&
+                            !x.IsSynced
+                            select
+                            x))
 
-                    detectors.AddRange(acts);
-
-                    // カレントサブルーチンのトリガを登録する
-                    if (this.CurrentSubroutine != null)
-                    {
-                        var triggers =
+                        // カレントサブルーチンのトリガを登録する
+                        .Concat(this.CurrentSubroutine == null ? EmptyTiggers : (
                             from x in this.CurrentSubroutine.Triggers
                             where
                             x.Enabled.GetValueOrDefault() &&
                             !string.IsNullOrEmpty(x.SyncKeyword) &&
                             x.SyncRegex != null
                             select
-                            x;
-
-                        detectors.AddRange(triggers);
-                    }
-                }
+                            x))
+                    select
+                    x).ToArray();
             }
 
             // 開始・終了判定のキーワードを取得する
@@ -1024,7 +1036,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 // アクティビティ・トリガとマッチングする
+                foreach (var detector in detectors)
+                {
+                    detect(detector);
+                }
+
+                /*
                 detectors.AsParallel().ForAll(detector =>
+                {
+                    detect(detector);
+                });
+                */
+
+                void detect(TimelineBase detector)
                 {
                     switch (detector)
                     {
@@ -1050,7 +1074,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             }
                             break;
                     }
-                });
+                }
             });
 
             // アクティビティに対して判定する
@@ -1172,7 +1196,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
                     }
 
-                    this.NotifyQueue.Enqueue(toNotice);
+                    NotifyQueue.Enqueue(toNotice);
                 }
 
                 WPFHelper.BeginInvoke(() =>
@@ -1190,26 +1214,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             select
                             x).FirstOrDefault();
 
-                        try
+                        // jumpを判定する
+                        if (!this.CallActivity(active, tri.CallTarget))
                         {
-                            this.Model.StopLive();
-
-                            // jumpを判定する
-                            if (!this.CallActivity(active, tri.CallTarget))
+                            if (!this.GoToActivity(active, tri.GoToDestination))
                             {
-                                if (!this.GoToActivity(active, tri.GoToDestination))
-                                {
-                                    this.LoadSubs(tri);
-                                }
+                                this.LoadSubs(tri);
                             }
+                        }
 
-                            // ログを発生させる
-                            RaiseLog(tri);
-                        }
-                        finally
-                        {
-                            this.Model.ResumeLive();
-                        }
+                        // ログを発生させる
+                        RaiseLog(tri);
                     }
                 });
 
@@ -1223,44 +1238,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private void DetectPSyncTriggers()
         {
             var detectTime = DateTime.Now;
-            var detectors = new List<TimelineTriggerModel>(64);
+            var psyncs = default(TimelineTriggerModel[]);
 
             lock (this)
             {
-                // グローバルトリガを登録する
-                detectors.AddRange(TimelineManager.Instance.GlobalTriggers);
-
-                if (!this.Model.IsGlobalZone)
-                {
-                    // タイムラインスコープのトリガを登録する
-                    detectors.AddRange(
-                        from x in this.Model.Triggers
-                        where
-                        x.IsAvailable() &&
-                        x.IsPositionSyncAvailable
-                        select
-                        x);
-
-                    // カレントサブルーチンのトリガを登録する
-                    if (this.CurrentSubroutine != null)
-                    {
-                        var triggers =
-                            from x in this.CurrentSubroutine.Triggers
-                            where
-                            x.IsAvailable() &&
-                            x.IsPositionSyncAvailable
-                            select
-                            x;
-
-                        detectors.AddRange(triggers);
-                    }
-                }
+                // P-Syncトリガを抽出する
+                psyncs = (
+                    from x in
+                        TimelineManager.Instance.GlobalTriggers
+                        .Concat(!this.Model.IsGlobalZone ? this.Model.Triggers : EmptyTiggers)
+                        .Concat(this.CurrentSubroutine != null ? this.CurrentSubroutine.Triggers : EmptyTiggers)
+                    where
+                    x.IsAvailable() &&
+                    x.IsPositionSyncAvailable
+                    select
+                    x).ToArray();
             }
-
-            // P-Syncトリガに対して判定する
-            var psyncs = detectors
-                .Where(x => x.IsPositionSyncAvailable)
-                .ToArray();
 
             if (!psyncs.Any())
             {
@@ -1275,128 +1268,137 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            psyncs.AsParallel().ForAll(tri => detectPSync(tri));
+            // P-Syncトリガに対して判定する
+#if false
+            // マルチスレッド版
+            psyncs.AsParallel().ForAll(tri =>
+            {
+                detectPSync(tri);
+            });
+#else
+            // シングルスレッド版
+            foreach (var tri in psyncs)
+            {
+                detectPSync(tri);
+            }
+#endif
 
             // P-Syncトリガに対して判定する
             void detectPSync(
                 TimelineTriggerModel tri)
             {
-                lock (tri)
+                var psync = tri.PositionSyncStatements
+                    .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
+                if (psync == null)
                 {
-                    var psync = tri.PositionSyncStatements
-                        .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
+                    return;
+                }
 
-                    if (psync == null)
+                if ((DateTime.Now - psync.LastSyncTimestamp).TotalSeconds <= psync.Interval)
+                {
+                    return;
+                }
+
+                var conditions = psync.Combatants
+                    .Where(x =>
+                        x.Enabled.GetValueOrDefault() &&
+                        !string.IsNullOrEmpty(x.Name));
+
+                if (!conditions.Any())
+                {
+                    return;
+                }
+
+                foreach (var con in conditions)
+                {
+                    var target = combatants.FirstOrDefault(x =>
                     {
-                        return;
-                    }
+                        var r = false;
 
-                    if ((DateTime.Now - psync.LastSyncTimestamp).TotalSeconds <= psync.Interval)
-                    {
-                        return;
-                    }
-
-                    var conditions = psync.Combatants
-                        .Where(x =>
-                            x.Enabled.GetValueOrDefault() &&
-                            !string.IsNullOrEmpty(x.Name));
-
-                    if (!conditions.Any())
-                    {
-                        return;
-                    }
-
-                    foreach (var con in conditions)
-                    {
-                        var target = combatants.FirstOrDefault(x =>
+                        if (con.IsMatchName(x.Name))
                         {
-                            var r = false;
-
-                            if (con.IsMatchName(x.Name))
+                            if (con.X == TimelineCombatantModel.InvalidPosition ||
+                                (con.X - con.Tolerance) <= x.PosXMap && x.PosXMap <= (con.X + con.Tolerance))
                             {
-                                if (con.X == TimelineCombatantModel.InvalidPosition ||
-                                    (con.X - con.Tolerance) <= x.PosXMap && x.PosXMap <= (con.X + con.Tolerance))
+                                if (con.Y == TimelineCombatantModel.InvalidPosition ||
+                                    (con.Y - con.Tolerance) <= x.PosYMap && x.PosYMap <= (con.Y + con.Tolerance))
                                 {
-                                    if (con.Y == TimelineCombatantModel.InvalidPosition ||
-                                        (con.Y - con.Tolerance) <= x.PosYMap && x.PosYMap <= (con.Y + con.Tolerance))
+                                    if (con.Z == TimelineCombatantModel.InvalidPosition ||
+                                        (con.Z - con.Tolerance) <= x.PosZMap && x.PosZMap <= (con.Z + con.Tolerance))
                                     {
-                                        if (con.Z == TimelineCombatantModel.InvalidPosition ||
-                                            (con.Z - con.Tolerance) <= x.PosZMap && x.PosZMap <= (con.Z + con.Tolerance))
-                                        {
-                                            r = true;
-                                        }
+                                        r = true;
                                     }
                                 }
                             }
+                        }
 
-                            return r;
-                        });
+                        return r;
+                    });
 
-                        con.ActualCombatant = target;
+                    con.ActualCombatant = target;
+                }
+
+                if (conditions.Count(x => x.ActualCombatant != null) <
+                    conditions.Count())
+                {
+                    return;
+                }
+
+                tri.TextReplaced = tri.Text ?? string.Empty;
+                tri.NoticeReplaced = tri.Notice ?? string.Empty;
+
+                var i = 1;
+                foreach (var con in conditions)
+                {
+                    string replace(string text)
+                    {
+                        text = text.Replace("{name" + i + "}", con.ActualCombatant.Name);
+                        text = text.Replace("{X" + i + "}", con.ActualCombatant.PosXMap.ToString("N1"));
+                        text = text.Replace("{Y" + i + "}", con.ActualCombatant.PosYMap.ToString("N1"));
+                        text = text.Replace("{Z" + i + "}", con.ActualCombatant.PosZMap.ToString("N1"));
+
+                        return text;
                     }
 
-                    if (conditions.Count(x => x.ActualCombatant != null) <
-                        conditions.Count())
+                    tri.TextReplaced = replace(tri.TextReplaced);
+                    tri.NoticeReplaced = replace(tri.NoticeReplaced);
+
+                    i++;
+                }
+
+                tri.MatchedCounter++;
+
+                if (tri.SyncCount.Value != 0)
+                {
+                    if (tri.SyncCount.Value != tri.MatchedCounter)
                     {
                         return;
                     }
-
-                    tri.TextReplaced = tri.Text ?? string.Empty;
-                    tri.NoticeReplaced = tri.Notice ?? string.Empty;
-
-                    var i = 1;
-                    foreach (var con in conditions)
-                    {
-                        string replace(string text)
-                        {
-                            text = text.Replace("{name" + i + "}", con.ActualCombatant.Name);
-                            text = text.Replace("{X" + i + "}", con.ActualCombatant.PosXMap.ToString("N1"));
-                            text = text.Replace("{Y" + i + "}", con.ActualCombatant.PosYMap.ToString("N1"));
-                            text = text.Replace("{Z" + i + "}", con.ActualCombatant.PosZMap.ToString("N1"));
-
-                            return text;
-                        }
-
-                        tri.TextReplaced = replace(tri.TextReplaced);
-                        tri.NoticeReplaced = replace(tri.NoticeReplaced);
-
-                        i++;
-                    }
-
-                    tri.MatchedCounter++;
-
-                    if (tri.SyncCount.Value != 0)
-                    {
-                        if (tri.SyncCount.Value != tri.MatchedCounter)
-                        {
-                            return;
-                        }
-                    }
-
-                    psync.LastSyncTimestamp = DateTime.Now;
-
-                    var toNotice = tri.Clone();
-
-                    var vnotices = toNotice.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
-                    if (vnotices.Any())
-                    {
-                        foreach (var vnotice in vnotices)
-                        {
-                            vnotice.Timestamp = detectTime;
-                        }
-                    }
-
-                    var inotices = toNotice.ImageNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
-                    if (inotices.Any())
-                    {
-                        foreach (var inotice in inotices)
-                        {
-                            inotice.Timestamp = detectTime;
-                        }
-                    }
-
-                    this.NotifyQueue.Enqueue(toNotice);
                 }
+
+                psync.LastSyncTimestamp = DateTime.Now;
+
+                var toNotice = tri.Clone();
+
+                var vnotices = toNotice.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
+                if (vnotices.Any())
+                {
+                    foreach (var vnotice in vnotices)
+                    {
+                        vnotice.Timestamp = detectTime;
+                    }
+                }
+
+                var inotices = toNotice.ImageNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
+                if (inotices.Any())
+                {
+                    foreach (var inotice in inotices)
+                    {
+                        inotice.Timestamp = detectTime;
+                    }
+                }
+
+                NotifyQueue.Enqueue(toNotice);
 
                 WPFHelper.BeginInvoke(() =>
                 {
@@ -1413,26 +1415,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             select
                             x).FirstOrDefault();
 
-                        try
+                        // jumpを判定する
+                        if (!this.CallActivity(active, tri.CallTarget))
                         {
-                            this.Model.StopLive();
-
-                            // jumpを判定する
-                            if (!this.CallActivity(active, tri.CallTarget))
+                            if (!this.GoToActivity(active, tri.GoToDestination))
                             {
-                                if (!this.GoToActivity(active, tri.GoToDestination))
-                                {
-                                    this.LoadSubs(tri);
-                                }
+                                this.LoadSubs(tri);
                             }
+                        }
 
-                            // ログを発生させる
-                            RaiseLog(tri);
-                        }
-                        finally
-                        {
-                            this.Model.ResumeLive();
-                        }
+                        // ログを発生させる
+                        RaiseLog(tri);
                     }
                 });
             }
@@ -1521,9 +1514,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (this.TimelineTimer == null)
                 {
-                    this.TimelineTimer = new DispatcherTimer()
+                    this.TimelineTimer = new DispatcherTimer(
+                        TimelineSettings.Instance.TimelineThreadPriority)
                     {
-                        Interval = TimeSpan.FromSeconds(0.02),
+                        Interval = TimeSpan.FromMilliseconds(
+                            TimelineSettings.Instance.ProgressBarRefreshInterval),
                     };
 
                     this.TimelineTimer.Tick += this.TimelineTimer_Tick;
@@ -1548,9 +1543,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 this.TimelineTimer.Stop();
-                this.LoadActivityLine();
 
+                // リソースを開放する
                 TimelineNoticeOverlay.NoticeView?.ClearNotice();
+                TimelineImageNoticeModel.Collect();
+                this.ClearNotifyQueue();
+                GC.Collect();
+
+                this.LoadActivityLine();
+                this.Model.RefreshActivitiesView();
 
                 this.isRunning = false;
                 this.Status = TimelineStatus.Loaded;
@@ -1599,6 +1600,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
+        private DateTime lastTimelineRefreshTimestamp = DateTime.MinValue;
+
         private void RefreshActivityLine()
         {
             if (this.CurrentTime == TimeSpan.Zero)
@@ -1608,6 +1611,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             // 現在の時間を更新する
             TimelineActivityModel.CurrentTime = this.CurrentTime;
+
+            // タイムライン進行の時間が経っていない？
+            if ((DateTime.Now - this.lastTimelineRefreshTimestamp).TotalMilliseconds
+                < TimelineSettings.Instance.TimelineRefreshInterval)
+            {
+                // プログレスバーだけ更新して抜ける
+                this.RefreshProgress();
+                return;
+            }
+
+            this.lastTimelineRefreshTimestamp = DateTime.Now;
 
             // 通知を判定する
             var toNotify =
@@ -1634,7 +1648,18 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     inotice.Timestamp = now;
                 }
 
-                this.NotifyQueue.Enqueue(act);
+                NotifyQueue.Enqueue(act);
+            }
+
+            // カウントアップ後の消去までの猶予時間
+            // 1秒 - リフレッシュレートの補正値
+            var timeToHide =
+                TimeSpan.FromSeconds(1) -
+                TimeSpan.FromMilliseconds(TimelineSettings.Instance.TimelineRefreshInterval / 2);
+
+            if (timeToHide < TimeSpan.Zero)
+            {
+                timeToHide = TimeSpan.Zero;
             }
 
             // 表示を終了させる
@@ -1642,7 +1667,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 from x in this.ActivityLine
                 where
                 !x.IsDone &&
-                x.Time <= this.CurrentTime - TimeSpan.FromSeconds(1)
+                x.Time <= this.CurrentTime - timeToHide
                 orderby
                 x.Seq descending
                 select
@@ -1685,11 +1710,42 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // 表示を更新する
-            this.RefreshActivityLineVisibility();
+            if (this.RefreshActivityLineVisibility())
+            {
+                this.Model.RefreshActivitiesView();
+            }
         }
 
-        public void RefreshActivityLineVisibility()
+        /// <summary>
+        /// プログレスバーの進捗状況だけ更新する
+        /// </summary>
+        public void RefreshProgress()
         {
+            var toRefresh =
+                from x in this.ActivityLine
+                where
+                x.Enabled.GetValueOrDefault() &&
+                !string.IsNullOrEmpty(x.Text) &&
+                x.IsVisible
+                select
+                x;
+
+            foreach (var x in toRefresh)
+            {
+                x.RefreshProgress();
+                Thread.Yield();
+            }
+        }
+
+        /// <summary>
+        /// アクティビティラインの表示を更新する
+        /// </summary>
+        /// <returns>
+        /// is changed?</returns>
+        public bool RefreshActivityLineVisibility()
+        {
+            var result = false;
+
             var maxTime = this.CurrentTime.Add(TimeSpan.FromSeconds(
                 TimelineSettings.Instance.ShowActivitiesTime));
 
@@ -1710,6 +1766,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     !x.IsDone &&
                     x.Time <= maxTime)
                 {
+                    x.RefreshProgress();
+
                     if (count == 0)
                     {
                         var sub = x.Parent as TimelineSubroutineModel;
@@ -1731,15 +1789,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         x.Scale = 1.0d;
                     }
 
-                    x.IsVisible = true;
-                    x.RefreshProgress();
+                    if (!x.IsVisible)
+                    {
+                        x.IsVisible = true;
+                        result = true;
+                    }
+
                     count++;
+                    Thread.Yield();
                 }
                 else
                 {
-                    x.IsVisible = false;
+                    if (x.IsVisible)
+                    {
+                        x.IsVisible = false;
+                        result = true;
+                    }
                 }
             }
+
+            return result;
         }
 
         #endregion 時間進行関係のスレッド
@@ -1747,61 +1816,74 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         #region 通知に関するメソッド
 
         private static readonly object NoticeLocker = new object();
-        private readonly ConcurrentQueue<TimelineBase> NotifyQueue = new ConcurrentQueue<TimelineBase>();
+        private static readonly TimeSpan NotifySleepInterval = TimeSpan.FromSeconds(5);
+        private static readonly ConcurrentQueue<TimelineBase> NotifyQueue = new ConcurrentQueue<TimelineBase>();
 
-        private ThreadWorker notifyWorker;
-        private volatile bool isNotifyExcuting = false;
+        private static readonly ThreadWorker NotifyWorker = new ThreadWorker(
+            null,
+            NotifySleepInterval.TotalMilliseconds,
+            "TimelineNotifyWorker",
+            TimelineSettings.Instance.NotifyThreadPriority);
+
+        private static volatile bool isNotifyRunning = false;
 
         private void StartNotifyWorker()
         {
             lock (NoticeLocker)
             {
-                if (this.notifyWorker == null)
+                if (!NotifyWorker.IsRunning)
                 {
-                    this.notifyWorker = new ThreadWorker(
-                        this.DoNotify,
-                        TimelineSettings.Instance.NotifyInterval,
-                        "TimelineNotifyWorker",
-                        ThreadPriority.Normal);
+                    NotifyWorker.Run();
                 }
-            }
 
-            this.notifyWorker.Run();
+                NotifyWorker.DoWorkAction = this.DoNotify;
+                NotifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
+
+                isNotifyRunning = true;
+            }
         }
 
         public void StopNotifyWorker()
         {
             lock (NoticeLocker)
             {
-                if (this.notifyWorker != null)
+                isNotifyRunning = false;
+                NotifyWorker.DoWorkAction = null;
+                NotifyWorker.Interval = NotifySleepInterval.TotalMilliseconds;
+                this.ClearNotifyQueue();
+            }
+        }
+
+        private void ClearNotifyQueue()
+        {
+            while (NotifyQueue.TryDequeue(out TimelineBase q))
+            {
+                if (q is TimelineImageNoticeModel i)
                 {
-                    this.notifyWorker.Abort();
-                    while (this.NotifyQueue.TryDequeue(out TimelineBase q)) ;
-                    this.notifyWorker = null;
+                    i.CloseNotice();
                 }
             }
         }
 
         private void DoNotify()
         {
-            this.notifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
-
-            if (this.NotifyQueue.IsEmpty)
+            lock (NoticeLocker)
             {
-                return;
-            }
+                if (!isNotifyRunning)
+                {
+                    NotifyWorker.Interval = NotifySleepInterval.TotalMilliseconds;
+                    return;
+                }
 
-            try
-            {
-                if (this.isNotifyExcuting)
+                NotifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
+
+                if (NotifyQueue.IsEmpty)
                 {
                     return;
                 }
 
-                this.isNotifyExcuting = true;
-
                 var exists = false;
-                while (this.NotifyQueue.TryDequeue(out TimelineBase element))
+                while (NotifyQueue.TryDequeue(out TimelineBase element))
                 {
                     switch (element)
                     {
@@ -1819,12 +1901,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (exists)
                 {
-                    this.notifyWorker.Interval = 0;
+                    NotifyWorker.Interval = 0;
                 }
-            }
-            finally
-            {
-                this.isNotifyExcuting = false;
             }
         }
 
@@ -1876,7 +1954,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var isSync = TimelineModel.RazorModel?.SyncTTS ?? false;
 
             RaiseLog(log);
-            NotifySound(notice, act.NoticeDevice.GetValueOrDefault(), isSync);
+            NotifySoundAsync(notice, act.NoticeDevice.GetValueOrDefault(), isSync);
 
             var vnotices = act.VisualNoticeStatements
                 .Where(x => x.Enabled.GetValueOrDefault())
@@ -1973,7 +2051,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var isSync = TimelineModel.RazorModel?.SyncTTS ?? false;
 
             RaiseLog(log);
-            NotifySound(notice, tri.NoticeDevice.GetValueOrDefault(), isSync);
+            NotifySoundAsync(notice, tri.NoticeDevice.GetValueOrDefault(), isSync);
 
             var vnotices = tri.VisualNoticeStatements
                 .Where(x => x.Enabled.GetValueOrDefault());
@@ -2069,6 +2147,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private static string lastNotice = string.Empty;
         private static DateTime lastNoticeTimestamp = DateTime.MinValue;
+
+        private static Task NotifySoundAsync(
+            string notice,
+            NoticeDevices device,
+            bool isSync = false)
+            => Task.Run(() => NotifySound(notice, device, isSync));
 
         private static void NotifySound(
             string notice,

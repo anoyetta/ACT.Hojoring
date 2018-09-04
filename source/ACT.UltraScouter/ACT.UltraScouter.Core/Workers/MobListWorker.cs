@@ -206,7 +206,7 @@ namespace ACT.UltraScouter.Workers
             CombatantsViewModel.RefreshCombatants(combatants);
 
             var targets =
-                from x in combatants.AsParallel()
+                from x in combatants
                 where
                 ((x.MaxHP <= 0) || (x.MaxHP > 0 && x.CurrentHP > 0)) &&
                 Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name)
@@ -220,12 +220,12 @@ namespace ACT.UltraScouter.Workers
                 };
 
             // 距離で絞り込む
-            targets = targets.AsParallel().Where(x => x.Distance <= x.MaxDistance);
+            targets = targets.Where(x => x.Distance <= x.MaxDistance);
 
             lock (this.TargetInfoLock)
             {
-                this.TargetInfo = targets.FirstOrDefault()?.Combatant;
                 this.targetMobList = targets.ToList();
+                this.TargetInfo = this.targetMobList.FirstOrDefault()?.Combatant;
 
                 if (this.TargetInfo == null)
                 {

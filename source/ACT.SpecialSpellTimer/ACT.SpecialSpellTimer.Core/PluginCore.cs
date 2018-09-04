@@ -147,6 +147,7 @@ namespace ACT.SpecialSpellTimer
                     if (!UpdateChecker.IsAvailableDotNet() ||
                         !UpdateChecker.IsAvailableWindows())
                     {
+                        NotSupportedView.AddAndShow(pluginScreenSpace);
                         return;
                     }
 

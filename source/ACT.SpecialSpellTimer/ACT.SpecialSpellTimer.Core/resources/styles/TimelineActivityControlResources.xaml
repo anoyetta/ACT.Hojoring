@@ -88,17 +88,12 @@
     <Setter Property="Grid.ColumnSpan" Value="2" />
     <Setter Property="Margin" Value="0 1 0 0" />
     <Setter Property="IsStrokeBackground" Value="False" />
-    <Setter Property="Fill" Value="{Binding Path=StyleModel.BarColorBrush, Mode=OneWay}" />
-    <Setter Property="Stroke" Value="{Binding Path=StyleModel.BarColorBrush, Mode=OneWay}" />
+    <Setter Property="Fill" Value="{Binding Path=ActualBarColorBrush, Mode=OneWay}" />
+    <Setter Property="Stroke" Value="{Binding Path=ActualBarColorBrush, Mode=OneWay}" />
     <Setter Property="Height" Value="{Binding Path=StyleModel.BarHeight, Mode=OneWay}" />
     <Setter Property="Progress" Value="{Binding Path=Progress, Mode=OneWay}" />
     <Setter Property="BlurOpacity" Value="0" />
     <Setter Property="BlurRadius" Value="0" />
-    <Style.Triggers>
-      <Trigger Property="Progress" Value="0">
-        <Setter Property="Visibility" Value="Hidden" />
-      </Trigger>
-    </Style.Triggers>
   </Style>
 
   <Style x:Key="CounterText" TargetType="controls:LightOutlineTextBlock">
@@ -194,7 +189,7 @@
   <Style x:Key="Circle" TargetType="controls:ProgressCircle">
     <Setter Property="HorizontalAlignment" Value="Center" />
     <Setter Property="VerticalAlignment" Value="Center" />
-    <Setter Property="Fill" Value="{Binding Path=StyleModel.BarColorBrush, Mode=OneWay}" />
+    <Setter Property="Fill" Value="{Binding Path=ActualBarColorBrush, Mode=OneWay}" />
     <Setter Property="Stroke" Value="Transparent" />
     <Setter Property="Thickness" Value="{Binding Path=StyleModel.BarHeight, Mode=OneWay}" />
     <Setter Property="Radius" Value="{Binding ElementName=CounterTextCircle, Path=ActualHeight, Mode=OneWay}" />
@@ -202,11 +197,7 @@
     <Setter Property="IsCCW" Value="True" />
     <Setter Property="BlurOpacity" Value="0" />
     <Setter Property="BlurRadius" Value="0" />
-    <Style.Triggers>
-      <Trigger Property="Progress" Value="0">
-        <Setter Property="Visibility" Value="Hidden" />
-      </Trigger>
-    </Style.Triggers>
+    <Setter Property="Visibility" Value="{Binding Path=StyleModel.IsCircleStyle, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
   </Style>
 
   <Style x:Key="CounterTextCircle" TargetType="controls:LightOutlineTextBlock">

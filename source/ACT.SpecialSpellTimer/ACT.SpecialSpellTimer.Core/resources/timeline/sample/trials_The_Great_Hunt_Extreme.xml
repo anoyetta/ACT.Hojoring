@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<timeline>
+  <name>極リオレウス狩猟戦</name>
+  <rev>rev2</rev>
+  <description>
+    リオレウス狩猟戦向けのタイムラインです。
+    タイムラインといってもほぼランダム攻撃ですのでトリガの定義だけです。
+
+    designed by Hojoring Forum
+    https://discord.gg/n6Mut3F
+  </description>
+  <zone>the Great Hunt,the Great Hunt (Extreme),Unknown Zone (2F9),Unknown Zone (2Fa)</zone>
+  <locale>JA</locale>
+
+  <t text="自分にマーカー" sync="^1B:[id8]:[mex]:" notice="自分にマーカー">
+    <v-notice
+      duration="5"
+      duration-visible="false"
+      order="0"
+      job-icon="true" />
+  </t>
+
+  <t text="マーカー\n ➜ ${_nex}" sync="^1B:[id8]:[nex]:" notice="マーカー">
+    <v-notice
+      duration="5"
+      duration-visible="false"
+      order="0"
+      job-icon="true" />
+  </t>
+
+  <!-- ファイアブレスはマーカと同時通知になるので不要かもしれない -->
+  <!--
+  <t sync="^14:2857:" notice="ファイアブレス">
+    <v-notice
+      text="ファイアブレス"
+      duration="3"
+      duration-visible="false"
+      order="1"
+      icon="Marker.png" />
+  </t>
+  -->
+
+  <t sync="^14:(286A|287A):" notice="アギト">
+    <v-notice
+      text="アギト"
+      duration="3"
+      duration-visible="false"
+      order="1"
+      icon="HardAttack.png" />
+  </t>
+
+  <t sync="^14:(2856|2861|286D|2878):" notice="突進">
+    <v-notice
+      text="突進"
+      duration="3"
+      duration-visible="false"
+      order="1"
+      icon="Arrow1.png" />
+  </t>
+
+  <t sync="^14:(2859|2870|285B):" notice="リコイル">
+    <v-notice
+      text="フレイムリコイル"
+      duration="3"
+      duration-visible="false"
+      order="1"
+      icon="Fire.png" />
+  </t>
+
+  <t sync=":2879:スウィーピングフレイム" notice="スウィープ">
+    <v-notice
+      text="スウィーピングフレイム"
+      duration="3"
+      duration-visible="false"
+      order="1"
+      icon="Fire.png" />
+  </t>
+
+  <t sync="^03:Added new combatant ステップ・シープ" notice="雑魚、ポップ">
+    <v-notice
+      text="雑魚"
+      duration="3"
+      duration-visible="false"
+      order="2"
+      icon="Check.png" />
+  </t>
+
+  <t sync="^03:Added new combatant ガルラ" notice="ガルラ、ポップ">
+    <v-notice
+      text="ガルラ"
+      duration="3"
+      duration-visible="false"
+      order="2"
+      icon="Check.png" />
+  </t>
+</timeline>

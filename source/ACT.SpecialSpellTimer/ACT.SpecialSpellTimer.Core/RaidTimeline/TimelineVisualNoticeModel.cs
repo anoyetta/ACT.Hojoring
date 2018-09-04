@@ -334,7 +334,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 this.timer = new DispatcherTimer(DispatcherPriority.Normal)
                 {
-                    Interval = TimeSpan.FromSeconds(0.25d)
+                    Interval = TimeSpan.FromSeconds(0.3d)
                 };
 
                 this.timer.Tick += (x, y) =>
@@ -405,10 +405,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public bool ExistsIcon => this.GetExistsIcon();
 
         [XmlIgnore]
-        public BitmapImage IconImage => this.GetIconImage();
+        public BitmapSource IconImage => this.GetIconImage();
 
         [XmlIgnore]
-        public BitmapImage ThisIconImage => this.GetThisIconImage();
+        public BitmapSource ThisIconImage => this.GetThisIconImage();
 
         #endregion IStylable
 

@@ -30,6 +30,9 @@ namespace ACT.UltraScouter.Views
 
             // 初期状態は透明（非表示）にしておく
             this.Opacity = 0;
+
+            // アニメーションのFPSを制限する
+            Timeline.SetDesiredFrameRate(this.animation, Settings.Instance.AnimationMaxFPS);
         }
 
         /// <summary>オーバーレイとして表示状態</summary>
@@ -56,11 +59,10 @@ namespace ACT.UltraScouter.Views
             this.animation.To = hpRate;
             this.animation.Duration = TimeSpan.FromSeconds(0.08);
 
-            Timeline.SetDesiredFrameRate(this.animation, Settings.Instance.AnimationMaxFPS);
-
             this.Bar.BeginAnimation(
                 RichProgressBar.ProgressProperty,
-                this.animation);
+                this.animation,
+                HandoffBehavior.SnapshotAndReplace);
         }
     }
 }
