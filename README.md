@@ -20,7 +20,7 @@ ACT本体のTTS機能をゆっくり実況などで有名な AquesTalk&trade; �
 
 ## 最新リリース
 ### **[DOWNLOAD Lastest-Release](https://github.com/anoyetta/ACT.Hojoring/releases/latest)**
-[pre-releease](https://github.com/anoyetta/ACT.Hojoring/releases)
+[prerelease](https://github.com/anoyetta/ACT.Hojoring/releases)
 
 ## インストール
 ### ALL-IN-ONE インストール
