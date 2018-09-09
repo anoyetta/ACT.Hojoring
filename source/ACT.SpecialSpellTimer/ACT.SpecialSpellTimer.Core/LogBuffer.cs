@@ -397,16 +397,42 @@ namespace ACT.SpecialSpellTimer
         */
 
         /// <summary>
+        /// ダメージログのキーワード
+        /// </summary>
+        private static readonly string DamageLogKeyword = "] 00:";
+
+        /// <summary>
         /// ダメージ関係のログを示すキーワード
         /// </summary>
         /// <remarks>
         /// </remarks>
-        public static readonly Regex DamageLogPattern =
+        private static readonly Regex DamageLogPattern =
             new Regex(
-                @"\] 00:..(29|a9|2d|ad):",
+                @"^00:..(29|a9|2d|ad):",
                 RegexOptions.Compiled |
                 RegexOptions.IgnoreCase |
                 RegexOptions.ExplicitCapture);
+
+        /// <summary>
+        /// ダメージログか？
+        /// </summary>
+        /// <param name="logLine">対象のログ行</param>
+        /// <returns>bool</returns>
+        public static bool IsDamageLog(
+            string logLine)
+        {
+            if (!Settings.Default.IgnoreDamageLogs)
+            {
+                return false;
+            }
+
+            if (logLine.Contains(DamageLogKeyword))
+            {
+                return DamageLogPattern.IsMatch(logLine.Remove(0, 15));
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// 設定によらず必ずカットするログのキーワード
@@ -505,8 +531,7 @@ namespace ACT.SpecialSpellTimer
                 }
 
                 // ダメージ系ログをカットする
-                if (Settings.Default.IgnoreDamageLogs &&
-                    DamageLogPattern.IsMatch(logLine))
+                if (IsDamageLog(logLine))
                 {
                     continue;
                 }

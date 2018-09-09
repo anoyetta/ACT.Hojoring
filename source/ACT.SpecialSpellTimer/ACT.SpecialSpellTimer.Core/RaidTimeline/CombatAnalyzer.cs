@@ -474,12 +474,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             foreach (var log in logs)
             {
                 // ダメージ系の不要なログか？
-                if (Settings.Default.IgnoreDamageLogs)
+                if (LogBuffer.IsDamageLog(log.logLine))
                 {
-                    if (LogBuffer.DamageLogPattern.IsMatch(log.logLine))
-                    {
-                        continue;
-                    }
+                    continue;
                 }
 
                 this.AnalyzeLogLine(log);
