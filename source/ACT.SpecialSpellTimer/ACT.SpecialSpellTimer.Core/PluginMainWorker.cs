@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -232,6 +231,7 @@ namespace ACT.SpecialSpellTimer
 
         private double lastLPS;
         private int lastActiveTriggerCount;
+        private int lastLogedActiveTriggerCount;
 
         private void BackgroundCore()
         {
@@ -242,20 +242,25 @@ namespace ACT.SpecialSpellTimer
             {
                 this.lastSaveTickerTableDateTime = DateTime.Now;
 
-                // ついでにLPSを出力する
-                var lps = this.LogBuffer.LPS;
-                if (lps > 0 &&
-                    this.lastLPS != lps)
+                if (this.existFFXIVProcess)
                 {
-                    Logger.Write($"LPS={lps.ToString("N1")}");
-                    this.lastLPS = lps;
-                }
+                    // ついでにLPSを出力する
+                    var lps = this.LogBuffer.LPS;
+                    if (lps > 0 &&
+                        this.lastLPS != lps)
+                    {
+                        Logger.Write($"LPS={lps.ToString("N1")}");
+                        this.lastLPS = lps;
+                    }
 
-                // ついでにアクティブなトリガ数を出力する
-                var count = this.lastActiveTriggerCount;
-                if (count > 0)
-                {
-                    Logger.Write($"ActiveTriggers={count.ToString("N0")}");
+                    // ついでにアクティブなトリガ数を出力する
+                    var count = this.lastActiveTriggerCount;
+                    if (count > 0 &&
+                        this.lastLogedActiveTriggerCount != count)
+                    {
+                        this.lastLogedActiveTriggerCount = count;
+                        Logger.Write($"ActiveTriggers={count.ToString("N0")}");
+                    }
                 }
             }
         }
@@ -275,14 +280,14 @@ namespace ACT.SpecialSpellTimer
                     if (!this.existFFXIVProcess)
                     {
 #if !DEBUG
-                    // importログの解析用にログを取り出しておく
-                    if (!this.LogBuffer.IsEmpty)
-                    {
-                        this.LogBuffer.GetLogLines();
-                    }
+                        // importログの解析用にログを取り出しておく
+                        if (!this.LogBuffer.IsEmpty)
+                        {
+                            this.LogBuffer.GetLogLines();
+                        }
 
-                    Thread.Sleep(TimeSpan.FromSeconds(3));
-                    return;
+                        Thread.Sleep(TimeSpan.FromSeconds(3));
+                        return;
 #endif
                     }
                 }
@@ -302,7 +307,6 @@ namespace ACT.SpecialSpellTimer
                 Thread.Sleep(TimeSpan.FromMilliseconds(Settings.Default.LogPollSleepInterval));
                 return;
             }
-
 #if DEBUG
             var sw = System.Diagnostics.Stopwatch.StartNew();
 #endif
@@ -337,7 +341,8 @@ namespace ACT.SpecialSpellTimer
             {
                 var time = sw.ElapsedMilliseconds;
                 var count = logs.Count;
-                Debug.WriteLine($"●DetectLogs\t{time:N1} ms\t{count:N0} lines\tavg {time / count:N2}");
+                System.Diagnostics.Debug.WriteLine(
+                    $"●DetectLogs\t{time:N1} ms\t{count:N0} lines\tavg {time / count:N2}");
             }
 #endif
 
@@ -515,8 +520,6 @@ namespace ACT.SpecialSpellTimer
                 if ((DateTime.Now - this.lastWipeOutDateTime).TotalSeconds >= 15.0)
                 {
                     // インスタンススペルを消去する
-                    SpellTable.Instance.RemoveInstanceSpellsAll();
-
                     SpellTable.ResetCount();
                     TickerTable.Instance.ResetCount();
 
