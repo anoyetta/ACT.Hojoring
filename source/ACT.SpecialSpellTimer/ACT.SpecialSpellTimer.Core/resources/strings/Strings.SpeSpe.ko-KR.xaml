@@ -119,6 +119,7 @@
   <system:String x:Key="Spell_BlinkIcon">아이콘을 깜박하기</system:String>
   <system:String x:Key="Spell_BlinkBar">바 깜박이기</system:String>
   <system:String x:Key="Spell_HideCounter">재생 시간을 숨긴다</system:String>
+  <system:String x:Key="Spell_NotResetAtWipeout">Don't reset at Wipeout</system:String>
   <system:String x:Key="Spell_NoticeOnMatch">시작시 알림</system:String>
   <system:String x:Key="Spell_NoticeOnOver">시작시 n초 후 알림</system:String>
   <system:String x:Key="Spell_NoticeOnBefore">완료 n초 전에 알림</system:String>

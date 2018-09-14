@@ -434,6 +434,14 @@ namespace ACT.SpecialSpellTimer.Models
             set => this.SetProperty(ref this.spellIconSize, value);
         }
 
+        private bool isNotResetAtWipeout = false;
+
+        public bool IsNotResetAtWipeout
+        {
+            get => this.isNotResetAtWipeout;
+            set => this.SetProperty(ref this.isNotResetAtWipeout, value);
+        }
+
         /// <summary>スペルが作用した対象</summary>
         [XmlIgnore]
         public string TargetName { get; set; } = string.Empty;
@@ -1041,6 +1049,7 @@ namespace ACT.SpecialSpellTimer.Models
             n.BackgroundAlpha = this.BackgroundAlpha;
             n.HideCounter = this.HideCounter;
             n.JobFilter = this.JobFilter;
+            n.PartyJobFilter = this.PartyJobFilter;
             n.ZoneFilter = this.ZoneFilter;
             n.TimersMustRunningForStart = this.TimersMustRunningForStart;
             n.TimersMustStoppingForStart = this.TimersMustStoppingForStart;
@@ -1113,7 +1122,9 @@ namespace ACT.SpecialSpellTimer.Models
             n.OverlapRecastTime = this.OverlapRecastTime;
             n.ReduceIconBrightness = this.ReduceIconBrightness;
             n.RegexEnabled = this.RegexEnabled;
+            n.IsNotResetAtWipeout = this.IsNotResetAtWipeout;
             n.JobFilter = this.JobFilter;
+            n.PartyJobFilter = this.PartyJobFilter;
             n.ZoneFilter = this.ZoneFilter;
             n.TimersMustRunningForStart = this.TimersMustRunningForStart;
             n.TimersMustStoppingForStart = this.TimersMustStoppingForStart;
