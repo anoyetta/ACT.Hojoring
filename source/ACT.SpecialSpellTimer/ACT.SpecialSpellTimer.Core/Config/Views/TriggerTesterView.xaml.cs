@@ -212,10 +212,12 @@ namespace ACT.SpecialSpellTimer.Config.Views
             private set;
         } = new ObservableCollection<TestLog>();
 
+        private string logLine = string.Empty;
+
         public string LogLine
         {
-            get;
-            set;
+            get => this.logLine;
+            set => this.SetProperty(ref this.logLine, value);
         }
 
         private DateTime prevTestTimestamp;
@@ -396,6 +398,8 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 {
                     this.TimelineTestListView.ScrollIntoView(last);
                 }
+
+                this.LogLine = string.Empty;
             });
         });
 

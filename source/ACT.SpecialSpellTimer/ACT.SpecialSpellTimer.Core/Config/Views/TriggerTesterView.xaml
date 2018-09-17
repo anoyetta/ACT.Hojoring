@@ -170,7 +170,7 @@
             <ColumnDefinition />
             <ColumnDefinition Width="Auto" />
           </Grid.ColumnDefinitions>
-          <TextBox Grid.Column="0" Margin="5" Height="28" VerticalContentAlignment="Center" Text="{Binding LogLine, Mode=OneWayToSource}" x:Name="AddLogLineTextBox" />
+          <TextBox Grid.Column="0" Margin="5" Height="28" VerticalContentAlignment="Center" Text="{Binding LogLine, Mode=TwoWay}" x:Name="AddLogLineTextBox" />
           <Button Grid.Column="1" Margin="0 0 5 0" Padding="5 0 5 0" Content="Add" x:Name="AddLogLineButton" />
         </Grid>
         <!-- コンテンツエリア end -->

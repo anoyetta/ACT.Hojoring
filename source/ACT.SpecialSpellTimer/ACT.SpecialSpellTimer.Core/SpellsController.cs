@@ -346,7 +346,11 @@ namespace ACT.SpecialSpellTimer
                     }
 
                     spell.CompleteScheduledTime = newSchedule;
+
+                    // マッチ時刻は更新しない
+                    /*
                     spell.MatchDateTime = now;
+                    */
 
                     notifyNeeded = true;
 
