@@ -389,10 +389,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     IsDone = true,
                     Time = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second),
                 });
-            });
 
-            await WPFHelper.InvokeAsync(() =>
-            {
                 var last = this.Logs.LastOrDefault();
                 if (last != null)
                 {
