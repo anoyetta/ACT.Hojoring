@@ -78,9 +78,16 @@ namespace ACT.SpecialSpellTimer.Models
                 {
                     this.RefreshCombatants();
 
+                    var isSimulationChanged = false;
                     var isPlayerChanged = this.IsPlayerChanged();
                     var isPartyChanged = this.IsPartyChanged();
                     var isZoneChanged = this.IsZoneChanged();
+
+                    if (this.previousInSimulation != this.InSimulation)
+                    {
+                        this.previousInSimulation = this.InSimulation;
+                        isSimulationChanged = true;
+                    }
 
                     if (isPlayerChanged)
                     {
@@ -94,7 +101,8 @@ namespace ACT.SpecialSpellTimer.Models
                         this.RefreshPetPlaceholder();
                     }
 
-                    if (isPlayerChanged ||
+                    if (isSimulationChanged ||
+                        isPlayerChanged ||
                         isPartyChanged ||
                         isZoneChanged)
                     {
@@ -253,6 +261,12 @@ namespace ACT.SpecialSpellTimer.Models
         public void CompileSpells()
         {
             var currentZoneID = default(int?);
+            var currentPlayer = this.player ?? new Combatant()
+            {
+                ID = 0,
+                Name = "Dummy Player",
+                Job = (byte)JobIDs.ADV,
+            };
 
             lock (this.SimulationLocker)
             {
@@ -267,32 +281,30 @@ namespace ACT.SpecialSpellTimer.Models
                 }
             }
 
-            bool filter(Spell spell)
+            bool filter(
+                Spell spell,
+                Combatant playerData)
             {
                 var enabledByJob = false;
                 var enabledByPartyJob = false;
                 var enabledByZone = false;
 
                 // ジョブフィルタをかける
-                if (this.player == null ||
-                    this.player.ID == 0 ||
-                    string.IsNullOrEmpty(spell.JobFilter))
+                if (string.IsNullOrEmpty(spell.JobFilter))
                 {
                     enabledByJob = true;
                 }
                 else
                 {
                     var jobs = spell.JobFilter.Split(',');
-                    if (jobs.Any(x => x == this.player.Job.ToString()))
+                    if (jobs.Any(x => x == playerData.Job.ToString()))
                     {
                         enabledByJob = true;
                     }
                 }
 
                 // filter by specific jobs in party
-                if (this.player == null ||
-                    this.player.ID == 0 ||
-                    string.IsNullOrEmpty(spell.PartyJobFilter))
+                if (string.IsNullOrEmpty(spell.PartyJobFilter))
                 {
                     enabledByPartyJob = true;
                 }
@@ -306,17 +318,19 @@ namespace ACT.SpecialSpellTimer.Models
                 }
 
                 // ゾーンフィルタをかける
-                if (currentZoneID == 0 ||
-                    string.IsNullOrEmpty(spell.ZoneFilter))
+                if (string.IsNullOrEmpty(spell.ZoneFilter))
                 {
                     enabledByZone = true;
                 }
                 else
                 {
-                    var zoneIDs = spell.ZoneFilter.Split(',');
-                    if (zoneIDs.Any(x => x == currentZoneID.ToString()))
+                    if (currentZoneID.HasValue)
                     {
-                        enabledByZone = true;
+                        var zoneIDs = spell.ZoneFilter.Split(',');
+                        if (zoneIDs.Any(x => x == currentZoneID.ToString()))
+                        {
+                            enabledByZone = true;
+                        }
                     }
                 }
 
@@ -329,7 +343,7 @@ namespace ACT.SpecialSpellTimer.Models
                 x.IsDesignMode ||
                 (
                     x.Enabled &&
-                    filter(x)
+                    filter(x, currentPlayer)
                 )
                 orderby
                 x.Panel?.PanelName,
@@ -397,6 +411,12 @@ namespace ACT.SpecialSpellTimer.Models
         public void CompileTickers()
         {
             var currentZoneID = default(int?);
+            var currentPlayer = this.player ?? new Combatant()
+            {
+                ID = 0,
+                Name = "Dummy Player",
+                Job = (byte)JobIDs.ADV,
+            };
 
             lock (this.SimulationLocker)
             {
@@ -411,39 +431,41 @@ namespace ACT.SpecialSpellTimer.Models
                 }
             }
 
-            bool filter(Ticker spell)
+            bool filter(
+                Ticker spell,
+                Combatant playerData)
             {
                 var enabledByJob = false;
                 var enabledByZone = false;
 
                 // ジョブフィルタをかける
-                if (this.player == null ||
-                    this.player.ID == 0 ||
-                    string.IsNullOrWhiteSpace(spell.JobFilter))
+                if (string.IsNullOrWhiteSpace(spell.JobFilter))
                 {
                     enabledByJob = true;
                 }
                 else
                 {
                     var jobs = spell.JobFilter.Split(',');
-                    if (jobs.Any(x => x == this.player.Job.ToString()))
+                    if (jobs.Any(x => x == playerData.Job.ToString()))
                     {
                         enabledByJob = true;
                     }
                 }
 
                 // ゾーンフィルタをかける
-                if (currentZoneID == 0 ||
-                    string.IsNullOrWhiteSpace(spell.ZoneFilter))
+                if (string.IsNullOrWhiteSpace(spell.ZoneFilter))
                 {
                     enabledByZone = true;
                 }
                 else
                 {
-                    var zoneIDs = spell.ZoneFilter.Split(',');
-                    if (zoneIDs.Any(x => x == currentZoneID.ToString()))
+                    if (currentZoneID.HasValue)
                     {
-                        enabledByZone = true;
+                        var zoneIDs = spell.ZoneFilter.Split(',');
+                        if (zoneIDs.Any(x => x == currentZoneID.ToString()))
+                        {
+                            enabledByZone = true;
+                        }
                     }
                 }
 
@@ -456,7 +478,7 @@ namespace ACT.SpecialSpellTimer.Models
                 x.IsDesignMode ||
                 (
                     x.Enabled &&
-                    filter(x)
+                    filter(x, currentPlayer)
                 )
                 orderby
                 x.MatchDateTime descending,
@@ -633,6 +655,7 @@ namespace ACT.SpecialSpellTimer.Models
         private volatile IReadOnlyList<Combatant> previousParty = new List<Combatant>();
         private volatile Combatant previousPlayer = new Combatant();
         private volatile int previousZoneID = 0;
+        private volatile bool previousInSimulation = false;
 
         public readonly object SimulationLocker = new object();
 

@@ -119,6 +119,7 @@
   <system:String x:Key="Spell_BlinkIcon">アイコンをブリンクさせる</system:String>
   <system:String x:Key="Spell_BlinkBar">バーをブリンクさせる</system:String>
   <system:String x:Key="Spell_HideCounter">リキャスト時間を表示しない</system:String>
+  <system:String x:Key="Spell_NotResetAtWipeout">全滅時にリセットしない</system:String>
   <system:String x:Key="Spell_NoticeOnMatch">マッチしたときの通知</system:String>
   <system:String x:Key="Spell_NoticeOnOver">マッチｎ秒後の通知</system:String>
   <system:String x:Key="Spell_NoticeOnBefore">カウント完了ｎ秒前の通知</system:String>
