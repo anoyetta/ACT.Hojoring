@@ -48,6 +48,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 await WPFHelper.InvokeAsync(() =>
                 {
                     this.MessageLabel.Content = "Loading, Please wait...";
+                    this.MessageLabel.Visibility = Visibility.Visible;
                 },
                 DispatcherPriority.Normal);
 
@@ -145,6 +146,13 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
             this.ApplyButton.Click += async (x, y) =>
             {
+                await WPFHelper.InvokeAsync(() =>
+                {
+                    this.MessageLabel.Content = "Loading, Please wait...";
+                    this.MessageLabel.Visibility = Visibility.Visible;
+                },
+                DispatcherPriority.Normal);
+
                 await Task.Run(() =>
                 {
                     // インスタンススペルを消去する
@@ -157,10 +165,25 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 ModernMessageBox.ShowDialog(
                     "Test Condition was applied.",
                     "Trigger Simulator");
+
+                await Task.Delay(TimeSpan.FromSeconds(0.5));
+                await WPFHelper.BeginInvoke(() =>
+                {
+                    this.MessageLabel.Content = string.Empty;
+                    this.MessageLabel.Visibility = Visibility.Collapsed;
+                },
+                DispatcherPriority.ApplicationIdle);
             };
 
             this.ClearButton.Click += async (x, y) =>
             {
+                await WPFHelper.InvokeAsync(() =>
+                {
+                    this.MessageLabel.Content = "Loading, Please wait...";
+                    this.MessageLabel.Visibility = Visibility.Visible;
+                },
+                DispatcherPriority.Normal);
+
                 await Task.Run(() =>
                 {
                     // インスタンススペルを消去する
@@ -173,6 +196,14 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 ModernMessageBox.ShowDialog(
                     "Test Condition was cleard.",
                     "Trigger Simulator");
+
+                await Task.Delay(TimeSpan.FromSeconds(0.5));
+                await WPFHelper.BeginInvoke(() =>
+                {
+                    this.MessageLabel.Content = string.Empty;
+                    this.MessageLabel.Visibility = Visibility.Collapsed;
+                },
+                DispatcherPriority.ApplicationIdle);
             };
 
             // AddLogLine
@@ -587,7 +618,6 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
                 TableCompiler.Instance.SimulationPlayer = TableCompiler.Instance.SimulationParty.FirstOrDefault();
                 TableCompiler.Instance.SimulationZoneID = this.ZoneID;
-                TableCompiler.Instance.InSimulation = true;
             }
         }
 
@@ -595,7 +625,6 @@ namespace ACT.SpecialSpellTimer.Config.Views
         {
             lock (TableCompiler.Instance.SimulationLocker)
             {
-                TableCompiler.Instance.InSimulation = false;
                 TableCompiler.Instance.SimulationPlayer = null;
                 TableCompiler.Instance.SimulationParty.Clear();
                 TableCompiler.Instance.SimulationZoneID = 0;
