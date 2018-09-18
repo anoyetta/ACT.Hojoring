@@ -71,8 +71,25 @@ namespace ACT.SpecialSpellTimer.Models
         /// </summary>
         public static void ResetCount()
         {
+            lock (SpellTable.Instance)
+            {
+                var toRemove = SpellTable.Instance.instanceSpells
+                    .Where(x => !x.Value.IsNotResetAtWipeout)
+                    .ToArray();
+
+                foreach (var item in toRemove)
+                {
+                    SpellTable.Instance.instanceSpells.Remove(item.Key);
+                }
+            }
+
             foreach (var row in TableCompiler.Instance.SpellList)
             {
+                if (row.IsNotResetAtWipeout)
+                {
+                    continue;
+                }
+
                 row.MatchDateTime = DateTime.MinValue;
                 row.UpdateDone = false;
                 row.OverDone = false;
