@@ -636,6 +636,8 @@ namespace ACT.SpecialSpellTimer
 
         #region その他のメソッド
 
+        private static (float X, float Y, float Z) previousPos = (0, 0, 0);
+
         /// <summary>
         /// 自分の座標をダンプする
         /// </summary>
@@ -649,6 +651,17 @@ namespace ACT.SpecialSpellTimer
             {
                 return;
             }
+
+            if (previousPos.X == player.PosXMap &&
+                previousPos.Y == player.PosYMap &&
+                previousPos.Z == player.PosZMap)
+            {
+                return;
+            }
+
+            previousPos.X = player.PosXMap;
+            previousPos.Y = player.PosYMap;
+            previousPos.Z = player.PosZMap;
 
             var zone = ActGlobals.oFormActMain?.CurrentZone;
             if (string.IsNullOrEmpty(zone))
