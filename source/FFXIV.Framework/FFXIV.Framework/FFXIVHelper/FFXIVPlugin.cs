@@ -56,9 +56,6 @@ namespace FFXIV.Framework.FFXIVHelper
         /// <summary>FFXIV_ACT_Plugin.Memory.ScanCombatants</summary>
         private dynamic pluginScancombat;
 
-        /// <summary>FFXIV_ACT_Plugin.Parse.CombatantHistory</summary>
-        private dynamic pluginCombatantHistory;
-
         /// <summary>FFXIV_ACT_Plugin.Overlays.Overlay</summary>
         private dynamic overlay;
 
@@ -669,7 +666,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #region Get Combatants
 
-        private byte[] dummyBuffer = new byte[15360];
+        private byte[] dummyBuffer = new byte[51200];
 
         public Combatant GetPlayer()
         {
@@ -1080,18 +1077,6 @@ namespace FFXIV.Framework.FFXIVHelper
                     "_LogParse",
                     BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
                 this.pluginLogParse = fi?.GetValue(this.plugin);
-            }
-
-            if (this.pluginCombatantHistory == null)
-            {
-                var settings = this.pluginLogParse?.Settings;
-                if (settings != null)
-                {
-                    fi = settings?.GetType().GetField(
-                        "CombatantHistory",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                    this.pluginCombatantHistory = fi?.GetValue(settings);
-                }
             }
 
             if (this.pluginMemory == null)
