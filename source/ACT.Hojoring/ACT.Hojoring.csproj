@@ -34,6 +34,9 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FFXIV_MemoryReader">
+      <HintPath>..\FFXIV.Framework\Thirdparty\FFXIV_MemoryReader.dll</HintPath>
+    </Reference>
     <Reference Include="FFXIV_MemoryReader.Model, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\FFXIV.Framework\Thirdparty\FFXIV_MemoryReader.Model.dll</HintPath>
