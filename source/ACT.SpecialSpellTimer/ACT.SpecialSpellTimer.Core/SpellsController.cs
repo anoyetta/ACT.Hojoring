@@ -347,10 +347,10 @@ namespace ACT.SpecialSpellTimer
 
                     spell.CompleteScheduledTime = newSchedule;
 
-                    // マッチ時刻は更新しない
-                    /*
-                    spell.MatchDateTime = now;
-                    */
+                    if (!spell.IsNotResetBarOnExtended)
+                    {
+                        spell.MatchDateTime = now;
+                    }
 
                     notifyNeeded = true;
 
