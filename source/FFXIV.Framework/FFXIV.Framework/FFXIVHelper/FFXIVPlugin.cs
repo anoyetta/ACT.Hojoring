@@ -88,8 +88,6 @@ namespace FFXIV.Framework.FFXIVHelper
             get
             {
                 if (ActGlobals.oFormActMain == null ||
-                    ActGlobals.oFormActMain.IsDisposed ||
-                    !ActGlobals.oFormActMain.IsHandleCreated ||
                     this.plugin == null ||
                     this.pluginConfig == null ||
                     this.pluginScancombat == null ||
@@ -261,7 +259,6 @@ namespace FFXIV.Framework.FFXIVHelper
 
                     if (fileName.ToLower() == "ffxiv.exe" ||
                         fileName.ToLower() == "ffxiv_dx11.exe" ||
-                        fileName.ToLower() == "dqx.exe" ||
                         fileName.ToLower() == actFileName.ToLower())
                     {
                         this.IsFFXIVActive = true;
@@ -978,7 +975,7 @@ namespace FFXIV.Framework.FFXIVHelper
         #region Get Misc
 
         public int GetCurrentZoneID() =>
-            this.pluginCombatantHistory?.CurrentZoneID ?? 0;
+            this.pluginScancombat?.GetCurrentZoneId() ?? 0;
 
         /// <summary>
         /// 文中に含まれるパーティメンバの名前を設定した形式に置換する
@@ -1035,19 +1032,20 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void Attach()
         {
-            this.AttachPlugin();
-            this.AttachScanMemory();
-            this.AttachOverlay();
+            lock (this)
+            {
+                this.AttachPlugin();
+                this.AttachScanMemory();
+                this.AttachOverlay();
 
-            this.LoadSkillList();
+                this.LoadSkillList();
+            }
         }
 
         private void AttachPlugin()
         {
             if (this.plugin != null ||
-                ActGlobals.oFormActMain == null ||
-                ActGlobals.oFormActMain.IsDisposed ||
-                !ActGlobals.oFormActMain.IsHandleCreated)
+                ActGlobals.oFormActMain == null)
             {
                 return;
             }
