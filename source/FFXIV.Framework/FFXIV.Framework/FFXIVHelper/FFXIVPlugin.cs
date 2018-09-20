@@ -316,6 +316,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
 #if DEBUG
 
+        #region Dummy Combatants
+
         private static readonly Combatant DummyPlayer = new Combatant()
         {
             ID = 1,
@@ -385,6 +387,8 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             1, 2, 3, 4, 5, 6, 7, 8
         };
+
+        #endregion Dummy Combatants
 
 #endif
 
@@ -606,8 +610,17 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
+        private DateTime currentPartyIDListTimestamp = DateTime.MinValue;
+
         public void RefreshCurrentPartyIDList()
         {
+            if ((DateTime.Now - this.currentPartyIDListTimestamp).TotalSeconds <= 3.0)
+            {
+                return;
+            }
+
+            this.currentPartyIDListTimestamp = DateTime.Now;
+
             if (!this.IsAvailable)
             {
 #if DEBUG
@@ -619,8 +632,9 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
+            var dummyBuffer = new byte[51200];
             var partyList = pluginScancombat?.GetCurrentPartyList(
-                this.dummyBuffer,
+                dummyBuffer,
                 out int partyCount) as List<uint>;
 
             if (partyList == null)
@@ -665,8 +679,6 @@ namespace FFXIV.Framework.FFXIVHelper
         #endregion Refresh Combatants
 
         #region Get Combatants
-
-        private byte[] dummyBuffer = new byte[51200];
 
         public Combatant GetPlayer()
         {
