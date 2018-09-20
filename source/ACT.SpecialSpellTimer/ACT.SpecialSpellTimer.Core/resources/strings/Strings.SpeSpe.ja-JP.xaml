@@ -112,6 +112,7 @@
   <system:String x:Key="Spell_Secounds">秒</system:String>
   <system:String x:Key="Spell_ExtendSecounds">秒延長する</system:String>
   <system:String x:Key="Spell_ExtendRecastTimeOverOrigal">元のリキャスト時間を超えて延長する</system:String>
+  <system:String x:Key="Spell_IsNotResetBarOnExtended">延長したときにバーをリセットしない</system:String>
   <system:String x:Key="Spell_UpperLimitOfRecastTime">リキャスト時間の最大値</system:String>
   <system:String x:Key="Spell_WarningTime">秒未満のとき警告色に変える</system:String>
   <system:String x:Key="Spell_WarningTimeChangeFontColor">フォントを警告色に変える</system:String>
