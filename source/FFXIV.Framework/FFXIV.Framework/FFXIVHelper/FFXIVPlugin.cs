@@ -619,8 +619,9 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
+            var dummyBuffer = new byte[51200];
             var partyList = pluginScancombat?.GetCurrentPartyList(
-                this.dummyBuffer,
+                dummyBuffer,
                 out int partyCount) as List<uint>;
 
             if (partyList == null)
@@ -665,8 +666,6 @@ namespace FFXIV.Framework.FFXIVHelper
         #endregion Refresh Combatants
 
         #region Get Combatants
-
-        private byte[] dummyBuffer = new byte[51200];
 
         public Combatant GetPlayer()
         {
