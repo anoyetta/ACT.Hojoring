@@ -44,6 +44,9 @@ namespace FFXIV.Framework.FFXIVHelper
         /// <summary>FFXIV_ACT_Plugin</summary>
         private dynamic plugin;
 
+        /// <summary>FFXIV_ACT_Plugin.DataSubscriptions</summary>
+        private dynamic pluginSubscriber;
+
         /// <summary>FFXIV_ACT_Plugin.MemoryScanSettings</summary>
         private dynamic pluginConfig;
 
@@ -163,6 +166,8 @@ namespace FFXIV.Framework.FFXIVHelper
                         this.LoadZoneList();
                         this.MergeSkillList();
                     }
+
+                    this.RefreshActive();
                 }
                 catch (Exception ex)
                 {
@@ -172,8 +177,6 @@ namespace FFXIV.Framework.FFXIVHelper
 
             this.scanFFXIVWorker = new ThreadWorker(() =>
             {
-                this.RefreshActive();
-
                 if (!this.IsAvailable)
                 {
                     Thread.Sleep(5000);
@@ -183,7 +186,6 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
 
                 this.RefreshCombatantList();
-                this.RefreshCurrentPartyIDList();
             },
             pollingInteval,
             nameof(this.attachFFXIVPluginWorker));
@@ -228,7 +230,7 @@ namespace FFXIV.Framework.FFXIVHelper
         /// </summary>
         private void RefreshActive()
         {
-            if ((DateTime.Now - this.detectedActiveTimestamp).TotalSeconds <= 5.0)
+            if ((DateTime.Now - this.detectedActiveTimestamp).TotalSeconds <= 4.9)
             {
                 return;
             }
@@ -316,6 +318,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
 #if DEBUG
 
+        #region Dummy Party
+
         private static readonly Combatant DummyPlayer = new Combatant()
         {
             ID = 1,
@@ -385,6 +389,8 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             1, 2, 3, 4, 5, 6, 7, 8
         };
+
+        #endregion Dummy Party
 
 #endif
 
@@ -606,35 +612,6 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public void RefreshCurrentPartyIDList()
-        {
-            if (!this.IsAvailable)
-            {
-#if DEBUG
-                lock (this.currentPartyIDListLock)
-                {
-                    this.currentPartyIDList = new List<uint>(this.DummyPartyList);
-                }
-#endif
-                return;
-            }
-
-            var dummyBuffer = new byte[51200];
-            var partyList = pluginScancombat?.GetCurrentPartyList(
-                dummyBuffer,
-                out int partyCount) as List<uint>;
-
-            if (partyList == null)
-            {
-                return;
-            }
-
-            lock (this.currentPartyIDListLock)
-            {
-                this.currentPartyIDList = partyList;
-            }
-        }
-
         public void SetSkillName(
             Combatant combatant)
         {
@@ -717,6 +694,13 @@ namespace FFXIV.Framework.FFXIVHelper
             lock (this.currentPartyIDListLock)
             {
                 partyIDs = new List<uint>(this.currentPartyIDList);
+
+                if (!this.IsAvailable)
+                {
+#if DEBUG
+                    partyIDs = new List<uint>(this.DummyPartyList);
+#endif
+                }
             }
 
             // PartyIDリストで絞り込みつつソートをかける
@@ -970,8 +954,10 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #region Get Misc
 
-        public int GetCurrentZoneID() =>
-            this.pluginScancombat?.GetCurrentZoneId() ?? 0;
+        private volatile int currentZoneID = 0;
+        private volatile string currentZoneName = string.Empty;
+
+        public int GetCurrentZoneID() => this.currentZoneID;
 
         /// <summary>
         /// 文中に含まれるパーティメンバの名前を設定した形式に置換する
@@ -1057,8 +1043,51 @@ namespace FFXIV.Framework.FFXIVHelper
             if (ffxivPlugin != null)
             {
                 this.plugin = ffxivPlugin;
+
+                // サブスクライバをセットする
+                this.SetSubscriber();
+
                 AppLogger.Trace("attached ffxiv plugin.");
             }
+        }
+
+        private volatile bool isSubscriving = false;
+
+        private void SetSubscriber()
+        {
+            this.pluginSubscriber = this.plugin?.DataSubscriptions;
+            if (this.pluginSubscriber == null)
+            {
+                return;
+            }
+
+            lock (this)
+            {
+                if (this.isSubscriving)
+                {
+                    return;
+                }
+
+                this.isSubscriving = true;
+            }
+
+            // パーティリストの変更？
+            this.pluginSubscriber.PartyListChanged += new Action<List<uint>>((partyList) =>
+            {
+                lock (this.currentPartyIDListLock)
+                {
+                    this.currentPartyIDList = partyList.ToList();
+                }
+            });
+
+            // ゾーンの変更？
+            this.pluginSubscriber.PartyListChanged += new Action<int, string>((zoneID, zoneName) =>
+            {
+                this.currentZoneID = zoneID;
+                this.currentZoneName = zoneName;
+            });
+
+            AppLogger.Trace("attached ffxiv plugin subscriber.");
         }
 
         private void AttachScanMemory()
