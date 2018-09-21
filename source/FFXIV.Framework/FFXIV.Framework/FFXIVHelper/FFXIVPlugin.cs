@@ -50,9 +50,6 @@ namespace FFXIV.Framework.FFXIVHelper
         /// <summary>FFXIV_ACT_Plugin.Memory.Memory</summary>
         private dynamic pluginMemory;
 
-        /// <summary>FFXIV_ACT_Plugin.Parse.LogParse</summary>
-        private dynamic pluginLogParse;
-
         /// <summary>FFXIV_ACT_Plugin.Memory.ScanCombatants</summary>
         private dynamic pluginScancombat;
 
@@ -316,6 +313,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
 #if DEBUG
 
+        #region Dummy Combatants
+
         private static readonly Combatant DummyPlayer = new Combatant()
         {
             ID = 1,
@@ -385,6 +384,8 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             1, 2, 3, 4, 5, 6, 7, 8
         };
+
+        #endregion Dummy Combatants
 
 #endif
 
@@ -606,8 +607,17 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
+        private DateTime currentPartyIDListTimestamp = DateTime.MinValue;
+
         public void RefreshCurrentPartyIDList()
         {
+            if ((DateTime.Now - this.currentPartyIDListTimestamp).TotalSeconds <= 3.0)
+            {
+                return;
+            }
+
+            this.currentPartyIDListTimestamp = DateTime.Now;
+
             if (!this.IsAvailable)
             {
 #if DEBUG
@@ -1069,14 +1079,6 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             FieldInfo fi;
-
-            if (this.pluginLogParse == null)
-            {
-                fi = this.plugin?.GetType().GetField(
-                    "_LogParse",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                this.pluginLogParse = fi?.GetValue(this.plugin);
-            }
 
             if (this.pluginMemory == null)
             {
