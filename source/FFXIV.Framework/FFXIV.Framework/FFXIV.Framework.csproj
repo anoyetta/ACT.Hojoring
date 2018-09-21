@@ -213,6 +213,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Content Include="FFXIV_MemoryReader.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\strings\Strings.Help.ko-KR.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -313,4 +316,8 @@
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>@COPY /B /Y $(ProjectDir)..\ThirdParty\FFXIV_MemoryReader.dll $(ProjectDir) &gt;nul
+</PreBuildEvent>
+  </PropertyGroup>
 </Project>
