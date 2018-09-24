@@ -8,7 +8,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Data;
-using System.Windows.Media;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
@@ -17,118 +16,10 @@ using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.Globalization;
 using NPOI.SS.UserModel;
+using TamanegiMage.FFXIV_MemoryReader.Model;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
-    #region Enum
-
-    /// <summary>
-    /// 分析キーワードの分類
-    /// </summary>
-    public enum KewordTypes
-    {
-        Unknown = 0,
-        Record,
-        Me,
-        PartyMember,
-        Pet,
-        Cast,
-        CastStartsUsing,
-        Action,
-        Effect,
-        Marker,
-        Dialogue,
-        HPRate,
-        Added,
-        Start,
-        End,
-        TimelineStart,
-    }
-
-    /// <summary>
-    /// 戦闘ログの種類
-    /// </summary>
-    public enum LogTypes
-    {
-        Unknown = 0,
-        CombatStart,
-        CombatEnd,
-        CastStart,
-        Action,
-        Effect,
-        Marker,
-        Added,
-        HPRate,
-        Dialog,
-    }
-
-    public static class LogTypesExtensions
-    {
-        private static ColorConverter cc = new ColorConverter();
-
-        public static string ToText(
-            this LogTypes t)
-            => new[]
-            {
-                "UNKNOWN",
-                "Combat Start",
-                "Combat End",
-                "Starts Using",
-                "Action",
-                "Effect",
-                "Marker",
-                "Added",
-                "HP Rate",
-                "Dialog",
-            }[(int)t];
-
-        public static Color ToBackgroundColor(
-            this LogTypes t)
-            => new[]
-            {
-                /*
-                (Color)cc.ConvertFrom("#FFFFFFFF"), // UNKNOWN
-                (Color)cc.ConvertFrom("#FFFF9999"), // Combat Start
-                (Color)cc.ConvertFrom("#FFFF9999"), // Combat End
-                (Color)cc.ConvertFrom("#FFCEE6F4"), // Starts Using
-                (Color)cc.ConvertFrom("#FFEEFBDD"), // Action
-                (Color)cc.ConvertFrom("#FFEFF6FB"), // Effect
-                (Color)cc.ConvertFrom("#FFFFDA97"), // Marker
-                (Color)cc.ConvertFrom("#FFFFFFFF"), // Added
-                (Color)cc.ConvertFrom("#FFFFFFFF"), // HP Rate
-                (Color)cc.ConvertFrom("#FFD8D8D8"), // Dialog
-                */
-                (Color)cc.ConvertFrom("#FFFFFFFF"), // UNKNOWN
-                (Color)cc.ConvertFrom("#FFDC143C"), // Combat Start
-                (Color)cc.ConvertFrom("#FFDC143C"), // Combat End
-                (Color)cc.ConvertFrom("#FF4169E1"), // Starts Using
-                (Color)cc.ConvertFrom("#FF98fb98"), // Action
-                (Color)cc.ConvertFrom("#FFF0E68C"), // Effect
-                (Color)cc.ConvertFrom("#FFFFA500"), // Marker
-                (Color)cc.ConvertFrom("#00000000"), // Added
-                (Color)cc.ConvertFrom("#00000000"), // HP Rate
-                (Color)cc.ConvertFrom("#FFD8D8D8"), // Dialog
-            }[(int)t];
-
-        public static Color ToForegroundColor(
-            this LogTypes t)
-            => new[]
-            {
-                (Color)cc.ConvertFrom("#FF000000"), // UNKNOWN
-                (Color)cc.ConvertFrom("#FF000000"), // Combat Start
-                (Color)cc.ConvertFrom("#FF000000"), // Combat End
-                (Color)cc.ConvertFrom("#FF000000"), // Starts Using
-                (Color)cc.ConvertFrom("#FF000000"), // Action
-                (Color)cc.ConvertFrom("#FF000000"), // Effect
-                (Color)cc.ConvertFrom("#FF000000"), // Marker
-                (Color)cc.ConvertFrom("#FF7F7F7F"), // Added
-                (Color)cc.ConvertFrom("#FF000000"), // HP Rate
-                (Color)cc.ConvertFrom("#FF000000"), // Dialog
-            }[(int)t];
-    }
-
-    #endregion Enum
-
     /// <summary>
     /// コンバットアナライザ
     /// </summary>
@@ -380,7 +271,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (names != null &&
                 names.Any() &&
-                names.AsParallel().Contains(actor))
+                names.Contains(actor))
             {
                 return false;
             }
@@ -401,21 +292,31 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private string ToNameToJob(
             string name)
         {
-            var jobName = "[pc]";
+            var jobName = name;
 
             var combs = this.GetCombatants();
 
             var com = combs.FirstOrDefault(x =>
-                x?.Name == name ||
-                x?.NameFI == name ||
-                x?.NameIF == name ||
-                x?.NameII == name);
+                x?.type == ObjectType.PC &&
+                (
+                    x?.Name == name ||
+                    x?.NameFI == name ||
+                    x?.NameIF == name ||
+                    x?.NameII == name
+                ));
 
             if (com != null)
             {
                 jobName = com.IsPlayer ?
                     $"[mex]" :
                     $"[{com.JobID.ToString()}]";
+            }
+            else
+            {
+                if (PCNameRegex.Match(jobName).Success)
+                {
+                    jobName = "[pc]";
+                }
             }
 
             return jobName;
@@ -559,6 +460,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     if (this.inCombat)
                     {
                         this.StoreAddedLog(logLine);
+                    }
+                    break;
+
+                case KewordTypes.NetworkAbility:
+                case KewordTypes.NetworkAOEAbility:
+                    if (this.inCombat)
+                    {
+                        this.StoreNewwork(logLine, category);
                     }
                     break;
 
@@ -872,6 +781,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
+        private const string ActorIDPlaceholder = "<id8>";
+        private const string PCIDPlaceholder = "<id8>";
+
         /// <summary>
         /// マーカーログを格納する
         /// </summary>
@@ -879,8 +791,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private void StoreMarkerLog(
             LogLineEventArgs logInfo)
         {
-            const string PCIDPlaceholder = "(?<pcid>.{8})";
-
             var log = default(CombatLog);
 
             var match = ConstantKeywords.MarkerRegex.Match(logInfo.logLine);
@@ -932,6 +842,94 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     this.StoreLog(log);
                 }
+            }
+        }
+
+        /// <summary>
+        /// 格納対象外とするアクション名
+        /// </summary>
+        private static readonly string[] IgnoreNewworkActions = new string[]
+        {
+            "攻撃",
+            "スプリント",
+            "Attack",
+            "Sprint",
+        };
+
+        /// <summary>
+        /// ネットワークログを格納する
+        /// </summary>
+        /// <param name="logInfo">ログ情報</param>
+        /// <param name="keywordType">キーワードのタイプ</param>
+        private void StoreNewwork(
+            LogLineEventArgs logInfo,
+            KewordTypes keywordType)
+        {
+            var log = default(CombatLog);
+
+            var targetLogLine = logInfo.logLine.Substring(15);
+            var match = keywordType == KewordTypes.NetworkAbility ?
+                ConstantKeywords.NetworkAbility.Match(targetLogLine) :
+                ConstantKeywords.NetworkAOEAbility.Match(targetLogLine);
+
+            if (match.Success)
+            {
+                var actorID = match.Groups["id"].ToString();
+                var victimID = match.Groups["victim_id"].ToString();
+                var actor = match.Groups["actor"].ToString();
+                var action = match.Groups["skill"].ToString();
+                var victim = match.Groups["victim"].ToString();
+                var victimJobName = this.ToNameToJob(victim);
+
+                if (IgnoreNewworkActions.Any(x =>
+                    string.Equals(x, action, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return;
+                }
+
+                var raw = logInfo.logLine.Substring(0, 15) + match.Value;
+                raw = raw
+                    .Replace(actorID, ActorIDPlaceholder)
+                    .Replace(victimID, PCIDPlaceholder);
+
+                if (!string.IsNullOrEmpty(victim))
+                {
+                    raw = raw.Replace(victim, victimJobName);
+                }
+
+                log = new CombatLog()
+                {
+                    TimeStamp = logInfo.detectedTime,
+                    Raw = raw,
+                    Actor = actor,
+                    Skill = action,
+                    Activity = keywordType == KewordTypes.NetworkAbility ?
+                        $"{action} Sign" :
+                        $"{action} Sign-AOE",
+                    LogType = keywordType == KewordTypes.NetworkAbility ?
+                        LogTypes.NetworkAbility :
+                        LogTypes.NetworkAOEAbility,
+                };
+
+                if (!this.ToStoreActor(log.Actor))
+                {
+                    return;
+                }
+            }
+
+            if (log != null)
+            {
+                if (this.CurrentCombatLogList.Any(x =>
+                    Math.Abs((x.TimeStamp - log.TimeStamp).TotalSeconds) <= 1.0 &&
+                    x.RawWithoutTimestamp == log.RawWithoutTimestamp))
+                {
+                    return;
+                }
+
+                log.Text = log.Activity;
+                log.SyncKeyword = log.RawWithoutTimestamp;
+
+                this.StoreLog(log);
             }
         }
 
@@ -1337,6 +1335,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 LogTypes.Added,
                 LogTypes.Marker,
                 LogTypes.Effect,
+                LogTypes.NetworkAbility,
+                LogTypes.NetworkAOEAbility,
             };
 
             var timeline = new TimelineModel();
@@ -1407,6 +1407,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
 
                         break;
+
+                    case LogTypes.NetworkAbility:
+                    case LogTypes.NetworkAOEAbility:
+                        a.Enabled = false;
+
+                        if (timeline.Activities.Any(x =>
+                            x.Time == a.Time &&
+                            x.Text == a.Text))
+                        {
+                            continue;
+                        }
+
+                        break;
                 }
 
                 timeline.Add(a);
@@ -1449,7 +1462,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 foreach (var log in combatLogs.Skip(startIndex))
                 {
                     sb.AppendLine(log.Raw
-                        .Replace("(?<pcid>.{8})", "00000000"));
+                        .Replace("(?<pcid>.{8})", "00000000")
+                        .Replace("(?<actor_id>.{8})", "00000000"));
 
                     if (sb.Length > 5012)
                     {
