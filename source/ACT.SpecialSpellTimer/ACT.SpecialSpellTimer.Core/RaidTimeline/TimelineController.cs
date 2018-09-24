@@ -371,6 +371,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             TimelineVisualNoticeModel.ClearSyncToHideList();
             TimelineImageNoticeModel.ClearSyncToHideList();
 
+            // タイムライン制御フラグを初期化する
+            TimelineExpressionsModel.Clear();
+
             // 表示設定を更新しておく
             this.RefreshActivityLineVisibility();
         }
@@ -1100,6 +1103,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     act.IsSynced = true;
                 }
 
+                act.SetExpressions();
+
                 WPFHelper.BeginInvoke(() =>
                 {
                     lock (this)
@@ -1170,6 +1175,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             return false;
                         }
                     }
+
+                    if (!tri.GetPredicateResult())
+                    {
+                        return false;
+                    }
+
+                    tri.SetExpressions();
 
                     var toNotice = tri.Clone();
                     toNotice.LogSeq = xivlog.No;
@@ -1374,6 +1386,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         return;
                     }
                 }
+
+                if (!tri.GetPredicateResult())
+                {
+                    return;
+                }
+
+                tri.SetExpressions();
 
                 psync.LastSyncTimestamp = DateTime.Now;
 
@@ -1680,6 +1699,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         x.Seq <= toDoneTop.Seq))
                 {
                     act.IsDone = true;
+                    act.SetExpressions();
                 }
             }
 

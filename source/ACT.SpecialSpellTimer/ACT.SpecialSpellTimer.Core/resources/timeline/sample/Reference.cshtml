@@ -146,7 +146,7 @@
     ファイルの識別用にリビジョンと詳細説明を記述できる。
     それぞれ設定画面で参照できる。
   -->
-  <rev>rev17</rev>
+  <rev>rev19</rev>
   <description>
     スペスペたいむの定義ファイルの説明書です。
     これ自体をタイムラインとして使用することは出来ません。
@@ -568,6 +568,72 @@
     このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
   -->
 
+
+  <!-- トリガ＋expressions -->
+  <!-- 1回目 横回転の定義 -->
+  <t text="横回転" sync="^15:[id8]:ミドガルズオルム:31C7" notice="横回転。">
+    <expressions>
+      <set name="take1_yoko" value="true" />
+    </expressions>
+  </t>
+
+  <!-- 2回目 横回転の定義 -->
+  <t text="横回転 ➔離れる" sync="^15:[id8]:ミドガルズオルム:31C9" notice="横回転、離れる。">
+    <expressions>
+      <pre name="take1_yoko" value="true" />
+    </expressions>
+  </t>
+
+  <!--
+  <expressions> タグ
+    トリガの判定を拡張する。
+    子要素で定義する pre の条件式をすべて満たしたときにトリガを実行する。
+    a タグ配下でも使用できるがその場合は set のみ動作する。
+
+  enabled :
+    bool, 任意項目, 既定値true
+    このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
+
+  <pre> タグ
+    条件式
+
+  name :
+    string, 必須項目
+    変数名
+
+  value :
+    bool, 任意項目, 既定値true
+    変数が true のとき真とするか、false のとき真とするか？
+
+    ex. <pre name="flag1" value="true"> の場合
+    if (flag1 == true)
+    {
+        トリガを実行する
+    }
+
+    ex. <pre name="flag2" value="false"> の場合
+    if (flag1 == false)
+    {
+        トリガを実行する
+    }
+
+  <set> タグ
+    変数にbool値を格納する
+
+  name :
+    string, 必須項目
+    変数名
+
+  value :
+    bool, 任意項目, 既定値true
+    変数に格納する bool値
+  
+  ttl :
+    double, 任意項目, 既定値-1 (無限大)
+    変数の有効期限、秒数で指定する。
+    ttl="30" とした場合、30秒経過後にはこの変数は false として扱われる
+  -->
+
   <!-- サブルーチン -->
   <s name="メインフェーズ">
     <a time="00:29" text="乾坤一擲" notice="次は、乾坤一擲。" />
@@ -638,6 +704,10 @@
 
 <!--
 変更履歴
+
+2018-09-24 rev19
+  * t タグの判定を拡張する expressions タグを追加した
+    判定結果をフラグとして変数に格納し後の判定条件として使用できるようにした。
 
 2018-08-08 rev17
   * v-notice にジョブアイコンを自動的に表示する job-icon 属性を追加した
