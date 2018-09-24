@@ -11,6 +11,34 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
     {
         public static SoundController.WaveFile[] WaveList => SoundController.Instance.EnumlateWave();
 
+        private void ClearSoundTestCommands()
+        {
+            this.testTTS1Command = null;
+            this.testTTS2Command = null;
+            this.testTTS3Command = null;
+            this.testTTS4Command = null;
+
+            this.testWave1Command = null;
+            this.testWave2Command = null;
+            this.testWave3Command = null;
+            this.testWave4Command = null;
+
+            foreach (var item in new[]
+            {
+                nameof(this.TestWave1Command),
+                nameof(this.TestWave2Command),
+                nameof(this.TestWave3Command),
+                nameof(this.TestWave4Command),
+                nameof(this.TestTTS1Command),
+                nameof(this.TestTTS2Command),
+                nameof(this.TestTTS3Command),
+                nameof(this.TestTTS4Command),
+            })
+            {
+                this.RaisePropertyChanged(item);
+            }
+        }
+
         private ICommand CreateTestWaveCommand(
             Func<string> getWave,
             AdvancedNoticeConfig noticeConfig)

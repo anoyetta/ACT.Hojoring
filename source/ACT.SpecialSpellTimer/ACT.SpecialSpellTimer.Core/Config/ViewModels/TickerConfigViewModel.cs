@@ -57,6 +57,8 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
                         this.isInitialize = false;
                     }
 
+                    this.ClearSoundTestCommands();
+
                     this.RaisePropertyChanged(nameof(this.IsJobFiltered));
                     this.RaisePropertyChanged(nameof(this.IsZoneFiltered));
                     this.RaisePropertyChanged(nameof(this.PreconditionSelectors));
