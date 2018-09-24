@@ -416,12 +416,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new IgnoreLogType()
             {
                 MessageType = MessageType.NetworkAbility,
-                IsIgnore = true
+                IsIgnore = false
             },
             new IgnoreLogType()
             {
                 MessageType = MessageType.NetworkAOEAbility,
-                IsIgnore = true
+                IsIgnore = false
             },
             new IgnoreLogType()
             {
