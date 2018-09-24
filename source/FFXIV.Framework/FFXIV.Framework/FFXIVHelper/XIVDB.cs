@@ -214,7 +214,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
             }
 
-            this.AppLogger.Trace($"XIVDB Area list loaded. {this.AreaFile}");
+            this.AppLogger.Trace($"XIVDB Area list loaded. {this.AreaENFile}");
         }
 
         private void LoadPlacename()
