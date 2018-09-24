@@ -159,6 +159,7 @@ namespace FFXIV.Framework.FFXIVHelper
                         this.LoadSkillList();
                         this.LoadZoneList();
                         this.MergeSkillList();
+                        this.MergeBuffList();
                     }
                 }
                 catch (Exception ex)
@@ -1445,6 +1446,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private volatile bool isMergedSkillList = false;
         private volatile bool isLoadedSkillToFFXIV = false;
+        private volatile bool isMergedBuffList = false;
 
         /// <summary>
         /// XIVDBのスキルリストとFFXIVプラグインのスキルリストをマージする
@@ -1468,7 +1470,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     }
 
                     this.isMergedSkillList = true;
-                    AppLogger.Trace("XIVDB action list merged.");
+                    AppLogger.Trace("XIVDB Action list merged.");
                 }
             }
 
@@ -1512,8 +1514,58 @@ namespace FFXIV.Framework.FFXIVHelper
             if (XIVDB.Instance.ActionList.Any())
             {
                 this.isLoadedSkillToFFXIV = true;
-                AppLogger.Trace("XIVDB action list -> FFXIV Plugin");
+                AppLogger.Trace("XIVDB Action list -> FFXIV Plugin");
             }
+        }
+
+        /// <summary>
+        /// XIVDBのBuff(Status)リストとFFXIVプラグインのBuffリストをマージする
+        /// </summary>
+        private void MergeBuffList()
+        {
+            if (this.isMergedBuffList)
+            {
+                return;
+            }
+
+            if (!XIVDB.Instance.BuffList.Any())
+            {
+                return;
+            }
+
+            if (this.plugin == null)
+            {
+                return;
+            }
+
+            var t = (this.plugin as object).GetType().Module.Assembly.GetType("FFXIV_ACT_Plugin.Resources.BuffList");
+            var obj = t.GetField(
+                "_instance",
+                BindingFlags.NonPublic | BindingFlags.Static)
+                .GetValue(null);
+
+            var list = obj.GetType().GetField(
+                "_BuffList",
+                BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(obj);
+
+            var pluginList = list as SortedDictionary<int, string>;
+
+            foreach (var entry in XIVDB.Instance.BuffList)
+            {
+                if (!pluginList.ContainsKey(entry.Key))
+                {
+                    pluginList[entry.Key] = entry.Value.Name;
+                    Debug.WriteLine(entry.ToString());
+                }
+            }
+
+            if (XIVDB.Instance.BuffList.Any())
+            {
+                AppLogger.Trace("XIVDB Status list -> FFXIV Plugin");
+            }
+
+            this.isMergedBuffList = true;
         }
 
         #endregion Resources

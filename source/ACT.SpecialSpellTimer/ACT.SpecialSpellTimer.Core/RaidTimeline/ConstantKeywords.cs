@@ -1,10 +1,118 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Windows.Media;
 using ACT.SpecialSpellTimer.Config;
 using FFXIV.Framework.Globalization;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
+    #region Enum
+
+    /// <summary>
+    /// 分析キーワードの分類
+    /// </summary>
+    public enum KewordTypes
+    {
+        Unknown = 0,
+        Record,
+        Me,
+        PartyMember,
+        Pet,
+        Cast,
+        CastStartsUsing,
+        Action,
+        Effect,
+        Marker,
+        Dialogue,
+        HPRate,
+        Added,
+        NetworkAbility,
+        NetworkAOEAbility,
+        Start,
+        End,
+        TimelineStart,
+    }
+
+    /// <summary>
+    /// 戦闘ログの種類
+    /// </summary>
+    public enum LogTypes
+    {
+        Unknown = 0,
+        CombatStart,
+        CombatEnd,
+        CastStart,
+        Action,
+        Effect,
+        Marker,
+        Added,
+        NetworkAbility,
+        NetworkAOEAbility,
+        HPRate,
+        Dialog,
+    }
+
+    public static class LogTypesExtensions
+    {
+        private static ColorConverter cc = new ColorConverter();
+
+        public static string ToText(
+            this LogTypes t)
+            => new[]
+            {
+                "UNKNOWN",
+                "Combat Start",
+                "Combat End",
+                "Starts Using",
+                "Action",
+                "Effect",
+                "Marker",
+                "Added",
+                "Ability",
+                "AOE",
+                "HP Rate",
+                "Dialog",
+            }[(int)t];
+
+        public static Color ToBackgroundColor(
+            this LogTypes t)
+            => new[]
+            {
+                (Color)cc.ConvertFrom("#FFFFFFFF"), // UNKNOWN
+                (Color)cc.ConvertFrom("#FFDC143C"), // Combat Start
+                (Color)cc.ConvertFrom("#FFDC143C"), // Combat End
+                (Color)cc.ConvertFrom("#FF4169E1"), // Starts Using
+                (Color)cc.ConvertFrom("#FF98fb98"), // Action
+                (Color)cc.ConvertFrom("#FFF0E68C"), // Effect
+                (Color)cc.ConvertFrom("#FFFFA500"), // Marker
+                (Color)cc.ConvertFrom("#00000000"), // Added
+                (Color)cc.ConvertFrom("#FFbed2c3"), // Ability
+                (Color)cc.ConvertFrom("#FFbed2c3"), // AOE
+                (Color)cc.ConvertFrom("#00000000"), // HP Rate
+                (Color)cc.ConvertFrom("#FFD8D8D8"), // Dialog
+            }[(int)t];
+
+        public static Color ToForegroundColor(
+            this LogTypes t)
+            => new[]
+            {
+                (Color)cc.ConvertFrom("#FF000000"), // UNKNOWN
+                (Color)cc.ConvertFrom("#FF000000"), // Combat Start
+                (Color)cc.ConvertFrom("#FF000000"), // Combat End
+                (Color)cc.ConvertFrom("#FF000000"), // Starts Using
+                (Color)cc.ConvertFrom("#FF000000"), // Action
+                (Color)cc.ConvertFrom("#FF000000"), // Effect
+                (Color)cc.ConvertFrom("#FF000000"), // Marker
+                (Color)cc.ConvertFrom("#FF7F7F7F"), // Added
+                (Color)cc.ConvertFrom("#FF000000"), // Ability
+                (Color)cc.ConvertFrom("#FF000000"), // AOE
+                (Color)cc.ConvertFrom("#FF000000"), // HP Rate
+                (Color)cc.ConvertFrom("#FF000000"), // Dialog
+            }[(int)t];
+    }
+
+    #endregion Enum
+
     public static class ConstantKeywords
     {
         public const string Wipeout = "wipeout";
@@ -71,6 +179,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public static Regex MarkingRegex => AnalyzeRegexes[nameof(MarkingRegex)];
 
+        public static Regex NetworkAbility => AnalyzeRegexes[nameof(NetworkAbility)];
+
+        public static Regex NetworkAOEAbility => AnalyzeRegexes[nameof(NetworkAOEAbility)];
+
         public static string CombatStartNow => AnalyzerDictionary[Settings.Default.FFXIVLocale].CombatStartNow;
 
         public static IList<AnalyzeKeyword> Keywords => AnalyzerDictionary[Settings.Default.FFXIVLocale].Keywords;
@@ -103,14 +215,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "を唱えた。", Category = KewordTypes.Cast },
             new AnalyzeKeyword() { Keyword = "の構え。", Category = KewordTypes.Cast },
             new AnalyzeKeyword() { Keyword = "starts using", Category = KewordTypes.Cast },
-            /*
-            new AnalyzeKeyword() { Keyword = "starts using", Category = KewordTypes.CastStartsUsing },
-            */
             new AnalyzeKeyword() { Keyword = "HP at", Category = KewordTypes.HPRate },
             new AnalyzeKeyword() { Keyword = "[EX] Added new combatant", Category = KewordTypes.Added },
             new AnalyzeKeyword() { Keyword = "] 1B:", Category = KewordTypes.Marker },
             new AnalyzeKeyword() { Keyword = "「マーキング」", Category = KewordTypes.Marker },
             new AnalyzeKeyword() { Keyword = "] 1A:", Category = KewordTypes.Effect },
+            new AnalyzeKeyword() { Keyword = "] 15:", Category = KewordTypes.NetworkAbility },
+            new AnalyzeKeyword() { Keyword = "] 16:", Category = KewordTypes.NetworkAOEAbility },
             new AnalyzeKeyword() { Keyword = "00:0044:", Category = KewordTypes.Dialogue },
             new AnalyzeKeyword() { Keyword = "00:0839:", Category = KewordTypes.Dialogue },
             new AnalyzeKeyword() { Keyword = ImportLog, Category = KewordTypes.Start },
@@ -176,6 +287,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 nameof(MarkingRegex),
                 CreateRegex(@"00:(?<id>....):(?<target>.+?)に「マーキング」の効果。")
             },
+            {
+                nameof(NetworkAbility),
+                CreateRegex(@"15:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+            },
+            {
+                nameof(NetworkAOEAbility),
+                CreateRegex(@"16:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+            },
         };
 
         #endregion JA
@@ -204,6 +323,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "] 1B:", Category = KewordTypes.Marker },
             new AnalyzeKeyword() { Keyword = "suffers the effect of Prey.", Category = KewordTypes.Marker },
             new AnalyzeKeyword() { Keyword = "] 1A:", Category = KewordTypes.Effect },
+            new AnalyzeKeyword() { Keyword = "] 15:", Category = KewordTypes.NetworkAbility },
+            new AnalyzeKeyword() { Keyword = "] 16:", Category = KewordTypes.NetworkAOEAbility },
             new AnalyzeKeyword() { Keyword = "00:0044:", Category = KewordTypes.Dialogue },
             new AnalyzeKeyword() { Keyword = "00:0839:", Category = KewordTypes.Dialogue },
             new AnalyzeKeyword() { Keyword = ImportLog, Category = KewordTypes.Start },
@@ -268,6 +389,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 nameof(MarkingRegex),
                 CreateRegex(@"00:(?<id>....):(?<target>.+?) suffers the effect of Prey\.$")
             },
+            {
+                nameof(NetworkAbility),
+                CreateRegex(@"15:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+            },
+            {
+                nameof(NetworkAOEAbility),
+                CreateRegex(@"16:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+            },
         };
 
         #endregion EN
@@ -294,6 +423,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "] 1B:", Category = KewordTypes.Marker },
             new AnalyzeKeyword() { Keyword = "「マーキング」", Category = KewordTypes.Marker },
             new AnalyzeKeyword() { Keyword = "] 1A:", Category = KewordTypes.Effect },
+            new AnalyzeKeyword() { Keyword = "] 15:", Category = KewordTypes.NetworkAbility },
+            new AnalyzeKeyword() { Keyword = "] 16:", Category = KewordTypes.NetworkAOEAbility },
             new AnalyzeKeyword() { Keyword = "00:0044:", Category = KewordTypes.Dialogue },
             new AnalyzeKeyword() { Keyword = "00:0839:", Category = KewordTypes.Dialogue },
             new AnalyzeKeyword() { Keyword = ImportLog, Category = KewordTypes.Start },
@@ -358,6 +489,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 nameof(MarkingRegex),
                 CreateRegex(@"00:(?<id>....):(?<target>.+?)に「マーキング」の効果。")
             },
+            {
+                nameof(NetworkAbility),
+                CreateRegex(@"15:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+            },
+            {
+                nameof(NetworkAOEAbility),
+                CreateRegex(@"16:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+            },
         };
 
         #endregion KO
@@ -386,6 +525,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "] 1B:", Category = KewordTypes.Marker },
             new AnalyzeKeyword() { Keyword = "陷入了“猎物”效果", Category = KewordTypes.Marker },
             new AnalyzeKeyword() { Keyword = "] 1A:", Category = KewordTypes.Effect },
+            new AnalyzeKeyword() { Keyword = "] 15:", Category = KewordTypes.NetworkAbility },
+            new AnalyzeKeyword() { Keyword = "] 16:", Category = KewordTypes.NetworkAOEAbility },
             new AnalyzeKeyword() { Keyword = "00:0044:", Category = KewordTypes.Dialogue },
             new AnalyzeKeyword() { Keyword = "00:0839:", Category = KewordTypes.Dialogue },
             new AnalyzeKeyword() { Keyword = ImportLog, Category = KewordTypes.Start },
@@ -449,6 +590,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 nameof(MarkingRegex),
                 CreateRegex(@"00:(?<id>....):(?<target>.+?)陷入了“猎物”效果\。$")
+            },
+            {
+                nameof(NetworkAbility),
+                CreateRegex(@"15:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+            },
+            {
+                nameof(NetworkAOEAbility),
+                CreateRegex(@"16:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
             },
         };
 
