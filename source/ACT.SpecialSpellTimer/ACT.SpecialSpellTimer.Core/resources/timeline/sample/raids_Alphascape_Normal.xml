@@ -95,7 +95,7 @@
   <!-- オメガ 右舷/左舷 start -->
   <t text="右舷 ➔左へ" sync="オメガは「右舷斉射・波動砲」の構え。" notice="左へ。">
     <expressions>
-      <pre name="take1_ugen" value="false"" />
+      <pre name="take1_ugen" value="false" />
       <set name="take1_ugen" value="true" ttl="10" />
     </expressions>
     <v-notice
@@ -116,7 +116,7 @@
 
   <t text="左舷 ➔右へ" sync="オメガは「左舷斉射・波動砲」の構え。" notice="右へ。">
     <expressions>
-      <pre name="take1_sagen" value="false"" />
+      <pre name="take1_sagen" value="false" />
       <set name="take1_sagen" value="true" ttl="10" />
     </expressions>
     <v-notice
@@ -127,7 +127,7 @@
 
   <t text="左舷 ➔左へ" sync="オメガは「左舷斉射・波動砲」の構え。" notice="左へ。">
     <expressions>
-      <pre name="take1_sagen" value="true"" />
+      <pre name="take1_sagen" value="true" />
     </expressions>
     <v-notice
       icon="Arrow7.png"
