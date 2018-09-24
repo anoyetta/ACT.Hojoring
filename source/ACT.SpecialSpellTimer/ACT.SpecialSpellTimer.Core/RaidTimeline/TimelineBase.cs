@@ -27,6 +27,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         Combatant,
         VisualNotice,
         ImageNotice,
+        Expressions,
+        ExpressionsSet,
+        ExpressionsPredicate,
     }
 
     public static class TimelineElementTypesEx
@@ -45,6 +48,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 "combatant",
                 "visualnotice",
                 "imagenotice",
+                "expresions",
+                "set",
+                "predicate",
             }[(int)t];
 
         public static TimelineElementTypes FromText(
