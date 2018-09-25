@@ -992,10 +992,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 x.Category == KewordTypes.TimelineStart ||
                 x.Category == KewordTypes.End);
 
-            // ログに対して判定する
+            // 先行して開始・終了の判定とスタートトリガの判定行う
             logs.AsParallel().ForAll(xivlog =>
             {
-                // 開始・終了を判定する
+                detectStartEnd(xivlog);
+                detectStartTrigger(xivlog);
+            });
+
+            // トリガ・アクティビティに対して判定を行う
+            detectors.AsParallel().ForAll(detector =>
+            {
+                foreach (var xivlog in logs)
+                {
+                    detect(xivlog, detector);
+                }
+            });
+
+            // 開始と終了の判定
+            void detectStartEnd(
+                XIVLog xivlog)
+            {
                 var key = (
                     from x in keywords
                     where
@@ -1023,8 +1039,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             break;
                     }
                 }
+            }
 
-                // StartTriggerがある？
+            // スタートトリガを判定する
+            void detectStartTrigger(
+                XIVLog xivlog)
+            {
                 if (!this.isRunning)
                 {
                     if (this.Model.StartTriggerRegex != null)
@@ -1036,48 +1056,38 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
                     }
                 }
+            }
 
-                // アクティビティ・トリガとマッチングする
-                foreach (var detector in detectors)
+            // トリガでログを判定する
+            void detect(
+            XIVLog xivlog,
+            TimelineBase detector)
+            {
+                switch (detector)
                 {
-                    detect(detector);
+                    case TimelineActivityModel act:
+                        detectActivity(xivlog, act);
+                        break;
+
+                    case TimelineTriggerModel tri:
+                        detectTrigger(xivlog, tri);
+                        break;
+
+                    case TimelineVisualNoticeModel vnotice:
+                        lock (vnotice)
+                        {
+                            vnotice.TryHide(xivlog.Log);
+                        }
+                        break;
+
+                    case TimelineImageNoticeModel inotice:
+                        lock (inotice)
+                        {
+                            inotice.TryHide(xivlog.Log);
+                        }
+                        break;
                 }
-
-                /*
-                detectors.AsParallel().ForAll(detector =>
-                {
-                    detect(detector);
-                });
-                */
-
-                void detect(TimelineBase detector)
-                {
-                    switch (detector)
-                    {
-                        case TimelineActivityModel act:
-                            detectActivity(xivlog, act);
-                            break;
-
-                        case TimelineTriggerModel tri:
-                            detectTrigger(xivlog, tri);
-                            break;
-
-                        case TimelineVisualNoticeModel vnotice:
-                            lock (vnotice)
-                            {
-                                vnotice.TryHide(xivlog.Log);
-                            }
-                            break;
-
-                        case TimelineImageNoticeModel inotice:
-                            lock (inotice)
-                            {
-                                inotice.TryHide(xivlog.Log);
-                            }
-                            break;
-                    }
-                }
-            });
+            }
 
             // アクティビティに対して判定する
             bool detectActivity(

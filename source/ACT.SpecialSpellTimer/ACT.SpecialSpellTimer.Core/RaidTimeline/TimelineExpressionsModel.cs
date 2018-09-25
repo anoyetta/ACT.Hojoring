@@ -123,17 +123,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             foreach (var pre in states)
             {
-                if (!Flags.ContainsKey(pre.Name))
-                {
-                    return false;
-                }
-
                 var flag = false;
 
-                var container = Flags[pre.Name];
-                if (DateTime.Now <= container.Expiration)
+                if (Flags.ContainsKey(pre.Name))
                 {
-                    flag = container.Value;
+                    var container = Flags[pre.Name];
+                    if (DateTime.Now <= container.Expiration)
+                    {
+                        flag = container.Value;
+                    }
                 }
 
                 result &= (pre.Value.GetValueOrDefault() == flag);
