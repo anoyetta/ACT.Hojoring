@@ -389,5 +389,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             return clone;
         }
+
+        public override string ToString() =>
+            !string.IsNullOrEmpty(this.SyncKeywordReplaced) ?
+            this.SyncKeywordReplaced :
+            this.SyncKeyword;
     }
 }
