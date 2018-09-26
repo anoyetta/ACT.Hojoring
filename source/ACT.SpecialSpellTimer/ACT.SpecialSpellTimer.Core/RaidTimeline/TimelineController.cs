@@ -930,8 +930,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static readonly TimelineActivityModel[] EmptyActivities = new TimelineActivityModel[0];
         private static readonly TimelineTriggerModel[] EmptyTiggers = new TimelineTriggerModel[0];
 
-        private DateTime detectTime;
-
         /// <summary>
         /// ログに対して判定する
         /// </summary>
