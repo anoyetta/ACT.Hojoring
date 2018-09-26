@@ -655,6 +655,7 @@ namespace ACT.SpecialSpellTimer.Models
         private volatile IReadOnlyList<Combatant> previousParty = new List<Combatant>();
         private volatile Combatant previousPlayer = new Combatant();
         private volatile int previousZoneID = 0;
+        private volatile string previousZoneName = string.Empty;
         private volatile bool previousInSimulation = false;
 
         public readonly object SimulationLocker = new object();
@@ -737,6 +738,7 @@ namespace ACT.SpecialSpellTimer.Models
             var r = false;
 
             var zoneID = default(int?);
+            var zoneName = string.Empty;
 
             lock (this.SimulationLocker)
             {
@@ -744,20 +746,24 @@ namespace ACT.SpecialSpellTimer.Models
                     this.SimulationZoneID != 0)
                 {
                     zoneID = this.SimulationZoneID;
+                    zoneName = "In Simulation";
                 }
                 else
                 {
                     zoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
+                    zoneName = ActGlobals.oFormActMain.CurrentZone;
                 }
             }
 
             if (zoneID != null &&
-                this.previousZoneID != zoneID)
+                this.previousZoneID != zoneID &&
+                this.previousZoneName != zoneName)
             {
                 r = true;
-            }
 
-            this.previousZoneID = zoneID ?? 0;
+                this.previousZoneID = zoneID ?? 0;
+                this.previousZoneName = zoneName;
+            }
 
             return r;
         }
@@ -878,7 +884,13 @@ namespace ACT.SpecialSpellTimer.Models
                 new List<PlaceholderContainer>();
 
             // パーティメンバのいずれを示す <pc> を登録する
-            var names = string.Join("|", this.partyList.Select(x => x.NamesRegex).ToArray());
+            var names = string.Join(
+                "|",
+                this.partyList.Select(x => x.NamesRegex).Concat(new[]
+                {
+                    @"\<pc\>",
+                    @"\[pc\]",
+                }));
             var oldValue = $"<pc>";
             var newValue = $"(?<_pc>{names})";
             newList.Add(new PlaceholderContainer(
@@ -953,7 +965,13 @@ namespace ACT.SpecialSpellTimer.Models
                 // <JOB>形式を登録する ただし、この場合は正規表現のグループ形式とする
                 // また、グループ名にはジョブの略称を設定する
                 // ex. <PLD> → (?<PLDs>Taro Paladin|Jiro Paladin)
-                names = string.Join("|", combatantsByJob.Select(x => x.NamesRegex).ToArray());
+                names = string.Join(
+                    "|",
+                    combatantsByJob.Select(x => x.NamesRegex).Concat(new[]
+                    {
+                        $@"\<{job.ID.ToString().ToUpper()}\>",
+                        $@"\[{job.ID.ToString().ToUpper()}\]",
+                    }));
                 oldValue = $"<{job.ID.ToString().ToUpper()}>";
                 newValue = $"(?<_{job.ID.ToString().ToUpper()}>{names})";
 
