@@ -930,6 +930,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static readonly TimelineActivityModel[] EmptyActivities = new TimelineActivityModel[0];
         private static readonly TimelineTriggerModel[] EmptyTiggers = new TimelineTriggerModel[0];
 
+        private DateTime detectTime;
+
         /// <summary>
         /// ログに対して判定する
         /// </summary>
@@ -1301,7 +1303,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         private void DetectPSyncTriggers()
         {
-            var detectTime = DateTime.Now;
+            var localDetectTime = DateTime.Now;
             var psyncs = default(TimelineTriggerModel[]);
 
             lock (this)
@@ -1456,7 +1458,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     foreach (var vnotice in vnotices)
                     {
-                        vnotice.Timestamp = detectTime;
+                        vnotice.Timestamp = localDetectTime;
                     }
                 }
 
@@ -1465,7 +1467,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     foreach (var inotice in inotices)
                     {
-                        inotice.Timestamp = detectTime;
+                        inotice.Timestamp = localDetectTime;
                     }
                 }
 
