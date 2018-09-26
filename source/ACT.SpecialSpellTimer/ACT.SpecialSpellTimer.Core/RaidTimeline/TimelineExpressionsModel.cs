@@ -98,8 +98,27 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     expretion = DateTime.Now.AddSeconds(set.TTL.GetValueOrDefault());
                 }
 
-                Flags[set.Name] =
-                    (set.Value.GetValueOrDefault(), expretion);
+                if (!set.IsToggle.GetValueOrDefault())
+                {
+                    Flags[set.Name] =
+                        (set.Value.GetValueOrDefault(), expretion);
+                }
+                else
+                {
+                    var current = false;
+
+                    if (Flags.ContainsKey(set.Name))
+                    {
+                        var container = Flags[set.Name];
+                        if (DateTime.Now <= container.Expiration)
+                        {
+                            current = container.Value;
+                        }
+                    }
+
+                    Flags[set.Name] =
+                        (current ^ true, expretion);
+                }
             }
         }
 
@@ -123,17 +142,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             foreach (var pre in states)
             {
-                if (!Flags.ContainsKey(pre.Name))
-                {
-                    return false;
-                }
-
                 var flag = false;
 
-                var container = Flags[pre.Name];
-                if (DateTime.Now <= container.Expiration)
+                if (Flags.ContainsKey(pre.Name))
                 {
-                    flag = container.Value;
+                    var container = Flags[pre.Name];
+                    if (DateTime.Now <= container.Expiration)
+                    {
+                        flag = container.Value;
+                    }
                 }
 
                 result &= (pre.Value.GetValueOrDefault() == flag);
@@ -170,6 +187,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             get => this.Value?.ToString();
             set => this.Value = bool.TryParse(value, out var v) ? v : (bool?)null;
+        }
+
+        private bool? isToggle = null;
+
+        [XmlIgnore]
+        public bool? IsToggle
+        {
+            get => this.isToggle;
+            set => this.SetProperty(ref this.isToggle, value);
+        }
+
+        [XmlAttribute(AttributeName = "toggle")]
+        public string IsToggleXML
+        {
+            get => this.IsToggle?.ToString();
+            set => this.IsToggle = bool.TryParse(value, out var v) ? v : (bool?)null;
         }
 
         private double? ttl = -1;
