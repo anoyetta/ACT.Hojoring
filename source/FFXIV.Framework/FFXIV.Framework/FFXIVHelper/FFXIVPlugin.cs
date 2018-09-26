@@ -612,7 +612,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public void RefreshCurrentPartyIDList()
         {
-            if ((DateTime.Now - this.currentPartyIDListTimestamp).TotalSeconds <= 3.0)
+            if ((DateTime.Now - this.currentPartyIDListTimestamp).TotalSeconds <= 1.0)
             {
                 return;
             }

@@ -930,6 +930,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static readonly TimelineActivityModel[] EmptyActivities = new TimelineActivityModel[0];
         private static readonly TimelineTriggerModel[] EmptyTiggers = new TimelineTriggerModel[0];
 
+        private DateTime detectTime;
+
         /// <summary>
         /// ログに対して判定する
         /// </summary>
@@ -937,54 +939,56 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private void DetectLogs(
             IReadOnlyList<XIVLog> logs)
         {
-            var detectTime = DateTime.Now;
-            var detectors = default(TimelineBase[]);
+            this.detectTime = DateTime.Now;
+
+            var acts = default(TimelineBase[]);
+            var tris = default(TimelineBase[]);
+            var hides = default(TimelineBase[]);
 
             lock (this)
             {
-                detectors = (
-                    from x in
-                        // グローバルトリガ
-                        TimelineManager.Instance.GlobalTriggers.Cast<TimelineBase>()
+                // 現在判定期間中のアクティビティ
+                acts = this.Model.IsGlobalZone ? EmptyActivities : (
+                        from x in this.ActivityLine
+                        where
+                        x.Enabled.GetValueOrDefault() &&
+                        !string.IsNullOrEmpty(x.SyncKeyword) &&
+                        x.SyncRegex != null &&
+                        this.CurrentTime >= x.Time + TimeSpan.FromSeconds(x.SyncOffsetStart.Value) &&
+                        this.CurrentTime <= x.Time + TimeSpan.FromSeconds(x.SyncOffsetEnd.Value) &&
+                        !x.IsSynced
+                        select
+                        x).ToArray();
 
-                        // ToHideトリガ
-                        .Concat(TimelineVisualNoticeModel.GetSyncToHideList())
-                        .Concat(TimelineImageNoticeModel.GetSyncToHideList())
+                tris = mergeDetectors(
+                    // グローバルトリガ
+                    TimelineManager.Instance.GlobalTriggers.Cast<TimelineBase>(),
 
-                        // タイムラインスコープのトリガ
-                        .Concat(this.Model.IsGlobalZone ? EmptyTiggers : (
-                            from x in this.Model.Triggers
-                            where
-                            x.Enabled.GetValueOrDefault() &&
-                            !string.IsNullOrEmpty(x.SyncKeyword) &&
-                            x.SyncRegex != null
-                            select
-                            x))
+                    // タイムラインスコープのトリガ
+                    (this.Model.IsGlobalZone ? EmptyTiggers : (
+                        from x in this.Model.Triggers
+                        where
+                        x.Enabled.GetValueOrDefault() &&
+                        !string.IsNullOrEmpty(x.SyncKeyword) &&
+                        x.SyncRegex != null
+                        select
+                        x)),
 
-                        // 判定期間中のアクティビティ
-                        .Concat(this.Model.IsGlobalZone ? EmptyActivities : (
-                            from x in this.ActivityLine
-                            where
-                            x.Enabled.GetValueOrDefault() &&
-                            !string.IsNullOrEmpty(x.SyncKeyword) &&
-                            x.SyncRegex != null &&
-                            this.CurrentTime >= x.Time + TimeSpan.FromSeconds(x.SyncOffsetStart.Value) &&
-                            this.CurrentTime <= x.Time + TimeSpan.FromSeconds(x.SyncOffsetEnd.Value) &&
-                            !x.IsSynced
-                            select
-                            x))
+                    // カレントサブルーチンスコープのトリガ
+                    (this.CurrentSubroutine == null ? EmptyTiggers : (
+                        from x in this.CurrentSubroutine.Triggers
+                        where
+                        x.Enabled.GetValueOrDefault() &&
+                        !string.IsNullOrEmpty(x.SyncKeyword) &&
+                        x.SyncRegex != null
+                        select
+                        x))).ToArray();
 
-                        // カレントサブルーチンのトリガを登録する
-                        .Concat(this.CurrentSubroutine == null ? EmptyTiggers : (
-                            from x in this.CurrentSubroutine.Triggers
-                            where
-                            x.Enabled.GetValueOrDefault() &&
-                            !string.IsNullOrEmpty(x.SyncKeyword) &&
-                            x.SyncRegex != null
-                            select
-                            x))
-                    select
-                    x).ToArray();
+                // 非表示判定対象のイメージ通知トリガ
+                hides = mergeDetectors(
+                    TimelineVisualNoticeModel.GetSyncToHideList(),
+                    TimelineImageNoticeModel.GetSyncToHideList())
+                    .ToArray();
             }
 
             // 開始・終了判定のキーワードを取得する
@@ -992,265 +996,304 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 x.Category == KewordTypes.TimelineStart ||
                 x.Category == KewordTypes.End);
 
-            // 先行して開始・終了の判定とスタートトリガの判定行う
-            logs.AsParallel().ForAll(xivlog =>
-            {
-                detectStartEnd(xivlog);
-                detectStartTrigger(xivlog);
-            });
-
-            // トリガ・アクティビティに対して判定を行う
-            detectors.AsParallel().ForAll(detector =>
-            {
-                foreach (var xivlog in logs)
+            Task.WaitAll(
+                // 開始・終了の判定とスタートトリガの判定行う
+                Task.Run(() =>
                 {
-                    detect(xivlog, detector);
-                }
-            });
-
-            // 開始と終了の判定
-            void detectStartEnd(
-                XIVLog xivlog)
-            {
-                var key = (
-                    from x in keywords
-                    where
-                    xivlog.Log.ContainsIgnoreCase(x.Keyword)
-                    select
-                    x).FirstOrDefault();
-
-                if (key != null)
-                {
-                    switch (key.Category)
+                    logs.AsParallel().ForAll(xivlog =>
                     {
-                        case KewordTypes.TimelineStart:
-                            if (this.Model.StartTriggerRegex == null)
-                            {
-                                WPFHelper.BeginInvoke(() =>
-                                {
-                                    Thread.Sleep(TimeSpan.FromSeconds(4.8));
-                                    this.StartActivityLine();
-                                });
-                            }
-                            break;
+                        this.DetectStartEnd(xivlog, keywords);
+                        this.DetectStartTrigger(xivlog);
+                    });
+                }),
 
-                        case KewordTypes.End:
-                            WPFHelper.BeginInvoke(this.EndActivityLine);
-                            break;
-                    }
-                }
-            }
-
-            // スタートトリガを判定する
-            void detectStartTrigger(
-                XIVLog xivlog)
-            {
-                if (!this.isRunning)
+                // アクティビティに対する判定
+                Task.Run(() =>
                 {
-                    if (this.Model.StartTriggerRegex != null)
+                    foreach (var xivlog in logs)
                     {
-                        var match = this.Model.StartTriggerRegex.Match(xivlog.Log);
-                        if (match.Success)
+                        foreach (var act in acts)
                         {
-                            WPFHelper.BeginInvoke(this.StartActivityLine);
+                            this.Detect(xivlog, act);
                         }
                     }
+                }),
+
+                // トリガに対する判定
+                Task.Run(() =>
+                {
+                    foreach (var xivlog in logs)
+                    {
+                        foreach (var tri in tris)
+                        {
+                            this.Detect(xivlog, tri);
+                        }
+                    }
+                }),
+
+                // 非表示判定対象のイメージ通知トリガ
+                Task.Run(() =>
+                {
+                    foreach (var xivlog in logs)
+                    {
+                        foreach (var hide in hides)
+                        {
+                            this.Detect(xivlog, hide);
+                        }
+                    }
+                }));
+
+            // 判定オブジェクトをマージするためのメソッド
+            IEnumerable<TimelineBase> mergeDetectors(
+                params IEnumerable<TimelineBase>[] detectorsSets)
+            {
+                foreach (var detectors in detectorsSets)
+                {
+                    foreach (var detector in detectors)
+                    {
+                        yield return detector;
+                    }
                 }
             }
+        }
 
-            // トリガでログを判定する
-            void detect(
+        // 開始と終了の判定
+        private void DetectStartEnd(
+            XIVLog xivlog,
+            IEnumerable<AnalyzeKeyword> keywords)
+        {
+            var key = (
+                from x in keywords
+                where
+                xivlog.Log.ContainsIgnoreCase(x.Keyword)
+                select
+                x).FirstOrDefault();
+
+            if (key != null)
+            {
+                switch (key.Category)
+                {
+                    case KewordTypes.TimelineStart:
+                        if (this.Model.StartTriggerRegex == null)
+                        {
+                            WPFHelper.BeginInvoke(() =>
+                            {
+                                Thread.Sleep(TimeSpan.FromSeconds(4.8));
+                                this.StartActivityLine();
+                            });
+                        }
+                        break;
+
+                    case KewordTypes.End:
+                        WPFHelper.BeginInvoke(this.EndActivityLine);
+                        break;
+                }
+            }
+        }
+
+        // スタートトリガを判定する
+        private void DetectStartTrigger(
+            XIVLog xivlog)
+        {
+            if (!this.isRunning)
+            {
+                if (this.Model.StartTriggerRegex != null)
+                {
+                    var match = this.Model.StartTriggerRegex.Match(xivlog.Log);
+                    if (match.Success)
+                    {
+                        WPFHelper.BeginInvoke(this.StartActivityLine);
+                    }
+                }
+            }
+        }
+
+        // トリガでログを判定する
+        private void Detect(
             XIVLog xivlog,
             TimelineBase detector)
+        {
+            switch (detector)
             {
-                switch (detector)
-                {
-                    case TimelineActivityModel act:
-                        detectActivity(xivlog, act);
-                        break;
+                case TimelineActivityModel act:
+                    this.DetectActivity(xivlog, act);
+                    break;
 
-                    case TimelineTriggerModel tri:
-                        detectTrigger(xivlog, tri);
-                        break;
+                case TimelineTriggerModel tri:
+                    this.DetectTrigger(xivlog, tri);
+                    break;
 
-                    case TimelineVisualNoticeModel vnotice:
-                        lock (vnotice)
-                        {
-                            vnotice.TryHide(xivlog.Log);
-                        }
-                        break;
+                case TimelineVisualNoticeModel vnotice:
+                    vnotice.TryHide(xivlog.Log);
+                    break;
 
-                    case TimelineImageNoticeModel inotice:
-                        lock (inotice)
-                        {
-                            inotice.TryHide(xivlog.Log);
-                        }
-                        break;
-                }
+                case TimelineImageNoticeModel inotice:
+                    inotice.TryHide(xivlog.Log);
+                    break;
             }
+        }
 
-            // アクティビティに対して判定する
-            bool detectActivity(
-                XIVLog xivlog,
-                TimelineActivityModel act)
+        // アクティビティに対して判定する
+        private bool DetectActivity(
+            XIVLog xivlog,
+            TimelineActivityModel act)
+        {
+            var match = default(Match);
+
+            lock (act)
             {
-                var match = default(Match);
-
-                lock (act)
-                {
-                    if (act.IsSynced)
-                    {
-                        return false;
-                    }
-
-                    match = act.TryMatch(xivlog.Log);
-                    if (match == null ||
-                        !match.Success)
-                    {
-                        return false;
-                    }
-
-                    act.IsSynced = true;
-                }
-
-                act.SetExpressions();
-
-                WPFHelper.BeginInvoke(() =>
-                {
-                    lock (this)
-                    {
-                        foreach (var item in this.ActivityLine.Where(x =>
-                            x.IsDone &&
-                            x.Seq >= act.Seq))
-                        {
-                            // 表示の制御に関するフラグを初期化する
-                            item.IsActive = false;
-                            item.IsDone = false;
-
-                            // まだ通知時間が到来していないことになるアクティビティの通知済みフラグを落とす
-                            if (item.Time.Add(TimeSpan.FromSeconds(item.NoticeOffset.GetValueOrDefault()))
-                                > act.Time)
-                            {
-                                item.IsNotified = false;
-                            }
-                        }
-
-                        foreach (var item in ActivityLine.Where(x =>
-                            !x.IsDone &&
-                            x.Seq < act.Seq))
-                        {
-                            item.IsDone = true;
-                            item.IsNotified = true;
-                        }
-
-                        this.CurrentTime = act.Time;
-
-                        // ログを発生させる
-                        RaiseLog(act);
-                    }
-                });
-
-                return true;
-            }
-
-            // トリガに対して判定する
-            bool detectTrigger(
-                XIVLog xivlog,
-                TimelineTriggerModel tri)
-            {
-                // P-Syncならば対象外なので抜ける
-                if (tri.IsPositionSyncAvailable)
+                if (act.IsSynced)
                 {
                     return false;
                 }
 
-                lock (tri)
+                match = act.TryMatch(xivlog.Log);
+                if (match == null ||
+                    !match.Success)
                 {
-                    var match = tri.TryMatch(xivlog.Log);
-                    if (match == null ||
-                        !match.Success)
-                    {
-                        return false;
-                    }
-
-                    tri.TextReplaced = match.Result(tri.Text ?? string.Empty);
-                    tri.NoticeReplaced = match.Result(tri.Notice ?? string.Empty);
-
-                    tri.MatchedCounter++;
-
-                    if (tri.SyncCount.Value != 0)
-                    {
-                        if (tri.SyncCount.Value != tri.MatchedCounter)
-                        {
-                            return false;
-                        }
-                    }
-
-                    if (!tri.GetPredicateResult())
-                    {
-                        return false;
-                    }
-
-                    tri.SetExpressions();
-
-                    var toNotice = tri.Clone();
-                    toNotice.LogSeq = xivlog.No;
-
-                    var vnotices = toNotice.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
-                    if (vnotices.Any())
-                    {
-                        foreach (var vnotice in vnotices)
-                        {
-                            vnotice.Timestamp = detectTime;
-
-                            // 自動ジョブアイコンをセットする
-                            vnotice.SetJobIcon();
-                        }
-                    }
-
-                    var inotices = toNotice.ImageNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
-                    if (inotices.Any())
-                    {
-                        foreach (var inotice in inotices)
-                        {
-                            inotice.Timestamp = detectTime;
-                        }
-                    }
-
-                    NotifyQueue.Enqueue(toNotice);
+                    return false;
                 }
 
-                WPFHelper.BeginInvoke(() =>
-                {
-                    lock (this)
-                    {
-                        var active = (
-                            from x in this.ActivityLine
-                            where
-                            x.IsActive &&
-                            !x.IsDone &&
-                            x.Time <= this.CurrentTime
-                            orderby
-                            x.Seq descending
-                            select
-                            x).FirstOrDefault();
-
-                        // jumpを判定する
-                        if (!this.CallActivity(active, tri.CallTarget))
-                        {
-                            if (!this.GoToActivity(active, tri.GoToDestination))
-                            {
-                                this.LoadSubs(tri);
-                            }
-                        }
-
-                        // ログを発生させる
-                        RaiseLog(tri);
-                    }
-                });
-
-                return true;
+                act.IsSynced = true;
             }
+
+            act.SetExpressions();
+
+            WPFHelper.BeginInvoke(() =>
+            {
+                lock (this)
+                {
+                    foreach (var item in this.ActivityLine.Where(x =>
+                        x.IsDone &&
+                        x.Seq >= act.Seq))
+                    {
+                        // 表示の制御に関するフラグを初期化する
+                        item.IsActive = false;
+                        item.IsDone = false;
+
+                        // まだ通知時間が到来していないことになるアクティビティの通知済みフラグを落とす
+                        if (item.Time.Add(TimeSpan.FromSeconds(item.NoticeOffset.GetValueOrDefault()))
+                            > act.Time)
+                        {
+                            item.IsNotified = false;
+                        }
+                    }
+
+                    foreach (var item in ActivityLine.Where(x =>
+                        !x.IsDone &&
+                        x.Seq < act.Seq))
+                    {
+                        item.IsDone = true;
+                        item.IsNotified = true;
+                    }
+
+                    this.CurrentTime = act.Time;
+
+                    // ログを発生させる
+                    RaiseLog(act);
+                }
+            });
+
+            return true;
+        }
+
+        // トリガに対して判定する
+        private bool DetectTrigger(
+            XIVLog xivlog,
+            TimelineTriggerModel tri)
+        {
+            // P-Syncならば対象外なので抜ける
+            if (tri.IsPositionSyncAvailable)
+            {
+                return false;
+            }
+
+            lock (tri)
+            {
+                var match = tri.TryMatch(xivlog.Log);
+                if (match == null ||
+                    !match.Success)
+                {
+                    return false;
+                }
+
+                tri.TextReplaced = match.Result(tri.Text ?? string.Empty);
+                tri.NoticeReplaced = match.Result(tri.Notice ?? string.Empty);
+
+                tri.MatchedCounter++;
+
+                if (tri.SyncCount.Value != 0)
+                {
+                    if (tri.SyncCount.Value != tri.MatchedCounter)
+                    {
+                        return false;
+                    }
+                }
+
+                if (!tri.GetPredicateResult())
+                {
+                    return false;
+                }
+
+                tri.SetExpressions();
+
+                var toNotice = tri.Clone();
+                toNotice.LogSeq = xivlog.No;
+
+                var vnotices = toNotice.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
+                if (vnotices.Any())
+                {
+                    foreach (var vnotice in vnotices)
+                    {
+                        vnotice.Timestamp = this.detectTime;
+
+                        // 自動ジョブアイコンをセットする
+                        vnotice.SetJobIcon();
+                    }
+                }
+
+                var inotices = toNotice.ImageNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
+                if (inotices.Any())
+                {
+                    foreach (var inotice in inotices)
+                    {
+                        inotice.Timestamp = this.detectTime;
+                    }
+                }
+
+                NotifyQueue.Enqueue(toNotice);
+            }
+
+            WPFHelper.BeginInvoke(() =>
+            {
+                lock (this)
+                {
+                    var active = (
+                        from x in this.ActivityLine
+                        where
+                        x.IsActive &&
+                        !x.IsDone &&
+                        x.Time <= this.CurrentTime
+                        orderby
+                        x.Seq descending
+                        select
+                        x).FirstOrDefault();
+
+                    // jumpを判定する
+                    if (!this.CallActivity(active, tri.CallTarget))
+                    {
+                        if (!this.GoToActivity(active, tri.GoToDestination))
+                        {
+                            this.LoadSubs(tri);
+                        }
+                    }
+
+                    // ログを発生させる
+                    RaiseLog(tri);
+                }
+            });
+
+            return true;
         }
 
         /// <summary>
@@ -1258,7 +1301,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         private void DetectPSyncTriggers()
         {
-            var detectTime = DateTime.Now;
+            var localDetectTime = DateTime.Now;
             var psyncs = default(TimelineTriggerModel[]);
 
             lock (this)
@@ -1413,7 +1456,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     foreach (var vnotice in vnotices)
                     {
-                        vnotice.Timestamp = detectTime;
+                        vnotice.Timestamp = localDetectTime;
                     }
                 }
 
@@ -1422,7 +1465,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     foreach (var inotice in inotices)
                     {
-                        inotice.Timestamp = detectTime;
+                        inotice.Timestamp = localDetectTime;
                     }
                 }
 
