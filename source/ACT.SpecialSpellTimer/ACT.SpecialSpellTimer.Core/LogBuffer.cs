@@ -543,22 +543,8 @@ namespace ACT.SpecialSpellTimer
                     continue;
                 }
 
-                // エフェクトに付与されるツールチップ文字を除去する
-                if (Settings.Default.RemoveTooltipSymbols)
-                {
-                    // 4文字分のツールチップ文字を除去する
-                    int index;
-                    if ((index = logLine.IndexOf(
-                        TooltipSuffix,
-                        0,
-                        StringComparison.Ordinal)) > -1)
-                    {
-                        logLine = logLine.Remove(index - 1, 4);
-                    }
-
-                    // 残ったReplacementCharを除去する
-                    logLine = logLine.Replace(TooltipReplacementChar, string.Empty);
-                }
+                // ツールチップシンボルを除去する
+                logLine = RemoveTooltipSynbols(logLine);
 
                 // ペットジョブで召喚をしたか？
                 if (!summoned &&
@@ -630,6 +616,42 @@ namespace ACT.SpecialSpellTimer
 
                 return r;
             }
+        }
+
+        /// <summary>
+        /// ツールチップシンボルを除去する
+        /// </summary>
+        /// <param name="logLine"></param>
+        /// <returns>編集後のLogLine</returns>
+        public static string RemoveTooltipSynbols(
+            string logLine)
+        {
+            var result = logLine;
+
+            // エフェクトに付与されるツールチップ文字を除去する
+            if (Settings.Default.RemoveTooltipSymbols)
+            {
+                // 4文字分のツールチップ文字を除去する
+                int index;
+                if ((index = result.IndexOf(
+                    TooltipSuffix,
+                    0,
+                    StringComparison.Ordinal)) > -1)
+                {
+                    const int removeLength = 4;
+                    var startIndex = index - 1;
+
+                    if (startIndex >= 0)
+                    {
+                        result = result.Remove(startIndex, removeLength);
+                    }
+                }
+
+                // 残ったReplacementCharを除去する
+                result = result.Replace(TooltipReplacementChar, string.Empty);
+            }
+
+            return result;
         }
 
         #endregion ログ処理

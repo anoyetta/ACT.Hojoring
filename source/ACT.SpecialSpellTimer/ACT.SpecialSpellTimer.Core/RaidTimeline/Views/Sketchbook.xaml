@@ -38,5 +38,14 @@
         HorizontalAlignment="Center"
         VerticalAlignment="Center" />
     </Grid>
+
+    <Grid>
+      <StackPanel>
+        <TextBlock Foreground="White" Text="あちょー1" />
+        <TextBlock Foreground="White" Text="あちょー2" />
+        <TextBlock Foreground="White" Text="あちょー3" />
+        <TextBlock Foreground="White" Text="あちょー4" />
+      </StackPanel>
+    </Grid>
   </Grid>
 </Window>
