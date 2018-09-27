@@ -74,6 +74,19 @@ namespace ACT.SpecialSpellTimer
         public CheckBox SwitchVisibleButton { get; set; }
 
         /// <summary>
+        /// すべての設定を保存する
+        /// </summary>
+        public async void SaveSettingsAsync() => await Task.Run(() =>
+        {
+            SpellPanelTable.Instance.Save();
+            SpellTable.Instance.Save();
+            TickerTable.Instance.Save();
+            TagTable.Instance.Save();
+            TimelineSettings.Save();
+            Settings.Default.Save();
+        });
+
+        /// <summary>
         /// 後片付けをする
         /// </summary>
         public void DeInitPluginCore()

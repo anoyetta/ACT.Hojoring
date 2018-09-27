@@ -120,6 +120,9 @@ namespace ACT.SpecialSpellTimer.Models
                         // インスタンススペルを消去する
                         SpellTable.Instance.RemoveInstanceSpellsAll();
 
+                        // 設定を保存する
+                        PluginCore.Instance?.SaveSettingsAsync();
+
                         var zone = ActGlobals.oFormActMain.CurrentZone;
                         var zoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
                         Logger.Write($"zone changed. zone={zone}, zone_id={zoneID}");
@@ -136,8 +139,8 @@ namespace ACT.SpecialSpellTimer.Models
                     // 定期的に自分の座標をダンプする
                     if ((DateTime.Now - this.lastDumpPositionTimestamp).TotalSeconds >= 60.0)
                     {
-                        LogBuffer.DumpPosition(true);
                         this.lastDumpPositionTimestamp = DateTime.Now;
+                        LogBuffer.DumpPosition(true);
                     }
                 }
             }
