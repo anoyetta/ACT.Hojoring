@@ -359,36 +359,60 @@
         <StackPanel>
           <CheckBox Margin="0 15 0 0" Content="{DynamicResource SpellPanel_EnabledAdvancedLayouyt}" IsChecked="{Binding Path=Model.EnabledAdvancedLayout, Mode=TwoWay}" />
 
-          <StackPanel
-            Visibility="{Binding Path=Model.EnabledAdvancedLayout, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+          <StackPanel>
             <CheckBox Margin="0 20 0 0" Content="{DynamicResource SpellPanel_AdvancedDesignMode}" IsChecked="{Binding Path=Model.IsAdvancedDesignMode, Mode=TwoWay}" />
 
             <!-- パネルのレイアウト -->
             <Label Margin="0 20 0 0" Content="{DynamicResource SpellPanel_PanelLauout}" FontSize="18" FontWeight="Bold" />
-            <StackPanel Margin="10 5 0 0">
-              <!-- Location -->
-              <Label Content="{DynamicResource Common_Location}" />
-              <StackPanel Orientation="Horizontal">
-                <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
-                <TextBox TextAlignment="Right" Text="{Binding Model.Left, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
-                <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
-                <TextBox TextAlignment="Right" Text="{Binding Model.Top, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+            <StackPanel Margin="10 5 0 0" Orientation="Horizontal">
+              <StackPanel>
+                <!-- Location -->
+                <Label Content="{DynamicResource Common_Location}" />
+                <StackPanel Orientation="Horizontal">
+                  <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
+                  <xctk:DoubleUpDown Value="{Binding Model.Left, Mode=TwoWay}" FormatString="N0" Increment="1" Width="75" />
+                  <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
+                  <xctk:DoubleUpDown Value="{Binding Model.Top, Mode=TwoWay}" FormatString="N0" Increment="1" Width="75" />
+                </StackPanel>
+
+                <!-- Size -->
+                <Label Margin="0 15 0 0" Content="{DynamicResource Common_Size}" />
+                <StackPanel Orientation="Horizontal">
+                  <Label Margin="0 0 5 0" Content="W" VerticalAlignment="Center" />
+                  <xctk:DoubleUpDown Value="{Binding Model.Width, Mode=TwoWay}" FormatString="N0" Increment="1" Width="75" />
+                  <Label Margin="10 0 5 0" Content="H" VerticalAlignment="Center" />
+                  <xctk:DoubleUpDown Value="{Binding Model.Height, Mode=TwoWay}"  FormatString="N0" Increment="1" Width="75" />
+                </StackPanel>
+
+                <Label Margin="0 15 0 0" Content="Padding" />
+                <TextBox HorizontalAlignment="Left" Width="100" Text="{Binding Model.GridPaddingString, Mode=TwoWay}" />
+
+                <TextBlock Margin="0 15 0 0" HorizontalAlignment="Left">
+                  <Hyperlink Command="{Binding ChangeAdvancedBackgroundColorCommand}">
+                    <TextBlock Text="{DynamicResource SpellPanel_BackgroundColor}" />
+                  </Hyperlink>
+                </TextBlock>
               </StackPanel>
 
-              <!-- Size -->
-              <Label Margin="0 15 0 0" Content="{DynamicResource Common_Size}" />
-              <StackPanel Orientation="Horizontal">
-                <Label Margin="0 0 5 0" Content="W" VerticalAlignment="Center" />
-                <TextBox TextAlignment="Right" Text="{Binding Model.Width, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
-                <Label Margin="10 0 5 0" Content="H" VerticalAlignment="Center" />
-                <TextBox TextAlignment="Right" Text="{Binding Model.Height, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+              <StackPanel Margin="40 0 0 0">
+                <Label Content="Vertical Alignment" />
+                <ComboBox ItemsSource="{Binding Model.VerticalAlignments, Mode=OneWay}" SelectedItem="{Binding Model.GridVerticalAlignment, Mode=TwoWay}" Width="180" />
+                <Label Content="Horizontal Alignment" Margin="0 15 0 0" />
+                <ComboBox ItemsSource="{Binding Model.HorizontalAlignments, Mode=OneWay}" SelectedItem="{Binding Model.GridHorizontalAlignment, Mode=TwoWay}" Width="180" />
+                <CheckBox Margin="0 15 0 0" IsChecked="{Binding Model.IsStackLayout, Mode=TwoWay}" VerticalContentAlignment="Center">
+                  <CheckBox.Content>
+                    <StackPanel>
+                      <TextBlock Text="Stacked Layout" />
+                      <TextBlock FontSize="12" Text="*Refresh view required" />
+                    </StackPanel>
+                  </CheckBox.Content>
+                </CheckBox>
               </StackPanel>
 
-              <TextBlock Margin="0 15 0 0" HorizontalAlignment="Left">
-                <Hyperlink Command="{Binding ChangeAdvancedBackgroundColorCommand}">
-                  <TextBlock Text="{DynamicResource SpellPanel_BackgroundColor}" />
-                </Hyperlink>
-              </TextBlock>
+              <StackPanel Margin="40 0 0 0">
+                <Label Content="Orientation" />
+                <ComboBox ItemsSource="{Binding Model.Orientations, Mode=OneWay}" SelectedItem="{Binding Model.StackPanelOrientation, Mode=TwoWay}" Width="180" />
+              </StackPanel>
             </StackPanel>
             <!-- パネルのレイアウト end -->
 
@@ -402,10 +426,12 @@
                 <DataTemplate DataType="{x:Type triggerModel:Spell}">
                   <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
                     <TextBlock Text="{Binding Path=SpellTitle, Mode=OneWay}" Width="340" Margin="0 0 20 0" />
-                    <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
-                    <xctk:DoubleUpDown Value="{Binding Path=Left, Mode=TwoWay}" Width="80" />
-                    <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
-                    <xctk:DoubleUpDown Value="{Binding Path=Top, Mode=TwoWay}" Width="80" />
+                    <DockPanel>
+                      <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
+                      <xctk:DoubleUpDown Value="{Binding Path=Left, Mode=TwoWay}" Width="80" />
+                      <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
+                      <xctk:DoubleUpDown Value="{Binding Path=Top, Mode=TwoWay}" Width="80" />
+                    </DockPanel>
                   </StackPanel>
                 </DataTemplate>
               </ItemsControl.ItemTemplate>

@@ -587,6 +587,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.Combatant, "Y", TimelineCombatantModel.InvalidPosition),
             NewDefault(TimelineElementTypes.Combatant, "Z", TimelineCombatantModel.InvalidPosition),
             NewDefault(TimelineElementTypes.Combatant, "Tolerance", 0.01f),
+
+            // Expressions
+            NewDefault(TimelineElementTypes.Expressions, "Enabled", true),
+            NewDefault(TimelineElementTypes.ExpressionsSet, "Enabled", true),
+            NewDefault(TimelineElementTypes.ExpressionsSet, "Value", true),
+            NewDefault(TimelineElementTypes.ExpressionsSet, "IsToggle", false),
+            NewDefault(TimelineElementTypes.ExpressionsSet, "TTL", -1),
+            NewDefault(TimelineElementTypes.ExpressionsPredicate, "Enabled", true),
+            NewDefault(TimelineElementTypes.ExpressionsPredicate, "Value", true),
         };
 
         private void SetDefaultValues()

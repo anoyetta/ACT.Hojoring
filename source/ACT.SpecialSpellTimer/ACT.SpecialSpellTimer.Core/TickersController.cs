@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.Utility;
@@ -319,6 +320,7 @@ namespace ACT.SpecialSpellTimer
                 var sw = Stopwatch.StartNew();
 #endif
                 refreshTelop(telop);
+                Thread.Yield();
 #if DEBUG
                 sw.Stop();
                 if (telop.IsDesignMode &&
