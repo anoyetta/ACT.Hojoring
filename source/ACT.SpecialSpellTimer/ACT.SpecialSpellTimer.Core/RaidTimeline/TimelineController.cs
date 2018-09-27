@@ -904,18 +904,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
 
                     // エフェクトに付与されるツールチップ文字を除去する
-                    // 4文字分のツールチップ文字を除去する
-                    int index;
-                    if ((index = logLine.IndexOf(
-                        LogBuffer.TooltipSuffix,
-                        0,
-                        StringComparison.Ordinal)) > -1)
-                    {
-                        logLine = logLine.Remove(index - 1, 4);
-                    }
-
-                    // 残ったReplacementCharを除去する
-                    logLine = logLine.Replace(LogBuffer.TooltipReplacementChar, string.Empty);
+                    logLine = LogBuffer.RemoveTooltipSynbols(logLine);
 
                     list.Add(new XIVLog(logLine)
                     {
