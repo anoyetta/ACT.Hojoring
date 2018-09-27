@@ -982,7 +982,9 @@ namespace FFXIV.Framework.FFXIVHelper
         #region Get Misc
 
         public int GetCurrentZoneID() =>
-            this.pluginScancombat?.GetCurrentZoneId() ?? 0;
+            this.IsAvailable ?
+            (this.pluginScancombat?.GetCurrentZoneId() ?? 0) :
+            0;
 
         /// <summary>
         /// 文中に含まれるパーティメンバの名前を設定した形式に置換する
