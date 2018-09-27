@@ -76,7 +76,7 @@ namespace ACT.SpecialSpellTimer
         /// <summary>
         /// すべての設定を保存する
         /// </summary>
-        public async void SaveSettingsAsync() => await Task.Run(() =>
+        public async void SaveSettingsAsync() => await WPFHelper.InvokeAsync(() =>
         {
             SpellPanelTable.Instance.Save();
             SpellTable.Instance.Save();
@@ -84,7 +84,8 @@ namespace ACT.SpecialSpellTimer
             TagTable.Instance.Save();
             TimelineSettings.Save();
             Settings.Default.Save();
-        });
+        },
+        DispatcherPriority.Background);
 
         /// <summary>
         /// 後片付けをする
