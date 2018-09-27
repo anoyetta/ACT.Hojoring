@@ -184,6 +184,15 @@ namespace ACT.SpecialSpellTimer.Config.Views
             this.reloadTimelineFolderCommand ?? (this.reloadTimelineFolderCommand = new DelegateCommand(() =>
                 this.LoadTimelineModels()));
 
+        private ICommand getMoreSampleCommand;
+
+        public ICommand GetMoreSampleCommand =>
+            this.getMoreSampleCommand ?? (this.getMoreSampleCommand = new DelegateCommand(() =>
+            {
+                const string Url = @"https://drive.google.com/drive/folders/1ZW_unF1dKZk7A2HrUGkbm4aQwvzuEQcz?usp=sharing";
+                Process.Start(new ProcessStartInfo(Url));
+            }));
+
         private ICommand startTimelineCommand;
 
         public ICommand StartTimelineCommand =>
