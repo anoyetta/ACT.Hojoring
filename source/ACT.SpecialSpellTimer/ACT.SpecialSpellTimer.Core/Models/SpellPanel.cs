@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml.Serialization;
@@ -177,7 +179,7 @@ namespace ACT.SpecialSpellTimer.Models
             set => this.SetProperty(ref this.height, Math.Round(value));
         }
 
-        private Color backgroudColor = Color.FromArgb(0x01, 0, 0, 0);
+        private Color backgroudColor = Color.FromArgb(0xA0, 0, 0, 0);
 
         public Color BackgroundColor
         {
@@ -197,6 +199,70 @@ namespace ACT.SpecialSpellTimer.Models
         [XmlIgnore]
         public SolidColorBrush BackgroundBrush =>
             this.backgroundBrush ?? (this.backgroundBrush = new SolidColorBrush(this.BackgroundColor));
+
+        private static readonly ThicknessConverter thicknessConverter = new ThicknessConverter();
+
+        public Thickness GridPadding =>
+            (Thickness)thicknessConverter.ConvertFromString(this.GridPaddingString);
+
+        private string gridPaddingString = "0 0 0 0";
+
+        [XmlElement(ElementName = "GridPadding")]
+        public string GridPaddingString
+        {
+            get => this.gridPaddingString.ToString();
+            set
+            {
+                if (this.SetProperty(ref this.gridPaddingString, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.GridPadding));
+                }
+            }
+        }
+
+        private VerticalAlignment gridVerticalAlignment = VerticalAlignment.Stretch;
+
+        public VerticalAlignment GridVerticalAlignment
+        {
+            get => this.gridVerticalAlignment;
+            set => this.SetProperty(ref this.gridVerticalAlignment, value);
+        }
+
+        private HorizontalAlignment gridHorizontalAlignment = HorizontalAlignment.Stretch;
+
+        public HorizontalAlignment GridHorizontalAlignment
+        {
+            get => this.gridHorizontalAlignment;
+            set => this.SetProperty(ref this.gridHorizontalAlignment, value);
+        }
+
+        private bool isStackLayout = false;
+
+        public bool IsStackLayout
+        {
+            get => this.isStackLayout;
+            set => this.SetProperty(ref this.isStackLayout, value);
+        }
+
+        private Orientation stackPanelOrientation = Orientation.Vertical;
+
+        public Orientation StackPanelOrientation
+        {
+            get => this.stackPanelOrientation;
+            set => this.SetProperty(ref this.stackPanelOrientation, value);
+        }
+
+        [XmlIgnore]
+        public IEnumerable<VerticalAlignment> VerticalAlignments =>
+            (IEnumerable<VerticalAlignment>)Enum.GetValues(typeof(VerticalAlignment));
+
+        [XmlIgnore]
+        public IEnumerable<HorizontalAlignment> HorizontalAlignments =>
+            (IEnumerable<HorizontalAlignment>)Enum.GetValues(typeof(HorizontalAlignment));
+
+        [XmlIgnore]
+        public IEnumerable<Orientation> Orientations =>
+            (IEnumerable<Orientation>)Enum.GetValues(typeof(Orientation));
 
         #endregion Advanced Layout
 
