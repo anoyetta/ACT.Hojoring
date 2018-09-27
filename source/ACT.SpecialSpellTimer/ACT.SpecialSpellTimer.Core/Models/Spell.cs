@@ -398,6 +398,17 @@ namespace ACT.SpecialSpellTimer.Models
 
         public double RecastTimeExtending2 { get; set; } = 0;
 
+        private bool isNotResetBarOnExtended = false;
+
+        /// <summary>
+        /// 延長したときにバーをリセットしない？
+        /// </summary>
+        public bool IsNotResetBarOnExtended
+        {
+            get => this.isNotResetBarOnExtended;
+            set => this.SetProperty(ref this.isNotResetBarOnExtended, value);
+        }
+
         private bool reduceIconBrightness;
 
         public bool ReduceIconBrightness
@@ -1022,6 +1033,7 @@ namespace ACT.SpecialSpellTimer.Models
             n.RecastTimeExtending1 = this.RecastTimeExtending1;
             n.KeywordForExtend2 = this.KeywordForExtend2;
             n.RecastTimeExtending2 = this.RecastTimeExtending2;
+            n.IsNotResetBarOnExtended = this.IsNotResetBarOnExtended;
             n.ExtendBeyondOriginalRecastTime = this.ExtendBeyondOriginalRecastTime;
             n.UpperLimitOfExtension = this.UpperLimitOfExtension;
             n.ProgressBarVisible = this.ProgressBarVisible;
@@ -1084,6 +1096,7 @@ namespace ACT.SpecialSpellTimer.Models
             n.RecastTime = this.RecastTime;
             n.RecastTimeExtending1 = this.RecastTimeExtending1;
             n.RecastTimeExtending2 = this.RecastTimeExtending2;
+            n.IsNotResetBarOnExtended = this.IsNotResetBarOnExtended;
             n.ExtendBeyondOriginalRecastTime = this.ExtendBeyondOriginalRecastTime;
             n.UpperLimitOfExtension = this.UpperLimitOfExtension;
             n.ProgressBarVisible = this.ProgressBarVisible;

@@ -112,6 +112,7 @@
   <system:String x:Key="Spell_Secounds">secounds</system:String>
   <system:String x:Key="Spell_ExtendSecounds">secounds, extend.</system:String>
   <system:String x:Key="Spell_ExtendRecastTimeOverOrigal">Extend beyond the original recast time</system:String>
+  <system:String x:Key="Spell_IsNotResetBarOnExtended">Don't reset bar on extended</system:String>
   <system:String x:Key="Spell_UpperLimitOfRecastTime">Upper limit of extend</system:String>
   <system:String x:Key="Spell_WarningTime">secounds, change to warning color it is less than.</system:String>
   <system:String x:Key="Spell_WarningTimeChangeFontColor">Change font to warning color</system:String>

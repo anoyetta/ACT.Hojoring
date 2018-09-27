@@ -112,6 +112,7 @@
   <system:String x:Key="Spell_Secounds">초</system:String>
   <system:String x:Key="Spell_ExtendSecounds">초 연장</system:String>
   <system:String x:Key="Spell_ExtendRecastTimeOverOrigal">원래 재생 시간을 초과하여 연장</system:String>
+  <system:String x:Key="Spell_IsNotResetBarOnExtended">Don't reset bar on extended</system:String>
   <system:String x:Key="Spell_UpperLimitOfRecastTime">재생 시간의 최대 값</system:String>
   <system:String x:Key="Spell_WarningTime">초 미만의 경우 경고색으로 변경</system:String>
   <system:String x:Key="Spell_WarningTimeChangeFontColor">글꼴의 경계색을 변경</system:String>

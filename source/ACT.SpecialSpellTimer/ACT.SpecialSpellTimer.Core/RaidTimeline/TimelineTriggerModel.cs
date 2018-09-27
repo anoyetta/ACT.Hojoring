@@ -69,6 +69,37 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        /// <summary>
+        /// 条件式
+        /// </summary>
+        /// <remarks>
+        /// 構文上複数定義できるが最初の定義しか使用しない
+        /// </remarks>
+        [XmlElement(ElementName = "expressions")]
+        public TimelineExpressionsModel[] ExpressionsStatements
+        {
+            get => this.Statements
+                .Where(x => x.TimelineType == TimelineElementTypes.Expressions)
+                .Cast<TimelineExpressionsModel>()
+                .ToArray();
+
+            set => this.AddRange(value);
+        }
+
+        public void SetExpressions()
+        {
+            var expressions = this.ExpressionsStatements.FirstOrDefault(x =>
+                x.Enabled.GetValueOrDefault());
+            expressions?.Set();
+        }
+
+        public bool GetPredicateResult()
+        {
+            var expressions = this.ExpressionsStatements.FirstOrDefault(x =>
+                x.Enabled.GetValueOrDefault());
+            return expressions?.Predicate() ?? true;
+        }
+
         [XmlIgnore]
         public bool IsPositionSyncAvailable =>
             this.PositionSyncStatements.Any(x => x.Enabled.GetValueOrDefault());
@@ -78,7 +109,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (timeline.TimelineType == TimelineElementTypes.Load ||
                 timeline.TimelineType == TimelineElementTypes.VisualNotice ||
                 timeline.TimelineType == TimelineElementTypes.ImageNotice ||
-                timeline.TimelineType == TimelineElementTypes.PositionSync)
+                timeline.TimelineType == TimelineElementTypes.PositionSync ||
+                timeline.TimelineType == TimelineElementTypes.Expressions)
             {
                 timeline.Parent = this;
                 this.statements.Add(timeline);
@@ -357,5 +389,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             return clone;
         }
+
+        public override string ToString() =>
+            !string.IsNullOrEmpty(this.SyncKeywordReplaced) ?
+            this.SyncKeywordReplaced :
+            this.SyncKeyword;
     }
 }
