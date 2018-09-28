@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Utility;
@@ -326,8 +327,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region Store Log
 
+        private volatile bool inCombat;
         private long no;
-        private bool inCombat;
         private bool isImporting;
 
         /// <summary>
@@ -420,7 +421,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 case KewordTypes.CastStartsUsing:
                     /*
-                    starts using は準備動作をかぶるので無視する
+                    starts using は準備動作とかぶるので無視する
                     if (this.inCombat)
                     {
                         this.StoreCastStartsUsingLog(log);
@@ -479,44 +480,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     break;
 
                 case KewordTypes.Start:
-                    lock (this.CurrentCombatLogList)
-                    {
-                        if (!this.inCombat)
-                        {
-                            if (!this.isImporting)
-                            {
-                                this.CurrentCombatLogList.Clear();
-                                this.ActorHPRate.Clear();
-                                this.partyNames = null;
-                                this.combatants = null;
-                                this.no = 1;
-                            }
-
-                            Logger.Write("Start Combat");
-
-                            // 自分の座標をダンプする
-                            LogBuffer.DumpPosition(true);
-                        }
-
-                        this.inCombat = true;
-                    }
-
-                    this.StoreStartCombat(logLine);
+                    this.StartCombat(logLine);
                     break;
 
                 case KewordTypes.End:
-                    lock (this.CurrentCombatLogList)
-                    {
-                        if (this.inCombat)
-                        {
-                            this.inCombat = false;
-                            this.StoreEndCombat(logLine);
-
-                            this.AutoSaveToSpreadsheet();
-
-                            Logger.Write("End Combat");
-                        }
-                    }
+                case KewordTypes.AnalyzeEnd:
+                    this.EndCombat(logLine);
                     break;
 
                 default:
@@ -535,6 +504,66 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return key != null ?
                     key.Category :
                     KewordTypes.Unknown;
+            }
+        }
+
+        /// <summary>
+        /// 戦闘（分析）を開始する
+        /// </summary>
+        /// <param name="logLine">
+        /// 対象のログ行</param>
+        private void StartCombat(
+            LogLineEventArgs logLine = null)
+        {
+            lock (this.CurrentCombatLogList)
+            {
+                if (!this.inCombat)
+                {
+                    if (!this.isImporting)
+                    {
+                        this.CurrentCombatLogList.Clear();
+                        this.ActorHPRate.Clear();
+                        this.partyNames = null;
+                        this.combatants = null;
+                        this.no = 1;
+                    }
+
+                    Logger.Write("Start Combat");
+
+                    // 自分の座標をダンプする
+                    LogBuffer.DumpPosition(true);
+                }
+
+                this.inCombat = true;
+            }
+
+            this.StoreStartCombat(logLine);
+        }
+
+        /// <summary>
+        /// 戦闘（分析）を終了する
+        /// </summary>
+        /// <param name="logLine">
+        /// 対象のログ行</param>
+        private void EndCombat(
+            LogLineEventArgs logLine = null)
+        {
+            lock (this.CurrentCombatLogList)
+            {
+                if (this.inCombat)
+                {
+                    this.inCombat = false;
+
+                    if (logLine != null)
+                    {
+                        this.StoreEndCombat(logLine);
+                    }
+
+                    this.AutoSaveToSpreadsheetAsync();
+                    ChatLogWorker.Instance?.Write(true);
+
+                    Logger.Write("End Combat");
+                }
             }
         }
 
@@ -1147,6 +1176,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.isImporting = false;
             }
         }
+
+        private async void AutoSaveToSpreadsheetAsync() => await Task.Run(() => this.AutoSaveToSpreadsheet());
 
         private void AutoSaveToSpreadsheet()
         {

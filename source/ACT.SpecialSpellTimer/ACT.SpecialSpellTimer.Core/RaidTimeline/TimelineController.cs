@@ -65,7 +65,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <summary>
         /// タイムラインから発生するログのSymbol
         /// </summary>
-        private const string TLSymbol = "[TL]";
+        public const string TLSymbol = "[TL]";
 
         public static void Init()
         {
@@ -1104,11 +1104,31 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             switch (detector)
             {
                 case TimelineActivityModel act:
-                    this.DetectActivity(xivlog, act);
+                    if (!act.IsExpressionAvailable)
+                    {
+                        this.DetectActivity(xivlog, act);
+                    }
+                    else
+                    {
+                        lock (TimelineExpressionsModel.ExpressionLocker)
+                        {
+                            this.DetectActivity(xivlog, act);
+                        }
+                    }
                     break;
 
                 case TimelineTriggerModel tri:
-                    this.DetectTrigger(xivlog, tri, detectTime);
+                    if (!tri.IsExpressionAvailable)
+                    {
+                        this.DetectTrigger(xivlog, tri, detectTime);
+                    }
+                    else
+                    {
+                        lock (TimelineExpressionsModel.ExpressionLocker)
+                        {
+                            this.DetectTrigger(xivlog, tri, detectTime);
+                        }
+                    }
                     break;
 
                 case TimelineVisualNoticeModel vnotice:
@@ -1315,26 +1335,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             // Combatantsを取得する
             var combatants = FFXIVPlugin.Instance.GetCombatantList();
-
             if (!combatants.Any())
             {
                 return;
             }
 
             // P-Syncトリガに対して判定する
-#if false
-            // マルチスレッド版
-            psyncs.AsParallel().ForAll(tri =>
-            {
-                detectPSync(tri);
-            });
-#else
-            // シングルスレッド版
             foreach (var tri in psyncs)
             {
-                detectPSync(tri);
+                if (!tri.IsExpressionAvailable)
+                {
+                    detectPSync(tri);
+                }
+                else
+                {
+                    lock (TimelineExpressionsModel.ExpressionLocker)
+                    {
+                        detectPSync(tri);
+                    }
+                }
             }
-#endif
 
             // P-Syncトリガに対して判定する
             void detectPSync(
