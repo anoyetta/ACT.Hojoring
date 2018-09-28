@@ -936,16 +936,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 // 現在判定期間中のアクティビティ
                 acts = this.Model.IsGlobalZone ? EmptyActivities : (
-                        from x in this.ActivityLine
-                        where
-                        x.Enabled.GetValueOrDefault() &&
-                        !string.IsNullOrEmpty(x.SyncKeyword) &&
-                        x.SyncRegex != null &&
-                        this.CurrentTime >= x.Time + TimeSpan.FromSeconds(x.SyncOffsetStart.Value) &&
-                        this.CurrentTime <= x.Time + TimeSpan.FromSeconds(x.SyncOffsetEnd.Value) &&
-                        !x.IsSynced
-                        select
-                        x).ToArray();
+                    from x in this.ActivityLine
+                    where
+                    x.Enabled.GetValueOrDefault() &&
+                    !string.IsNullOrEmpty(x.SyncKeyword) &&
+                    x.SyncRegex != null &&
+                    this.CurrentTime >= x.Time + TimeSpan.FromSeconds(x.SyncOffsetStart.Value) &&
+                    this.CurrentTime <= x.Time + TimeSpan.FromSeconds(x.SyncOffsetEnd.Value) &&
+                    !x.IsSynced
+                    select
+                    x).ToArray();
 
                 tris = mergeDetectors(
                     // グローバルトリガ
