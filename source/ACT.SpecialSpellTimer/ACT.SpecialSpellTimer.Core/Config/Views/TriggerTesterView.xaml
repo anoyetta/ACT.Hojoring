@@ -93,6 +93,8 @@
           <RowDefinition Height="Auto" />
           <RowDefinition />
           <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- ヘッダエリア -->
@@ -102,7 +104,7 @@
         </DockPanel>
 
         <!-- ボタンエリア -->
-        <DockPanel Grid.Row="2" Grid.Column="0">
+        <DockPanel Grid.Row="3" Grid.Column="0">
           <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left" Margin="5 0 0 5">
             <Button x:Name="OpenButton" Margin="10 0 10 0" Padding="5 0 5 0" Content="Open" />
           </StackPanel>
@@ -116,9 +118,9 @@
 
         <!-- コンテンツエリア -->
         <Grid
-        Grid.Row="1"
-        Grid.Column="0"
-        Margin="3 10 3 10">
+          Grid.Row="1"
+          Grid.Column="0"
+          Margin="3 10 3 10">
 
           <TextBlock
             Margin="5 0 0 0"
@@ -159,6 +161,17 @@
               </DataTemplate>
             </ListView.ItemTemplate>
           </ListView>
+        </Grid>
+
+        <Grid
+          Grid.Row="2"
+          Grid.Column="0">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <TextBox Grid.Column="0" Margin="5" Height="28" VerticalContentAlignment="Center" Text="{Binding LogLine, Mode=TwoWay}" x:Name="AddLogLineTextBox" />
+          <Button Grid.Column="1" Margin="0 0 5 0" Padding="5 0 5 0" Content="Add" x:Name="AddLogLineButton" />
         </Grid>
         <!-- コンテンツエリア end -->
 
@@ -224,22 +237,33 @@
 
           <Label Content="Zone" Margin="0 15 0 0" HorizontalAlignment="Left" />
           <ComboBox
-          Margin="0 5 0 0"
-          ItemsSource="{Binding ZoneList, Mode=OneWay}"
-          DisplayMemberPath="Name"
-          SelectedValuePath="ID"
-          SelectedIndex="0"
-          SelectedValue="{Binding ZoneID, Mode=TwoWay}" />
+            Margin="0 5 0 0"
+            ItemsSource="{Binding ZoneList, Mode=OneWay}"
+            DisplayMemberPath="Name"
+            SelectedValuePath="ID"
+            SelectedIndex="0"
+            SelectedValue="{Binding ZoneID, Mode=TwoWay}" />
         </StackPanel>
 
         <!-- ボタンエリア -->
-        <DockPanel Grid.Row="2" Grid.Column="1">
+        <DockPanel Grid.Row="3" Grid.Column="1">
           <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 5 5">
             <Button x:Name="ClearButton" Margin="10 0 10 0" Padding="5 0 5 0" Content="Clear" />
             <Button x:Name="ApplyButton" Margin="10 0 10 0" Padding="5 0 5 0" Content="Apply" />
           </StackPanel>
         </DockPanel>
         <!-- シミュレーション条件エリア end -->
+
+        <Label
+          x:Name="MessageLabel"
+          Grid.Row="4"
+          Grid.ColumnSpan="2"
+          Foreground="#ba2636"
+          FontStyle="Italic"
+          Margin="10 0"
+          Padding="0 3"
+          HorizontalContentAlignment="Right"
+          VerticalContentAlignment="Center" />
       </Grid>
       <!-- base grid end -->
     </Border>

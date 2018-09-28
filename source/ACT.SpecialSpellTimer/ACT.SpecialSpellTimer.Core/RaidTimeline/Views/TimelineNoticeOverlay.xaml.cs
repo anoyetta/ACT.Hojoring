@@ -164,7 +164,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
         public bool DummyMode { get; set; } = false;
 
         private readonly ObservableCollection<TimelineVisualNoticeModel> noticeList =
-            new ObservableCollection<TimelineVisualNoticeModel>();
+            new ObservableCollection<TimelineVisualNoticeModel>(
+                new List<TimelineVisualNoticeModel>(32));
 
         public void AddNotice(
             TimelineVisualNoticeModel notice,

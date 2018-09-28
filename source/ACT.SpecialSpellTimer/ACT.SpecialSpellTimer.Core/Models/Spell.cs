@@ -398,6 +398,17 @@ namespace ACT.SpecialSpellTimer.Models
 
         public double RecastTimeExtending2 { get; set; } = 0;
 
+        private bool isNotResetBarOnExtended = false;
+
+        /// <summary>
+        /// 延長したときにバーをリセットしない？
+        /// </summary>
+        public bool IsNotResetBarOnExtended
+        {
+            get => this.isNotResetBarOnExtended;
+            set => this.SetProperty(ref this.isNotResetBarOnExtended, value);
+        }
+
         private bool reduceIconBrightness;
 
         public bool ReduceIconBrightness
@@ -432,6 +443,14 @@ namespace ACT.SpecialSpellTimer.Models
         {
             get => this.spellIconSize;
             set => this.SetProperty(ref this.spellIconSize, value);
+        }
+
+        private bool isNotResetAtWipeout = false;
+
+        public bool IsNotResetAtWipeout
+        {
+            get => this.isNotResetAtWipeout;
+            set => this.SetProperty(ref this.isNotResetAtWipeout, value);
         }
 
         /// <summary>スペルが作用した対象</summary>
@@ -1014,6 +1033,7 @@ namespace ACT.SpecialSpellTimer.Models
             n.RecastTimeExtending1 = this.RecastTimeExtending1;
             n.KeywordForExtend2 = this.KeywordForExtend2;
             n.RecastTimeExtending2 = this.RecastTimeExtending2;
+            n.IsNotResetBarOnExtended = this.IsNotResetBarOnExtended;
             n.ExtendBeyondOriginalRecastTime = this.ExtendBeyondOriginalRecastTime;
             n.UpperLimitOfExtension = this.UpperLimitOfExtension;
             n.ProgressBarVisible = this.ProgressBarVisible;
@@ -1041,6 +1061,7 @@ namespace ACT.SpecialSpellTimer.Models
             n.BackgroundAlpha = this.BackgroundAlpha;
             n.HideCounter = this.HideCounter;
             n.JobFilter = this.JobFilter;
+            n.PartyJobFilter = this.PartyJobFilter;
             n.ZoneFilter = this.ZoneFilter;
             n.TimersMustRunningForStart = this.TimersMustRunningForStart;
             n.TimersMustStoppingForStart = this.TimersMustStoppingForStart;
@@ -1075,6 +1096,7 @@ namespace ACT.SpecialSpellTimer.Models
             n.RecastTime = this.RecastTime;
             n.RecastTimeExtending1 = this.RecastTimeExtending1;
             n.RecastTimeExtending2 = this.RecastTimeExtending2;
+            n.IsNotResetBarOnExtended = this.IsNotResetBarOnExtended;
             n.ExtendBeyondOriginalRecastTime = this.ExtendBeyondOriginalRecastTime;
             n.UpperLimitOfExtension = this.UpperLimitOfExtension;
             n.ProgressBarVisible = this.ProgressBarVisible;
@@ -1113,7 +1135,9 @@ namespace ACT.SpecialSpellTimer.Models
             n.OverlapRecastTime = this.OverlapRecastTime;
             n.ReduceIconBrightness = this.ReduceIconBrightness;
             n.RegexEnabled = this.RegexEnabled;
+            n.IsNotResetAtWipeout = this.IsNotResetAtWipeout;
             n.JobFilter = this.JobFilter;
+            n.PartyJobFilter = this.PartyJobFilter;
             n.ZoneFilter = this.ZoneFilter;
             n.TimersMustRunningForStart = this.TimersMustRunningForStart;
             n.TimersMustStoppingForStart = this.TimersMustStoppingForStart;

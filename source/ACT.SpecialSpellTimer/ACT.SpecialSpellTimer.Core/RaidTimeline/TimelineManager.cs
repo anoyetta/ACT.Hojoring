@@ -347,13 +347,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var jobsPlacement = string.Join("|", jobs.Select(x => $@"\[{x}\]"));
 
             list.Add(new PlaceholderContainer("[mex]", @"(?<_mex>\[mex\])", PlaceholderTypes.Me));
-            list.Add(new PlaceholderContainer("[nex]", $@"(?<_nex>{jobsPlacement})", PlaceholderTypes.Party));
-            list.Add(new PlaceholderContainer("[pc]", $@"(?<_pc>{jobsPlacement}|\[pc\])", PlaceholderTypes.Party));
+            list.Add(new PlaceholderContainer("[nex]", $@"(?<_nex>{jobsPlacement}|\[nex\])", PlaceholderTypes.Party));
+            list.Add(new PlaceholderContainer("[pc]", $@"(?<_pc>{jobsPlacement}|\[pc\]|\[mex\]|\[nex\])", PlaceholderTypes.Party));
 
             foreach (var job in jobs)
             {
-                list.Add(new PlaceholderContainer($"[{job}]", $"[{job}]", PlaceholderTypes.Party));
+                list.Add(new PlaceholderContainer($"[{job}]", $@"\[{job}\]", PlaceholderTypes.Party));
             }
+
+            list.Add(new PlaceholderContainer("[id]", @"[0-9a-fA-F]+", PlaceholderTypes.Custom));
+            list.Add(new PlaceholderContainer("[id4]", @"[0-9a-fA-F]{4}", PlaceholderTypes.Custom));
+            list.Add(new PlaceholderContainer("[id8]", @"[0-9a-fA-F]{8}", PlaceholderTypes.Custom));
 
             return list.ToArray();
         }

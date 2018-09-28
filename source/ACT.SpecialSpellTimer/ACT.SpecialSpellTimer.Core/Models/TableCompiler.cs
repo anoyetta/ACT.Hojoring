@@ -78,9 +78,16 @@ namespace ACT.SpecialSpellTimer.Models
                 {
                     this.RefreshCombatants();
 
+                    var isSimulationChanged = false;
                     var isPlayerChanged = this.IsPlayerChanged();
                     var isPartyChanged = this.IsPartyChanged();
                     var isZoneChanged = this.IsZoneChanged();
+
+                    if (this.previousInSimulation != this.InSimulation)
+                    {
+                        this.previousInSimulation = this.InSimulation;
+                        isSimulationChanged = true;
+                    }
 
                     if (isPlayerChanged)
                     {
@@ -94,7 +101,8 @@ namespace ACT.SpecialSpellTimer.Models
                         this.RefreshPetPlaceholder();
                     }
 
-                    if (isPlayerChanged ||
+                    if (isSimulationChanged ||
+                        isPlayerChanged ||
                         isPartyChanged ||
                         isZoneChanged)
                     {
@@ -112,6 +120,9 @@ namespace ACT.SpecialSpellTimer.Models
                         // インスタンススペルを消去する
                         SpellTable.Instance.RemoveInstanceSpellsAll();
 
+                        // 設定を保存する
+                        PluginCore.Instance?.SaveSettingsAsync();
+
                         var zone = ActGlobals.oFormActMain.CurrentZone;
                         var zoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
                         Logger.Write($"zone changed. zone={zone}, zone_id={zoneID}");
@@ -128,8 +139,8 @@ namespace ACT.SpecialSpellTimer.Models
                     // 定期的に自分の座標をダンプする
                     if ((DateTime.Now - this.lastDumpPositionTimestamp).TotalSeconds >= 60.0)
                     {
-                        LogBuffer.DumpPosition(true);
                         this.lastDumpPositionTimestamp = DateTime.Now;
+                        LogBuffer.DumpPosition(true);
                     }
                 }
             }
@@ -253,6 +264,12 @@ namespace ACT.SpecialSpellTimer.Models
         public void CompileSpells()
         {
             var currentZoneID = default(int?);
+            var currentPlayer = this.player ?? new Combatant()
+            {
+                ID = 0,
+                Name = "Dummy Player",
+                Job = (byte)JobIDs.ADV,
+            };
 
             lock (this.SimulationLocker)
             {
@@ -267,32 +284,30 @@ namespace ACT.SpecialSpellTimer.Models
                 }
             }
 
-            bool filter(Spell spell)
+            bool filter(
+                Spell spell,
+                Combatant playerData)
             {
                 var enabledByJob = false;
                 var enabledByPartyJob = false;
                 var enabledByZone = false;
 
                 // ジョブフィルタをかける
-                if (this.player == null ||
-                    this.player.ID == 0 ||
-                    string.IsNullOrEmpty(spell.JobFilter))
+                if (string.IsNullOrEmpty(spell.JobFilter))
                 {
                     enabledByJob = true;
                 }
                 else
                 {
                     var jobs = spell.JobFilter.Split(',');
-                    if (jobs.Any(x => x == this.player.Job.ToString()))
+                    if (jobs.Any(x => x == playerData.Job.ToString()))
                     {
                         enabledByJob = true;
                     }
                 }
 
                 // filter by specific jobs in party
-                if (this.player == null ||
-                    this.player.ID == 0 ||
-                    string.IsNullOrEmpty(spell.PartyJobFilter))
+                if (string.IsNullOrEmpty(spell.PartyJobFilter))
                 {
                     enabledByPartyJob = true;
                 }
@@ -306,17 +321,19 @@ namespace ACT.SpecialSpellTimer.Models
                 }
 
                 // ゾーンフィルタをかける
-                if (currentZoneID == 0 ||
-                    string.IsNullOrEmpty(spell.ZoneFilter))
+                if (string.IsNullOrEmpty(spell.ZoneFilter))
                 {
                     enabledByZone = true;
                 }
                 else
                 {
-                    var zoneIDs = spell.ZoneFilter.Split(',');
-                    if (zoneIDs.Any(x => x == currentZoneID.ToString()))
+                    if (currentZoneID.HasValue)
                     {
-                        enabledByZone = true;
+                        var zoneIDs = spell.ZoneFilter.Split(',');
+                        if (zoneIDs.Any(x => x == currentZoneID.ToString()))
+                        {
+                            enabledByZone = true;
+                        }
                     }
                 }
 
@@ -329,7 +346,7 @@ namespace ACT.SpecialSpellTimer.Models
                 x.IsDesignMode ||
                 (
                     x.Enabled &&
-                    filter(x)
+                    filter(x, currentPlayer)
                 )
                 orderby
                 x.Panel?.PanelName,
@@ -397,6 +414,12 @@ namespace ACT.SpecialSpellTimer.Models
         public void CompileTickers()
         {
             var currentZoneID = default(int?);
+            var currentPlayer = this.player ?? new Combatant()
+            {
+                ID = 0,
+                Name = "Dummy Player",
+                Job = (byte)JobIDs.ADV,
+            };
 
             lock (this.SimulationLocker)
             {
@@ -411,39 +434,41 @@ namespace ACT.SpecialSpellTimer.Models
                 }
             }
 
-            bool filter(Ticker spell)
+            bool filter(
+                Ticker spell,
+                Combatant playerData)
             {
                 var enabledByJob = false;
                 var enabledByZone = false;
 
                 // ジョブフィルタをかける
-                if (this.player == null ||
-                    this.player.ID == 0 ||
-                    string.IsNullOrWhiteSpace(spell.JobFilter))
+                if (string.IsNullOrWhiteSpace(spell.JobFilter))
                 {
                     enabledByJob = true;
                 }
                 else
                 {
                     var jobs = spell.JobFilter.Split(',');
-                    if (jobs.Any(x => x == this.player.Job.ToString()))
+                    if (jobs.Any(x => x == playerData.Job.ToString()))
                     {
                         enabledByJob = true;
                     }
                 }
 
                 // ゾーンフィルタをかける
-                if (currentZoneID == 0 ||
-                    string.IsNullOrWhiteSpace(spell.ZoneFilter))
+                if (string.IsNullOrWhiteSpace(spell.ZoneFilter))
                 {
                     enabledByZone = true;
                 }
                 else
                 {
-                    var zoneIDs = spell.ZoneFilter.Split(',');
-                    if (zoneIDs.Any(x => x == currentZoneID.ToString()))
+                    if (currentZoneID.HasValue)
                     {
-                        enabledByZone = true;
+                        var zoneIDs = spell.ZoneFilter.Split(',');
+                        if (zoneIDs.Any(x => x == currentZoneID.ToString()))
+                        {
+                            enabledByZone = true;
+                        }
                     }
                 }
 
@@ -456,7 +481,7 @@ namespace ACT.SpecialSpellTimer.Models
                 x.IsDesignMode ||
                 (
                     x.Enabled &&
-                    filter(x)
+                    filter(x, currentPlayer)
                 )
                 orderby
                 x.MatchDateTime descending,
@@ -633,6 +658,8 @@ namespace ACT.SpecialSpellTimer.Models
         private volatile IReadOnlyList<Combatant> previousParty = new List<Combatant>();
         private volatile Combatant previousPlayer = new Combatant();
         private volatile int previousZoneID = 0;
+        private volatile string previousZoneName = string.Empty;
+        private volatile bool previousInSimulation = false;
 
         public readonly object SimulationLocker = new object();
 
@@ -714,6 +741,7 @@ namespace ACT.SpecialSpellTimer.Models
             var r = false;
 
             var zoneID = default(int?);
+            var zoneName = string.Empty;
 
             lock (this.SimulationLocker)
             {
@@ -721,20 +749,24 @@ namespace ACT.SpecialSpellTimer.Models
                     this.SimulationZoneID != 0)
                 {
                     zoneID = this.SimulationZoneID;
+                    zoneName = "In Simulation";
                 }
                 else
                 {
                     zoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
+                    zoneName = ActGlobals.oFormActMain.CurrentZone;
                 }
             }
 
             if (zoneID != null &&
-                this.previousZoneID != zoneID)
+                this.previousZoneID != zoneID &&
+                this.previousZoneName != zoneName)
             {
                 r = true;
-            }
 
-            this.previousZoneID = zoneID ?? 0;
+                this.previousZoneID = zoneID ?? 0;
+                this.previousZoneName = zoneName;
+            }
 
             return r;
         }
@@ -855,7 +887,13 @@ namespace ACT.SpecialSpellTimer.Models
                 new List<PlaceholderContainer>();
 
             // パーティメンバのいずれを示す <pc> を登録する
-            var names = string.Join("|", this.partyList.Select(x => x.NamesRegex).ToArray());
+            var names = string.Join(
+                "|",
+                this.partyList.Select(x => x.NamesRegex).Concat(new[]
+                {
+                    @"\<pc\>",
+                    @"\[pc\]",
+                }));
             var oldValue = $"<pc>";
             var newValue = $"(?<_pc>{names})";
             newList.Add(new PlaceholderContainer(
@@ -930,7 +968,13 @@ namespace ACT.SpecialSpellTimer.Models
                 // <JOB>形式を登録する ただし、この場合は正規表現のグループ形式とする
                 // また、グループ名にはジョブの略称を設定する
                 // ex. <PLD> → (?<PLDs>Taro Paladin|Jiro Paladin)
-                names = string.Join("|", combatantsByJob.Select(x => x.NamesRegex).ToArray());
+                names = string.Join(
+                    "|",
+                    combatantsByJob.Select(x => x.NamesRegex).Concat(new[]
+                    {
+                        $@"\<{job.ID.ToString().ToUpper()}\>",
+                        $@"\[{job.ID.ToString().ToUpper()}\]",
+                    }));
                 oldValue = $"<{job.ID.ToString().ToUpper()}>";
                 newValue = $"(?<_{job.ID.ToString().ToUpper()}>{names})";
 

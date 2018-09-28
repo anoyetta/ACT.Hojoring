@@ -51,10 +51,46 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        /// <summary>
+        /// 条件式
+        /// </summary>
+        /// <remarks>
+        /// 構文上複数定義できるが最初の定義しか使用しない
+        /// </remarks>
+        [XmlElement(ElementName = "expressions")]
+        public TimelineExpressionsModel[] ExpressionsStatements
+        {
+            get => this.Statements
+                .Where(x => x.TimelineType == TimelineElementTypes.Expressions)
+                .Cast<TimelineExpressionsModel>()
+                .ToArray();
+
+            set => this.AddRange(value);
+        }
+
+        [XmlIgnore]
+        public bool IsExpressionAvailable =>
+            this.ExpressionsStatements.Any(x => x.Enabled.GetValueOrDefault());
+
+        public void SetExpressions()
+        {
+            var expressions = this.ExpressionsStatements.FirstOrDefault(x =>
+                x.Enabled.GetValueOrDefault());
+
+            if (expressions != null)
+            {
+                lock (TimelineExpressionsModel.ExpressionLocker)
+                {
+                    expressions.Set();
+                }
+            }
+        }
+
         public void Add(TimelineBase timeline)
         {
             if (timeline.TimelineType == TimelineElementTypes.VisualNotice ||
-                timeline.TimelineType == TimelineElementTypes.ImageNotice)
+                timeline.TimelineType == TimelineElementTypes.ImageNotice ||
+                timeline.TimelineType == TimelineElementTypes.Expressions)
             {
                 timeline.Parent = this;
                 this.statements.Add(timeline);

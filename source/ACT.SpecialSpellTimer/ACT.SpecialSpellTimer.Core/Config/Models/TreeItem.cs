@@ -709,6 +709,9 @@ namespace ACT.SpecialSpellTimer.Config.Models
                     return;
                 }
 
+                // 設定を保存する
+                PluginCore.Instance?.SaveSettingsAsync();
+
                 Task.Run(() =>
                 {
                     TableCompiler.Instance.CompileSpells();

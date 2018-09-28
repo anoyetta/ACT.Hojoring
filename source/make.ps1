@@ -132,7 +132,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "Prism*.dll",
         "Xceed.*.dll",
         "NPOI*.dll",
-        "FFXIV_MemoryReader.*.dll",
+        "FFXIV_MemoryReader.Model.dll",
         "AWSSDK.*.dll"
     )
 
