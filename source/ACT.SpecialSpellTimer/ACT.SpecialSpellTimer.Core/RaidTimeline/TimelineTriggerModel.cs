@@ -90,18 +90,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public bool IsExpressionAvailable =>
             this.ExpressionsStatements.Any(x => x.Enabled.GetValueOrDefault());
 
-        public void SetExpressions()
+        public bool ExecuteExpressions()
         {
             var expressions = this.ExpressionsStatements.FirstOrDefault(x =>
                 x.Enabled.GetValueOrDefault());
-            expressions?.Set();
-        }
 
-        public bool GetPredicateResult()
-        {
-            var expressions = this.ExpressionsStatements.FirstOrDefault(x =>
-                x.Enabled.GetValueOrDefault());
-            return expressions?.Predicate() ?? true;
+            if (expressions == null)
+            {
+                return false;
+            }
+
+            lock (TimelineExpressionsModel.ExpressionLocker)
+            {
+                var result = expressions.Predicate();
+                if (result)
+                {
+                    expressions.Set();
+                }
+
+                return result;
+            }
         }
 
         [XmlIgnore]
@@ -133,6 +141,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         #endregion Children
+
+        private int? no = null;
+
+        [XmlIgnore]
+        public int? No
+        {
+            get => this.no;
+            set => this.SetProperty(ref this.no, value);
+        }
+
+        [XmlAttribute(AttributeName = "no")]
+        public string NoXML
+        {
+            get => this.No?.ToString();
+            set => this.No = int.TryParse(value, out var v) ? v : (int?)null;
+        }
 
         private string text = null;
 
