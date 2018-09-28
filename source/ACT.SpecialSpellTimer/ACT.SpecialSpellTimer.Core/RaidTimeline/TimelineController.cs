@@ -991,6 +991,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         this.DetectStartEnd(xivlog, keywords);
                         this.DetectStartTrigger(xivlog);
+                        Thread.Yield();
                     });
                 }),
 
@@ -1002,6 +1003,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         foreach (var act in acts)
                         {
                             this.Detect(xivlog, act, detectTime);
+                            Thread.Yield();
                         }
                     }
                 }),
@@ -1014,6 +1016,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         foreach (var tri in tris)
                         {
                             this.Detect(xivlog, tri, detectTime);
+                            Thread.Yield();
                         }
                     }
                 }),
@@ -1026,6 +1029,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         foreach (var hide in hides)
                         {
                             this.Detect(xivlog, hide, detectTime);
+                            Thread.Yield();
                         }
                     }
                 }));
@@ -1104,31 +1108,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             switch (detector)
             {
                 case TimelineActivityModel act:
-                    if (!act.IsExpressionAvailable)
-                    {
-                        this.DetectActivity(xivlog, act);
-                    }
-                    else
-                    {
-                        lock (TimelineExpressionsModel.ExpressionLocker)
-                        {
-                            this.DetectActivity(xivlog, act);
-                        }
-                    }
+                    this.DetectActivity(xivlog, act);
                     break;
 
                 case TimelineTriggerModel tri:
-                    if (!tri.IsExpressionAvailable)
-                    {
-                        this.DetectTrigger(xivlog, tri, detectTime);
-                    }
-                    else
-                    {
-                        lock (TimelineExpressionsModel.ExpressionLocker)
-                        {
-                            this.DetectTrigger(xivlog, tri, detectTime);
-                        }
-                    }
+                    this.DetectTrigger(xivlog, tri, detectTime);
                     break;
 
                 case TimelineVisualNoticeModel vnotice:
@@ -1239,12 +1223,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
                 }
 
-                if (!tri.GetPredicateResult())
+                if (!tri.ExecuteExpressions())
                 {
                     return false;
                 }
-
-                tri.SetExpressions();
 
                 var toNotice = tri.Clone();
                 toNotice.LogSeq = xivlog.No;
@@ -1449,12 +1431,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
                 }
 
-                if (!tri.GetPredicateResult())
+                if (!tri.ExecuteExpressions())
                 {
                     return;
                 }
-
-                tri.SetExpressions();
 
                 psync.LastSyncTimestamp = DateTime.Now;
 
@@ -1584,6 +1564,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return;
                 }
 
+                // 変数をクリアする
+                TimelineExpressionsModel.Clear();
+
                 // 有効なActivityが存在しない？
                 if (!this.Model.ExistsActivities())
                 {
@@ -1625,6 +1608,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.TimelineTimer.Stop();
 
                 // リソースを開放する
+                TimelineExpressionsModel.Clear();
                 TimelineNoticeOverlay.NoticeView?.ClearNotice();
                 TimelineImageNoticeModel.Collect();
                 this.ClearNotifyQueue();
