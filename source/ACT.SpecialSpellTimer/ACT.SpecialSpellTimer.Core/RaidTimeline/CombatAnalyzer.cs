@@ -560,6 +560,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
 
                     this.AutoSaveToSpreadsheetAsync();
+                    ChatLogWorker.Instance?.Write(true);
 
                     Logger.Write("End Combat");
                 }
