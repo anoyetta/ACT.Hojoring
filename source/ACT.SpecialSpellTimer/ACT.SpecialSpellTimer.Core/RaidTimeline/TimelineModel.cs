@@ -230,10 +230,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        /// <summary>
+        /// Triggers
+        /// </summary>
+        /// <remarks>
+        /// 必ずNoでソートされる</remarks>
         [XmlElement(ElementName = "t")]
         public TimelineTriggerModel[] Triggers
         {
-            get => this.Elements.Where(x => x.TimelineType == TimelineElementTypes.Trigger).Cast<TimelineTriggerModel>().ToArray();
+            get => this.Elements
+                .Where(x => x.TimelineType == TimelineElementTypes.Trigger)
+                .Cast<TimelineTriggerModel>()
+                .OrderBy(x => x.No.GetValueOrDefault())
+                .ToArray();
             set => this.AddRange(value);
         }
 
@@ -551,6 +560,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.Activity, "NoticeOffset", -6d),
 
             // トリガ
+            NewDefault(TimelineElementTypes.Trigger, "No", 0),
             NewDefault(TimelineElementTypes.Trigger, "Enabled", true),
             NewDefault(TimelineElementTypes.Trigger, "SyncCount", 0),
             NewDefault(TimelineElementTypes.Trigger, "NoticeDevice", NoticeDevices.Both),
@@ -587,6 +597,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.Combatant, "Y", TimelineCombatantModel.InvalidPosition),
             NewDefault(TimelineElementTypes.Combatant, "Z", TimelineCombatantModel.InvalidPosition),
             NewDefault(TimelineElementTypes.Combatant, "Tolerance", 0.01f),
+
+            // Expressions
+            NewDefault(TimelineElementTypes.Expressions, "Enabled", true),
+            NewDefault(TimelineElementTypes.ExpressionsSet, "Enabled", true),
+            NewDefault(TimelineElementTypes.ExpressionsSet, "Value", true),
+            NewDefault(TimelineElementTypes.ExpressionsSet, "IsToggle", false),
+            NewDefault(TimelineElementTypes.ExpressionsSet, "TTL", -1),
+            NewDefault(TimelineElementTypes.ExpressionsPredicate, "Enabled", true),
+            NewDefault(TimelineElementTypes.ExpressionsPredicate, "Value", true),
         };
 
         private void SetDefaultValues()

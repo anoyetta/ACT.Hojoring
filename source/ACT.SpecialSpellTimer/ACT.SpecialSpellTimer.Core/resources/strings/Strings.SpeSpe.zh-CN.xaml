@@ -112,6 +112,7 @@
   <system:String x:Key="Spell_Secounds">秒</system:String>
   <system:String x:Key="Spell_ExtendSecounds">秒,延长.</system:String>
   <system:String x:Key="Spell_ExtendRecastTimeOverOrigal">可延长至原时间上限以上</system:String>
+  <system:String x:Key="Spell_IsNotResetBarOnExtended">Don't reset bar on extended</system:String>
   <system:String x:Key="Spell_UpperLimitOfRecastTime">延长时间上线</system:String>
   <system:String x:Key="Spell_WarningTime">秒时改为警告颜色.</system:String>
   <system:String x:Key="Spell_WarningTimeChangeFontColor">字体颜色改为警告色</system:String>
@@ -119,6 +120,7 @@
   <system:String x:Key="Spell_BlinkIcon">图标闪烁</system:String>
   <system:String x:Key="Spell_BlinkBar">进度条闪烁</system:String>
   <system:String x:Key="Spell_HideCounter">隐藏复唱时间</system:String>
+  <system:String x:Key="Spell_NotResetAtWipeout">Don't reset at Wipeout</system:String>
   <system:String x:Key="Spell_NoticeOnMatch">触发时通知</system:String>
   <system:String x:Key="Spell_NoticeOnOver">触发后N秒提示</system:String>
   <system:String x:Key="Spell_NoticeOnBefore">结束前N秒提示</system:String>

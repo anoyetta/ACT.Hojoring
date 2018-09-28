@@ -9,10 +9,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.resources;
 using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.Globalization;
@@ -41,6 +43,27 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
             this.MouseLeftButtonDown += (x, y) => this.DragMove();
 
+            this.Loaded += async (x, y) =>
+            {
+                await WPFHelper.InvokeAsync(() =>
+                {
+                    this.MessageLabel.Content = "Loading, Please wait...";
+                    this.MessageLabel.Visibility = Visibility.Visible;
+                },
+                DispatcherPriority.Normal);
+
+                // シミュレーションモードをONにする
+                PluginMainWorker.Instance.InSimulation = true;
+
+                await Task.Delay(TimeSpan.FromSeconds(0.5));
+                await WPFHelper.BeginInvoke(() =>
+                {
+                    this.MessageLabel.Content = string.Empty;
+                    this.MessageLabel.Visibility = Visibility.Collapsed;
+                },
+                DispatcherPriority.ApplicationIdle);
+            };
+
             this.CloseButton.Click += (x, y) =>
             {
                 this.testTimer.Stop();
@@ -62,8 +85,6 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
                 await Task.Run(() =>
                 {
-                    PluginMainWorker.Instance.InSimulation = true;
-
                     lock (this)
                     {
                         this.testTimer.Stop();
@@ -105,6 +126,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     }
 
                     PluginMainWorker.Instance.InSimulation = false;
+                    ChatLogWorker.Instance?.Write(true);
                 });
 
                 // インスタンススペルを消去する
@@ -125,6 +147,13 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
             this.ApplyButton.Click += async (x, y) =>
             {
+                await WPFHelper.InvokeAsync(() =>
+                {
+                    this.MessageLabel.Content = "Loading, Please wait...";
+                    this.MessageLabel.Visibility = Visibility.Visible;
+                },
+                DispatcherPriority.Normal);
+
                 await Task.Run(() =>
                 {
                     // インスタンススペルを消去する
@@ -137,10 +166,25 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 ModernMessageBox.ShowDialog(
                     "Test Condition was applied.",
                     "Trigger Simulator");
+
+                await Task.Delay(TimeSpan.FromSeconds(0.5));
+                await WPFHelper.BeginInvoke(() =>
+                {
+                    this.MessageLabel.Content = string.Empty;
+                    this.MessageLabel.Visibility = Visibility.Collapsed;
+                },
+                DispatcherPriority.ApplicationIdle);
             };
 
             this.ClearButton.Click += async (x, y) =>
             {
+                await WPFHelper.InvokeAsync(() =>
+                {
+                    this.MessageLabel.Content = "Loading, Please wait...";
+                    this.MessageLabel.Visibility = Visibility.Visible;
+                },
+                DispatcherPriority.Normal);
+
                 await Task.Run(() =>
                 {
                     // インスタンススペルを消去する
@@ -153,6 +197,29 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 ModernMessageBox.ShowDialog(
                     "Test Condition was cleard.",
                     "Trigger Simulator");
+
+                await Task.Delay(TimeSpan.FromSeconds(0.5));
+                await WPFHelper.BeginInvoke(() =>
+                {
+                    this.MessageLabel.Content = string.Empty;
+                    this.MessageLabel.Visibility = Visibility.Collapsed;
+                },
+                DispatcherPriority.ApplicationIdle);
+            };
+
+            // AddLogLine
+            this.AddLogLineButton.Click += async (x, y) => await this.AddLogLineAsync();
+            this.AddLogLineTextBox.KeyDown += async (x, y) =>
+            {
+                if (y.Key == Key.Enter)
+                {
+                    if (!string.IsNullOrEmpty(this.AddLogLineTextBox.Text))
+                    {
+                        this.LogLine = this.AddLogLineTextBox.Text;
+                    }
+
+                    await this.AddLogLineAsync();
+                }
             };
         }
 
@@ -176,6 +243,14 @@ namespace ACT.SpecialSpellTimer.Config.Views
             get;
             private set;
         } = new ObservableCollection<TestLog>();
+
+        private string logLine = string.Empty;
+
+        public string LogLine
+        {
+            get => this.logLine;
+            set => this.SetProperty(ref this.logLine, value);
+        }
 
         private DateTime prevTestTimestamp;
         private TimeSpan testTime;
@@ -300,10 +375,6 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
                 foreach (var log in logs)
                 {
-                    Thread.Yield();
-
-                    log.IsDone = true;
-
                     var logInfo = new LogLineEventArgs(
                         $"[{DateTime.Now:HH:mm:ss.fff}] {log.Log}",
                         0,
@@ -312,6 +383,9 @@ namespace ACT.SpecialSpellTimer.Config.Views
                         true);
 
                     PluginMainWorker.Instance.LogBuffer.LogInfoQueue.Enqueue(logInfo);
+
+                    log.IsDone = true;
+                    Thread.Yield();
                 }
 
                 var last = logs.LastOrDefault();
@@ -321,6 +395,41 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 }
             }
         }
+
+        private Task AddLogLineAsync() => Task.Run(async () =>
+        {
+            if (string.IsNullOrEmpty(this.LogLine))
+            {
+                return;
+            }
+
+            var logInfo = new LogLineEventArgs(
+                $"[{DateTime.Now:HH:mm:ss.fff}] {this.LogLine}",
+                0,
+                DateTime.Now,
+                string.Empty,
+                true);
+
+            PluginMainWorker.Instance.LogBuffer.LogInfoQueue.Enqueue(logInfo);
+
+            await WPFHelper.InvokeAsync(() =>
+            {
+                this.Logs.Add(new TestLog(logInfo.logLine)
+                {
+                    Seq = this.Logs.Count() + 1,
+                    IsDone = true,
+                    Time = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second),
+                });
+
+                var last = this.Logs.LastOrDefault();
+                if (last != null)
+                {
+                    this.TimelineTestListView.ScrollIntoView(last);
+                }
+
+                this.LogLine = string.Empty;
+            });
+        });
 
         #region Test Conditions
 
@@ -469,7 +578,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
         {
             lock (TableCompiler.Instance.SimulationLocker)
             {
-                var dummyPartys = new(string Name, JobIDs Job)[]
+                var dummyPartys = new (string Name, JobIDs Job)[]
                 {
                     (this.MeName, this.MeJob),
                     (this.Party2Name, this.Party2Job),
@@ -509,7 +618,6 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
                 TableCompiler.Instance.SimulationPlayer = TableCompiler.Instance.SimulationParty.FirstOrDefault();
                 TableCompiler.Instance.SimulationZoneID = this.ZoneID;
-                TableCompiler.Instance.InSimulation = true;
             }
         }
 
@@ -517,7 +625,6 @@ namespace ACT.SpecialSpellTimer.Config.Views
         {
             lock (TableCompiler.Instance.SimulationLocker)
             {
-                TableCompiler.Instance.InSimulation = false;
                 TableCompiler.Instance.SimulationPlayer = null;
                 TableCompiler.Instance.SimulationParty.Clear();
                 TableCompiler.Instance.SimulationZoneID = 0;

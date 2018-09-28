@@ -120,6 +120,21 @@ namespace FFXIV.Framework.Common
                     }
                 }
 
+                // ついでにFFXIV_MemoryReaderのバージョンを出力する
+                var memoryReader = ActGlobals.oFormActMain?.ActPlugins?
+                    .FirstOrDefault(
+                        x => x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"))?
+                    .pluginFile.FullName;
+
+                if (File.Exists(memoryReader))
+                {
+                    var vi = FileVersionInfo.GetVersionInfo(memoryReader);
+                    if (vi != null)
+                    {
+                        Logger.Trace($"*** FFXIV_MemoryReader v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FileBuildPart}.{vi.FilePrivatePart} ***");
+                    }
+                }
+
                 // Hojoringのバージョンを出力しつつSPLASHを表示する
                 var hojoring = GetHojoring();
                 if (hojoring != null)
