@@ -117,6 +117,8 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
                         this.prevTestTimestamp = DateTime.MinValue;
                     }
+
+                    ChatLogWorker.Instance?.Write(true);
                 });
 
                 TimelineController.CurrentController?.EndActivityLine();
@@ -267,10 +269,6 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
                 foreach (var log in logs)
                 {
-                    Thread.Yield();
-
-                    log.IsDone = true;
-
                     var logInfo = new LogLineEventArgs(
                         $"[{DateTime.Now:HH:mm:ss.fff}] {log.Log}",
                         0,
@@ -279,6 +277,9 @@ namespace ACT.SpecialSpellTimer.Config.Views
                         true);
 
                     TimelineController.CurrentController?.EnqueueLog(logInfo);
+
+                    log.IsDone = true;
+                    Thread.Yield();
                 }
 
                 var last = logs.LastOrDefault();
