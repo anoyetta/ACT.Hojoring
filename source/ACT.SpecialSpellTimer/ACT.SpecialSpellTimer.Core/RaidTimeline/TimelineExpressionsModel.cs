@@ -114,32 +114,41 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     expretion = DateTime.Now.AddSeconds(set.TTL.GetValueOrDefault());
                 }
 
-                var value = false;
-
-                if (!set.IsToggle.GetValueOrDefault())
+                var flag = default(Flag);
+                if (Flags.ContainsKey(set.Name))
                 {
-                    value = set.Value.GetValueOrDefault();
+                    flag = Flags[set.Name];
                 }
                 else
                 {
-                    var current = false;
-
-                    if (Flags.ContainsKey(set.Name))
-                    {
-                        var container = Flags[set.Name];
-                        if (DateTime.Now <= container.Expiration)
-                        {
-                            current = container.Value;
-                        }
-                    }
-
-                    value = current ^ true;
+                    flag = new Flag();
+                    Flags[set.Name] = flag;
                 }
 
-                Flags[set.Name] = new Flag(value, expretion);
+                // トグル？
+                if (set.IsToggle.GetValueOrDefault())
+                {
+                    var current = false;
+                    if (DateTime.Now <= flag.Expiration)
+                    {
+                        current = flag.Value;
+                    }
+
+                    flag.Value = current ^ true;
+                }
+                else
+                {
+                    flag.Value = set.Value.GetValueOrDefault();
+                }
+
+                // カウンタを更新する
+                flag.Counter = set.ExecuteCount(flag.Counter);
 
                 // フラグの状況を把握するためにログを出力する
-                TimelineController.RaiseLog($"{TimelineController.TLSymbol} set {set.Name}={value}");
+                TimelineController.RaiseLog(
+                    string.IsNullOrEmpty(set.Count) ?
+                    $"{TimelineController.TLSymbol} set Flags[\"{set.Name}\"] = {flag.Value}" :
+                    $"{TimelineController.TLSymbol} set Flags[\"{set.Name}\"] = {flag.Counter}");
             }
         }
 
@@ -159,29 +168,49 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return true;
             }
 
-            var result = true;
-
+            var totalResult = true;
             foreach (var pre in states)
             {
-                var flag = false;
+                var flag = Flags.ContainsKey(pre.Name) ?
+                    Flags[pre.Name] :
+                    Flag.EmptyFlag;
 
-                if (Flags.ContainsKey(pre.Name))
+                if (!pre.Count.HasValue)
                 {
-                    var container = Flags[pre.Name];
-                    if (DateTime.Now <= container.Expiration)
+                    var value = false;
+                    if (DateTime.Now <= flag.Expiration)
                     {
-                        flag = container.Value;
+                        value = flag.Value;
                     }
-                }
 
-                result &= (pre.Value.GetValueOrDefault() == flag);
+                    totalResult &= (pre.Value.GetValueOrDefault() == value);
+                }
+                else
+                {
+                    totalResult &= (pre.Count.GetValueOrDefault() == flag.Counter);
+                }
             }
 
-            return result;
+            return totalResult;
         }
 
         public class Flag
         {
+            /// <summary>
+            /// 空フラグ
+            /// </summary>
+            public static readonly Flag EmptyFlag = new Flag();
+
+            public Flag()
+            {
+            }
+
+            public Flag(
+                int counter)
+            {
+                this.Counter = counter;
+            }
+
             public Flag(
                 bool value,
                 DateTime expiration)
@@ -191,6 +220,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             public bool Value { get; set; } = false;
+
+            public int Counter { get; set; } = 0;
+
             public DateTime Expiration { get; set; } = DateTime.MaxValue;
         }
     }
@@ -240,6 +272,44 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.IsToggle = bool.TryParse(value, out var v) ? v : (bool?)null;
         }
 
+        private string count = null;
+
+        [XmlAttribute(AttributeName = "count")]
+        public string Count
+        {
+            get => this.count;
+            set => this.SetProperty(ref this.count, value);
+        }
+
+        public int ExecuteCount(
+            int counter)
+        {
+            var result = counter;
+
+            if (string.IsNullOrEmpty(this.Count))
+            {
+                return result;
+            }
+
+            int i;
+            if (!int.TryParse(this.Count, out i))
+            {
+                return result;
+            }
+
+            if (this.Count.StartsWith("+") ||
+                this.Count.StartsWith("-"))
+            {
+                result += i;
+            }
+            else
+            {
+                result = i;
+            }
+
+            return result;
+        }
+
         private double? ttl = -1;
 
         [XmlIgnore]
@@ -284,6 +354,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             get => this.Value?.ToString();
             set => this.Value = bool.TryParse(value, out var v) ? v : (bool?)null;
+        }
+
+        private int? count = null;
+
+        [XmlIgnore]
+        public int? Count
+        {
+            get => this.count;
+            set => this.SetProperty(ref this.count, value);
+        }
+
+        [XmlAttribute(AttributeName = "count")]
+        public string CountXML
+        {
+            get => this.Count?.ToString();
+            set => this.Count = int.TryParse(value, out var v) ? v : (int?)null;
         }
     }
 }
