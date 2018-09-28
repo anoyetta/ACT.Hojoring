@@ -71,14 +71,25 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         #endregion Children
 
         /// <summary>
+        /// ロックオブジェクト
+        /// </summary>
+        public static readonly object ExpressionLocker = new object();
+
+        /// <summary>
         /// フラグ格納領域
         /// </summary>
-        private static readonly Dictionary<string, (bool Value, DateTime Expiration)> Flags = new Dictionary<string, (bool, DateTime)>();
+        private static readonly Dictionary<string, Flag> Flags = new Dictionary<string, Flag>();
 
         /// <summary>
         /// すべてのフラグを消去する
         /// </summary>
-        public static void Clear() => Flags.Clear();
+        public static void Clear()
+        {
+            lock (ExpressionLocker)
+            {
+                Flags.Clear();
+            }
+        }
 
         /// <summary>
         /// 配下のSetステートメントを実行する
@@ -90,6 +101,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     x.Enabled.GetValueOrDefault() &&
                     !string.IsNullOrEmpty(x.Name));
 
+            if (!sets.Any())
+            {
+                return;
+            }
+
             foreach (var set in sets)
             {
                 var expretion = DateTime.MaxValue;
@@ -98,10 +114,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     expretion = DateTime.Now.AddSeconds(set.TTL.GetValueOrDefault());
                 }
 
+                var value = false;
+
                 if (!set.IsToggle.GetValueOrDefault())
                 {
-                    Flags[set.Name] =
-                        (set.Value.GetValueOrDefault(), expretion);
+                    value = set.Value.GetValueOrDefault();
                 }
                 else
                 {
@@ -116,9 +133,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
                     }
 
-                    Flags[set.Name] =
-                        (current ^ true, expretion);
+                    value = current ^ true;
                 }
+
+                Flags[set.Name] = new Flag(value, expretion);
+
+                // フラグの状況を把握するためにログを出力する
+                TimelineController.RaiseLog($"{TimelineController.TLSymbol} set {set.Name}={value}");
             }
         }
 
@@ -157,6 +178,20 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             return result;
+        }
+
+        public class Flag
+        {
+            public Flag(
+                bool value,
+                DateTime expiration)
+            {
+                this.Value = value;
+                this.Expiration = expiration;
+            }
+
+            public bool Value { get; set; } = false;
+            public DateTime Expiration { get; set; } = DateTime.MaxValue;
         }
     }
 

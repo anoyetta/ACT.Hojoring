@@ -68,6 +68,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        [XmlIgnore]
+        public bool IsExpressionAvailable =>
+            this.ExpressionsStatements.Any(x => x.Enabled.GetValueOrDefault());
+
         public void SetExpressions()
         {
             var expressions = this.ExpressionsStatements.FirstOrDefault(x =>

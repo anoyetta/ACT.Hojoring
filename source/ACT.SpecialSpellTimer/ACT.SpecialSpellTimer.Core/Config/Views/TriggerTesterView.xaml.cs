@@ -126,6 +126,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     }
 
                     PluginMainWorker.Instance.InSimulation = false;
+                    ChatLogWorker.Instance?.Write(true);
                 });
 
                 // インスタンススペルを消去する
@@ -374,10 +375,6 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
                 foreach (var log in logs)
                 {
-                    Thread.Yield();
-
-                    log.IsDone = true;
-
                     var logInfo = new LogLineEventArgs(
                         $"[{DateTime.Now:HH:mm:ss.fff}] {log.Log}",
                         0,
@@ -386,6 +383,9 @@ namespace ACT.SpecialSpellTimer.Config.Views
                         true);
 
                     PluginMainWorker.Instance.LogBuffer.LogInfoQueue.Enqueue(logInfo);
+
+                    log.IsDone = true;
+                    Thread.Yield();
                 }
 
                 var last = logs.LastOrDefault();
