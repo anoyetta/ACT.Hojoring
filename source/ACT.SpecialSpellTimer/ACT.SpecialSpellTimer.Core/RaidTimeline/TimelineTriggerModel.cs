@@ -97,7 +97,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (expressions == null)
             {
-                return false;
+                return true;
             }
 
             lock (TimelineExpressionsModel.ExpressionLocker)
