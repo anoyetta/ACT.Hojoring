@@ -89,13 +89,13 @@ Campacti                        A
 Alteci                          B
 Kreutzet                        B
 Squonk                          B
-"Sanu Vali of Dancing Wing"     B
+"Sanu Vali of Dancing Wings"     B
 Scitalis                        B
 "The Scarecrow"                 B
 "Gnath Cometdrone"              B
 Thextera                        B
 Pterygotus                      B
-Gigantopithecus                 B
+"False Gigantopithecus"                 B
 Lycidas                         B
 Omni                            B
 
