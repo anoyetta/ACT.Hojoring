@@ -20,7 +20,7 @@ using Advanced_Combat_Tracker;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ACT.XIVLog")]
-[assembly: AssemblyCopyright("Copyright © RIGS 2018")]
+[assembly: AssemblyCopyright("Copyright © RINGS 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
