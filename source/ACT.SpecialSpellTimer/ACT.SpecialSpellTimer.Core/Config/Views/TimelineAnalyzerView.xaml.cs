@@ -121,7 +121,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
         private System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog()
         {
             RestoreDirectory = true,
-            Filter = "CombatLog Files|*.log|All Files|*.*",
+            Filter = "CombatLog Files & XIVLog|*.log;*.csv|All Files|*.*",
             FilterIndex = 0,
             DefaultExt = ".log",
             SupportMultiDottedExtensions = true,
@@ -250,13 +250,22 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     return;
                 }
 
+                var isCSV = Path.GetExtension(file).ContainsIgnoreCase("csv");
+
                 try
                 {
-                    await Task.Run(() =>
+                    if (!isCSV)
                     {
-                        var lines = File.ReadAllLines(file, new UTF8Encoding(false));
-                        CombatAnalyzer.Instance.ImportLogLines(lines.ToList());
-                    });
+                        await Task.Run(() =>
+                        {
+                            var lines = File.ReadAllLines(file, new UTF8Encoding(false));
+                            CombatAnalyzer.Instance.ImportLogLines(lines.ToList());
+                        });
+                    }
+                    else
+                    {
+                        await Task.Run(() => CombatAnalyzer.Instance.ImportLogLinesFromCSV(file));
+                    }
 
                     ModernMessageBox.ShowDialog(
                         $"CombatLog Imported",

@@ -16,6 +16,7 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.Globalization;
+using Microsoft.VisualBasic.FileIO;
 using NPOI.SS.UserModel;
 using TamanegiMage.FFXIV_MemoryReader.Model;
 
@@ -1116,8 +1117,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 this.isImporting = true;
 
-                // 冒頭にインポートを示すログを加える
-                logLines.Insert(0, $"[00:00:00.000] {ConstantKeywords.ImportLog}");
+                // 冒頭にインポートを示すログを発生させる
+                this.AnalyzeLogLine(new LogLineEventArgs(
+                    $"[00:00:00.000] {ConstantKeywords.ImportLog}",
+                    0,
+                    DateTime.Now,
+                    string.Empty,
+                    true));
 
                 var now = DateTime.Now;
 
@@ -1131,12 +1137,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 foreach (var line in logLines)
                 {
-                    if (line.Length < 14)
+                    var log = line;
+                    var detectTime = default(DateTime);
+
+                    if (log.Length < 14)
                     {
                         continue;
                     }
 
-                    var timeAsText = line.Substring(0, 14)
+                    var timeAsText = log.Substring(0, 14)
                         .Replace("[", string.Empty)
                         .Replace("]", string.Empty);
 
@@ -1146,7 +1155,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         continue;
                     }
 
-                    var detectTime = new DateTime(
+                    detectTime = new DateTime(
                         now.Year,
                         now.Month,
                         now.Day,
@@ -1156,13 +1165,85 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         time.Millisecond);
 
                     var arg = new LogLineEventArgs(
-                        line,
+                        log,
                         0,
                         detectTime,
                         string.Empty,
                         true);
 
                     this.AnalyzeLogLine(arg);
+                }
+
+                var startCombat = this.CurrentCombatLogList.FirstOrDefault(x => x.Raw.Contains(ConstantKeywords.CombatStartNow));
+                if (startCombat != null)
+                {
+                    this.SetOrigin(this.CurrentCombatLogList, startCombat);
+                }
+            }
+            finally
+            {
+                this.isImporting = false;
+            }
+        }
+
+        /// <summary>
+        /// ログ行をインポートして解析する
+        /// </summary>
+        /// <param name="file">対象のファイル</param>
+        public void ImportLogLinesFromCSV(
+            string file)
+        {
+            try
+            {
+                this.isImporting = true;
+
+                // 冒頭にインポートを示すログを発生させる
+                this.AnalyzeLogLine(new LogLineEventArgs(
+                    $"[00:00:00.000] {ConstantKeywords.ImportLog}",
+                    0,
+                    DateTime.Now,
+                    string.Empty,
+                    true));
+
+                var now = DateTime.Now;
+
+                // 各種初期化
+                this.inCombat = false;
+                this.CurrentCombatLogList.Clear();
+                this.ActorHPRate.Clear();
+                this.partyNames = null;
+                this.combatants = null;
+                this.no = 1;
+
+                using (var reader = new StreamReader(file, new UTF8Encoding(false)))
+                using (var parser = new TextFieldParser(reader)
+                {
+                    TextFieldType = FieldType.Delimited,
+                    Delimiters = new[] { "," },
+                    HasFieldsEnclosedInQuotes = true,
+                })
+                {
+                    while (!parser.EndOfData)
+                    {
+                        var fields = parser.ReadFields();
+                        if (fields.Length < 6)
+                        {
+                            continue;
+                        }
+
+                        var detectTime = DateTime.Parse(fields[1]);
+                        var log = fields[4];
+                        var zone = fields[5];
+
+                        var arg = new LogLineEventArgs(
+                            log,
+                            0,
+                            detectTime,
+                            zone,
+                            true);
+
+                        this.AnalyzeLogLine(arg);
+                    }
                 }
 
                 var startCombat = this.CurrentCombatLogList.FirstOrDefault(x => x.Raw.Contains(ConstantKeywords.CombatStartNow));
