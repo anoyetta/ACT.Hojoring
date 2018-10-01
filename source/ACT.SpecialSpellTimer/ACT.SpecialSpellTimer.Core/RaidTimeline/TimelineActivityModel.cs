@@ -76,14 +76,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             var expressions = this.ExpressionsStatements.FirstOrDefault(x =>
                 x.Enabled.GetValueOrDefault());
-            expressions?.Set();
-        }
 
-        public bool GetPredicateResult()
-        {
-            var expressions = this.ExpressionsStatements.FirstOrDefault(x =>
-                x.Enabled.GetValueOrDefault());
-            return expressions?.Predicate() ?? true;
+            if (expressions != null)
+            {
+                lock (TimelineExpressionsModel.ExpressionLocker)
+                {
+                    expressions.Set();
+                }
+            }
         }
 
         public void Add(TimelineBase timeline)

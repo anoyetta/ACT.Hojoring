@@ -70,15 +70,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #endregion Children
 
-        /// <summary>
-        /// ロックオブジェクト
-        /// </summary>
         public static readonly object ExpressionLocker = new object();
 
         /// <summary>
         /// フラグ格納領域
         /// </summary>
-        private static readonly Dictionary<string, Flag> Flags = new Dictionary<string, Flag>();
+        private static readonly Dictionary<string, Flag> Flags = new Dictionary<string, Flag>(128);
 
         /// <summary>
         /// すべてのフラグを消去する
