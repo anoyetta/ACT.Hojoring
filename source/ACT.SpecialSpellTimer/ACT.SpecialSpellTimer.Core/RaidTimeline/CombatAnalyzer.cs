@@ -1193,6 +1193,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public void ImportLogLinesFromCSV(
             string file)
         {
+            if (!File.Exists(file))
+            {
+                return;
+            }
+
             try
             {
                 this.isImporting = true;
@@ -1215,7 +1220,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.combatants = null;
                 this.no = 1;
 
-                using (var reader = new StreamReader(file, new UTF8Encoding(false)))
+                using (var reader = new StreamReader(
+                    new FileStream(
+                        file,
+                        FileMode.Open,
+                        FileAccess.Read,
+                        FileShare.ReadWrite),
+                    new UTF8Encoding(false)))
                 using (var parser = new TextFieldParser(reader)
                 {
                     TextFieldType = FieldType.Delimited,
