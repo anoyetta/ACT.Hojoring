@@ -355,9 +355,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 list.Add(new PlaceholderContainer($"[{job}]", $@"\[{job}\]", PlaceholderTypes.Party));
             }
 
-            list.Add(new PlaceholderContainer("[id]", @"[0-9a-fA-F]+", PlaceholderTypes.Custom));
-            list.Add(new PlaceholderContainer("[id4]", @"[0-9a-fA-F]{4}", PlaceholderTypes.Custom));
-            list.Add(new PlaceholderContainer("[id8]", @"[0-9a-fA-F]{8}", PlaceholderTypes.Custom));
+            list.Add(new PlaceholderContainer("[id]", @"([0-9a-fA-F]+|<id>|\[id\])", PlaceholderTypes.Custom));
+            list.Add(new PlaceholderContainer("[id4]", @"([0-9a-fA-F]{4}|<id4>|\[id4\])", PlaceholderTypes.Custom));
+            list.Add(new PlaceholderContainer("[id8]", @"([0-9a-fA-F]{8}|<id8>|\[id8\])", PlaceholderTypes.Custom));
 
             return list.ToArray();
         }

@@ -116,8 +116,11 @@ namespace ACT.XIVLog
                     }
 
                     this.writter = new StreamWriter(
-                        this.LogfileName,
-                        true,
+                        new FileStream(
+                            this.LogfileName,
+                            FileMode.Append,
+                            FileAccess.Write,
+                            FileShare.Read),
                         new UTF8Encoding(false));
                     this.currentLogfileName = this.LogfileName;
                 }
