@@ -121,7 +121,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
         private System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog()
         {
             RestoreDirectory = true,
-            Filter = "CombatLog Files & XIVLog|*.log;*.csv|All Files|*.*",
+            Filter = "CombatLog, XIVLog|*.log;*.csv|All Files|*.*",
             FilterIndex = 0,
             DefaultExt = ".log",
             SupportMultiDottedExtensions = true,
