@@ -139,18 +139,21 @@ namespace ACT.TTSYukkuri
                 tpTextToSpeak = tpTextToSpeak.Replace("<tp>", tp.ToString());
                 tpTextToSpeak = tpTextToSpeak.Replace("<tpp>", decimal.ToInt32(tpp).ToString());
 
+                // 設定へのショートカット
+                var config = Settings.Default.StatusAlertSettings;
+
                 // HPをチェックして読上げる
-                if (Settings.Default.StatusAlertSettings.EnabledHPAlert &&
+                if (config.EnabledHPAlert &&
                     !string.IsNullOrWhiteSpace(hpTextToSpeak))
                 {
                     if (this.IsWatchTarget(partyMember, player, "HP"))
                     {
-                        if (hpp <= (decimal)Settings.Default.StatusAlertSettings.HPThreshold &&
-                            previousePartyMember.HPRate > (decimal)Settings.Default.StatusAlertSettings.HPThreshold)
+                        if (hpp <= (decimal)config.HPThreshold &&
+                            previousePartyMember.HPRate > (decimal)config.HPThreshold)
                         {
                             if ((DateTime.Now - this.lastHPNotice).TotalSeconds >= NoticeInterval)
                             {
-                                this.Speak(hpTextToSpeak);
+                                this.Speak(hpTextToSpeak, config.NoticeDeviceForHP);
                                 this.lastHPNotice = DateTime.Now;
                             }
                         }
@@ -158,7 +161,7 @@ namespace ACT.TTSYukkuri
                         {
                             if (hpp <= decimal.Zero && previousePartyMember.HPRate != decimal.Zero)
                             {
-                                this.SpeakEmpty("HP", pcname);
+                                this.SpeakEmpty("HP", pcname, config.NoticeDeviceForHP);
                                 this.lastHPNotice = DateTime.Now;
                             }
                         }
@@ -168,17 +171,17 @@ namespace ACT.TTSYukkuri
                 // MPをチェックして読上げる
                 if (hp > 0)
                 {
-                    if (Settings.Default.StatusAlertSettings.EnabledMPAlert &&
+                    if (config.EnabledMPAlert &&
                         !string.IsNullOrWhiteSpace(mpTextToSpeak))
                     {
                         if (this.IsWatchTarget(partyMember, player, "MP"))
                         {
-                            if (mpp <= (decimal)Settings.Default.StatusAlertSettings.MPThreshold &&
-                                previousePartyMember.MPRate > (decimal)Settings.Default.StatusAlertSettings.MPThreshold)
+                            if (mpp <= (decimal)config.MPThreshold &&
+                                previousePartyMember.MPRate > (decimal)config.MPThreshold)
                             {
                                 if ((DateTime.Now - this.lastMPNotice).TotalSeconds >= NoticeInterval)
                                 {
-                                    this.Speak(mpTextToSpeak);
+                                    this.Speak(mpTextToSpeak, config.NoticeDeviceForMP);
                                     this.lastMPNotice = DateTime.Now;
                                 }
                             }
@@ -186,7 +189,7 @@ namespace ACT.TTSYukkuri
                             {
                                 if (mpp <= decimal.Zero && previousePartyMember.MPRate != decimal.Zero)
                                 {
-                                    this.SpeakEmpty("MP", pcname);
+                                    this.SpeakEmpty("MP", pcname, config.NoticeDeviceForMP);
                                     this.lastMPNotice = DateTime.Now;
                                 }
                             }
@@ -197,17 +200,17 @@ namespace ACT.TTSYukkuri
                 // TPをチェックして読上げる
                 if (hp > 0)
                 {
-                    if (Settings.Default.StatusAlertSettings.EnabledTPAlert &&
+                    if (config.EnabledTPAlert &&
                         !string.IsNullOrWhiteSpace(tpTextToSpeak))
                     {
                         if (this.IsWatchTarget(partyMember, player, "TP"))
                         {
-                            if (tpp <= (decimal)Settings.Default.StatusAlertSettings.TPThreshold &&
-                                previousePartyMember.TPRate > (decimal)Settings.Default.StatusAlertSettings.TPThreshold)
+                            if (tpp <= (decimal)config.TPThreshold &&
+                                previousePartyMember.TPRate > (decimal)config.TPThreshold)
                             {
                                 if ((DateTime.Now - this.lastTPNotice).TotalSeconds >= NoticeInterval)
                                 {
-                                    this.Speak(tpTextToSpeak);
+                                    this.Speak(tpTextToSpeak, config.NoticeDeviceForTP);
                                     this.lastTPNotice = DateTime.Now;
                                 }
                             }
@@ -215,7 +218,7 @@ namespace ACT.TTSYukkuri
                             {
                                 if (tpp <= decimal.Zero && previousePartyMember.TPRate != decimal.Zero)
                                 {
-                                    this.SpeakEmpty("TP", pcname);
+                                    this.SpeakEmpty("TP", pcname, config.NoticeDeviceForTP);
                                     this.lastTPNotice = DateTime.Now;
                                 }
                             }
@@ -239,7 +242,8 @@ namespace ACT.TTSYukkuri
         /// PC名</param>
         private void SpeakEmpty(
             string targetStatus,
-            string pcName)
+            string pcName,
+            PlayDevices device = PlayDevices.Both)
         {
             var emptyJa = $"{pcName},{targetStatus}なし。";
             var emptyEn = $"{pcName}, {targetStatus} empty.";
@@ -273,7 +277,7 @@ namespace ACT.TTSYukkuri
                     break;
             }
 
-            this.Speak(tts);
+            this.Speak(tts, device);
         }
 
         /// <summary>
