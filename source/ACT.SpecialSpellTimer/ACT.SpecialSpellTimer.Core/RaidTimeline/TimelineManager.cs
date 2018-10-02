@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using ACT.SpecialSpellTimer.Models;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -310,61 +309,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public bool InSimulation { get; set; } = false;
 
-        public PlaceholderContainer[] GetPlaceholders()
-        {
-            var placeholders = TableCompiler.Instance.PlaceholderList;
-
-            if (!this.InSimulation)
-            {
-                return placeholders.Select(x =>
-                    new PlaceholderContainer(
-                        x.Placeholder
-                            .Replace("<", "[")
-                            .Replace(">", "]"),
-                        x.ReplaceString,
-                        x.Type))
-                    .ToArray();
-            }
-
-            var list = new List<PlaceholderContainer>(placeholders);
-#if DEBUG
-            list.Clear();
-#endif
-
-            if (list.Any())
-            {
-                return placeholders.Select(x =>
-                    new PlaceholderContainer(
-                        x.Placeholder
-                            .Replace("<", "[")
-                            .Replace(">", "]"),
-                        x.ReplaceString,
-                        x.Type))
-                    .ToArray();
-            }
-
-            var jobs = Enum.GetNames(typeof(JobIDs));
-            var jobsPlacement = string.Join("|", jobs.Select(x => $@"\[{x}\]"));
-
-            list.Add(new PlaceholderContainer("[mex]", @"(?<_mex>\[mex\])", PlaceholderTypes.Me));
-            list.Add(new PlaceholderContainer("[nex]", $@"(?<_nex>{jobsPlacement}|\[nex\])", PlaceholderTypes.Party));
-            list.Add(new PlaceholderContainer("[pc]", $@"(?<_pc>{jobsPlacement}|\[pc\]|\[mex\]|\[nex\])", PlaceholderTypes.Party));
-
-            foreach (var job in jobs)
-            {
-                list.Add(new PlaceholderContainer($"[{job}]", $@"\[{job}\]", PlaceholderTypes.Party));
-            }
-
-            list.Add(new PlaceholderContainer("[id]", @"([0-9a-fA-F]+|<id>|\[id\])", PlaceholderTypes.Custom));
-            list.Add(new PlaceholderContainer("[id4]", @"([0-9a-fA-F]{4}|<id4>|\[id4\])", PlaceholderTypes.Custom));
-            list.Add(new PlaceholderContainer("[id8]", @"([0-9a-fA-F]{8}|<id8>|\[id8\])", PlaceholderTypes.Custom));
-
-            return list.ToArray();
-        }
+        public IEnumerable<PlaceholderContainer> GetPlaceholders() =>
+            TableCompiler.Instance.GetPlaceholders(this.InSimulation, true);
 
         public string ReplacePlaceholder(
             string keyword,
-            PlaceholderContainer[] placeholders = null)
+            IEnumerable<PlaceholderContainer> placeholders = null)
         {
             var replacedKeyword = keyword;
 
@@ -476,7 +426,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // 正規表現をセットする
             void setRegex(
                 TimelineBase element,
-                IList<PlaceholderContainer> placeholderList)
+                IEnumerable<PlaceholderContainer> phs)
             {
                 if (!(element is ISynchronizable sync))
                 {
@@ -487,7 +437,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (!string.IsNullOrEmpty(replacedKeyword))
                 {
-                    foreach (var ph in placeholderList)
+                    foreach (var ph in phs)
                     {
                         replacedKeyword = replacedKeyword.Replace(
                             ph.Placeholder,
