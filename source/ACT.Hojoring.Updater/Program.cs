@@ -37,10 +37,16 @@ namespace ACT.Hojoring.Updater
                     bool.TryParse(args[1], out usePre);
                 }
 
+#if false
                 var client = new GitHubClient(new ProductHeaderValue("ACT.Hojoring.Updater"))
                 {
                     Credentials = new Credentials("4a380243ea7a6894be1c1cfc154f4fecd1a46bd0")
                 };
+#else
+                // rate limit に引っかかるため token を使用しない
+                // 1IP につき 60access/h となる
+                var client = new GitHubClient(new ProductHeaderValue("ACT.Hojoring.Updater"));
+#endif
 
                 var releases = client.Repository.Release.GetAll("anoyetta", "ACT.Hojoring").Result;
 
