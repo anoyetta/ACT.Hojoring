@@ -80,6 +80,8 @@ namespace ACT.XIVLog
 
             void doWork()
             {
+                var isNeedsFlush = false;
+
                 if (string.IsNullOrEmpty(Config.Instance.OutputDirectory) ||
                     LogQueue.IsEmpty)
                 {
@@ -87,18 +89,10 @@ namespace ACT.XIVLog
                     return;
                 }
 
-                if (this.currentZoneName != ActGlobals.oFormActMain.CurrentZone)
-                {
-                    this.currentZoneName = ActGlobals.oFormActMain.CurrentZone;
-                    this.lastFlushTimestamp = DateTime.Now;
-                    this.writter?.Flush();
-                }
-
                 if ((DateTime.Now - this.lastFlushTimestamp).TotalSeconds
                     >= Config.Instance.FlushInterval)
                 {
-                    this.lastFlushTimestamp = DateTime.Now;
-                    this.writter?.Flush();
+                    isNeedsFlush = true;
                 }
 
                 if (this.currentLogfileName != this.LogfileName)
@@ -130,6 +124,12 @@ namespace ACT.XIVLog
                 this.writeBuffer.Clear();
                 while (LogQueue.TryDequeue(out XIVLog xivlog))
                 {
+                    if (this.currentZoneName != xivlog.ZoneName)
+                    {
+                        this.currentZoneName = xivlog.ZoneName;
+                        isNeedsFlush = true;
+                    }
+
                     this.writeBuffer.AppendLine(xivlog.ToCSVLine());
                     Thread.Yield();
                 }
@@ -137,6 +137,12 @@ namespace ACT.XIVLog
                 if (this.writeBuffer.Length > 0)
                 {
                     this.writter.Write(this.writeBuffer.ToString());
+                }
+
+                if (isNeedsFlush)
+                {
+                    this.lastFlushTimestamp = DateTime.Now;
+                    this.writter?.Flush();
                 }
             }
         }
@@ -244,7 +250,9 @@ namespace ACT.XIVLog
             this.Timestamp = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " " + timeString);
             this.LogType = line.Substring(15, 2);
             this.Log = line.Substring(15);
-            this.ZoneName = ActGlobals.oFormActMain?.CurrentZone ?? string.Empty;
+            this.ZoneName = !string.IsNullOrEmpty(logInfo.detectedZone) ?
+                logInfo.detectedZone :
+                "NO DATA";
 
             if (currentNo >= int.MaxValue)
             {
@@ -306,7 +314,7 @@ namespace ACT.XIVLog
 
                 foreach (var com in combatants)
                 {
-                    var alias = $"{com.AsJob()?.NameEN ?? "Unknown"} {JobAliases[com.Job % 10]}";
+                    var alias = $"{com.AsJob()?.NameEN.Replace(" ", string.Empty) ?? "Unknown"} {JobAliases[com.Job % 10]}";
                     PCNameDictionary[com.Name] = alias;
                     PCNameDictionary[com.NameFI] = alias;
                     PCNameDictionary[com.NameIF] = alias;
@@ -326,13 +334,14 @@ namespace ACT.XIVLog
             foreach (var entry in PCNameDictionary)
             {
                 result = result.Replace(entry.Key, entry.Value);
+                Thread.Yield();
             }
 
             return result;
         }
 
         public string ToCSVLine() =>
-            $"{this.No}," +
+            $"{this.No:000000000}," +
             $"{this.Timestamp:yyyy-MM-dd HH:mm:ss.fff}," +
             $"{(this.IsImport ? 1 : 0)}," +
             $"\"{this.LogType}\"," +
