@@ -174,7 +174,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         public void SetSyncToHide(
-            PlaceholderContainer[] placeholders = null)
+            IEnumerable<PlaceholderContainer> placeholders = null)
         {
             if (string.IsNullOrEmpty(this.SyncToHideKeyword))
             {

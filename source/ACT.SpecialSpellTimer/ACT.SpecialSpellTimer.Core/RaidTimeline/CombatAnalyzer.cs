@@ -1240,6 +1240,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     while (!parser.EndOfData)
                     {
+                        Thread.Yield();
+
                         var fields = default(string[]);
 
                         try
@@ -1260,12 +1262,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         var log = fields[4];
                         var zone = fields[5];
 
-                        // ログ種別のみの行？
-                        if (log.Length <= 3)
-                        {
-                            continue;
-                        }
-
                         // 直前とまったく同じ行はカットする
                         if (preLog[0] == log ||
                             preLog[1] == log ||
@@ -1281,13 +1277,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
 
                         // 無効なログ？
-                        if (ignores.Any(x => log.Contains(x.Keyword)))
-                        {
-                            continue;
-                        }
-
-                        // ダメージ系の不要なログか？
-                        if (LogBuffer.IsDamageLog(log))
+                        // ログ種別だけのゴミ？, 不要なログキーワード？, TLシンボルあり？, ダメージ系ログ？
+                        if (log.Length <= 3 ||
+                            ignores.Any(x => log.Contains(x.Keyword)) ||
+                            log.Contains(TimelineController.TLSymbol) ||
+                            LogBuffer.IsDamageLog(log))
                         {
                             continue;
                         }
