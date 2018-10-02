@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Config.Models;
+using ACT.SpecialSpellTimer.RaidTimeline;
 using ACT.SpecialSpellTimer.Sound;
 using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
@@ -602,7 +603,7 @@ namespace ACT.SpecialSpellTimer.Models
                 return sourceKeyword;
             }
 
-            var placeholders = this.PlaceholderList;
+            var placeholders = this.GetPlaceholders(this.InSimulation, false);
 
             string replace(string text)
             {
@@ -844,31 +845,130 @@ namespace ACT.SpecialSpellTimer.Models
 
         #region プレースホルダに関するメソッド群
 
-        private volatile List<PlaceholderContainer> placeholderList =
-            new List<PlaceholderContainer>();
-
-        public IReadOnlyList<PlaceholderContainer> PlaceholderList
-        {
-            get
-            {
-                lock (this.PlaceholderListSyncRoot)
-                {
-                    return
-                        new List<PlaceholderContainer>(
-                            this.placeholderList);
-                }
-            }
-        }
-
-        private object PlaceholderListSyncRoot =>
-            ((ICollection)this.placeholderList)?.SyncRoot;
-
         private readonly PlaceholderContainer[] IDPlaceholders = new[]
         {
             new PlaceholderContainer("<id>", "[0-9a-fA-F]+", PlaceholderTypes.Custom),
             new PlaceholderContainer("<id4>", "[0-9a-fA-F]{4}", PlaceholderTypes.Custom),
             new PlaceholderContainer("<id8>", "[0-9a-fA-F]{8}", PlaceholderTypes.Custom),
         };
+
+        private volatile List<PlaceholderContainer> placeholderList =
+            new List<PlaceholderContainer>();
+
+        public IReadOnlyList<PlaceholderContainer> PlaceholderList =>
+            this.GetPlaceholders(
+                this.InSimulation || TimelineManager.Instance.InSimulation,
+                false)
+            as List<PlaceholderContainer>;
+
+        private object PlaceholderListSyncRoot =>
+            ((ICollection)this.placeholderList)?.SyncRoot;
+
+        public IEnumerable<PlaceholderContainer> GetPlaceholders(
+            bool inSimulation = false,
+            bool forTimeline = false)
+        {
+            var placeholders = default(IEnumerable<PlaceholderContainer>);
+            lock (this.PlaceholderListSyncRoot)
+            {
+                placeholders = new List<PlaceholderContainer>(this.placeholderList);
+            }
+
+            // Simulationモードでなければ抜ける
+            if (!inSimulation)
+            {
+                if (forTimeline)
+                {
+                    placeholders = placeholders.Select(x =>
+                        new PlaceholderContainer(
+                            x.Placeholder
+                                .Replace("<", "[")
+                                .Replace(">", "]"),
+                            x.ReplaceString,
+                            x.Type));
+                }
+
+                return placeholders;
+            }
+
+            // プレースホルダ生成用のメソッド
+            string createPH(string name) => !forTimeline ? $"<{name}>" : $"[{name}]";
+
+            // シミュレータ向けプレースホルダのリストを生成する
+            var placeholdersInSim = new List<PlaceholderContainer>(placeholders);
+#if DEBUG
+            placeholdersInSim.Clear();
+#endif
+            // ID系プレースホルダ
+            var idsInSim = new[]
+            {
+                new PlaceholderContainer(createPH("id"), @"([0-9a-fA-F]+|<id>|\[id\]|<id4>|\[id4\]|<id8>|\[id8\])", PlaceholderTypes.Custom),
+                new PlaceholderContainer(createPH("id4"), @"([0-9a-fA-F]{4}|<id4>|\[id4\])", PlaceholderTypes.Custom),
+                new PlaceholderContainer(createPH("id8"), @"([0-9a-fA-F]{8}|<id8>|\[id8\])", PlaceholderTypes.Custom)
+            };
+
+            var jobs = Enum.GetNames(typeof(JobIDs));
+            var jobsPlacement = string.Join("|", jobs.Select(x => $@"\[{x}\]"));
+
+            // JOB系プレースホルダ
+            var jobsInSim = new List<PlaceholderContainer>();
+            foreach (var job in jobs)
+            {
+                jobsInSim.Add(new PlaceholderContainer(createPH(job), $@"\[{job}\]", PlaceholderTypes.Party));
+            }
+
+            // PC系プレースホルダ
+            var pcInSim = new[]
+            {
+                new PlaceholderContainer(createPH("mex"), @"(?<_mex>\[mex\])", PlaceholderTypes.Me),
+                new PlaceholderContainer(createPH("nex"), $@"(?<_nex>{jobsPlacement}|\[nex\])", PlaceholderTypes.Party),
+                new PlaceholderContainer(createPH("pc"), $@"(?<_pc>{jobsPlacement}|\[pc\]|\[mex\]|\[nex\])", PlaceholderTypes.Party),
+            };
+
+            // ID系を置き換える
+            foreach (var ph in idsInSim)
+            {
+                var old = placeholdersInSim.FirstOrDefault(x => x.Placeholder == ph.Placeholder);
+                if (old != null)
+                {
+                    old.ReplaceString = ph.ReplaceString;
+                }
+                else
+                {
+                    placeholdersInSim.Add(ph);
+                }
+            }
+
+            // JOB系を追加する
+            foreach (var ph in jobsInSim)
+            {
+                var old = placeholdersInSim.FirstOrDefault(x => x.Placeholder == ph.Placeholder);
+                if (old != null)
+                {
+                    // NO-OP
+                }
+                else
+                {
+                    placeholdersInSim.Add(ph);
+                }
+            }
+
+            // PC系を追加する
+            foreach (var ph in pcInSim)
+            {
+                var old = placeholdersInSim.FirstOrDefault(x => x.Placeholder == ph.Placeholder);
+                if (old != null)
+                {
+                    // NO-OP
+                }
+                else
+                {
+                    placeholdersInSim.Add(ph);
+                }
+            }
+
+            return placeholdersInSim;
+        }
 
         public void RefreshPartyPlaceholders()
         {
@@ -893,6 +993,10 @@ namespace ACT.SpecialSpellTimer.Models
                 {
                     @"\<pc\>",
                     @"\[pc\]",
+                    @"\<mex\>",
+                    @"\[mex\]",
+                    @"\<nex\>",
+                    @"\[nex\]",
                 }));
             var oldValue = $"<pc>";
             var newValue = $"(?<_pc>{names})";
@@ -910,7 +1014,13 @@ namespace ACT.SpecialSpellTimer.Models
                 x;
 
             // 自分以外のPTメンバを示す <nex> を登録する
-            names = string.Join("|", partyListSorted.Select(x => x.NamesRegex).ToArray());
+            names = string.Join(
+                "|",
+                partyListSorted.Select(x => x.NamesRegex).Concat(new[]
+                {
+                    @"\<nex\>",
+                    @"\[nex\]",
+                }));
             oldValue = $"<nex>";
             newValue = $"(?<_nex>{names})";
             newList.Add(new PlaceholderContainer(
@@ -1120,7 +1230,7 @@ namespace ACT.SpecialSpellTimer.Models
 
                 this.placeholderList.Add(new PlaceholderContainer(
                     "<mex>",
-                    $"(?<_mex>{this.player.NamesRegex})",
+                    $@"(?<_mex>{this.player.NamesRegex}|\<mex\>|\[mex\])",
                     PlaceholderTypes.Me));
             }
         }

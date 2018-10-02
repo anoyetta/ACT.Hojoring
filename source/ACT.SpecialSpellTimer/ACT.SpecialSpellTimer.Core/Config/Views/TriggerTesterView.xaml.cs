@@ -54,6 +54,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
                 // シミュレーションモードをONにする
                 PluginMainWorker.Instance.InSimulation = true;
+                TableCompiler.Instance.InSimulation = true;
 
                 await Task.Delay(TimeSpan.FromSeconds(0.5));
                 await WPFHelper.BeginInvoke(() =>
@@ -73,6 +74,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
             this.Closed += (x, y) =>
             {
                 PluginMainWorker.Instance.InSimulation = false;
+                TableCompiler.Instance.InSimulation = false;
                 this.ClearTestCondition();
             };
 
