@@ -279,7 +279,7 @@ namespace ACT.XIVLog
 
         public LogLineEventArgs LogInfo { get; set; }
 
-        private static readonly Dictionary<string, string> PCNameDictionary = new Dictionary<string, string>();
+        private static readonly Dictionary<string, Alias> PCNameDictionary = new Dictionary<string, Alias>(512);
 
         private static readonly string[] JobAliases = new[]
         {
@@ -312,12 +312,25 @@ namespace ACT.XIVLog
                     return;
                 }
 
+                // 古くなったエントリを削除する
+                var olds = PCNameDictionary.Where(x =>
+                    (DateTime.Now - x.Value.Timestamp).TotalMinutes >= 10.0)
+                    .ToArray();
+                foreach (var toRemove in olds)
+                {
+                    PCNameDictionary.Remove(toRemove.Key);
+                    Thread.Yield();
+                }
+
                 foreach (var com in combatants)
                 {
-                    var alias = $"{com.AsJob()?.NameEN.Replace(" ", string.Empty) ?? "Unknown"} {JobAliases[com.Job % 10]}";
+                    var alias = new Alias(
+                        $"{com.AsJob()?.NameEN.Replace(" ", string.Empty) ?? "Unknown"} {JobAliases[com.Job % 10]}",
+                        DateTime.Now);
                     PCNameDictionary[com.Name] = alias;
                     PCNameDictionary[com.NameFI] = alias;
                     PCNameDictionary[com.NameIF] = alias;
+                    Thread.Yield();
                 }
             });
         }
@@ -333,7 +346,13 @@ namespace ACT.XIVLog
 
             foreach (var entry in PCNameDictionary)
             {
-                result = result.Replace(entry.Key, entry.Value);
+                var before = result;
+                result = result.Replace(entry.Key, entry.Value.Replacement);
+                if (result != before)
+                {
+                    entry.Value.Timestamp = DateTime.Now;
+                }
+
                 Thread.Yield();
             }
 
@@ -347,5 +366,19 @@ namespace ACT.XIVLog
             $"\"{this.LogType}\"," +
             $"\"{this.GetReplacedLog()}\"," +
             $"\"{this.ZoneName}\"";
+
+        public class Alias
+        {
+            public Alias(
+                string replacement,
+                DateTime timestamp)
+            {
+                this.Replacement = replacement;
+                this.Timestamp = timestamp;
+            }
+
+            public string Replacement { get; set; }
+            public DateTime Timestamp { get; set; }
+        }
     }
 }
