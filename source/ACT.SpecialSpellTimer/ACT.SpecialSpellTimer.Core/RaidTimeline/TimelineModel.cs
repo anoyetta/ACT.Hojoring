@@ -100,6 +100,132 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 this.SetProperty(ref this.description, text);
+                this.RaisePropertyChanged(nameof(this.DescriptionForDisplay));
+            }
+        }
+
+        private string author = null;
+
+        [XmlElement(ElementName = "author")]
+        public string Author
+        {
+            get => this.author;
+            set
+            {
+                var text = string.Empty;
+
+                if (!string.IsNullOrEmpty(value))
+                {
+                    using (var sr = new StringReader(value))
+                    {
+                        while (true)
+                        {
+                            var line = sr.ReadLine();
+                            if (line == null)
+                            {
+                                break;
+                            }
+
+                            line = line.Trim();
+                            if (string.IsNullOrEmpty(line))
+                            {
+                                continue;
+                            }
+
+                            text += !string.IsNullOrEmpty(text) ?
+                                Environment.NewLine + line :
+                                line;
+                        }
+                    }
+                }
+
+                this.SetProperty(ref this.author, text);
+                this.RaisePropertyChanged(nameof(this.AuthorForDisplay));
+                this.RaisePropertyChanged(nameof(this.IsExistsAuthor));
+                this.RaisePropertyChanged(nameof(this.DescriptionForDisplay));
+            }
+        }
+
+        /// <summary>
+        /// CC BY-SA ライセンス表記
+        /// </summary>
+        public const string CC_BY_SALicense = "CC BY-SA";
+
+        /// <summary>
+        /// Public Domain ライセンス表記
+        /// </summary>
+        public const string PublicDomainLicense = "Public Domain";
+
+        private string license = null;
+
+        [XmlElement(ElementName = "license")]
+        public string License
+        {
+            get => this.license;
+            set
+            {
+                if (this.SetProperty(ref this.license, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.LicenseForDisplay));
+                    this.RaisePropertyChanged(nameof(this.IsExistsLicense));
+                    this.RaisePropertyChanged(nameof(this.DescriptionForDisplay));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public bool IsExistsAuthor => !string.IsNullOrEmpty(this.Author);
+
+        [XmlIgnore]
+        public bool IsExistsLicense => !string.IsNullOrEmpty(this.License);
+
+        [XmlIgnore]
+        public string AuthorForDisplay => string.IsNullOrEmpty(this.Author) ?
+            null :
+            $"Author : {this.Author.Replace(Environment.NewLine, ", ")}";
+
+        [XmlIgnore]
+        public string LicenseForDisplay => string.IsNullOrEmpty(this.License) ?
+            null :
+            $"License: {this.License}";
+
+        [XmlIgnore]
+        public string DescriptionForDisplay
+        {
+            get
+            {
+                var result = this.Description;
+
+#if false
+                var b = new List<string>(); ;
+                if (this.IsExistsAuthor)
+                {
+                    b.Add(this.AuthorForDisplay);
+                }
+
+                if (this.IsExistsLicense)
+                {
+                    b.Add(this.LicenseForDisplay);
+                }
+
+                if (b.Any())
+                {
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        result += $"\n\n{string.Join(Environment.NewLine, b)}";
+                    }
+                    else
+                    {
+                        result = string.Join(Environment.NewLine, b);
+                    }
+                }
+#endif
+                if (string.IsNullOrEmpty(result))
+                {
+                    result = "no description";
+                }
+
+                return result;
             }
         }
 

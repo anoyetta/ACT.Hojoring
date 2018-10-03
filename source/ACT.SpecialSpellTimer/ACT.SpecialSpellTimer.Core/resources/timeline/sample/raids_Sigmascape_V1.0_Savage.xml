@@ -5,10 +5,8 @@
   <description>
     シグマ1層向けのタイムラインです。
     既存のタイムラインをスペスペたいむに変換するとこのような感じになると思います。
-
-    designed by Hojoring Forum
-    https://discord.gg/n6Mut3F
   </description>
+  <author>anoyetta with Hojoring Forum</author>
   <zone>Sigmascape V1.0 (Savage)</zone>
   <locale>JA</locale>
   <entry>前半フェーズ</entry>
