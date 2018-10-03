@@ -151,7 +151,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
-        public void LoadTimelineModels()
+        public async void LoadTimelineModels()
         {
             var dir = this.TimelineDirectory;
             if (!Directory.Exists(dir))
@@ -159,7 +159,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            WPFHelper.Invoke(() => this.TimelineModels.Clear());
+            await WPFHelper.InvokeAsync(() => this.TimelineModels.Clear());
 
             var sampleDirectory = Path.Combine(dir, "sample");
 
@@ -229,7 +229,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 Thread.Sleep(10);
             }
 
-            WPFHelper.Invoke(() =>
+            await WPFHelper.InvokeAsync(() =>
             {
                 foreach (var tl in this.TimelineModels)
                 {

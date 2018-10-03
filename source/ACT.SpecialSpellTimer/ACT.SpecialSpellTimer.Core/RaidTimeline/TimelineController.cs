@@ -1325,17 +1325,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // P-Syncトリガに対して判定する
             foreach (var tri in psyncs)
             {
-                if (!tri.IsExpressionAvailable)
-                {
-                    detectPSync(tri);
-                }
-                else
-                {
-                    lock (TimelineExpressionsModel.ExpressionLocker)
-                    {
-                        detectPSync(tri);
-                    }
-                }
+                detectPSync(tri);
+                Thread.Yield();
             }
 
             // P-Syncトリガに対して判定する
