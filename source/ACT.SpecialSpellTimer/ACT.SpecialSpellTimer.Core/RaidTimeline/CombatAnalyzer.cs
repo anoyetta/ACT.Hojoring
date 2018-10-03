@@ -1523,6 +1523,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             timeline.Description =
                 "自動生成によるドラフト版タイムラインです。タイムライン定義の作成にご活用ください。" + Environment.NewLine +
                 "なお未編集のままで運用できるようには設計されていません。";
+            timeline.Author = Environment.UserName;
+            timeline.License = TimelineModel.CC_BY_SALicense;
 
             foreach (var log in combatLogs.Where(x =>
                 outputTypes.Contains(x.LogType)))
