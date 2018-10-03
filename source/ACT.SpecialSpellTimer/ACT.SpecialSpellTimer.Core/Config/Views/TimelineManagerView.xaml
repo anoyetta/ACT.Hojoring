@@ -144,18 +144,44 @@
                   CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}"
                   VerticalAlignment="Center"
                   IsTabStop="False"
-                  Focusable="False"
-                  ToolTip="{Binding Description, Mode=OneWay}">
+                  Focusable="False">
+                  <CheckBox.Resources>
+                    <Style TargetType="ToolTip">
+                      <Setter Property="Background" Value="Transparent" />
+                      <Setter Property="BorderBrush" Value="Transparent" />
+                      <Setter Property="BorderThickness" Value="0" />
+                      <Setter Property="Padding" Value="0" />
+                    </Style>
+                  </CheckBox.Resources>
+                  <CheckBox.ToolTip>
+                    <Border
+                      CornerRadius="6"
+                      Margin="0"
+                      Padding="12 8"
+                      BorderThickness="0"
+                      Background="#fbfaf5">
+                      <TextBlock
+                        FontFamily="{DynamicResource UIFont}"
+                        FontSize="{DynamicResource UIFontSize}"
+                        Foreground="#2e2930"
+                        Text="{Binding DescriptionForDisplay, Mode=OneWay}" />
+                    </Border>
+                  </CheckBox.ToolTip>
 
                   <StackPanel Margin="5 0 0 0" MaxWidth="400">
+                    <StackPanel.Resources>
+                      <SolidColorBrush x:Key="DetailsTextColor" Color="#383c3c" />
+                    </StackPanel.Resources>
                     <StackPanel Orientation="Horizontal">
                       <TextBlock Text="{Binding Path=Name, Mode=OneWay}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" MaxWidth="330" TextWrapping="WrapWithOverflow" />
                       <TextBlock Margin="15 0 0 0" Text="{Binding Path=Revision, Mode=OneWay}" FontSize="14" VerticalAlignment="Center" />
                     </StackPanel>
 
-                    <TextBlock Margin="10 5 0 0" Text="{Binding Path=Zone, Mode=OneWay}" FontSize="13" Foreground="DimGray" />
-                    <TextBlock Margin="10 1 0 0" Text="{Binding Path=LocaleText, Mode=OneWay}" FontSize="13" Foreground="DimGray" />
-                    <TextBlock Margin="10 1 0 0" Text="{Binding Path=SourceFileName, Mode=OneWay}" FontSize="13" Foreground="DimGray" />
+                    <TextBlock Margin="10 5 0 0" Text="{Binding Path=Zone, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" />
+                    <TextBlock Margin="10 1 0 0" Text="{Binding Path=LocaleText, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" />
+                    <TextBlock Margin="10 1 0 3" Text="{Binding Path=SourceFileName, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" />
+                    <TextBlock Margin="10 1 0 0" Text="{Binding Path=AuthorForDisplay, Mode=OneWay}" FontSize="11" Foreground="{DynamicResource DetailsTextColor}" Visibility="{Binding Path=IsExistsAuthor, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" />
+                    <TextBlock Margin="10 1 0 0" Text="{Binding Path=LicenseForDisplay, Mode=OneWay}" FontSize="11" Foreground="{DynamicResource DetailsTextColor}" Visibility="{Binding Path=IsExistsLicense, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" />
                   </StackPanel>
                 </CheckBox>
 
