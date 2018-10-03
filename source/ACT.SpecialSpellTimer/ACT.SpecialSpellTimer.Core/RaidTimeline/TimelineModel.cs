@@ -24,6 +24,8 @@ using FFXIV.Framework.Globalization;
 using FFXIV.Framework.WPF.Views;
 using Prism.Commands;
 using RazorEngine;
+using RazorEngine.Compilation;
+using RazorEngine.Compilation.ReferenceResolver;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
 using RazorEngine.Text;
@@ -533,6 +535,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             config.Language = Language.CSharp;
 
+            config.ReferenceResolver = new RazorReferenceResolver();
+
+            config.Namespaces.Add("System.Runtime");
             config.Namespaces.Add("System.IO");
             config.Namespaces.Add("System.Linq");
             config.Namespaces.Add("System.Text");
@@ -1152,5 +1157,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         #endregion Dummy Timeline
+    }
+
+    public class RazorReferenceResolver : IReferenceResolver
+    {
+        public IEnumerable<CompilerReference> GetReferences(
+            TypeContext context,
+            IEnumerable<CompilerReference> includeAssemblies = null) =>
+            new UseCurrentAssembliesReferenceResolver()
+                .GetReferences(context, includeAssemblies)
+                .Where(f => !f.GetFile().EndsWith(".winmd"));
     }
 }
