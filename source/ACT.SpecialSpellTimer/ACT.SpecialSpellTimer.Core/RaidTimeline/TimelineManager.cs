@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using ACT.SpecialSpellTimer.Models;
 using FFXIV.Framework.Common;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
@@ -78,11 +79,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             this.isLoading = true;
 
-            WPFHelper.BeginInvoke(() =>
+            WPFHelper.BeginInvoke(async () =>
             {
                 try
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
+                    await Task.Delay(TimeSpan.FromSeconds(5));
                     this.LoadCurrentTimeline();
                 }
                 finally
@@ -237,6 +238,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         tl.IsActive = false;
                         tl.Controller.Unload();
+                        Thread.Yield();
                     }
                 }
 
