@@ -26,7 +26,7 @@ namespace ACT.SpecialSpellTimer.Models
     public class Spell :
         TreeItemBase,
         IDisposable,
-        ITrigger
+        IFilterizableTrigger
     {
         [XmlIgnore]
         public override ItemTypes ItemType => ItemTypes.Spell;
