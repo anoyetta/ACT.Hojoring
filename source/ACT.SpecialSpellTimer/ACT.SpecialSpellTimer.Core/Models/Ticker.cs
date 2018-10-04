@@ -24,7 +24,7 @@ namespace ACT.SpecialSpellTimer.Models
     public class Ticker :
         TreeItemBase,
         IDisposable,
-        ITrigger
+        IFilterizableTrigger
     {
         [XmlIgnore]
         public override ItemTypes ItemType => ItemTypes.Ticker;
@@ -192,6 +192,15 @@ namespace ACT.SpecialSpellTimer.Models
         {
             get => this.jobFilter;
             set => this.SetProperty(ref this.jobFilter, value);
+        }
+
+        /// <summary>
+        /// パーティジョブフィルタ（未実装）
+        /// </summary>
+        public string PartyJobFilter
+        {
+            get => string.Empty;
+            set { }
         }
 
         private string zoneFilter = string.Empty;
