@@ -224,6 +224,9 @@ namespace FFXIV.Framework.FFXIVHelper
             this.NameII = $"{blocks[0].Substring(0, 1)}. {blocks[1].Substring(0, 1)}.";
         }
 
+        public override string ToString() =>
+            $"{this.Name}, {this.JobID}";
+
         public Combatant Clone() => (Combatant)this.MemberwiseClone();
 
         object ICloneable.Clone() => this.MemberwiseClone();

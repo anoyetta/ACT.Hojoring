@@ -262,9 +262,13 @@ namespace ACT.SpecialSpellTimer.Models
             }
         }
 
-        public void CompileSpells()
+        /// <summary>
+        /// トリガのコンパイル（フィルタ）向けの現在情報を取得する
+        /// </summary>
+        /// <returns>
+        /// プレイヤー, パーティリスト, ゾーンID</returns>
+        private (Combatant Player, IEnumerable<Combatant> PartyList, int? ZoneID) GetCurrentFilterCondition()
         {
-            var currentZoneID = default(int?);
             var currentPlayer = this.player ?? new Combatant()
             {
                 ID = 0,
@@ -272,6 +276,9 @@ namespace ACT.SpecialSpellTimer.Models
                 Job = (byte)JobIDs.ADV,
             };
 
+            var currentPartyList = this.partyList;
+
+            var currentZoneID = default(int?);
             lock (this.SimulationLocker)
             {
                 if (this.InSimulation &&
@@ -285,61 +292,15 @@ namespace ACT.SpecialSpellTimer.Models
                 }
             }
 
-            bool filter(
-                Spell spell,
-                Combatant playerData)
-            {
-                var enabledByJob = false;
-                var enabledByPartyJob = false;
-                var enabledByZone = false;
+            return (currentPlayer, currentPartyList, currentZoneID);
+        }
 
-                // ジョブフィルタをかける
-                if (string.IsNullOrEmpty(spell.JobFilter))
-                {
-                    enabledByJob = true;
-                }
-                else
-                {
-                    var jobs = spell.JobFilter.Split(',');
-                    if (jobs.Any(x => x == playerData.Job.ToString()))
-                    {
-                        enabledByJob = true;
-                    }
-                }
-
-                // filter by specific jobs in party
-                if (string.IsNullOrEmpty(spell.PartyJobFilter))
-                {
-                    enabledByPartyJob = true;
-                }
-                else
-                {
-                    var jobs = spell.PartyJobFilter.Split(',');
-                    if (jobs.Any(x => this.partyList.Where(c => !c.IsPlayer).Any(c => c.Job.ToString() == x)))
-                    {
-                        enabledByPartyJob = true;
-                    }
-                }
-
-                // ゾーンフィルタをかける
-                if (string.IsNullOrEmpty(spell.ZoneFilter))
-                {
-                    enabledByZone = true;
-                }
-                else
-                {
-                    if (currentZoneID.HasValue)
-                    {
-                        var zoneIDs = spell.ZoneFilter.Split(',');
-                        if (zoneIDs.Any(x => x == currentZoneID.ToString()))
-                        {
-                            enabledByZone = true;
-                        }
-                    }
-                }
-
-                return enabledByJob && enabledByZone && enabledByPartyJob;
-            }
+        /// <summary>
+        /// スペルをコンパイルする
+        /// </summary>
+        public void CompileSpells()
+        {
+            var current = this.GetCurrentFilterCondition();
 
             var query =
                 from x in SpellTable.Instance.Table
@@ -347,7 +308,9 @@ namespace ACT.SpecialSpellTimer.Models
                 x.IsDesignMode ||
                 (
                     x.Enabled &&
-                    filter(x, currentPlayer)
+
+                    // フィルタを判定する
+                    x.PredicateFilters(current.Player, current.PartyList, current.ZoneID)
                 )
                 orderby
                 x.Panel?.PanelName,
@@ -412,69 +375,12 @@ namespace ACT.SpecialSpellTimer.Models
             this.RaiseTableChenged();
         }
 
+        /// <summary>
+        /// テロップをコンパイルする
+        /// </summary>
         public void CompileTickers()
         {
-            var currentZoneID = default(int?);
-            var currentPlayer = this.player ?? new Combatant()
-            {
-                ID = 0,
-                Name = "Dummy Player",
-                Job = (byte)JobIDs.ADV,
-            };
-
-            lock (this.SimulationLocker)
-            {
-                if (this.InSimulation &&
-                    this.SimulationZoneID != 0)
-                {
-                    currentZoneID = this.SimulationZoneID;
-                }
-                else
-                {
-                    currentZoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
-                }
-            }
-
-            bool filter(
-                Ticker spell,
-                Combatant playerData)
-            {
-                var enabledByJob = false;
-                var enabledByZone = false;
-
-                // ジョブフィルタをかける
-                if (string.IsNullOrWhiteSpace(spell.JobFilter))
-                {
-                    enabledByJob = true;
-                }
-                else
-                {
-                    var jobs = spell.JobFilter.Split(',');
-                    if (jobs.Any(x => x == playerData.Job.ToString()))
-                    {
-                        enabledByJob = true;
-                    }
-                }
-
-                // ゾーンフィルタをかける
-                if (string.IsNullOrWhiteSpace(spell.ZoneFilter))
-                {
-                    enabledByZone = true;
-                }
-                else
-                {
-                    if (currentZoneID.HasValue)
-                    {
-                        var zoneIDs = spell.ZoneFilter.Split(',');
-                        if (zoneIDs.Any(x => x == currentZoneID.ToString()))
-                        {
-                            enabledByZone = true;
-                        }
-                    }
-                }
-
-                return enabledByJob && enabledByZone;
-            }
+            var current = this.GetCurrentFilterCondition();
 
             var query =
                 from x in TickerTable.Instance.Table
@@ -482,7 +388,9 @@ namespace ACT.SpecialSpellTimer.Models
                 x.IsDesignMode ||
                 (
                     x.Enabled &&
-                    filter(x, currentPlayer)
+
+                    // フィルタを判定する
+                    x.PredicateFilters(current.Player, current.PartyList, current.ZoneID)
                 )
                 orderby
                 x.MatchDateTime descending,
@@ -539,10 +447,8 @@ namespace ACT.SpecialSpellTimer.Models
             this.RaiseTableChenged();
         }
 
-        public void RaiseTableChenged()
-        {
+        public void RaiseTableChenged() =>
             this.OnTableChanged?.Invoke(this, new EventArgs());
-        }
 
         public void RecompileSpells()
         {

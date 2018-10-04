@@ -576,10 +576,8 @@ namespace FFXIV.Framework.FFXIVHelper
                 {
                     player = combatant;
                 }
-                else
-                {
-                    combatant.Player = player;
-                }
+
+                combatant.Player = player;
 
                 list.Add(combatant);
             }
