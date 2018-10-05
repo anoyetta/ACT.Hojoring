@@ -154,6 +154,7 @@ namespace ACT.SpecialSpellTimer
 
                 try
                 {
+                    EnvironmentHelper.GarbageLogs();
                     Logger.Init();
                     Logger.Write("[SPESPE] Start InitPlugin");
 
