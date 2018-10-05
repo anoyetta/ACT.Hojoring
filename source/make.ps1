@@ -1,4 +1,4 @@
-# Œ»İ‚ÌƒfƒBƒŒƒNƒgƒŠ‚ğæ“¾‚·‚é
+ï»¿# ç¾åœ¨ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’å–å¾—ã™ã‚‹
 $cd = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $cd
 
@@ -7,7 +7,7 @@ Start-Transcript make.log | Out-Null
 function EndMake() {
     Stop-Transcript | Out-Null
     ''
-    Read-Host "I—¹‚·‚é‚É‚Í‰½‚©ƒL[‚ğ‹³‚¦‚Ä‚­‚¾‚³‚¢..."
+    Read-Host "çµ‚äº†ã™ã‚‹ã«ã¯ä½•ã‹ã‚­ãƒ¼ã‚’æ•™ãˆã¦ãã ã•ã„..."
     exit
 }
 
@@ -20,27 +20,27 @@ $archives = Get-Item .\archives\
 $libz = Get-Item .\tools\libz.exe
 $cevioLib = Get-Item FFXIV.Framework\Thirdparty\CeVIO.Talk.RemoteService.dll
 
-# 'œVersion'
+# 'â—Version'
 $versionContent = $(Get-Content "@MasterVersion.txt").Trim("\r").Trim("\n")
 
-# AssemblyInfo.cs Œü‚¯‚Ìƒo[ƒWƒ‡ƒ“•¶š—ñ‚ğ¶¬‚·‚é
+# AssemblyInfo.cs å‘ã‘ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³æ–‡å­—åˆ—ã‚’ç”Ÿæˆã™ã‚‹
 [Collections.Generic.List[String]]$versionParts = $versionContent.Replace("v", "").Split(".")
 $versionParts.Insert(2, "0")
 $version = [string]::Join(".", $versionParts)
 $masterVersionCS = "MasterVersion.cs"
 $masterVersionTemp = $masterVersionCS + ".tmp"
 
-# ƒo[ƒWƒ‡ƒ“•\‹L
+# ãƒãƒ¼ã‚¸ãƒ§ãƒ³è¡¨è¨˜
 $versionShort = $versionContent
 
 Write-Output "***"
 Write-Output ("*** ACT.Hojoring " + $versionShort + " ***")
 Write-Output "***"
 
-# MasterVersion.cs ‚Ìƒo[ƒWƒ‡ƒ“‚ğ’uŠ·‚·‚é
-(Get-Content $masterVersionCS) | ForEach-Object { $_ -replace "#MASTER_VERSION#", $version } > $masterVersionTemp
+# MasterVersion.cs ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‚’ç½®æ›ã™ã‚‹
+(Get-Content $masterVersionCS) | ForEach-Object { $_ -replace "#MASTER_VERSION#", $version } | Out-File $masterVersionTemp -Encoding utf8
 
-# MasterVersion.cs.tmp ‚ğƒRƒs[‚·‚é
+# MasterVersion.cs.tmp ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹
 Copy-Item -Force $masterVersionTemp ".\ACT.Hojoring.Common\Version.cs"
 
 if (Test-Path .\ACT.Hojoring\bin\Release) {
@@ -48,16 +48,16 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Remove-Item -Path .\ACT.Hojoring\bin\Release -Force -Recurse
 }
 
-'œBuild ACT.Hojoring Release'
+'â—Build ACT.Hojoring Release'
 Start-Sleep -m 500
 & $msbuild $sln /nologo /v:minimal /p:Configuration=Release /t:Rebuild | Write-Output
 Start-Sleep -m 500
 
-'œDeploy Release'
+'â—Deploy Release'
 if (Test-Path .\ACT.Hojoring\bin\Release) {
     Set-Location .\ACT.Hojoring\bin\Release
 
-    'œHojoring.dll ‚ğíœ‚·‚é'
+    'â—Hojoring.dll ã‚’å‰Šé™¤ã™ã‚‹'
     Remove-Item -Force ACT.Hojoring.dll
 
     Copy-Item -Recurse -Force -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\ -Exclude *.pdb
@@ -65,7 +65,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Remove-Item -Recurse .\tools\XIVDBDownloader\resources
     Remove-Item -Recurse * -Include *.pdb
 
-    'œ•s—v‚ÈƒƒP[ƒ‹‚ğíœ‚·‚é'
+    'â—ä¸è¦ãªãƒ­ã‚±ãƒ¼ãƒ«ã‚’å‰Šé™¤ã™ã‚‹'
     $locales = @(
         "de",
         "en",
@@ -90,7 +90,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         }
     }
 
-    'œŠO•”QÆ—pDLL‚ğ“¦‚ª‚·'
+    'â—å¤–éƒ¨å‚ç…§ç”¨DLLã‚’é€ƒãŒã™'
     $references = @(
         "System.Windows.Interactivity.dll",
         "ICSharpCode.SharpZipLib.dll",
@@ -106,17 +106,17 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     New-Item -ItemType Directory "references" | Out-Null
     Move-Item -Path $references -Destination "references" | Out-Null
 
-    'œTTSServer ‚ÉCeVIO‚ğƒ}[ƒW‚·‚é'
+    'â—TTSServer ã«CeVIOã‚’ãƒãƒ¼ã‚¸ã™ã‚‹'
     (& $libz inject-dll -a "FFXIV.Framework.TTS.Server.exe" -i $cevioLib) | Select-String "Injecting"
 
-    'œACT.Hojoring.Updater ‚ğƒ}[ƒW‚·‚é'
+    'â—ACT.Hojoring.Updater ã‚’ãƒãƒ¼ã‚¸ã™ã‚‹'
     (& $libz inject-dll -a "ACT.Hojoring.Updater.exe" -i "Octokit.dll") | Select-String "Injecting"
     (& $libz inject-dll -a "ACT.Hojoring.Updater.exe" -i "SevenZipSharp.dll" --move) | Select-String "Injecting"
 
-    # œì‹ÆƒfƒBƒŒƒNƒgƒŠ‚ğì‚é
+    # â—ä½œæ¥­ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ä½œã‚‹
     New-Item -ItemType Directory "temp" | Out-Null
     
-    'œTTSYukkuri ‚ÌAssembly‚ğƒ}[ƒW‚·‚é'
+    'â—TTSYukkuri ã®Assemblyã‚’ãƒãƒ¼ã‚¸ã™ã‚‹'
     $libs = @(
 #        "DSharpPlus*.dll",
         "Discord.*.dll",
@@ -126,7 +126,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Move-Item -Path $libs -Destination "temp" | Out-Null
     (& $libz inject-dll -a "ACT.TTSYukkuri.Core.dll" -i "temp\*.dll" --move) | Select-String "Injecting"
 
-    'œ‚»‚Ì‘¼‚ÌDLL‚ğƒ}[ƒW‚·‚é'
+    'â—ãã®ä»–ã®DLLã‚’ãƒãƒ¼ã‚¸ã™ã‚‹'
     $libs = @(
         "FontAwesome.WPF.dll",
         "System.Web.Razor.dll",
@@ -145,21 +145,21 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Move-Item -Path $libs -Destination "temp" | Out-Null
     (& $libz inject-dll -a "FFXIV.Framework.dll" -i "temp\*.dll" --move) | Select-String "Injecting"
 
-    # œì‹ÆƒfƒBƒŒƒNƒgƒŠ‚ğíœ‚·‚é
+    # â—ä½œæ¥­ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’å‰Šé™¤ã™ã‚‹
     Remove-Item -Force -Recurse "temp"
 
-    'œ•s—v‚Èƒtƒ@ƒCƒ‹‚ğíœ‚·‚é'
+    'â—ä¸è¦ãªãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‰Šé™¤ã™ã‚‹'
     Remove-Item -Force System.*.dll
     Remove-Item -Force Microsoft.*.dll
     Remove-Item -Force *.exe.config
 
-    'œƒtƒHƒ‹ƒ_‚ğƒŠƒl[ƒ€‚·‚é'
+    'â—ãƒ•ã‚©ãƒ«ãƒ€ã‚’ãƒªãƒãƒ¼ãƒ ã™ã‚‹'
     Rename-Item Yukkuri _yukkuri
     Rename-Item OpenJTalk _openJTalk
     Rename-Item _yukkuri yukkuri
     Rename-Item _openJTalk openJTalk
 
-    'œ”z•zƒtƒ@ƒCƒ‹‚ğƒA[ƒJƒCƒu‚·‚é'
+    'â—é…å¸ƒãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚¢ãƒ¼ã‚«ã‚¤ãƒ–ã™ã‚‹'
     $archive = "ACT.Hojoring-v" + $versionShort
     $archiveZip = $archive + ".zip"
     $archive7z = $archive + ".7z"
@@ -172,12 +172,12 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         Remove-Item $archive7z -Force
     }
 
-    'œto 7z'
+    'â—to 7z'
     & $7z a -r "-xr!*.zip" "-xr!*.7z" "-xr!*.pdb" "-xr!archives\" $archive7z *
     Move-Item $archive7z $archives -Force
 
     <#
-    'œto zip'
+    'â—to zip'
     & $7z a -r "-xr!*.zip" "-xr!*.7z" "-xr!*.pdb" "-xr!archives\" $archiveZip *
     Move-Item $archiveZip $archives -Force
     #>
