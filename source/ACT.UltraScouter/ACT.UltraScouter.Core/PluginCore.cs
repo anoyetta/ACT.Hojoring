@@ -58,6 +58,7 @@ namespace ACT.UltraScouter
         {
             try
             {
+                EnvironmentHelper.GarbageLogs();
                 this.Logger.Trace("start DeInitPlugin");
 
                 // ターゲット情報ワーカを終了する
