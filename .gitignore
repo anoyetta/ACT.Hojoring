@@ -298,5 +298,5 @@ __pycache__/
 /source/ACT.TTSYukkuri/ACT.TTSYukkuri.Core/Yukkuri/AquesTalkDriver.exe
 /source/ACT.TTSYukkuri/ACT.TTSYukkuri.Core/Yukkuri/AquesTalkDriver.dll
 /push.ps1
-
-pull\.ps1
+/pull.ps1
+/merge_into_master.ps1

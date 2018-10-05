@@ -22,13 +22,19 @@ $cevioLib = Get-Item FFXIV.Framework\Thirdparty\CeVIO.Talk.RemoteService.dll
 
 # '●Version'
 $versionContent = $(Get-Content "@MasterVersion.txt").Trim("\r").Trim("\n")
-$version = $versionContent.Replace(".X", ".0")
-$versionShort = $versionContent.Replace(".X", "")
+
+# AssemblyInfo.cs 向けのバージョン文字列を生成する
+[Collections.Generic.List[String]]$versionParts = $versionContent.Replace("v", "").Split(".")
+$versionParts.Insert(2, "0")
+$version = [string]::Join(".", $versionParts)
 $masterVersionCS = "MasterVersion.cs"
 $masterVersionTemp = $masterVersionCS + ".tmp"
 
+# バージョン表記
+$versionShort = $versionContent
+
 Write-Output "***"
-Write-Output ("*** ACT.Hojoring v" + $versionShort + " ***")
+Write-Output ("*** ACT.Hojoring " + $versionShort + " ***")
 Write-Output "***"
 
 # MasterVersion.cs のバージョンを置換する
@@ -180,7 +186,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 }
 
 Write-Output "***"
-Write-Output ("*** ACT.Hojoring v" + $versionShort + " Done! ***")
+Write-Output ("*** ACT.Hojoring " + $versionShort + " Done! ***")
 Write-Output "***"
 
 EndMake
