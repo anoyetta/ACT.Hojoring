@@ -536,6 +536,16 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.combatantList = newList;
                 this.combatantDictionary = newDictionary;
 
+                // TargetOfTargetを設定する
+                if (this.combatantDictionary.ContainsKey(player.TargetID))
+                {
+                    var target = this.combatantDictionary[player.TargetID];
+                    if (player.ID != target.ID)
+                    {
+                        player.TargetOfTargetID = target.TargetID;
+                    }
+                }
+
                 if (addedCombatants.Any())
                 {
                     Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
@@ -593,6 +603,16 @@ namespace FFXIV.Framework.FFXIVHelper
 
                 this.combatantList = list;
                 this.combatantDictionary = list.ToDictionary(x => x.ID);
+
+                // TargetOfTargetを設定する
+                if (this.combatantDictionary.ContainsKey(player.TargetID))
+                {
+                    var target = this.combatantDictionary[player.TargetID];
+                    if (player.ID != target.ID)
+                    {
+                        player.TargetOfTargetID = target.TargetID;
+                    }
+                }
 
                 if (addedCombatants.Any())
                 {
