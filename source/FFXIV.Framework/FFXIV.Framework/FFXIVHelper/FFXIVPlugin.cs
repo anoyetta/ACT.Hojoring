@@ -537,12 +537,12 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.combatantDictionary = newDictionary;
 
                 // TargetOfTargetを設定する
-                if (this.combatantDictionary.ContainsKey(player.TargetID))
+                if (player != null)
                 {
-                    var target = this.combatantDictionary[player.TargetID];
-                    if (player.ID != target.ID)
+                    var tot = this.GetTargetInfo(OverlayType.TargetOfTarget);
+                    if (tot != null)
                     {
-                        player.TargetOfTargetID = target.TargetID;
+                        player.TargetOfTargetID = tot.ID;
                     }
                 }
 
@@ -605,12 +605,12 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.combatantDictionary = list.ToDictionary(x => x.ID);
 
                 // TargetOfTargetを設定する
-                if (this.combatantDictionary.ContainsKey(player.TargetID))
+                if (player != null)
                 {
-                    var target = this.combatantDictionary[player.TargetID];
-                    if (player.ID != target.ID)
+                    var tot = this.GetTargetInfo(OverlayType.TargetOfTarget);
+                    if (tot != null)
                     {
-                        player.TargetOfTargetID = target.TargetID;
+                        player.TargetOfTargetID = tot.ID;
                     }
                 }
 

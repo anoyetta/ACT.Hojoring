@@ -295,44 +295,41 @@ namespace ACT.XIVLog
             "Amelia",   // 9
         };
 
-        public static async void RefreshPCNameDictionary()
+        public static void RefreshPCNameDictionary()
         {
             if (!Config.Instance.IsReplacePCName)
             {
                 return;
             }
 
-            await Task.Run(() =>
+            var combatants = FFXIVPlugin.Instance?.GetCombatantList()
+                .Where(x => x.type == ObjectType.PC);
+
+            if (combatants == null)
             {
-                var combatants = FFXIVPlugin.Instance?.GetCombatantList()
-                    .Where(x => x.type == ObjectType.PC);
+                return;
+            }
 
-                if (combatants == null)
-                {
-                    return;
-                }
+            // 古くなったエントリを削除する
+            var olds = PCNameDictionary.Where(x =>
+                (DateTime.Now - x.Value.Timestamp).TotalMinutes >= 10.0)
+                .ToArray();
+            foreach (var toRemove in olds)
+            {
+                PCNameDictionary.Remove(toRemove.Key);
+                Thread.Yield();
+            }
 
-                // 古くなったエントリを削除する
-                var olds = PCNameDictionary.Where(x =>
-                    (DateTime.Now - x.Value.Timestamp).TotalMinutes >= 10.0)
-                    .ToArray();
-                foreach (var toRemove in olds)
-                {
-                    PCNameDictionary.Remove(toRemove.Key);
-                    Thread.Yield();
-                }
-
-                foreach (var com in combatants)
-                {
-                    var alias = new Alias(
-                        $"{com.AsJob()?.NameEN.Replace(" ", string.Empty) ?? "Unknown"} {JobAliases[com.Job % 10]}",
-                        DateTime.Now);
-                    PCNameDictionary[com.Name] = alias;
-                    PCNameDictionary[com.NameFI] = alias;
-                    PCNameDictionary[com.NameIF] = alias;
-                    Thread.Yield();
-                }
-            });
+            foreach (var com in combatants)
+            {
+                var alias = new Alias(
+                    $"{com.AsJob()?.NameEN.Replace(" ", string.Empty) ?? "Unknown"} {JobAliases[com.Job % 10]}",
+                    DateTime.Now);
+                PCNameDictionary[com.Name] = alias;
+                PCNameDictionary[com.NameFI] = alias;
+                PCNameDictionary[com.NameIF] = alias;
+                Thread.Yield();
+            }
         }
 
         public string GetReplacedLog()
