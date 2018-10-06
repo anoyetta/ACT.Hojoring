@@ -71,6 +71,11 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public long Index => this.index;
 
+        public uint TargetOfTargetID;
+
+        public bool IsTargetOfTargetMe =>
+            this.ID == this.TargetOfTargetID;
+
         public bool IsCasting;
         public uint CastTargetID;
         public int CastBuffID;

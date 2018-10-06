@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using FFXIV.Framework.FFXIVHelper;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -69,6 +70,82 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         #endregion Children
+
+        #region Global Variable
+
+        /// <summary>
+        /// TargetOfTargetが自分か？
+        /// </summary>
+        public const string IS_TOT_ME = "IS_TOT_ME";
+
+        /// <summary>
+        /// IS_TOT_ME を更新する
+        /// </summary>
+        public static void RefreshIsToTMe()
+        {
+            var player = FFXIVPlugin.Instance.GetPlayer();
+            if (player != null)
+            {
+                var value = player.IsTargetOfTargetMe;
+                if (SetGlobal(IS_TOT_ME, value))
+                {
+                    TimelineController.RaiseLog(
+                        $"{TimelineController.TLSymbol} set ENV[\"{IS_TOT_ME}\"] = {value}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// グローバル変数をセットする
+        /// </summary>
+        /// <param name="name">グローバル変数名</param>
+        /// <param name="value">値</param>
+        /// <returns>is changed</returns>
+        public static bool SetGlobal(
+            string name,
+            object value)
+        {
+            var result = false;
+
+            lock (ExpressionLocker)
+            {
+                var flag = default(Flag);
+                if (Flags.ContainsKey(name))
+                {
+                    flag = Flags[name];
+                }
+                else
+                {
+                    flag = new Flag();
+                    Flags[name] = flag;
+                }
+
+                switch (value)
+                {
+                    case bool b:
+                        if (flag.Value != b)
+                        {
+                            flag.Value = b;
+                            flag.Expiration = DateTime.MaxValue;
+                            result = true;
+                        }
+                        break;
+
+                    case int i:
+                        if (flag.Counter != i)
+                        {
+                            flag.Counter = i;
+                            flag.Expiration = DateTime.MaxValue;
+                            result = true;
+                        }
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        #endregion Global Variable
 
         public static readonly object ExpressionLocker = new object();
 

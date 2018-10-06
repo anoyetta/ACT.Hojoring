@@ -798,6 +798,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         continue;
                     }
 
+                    // グローバル変数を更新する
+                    TimelineExpressionsModel.RefreshIsToTMe();
+
                     // P-Syncを判定する
                     if ((DateTime.Now - this.lastPSyncDetectTimestamp).TotalMilliseconds
                         > TimelineSettings.Instance.PSyncDetectInterval)
