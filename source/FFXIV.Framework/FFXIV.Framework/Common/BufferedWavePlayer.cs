@@ -31,7 +31,10 @@ namespace FFXIV.Framework.Common
 
         #endregion Singleton
 
-        public static readonly WaveFormat OutputFormat = new WaveFormat(44100, 16, 1);
+        /// <summary>
+        /// Default WaveFormat 44.1khz 16bit 2ch
+        /// </summary>
+        private static readonly WaveFormat DefaultOutputFormat = new WaveFormat(44100, 16, 2);
 
         private MMDevice[] GetDevices() =>
             new MMDeviceEnumerator()
@@ -129,7 +132,9 @@ namespace FFXIV.Framework.Common
             IDisposable
         {
             private const int Latency = 200;
+
             private static int MultiplePlaybackCount => Config.Instance.WasapiMultiplePlaybackCount;
+
             private static TimeSpan BufferDurations => Config.Instance.WasapiLoopBufferDuration;
 
             private static readonly Dictionary<string, byte[]> WaveBuffer = new Dictionary<string, byte[]>(128);
@@ -141,6 +146,8 @@ namespace FFXIV.Framework.Common
             public BufferedWaveProvider[] Buffers { get; private set; } = null;
 
             public int CurrentPlayerIndex { get; private set; } = 0;
+
+            public WaveFormat OutputFormat { get; private set; } = DefaultOutputFormat;
 
             public void Dispose()
             {
@@ -160,7 +167,7 @@ namespace FFXIV.Framework.Common
                 var list = new List<BufferedWaveProvider>();
                 for (int i = 0; i < MultiplePlaybackCount; i++)
                 {
-                    var buffer = new BufferedWaveProvider(OutputFormat)
+                    var buffer = new BufferedWaveProvider(this.OutputFormat)
                     {
                         BufferDuration = BufferDurations,
                         DiscardOnBufferOverflow = true,
@@ -170,7 +177,7 @@ namespace FFXIV.Framework.Common
                 }
 
                 // シンクロ再生用のバッファを追加しておく
-                list.Add(new BufferedWaveProvider(OutputFormat)
+                list.Add(new BufferedWaveProvider(this.OutputFormat)
                 {
                     BufferDuration = BufferDurations,
                     DiscardOnBufferOverflow = true,
@@ -242,7 +249,7 @@ namespace FFXIV.Framework.Common
                     else
                     {
                         using (var audio = new AudioFileReader(file) { Volume = volume })
-                        using (var resampler = new MediaFoundationResampler(audio, BufferedWavePlayer.OutputFormat))
+                        using (var resampler = new MediaFoundationResampler(audio, this.OutputFormat))
                         using (var output = new MemoryStream(51200))
                         {
                             WaveFileWriter.WriteWavFileToStream(output, resampler);
