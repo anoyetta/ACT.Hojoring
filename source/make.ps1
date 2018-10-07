@@ -160,7 +160,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Rename-Item _openJTalk openJTalk
 
     '●配布ファイルをアーカイブする'
-    $archive = "ACT.Hojoring-v" + $versionShort
+    $archive = "ACT.Hojoring-" + $versionShort
     $archiveZip = $archive + ".zip"
     $archive7z = $archive + ".7z"
 
