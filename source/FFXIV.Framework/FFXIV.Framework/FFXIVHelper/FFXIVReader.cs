@@ -84,6 +84,12 @@ namespace FFXIV.Framework.FFXIVHelper
                         return;
                     }
 
+                    // すでに有効なら抜ける
+                    if (isAvailableFFXIVMemoryReader())
+                    {
+                        return;
+                    }
+
                     var xdoc = default(XDocument);
                     using (var sr = new StreamReader(config))
                     {
@@ -123,24 +129,35 @@ namespace FFXIV.Framework.FFXIVHelper
                 {
                     Thread.Sleep(TimeSpan.FromSeconds(interval));
 
-                    var reader = ActGlobals.oFormActMain.ActPlugins
-                        .FirstOrDefault(x =>
-                            x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"));
-
-                    if (reader != null &&
-                        reader.lblPluginStatus != null &&
-                        reader.lblPluginStatus.Text != null)
+                    if (isAvailableFFXIVMemoryReader())
                     {
-                        if (reader.lblPluginStatus.Text.ContainsIgnoreCase("Started"))
-                        {
-                            Thread.Sleep(CommonHelper.GetRandomTimeSpan(0.01, 0.1));
-                            break;
-                        }
+                        Thread.Sleep(CommonHelper.GetRandomTimeSpan(0.01, 0.1));
+                        break;
                     }
                 }
             }
             catch (Exception)
             {
+            }
+
+            // FFXIV_MemoryReaderが有効か？
+            bool isAvailableFFXIVMemoryReader()
+            {
+                var reader = ActGlobals.oFormActMain.ActPlugins
+                    .FirstOrDefault(x =>
+                        x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"));
+
+                if (reader != null &&
+                    reader.lblPluginStatus != null &&
+                    reader.lblPluginStatus.Text != null)
+                {
+                    if (reader.lblPluginStatus.Text.ContainsIgnoreCase("Started"))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
             // FFXIV_MemoryReader を追加する
