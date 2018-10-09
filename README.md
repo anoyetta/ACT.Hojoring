@@ -46,7 +46,7 @@ ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」
 4. ACTに追加する  
 ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
 必要なものだけ登録してください。もちろんすべて登録しても問題ありません。  
-    * FFXIV_MemoryReader.dll （これは一番最初に登録する）
+    * FFXIV_MemoryReader.dll （必須、一番最初に追加すること）
     * ACT.SpecialSpellTimer.dll
     * ACT.UltraScouter.dll
     * ACT.TTSYukkuri.dll
