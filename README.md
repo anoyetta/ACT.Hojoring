@@ -46,7 +46,7 @@ ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」
 4. ACTに追加する  
 ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
 必要なものだけ登録してください。もちろんすべて登録しても問題ありません。  
-
+    * FFXIV_MemoryReader.dll （必須、一番最初に追加すること）
     * ACT.SpecialSpellTimer.dll
     * ACT.UltraScouter.dll
     * ACT.TTSYukkuri.dll
@@ -56,8 +56,6 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 * UltraScouter の距離の表示がスキルの射程に準じたものになる
 * SpecialSpellTimer のスペルでリキャスト時間が動的に変化するスキルのリキャストを扱えるようになる
 * 全体的なパフォーマンスが改善するかも
-
-これらの機能は FFXIV_MemoryReader を有効にするだけで拡張されます。
 
 ### 動作環境
 * [Windows 10](https://www.microsoft.com/software-download/windows10) 以降（Windows 7/8/8.1 では原則的に動作しません）
