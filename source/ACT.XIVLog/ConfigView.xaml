@@ -36,6 +36,8 @@
     <StackPanel>
       <Label Content="Output Directory" />
       <TextBox HorizontalAlignment="Left" Width="700" Text="{Binding Path=Config.OutputDirectory, Mode=TwoWay}" />
+      <Label Content="{Binding Path=Plugin.LogfileNameWithoutParent, Mode=OneWay}" Height="30" VerticalContentAlignment="Center" />
+      <Button BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Open Log" Command="{Binding OpenLogCommand, Mode=OneWay}" />
       <CheckBox Margin="0 10 0 0" Content="Replace PC name to Job name" IsChecked="{Binding Path=Config.IsReplacePCName, Mode=TwoWay}" />
 
       <TextBlock Margin="5 25 0 0">
