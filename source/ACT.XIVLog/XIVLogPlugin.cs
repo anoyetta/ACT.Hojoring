@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,8 +20,19 @@ using TamanegiMage.FFXIV_MemoryReader.Model;
 namespace ACT.XIVLog
 {
     public class XIVLogPlugin :
-        IActPluginV1
+        IActPluginV1,
+        INotifyPropertyChanged
     {
+        #region Singleton
+
+        private static XIVLogPlugin instance;
+
+        public static XIVLogPlugin Instance => instance;
+
+        public XIVLogPlugin() => instance = this;
+
+        #endregion Singleton
+
         #region IActPluginV1
 
         private Label pluginLabel;
@@ -53,7 +66,9 @@ namespace ACT.XIVLog
 
         #endregion IActPluginV1
 
-        private string LogfileName =>
+        public string LogfileNameWithoutParent => Path.GetFileName(this.LogfileName);
+
+        public string LogfileName =>
             Path.Combine(
                 Config.Instance.OutputDirectory,
                 $"XIVLog.{DateTime.Now.ToString("yyyy-MM-dd")}.csv");
@@ -117,6 +132,9 @@ namespace ACT.XIVLog
                             FileShare.Read),
                         new UTF8Encoding(false));
                     this.currentLogfileName = this.LogfileName;
+
+                    this.RaisePropertyChanged(nameof(this.LogfileName));
+                    this.RaisePropertyChanged(nameof(this.LogfileNameWithoutParent));
                 }
 
                 XIVLog.RefreshPCNameDictionary();
@@ -224,6 +242,39 @@ namespace ACT.XIVLog
                     Process.Start(this.LogfileName);
                 }
             });
+
+        #region INotifyPropertyChanged
+
+        [field: NonSerialized]
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void RaisePropertyChanged(
+            [CallerMemberName]string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected virtual bool SetProperty<T>(
+            ref T field,
+            T value,
+            [CallerMemberName]string propertyName = null)
+        {
+            if (Equals(field, value))
+            {
+                return false;
+            }
+
+            field = value;
+            this.PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(propertyName));
+
+            return true;
+        }
+
+        #endregion INotifyPropertyChanged
     }
 
     public class XIVLog
