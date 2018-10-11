@@ -359,9 +359,14 @@ namespace ACT.TTSYukkuri
 
                     await Task.Run(() =>
                     {
-                        // Discordに接続する
+                        // DISCORD BOT クライアントを初期化する
                         DiscordClientModel.Model.Initialize();
-                        DiscordClientModel.Model.Connect(true);
+
+                        // AutoJoinがONならば接続する
+                        if (Settings.Default.DiscordSettings.AutoJoin)
+                        {
+                            DiscordClientModel.Model.Connect(true);
+                        }
                     });
 
                     await Task.Run(() =>
