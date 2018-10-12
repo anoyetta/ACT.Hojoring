@@ -161,7 +161,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (ExpressionLocker)
             {
+                var any = Flags.Any();
+
                 Flags.Clear();
+
+                if (any)
+                {
+                    TimelineController.RaiseLog(
+                        $"{TimelineController.TLSymbol} cleared all Flags.");
+                }
             }
         }
 
