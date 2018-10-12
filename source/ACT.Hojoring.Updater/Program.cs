@@ -22,11 +22,9 @@ namespace ACT.Hojoring.Updater
         {
             try
             {
-                // SSL/TLSを有効にする
-                ServicePointManager.SecurityProtocol =
-                    SecurityProtocolType.Tls |
-                    SecurityProtocolType.Tls11 |
-                    SecurityProtocolType.Tls12;
+                // TLS1.2を有効にする
+                ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+                ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
                 var dest = "update";
                 var usePre = false;

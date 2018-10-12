@@ -172,11 +172,9 @@ namespace FFXIV.Framework.Common
 
             try
             {
-                // SSL/TLSを有効にする
-                ServicePointManager.SecurityProtocol =
-                    SecurityProtocolType.Tls |
-                    SecurityProtocolType.Tls11 |
-                    SecurityProtocolType.Tls12;
+                // TLS1.2を有効にする
+                ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+                ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
                 var html = string.Empty;
 
@@ -412,6 +410,7 @@ namespace FFXIV.Framework.Common
             => Registry.GetValue(keyname, valuename, string.Empty).ToString();
 
         private const int Windows10BuildNo = 10240;
+        private const int Windows81BuildNo = 9200;
         private static int osBuildNo;
 
         private static void DumpEnvironment()
@@ -443,26 +442,11 @@ namespace FFXIV.Framework.Common
             }
 
             Logger.Info($"*** {productName} v{releaseId}, build {buildNo} ***");
-
-#if false
-            // SUPPORT_WIN7 というファイルが存在する場合は
-            // 強制的にWindows 7を許可する
-            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            if (Directory.GetFiles(
-                dir,
-                "*SUPPORT_WIN7*",
-                SearchOption.TopDirectoryOnly).Length > 0)
-            {
-                supportWin7 = true;
-                Logger.Info($"*** Support Win7 ***");
-            }
-#endif
-
             Logger.Info($"*** .NET Framework v{dotNetVersion}, release {dotNetReleaseID} ***");
         }
 
-        public static bool IsWindows10Later =>
-            osBuildNo >= Windows10BuildNo;
+        public static bool IsWindowsNewer =>
+            osBuildNo >= Windows81BuildNo;
 
         private static volatile bool shownWindowsIsOld = false;
 
@@ -473,7 +457,7 @@ namespace FFXIV.Framework.Common
 
             var result = false;
 
-            if (IsWindows10Later)
+            if (IsWindowsNewer)
             {
                 result = true;
             }
