@@ -177,7 +177,7 @@ namespace ACT.TTSYukkuri.Discord.Models
         public async void Connect(
             bool isInitialize = false)
         {
-            if (!UpdateChecker.IsWindows10Later)
+            if (!UpdateChecker.IsWindowsNewer)
             {
                 this.AppendLogLine("Unsupported Operating System. Windows 10 or Later is Required.");
                 return;
