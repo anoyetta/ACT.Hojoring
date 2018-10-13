@@ -118,6 +118,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     flag = new Flag();
                     Flags[name] = flag;
+                    result = true;
                 }
 
                 switch (value)
