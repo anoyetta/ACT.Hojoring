@@ -543,7 +543,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     if (this.combatantDictionary.ContainsKey(player.TargetID))
                     {
                         var target = this.combatantDictionary[player.TargetID];
-                        player.TargetID = target.ID;
+                        player.TargetOfTargetID = target.TargetID;
                     }
                 }
 
@@ -612,7 +612,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     if (this.combatantDictionary.ContainsKey(player.TargetID))
                     {
                         var target = this.combatantDictionary[player.TargetID];
-                        player.TargetID = target.ID;
+                        player.TargetOfTargetID = target.TargetID;
                     }
                 }
 
