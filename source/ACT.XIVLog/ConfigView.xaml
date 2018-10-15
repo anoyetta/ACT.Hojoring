@@ -37,7 +37,10 @@
       <Label Content="Output Directory" />
       <TextBox HorizontalAlignment="Left" Width="700" Text="{Binding Path=Config.OutputDirectory, Mode=TwoWay}" />
       <Label Content="{Binding Path=Plugin.LogfileNameWithoutParent, Mode=OneWay}" Height="30" VerticalContentAlignment="Center" />
-      <Button BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Open Log" Command="{Binding OpenLogCommand, Mode=OneWay}" />
+      <StackPanel Orientation="Horizontal">
+        <Button BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Open Log" Command="{Binding OpenLogCommand, Mode=OneWay}" />
+        <Button Margin="25 0 0 0" BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Open Directory" Command="{Binding OpenLogDirectoryCommand, Mode=OneWay}" />
+      </StackPanel>
       <CheckBox Margin="0 10 0 0" Content="Replace PC name to Job name" IsChecked="{Binding Path=Config.IsReplacePCName, Mode=TwoWay}" />
 
       <TextBlock Margin="5 25 0 0">
@@ -59,6 +62,9 @@
         </TextBlock>
         <LineBreak />
       </TextBlock>
+
+      <!-- Version Info -->
+      <Label Margin="0 20 0 0" Content="{Binding VersionInfo, Mode=OneWay}" />
     </StackPanel>
   </Grid>
 </UserControl>
