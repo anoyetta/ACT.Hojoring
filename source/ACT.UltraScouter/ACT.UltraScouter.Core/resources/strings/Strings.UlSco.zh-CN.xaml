@@ -57,7 +57,7 @@
   <system:String x:Key="Action_CastingBarSize">咏唱条大小</system:String>
   <system:String x:Key="Action_CircleStyle">圆形样式</system:String>
   <system:String x:Key="Action_RotateCCW">逆时针</system:String>
-  <system:String x:Key="Action_CircleBlurRadius">Circle blur radius</system:String>
+  <system:String x:Key="Action_CircleBlurRadius">模糊半径</system:String>
   <system:String x:Key="Action_Sound">声音</system:String>
   <system:String x:Key="Action_WaveSound">提示音</system:String>
 
@@ -82,7 +82,7 @@
   <system:String x:Key="MobList_SimpleView">简单显示</system:String>
   <system:String x:Key="MobList_VisibleZPosition">显示Z轴位置</system:String>
   <system:String x:Key="MobList_DirectionOrigin">方向显示</system:String>
-  <system:String x:Key="MobList_DirectionAdjustmentAngle">Direction adjustment angle</system:String>
+  <system:String x:Key="MobList_DirectionAdjustmentAngle">箭头指向基准角度</system:String>
   <system:String x:Key="MobList_DirectionOriginDescription">要使用"角色"或"视角", FFXIV_MemoryReader需要保持启动.</system:String>
   <system:String x:Key="MobList_OpenTargetMobList">打开狩猎怪列表</system:String>
   <system:String x:Key="MobList_ReloadTargetMobList">重载狩猎怪列表</system:String>
