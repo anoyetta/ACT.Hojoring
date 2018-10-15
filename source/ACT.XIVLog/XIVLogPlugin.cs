@@ -292,13 +292,33 @@ namespace ACT.XIVLog
             this.IsImport = isImport;
             this.LogInfo = logInfo;
 
+            // ログの書式の例
             /*
             [08:20:19.383] 00:0000:clear stacks of Loading....
             */
 
             var line = this.LogInfo.logLine;
+
+            // 18文字未満のログは書式エラーになるため無視する
+            if (line.Length < 18)
+            {
+                return;
+            }
+
             var timeString = line.Substring(1, 12);
-            this.Timestamp = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " " + timeString);
+
+            var timestampString = DateTime.Now.ToString("yyyy-MM-dd") + " " + timeString;
+            DateTime d;
+            if (DateTime.TryParse(timestampString, out d))
+            {
+                this.Timestamp = d;
+            }
+            else
+            {
+                // タイムスタンプ書式が不正なものは無視する
+                return;
+            }
+
             this.LogType = line.Substring(15, 2);
             this.Log = line.Substring(15);
             this.ZoneName = !string.IsNullOrEmpty(logInfo.detectedZone) ?
