@@ -521,7 +521,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "朝日小仙女", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "夕月小仙女", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "宝石兽", Category = KewordTypes.Pet },
-            new AnalyzeKeyword() { Keyword = "浮空塔", Category = KewordTypes.Pet },
+            new AnalyzeKeyword() { Keyword = "式浮空炮塔", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "亚灵神巴哈姆特", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "地星", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "正在咏唱", Category = KewordTypes.Cast },
