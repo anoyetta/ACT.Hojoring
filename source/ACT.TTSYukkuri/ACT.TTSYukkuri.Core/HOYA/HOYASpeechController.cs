@@ -83,10 +83,9 @@ namespace ACT.TTSYukkuri.HOYA
                 Format = Format.WAV,
             };
 
-            ServicePointManager.SecurityProtocol =
-                SecurityProtocolType.SystemDefault |
-                SecurityProtocolType.Tls11 |
-                SecurityProtocolType.Tls12;
+            // TLS1.2を有効にする
+            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
             var waveData = client.GetVoice(textToSpeak);
 

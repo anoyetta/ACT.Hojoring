@@ -1,11 +1,62 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace FFXIV.Framework.Common
 {
     public static class EnvironmentHelper
     {
+        private static volatile bool isGarbaged = false;
+
+        public static async void GarbageLogs() => await Task.Run(() =>
+        {
+            if (isGarbaged)
+            {
+                return;
+            }
+
+            isGarbaged = true;
+
+            var appdata = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                @"anoyetta\ACT");
+
+            if (!Directory.Exists(appdata))
+            {
+                return;
+            }
+
+            Directory.GetFiles(appdata, "*.bak", SearchOption.TopDirectoryOnly)
+                .Walk((file) =>
+                {
+                    File.Delete(file);
+                });
+
+            Directory.GetFiles(appdata, "*.log", SearchOption.TopDirectoryOnly)
+                .Walk((file) =>
+                {
+                    File.Delete(file);
+                });
+
+            var logs = Path.Combine(appdata, "logs");
+            Directory.GetFiles(logs, "*.log", SearchOption.TopDirectoryOnly)
+                .Walk((file) =>
+                {
+                    var timestamp = File.GetCreationTime(file);
+                    if ((DateTime.Now - timestamp).TotalDays > 30)
+                    {
+                        File.Delete(file);
+                    }
+                });
+
+            var archives = Path.Combine(logs, "archives");
+            if (Directory.Exists(archives))
+            {
+                Directory.Delete(archives, true);
+            }
+        });
+
         public static string GetAppDataPath()
         {
             var path = Path.Combine(

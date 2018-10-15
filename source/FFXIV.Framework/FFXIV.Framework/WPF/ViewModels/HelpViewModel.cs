@@ -90,6 +90,20 @@ namespace FFXIV.Framework.WPF.ViewModels
                     }
                 }
 
+                var memoryReader = ActGlobals.oFormActMain?.ActPlugins?
+                    .FirstOrDefault(
+                        x => x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"))?
+                    .pluginFile.FullName;
+
+                if (File.Exists(memoryReader))
+                {
+                    var vi = FileVersionInfo.GetVersionInfo(memoryReader);
+                    if (vi != null)
+                    {
+                        text.AppendLine($"FFXIV_MemoryReader v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FileBuildPart}.{vi.FilePrivatePart}");
+                    }
+                }
+
                 var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 var hojorin = Path.Combine(location, "ACT.Hojoring.Common.dll");
                 var spespe = Path.Combine(location, "ACT.SpecialSpellTimer.dll");

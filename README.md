@@ -20,7 +20,7 @@ ACT本体のTTS機能をゆっくり実況などで有名な AquesTalk&trade; �
 
 ## 最新リリース
 ### **[DOWNLOAD Lastest-Release](https://github.com/anoyetta/ACT.Hojoring/releases/latest)**
-[pre-releease](https://github.com/anoyetta/ACT.Hojoring/releases)
+[pre-release](https://github.com/anoyetta/ACT.Hojoring/releases)
 
 ## インストール
 ### ALL-IN-ONE インストール
@@ -46,7 +46,7 @@ ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」
 4. ACTに追加する  
 ACTにプラグインとして追加します。3つのプラグインそれぞれを登録します。  
 必要なものだけ登録してください。もちろんすべて登録しても問題ありません。  
-
+    * FFXIV_MemoryReader.dll （必須、一番最初に追加すること）
     * ACT.SpecialSpellTimer.dll
     * ACT.UltraScouter.dll
     * ACT.TTSYukkuri.dll
@@ -56,8 +56,6 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 * UltraScouter の距離の表示がスキルの射程に準じたものになる
 * SpecialSpellTimer のスペルでリキャスト時間が動的に変化するスキルのリキャストを扱えるようになる
 * 全体的なパフォーマンスが改善するかも
-
-これらの機能は FFXIV_MemoryReader を有効にするだけで拡張されます。
 
 ### 動作環境
 * [Windows 10](https://www.microsoft.com/software-download/windows10) 以降（Windows 7/8/8.1 では原則的に動作しません）
@@ -145,8 +143,8 @@ $updateExclude = @(
 
 ### まったく分かっていない
 リモートでサポートすることも出来ます。  
-下記のいずれかのリモートソフトウェアを使用して [DISCORD](https://discord.gg/n6Mut3F) 経由でリモートサポートを依頼してください。  
-* [TeamViewer](https://www.teamviewer.com)
+下記のいずれかのリモート機能を使用して [DISCORD](https://discord.gg/n6Mut3F) 経由でリモートサポートを依頼してください。  
+* [クイックアシスト機能](https://support.microsoft.com/ja-jp/help/27919/windows-10-get-help-with-pc-problems)
 * [Google リモートデスクトップ](https://support.google.com/chrome/answer/1649523?co=GENIE.Platform%3DDesktop&hl=ja)  
 
 また、リモートサポートの依頼ではなくても説明が困難な場合はリモートによる設定を案内する場合があります。その場合は案内に従ってください。

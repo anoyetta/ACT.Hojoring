@@ -206,7 +206,8 @@
                 SelectionChanged="PlayMethodOnSelectionChanged" />
               <TextBlock
                 Margin="0 4 0 0"
-                Text="* 16bit - 44.1kHz" FontSize="15" />
+                Text="* 16bit - 44.1kHz" FontSize="15"
+                Visibility="Collapsed" />
 
               <CheckBox
                 Margin="0 10 0 0"

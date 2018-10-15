@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace FFXIV.Framework.Common
 {
@@ -38,6 +39,14 @@ namespace FFXIV.Framework.Common
               "MemberwiseClone",
               System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod,
               null, source, null);
+        }
+
+        public static void Walk<T>(this IEnumerable<T> e, Action<T> action)
+        {
+            foreach (var item in e)
+            {
+                action(item);
+            }
         }
     }
 }

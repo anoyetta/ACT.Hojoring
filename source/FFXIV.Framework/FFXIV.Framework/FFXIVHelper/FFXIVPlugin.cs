@@ -50,14 +50,8 @@ namespace FFXIV.Framework.FFXIVHelper
         /// <summary>FFXIV_ACT_Plugin.Memory.Memory</summary>
         private dynamic pluginMemory;
 
-        /// <summary>FFXIV_ACT_Plugin.Parse.LogParse</summary>
-        private dynamic pluginLogParse;
-
         /// <summary>FFXIV_ACT_Plugin.Memory.ScanCombatants</summary>
         private dynamic pluginScancombat;
-
-        /// <summary>FFXIV_ACT_Plugin.Parse.CombatantHistory</summary>
-        private dynamic pluginCombatantHistory;
 
         /// <summary>FFXIV_ACT_Plugin.Overlays.Overlay</summary>
         private dynamic overlay;
@@ -88,8 +82,6 @@ namespace FFXIV.Framework.FFXIVHelper
             get
             {
                 if (ActGlobals.oFormActMain == null ||
-                    ActGlobals.oFormActMain.IsDisposed ||
-                    !ActGlobals.oFormActMain.IsHandleCreated ||
                     this.plugin == null ||
                     this.pluginConfig == null ||
                     this.pluginScancombat == null ||
@@ -167,6 +159,7 @@ namespace FFXIV.Framework.FFXIVHelper
                         this.LoadSkillList();
                         this.LoadZoneList();
                         this.MergeSkillList();
+                        this.MergeBuffList();
                     }
                 }
                 catch (Exception ex)
@@ -261,7 +254,6 @@ namespace FFXIV.Framework.FFXIVHelper
 
                     if (fileName.ToLower() == "ffxiv.exe" ||
                         fileName.ToLower() == "ffxiv_dx11.exe" ||
-                        fileName.ToLower() == "dqx.exe" ||
                         fileName.ToLower() == actFileName.ToLower())
                     {
                         this.IsFFXIVActive = true;
@@ -321,6 +313,8 @@ namespace FFXIV.Framework.FFXIVHelper
         private Combatant player;
 
 #if DEBUG
+
+        #region Dummy Combatants
 
         private static readonly Combatant DummyPlayer = new Combatant()
         {
@@ -391,6 +385,8 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             1, 2, 3, 4, 5, 6, 7, 8
         };
+
+        #endregion Dummy Combatants
 
 #endif
 
@@ -540,6 +536,17 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.combatantList = newList;
                 this.combatantDictionary = newDictionary;
 
+                // TargetOfTargetを設定する
+                if (player != null &&
+                    player.TargetID != 0)
+                {
+                    if (this.combatantDictionary.ContainsKey(player.TargetID))
+                    {
+                        var target = this.combatantDictionary[player.TargetID];
+                        player.TargetOfTargetID = target.TargetID;
+                    }
+                }
+
                 if (addedCombatants.Any())
                 {
                     Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
@@ -580,10 +587,8 @@ namespace FFXIV.Framework.FFXIVHelper
                 {
                     player = combatant;
                 }
-                else
-                {
-                    combatant.Player = player;
-                }
+
+                combatant.Player = player;
 
                 list.Add(combatant);
             }
@@ -600,6 +605,17 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.combatantList = list;
                 this.combatantDictionary = list.ToDictionary(x => x.ID);
 
+                // TargetOfTargetを設定する
+                if (player != null &&
+                    player.TargetID != 0)
+                {
+                    if (this.combatantDictionary.ContainsKey(player.TargetID))
+                    {
+                        var target = this.combatantDictionary[player.TargetID];
+                        player.TargetOfTargetID = target.TargetID;
+                    }
+                }
+
                 if (addedCombatants.Any())
                 {
                     Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
@@ -612,8 +628,17 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
+        private DateTime currentPartyIDListTimestamp = DateTime.MinValue;
+
         public void RefreshCurrentPartyIDList()
         {
+            if ((DateTime.Now - this.currentPartyIDListTimestamp).TotalSeconds <= 1.0)
+            {
+                return;
+            }
+
+            this.currentPartyIDListTimestamp = DateTime.Now;
+
             if (!this.IsAvailable)
             {
 #if DEBUG
@@ -625,8 +650,9 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
+            var dummyBuffer = new byte[51200];
             var partyList = pluginScancombat?.GetCurrentPartyList(
-                this.dummyBuffer,
+                dummyBuffer,
                 out int partyCount) as List<uint>;
 
             if (partyList == null)
@@ -671,8 +697,6 @@ namespace FFXIV.Framework.FFXIVHelper
         #endregion Refresh Combatants
 
         #region Get Combatants
-
-        private byte[] dummyBuffer = new byte[15360];
 
         public Combatant GetPlayer()
         {
@@ -978,7 +1002,9 @@ namespace FFXIV.Framework.FFXIVHelper
         #region Get Misc
 
         public int GetCurrentZoneID() =>
-            this.pluginCombatantHistory?.CurrentZoneID ?? 0;
+            this.IsAvailable ?
+            (this.pluginScancombat?.GetCurrentZoneId() ?? 0) :
+            0;
 
         /// <summary>
         /// 文中に含まれるパーティメンバの名前を設定した形式に置換する
@@ -1035,19 +1061,20 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void Attach()
         {
-            this.AttachPlugin();
-            this.AttachScanMemory();
-            this.AttachOverlay();
+            lock (this)
+            {
+                this.AttachPlugin();
+                this.AttachScanMemory();
+                this.AttachOverlay();
 
-            this.LoadSkillList();
+                this.LoadSkillList();
+            }
         }
 
         private void AttachPlugin()
         {
             if (this.plugin != null ||
-                ActGlobals.oFormActMain == null ||
-                ActGlobals.oFormActMain.IsDisposed ||
-                !ActGlobals.oFormActMain.IsHandleCreated)
+                ActGlobals.oFormActMain == null)
             {
                 return;
             }
@@ -1075,26 +1102,6 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             FieldInfo fi;
-
-            if (this.pluginLogParse == null)
-            {
-                fi = this.plugin?.GetType().GetField(
-                    "_LogParse",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                this.pluginLogParse = fi?.GetValue(this.plugin);
-            }
-
-            if (this.pluginCombatantHistory == null)
-            {
-                var settings = this.pluginLogParse?.Settings;
-                if (settings != null)
-                {
-                    fi = settings?.GetType().GetField(
-                        "CombatantHistory",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                    this.pluginCombatantHistory = fi?.GetValue(settings);
-                }
-            }
 
             if (this.pluginMemory == null)
             {
@@ -1461,6 +1468,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private volatile bool isMergedSkillList = false;
         private volatile bool isLoadedSkillToFFXIV = false;
+        private volatile bool isMergedBuffList = false;
 
         /// <summary>
         /// XIVDBのスキルリストとFFXIVプラグインのスキルリストをマージする
@@ -1484,7 +1492,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     }
 
                     this.isMergedSkillList = true;
-                    AppLogger.Trace("XIVDB action list merged.");
+                    AppLogger.Trace("XIVDB Action list merged.");
                 }
             }
 
@@ -1528,8 +1536,58 @@ namespace FFXIV.Framework.FFXIVHelper
             if (XIVDB.Instance.ActionList.Any())
             {
                 this.isLoadedSkillToFFXIV = true;
-                AppLogger.Trace("XIVDB action list -> FFXIV Plugin");
+                AppLogger.Trace("XIVDB Action list -> FFXIV Plugin");
             }
+        }
+
+        /// <summary>
+        /// XIVDBのBuff(Status)リストとFFXIVプラグインのBuffリストをマージする
+        /// </summary>
+        private void MergeBuffList()
+        {
+            if (this.isMergedBuffList)
+            {
+                return;
+            }
+
+            if (!XIVDB.Instance.BuffList.Any())
+            {
+                return;
+            }
+
+            if (this.plugin == null)
+            {
+                return;
+            }
+
+            var t = (this.plugin as object).GetType().Module.Assembly.GetType("FFXIV_ACT_Plugin.Resources.BuffList");
+            var obj = t.GetField(
+                "_instance",
+                BindingFlags.NonPublic | BindingFlags.Static)
+                .GetValue(null);
+
+            var list = obj.GetType().GetField(
+                "_BuffList",
+                BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(obj);
+
+            var pluginList = list as SortedDictionary<int, string>;
+
+            foreach (var entry in XIVDB.Instance.BuffList)
+            {
+                if (!pluginList.ContainsKey(entry.Key))
+                {
+                    pluginList[entry.Key] = entry.Value.Name;
+                    Debug.WriteLine(entry.ToString());
+                }
+            }
+
+            if (XIVDB.Instance.BuffList.Any())
+            {
+                AppLogger.Trace("XIVDB Status list -> FFXIV Plugin");
+            }
+
+            this.isMergedBuffList = true;
         }
 
         #endregion Resources

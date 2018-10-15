@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace ACT.SpecialSpellTimer.Models
@@ -102,6 +103,7 @@ namespace ACT.SpecialSpellTimer.Models
                 panel.ID = newID;
             }
 
+            var triggerIDDictionary = new Dictionary<Guid, Guid>();
             var seq = default(long);
 
             seq =
@@ -111,7 +113,10 @@ namespace ACT.SpecialSpellTimer.Models
             foreach (var spell in data.Spells)
             {
                 spell.ID = seq++;
-                spell.Guid = Guid.NewGuid();
+
+                var newID = Guid.NewGuid();
+                triggerIDDictionary[spell.Guid] = newID;
+                spell.Guid = newID;
 
                 if (panelIDConverter.ContainsKey(spell.PanelID))
                 {
@@ -123,11 +128,64 @@ namespace ACT.SpecialSpellTimer.Models
                 TickerTable.Instance.Table.Any() ?
                 TickerTable.Instance.Table.Max(x => x.ID) + 1 :
                 1;
-            foreach (var spell in data.Tickers)
+            foreach (var ticker in data.Tickers)
             {
-                spell.ID = seq++;
-                spell.Guid = Guid.NewGuid();
+                ticker.ID = seq++;
+
+                var newID = Guid.NewGuid();
+                triggerIDDictionary[ticker.Guid] = newID;
+                ticker.Guid = newID;
             }
+
+            // 前提条件のIDを置き換える
+            Task.WaitAll(
+                Task.Run(() =>
+                {
+                    foreach (var spell in data.Spells)
+                    {
+                        for (int i = 0; i < spell.TimersMustRunningForStart.Length; i++)
+                        {
+                            var id = spell.TimersMustRunningForStart[i];
+                            if (triggerIDDictionary.ContainsKey(id))
+                            {
+                                spell.TimersMustRunningForStart[i] = triggerIDDictionary[id];
+                            }
+                        }
+
+                        for (int i = 0; i < spell.TimersMustStoppingForStart.Length; i++)
+                        {
+                            var id = spell.TimersMustStoppingForStart[i];
+                            if (triggerIDDictionary.ContainsKey(id))
+                            {
+                                spell.TimersMustStoppingForStart[i] = triggerIDDictionary[id];
+                            }
+                        }
+                    }
+                }),
+
+                Task.Run(() =>
+                {
+                    foreach (var ticker in data.Tickers)
+                    {
+                        for (int i = 0; i < ticker.TimersMustRunningForStart.Length; i++)
+                        {
+                            var id = ticker.TimersMustRunningForStart[i];
+                            if (triggerIDDictionary.ContainsKey(id))
+                            {
+                                ticker.TimersMustRunningForStart[i] = triggerIDDictionary[id];
+                            }
+                        }
+
+                        for (int i = 0; i < ticker.TimersMustStoppingForStart.Length; i++)
+                        {
+                            var id = ticker.TimersMustStoppingForStart[i];
+                            if (triggerIDDictionary.ContainsKey(id))
+                            {
+                                ticker.TimersMustStoppingForStart[i] = triggerIDDictionary[id];
+                            }
+                        }
+                    }
+                }));
 
             return data;
         }

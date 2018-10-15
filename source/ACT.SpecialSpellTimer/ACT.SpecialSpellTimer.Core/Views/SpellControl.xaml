@@ -173,6 +173,8 @@
         Opacity="0.99"
         Fill="{Binding ElementName=RecastTimeTextBlock, Path=Fill, Mode=OneWay}"
         Stroke="{Binding ElementName=RecastTimeTextBlock, Path=Stroke, Mode=OneWay}"
+        StrokeThickness="{Binding ElementName=RecastTimeTextBlock, Path=StrokeThickness, Mode=OneWay}"
+        BlurRadius="{Binding ElementName=RecastTimeTextBlock, Path=BlurRadius, Mode=OneWay}"
         Text="{Binding ElementName=RecastTimeTextBlock, Path=Text, Mode=OneWay}"
         FontFamily="{Binding ElementName=RecastTimeTextBlock, Path=FontFamily, Mode=OneWay}"
         FontSize="{Binding ElementName=RecastTimeTextBlock, Path=FontSize, Mode=OneWay}"

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Xml.Serialization;
 using Prism.Mvvm;
 
 namespace ACT.TTSYukkuri.Config
@@ -174,6 +176,42 @@ namespace ACT.TTSYukkuri.Config
             get => this.alertTargetsTP;
             set => this.SetProperty(ref this.alertTargetsTP, value);
         }
+
+        private PlayDevices noticeDeviceForHP = PlayDevices.Both;
+
+        /// <summary>
+        /// HPの通知先デバイス
+        /// </summary>
+        public PlayDevices NoticeDeviceForHP
+        {
+            get => this.noticeDeviceForHP;
+            set => this.SetProperty(ref this.noticeDeviceForHP, value);
+        }
+
+        private PlayDevices noticeDeviceForMP = PlayDevices.Both;
+
+        /// <summary>
+        /// MPの通知先デバイス
+        /// </summary>
+        public PlayDevices NoticeDeviceForMP
+        {
+            get => this.noticeDeviceForMP;
+            set => this.SetProperty(ref this.noticeDeviceForMP, value);
+        }
+
+        private PlayDevices noticeDeviceForTP = PlayDevices.Both;
+
+        /// <summary>
+        /// TPの通知先デバイス
+        /// </summary>
+        public PlayDevices NoticeDeviceForTP
+        {
+            get => this.noticeDeviceForTP;
+            set => this.SetProperty(ref this.noticeDeviceForTP, value);
+        }
+
+        [XmlIgnore]
+        public IEnumerable<PlayDevices> Devices => (IEnumerable<PlayDevices>)Enum.GetValues(typeof(PlayDevices));
 
         /// <summary>
         /// アラート対象に初期値をセットする

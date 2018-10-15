@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Config.Models;
+using ACT.SpecialSpellTimer.RaidTimeline;
 using ACT.SpecialSpellTimer.Sound;
 using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
@@ -78,9 +79,16 @@ namespace ACT.SpecialSpellTimer.Models
                 {
                     this.RefreshCombatants();
 
+                    var isSimulationChanged = false;
                     var isPlayerChanged = this.IsPlayerChanged();
                     var isPartyChanged = this.IsPartyChanged();
                     var isZoneChanged = this.IsZoneChanged();
+
+                    if (this.previousInSimulation != this.InSimulation)
+                    {
+                        this.previousInSimulation = this.InSimulation;
+                        isSimulationChanged = true;
+                    }
 
                     if (isPlayerChanged)
                     {
@@ -94,7 +102,8 @@ namespace ACT.SpecialSpellTimer.Models
                         this.RefreshPetPlaceholder();
                     }
 
-                    if (isPlayerChanged ||
+                    if (isSimulationChanged ||
+                        isPlayerChanged ||
                         isPartyChanged ||
                         isZoneChanged)
                     {
@@ -112,6 +121,9 @@ namespace ACT.SpecialSpellTimer.Models
                         // インスタンススペルを消去する
                         SpellTable.Instance.RemoveInstanceSpellsAll();
 
+                        // 設定を保存する
+                        PluginCore.Instance?.SaveSettingsAsync();
+
                         var zone = ActGlobals.oFormActMain.CurrentZone;
                         var zoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
                         Logger.Write($"zone changed. zone={zone}, zone_id={zoneID}");
@@ -128,8 +140,8 @@ namespace ACT.SpecialSpellTimer.Models
                     // 定期的に自分の座標をダンプする
                     if ((DateTime.Now - this.lastDumpPositionTimestamp).TotalSeconds >= 60.0)
                     {
-                        LogBuffer.DumpPosition(true);
                         this.lastDumpPositionTimestamp = DateTime.Now;
+                        LogBuffer.DumpPosition(true);
                     }
                 }
             }
@@ -250,10 +262,23 @@ namespace ACT.SpecialSpellTimer.Models
             }
         }
 
-        public void CompileSpells()
+        /// <summary>
+        /// トリガのコンパイル（フィルタ）向けの現在情報を取得する
+        /// </summary>
+        /// <returns>
+        /// プレイヤー, パーティリスト, ゾーンID</returns>
+        private (Combatant Player, IEnumerable<Combatant> PartyList, int? ZoneID) GetCurrentFilterCondition()
         {
-            var currentZoneID = default(int?);
+            var currentPlayer = this.player ?? new Combatant()
+            {
+                ID = 0,
+                Name = "Dummy Player",
+                Job = (byte)JobIDs.ADV,
+            };
 
+            var currentPartyList = this.partyList;
+
+            var currentZoneID = default(int?);
             lock (this.SimulationLocker)
             {
                 if (this.InSimulation &&
@@ -267,61 +292,15 @@ namespace ACT.SpecialSpellTimer.Models
                 }
             }
 
-            bool filter(Spell spell)
-            {
-                var enabledByJob = false;
-                var enabledByPartyJob = false;
-                var enabledByZone = false;
+            return (currentPlayer, currentPartyList, currentZoneID);
+        }
 
-                // ジョブフィルタをかける
-                if (this.player == null ||
-                    this.player.ID == 0 ||
-                    string.IsNullOrEmpty(spell.JobFilter))
-                {
-                    enabledByJob = true;
-                }
-                else
-                {
-                    var jobs = spell.JobFilter.Split(',');
-                    if (jobs.Any(x => x == this.player.Job.ToString()))
-                    {
-                        enabledByJob = true;
-                    }
-                }
-
-                // filter by specific jobs in party
-                if (this.player == null ||
-                    this.player.ID == 0 ||
-                    string.IsNullOrEmpty(spell.PartyJobFilter))
-                {
-                    enabledByPartyJob = true;
-                }
-                else
-                {
-                    var jobs = spell.PartyJobFilter.Split(',');
-                    if (jobs.Any(x => this.partyList.Where(c => !c.IsPlayer).Any(c => c.Job.ToString() == x)))
-                    {
-                        enabledByPartyJob = true;
-                    }
-                }
-
-                // ゾーンフィルタをかける
-                if (currentZoneID == 0 ||
-                    string.IsNullOrEmpty(spell.ZoneFilter))
-                {
-                    enabledByZone = true;
-                }
-                else
-                {
-                    var zoneIDs = spell.ZoneFilter.Split(',');
-                    if (zoneIDs.Any(x => x == currentZoneID.ToString()))
-                    {
-                        enabledByZone = true;
-                    }
-                }
-
-                return enabledByJob && enabledByZone && enabledByPartyJob;
-            }
+        /// <summary>
+        /// スペルをコンパイルする
+        /// </summary>
+        public void CompileSpells()
+        {
+            var current = this.GetCurrentFilterCondition();
 
             var query =
                 from x in SpellTable.Instance.Table
@@ -329,7 +308,9 @@ namespace ACT.SpecialSpellTimer.Models
                 x.IsDesignMode ||
                 (
                     x.Enabled &&
-                    filter(x)
+
+                    // フィルタを判定する
+                    x.PredicateFilters(current.Player, current.PartyList, current.ZoneID)
                 )
                 orderby
                 x.Panel?.PanelName,
@@ -394,61 +375,12 @@ namespace ACT.SpecialSpellTimer.Models
             this.RaiseTableChenged();
         }
 
+        /// <summary>
+        /// テロップをコンパイルする
+        /// </summary>
         public void CompileTickers()
         {
-            var currentZoneID = default(int?);
-
-            lock (this.SimulationLocker)
-            {
-                if (this.InSimulation &&
-                    this.SimulationZoneID != 0)
-                {
-                    currentZoneID = this.SimulationZoneID;
-                }
-                else
-                {
-                    currentZoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
-                }
-            }
-
-            bool filter(Ticker spell)
-            {
-                var enabledByJob = false;
-                var enabledByZone = false;
-
-                // ジョブフィルタをかける
-                if (this.player == null ||
-                    this.player.ID == 0 ||
-                    string.IsNullOrWhiteSpace(spell.JobFilter))
-                {
-                    enabledByJob = true;
-                }
-                else
-                {
-                    var jobs = spell.JobFilter.Split(',');
-                    if (jobs.Any(x => x == this.player.Job.ToString()))
-                    {
-                        enabledByJob = true;
-                    }
-                }
-
-                // ゾーンフィルタをかける
-                if (currentZoneID == 0 ||
-                    string.IsNullOrWhiteSpace(spell.ZoneFilter))
-                {
-                    enabledByZone = true;
-                }
-                else
-                {
-                    var zoneIDs = spell.ZoneFilter.Split(',');
-                    if (zoneIDs.Any(x => x == currentZoneID.ToString()))
-                    {
-                        enabledByZone = true;
-                    }
-                }
-
-                return enabledByJob && enabledByZone;
-            }
+            var current = this.GetCurrentFilterCondition();
 
             var query =
                 from x in TickerTable.Instance.Table
@@ -456,7 +388,9 @@ namespace ACT.SpecialSpellTimer.Models
                 x.IsDesignMode ||
                 (
                     x.Enabled &&
-                    filter(x)
+
+                    // フィルタを判定する
+                    x.PredicateFilters(current.Player, current.PartyList, current.ZoneID)
                 )
                 orderby
                 x.MatchDateTime descending,
@@ -513,10 +447,8 @@ namespace ACT.SpecialSpellTimer.Models
             this.RaiseTableChenged();
         }
 
-        public void RaiseTableChenged()
-        {
+        public void RaiseTableChenged() =>
             this.OnTableChanged?.Invoke(this, new EventArgs());
-        }
 
         public void RecompileSpells()
         {
@@ -577,7 +509,7 @@ namespace ACT.SpecialSpellTimer.Models
                 return sourceKeyword;
             }
 
-            var placeholders = this.PlaceholderList;
+            var placeholders = this.GetPlaceholders(this.InSimulation, false);
 
             string replace(string text)
             {
@@ -633,6 +565,8 @@ namespace ACT.SpecialSpellTimer.Models
         private volatile IReadOnlyList<Combatant> previousParty = new List<Combatant>();
         private volatile Combatant previousPlayer = new Combatant();
         private volatile int previousZoneID = 0;
+        private volatile string previousZoneName = string.Empty;
+        private volatile bool previousInSimulation = false;
 
         public readonly object SimulationLocker = new object();
 
@@ -714,6 +648,7 @@ namespace ACT.SpecialSpellTimer.Models
             var r = false;
 
             var zoneID = default(int?);
+            var zoneName = string.Empty;
 
             lock (this.SimulationLocker)
             {
@@ -721,20 +656,24 @@ namespace ACT.SpecialSpellTimer.Models
                     this.SimulationZoneID != 0)
                 {
                     zoneID = this.SimulationZoneID;
+                    zoneName = "In Simulation";
                 }
                 else
                 {
                     zoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
+                    zoneName = ActGlobals.oFormActMain.CurrentZone;
                 }
             }
 
             if (zoneID != null &&
-                this.previousZoneID != zoneID)
+                this.previousZoneID != zoneID &&
+                this.previousZoneName != zoneName)
             {
                 r = true;
-            }
 
-            this.previousZoneID = zoneID ?? 0;
+                this.previousZoneID = zoneID ?? 0;
+                this.previousZoneName = zoneName;
+            }
 
             return r;
         }
@@ -812,31 +751,130 @@ namespace ACT.SpecialSpellTimer.Models
 
         #region プレースホルダに関するメソッド群
 
-        private volatile List<PlaceholderContainer> placeholderList =
-            new List<PlaceholderContainer>();
-
-        public IReadOnlyList<PlaceholderContainer> PlaceholderList
-        {
-            get
-            {
-                lock (this.PlaceholderListSyncRoot)
-                {
-                    return
-                        new List<PlaceholderContainer>(
-                            this.placeholderList);
-                }
-            }
-        }
-
-        private object PlaceholderListSyncRoot =>
-            ((ICollection)this.placeholderList)?.SyncRoot;
-
         private readonly PlaceholderContainer[] IDPlaceholders = new[]
         {
             new PlaceholderContainer("<id>", "[0-9a-fA-F]+", PlaceholderTypes.Custom),
             new PlaceholderContainer("<id4>", "[0-9a-fA-F]{4}", PlaceholderTypes.Custom),
             new PlaceholderContainer("<id8>", "[0-9a-fA-F]{8}", PlaceholderTypes.Custom),
         };
+
+        private volatile List<PlaceholderContainer> placeholderList =
+            new List<PlaceholderContainer>();
+
+        public IReadOnlyList<PlaceholderContainer> PlaceholderList =>
+            this.GetPlaceholders(
+                this.InSimulation || TimelineManager.Instance.InSimulation,
+                false)
+            as List<PlaceholderContainer>;
+
+        private object PlaceholderListSyncRoot =>
+            ((ICollection)this.placeholderList)?.SyncRoot;
+
+        public IEnumerable<PlaceholderContainer> GetPlaceholders(
+            bool inSimulation = false,
+            bool forTimeline = false)
+        {
+            var placeholders = default(IEnumerable<PlaceholderContainer>);
+            lock (this.PlaceholderListSyncRoot)
+            {
+                placeholders = new List<PlaceholderContainer>(this.placeholderList);
+            }
+
+            // Simulationモードでなければ抜ける
+            if (!inSimulation)
+            {
+                if (forTimeline)
+                {
+                    placeholders = placeholders.Select(x =>
+                        new PlaceholderContainer(
+                            x.Placeholder
+                                .Replace("<", "[")
+                                .Replace(">", "]"),
+                            x.ReplaceString,
+                            x.Type));
+                }
+
+                return placeholders;
+            }
+
+            // プレースホルダ生成用のメソッド
+            string createPH(string name) => !forTimeline ? $"<{name}>" : $"[{name}]";
+
+            // シミュレータ向けプレースホルダのリストを生成する
+            var placeholdersInSim = new List<PlaceholderContainer>(placeholders);
+#if DEBUG
+            placeholdersInSim.Clear();
+#endif
+            // ID系プレースホルダ
+            var idsInSim = new[]
+            {
+                new PlaceholderContainer(createPH("id"), @"([0-9a-fA-F]+|<id>|\[id\]|<id4>|\[id4\]|<id8>|\[id8\])", PlaceholderTypes.Custom),
+                new PlaceholderContainer(createPH("id4"), @"([0-9a-fA-F]{4}|<id4>|\[id4\])", PlaceholderTypes.Custom),
+                new PlaceholderContainer(createPH("id8"), @"([0-9a-fA-F]{8}|<id8>|\[id8\])", PlaceholderTypes.Custom)
+            };
+
+            var jobs = Enum.GetNames(typeof(JobIDs));
+            var jobsPlacement = string.Join("|", jobs.Select(x => $@"\[{x}\]"));
+
+            // JOB系プレースホルダ
+            var jobsInSim = new List<PlaceholderContainer>();
+            foreach (var job in jobs)
+            {
+                jobsInSim.Add(new PlaceholderContainer(createPH(job), $@"\[{job}\]", PlaceholderTypes.Party));
+            }
+
+            // PC系プレースホルダ
+            var pcInSim = new[]
+            {
+                new PlaceholderContainer(createPH("mex"), @"(?<_mex>\[mex\])", PlaceholderTypes.Me),
+                new PlaceholderContainer(createPH("nex"), $@"(?<_nex>{jobsPlacement}|\[nex\])", PlaceholderTypes.Party),
+                new PlaceholderContainer(createPH("pc"), $@"(?<_pc>{jobsPlacement}|\[pc\]|\[mex\]|\[nex\])", PlaceholderTypes.Party),
+            };
+
+            // ID系を置き換える
+            foreach (var ph in idsInSim)
+            {
+                var old = placeholdersInSim.FirstOrDefault(x => x.Placeholder == ph.Placeholder);
+                if (old != null)
+                {
+                    old.ReplaceString = ph.ReplaceString;
+                }
+                else
+                {
+                    placeholdersInSim.Add(ph);
+                }
+            }
+
+            // JOB系を追加する
+            foreach (var ph in jobsInSim)
+            {
+                var old = placeholdersInSim.FirstOrDefault(x => x.Placeholder == ph.Placeholder);
+                if (old != null)
+                {
+                    // NO-OP
+                }
+                else
+                {
+                    placeholdersInSim.Add(ph);
+                }
+            }
+
+            // PC系を追加する
+            foreach (var ph in pcInSim)
+            {
+                var old = placeholdersInSim.FirstOrDefault(x => x.Placeholder == ph.Placeholder);
+                if (old != null)
+                {
+                    // NO-OP
+                }
+                else
+                {
+                    placeholdersInSim.Add(ph);
+                }
+            }
+
+            return placeholdersInSim;
+        }
 
         public void RefreshPartyPlaceholders()
         {
@@ -855,7 +893,17 @@ namespace ACT.SpecialSpellTimer.Models
                 new List<PlaceholderContainer>();
 
             // パーティメンバのいずれを示す <pc> を登録する
-            var names = string.Join("|", this.partyList.Select(x => x.NamesRegex).ToArray());
+            var names = string.Join(
+                "|",
+                this.partyList.Select(x => x.NamesRegex).Concat(new[]
+                {
+                    @"\<pc\>",
+                    @"\[pc\]",
+                    @"\<mex\>",
+                    @"\[mex\]",
+                    @"\<nex\>",
+                    @"\[nex\]",
+                }));
             var oldValue = $"<pc>";
             var newValue = $"(?<_pc>{names})";
             newList.Add(new PlaceholderContainer(
@@ -872,7 +920,13 @@ namespace ACT.SpecialSpellTimer.Models
                 x;
 
             // 自分以外のPTメンバを示す <nex> を登録する
-            names = string.Join("|", partyListSorted.Select(x => x.NamesRegex).ToArray());
+            names = string.Join(
+                "|",
+                partyListSorted.Select(x => x.NamesRegex).Concat(new[]
+                {
+                    @"\<nex\>",
+                    @"\[nex\]",
+                }));
             oldValue = $"<nex>";
             newValue = $"(?<_nex>{names})";
             newList.Add(new PlaceholderContainer(
@@ -930,7 +984,13 @@ namespace ACT.SpecialSpellTimer.Models
                 // <JOB>形式を登録する ただし、この場合は正規表現のグループ形式とする
                 // また、グループ名にはジョブの略称を設定する
                 // ex. <PLD> → (?<PLDs>Taro Paladin|Jiro Paladin)
-                names = string.Join("|", combatantsByJob.Select(x => x.NamesRegex).ToArray());
+                names = string.Join(
+                    "|",
+                    combatantsByJob.Select(x => x.NamesRegex).Concat(new[]
+                    {
+                        $@"\<{job.ID.ToString().ToUpper()}\>",
+                        $@"\[{job.ID.ToString().ToUpper()}\]",
+                    }));
                 oldValue = $"<{job.ID.ToString().ToUpper()}>";
                 newValue = $"(?<_{job.ID.ToString().ToUpper()}>{names})";
 
@@ -1076,7 +1136,7 @@ namespace ACT.SpecialSpellTimer.Models
 
                 this.placeholderList.Add(new PlaceholderContainer(
                     "<mex>",
-                    $"(?<_mex>{this.player.NamesRegex})",
+                    $@"(?<_mex>{this.player.NamesRegex}|\<mex\>|\[mex\])",
                     PlaceholderTypes.Me));
             }
         }

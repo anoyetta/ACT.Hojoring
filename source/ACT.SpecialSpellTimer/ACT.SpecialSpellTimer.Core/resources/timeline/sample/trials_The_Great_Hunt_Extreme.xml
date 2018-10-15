@@ -5,10 +5,8 @@
   <description>
     リオレウス狩猟戦向けのタイムラインです。
     タイムラインといってもほぼランダム攻撃ですのでトリガの定義だけです。
-
-    designed by Hojoring Forum
-    https://discord.gg/n6Mut3F
   </description>
+  <author>anoyetta with Hojoring Forum</author>
   <zone>the Great Hunt,the Great Hunt (Extreme),Unknown Zone (2F9),Unknown Zone (2Fa)</zone>
   <locale>JA</locale>
 

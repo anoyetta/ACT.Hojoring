@@ -97,6 +97,7 @@ For use for commercial purposes, a license to use the library is required.</syst
   <system:String x:Key="SA_Threshold">警报百分比</system:String>
   <system:String x:Key="SA_TTSFormat">警报内容</system:String>
   <system:String x:Key="SA_AlertTarget">警报目标</system:String>
+  <system:String x:Key="SA_Device">Device to Notify</system:String>
 
   <system:String x:Key="SA_Discription" xml:space="preserve">
 * 警报内容样例

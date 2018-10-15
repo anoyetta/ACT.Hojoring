@@ -47,6 +47,10 @@ namespace FFXIV.Framework.FFXIVHelper
             this.ResourcesDirectory,
             $@"Actions.csv");
 
+        public string BuffFile => Path.Combine(
+            this.ResourcesDirectory + @"\xivdb",
+            $@"Status.{this.FFXIVLocale.ToResourcesName()}.csv");
+
         #endregion Resources Files
 
         #region Resources Lists
@@ -55,10 +59,12 @@ namespace FFXIV.Framework.FFXIVHelper
         private readonly List<Area> areaList = new List<Area>();
         private readonly List<Placename> placenameList = new List<Placename>();
         private readonly Dictionary<int, XIVDBAction> actionList = new Dictionary<int, XIVDBAction>();
+        private readonly Dictionary<int, Buff> buffList = new Dictionary<int, Buff>();
 
         public IReadOnlyList<Area> AreaList => this.areaList;
         public IReadOnlyList<Placename> PlacenameList => this.placenameList;
         public IReadOnlyDictionary<int, XIVDBAction> ActionList => this.actionList;
+        public IReadOnlyDictionary<int, Buff> BuffList => this.buffList;
 
         #endregion Resources Lists
 
@@ -102,7 +108,8 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             Task.WaitAll(
                 Task.Run(() => this.LoadArea()),
-                Task.Run(() => this.LoadAction()));
+                Task.Run(() => this.LoadAction()),
+                Task.Run(() => this.LoadBuff()));
         }
 
         private void LoadArea()
@@ -207,7 +214,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
             }
 
-            this.AppLogger.Trace($"XIVDB Area list loaded. {this.AreaFile}");
+            this.AppLogger.Trace($"XIVDB Area list loaded. {this.AreaENFile}");
         }
 
         private void LoadPlacename()
@@ -350,6 +357,56 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 this.AppLogger.Trace($"User Action list loaded.");
             }
+        }
+
+        private void LoadBuff()
+        {
+            if (!File.Exists(this.BuffFile))
+            {
+                return;
+            }
+
+            this.buffList.Clear();
+
+            // UTF-8 BOMあり
+            using (var sr = new StreamReader(this.BuffFile, new UTF8Encoding(true)))
+            using (var parser = new TextFieldParser(sr)
+            {
+                TextFieldType = FieldType.Delimited,
+                Delimiters = new[] { "," },
+                HasFieldsEnclosedInQuotes = true,
+                TrimWhiteSpace = true,
+                CommentTokens = new[] { "#" },
+            })
+            {
+                while (!parser.EndOfData)
+                {
+                    var fields = parser.ReadFields();
+
+                    if (fields == null ||
+                        fields.Length < 2)
+                    {
+                        continue;
+                    }
+
+                    int id;
+                    if (!int.TryParse(fields[0], out id) ||
+                        string.IsNullOrEmpty(fields[1]))
+                    {
+                        continue;
+                    }
+
+                    var entry = new Buff()
+                    {
+                        ID = id,
+                        Name = fields[1]
+                    };
+
+                    this.buffList[entry.ID] = entry;
+                }
+            }
+
+            this.AppLogger.Trace($"XIVDB Status list loaded. {this.BuffFile}");
         }
 
         #region Sub classes

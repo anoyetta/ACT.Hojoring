@@ -71,6 +71,11 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public long Index => this.index;
 
+        public uint TargetOfTargetID;
+
+        public bool IsTargetOfTargetMe =>
+            this.ID == this.TargetOfTargetID;
+
         public bool IsCasting;
         public uint CastTargetID;
         public int CastBuffID;
@@ -223,6 +228,9 @@ namespace FFXIV.Framework.FFXIVHelper
             this.NameIF = $"{blocks[0].Substring(0, 1)}. {blocks[1]}";
             this.NameII = $"{blocks[0].Substring(0, 1)}. {blocks[1].Substring(0, 1)}.";
         }
+
+        public override string ToString() =>
+            $"{this.Name}, {this.JobID}";
 
         public Combatant Clone() => (Combatant)this.MemberwiseClone();
 
