@@ -97,6 +97,7 @@
   <system:String x:Key="SA_Threshold">通知する閾値</system:String>
   <system:String x:Key="SA_TTSFormat">通知するテキスト</system:String>
   <system:String x:Key="SA_AlertTarget">監視する対象</system:String>
+  <system:String x:Key="SA_Device">通知するデバイス</system:String>
 
   <system:String x:Key="SA_Discription" xml:space="preserve">
 ※通知するテキストの凡例

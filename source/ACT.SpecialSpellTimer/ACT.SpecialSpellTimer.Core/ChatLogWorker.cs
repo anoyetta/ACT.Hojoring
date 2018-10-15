@@ -148,7 +148,8 @@ namespace ACT.SpecialSpellTimer
 
         private DateTime lastFlushTimestamp = DateTime.MinValue;
 
-        public void Write()
+        public void Write(
+            bool isForceFlush = false)
         {
             const double LongInterval = 10 * 1000;
 
@@ -186,6 +187,14 @@ namespace ACT.SpecialSpellTimer
             }
             catch (Exception)
             {
+            }
+            finally
+            {
+                if (isForceFlush)
+                {
+                    this.lastFlushTimestamp = DateTime.Now;
+                    this.outputStream?.Flush();
+                }
             }
         }
     }

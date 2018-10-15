@@ -24,6 +24,8 @@ using FFXIV.Framework.Globalization;
 using FFXIV.Framework.WPF.Views;
 using Prism.Commands;
 using RazorEngine;
+using RazorEngine.Compilation;
+using RazorEngine.Compilation.ReferenceResolver;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
 using RazorEngine.Text;
@@ -100,6 +102,132 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 this.SetProperty(ref this.description, text);
+                this.RaisePropertyChanged(nameof(this.DescriptionForDisplay));
+            }
+        }
+
+        private string author = null;
+
+        [XmlElement(ElementName = "author")]
+        public string Author
+        {
+            get => this.author;
+            set
+            {
+                var text = string.Empty;
+
+                if (!string.IsNullOrEmpty(value))
+                {
+                    using (var sr = new StringReader(value))
+                    {
+                        while (true)
+                        {
+                            var line = sr.ReadLine();
+                            if (line == null)
+                            {
+                                break;
+                            }
+
+                            line = line.Trim();
+                            if (string.IsNullOrEmpty(line))
+                            {
+                                continue;
+                            }
+
+                            text += !string.IsNullOrEmpty(text) ?
+                                Environment.NewLine + line :
+                                line;
+                        }
+                    }
+                }
+
+                this.SetProperty(ref this.author, text);
+                this.RaisePropertyChanged(nameof(this.AuthorForDisplay));
+                this.RaisePropertyChanged(nameof(this.IsExistsAuthor));
+                this.RaisePropertyChanged(nameof(this.DescriptionForDisplay));
+            }
+        }
+
+        /// <summary>
+        /// CC BY-SA ライセンス表記
+        /// </summary>
+        public const string CC_BY_SALicense = "CC BY-SA";
+
+        /// <summary>
+        /// Public Domain ライセンス表記
+        /// </summary>
+        public const string PublicDomainLicense = "Public Domain";
+
+        private string license = null;
+
+        [XmlElement(ElementName = "license")]
+        public string License
+        {
+            get => this.license;
+            set
+            {
+                if (this.SetProperty(ref this.license, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.LicenseForDisplay));
+                    this.RaisePropertyChanged(nameof(this.IsExistsLicense));
+                    this.RaisePropertyChanged(nameof(this.DescriptionForDisplay));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public bool IsExistsAuthor => !string.IsNullOrEmpty(this.Author);
+
+        [XmlIgnore]
+        public bool IsExistsLicense => !string.IsNullOrEmpty(this.License);
+
+        [XmlIgnore]
+        public string AuthorForDisplay => string.IsNullOrEmpty(this.Author) ?
+            null :
+            $"Author : {this.Author.Replace(Environment.NewLine, ", ")}";
+
+        [XmlIgnore]
+        public string LicenseForDisplay => string.IsNullOrEmpty(this.License) ?
+            null :
+            $"License: {this.License}";
+
+        [XmlIgnore]
+        public string DescriptionForDisplay
+        {
+            get
+            {
+                var result = this.Description;
+
+#if false
+                var b = new List<string>(); ;
+                if (this.IsExistsAuthor)
+                {
+                    b.Add(this.AuthorForDisplay);
+                }
+
+                if (this.IsExistsLicense)
+                {
+                    b.Add(this.LicenseForDisplay);
+                }
+
+                if (b.Any())
+                {
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        result += $"\n\n{string.Join(Environment.NewLine, b)}";
+                    }
+                    else
+                    {
+                        result = string.Join(Environment.NewLine, b);
+                    }
+                }
+#endif
+                if (string.IsNullOrEmpty(result))
+                {
+                    result = "no description";
+                }
+
+                return result;
             }
         }
 
@@ -230,10 +358,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        /// <summary>
+        /// Triggers
+        /// </summary>
+        /// <remarks>
+        /// 必ずNoでソートされる</remarks>
         [XmlElement(ElementName = "t")]
         public TimelineTriggerModel[] Triggers
         {
-            get => this.Elements.Where(x => x.TimelineType == TimelineElementTypes.Trigger).Cast<TimelineTriggerModel>().ToArray();
+            get => this.Elements
+                .Where(x => x.TimelineType == TimelineElementTypes.Trigger)
+                .Cast<TimelineTriggerModel>()
+                .OrderBy(x => x.No.GetValueOrDefault())
+                .ToArray();
             set => this.AddRange(value);
         }
 
@@ -398,6 +535,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             config.Language = Language.CSharp;
 
+            config.ReferenceResolver = new RazorReferenceResolver();
+
+            config.Namespaces.Add("System.Runtime");
             config.Namespaces.Add("System.IO");
             config.Namespaces.Add("System.Linq");
             config.Namespaces.Add("System.Text");
@@ -551,6 +691,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.Activity, "NoticeOffset", -6d),
 
             // トリガ
+            NewDefault(TimelineElementTypes.Trigger, "No", 0),
             NewDefault(TimelineElementTypes.Trigger, "Enabled", true),
             NewDefault(TimelineElementTypes.Trigger, "SyncCount", 0),
             NewDefault(TimelineElementTypes.Trigger, "NoticeDevice", NoticeDevices.Both),
@@ -587,6 +728,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.Combatant, "Y", TimelineCombatantModel.InvalidPosition),
             NewDefault(TimelineElementTypes.Combatant, "Z", TimelineCombatantModel.InvalidPosition),
             NewDefault(TimelineElementTypes.Combatant, "Tolerance", 0.01f),
+
+            // Expressions
+            NewDefault(TimelineElementTypes.Expressions, "Enabled", true),
+            NewDefault(TimelineElementTypes.ExpressionsSet, "Enabled", true),
+            NewDefault(TimelineElementTypes.ExpressionsSet, "Value", true),
+            NewDefault(TimelineElementTypes.ExpressionsSet, "IsToggle", false),
+            NewDefault(TimelineElementTypes.ExpressionsSet, "TTL", -1),
+            NewDefault(TimelineElementTypes.ExpressionsPredicate, "Enabled", true),
+            NewDefault(TimelineElementTypes.ExpressionsPredicate, "Value", true),
         };
 
         private void SetDefaultValues()
@@ -1007,5 +1157,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         #endregion Dummy Timeline
+    }
+
+    public class RazorReferenceResolver : IReferenceResolver
+    {
+        public IEnumerable<CompilerReference> GetReferences(
+            TypeContext context,
+            IEnumerable<CompilerReference> includeAssemblies = null) =>
+            new UseCurrentAssembliesReferenceResolver()
+                .GetReferences(context, includeAssemblies)
+                .Where(f => !f.GetFile().EndsWith(".winmd"));
     }
 }

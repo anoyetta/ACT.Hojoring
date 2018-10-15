@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<timeline>
+  <name>次元の狭間オメガ零式：アルファ編（ノーマル）</name>
+  <rev>rev1</rev>
+  <description>
+    次元の狭間オメガ零式：アルファ編（ノーマル）向けのトリガセットです。
+  </description>
+  <author>anoyetta with Hojoring Forum</author>
+  <zone>Alphascape (V1.0),Alphascape (V2.0),Alphascape (V3.0),Alphascape (V4.0)</zone>
+  <locale>JA</locale>
+  <entry>ENTRY</entry>
+  <start>0039:戦闘開始！</start>
+
+  <!-- 1回転目の定義 start -->
+  <t text="横回転" sync="^15:[id8]:ミドガルズオルム:31C7" notice="横回転。">
+    <expressions>
+      <set name="take1_yoko" value="true" />
+    </expressions>
+    <v-notice
+      sync-to-hide="ミドガルズオルムは魔力を解き放った！"
+      order="-1"
+      icon="Arrow3.png"
+      duration="25"
+      duration-visible="false"
+      style="NOTICE_NORMAL" />
+  </t>
+
+  <t text="縦回転" sync="^15:[id8]:ミドガルズオルム:31C8" notice="縦回転。">
+    <expressions>
+      <set name="take1_yoko" value="false" />
+    </expressions>
+    <v-notice
+      sync-to-hide="ミドガルズオルムは魔力を解き放った！"
+      order="-1"
+      icon="Arrow1.png"
+      duration="25"
+      duration-visible="false"
+      style="NOTICE_NORMAL" />
+  </t>
+  <!-- 1回転目の定義 end -->
+
+  <!-- 2回転目の定義 start -->
+  <!-- 横→横 -->
+  <t text="横回転 ➔離れる" sync="^15:[id8]:ミドガルズオルム:31C9" notice="横回転、離れる。">
+    <expressions>
+      <pre name="take1_yoko" value="true" />
+    </expressions>
+    <v-notice
+      sync-to-hide="ミドガルズオルムは魔力を解き放った！"
+      icon="Arrow3.png"
+      duration="25"
+      duration-visible="false"
+      style="NOTICE_NORMAL" />
+  </t>
+
+  <!-- 縦→横 -->
+  <t text="横回転 ➔未実装" sync="^15:[id8]:ミドガルズオルム:31C9" notice="横回転、未実装だよ。">
+    <expressions>
+      <pre name="take1_yoko" value="false" />
+    </expressions>
+    <v-notice
+      sync-to-hide="ミドガルズオルムは魔力を解き放った！"
+      icon="Arrow3.png"
+      duration="25"
+      duration-visible="false"
+      style="NOTICE_NORMAL" />
+  </t>
+
+  <!-- 横→縦 -->
+  <t text="縦回転 ➔中央へ" sync="^15:[id8]:ミドガルズオルム:31CB" notice="縦回転、中央へ。">
+    <expressions>
+      <pre name="take1_yoko" value="true" />
+    </expressions>
+    <v-notice
+      sync-to-hide="ミドガルズオルムは魔力を解き放った！"
+      icon="Arrow1.png"
+      duration="25"
+      duration-visible="false"
+      style="NOTICE_NORMAL" />
+  </t>
+
+  <!-- 縦→縦 -->
+  <t text="縦回転 ➔四隅へ" sync="^15:[id8]:ミドガルズオルム:31CB" notice="縦回転、四隅へ。">
+    <expressions>
+      <pre name="take1_yoko" value="false" />
+    </expressions>
+    <v-notice
+      sync-to-hide="ミドガルズオルムは魔力を解き放った！"
+      icon="Arrow1.png"
+      duration="25"
+      duration-visible="false"
+      style="NOTICE_NORMAL" />
+  </t>
+  <!-- 2回転目の定義 end -->
+
+  <!-- オメガ 右舷/左舷 start -->
+  <t text="右舷 ➔左へ" sync="オメガは「右舷斉射・波動砲」の構え。" notice="左へ。">
+    <expressions>
+      <pre name="take1_ugen" value="false" />
+      <set name="take1_ugen" value="true" ttl="10" />
+    </expressions>
+    <v-notice
+      icon="Arrow7.png"
+      duration="3"
+      duration-visible="false" />
+  </t>
+
+  <t text="右舷 ➔右へ" sync="オメガは「右舷斉射・波動砲」の構え。" notice="右へ。">
+    <expressions>
+      <pre name="take1_ugen" value="true" />
+    </expressions>
+    <v-notice
+      icon="Arrow3.png"
+      duration="3"
+      duration-visible="false" />
+  </t>
+
+  <t text="左舷 ➔右へ" sync="オメガは「左舷斉射・波動砲」の構え。" notice="右へ。">
+    <expressions>
+      <pre name="take1_sagen" value="false" />
+      <set name="take1_sagen" value="true" ttl="10" />
+    </expressions>
+    <v-notice
+      icon="Arrow3.png"
+      duration="3"
+      duration-visible="false" />
+  </t>
+
+  <t text="左舷 ➔左へ" sync="オメガは「左舷斉射・波動砲」の構え。" notice="左へ。">
+    <expressions>
+      <pre name="take1_sagen" value="true" />
+    </expressions>
+    <v-notice
+      icon="Arrow7.png"
+      duration="3"
+      duration-visible="false" />
+  </t>
+  <!-- オメガ 右舷/左舷 end -->
+
+  <t text="マスタード・B\n➔ ${_pc}" sync="オメガ starts using マスタードボム on [pc]" notice="マスタード。">
+    <v-notice
+      icon="Explosion.png"
+      duration="5"
+      duration-visible="false" />
+  </t>
+
+  <t text="F ➔ノックバック" sync="オメガMは「トランスフォームF」の構え。" notice="F、ノックバック。">
+    <v-notice
+      icon="KnockBack.png"
+      duration="6"
+      duration-visible="false" />
+  </t>
+
+  <t text="M ➔AOE" sync="オメガFは「トランスフォームM」の構え。" notice="M、AOE。">
+    <v-notice
+      icon="Leave.png"
+      duration="6"
+      duration-visible="false" />
+  </t>
+
+  <t text="AOE" sync="1B:[id8]:[mex]:[id4]:[id4]:008B:" notice="自分にAOE。">
+    <v-notice
+      icon="Explosion.png"
+      duration="5"
+      duration-visible="false" />
+  </t>
+
+  <t text="頭割り" sync="1B:[id8]:[mex]:[id4]:[id4]:003E:" notice="自分に頭割り。">
+    <v-notice
+      icon="DamageShare.png"
+      duration="5"
+      duration-visible="false" />
+  </t>
+
+  <t text="➔ M" sync="[mex]に「ガードプログラムF」の効果。" notice="ターゲット、M。">
+    <v-notice
+      icon="Marker.png"
+      duration="60"
+      duration-visible="false" />
+  </t>
+
+  <t text="➔ F" sync="[mex]に「ガードプログラムM」の効果。" notice="ターゲット、F。">
+    <v-notice
+      icon="Marker.png"
+      duration="60"
+      duration-visible="false" />
+  </t>
+</timeline>

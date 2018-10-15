@@ -112,6 +112,7 @@
   <system:String x:Key="Spell_Secounds">secounds</system:String>
   <system:String x:Key="Spell_ExtendSecounds">secounds, extend.</system:String>
   <system:String x:Key="Spell_ExtendRecastTimeOverOrigal">Extend beyond the original recast time</system:String>
+  <system:String x:Key="Spell_IsNotResetBarOnExtended">Don't reset bar on extended</system:String>
   <system:String x:Key="Spell_UpperLimitOfRecastTime">Upper limit of extend</system:String>
   <system:String x:Key="Spell_WarningTime">secounds, change to warning color it is less than.</system:String>
   <system:String x:Key="Spell_WarningTimeChangeFontColor">Change font to warning color</system:String>
@@ -119,6 +120,7 @@
   <system:String x:Key="Spell_BlinkIcon">Blink icon</system:String>
   <system:String x:Key="Spell_BlinkBar">Blink progress bar</system:String>
   <system:String x:Key="Spell_HideCounter">Hide recast time</system:String>
+  <system:String x:Key="Spell_NotResetAtWipeout">Don't reset at Wipeout</system:String>
   <system:String x:Key="Spell_NoticeOnMatch">Notice when log matches</system:String>
   <system:String x:Key="Spell_NoticeOnOver">Notice when log matches, after N seconds</system:String>
   <system:String x:Key="Spell_NoticeOnBefore">Notice when log matches, after N seconds</system:String>

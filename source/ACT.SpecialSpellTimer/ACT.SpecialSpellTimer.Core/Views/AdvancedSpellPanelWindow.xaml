@@ -84,7 +84,9 @@
     <!-- レイアウトガイド用グリッド end -->
 
     <!-- スペル配置グリッド -->
-    <Grid>
+    <Grid
+      VerticalAlignment="{Binding Panel.GridVerticalAlignment, Mode=OneWay}"
+      HorizontalAlignment="{Binding Panel.GridHorizontalAlignment, Mode=OneWay}">
       <Border
         Panel.ZIndex="-2"
         CornerRadius="8"
@@ -93,14 +95,36 @@
 
       <ItemsControl
         x:Name="SpellsControl"
+        Margin="{Binding Panel.GridPadding, Mode=OneWay}"
         BorderThickness="0"
+        Style="{DynamicResource AdvancedLayoutPanel}"
         ItemsSource="{Binding ActiveSpellView, Mode=OneWay}">
 
-        <ItemsControl.ItemsPanel>
-          <ItemsPanelTemplate>
-            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-          </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
+        <ItemsControl.Resources>
+          <Style x:Key="AdvancedLayoutPanel" TargetType="ItemsControl">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Panel.IsStackLayout, Mode=OneWay}" Value="False">
+                <Setter Property="ItemsPanel">
+                  <Setter.Value>
+                    <ItemsPanelTemplate>
+                      <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                    </ItemsPanelTemplate>
+                  </Setter.Value>
+                </Setter>
+              </DataTrigger>
+
+              <DataTrigger Binding="{Binding Panel.IsStackLayout, Mode=OneWay}" Value="True">
+                <Setter Property="ItemsPanel">
+                  <Setter.Value>
+                    <ItemsPanelTemplate>
+                      <StackPanel Orientation="{Binding Panel.StackPanelOrientation, Mode=OneWay}" />
+                    </ItemsPanelTemplate>
+                  </Setter.Value>
+                </Setter>
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </ItemsControl.Resources>
 
         <ItemsControl.ItemTemplate>
           <DataTemplate>

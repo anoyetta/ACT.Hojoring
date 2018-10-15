@@ -397,16 +397,42 @@ namespace ACT.SpecialSpellTimer
         */
 
         /// <summary>
+        /// ダメージログのキーワード
+        /// </summary>
+        private static readonly string DamageLogKeyword = "] 00:";
+
+        /// <summary>
         /// ダメージ関係のログを示すキーワード
         /// </summary>
         /// <remarks>
         /// </remarks>
-        public static readonly Regex DamageLogPattern =
+        private static readonly Regex DamageLogPattern =
             new Regex(
-                @"\] 00:..(29|a9|2d|ad):",
+                @"^00:..(29|a9|2d|ad):",
                 RegexOptions.Compiled |
                 RegexOptions.IgnoreCase |
                 RegexOptions.ExplicitCapture);
+
+        /// <summary>
+        /// ダメージログか？
+        /// </summary>
+        /// <param name="logLine">対象のログ行</param>
+        /// <returns>bool</returns>
+        public static bool IsDamageLog(
+            string logLine)
+        {
+            if (!Settings.Default.IgnoreDamageLogs)
+            {
+                return false;
+            }
+
+            if (logLine.Contains(DamageLogKeyword))
+            {
+                return DamageLogPattern.IsMatch(logLine.Remove(0, 15));
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// 設定によらず必ずカットするログのキーワード
@@ -505,8 +531,7 @@ namespace ACT.SpecialSpellTimer
                 }
 
                 // ダメージ系ログをカットする
-                if (Settings.Default.IgnoreDamageLogs &&
-                    DamageLogPattern.IsMatch(logLine))
+                if (IsDamageLog(logLine))
                 {
                     continue;
                 }
@@ -518,22 +543,8 @@ namespace ACT.SpecialSpellTimer
                     continue;
                 }
 
-                // エフェクトに付与されるツールチップ文字を除去する
-                if (Settings.Default.RemoveTooltipSymbols)
-                {
-                    // 4文字分のツールチップ文字を除去する
-                    int index;
-                    if ((index = logLine.IndexOf(
-                        TooltipSuffix,
-                        0,
-                        StringComparison.Ordinal)) > -1)
-                    {
-                        logLine = logLine.Remove(index - 1, 4);
-                    }
-
-                    // 残ったReplacementCharを除去する
-                    logLine = logLine.Replace(TooltipReplacementChar, string.Empty);
-                }
+                // ツールチップシンボルを除去する
+                logLine = RemoveTooltipSynbols(logLine);
 
                 // ペットジョブで召喚をしたか？
                 if (!summoned &&
@@ -607,9 +618,47 @@ namespace ACT.SpecialSpellTimer
             }
         }
 
+        /// <summary>
+        /// ツールチップシンボルを除去する
+        /// </summary>
+        /// <param name="logLine"></param>
+        /// <returns>編集後のLogLine</returns>
+        public static string RemoveTooltipSynbols(
+            string logLine)
+        {
+            var result = logLine;
+
+            // エフェクトに付与されるツールチップ文字を除去する
+            if (Settings.Default.RemoveTooltipSymbols)
+            {
+                // 4文字分のツールチップ文字を除去する
+                int index;
+                if ((index = result.IndexOf(
+                    TooltipSuffix,
+                    0,
+                    StringComparison.Ordinal)) > -1)
+                {
+                    const int removeLength = 4;
+                    var startIndex = index - 1;
+
+                    if (startIndex >= 0)
+                    {
+                        result = result.Remove(startIndex, removeLength);
+                    }
+                }
+
+                // 残ったReplacementCharを除去する
+                result = result.Replace(TooltipReplacementChar, string.Empty);
+            }
+
+            return result;
+        }
+
         #endregion ログ処理
 
         #region その他のメソッド
+
+        private static (float X, float Y, float Z) previousPos = (0, 0, 0);
 
         /// <summary>
         /// 自分の座標をダンプする
@@ -624,6 +673,17 @@ namespace ACT.SpecialSpellTimer
             {
                 return;
             }
+
+            if (previousPos.X == player.PosXMap &&
+                previousPos.Y == player.PosYMap &&
+                previousPos.Z == player.PosZMap)
+            {
+                return;
+            }
+
+            previousPos.X = player.PosXMap;
+            previousPos.Y = player.PosYMap;
+            previousPos.Z = player.PosZMap;
 
             var zone = ActGlobals.oFormActMain?.CurrentZone;
             if (string.IsNullOrEmpty(zone))

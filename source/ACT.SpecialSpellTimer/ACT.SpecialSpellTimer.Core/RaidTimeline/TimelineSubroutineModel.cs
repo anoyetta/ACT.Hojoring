@@ -34,10 +34,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        /// <summary>
+        /// Triggers
+        /// </summary>
+        /// <remarks>
+        /// 必ずNoでソートされる</remarks>
         [XmlElement(ElementName = "t")]
         public TimelineTriggerModel[] Triggers
         {
-            get => this.Statements.Where(x => x.TimelineType == TimelineElementTypes.Trigger).Cast<TimelineTriggerModel>().ToArray();
+            get => this.Statements
+                .Where(x => x.TimelineType == TimelineElementTypes.Trigger)
+                .Cast<TimelineTriggerModel>()
+                .OrderBy(x => x.No.GetValueOrDefault())
+                .ToArray();
             set => this.AddRange(value);
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Config.UI.ViewModels;
 using ACT.UltraScouter.Models;
@@ -45,7 +46,7 @@ namespace ACT.UltraScouter.Workers
 
         private DateTime combatantsTimestamp = DateTime.MinValue;
 
-        protected override void GetCombatant()
+        protected override async void GetCombatant()
         {
             if ((DateTime.Now - this.combatantsTimestamp).TotalMilliseconds
                 < Settings.Instance.MobList.RefreshRateMin)
@@ -205,22 +206,27 @@ namespace ACT.UltraScouter.Workers
             // 画面ダンプ用のCombatantsを更新する
             CombatantsViewModel.RefreshCombatants(combatants);
 
-            var targets =
-                from x in combatants
-                where
-                ((x.MaxHP <= 0) || (x.MaxHP > 0 && x.CurrentHP > 0)) &&
-                Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name)
-                select new MobInfo()
-                {
-                    Name = x.Name,
-                    Combatant = x,
-                    Rank = Settings.Instance.MobList.TargetMobList[x.Name].Rank,
-                    MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
-                    TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
-                };
+            var targets = default(IEnumerable<MobInfo>);
 
-            // 距離で絞り込む
-            targets = targets.Where(x => x.Distance <= x.MaxDistance);
+            await Task.Run(() =>
+            {
+                targets =
+                    from x in combatants
+                    where
+                    ((x.MaxHP <= 0) || (x.MaxHP > 0 && x.CurrentHP > 0)) &&
+                    Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name)
+                    select new MobInfo()
+                    {
+                        Name = x.Name,
+                        Combatant = x,
+                        Rank = Settings.Instance.MobList.TargetMobList[x.Name].Rank,
+                        MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
+                        TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
+                    };
+
+                // 距離で絞り込む
+                targets = targets.Where(x => x.Distance <= x.MaxDistance);
+            });
 
             lock (this.TargetInfoLock)
             {

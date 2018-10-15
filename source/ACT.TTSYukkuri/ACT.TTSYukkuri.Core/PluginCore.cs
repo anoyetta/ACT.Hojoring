@@ -299,6 +299,7 @@ namespace ACT.TTSYukkuri
 
                 try
                 {
+                    EnvironmentHelper.GarbageLogs();
                     this.Logger.Trace("[YUKKURI] Start InitPlugin");
 
                     this.PluginStatusLabel = pluginStatusText;
@@ -323,8 +324,12 @@ namespace ACT.TTSYukkuri
                     // 漢字変換を初期化する
                     KanjiTranslator.Default.Initialize();
 
-                    // TTSのキャッシュを移行する
-                    await Task.Run(() => this.MigrateTTSCache());
+                    // TTSキャッシュの移行とGarbageを行う
+                    await Task.Run(() =>
+                    {
+                        this.MigrateTTSCache();
+                        this.GarbageTTSCache();
+                    });
 
                     // HojoringのSplashを表示する
                     WPFHelper.Start();
@@ -354,9 +359,14 @@ namespace ACT.TTSYukkuri
 
                     await Task.Run(() =>
                     {
-                        // Discordに接続する
+                        // DISCORD BOT クライアントを初期化する
                         DiscordClientModel.Model.Initialize();
-                        DiscordClientModel.Model.Connect(true);
+
+                        // AutoJoinがONならば接続する
+                        if (Settings.Default.DiscordSettings.AutoJoin)
+                        {
+                            DiscordClientModel.Model.Connect(true);
+                        }
                     });
 
                     await Task.Run(() =>
@@ -463,6 +473,41 @@ namespace ACT.TTSYukkuri
             {
                 this.Logger.Error(ex, "DeInitPlugin error.");
             }
+        }
+
+        /// <summary>
+        /// TTSキャッシュをガーベージする
+        /// </summary>
+        private void GarbageTTSCache()
+        {
+            var cacheFolder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                @"anoyetta\ACT\tts cache");
+
+            if (!Directory.Exists(cacheFolder))
+            {
+                return;
+            }
+
+            Directory.EnumerateFiles(
+                cacheFolder,
+                "*.*",
+                SearchOption.TopDirectoryOnly).Walk((file) =>
+                {
+                    var timestamp = File.GetLastAccessTime(file);
+                    if ((DateTime.Now - timestamp).TotalDays > 30)
+                    {
+                        File.Delete(file);
+                    }
+                });
+
+            Directory.EnumerateFiles(
+                cacheFolder,
+                "*本日は晴天なり*",
+                SearchOption.TopDirectoryOnly).Walk((file) =>
+                {
+                    File.Delete(file);
+                });
         }
 
         /// <summary>

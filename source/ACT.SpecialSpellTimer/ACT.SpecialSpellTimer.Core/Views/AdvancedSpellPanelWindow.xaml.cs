@@ -177,6 +177,8 @@ namespace ACT.SpecialSpellTimer.Views
                 from x in this.Spells
                 where
                 x.ProgressBarVisible
+                orderby
+                x.DisplayNo
                 select
                 x;
 

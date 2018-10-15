@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Data;
-using System.Windows.Media;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
@@ -16,119 +16,12 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.Globalization;
+using Microsoft.VisualBasic.FileIO;
 using NPOI.SS.UserModel;
+using TamanegiMage.FFXIV_MemoryReader.Model;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
-    #region Enum
-
-    /// <summary>
-    /// 分析キーワードの分類
-    /// </summary>
-    public enum KewordTypes
-    {
-        Unknown = 0,
-        Record,
-        Me,
-        PartyMember,
-        Pet,
-        Cast,
-        CastStartsUsing,
-        Action,
-        Effect,
-        Marker,
-        Dialogue,
-        HPRate,
-        Added,
-        Start,
-        End,
-        TimelineStart,
-    }
-
-    /// <summary>
-    /// 戦闘ログの種類
-    /// </summary>
-    public enum LogTypes
-    {
-        Unknown = 0,
-        CombatStart,
-        CombatEnd,
-        CastStart,
-        Action,
-        Effect,
-        Marker,
-        Added,
-        HPRate,
-        Dialog,
-    }
-
-    public static class LogTypesExtensions
-    {
-        private static ColorConverter cc = new ColorConverter();
-
-        public static string ToText(
-            this LogTypes t)
-            => new[]
-            {
-                "UNKNOWN",
-                "Combat Start",
-                "Combat End",
-                "Starts Using",
-                "Action",
-                "Effect",
-                "Marker",
-                "Added",
-                "HP Rate",
-                "Dialog",
-            }[(int)t];
-
-        public static Color ToBackgroundColor(
-            this LogTypes t)
-            => new[]
-            {
-                /*
-                (Color)cc.ConvertFrom("#FFFFFFFF"), // UNKNOWN
-                (Color)cc.ConvertFrom("#FFFF9999"), // Combat Start
-                (Color)cc.ConvertFrom("#FFFF9999"), // Combat End
-                (Color)cc.ConvertFrom("#FFCEE6F4"), // Starts Using
-                (Color)cc.ConvertFrom("#FFEEFBDD"), // Action
-                (Color)cc.ConvertFrom("#FFEFF6FB"), // Effect
-                (Color)cc.ConvertFrom("#FFFFDA97"), // Marker
-                (Color)cc.ConvertFrom("#FFFFFFFF"), // Added
-                (Color)cc.ConvertFrom("#FFFFFFFF"), // HP Rate
-                (Color)cc.ConvertFrom("#FFD8D8D8"), // Dialog
-                */
-                (Color)cc.ConvertFrom("#FFFFFFFF"), // UNKNOWN
-                (Color)cc.ConvertFrom("#FFDC143C"), // Combat Start
-                (Color)cc.ConvertFrom("#FFDC143C"), // Combat End
-                (Color)cc.ConvertFrom("#FF4169E1"), // Starts Using
-                (Color)cc.ConvertFrom("#FF98fb98"), // Action
-                (Color)cc.ConvertFrom("#FFF0E68C"), // Effect
-                (Color)cc.ConvertFrom("#FFFFA500"), // Marker
-                (Color)cc.ConvertFrom("#00000000"), // Added
-                (Color)cc.ConvertFrom("#00000000"), // HP Rate
-                (Color)cc.ConvertFrom("#FFD8D8D8"), // Dialog
-            }[(int)t];
-
-        public static Color ToForegroundColor(
-            this LogTypes t)
-            => new[]
-            {
-                (Color)cc.ConvertFrom("#FF000000"), // UNKNOWN
-                (Color)cc.ConvertFrom("#FF000000"), // Combat Start
-                (Color)cc.ConvertFrom("#FF000000"), // Combat End
-                (Color)cc.ConvertFrom("#FF000000"), // Starts Using
-                (Color)cc.ConvertFrom("#FF000000"), // Action
-                (Color)cc.ConvertFrom("#FF000000"), // Effect
-                (Color)cc.ConvertFrom("#FF000000"), // Marker
-                (Color)cc.ConvertFrom("#FF7F7F7F"), // Added
-                (Color)cc.ConvertFrom("#FF000000"), // HP Rate
-                (Color)cc.ConvertFrom("#FF000000"), // Dialog
-            }[(int)t];
-    }
-
-    #endregion Enum
-
     /// <summary>
     /// コンバットアナライザ
     /// </summary>
@@ -380,7 +273,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (names != null &&
                 names.Any() &&
-                names.AsParallel().Contains(actor))
+                names.Contains(actor))
             {
                 return false;
             }
@@ -401,21 +294,31 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private string ToNameToJob(
             string name)
         {
-            var jobName = "[pc]";
+            var jobName = name;
 
             var combs = this.GetCombatants();
 
             var com = combs.FirstOrDefault(x =>
-                x?.Name == name ||
-                x?.NameFI == name ||
-                x?.NameIF == name ||
-                x?.NameII == name);
+                x?.type == ObjectType.PC &&
+                (
+                    x?.Name == name ||
+                    x?.NameFI == name ||
+                    x?.NameIF == name ||
+                    x?.NameII == name
+                ));
 
             if (com != null)
             {
                 jobName = com.IsPlayer ?
                     $"[mex]" :
                     $"[{com.JobID.ToString()}]";
+            }
+            else
+            {
+                if (PCNameRegex.Match(jobName).Success)
+                {
+                    jobName = "[pc]";
+                }
             }
 
             return jobName;
@@ -425,8 +328,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region Store Log
 
+        private volatile bool inCombat;
         private long no;
-        private bool inCombat;
         private bool isImporting;
 
         /// <summary>
@@ -474,12 +377,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             foreach (var log in logs)
             {
                 // ダメージ系の不要なログか？
-                if (Settings.Default.IgnoreDamageLogs)
+                if (LogBuffer.IsDamageLog(log.logLine))
                 {
-                    if (LogBuffer.DamageLogPattern.IsMatch(log.logLine))
-                    {
-                        continue;
-                    }
+                    continue;
                 }
 
                 this.AnalyzeLogLine(log);
@@ -522,7 +422,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 case KewordTypes.CastStartsUsing:
                     /*
-                    starts using は準備動作をかぶるので無視する
+                    starts using は準備動作とかぶるので無視する
                     if (this.inCombat)
                     {
                         this.StoreCastStartsUsingLog(log);
@@ -565,6 +465,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
                     break;
 
+                case KewordTypes.NetworkAbility:
+                case KewordTypes.NetworkAOEAbility:
+                    if (this.inCombat)
+                    {
+                        this.StoreNewwork(logLine, category);
+                    }
+                    break;
+
                 case KewordTypes.Dialogue:
                     if (this.inCombat)
                     {
@@ -573,44 +481,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     break;
 
                 case KewordTypes.Start:
-                    lock (this.CurrentCombatLogList)
-                    {
-                        if (!this.inCombat)
-                        {
-                            if (!this.isImporting)
-                            {
-                                this.CurrentCombatLogList.Clear();
-                                this.ActorHPRate.Clear();
-                                this.partyNames = null;
-                                this.combatants = null;
-                                this.no = 1;
-                            }
-
-                            Logger.Write("Start Combat");
-
-                            // 自分の座標をダンプする
-                            LogBuffer.DumpPosition(true);
-                        }
-
-                        this.inCombat = true;
-                    }
-
-                    this.StoreStartCombat(logLine);
+                    this.StartCombat(logLine);
                     break;
 
                 case KewordTypes.End:
-                    lock (this.CurrentCombatLogList)
-                    {
-                        if (this.inCombat)
-                        {
-                            this.inCombat = false;
-                            this.StoreEndCombat(logLine);
-
-                            this.AutoSaveToSpreadsheet();
-
-                            Logger.Write("End Combat");
-                        }
-                    }
+                case KewordTypes.AnalyzeEnd:
+                    this.EndCombat(logLine);
                     break;
 
                 default:
@@ -633,13 +509,75 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         /// <summary>
+        /// 戦闘（分析）を開始する
+        /// </summary>
+        /// <param name="logLine">
+        /// 対象のログ行</param>
+        private void StartCombat(
+            LogLineEventArgs logLine = null)
+        {
+            lock (this.CurrentCombatLogList)
+            {
+                if (!this.inCombat)
+                {
+                    if (!this.isImporting)
+                    {
+                        this.CurrentCombatLogList.Clear();
+                        this.ActorHPRate.Clear();
+                        this.partyNames = null;
+                        this.combatants = null;
+                        this.no = 1;
+                    }
+
+                    Logger.Write("Start Combat");
+
+                    // 自分の座標をダンプする
+                    LogBuffer.DumpPosition(true);
+                }
+
+                this.inCombat = true;
+            }
+
+            this.StoreStartCombat(logLine);
+        }
+
+        /// <summary>
+        /// 戦闘（分析）を終了する
+        /// </summary>
+        /// <param name="logLine">
+        /// 対象のログ行</param>
+        private void EndCombat(
+            LogLineEventArgs logLine = null)
+        {
+            lock (this.CurrentCombatLogList)
+            {
+                if (this.inCombat)
+                {
+                    this.inCombat = false;
+
+                    if (logLine != null)
+                    {
+                        this.StoreEndCombat(logLine);
+                    }
+
+                    this.AutoSaveToSpreadsheetAsync();
+                    ChatLogWorker.Instance?.Write(true);
+
+                    Logger.Write("End Combat");
+                }
+            }
+        }
+
+        /// <summary>
         /// ログを格納する
         /// </summary>
         /// <param name="log">ログ</param>
+        /// <param name="logLine">ログイベント引数</param>
         private void StoreLog(
-            CombatLog log)
+            CombatLog log,
+            LogLineEventArgs logLine)
         {
-            var zone = ActGlobals.oFormActMain.CurrentZone;
+            var zone = logLine.detectedZone;
             zone = string.IsNullOrEmpty(zone) ?
                 "UNKNOWN" :
                 zone;
@@ -699,7 +637,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 LogType = LogTypes.Unknown
             };
 
-            this.StoreLog(log);
+            this.StoreLog(log, logInfo);
         }
 
         /// <summary>
@@ -730,7 +668,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (this.ToStoreActor(log.Actor))
             {
-                this.StoreLog(log);
+                this.StoreLog(log, logInfo);
             }
         }
 
@@ -761,7 +699,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (this.ToStoreActor(log.Actor))
             {
-                this.StoreLog(log);
+                this.StoreLog(log, logInfo);
             }
         }
 
@@ -797,7 +735,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (this.ToStoreActor(log.Actor))
             {
-                this.StoreLog(log);
+                this.StoreLog(log, logInfo);
             }
         }
 
@@ -829,7 +767,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (this.ToStoreActor(log.Actor))
             {
-                this.StoreLog(log);
+                this.StoreLog(log, logInfo);
             }
         }
 
@@ -870,10 +808,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 if (this.ToStoreActor(log.Actor))
                 {
-                    this.StoreLog(log);
+                    this.StoreLog(log, logInfo);
                 }
             }
         }
+
+        private const string ActorIDPlaceholder = "<id8>";
+        private const string PCIDPlaceholder = "<id8>";
 
         /// <summary>
         /// マーカーログを格納する
@@ -882,8 +823,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private void StoreMarkerLog(
             LogLineEventArgs logInfo)
         {
-            const string PCIDPlaceholder = "(?<pcid>.{8})";
-
             var log = default(CombatLog);
 
             var match = ConstantKeywords.MarkerRegex.Match(logInfo.logLine);
@@ -933,8 +872,96 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (this.ToStoreActor(log.Actor))
                 {
-                    this.StoreLog(log);
+                    this.StoreLog(log, logInfo);
                 }
+            }
+        }
+
+        /// <summary>
+        /// 格納対象外とするアクション名
+        /// </summary>
+        private static readonly string[] IgnoreNewworkActions = new string[]
+        {
+            "攻撃",
+            "スプリント",
+            "Attack",
+            "Sprint",
+        };
+
+        /// <summary>
+        /// ネットワークログを格納する
+        /// </summary>
+        /// <param name="logInfo">ログ情報</param>
+        /// <param name="keywordType">キーワードのタイプ</param>
+        private void StoreNewwork(
+            LogLineEventArgs logInfo,
+            KewordTypes keywordType)
+        {
+            var log = default(CombatLog);
+
+            var targetLogLine = logInfo.logLine.Substring(15);
+            var match = keywordType == KewordTypes.NetworkAbility ?
+                ConstantKeywords.NetworkAbility.Match(targetLogLine) :
+                ConstantKeywords.NetworkAOEAbility.Match(targetLogLine);
+
+            if (match.Success)
+            {
+                var actorID = match.Groups["id"].ToString();
+                var victimID = match.Groups["victim_id"].ToString();
+                var actor = match.Groups["actor"].ToString();
+                var action = match.Groups["skill"].ToString();
+                var victim = match.Groups["victim"].ToString();
+                var victimJobName = this.ToNameToJob(victim);
+
+                if (IgnoreNewworkActions.Any(x =>
+                    string.Equals(x, action, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return;
+                }
+
+                var raw = logInfo.logLine.Substring(0, 15) + match.Value;
+                raw = raw
+                    .Replace(actorID, ActorIDPlaceholder)
+                    .Replace(victimID, PCIDPlaceholder);
+
+                if (!string.IsNullOrEmpty(victim))
+                {
+                    raw = raw.Replace(victim, victimJobName);
+                }
+
+                log = new CombatLog()
+                {
+                    TimeStamp = logInfo.detectedTime,
+                    Raw = raw,
+                    Actor = actor,
+                    Skill = action,
+                    Activity = keywordType == KewordTypes.NetworkAbility ?
+                        $"{action} Sign" :
+                        $"{action} Sign-AOE",
+                    LogType = keywordType == KewordTypes.NetworkAbility ?
+                        LogTypes.NetworkAbility :
+                        LogTypes.NetworkAOEAbility,
+                };
+
+                if (!this.ToStoreActor(log.Actor))
+                {
+                    return;
+                }
+            }
+
+            if (log != null)
+            {
+                if (this.CurrentCombatLogList.Any(x =>
+                    Math.Abs((x.TimeStamp - log.TimeStamp).TotalSeconds) <= 1.0 &&
+                    x.RawWithoutTimestamp == log.RawWithoutTimestamp))
+                {
+                    return;
+                }
+
+                log.Text = log.Activity;
+                log.SyncKeyword = log.RawWithoutTimestamp;
+
+                this.StoreLog(log, logInfo);
             }
         }
 
@@ -994,7 +1021,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             log.Text = null;
             log.SyncKeyword = log.RawWithoutTimestamp.Substring(8);
 
-            this.StoreLog(log);
+            this.StoreLog(log, logInfo);
         }
 
         /// <summary>
@@ -1021,7 +1048,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 LogType = LogTypes.CombatStart
             };
 
-            this.StoreLog(log);
+            this.StoreLog(log, logInfo);
         }
 
         /// <summary>
@@ -1048,7 +1075,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 LogType = LogTypes.CombatEnd
             };
 
-            this.StoreLog(log);
+            this.StoreLog(log, logInfo);
         }
 
         #endregion Store Log
@@ -1092,8 +1119,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 this.isImporting = true;
 
-                // 冒頭にインポートを示すログを加える
-                logLines.Insert(0, $"[00:00:00.000] {ConstantKeywords.ImportLog}");
+                // 冒頭にインポートを示すログを発生させる
+                this.AnalyzeLogLine(new LogLineEventArgs(
+                    $"[00:00:00.000] {ConstantKeywords.ImportLog}",
+                    0,
+                    DateTime.Now,
+                    string.Empty,
+                    true));
 
                 var now = DateTime.Now;
 
@@ -1107,12 +1139,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 foreach (var line in logLines)
                 {
-                    if (line.Length < 14)
+                    var log = line;
+                    var detectTime = default(DateTime);
+
+                    if (log.Length < 14)
                     {
                         continue;
                     }
 
-                    var timeAsText = line.Substring(0, 14)
+                    var timeAsText = log.Substring(0, 14)
                         .Replace("[", string.Empty)
                         .Replace("]", string.Empty);
 
@@ -1122,7 +1157,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         continue;
                     }
 
-                    var detectTime = new DateTime(
+                    detectTime = new DateTime(
                         now.Year,
                         now.Month,
                         now.Day,
@@ -1132,7 +1167,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         time.Millisecond);
 
                     var arg = new LogLineEventArgs(
-                        line,
+                        log,
                         0,
                         detectTime,
                         string.Empty,
@@ -1152,6 +1187,136 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.isImporting = false;
             }
         }
+
+        /// <summary>
+        /// ログ行をインポートして解析する
+        /// </summary>
+        /// <param name="file">対象のファイル</param>
+        public void ImportLogLinesFromCSV(
+            string file)
+        {
+            if (!File.Exists(file))
+            {
+                return;
+            }
+
+            try
+            {
+                this.isImporting = true;
+
+                // 冒頭にインポートを示すログを発生させる
+                this.AnalyzeLogLine(new LogLineEventArgs(
+                    $"[00:00:00.000] {ConstantKeywords.ImportLog}",
+                    0,
+                    DateTime.Now,
+                    string.Empty,
+                    true));
+
+                // 各種初期化
+                this.inCombat = false;
+                this.CurrentCombatLogList.Clear();
+                this.ActorHPRate.Clear();
+                this.partyNames = null;
+                this.combatants = null;
+                this.no = 1;
+
+                var preLog = new string[3];
+                var preLogIndex = 0;
+                var ignores = TimelineSettings.Instance.IgnoreLogTypes.Where(x => x.IsIgnore);
+
+                using (var reader = new StreamReader(
+                    new FileStream(
+                        file,
+                        FileMode.Open,
+                        FileAccess.Read,
+                        FileShare.ReadWrite),
+                    new UTF8Encoding(false)))
+                using (var parser = new TextFieldParser(reader)
+                {
+                    TextFieldType = FieldType.Delimited,
+                    Delimiters = new[] { "," },
+                    HasFieldsEnclosedInQuotes = true,
+                })
+                {
+                    while (!parser.EndOfData)
+                    {
+                        Thread.Yield();
+
+                        var fields = default(string[]);
+
+                        try
+                        {
+                            fields = parser.ReadFields();
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+
+                        if (fields.Length < 6)
+                        {
+                            continue;
+                        }
+
+                        var detectTime = DateTime.Parse(fields[1]);
+                        var log = fields[4];
+                        var zone = fields[5];
+
+                        // 直前とまったく同じ行はカットする
+                        if (preLog[0] == log ||
+                            preLog[1] == log ||
+                            preLog[2] == log)
+                        {
+                            continue;
+                        }
+
+                        preLog[preLogIndex++] = log;
+                        if (preLogIndex >= 3)
+                        {
+                            preLogIndex = 0;
+                        }
+
+                        // 無効なログ？
+                        // ログ種別だけのゴミ？, 不要なログキーワード？, TLシンボルあり？, ダメージ系ログ？
+                        if (log.Length <= 3 ||
+                            ignores.Any(x => log.Contains(x.Keyword)) ||
+                            log.Contains(TimelineController.TLSymbol) ||
+                            LogBuffer.IsDamageLog(log))
+                        {
+                            continue;
+                        }
+
+                        // エフェクトに付与されるツールチップ文字を除去する
+                        log = LogBuffer.RemoveTooltipSynbols(log);
+
+                        // タイムスタンプを付与し直す
+                        log = $"[{detectTime.ToString("HH:mm:ss.fff")}] {log}";
+
+                        var arg = new LogLineEventArgs(
+                            log,
+                            0,
+                            detectTime,
+                            zone,
+                            true);
+
+                        this.AnalyzeLogLine(arg);
+                    }
+                }
+
+                var startCombat = this.CurrentCombatLogList.FirstOrDefault(x => x.Raw.Contains(ConstantKeywords.CombatStartNow));
+                if (startCombat != null)
+                {
+                    this.SetOrigin(this.CurrentCombatLogList, startCombat);
+                }
+            }
+            finally
+            {
+                this.isImporting = false;
+            }
+        }
+
+        private async void AutoSaveToSpreadsheetAsync() =>
+            await Task.Run(() => this.AutoSaveToSpreadsheet());
 
         private void AutoSaveToSpreadsheet()
         {
@@ -1201,96 +1366,101 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 logs);
         }
 
+        private static readonly object SpreadsheetLocker = new object();
+
         public void SaveToSpreadsheet(
             string file,
             IList<CombatLog> combatLogs)
         {
-            var master = Path.Combine(
-                DirectoryHelper.FindSubDirectory("resources"),
-                "CombatLogBase.xlsx");
-
-            var work = Path.Combine(
-                DirectoryHelper.FindSubDirectory("resources"),
-                "CombatLogBase_work.xlsx");
-
-            if (!File.Exists(master))
+            lock (SpreadsheetLocker)
             {
-                throw new FileNotFoundException(
-                   $"CombatLog Master File Not Found. {master}");
-            }
+                var master = Path.Combine(
+                    DirectoryHelper.FindSubDirectory("resources"),
+                    "CombatLogBase.xlsx");
 
-            File.Copy(master, work, true);
+                var work = Path.Combine(
+                    DirectoryHelper.FindSubDirectory("resources"),
+                    "CombatLogBase_work.xlsx");
 
-            var book = WorkbookFactory.Create(work);
-            var sheet = book.GetSheet("CombatLog");
-
-            try
-            {
-                // セルの書式を生成する
-                var noStyle = book.CreateCellStyle();
-                var timestampStyle = book.CreateCellStyle();
-                var timeStyle = book.CreateCellStyle();
-                var textStyle = book.CreateCellStyle();
-                var perStyle = book.CreateCellStyle();
-                noStyle.DataFormat = book.CreateDataFormat().GetFormat("#,##0_ ");
-                timestampStyle.DataFormat = book.CreateDataFormat().GetFormat("yyyy-MM-dd HH:mm:ss.000");
-                timeStyle.DataFormat = book.CreateDataFormat().GetFormat("mm:ss");
-                textStyle.DataFormat = book.CreateDataFormat().GetFormat("@");
-                perStyle.DataFormat = book.CreateDataFormat().GetFormat("0.0%");
-
-                var now = DateTime.Now;
-
-                var row = 1;
-                foreach (var data in combatLogs)
+                if (!File.Exists(master))
                 {
-                    var timeAsDateTime = new DateTime(
-                        now.Year,
-                        now.Month,
-                        now.Day,
-                        0,
-                        data.TimeStampElapted.Minutes >= 0 ? data.TimeStampElapted.Minutes : 0,
-                        data.TimeStampElapted.Seconds >= 0 ? data.TimeStampElapted.Seconds : 0);
-
-                    var col = 0;
-
-                    writeCell<long>(sheet, row, col++, data.No, noStyle);
-                    writeCell<DateTime>(sheet, row, col++, timeAsDateTime, timeStyle);
-                    writeCell<double>(sheet, row, col++, data.TimeStampElapted.TotalSeconds, noStyle);
-                    writeCell<string>(sheet, row, col++, data.LogTypeName, textStyle);
-                    writeCell<string>(sheet, row, col++, data.Actor, textStyle);
-                    writeCell<decimal>(sheet, row, col++, data.HPRate, perStyle);
-                    writeCell<string>(sheet, row, col++, data.Activity, textStyle);
-                    writeCell<string>(sheet, row, col++, data.RawWithoutTimestamp, textStyle);
-                    writeCell<string>(sheet, row, col++, data.Text, textStyle);
-                    writeCell<string>(sheet, row, col++, data.SyncKeyword, textStyle);
-                    writeCell<DateTime>(sheet, row, col++, data.TimeStamp, timestampStyle);
-                    writeCell<string>(sheet, row, col++, data.Zone, textStyle);
-
-                    row++;
+                    throw new FileNotFoundException(
+                       $"CombatLog Master File Not Found. {master}");
                 }
 
-                if (File.Exists(file))
-                {
-                    File.Delete(file);
-                }
+                File.Copy(master, work, true);
 
-                FileHelper.CreateDirectory(file);
+                var book = WorkbookFactory.Create(work);
+                var sheet = book.GetSheet("CombatLog");
 
-                using (var fs = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Write))
+                try
                 {
-                    book.Write(fs);
+                    // セルの書式を生成する
+                    var noStyle = book.CreateCellStyle();
+                    var timestampStyle = book.CreateCellStyle();
+                    var timeStyle = book.CreateCellStyle();
+                    var textStyle = book.CreateCellStyle();
+                    var perStyle = book.CreateCellStyle();
+                    noStyle.DataFormat = book.CreateDataFormat().GetFormat("#,##0_ ");
+                    timestampStyle.DataFormat = book.CreateDataFormat().GetFormat("yyyy-MM-dd HH:mm:ss.000");
+                    timeStyle.DataFormat = book.CreateDataFormat().GetFormat("mm:ss");
+                    textStyle.DataFormat = book.CreateDataFormat().GetFormat("@");
+                    perStyle.DataFormat = book.CreateDataFormat().GetFormat("0.0%");
+
+                    var now = DateTime.Now;
+
+                    var row = 1;
+                    foreach (var data in combatLogs)
+                    {
+                        var timeAsDateTime = new DateTime(
+                            now.Year,
+                            now.Month,
+                            now.Day,
+                            0,
+                            data.TimeStampElapted.Minutes >= 0 ? data.TimeStampElapted.Minutes : 0,
+                            data.TimeStampElapted.Seconds >= 0 ? data.TimeStampElapted.Seconds : 0);
+
+                        var col = 0;
+
+                        writeCell<long>(sheet, row, col++, data.No, noStyle);
+                        writeCell<DateTime>(sheet, row, col++, timeAsDateTime, timeStyle);
+                        writeCell<double>(sheet, row, col++, data.TimeStampElapted.TotalSeconds, noStyle);
+                        writeCell<string>(sheet, row, col++, data.LogTypeName, textStyle);
+                        writeCell<string>(sheet, row, col++, data.Actor, textStyle);
+                        writeCell<decimal>(sheet, row, col++, data.HPRate, perStyle);
+                        writeCell<string>(sheet, row, col++, data.Activity, textStyle);
+                        writeCell<string>(sheet, row, col++, data.RawWithoutTimestamp, textStyle);
+                        writeCell<string>(sheet, row, col++, data.Text, textStyle);
+                        writeCell<string>(sheet, row, col++, data.SyncKeyword, textStyle);
+                        writeCell<DateTime>(sheet, row, col++, data.TimeStamp, timestampStyle);
+                        writeCell<string>(sheet, row, col++, data.Zone, textStyle);
+
+                        row++;
+                    }
+
+                    if (File.Exists(file))
+                    {
+                        File.Delete(file);
+                    }
+
+                    FileHelper.CreateDirectory(file);
+
+                    using (var fs = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Write))
+                    {
+                        book.Write(fs);
+                    }
                 }
-            }
-            finally
-            {
-                book?.Close();
-                File.Delete(work);
+                finally
+                {
+                    book?.Close();
+                    File.Delete(work);
+                }
             }
 
             // セルの編集内部メソッド
             void writeCell<T>(ISheet sh, int r, int c, T v, ICellStyle style)
             {
-                var rowObj = sh.GetRow(r) ?? sheet.CreateRow(r);
+                var rowObj = sh.GetRow(r) ?? sh.CreateRow(r);
                 var cellObj = rowObj.GetCell(c) ?? rowObj.CreateCell(c);
 
                 switch (Type.GetTypeCode(typeof(T)))
@@ -1340,6 +1510,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 LogTypes.Added,
                 LogTypes.Marker,
                 LogTypes.Effect,
+                LogTypes.NetworkAbility,
+                LogTypes.NetworkAOEAbility,
             };
 
             var timeline = new TimelineModel();
@@ -1351,6 +1523,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             timeline.Description =
                 "自動生成によるドラフト版タイムラインです。タイムライン定義の作成にご活用ください。" + Environment.NewLine +
                 "なお未編集のままで運用できるようには設計されていません。";
+            timeline.Author = Environment.UserName;
+            timeline.License = TimelineModel.CC_BY_SALicense;
 
             foreach (var log in combatLogs.Where(x =>
                 outputTypes.Contains(x.LogType)))
@@ -1410,6 +1584,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
 
                         break;
+
+                    case LogTypes.NetworkAbility:
+                    case LogTypes.NetworkAOEAbility:
+                        a.Enabled = false;
+
+                        if (timeline.Activities.Any(x =>
+                            x.Time == a.Time &&
+                            x.Text == a.Text))
+                        {
+                            continue;
+                        }
+
+                        break;
                 }
 
                 timeline.Add(a);
@@ -1452,7 +1639,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 foreach (var log in combatLogs.Skip(startIndex))
                 {
                     sb.AppendLine(log.Raw
-                        .Replace("(?<pcid>.{8})", "00000000"));
+                        .Replace("(?<pcid>.{8})", "00000000")
+                        .Replace("(?<actor_id>.{8})", "00000000"));
 
                     if (sb.Length > 5012)
                     {

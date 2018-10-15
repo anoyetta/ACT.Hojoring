@@ -4,5 +4,7 @@ namespace FFXIV.Framework.FFXIVHelper
     {
         public int ID { get; set; }
         public string Name { get; set; }
+
+        public override string ToString() => $"ID={this.ID} Name={this.Name}";
     }
 }
