@@ -1,5 +1,6 @@
 using System.Net;
 using System.Runtime.Serialization.Json;
+using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 
 namespace XIVDBDownloader.Models
@@ -12,9 +13,8 @@ namespace XIVDBDownloader.Models
         public T GET(
             Locales language)
         {
-            // TLS1.2を有効にする
-            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
-            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+            // TLSプロトコルを設定する
+            EnvironmentHelper.SetTLSProtocol();
 
             var resultList = default(T);
 
