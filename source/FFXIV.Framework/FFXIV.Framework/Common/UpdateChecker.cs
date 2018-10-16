@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -172,9 +171,8 @@ namespace FFXIV.Framework.Common
 
             try
             {
-                // TLS1.2を有効にする
-                ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
-                ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+                // TLSプロトコルを設定する
+                EnvironmentHelper.SetTLSProtocol();
 
                 var html = string.Empty;
 

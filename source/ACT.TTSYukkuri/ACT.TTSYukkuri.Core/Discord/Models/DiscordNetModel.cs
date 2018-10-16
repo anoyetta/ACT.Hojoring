@@ -179,7 +179,7 @@ namespace ACT.TTSYukkuri.Discord.Models
         {
             if (!UpdateChecker.IsWindowsNewer)
             {
-                this.AppendLogLine("Unsupported Operating System. Windows 10 or Later is Required.");
+                this.AppendLogLine("Unsupported Operating System. Windows 8.1 or Later is Required.");
                 return;
             }
 

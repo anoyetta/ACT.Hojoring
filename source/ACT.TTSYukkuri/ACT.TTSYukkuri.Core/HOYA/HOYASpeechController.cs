@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using System.Net;
 using ACT.TTSYukkuri.Config;
+using FFXIV.Framework.Common;
 using VoiceTextWebAPI.Client;
 
 namespace ACT.TTSYukkuri.HOYA
@@ -83,9 +83,8 @@ namespace ACT.TTSYukkuri.HOYA
                 Format = Format.WAV,
             };
 
-            // TLS1.2を有効にする
-            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
-            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+            // TLSプロトコルを設定する
+            EnvironmentHelper.SetTLSProtocol();
 
             var waveData = client.GetVoice(textToSpeak);
 
