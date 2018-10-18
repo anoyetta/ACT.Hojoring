@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -494,7 +496,18 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public ICommand CcopyTagCommand =>
             this.copyTagCommand ?? (this.copyTagCommand = new DelegateCommand(() =>
             {
-                Clipboard.SetText(this.Tag + Environment.NewLine);
+                for (int i = 0; i < 10; i++)
+                {
+                    try
+                    {
+                        Clipboard.SetDataObject(this.Tag + Environment.NewLine);
+                        break;
+                    }
+                    catch (COMException)
+                    {
+                        Thread.Sleep(10);
+                    }
+                }
             }));
 
         #endregion Commmands
