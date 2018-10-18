@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
+using FFXIV.Framework.WPF.Views;
 
 namespace FFXIV.Framework.Common
 {
@@ -44,6 +45,9 @@ namespace FFXIV.Framework.Common
                 if (Application.Current == null)
                 {
                     new Application().ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+                    // UnhandledException のイベントハンドラを設定する
+                    Application.Current.DispatcherUnhandledException += OnDispatcherUnhandledException;
                 }
             }
         }
@@ -90,6 +94,34 @@ namespace FFXIV.Framework.Common
 #else
                 return false;
 #endif
+            }
+        }
+
+        /// <summary>
+        /// ハンドルされない例外ハンドラ
+        /// </summary>
+        /// <param name="sender">sender</param>
+        /// <param name="e">イベント引数</param>
+        private static void OnDispatcherUnhandledException(
+            object sender,
+            DispatcherUnhandledExceptionEventArgs e)
+        {
+            try
+            {
+                AppLog.DefaultLogger.Fatal(
+                    e.Exception,
+                    "Unhandled Exception");
+
+                InvokeAsync(() => ModernMessageBox.ShowDialog(
+                    "Fatal Error.\nUnhandled Exception.",
+                    "Fatal Error",
+                    MessageBoxButton.OK,
+                    e.Exception));
+
+                e.Handled = true;
+            }
+            catch (Exception)
+            {
             }
         }
     }

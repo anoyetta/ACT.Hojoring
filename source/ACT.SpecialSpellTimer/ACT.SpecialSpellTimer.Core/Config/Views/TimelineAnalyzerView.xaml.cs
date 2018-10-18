@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -216,7 +218,18 @@ namespace ACT.SpecialSpellTimer.Config.Views
                             break;
                     }
 
-                    Clipboard.SetText(text);
+                    for (int i = 0; i < 10; i++)
+                    {
+                        try
+                        {
+                            Clipboard.SetDataObject(text);
+                            break;
+                        }
+                        catch (COMException)
+                        {
+                            Thread.Sleep(10);
+                        }
+                    }
                 }
             }));
 
