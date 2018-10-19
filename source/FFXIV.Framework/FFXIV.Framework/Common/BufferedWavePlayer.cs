@@ -194,8 +194,6 @@ namespace FFXIV.Framework.Common
                 this.Player.SetBackground();
             }
 
-            private float prevVolume = 0;
-
             public void Play(
                 string file,
                 float volume = 1.0f,
@@ -235,20 +233,13 @@ namespace FFXIV.Framework.Common
 
                 lock (WaveBuffer)
                 {
-                    if (this.prevVolume != volume)
-                    {
-                        WaveBuffer.Clear();
-                    }
-
-                    this.prevVolume = volume;
-
                     if (WaveBuffer.ContainsKey(file))
                     {
-                        samples = WaveBuffer[file];
+                        samples = WaveBuffer[file].ToArray();
                     }
                     else
                     {
-                        using (var audio = new AudioFileReader(file) { Volume = volume })
+                        using (var audio = new AudioFileReader(file))
                         using (var resampler = new MediaFoundationResampler(audio, this.OutputFormat))
                         using (var output = new MemoryStream(51200))
                         {
@@ -269,6 +260,21 @@ namespace FFXIV.Framework.Common
                         }
 
                         WaveBuffer[file] = samples;
+                    }
+                }
+
+                // ボリュームを反映する
+                if (volume != 1.0)
+                {
+                    for (int i = 0; i < samples.Length; i++)
+                    {
+                        var s = samples[i] * volume;
+                        if (s > 255)
+                        {
+                            s = 255;
+                        }
+
+                        samples[i] = Convert.ToByte(s);
                     }
                 }
 
