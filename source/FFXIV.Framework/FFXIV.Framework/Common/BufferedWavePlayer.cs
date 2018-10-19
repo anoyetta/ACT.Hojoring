@@ -242,7 +242,7 @@ namespace FFXIV.Framework.Common
                     }
                     else
                     {
-                        using (var audio = new AudioFileReader(file))
+                        using (var audio = new AudioFileReader(file) { Volume = volume })
                         using (var resampler = new MediaFoundationResampler(audio, this.OutputFormat))
                         {
                             TempOutput.Position = 0;
