@@ -194,6 +194,8 @@ namespace FFXIV.Framework.Common
                 this.Player.SetBackground();
             }
 
+            private static readonly MemoryStream TempOutput = new MemoryStream(51200);
+
             public void Play(
                 string file,
                 float volume = 1.0f,
@@ -230,27 +232,28 @@ namespace FFXIV.Framework.Common
                 }
 
                 var samples = default(byte[]);
+                var bufferKey = $"{file}-{volume}";
 
                 lock (WaveBuffer)
                 {
-                    if (WaveBuffer.ContainsKey(file))
+                    if (WaveBuffer.ContainsKey(bufferKey))
                     {
-                        samples = WaveBuffer[file].ToArray();
+                        samples = WaveBuffer[bufferKey];
                     }
                     else
                     {
-                        using (var audio = new AudioFileReader(file))
+                        using (var audio = new AudioFileReader(file) { Volume = volume })
                         using (var resampler = new MediaFoundationResampler(audio, this.OutputFormat))
-                        using (var output = new MemoryStream(51200))
                         {
-                            WaveFileWriter.WriteWavFileToStream(output, resampler);
-                            output.Flush();
-                            output.Position = 0;
+                            TempOutput.Position = 0;
+                            WaveFileWriter.WriteWavFileToStream(TempOutput, resampler);
+                            TempOutput.Flush();
+                            TempOutput.Position = 0;
 
                             // ヘッダをカットする
-                            var raw = output.ToArray();
+                            var raw = TempOutput.ToArray();
                             var headerLength = 0;
-                            using (var wave = new WaveFileReader(output))
+                            using (var wave = new WaveFileReader(TempOutput))
                             {
                                 headerLength = (int)(raw.Length - wave.Length);
                             }
@@ -259,22 +262,7 @@ namespace FFXIV.Framework.Common
                             samples = raw.Skip(headerLength).ToArray();
                         }
 
-                        WaveBuffer[file] = samples;
-                    }
-                }
-
-                // ボリュームを反映する
-                if (volume != 1.0)
-                {
-                    for (int i = 0; i < samples.Length; i++)
-                    {
-                        var s = samples[i] * volume;
-                        if (s > 255)
-                        {
-                            s = 255;
-                        }
-
-                        samples[i] = Convert.ToByte(s);
+                        WaveBuffer[bufferKey] = samples;
                     }
                 }
 
