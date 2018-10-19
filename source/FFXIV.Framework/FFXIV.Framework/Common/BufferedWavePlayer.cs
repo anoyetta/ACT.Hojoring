@@ -238,7 +238,7 @@ namespace FFXIV.Framework.Common
                 {
                     if (WaveBuffer.ContainsKey(key))
                     {
-                        samples = WaveBuffer[key].ToArray();
+                        samples = WaveBuffer[key];
                     }
                     else
                     {
@@ -268,20 +268,30 @@ namespace FFXIV.Framework.Common
 
                 if (volume != 1.0)
                 {
-                    for (int i = 0; i < samples.Length; i += 2)
+                    var samplesByVolume = samples.ToArray();
+
+                    // 音量による増幅・減衰を演算する
+                    for (int i = 0; i < samplesByVolume.Length; i += 2)
                     {
-                        var s = BitConverter.ToInt16(samples, i);
+                        var s = BitConverter.ToInt16(samplesByVolume, i);
                         s = (short)(s * volume);
                         var bytes = BitConverter.GetBytes(s);
-                        samples[i + 0] = bytes[0];
-                        samples[i + 1] = bytes[1];
+                        samplesByVolume[i + 0] = bytes[0];
+                        samplesByVolume[i + 1] = bytes[1];
                     }
-                }
 
-                buffer.AddSamples(
-                    samples,
-                    0,
-                    samples.Length);
+                    buffer.AddSamples(
+                        samplesByVolume,
+                        0,
+                        samplesByVolume.Length);
+                }
+                else
+                {
+                    buffer.AddSamples(
+                        samples,
+                        0,
+                        samples.Length);
+                }
 
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine($"WASAPI(Buffered) Play: {file}");
