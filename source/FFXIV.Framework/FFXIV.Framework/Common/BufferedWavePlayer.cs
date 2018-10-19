@@ -194,6 +194,8 @@ namespace FFXIV.Framework.Common
                 this.Player.SetBackground();
             }
 
+            private static readonly MemoryStream TempOutput = new MemoryStream(51200);
+
             public void Play(
                 string file,
                 float volume = 1.0f,
@@ -230,27 +232,28 @@ namespace FFXIV.Framework.Common
                 }
 
                 var samples = default(byte[]);
+                var key = $"{file}";
 
                 lock (WaveBuffer)
                 {
-                    if (WaveBuffer.ContainsKey(file))
+                    if (WaveBuffer.ContainsKey(key))
                     {
-                        samples = WaveBuffer[file].ToArray();
+                        samples = WaveBuffer[key].ToArray();
                     }
                     else
                     {
                         using (var audio = new AudioFileReader(file))
                         using (var resampler = new MediaFoundationResampler(audio, this.OutputFormat))
-                        using (var output = new MemoryStream(51200))
                         {
-                            WaveFileWriter.WriteWavFileToStream(output, resampler);
-                            output.Flush();
-                            output.Position = 0;
+                            TempOutput.Position = 0;
+                            WaveFileWriter.WriteWavFileToStream(TempOutput, resampler);
+                            TempOutput.Flush();
+                            TempOutput.Position = 0;
 
                             // ヘッダをカットする
-                            var raw = output.ToArray();
+                            var raw = TempOutput.ToArray();
                             var headerLength = 0;
-                            using (var wave = new WaveFileReader(output))
+                            using (var wave = new WaveFileReader(TempOutput))
                             {
                                 headerLength = (int)(raw.Length - wave.Length);
                             }
@@ -259,22 +262,19 @@ namespace FFXIV.Framework.Common
                             samples = raw.Skip(headerLength).ToArray();
                         }
 
-                        WaveBuffer[file] = samples;
+                        WaveBuffer[key] = samples;
                     }
                 }
 
-                // ボリュームを反映する
                 if (volume != 1.0)
                 {
-                    for (int i = 0; i < samples.Length; i++)
+                    for (int i = 0; i < samples.Length; i += 2)
                     {
-                        var s = samples[i] * volume;
-                        if (s > 255)
-                        {
-                            s = 255;
-                        }
-
-                        samples[i] = Convert.ToByte(s);
+                        var s = BitConverter.ToInt16(samples, i);
+                        s = (short)(s * volume);
+                        var bytes = BitConverter.GetBytes(s);
+                        samples[i + 0] = bytes[0];
+                        samples[i + 1] = bytes[1];
                     }
                 }
 
