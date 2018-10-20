@@ -194,8 +194,6 @@ namespace FFXIV.Framework.Common
                 this.Player.SetBackground();
             }
 
-            private static readonly MemoryStream TempOutput = new MemoryStream(51200);
-
             public void Play(
                 string file,
                 float volume = 1.0f,
@@ -232,7 +230,7 @@ namespace FFXIV.Framework.Common
                 }
 
                 var samples = default(byte[]);
-                var key = $"{file}";
+                var key = $"{file}-{volume}";
 
                 lock (WaveBuffer)
                 {
@@ -244,16 +242,16 @@ namespace FFXIV.Framework.Common
                     {
                         using (var audio = new AudioFileReader(file) { Volume = volume })
                         using (var resampler = new MediaFoundationResampler(audio, this.OutputFormat))
+                        using (var output = new MemoryStream(51200))
                         {
-                            TempOutput.Position = 0;
-                            WaveFileWriter.WriteWavFileToStream(TempOutput, resampler);
-                            TempOutput.Flush();
-                            TempOutput.Position = 0;
+                            WaveFileWriter.WriteWavFileToStream(output, resampler);
+                            output.Flush();
+                            output.Position = 0;
 
                             // ヘッダをカットする
-                            var raw = TempOutput.ToArray();
+                            var raw = output.ToArray();
                             var headerLength = 0;
-                            using (var wave = new WaveFileReader(TempOutput))
+                            using (var wave = new WaveFileReader(output))
                             {
                                 headerLength = (int)(raw.Length - wave.Length);
                             }
@@ -266,32 +264,10 @@ namespace FFXIV.Framework.Common
                     }
                 }
 
-                if (volume != 1.0)
-                {
-                    var samplesByVolume = samples.ToArray();
-
-                    // 音量による増幅・減衰を演算する
-                    for (int i = 0; i < samplesByVolume.Length; i += 2)
-                    {
-                        var s = BitConverter.ToInt16(samplesByVolume, i);
-                        s = (short)(s * volume);
-                        var bytes = BitConverter.GetBytes(s);
-                        samplesByVolume[i + 0] = bytes[0];
-                        samplesByVolume[i + 1] = bytes[1];
-                    }
-
-                    buffer.AddSamples(
-                        samplesByVolume,
-                        0,
-                        samplesByVolume.Length);
-                }
-                else
-                {
-                    buffer.AddSamples(
-                        samples,
-                        0,
-                        samples.Length);
-                }
+                buffer.AddSamples(
+                    samples,
+                    0,
+                    samples.Length);
 
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine($"WASAPI(Buffered) Play: {file}");
