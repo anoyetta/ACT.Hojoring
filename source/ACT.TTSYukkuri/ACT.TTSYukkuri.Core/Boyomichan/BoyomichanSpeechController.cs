@@ -75,10 +75,14 @@ namespace ACT.TTSYukkuri.Boyomichan
         /// テキストを読み上げる
         /// </summary>
         /// <param name="text">読み上げるテキスト</param>
+        /// <param name="isSync">使用しない</param>
+        /// <param name="playDevice">使用しない</param>
+        /// <param name="volume">使用しない</param>
         public void Speak(
             string text,
             PlayDevices playDevice = PlayDevices.Both,
-            bool isSync = false)
+            bool isSync = false,
+            float? volume = null)
         {
             Task.Run(() =>
             {

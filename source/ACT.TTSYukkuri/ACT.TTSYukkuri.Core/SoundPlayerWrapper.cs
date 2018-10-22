@@ -78,9 +78,13 @@ namespace ACT.TTSYukkuri
         public static void Play(
             string waveFile,
             PlayDevices playDevice = PlayDevices.Both,
-            bool isSync = false)
+            bool isSync = false,
+            float? volume = null)
         {
-            var volume = Settings.Default.WaveVolume / 100f;
+            if (!volume.HasValue)
+            {
+                volume = Settings.Default.WaveVolume / 100;
+            }
 
             switch (playDevice)
             {
@@ -90,7 +94,7 @@ namespace ACT.TTSYukkuri
                     {
                         SoundPlayerWrapper.PlayCore(
                             waveFile,
-                            volume,
+                            volume.Value,
                             Settings.Default.Player,
                             Settings.Default.SubDeviceID,
                             isSync);
@@ -98,7 +102,7 @@ namespace ACT.TTSYukkuri
 
                     SoundPlayerWrapper.PlayCore(
                         waveFile,
-                        volume,
+                        volume.Value,
                         Settings.Default.Player,
                         Settings.Default.MainDeviceID,
                         isSync);
@@ -107,7 +111,7 @@ namespace ACT.TTSYukkuri
                 case PlayDevices.Main:
                     SoundPlayerWrapper.PlayCore(
                         waveFile,
-                        volume,
+                        volume.Value,
                         Settings.Default.Player,
                         Settings.Default.MainDeviceID,
                         isSync);
@@ -119,7 +123,7 @@ namespace ACT.TTSYukkuri
                     {
                         SoundPlayerWrapper.PlayCore(
                             waveFile,
-                            volume,
+                            volume.Value,
                             Settings.Default.Player,
                             Settings.Default.SubDeviceID,
                             isSync);

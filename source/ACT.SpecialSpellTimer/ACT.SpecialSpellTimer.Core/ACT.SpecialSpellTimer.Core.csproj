@@ -184,6 +184,7 @@
     <Compile Include="RaidTimeline\ConstantKeywords.cs" />
     <Compile Include="RaidTimeline\TimelineLoadModel.cs" />
     <Compile Include="RaidTimeline\TimelineManager.cs" />
+    <Compile Include="RaidTimeline\TimelineModel.DefaultValues.cs" />
     <Compile Include="RaidTimeline\TimelineModel.cs" />
     <Compile Include="RaidTimeline\TimelinePositionSyncModel.cs" />
     <Compile Include="RaidTimeline\TimelineRazorModel.cs" />

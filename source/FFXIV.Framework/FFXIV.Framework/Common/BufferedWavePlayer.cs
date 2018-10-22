@@ -240,7 +240,9 @@ namespace FFXIV.Framework.Common
                     }
                     else
                     {
-                        using (var audio = new AudioFileReader(file) { Volume = volume })
+                        var vol = volume > 1.0f ? 1.0f : volume;
+
+                        using (var audio = new AudioFileReader(file) { Volume = vol })
                         using (var resampler = new MediaFoundationResampler(audio, this.OutputFormat))
                         using (var output = new MemoryStream(51200))
                         {
