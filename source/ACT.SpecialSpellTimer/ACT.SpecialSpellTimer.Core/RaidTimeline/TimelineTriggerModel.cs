@@ -322,13 +322,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public string NoticeVolumeXML
         {
             get => this.NoticeVolume?.ToString();
-            set
-            {
-                if (value != null)
-                {
-                    this.NoticeVolume = float.TryParse(value, out var v) ? v : (float?)null;
-                }
-            }
+            set => this.NoticeVolume = float.TryParse(value, out var v) ? v : (float?)null;
         }
 
         private bool? noticeSync = null;
