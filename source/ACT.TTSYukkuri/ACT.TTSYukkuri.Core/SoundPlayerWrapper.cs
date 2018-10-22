@@ -83,7 +83,7 @@ namespace ACT.TTSYukkuri
         {
             if (!volume.HasValue)
             {
-                volume = Settings.Default.WaveVolume / 100;
+                volume = Settings.Default.WaveVolume / 100.0f;
             }
 
             switch (playDevice)

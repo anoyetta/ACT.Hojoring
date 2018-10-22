@@ -20,7 +20,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.Activity, "SyncOffsetEnd", 12d),
             NewDefault(TimelineElementTypes.Activity, "NoticeDevice", NoticeDevices.Both),
             NewDefault(TimelineElementTypes.Activity, "NoticeOffset", -6d),
-            NewDefault(TimelineElementTypes.Activity, "NoticeVolume", 1.0f),
             NewDefault(TimelineElementTypes.Activity, "NoticeSync", false),
 
             // Trigger
@@ -28,7 +27,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.Trigger, "Enabled", true),
             NewDefault(TimelineElementTypes.Trigger, "SyncCount", 0),
             NewDefault(TimelineElementTypes.Trigger, "NoticeDevice", NoticeDevices.Both),
-            NewDefault(TimelineElementTypes.Trigger, "NoticeVolume", 1.0f),
             NewDefault(TimelineElementTypes.Trigger, "NoticeSync", false),
 
             // Subroutine
@@ -99,21 +97,24 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         {
                             object defValue = null;
 
-                            var type = pi.PropertyType;
+                            if (def.Value != null)
+                            {
+                                var type = pi.PropertyType;
 
-                            if (type.IsGenericType &&
-                                type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                            {
-                                type = Nullable.GetUnderlyingType(type);
-                            }
+                                if (type.IsGenericType &&
+                                    type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                                {
+                                    type = Nullable.GetUnderlyingType(type);
+                                }
 
-                            if (!type.IsEnum)
-                            {
-                                defValue = Convert.ChangeType(def.Value, type);
-                            }
-                            else
-                            {
-                                defValue = Enum.Parse(type, def.Value, true);
+                                if (!type.IsEnum)
+                                {
+                                    defValue = Convert.ChangeType(def.Value, type);
+                                }
+                                else
+                                {
+                                    defValue = Enum.Parse(type, def.Value, true);
+                                }
                             }
 
                             if (defValue != null)
