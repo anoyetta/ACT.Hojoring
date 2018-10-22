@@ -131,13 +131,13 @@ namespace ACT.TTSYukkuri
         private static readonly object TTSBlocker = new object();
 
         public void PlaySound(string wave, int volume)
-            => this.PlaySound(wave, volume, PlayDevices.Both);
+            => this.PlaySound(wave, PlayDevices.Both, false, null);
 
         public void PlaySound(
             string wave,
-            int volume,
             PlayDevices playDevice = PlayDevices.Both,
-            bool isSync = false)
+            bool isSync = false,
+            float? volume = null)
         {
             if (!File.Exists(wave))
             {
@@ -146,7 +146,7 @@ namespace ACT.TTSYukkuri
 
             if (!isSync)
             {
-                Task.Run(() => SoundPlayerWrapper.Play(wave, playDevice, isSync));
+                Task.Run(() => SoundPlayerWrapper.Play(wave, playDevice, isSync, volume));
             }
             else
             {
@@ -154,18 +154,19 @@ namespace ACT.TTSYukkuri
                 {
                     lock (WaveBlocker)
                     {
-                        SoundPlayerWrapper.Play(wave, playDevice, isSync);
+                        SoundPlayerWrapper.Play(wave, playDevice, isSync, volume);
                     }
                 });
             }
         }
 
-        public void Speak(string message) => this.Speak(message, PlayDevices.Both);
+        public void Speak(string message) => this.Speak(message, PlayDevices.Both, false, null);
 
         public void Speak(
             string message,
             PlayDevices playDevice = PlayDevices.Both,
-            bool isSync = false)
+            bool isSync = false,
+            float? volume = null)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
@@ -173,13 +174,13 @@ namespace ACT.TTSYukkuri
             }
 
             // ファイルじゃない（TTS）？
-            if (!message.EndsWith(".wav") &&
-                !message.EndsWith(".wave") &&
-                !message.EndsWith(".mp3"))
+            if (!message.EndsWith(".wav", StringComparison.OrdinalIgnoreCase) &&
+                !message.EndsWith(".wave", StringComparison.OrdinalIgnoreCase) &&
+                !message.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase))
             {
                 if (!isSync)
                 {
-                    Task.Run(() => this.SpeakTTS(message, playDevice, isSync));
+                    Task.Run(() => this.SpeakTTS(message, playDevice, isSync, volume));
                 }
                 else
                 {
@@ -187,7 +188,7 @@ namespace ACT.TTSYukkuri
                     {
                         lock (TTSBlocker)
                         {
-                            this.SpeakTTS(message, playDevice, isSync);
+                            this.SpeakTTS(message, playDevice, isSync, volume);
                         }
                     });
                 }
@@ -216,14 +217,15 @@ namespace ACT.TTSYukkuri
                 }
             }
 
-            // Volumeはダミーなので0で指定する
-            this.PlaySound(wave, 0, playDevice, isSync);
+            // Volume はダミーなので0で指定する
+            this.PlaySound(wave, playDevice, isSync, volume);
         }
 
         private void SpeakTTS(
             string textToSpeak,
             PlayDevices playDevice = PlayDevices.Both,
-            bool isSync = false)
+            bool isSync = false,
+            float? volume = null)
         {
             const string waitCommand = "/wait";
 
@@ -232,7 +234,7 @@ namespace ACT.TTSYukkuri
                 // waitなし？
                 if (!textToSpeak.StartsWith(waitCommand))
                 {
-                    SpeechController.Default.Speak(textToSpeak, playDevice, isSync);
+                    SpeechController.Default.Speak(textToSpeak, playDevice, isSync, volume);
                 }
                 else
                 {
@@ -242,7 +244,7 @@ namespace ACT.TTSYukkuri
                     if (values.Length < 2)
                     {
                         // 普通に読上げて終わる
-                        SpeechController.Default.Speak(textToSpeak, playDevice, isSync);
+                        SpeechController.Default.Speak(textToSpeak, playDevice, isSync, volume);
                         return;
                     }
 
@@ -255,7 +257,7 @@ namespace ACT.TTSYukkuri
                     if (!int.TryParse(delayAsText, out delay))
                     {
                         // 普通に読上げて終わる
-                        SpeechController.Default.Speak(textToSpeak, playDevice, isSync);
+                        SpeechController.Default.Speak(textToSpeak, playDevice, isSync, volume);
                         return;
                     }
 
@@ -264,7 +266,8 @@ namespace ACT.TTSYukkuri
                         message,
                         delay,
                         playDevice,
-                        isSync);
+                        isSync,
+                        volume);
                 }
             }
             catch (Exception ex)
@@ -379,9 +382,9 @@ namespace ACT.TTSYukkuri
                     });
 
                     // Bridgeにメソッドを登録する
-                    PlayBridge.Instance.SetBothDelegate((message, isSync) => this.Speak(message, PlayDevices.Both, isSync));
-                    PlayBridge.Instance.SetMainDeviceDelegate((message, isSync) => this.Speak(message, PlayDevices.Main, isSync));
-                    PlayBridge.Instance.SetSubDeviceDelegate((message, isSync) => this.Speak(message, PlayDevices.Sub, isSync));
+                    PlayBridge.Instance.SetBothDelegate((message, isSync, volume) => this.Speak(message, PlayDevices.Both, isSync, volume));
+                    PlayBridge.Instance.SetMainDeviceDelegate((message, isSync, volume) => this.Speak(message, PlayDevices.Main, isSync, volume));
+                    PlayBridge.Instance.SetSubDeviceDelegate((message, isSync, volume) => this.Speak(message, PlayDevices.Sub, isSync, volume));
                     PlayBridge.Instance.SetSyncStatusDelegate(() => Settings.Default.Player == WavePlayerTypes.WASAPIBuffered);
 
                     // サウンドデバイスを初期化する

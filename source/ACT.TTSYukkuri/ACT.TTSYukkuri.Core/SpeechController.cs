@@ -124,7 +124,8 @@ namespace ACT.TTSYukkuri
         public void Speak(
             string text,
             PlayDevices playDevice = PlayDevices.Both,
-            bool isSync = false)
-            => SpeechController.instance.Speak(text, playDevice, isSync);
+            bool isSync = false,
+            float? volume = null)
+            => SpeechController.instance.Speak(text, playDevice, isSync, volume);
     }
 }

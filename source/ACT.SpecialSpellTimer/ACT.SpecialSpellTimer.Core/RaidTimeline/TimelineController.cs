@@ -2010,10 +2010,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
             }
 
-            var isSync = TimelineModel.RazorModel?.SyncTTS ?? false;
+            var isSync =
+                (TimelineModel.RazorModel?.SyncTTS ?? false) ||
+                act.NoticeSync.Value;
 
             RaiseLog(log);
-            NotifySoundAsync(notice, act.NoticeDevice.GetValueOrDefault(), isSync);
+            NotifySoundAsync(notice, act.NoticeDevice.GetValueOrDefault(), isSync, act.NoticeVolume);
 
             var vnotices = act.VisualNoticeStatements
                 .Where(x => x.Enabled.GetValueOrDefault())
@@ -2107,10 +2109,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
             }
 
-            var isSync = TimelineModel.RazorModel?.SyncTTS ?? false;
+            var isSync =
+                (TimelineModel.RazorModel?.SyncTTS ?? false) ||
+                tri.NoticeSync.Value;
 
             RaiseLog(log);
-            NotifySoundAsync(notice, tri.NoticeDevice.GetValueOrDefault(), isSync);
+            NotifySoundAsync(notice, tri.NoticeDevice.GetValueOrDefault(), isSync, tri.NoticeVolume);
 
             var vnotices = tri.VisualNoticeStatements
                 .Where(x => x.Enabled.GetValueOrDefault());
@@ -2210,13 +2214,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static Task NotifySoundAsync(
             string notice,
             NoticeDevices device,
-            bool isSync = false)
-            => Task.Run(() => NotifySound(notice, device, isSync));
+            bool isSync = false,
+            float? volume = null)
+            => Task.Run(() => NotifySound(notice, device, isSync, volume));
 
         private static void NotifySound(
             string notice,
             NoticeDevices device,
-            bool isSync = false)
+            bool isSync = false,
+            float? volume = null)
         {
             if (string.IsNullOrEmpty(notice))
             {
@@ -2264,18 +2270,31 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             switch (device)
             {
                 case NoticeDevices.Both:
-                    SoundController.Instance.Play(notice, isSync);
+                    if (PlayBridge.Instance.IsAvailable)
+                    {
+                        PlayBridge.Instance.Play(notice, isSync, volume);
+                        break;
+                    }
+
+                    if (isWave)
+                    {
+                        ActGlobals.oFormActMain.PlaySound(notice);
+                    }
+                    else
+                    {
+                        ActGlobals.oFormActMain.TTS(notice);
+                    }
+
                     break;
 
                 case NoticeDevices.Main:
-                    PlayBridge.Instance.PlayMain(notice, isSync);
+                    PlayBridge.Instance.PlayMain(notice, isSync, volume);
                     break;
 
                 case NoticeDevices.Sub:
-                    PlayBridge.Instance.PlaySub(notice, isSync);
+                    PlayBridge.Instance.PlaySub(notice, isSync, volume);
                     break;
             }
-
 #if DEBUG
             System.Diagnostics.Debug.WriteLine($"{DateTime.Now:HH:mm:ss.fff} notify={notice}");
 #endif

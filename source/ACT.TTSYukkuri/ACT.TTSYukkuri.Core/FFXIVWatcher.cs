@@ -12,7 +12,7 @@ namespace ACT.TTSYukkuri
     /// スピークdelegate
     /// </summary>
     /// <param name="textToSpeak"></param>
-    public delegate void Speak(string textToSpeak, PlayDevices playDevice = PlayDevices.Both, bool isSync = false);
+    public delegate void Speak(string textToSpeak, PlayDevices playDevice = PlayDevices.Both, bool isSync = false, float? volume = null);
 
     /// <summary>
     /// FF14を監視する

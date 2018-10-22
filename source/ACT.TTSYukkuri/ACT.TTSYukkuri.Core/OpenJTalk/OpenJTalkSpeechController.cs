@@ -36,7 +36,8 @@ namespace ACT.TTSYukkuri.OpenJTalk
         public void Speak(
             string text,
             PlayDevices playDevice = PlayDevices.Both,
-            bool isSync = false)
+            bool isSync = false,
+            float? volume = null)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -63,7 +64,7 @@ namespace ACT.TTSYukkuri.OpenJTalk
             }
 
             // 再生する
-            SoundPlayerWrapper.Play(wave, playDevice, isSync);
+            SoundPlayerWrapper.Play(wave, playDevice, isSync, volume);
         }
 
         /// <summary>
