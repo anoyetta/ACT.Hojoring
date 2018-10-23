@@ -45,11 +45,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         [XmlElement(ElementName = "t")]
         public TimelineTriggerModel[] Triggers
         {
-            get => this.Statements
+            // インポートトリガとマージして取り出す
+            get => this.Statements.Concat(this.importTriggers)
                 .Where(x => x.TimelineType == TimelineElementTypes.Trigger)
                 .Cast<TimelineTriggerModel>()
                 .OrderBy(x => x.No.GetValueOrDefault())
                 .ToArray();
+
             set => this.AddRange(value);
         }
 
@@ -73,6 +75,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         public void ExecuteImports()
         {
+            this.importTriggers.Clear();
+
             var imports = this.Imports
                 .Where(x => x.Enabled.GetValueOrDefault());
 
@@ -105,12 +109,20 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     continue;
                 }
 
-                var triggers = sub.Triggers.Where(x => x.Enabled.GetValueOrDefault());
+                var triggers = sub.Triggers
+                    .Where(x => x.Enabled.GetValueOrDefault())
+                    .Cast<TimelineTriggerModel>()
+                    .OrderBy(x => x.No.GetValueOrDefault());
+
                 if (triggers.Any())
                 {
-                    this.AddRange(triggers
-                        .Select(x => x.Clone())
-                        .ToArray());
+                    foreach (var t in triggers)
+                    {
+                        // トリガのクローンをこのサブルーチンに取り込む
+                        var clone = t.Clone();
+                        clone.Parent = this;
+                        this.importTriggers.Add(clone);
+                    }
                 }
             }
         }
