@@ -257,11 +257,14 @@ namespace ACT.SpecialSpellTimer.Models
                     Directory.CreateDirectory(dir);
                 }
 
+                var ns = new XmlSerializerNamespaces();
+                ns.Add(string.Empty, string.Empty);
+
                 var sb = new StringBuilder();
                 using (var sw = new StringWriter(sb))
                 {
                     var xs = new XmlSerializer(list.GetType());
-                    xs.Serialize(sw, list);
+                    xs.Serialize(sw, list, ns);
                 }
 
                 sb.Replace("utf-16", "utf-8");

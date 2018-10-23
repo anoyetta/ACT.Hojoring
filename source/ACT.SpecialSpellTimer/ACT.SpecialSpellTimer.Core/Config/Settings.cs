@@ -661,11 +661,14 @@ namespace ACT.SpecialSpellTimer.Config
                     Directory.CreateDirectory(directoryName);
                 }
 
+                var ns = new XmlSerializerNamespaces();
+                ns.Add(string.Empty, string.Empty);
+
                 var sb = new StringBuilder();
                 using (var sw = new StringWriter(sb))
                 {
                     var xs = new XmlSerializer(this.GetType());
-                    xs.Serialize(sw, this);
+                    xs.Serialize(sw, this, ns);
                 }
 
                 sb.Replace("utf-16", "utf-8");
