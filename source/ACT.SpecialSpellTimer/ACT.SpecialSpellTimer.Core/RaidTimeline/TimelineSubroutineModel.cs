@@ -20,6 +20,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public override IList<TimelineBase> Children => this.statements;
 
         private List<TimelineBase> statements = new List<TimelineBase>();
+        private List<TimelineBase> importTriggers = new List<TimelineBase>();
 
         [XmlIgnore]
         public IReadOnlyList<TimelineBase> Statements => this.statements;
