@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
@@ -8,6 +9,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
     [XmlInclude(typeof(TimelineDefaultModel))]
     [XmlInclude(typeof(TimelineActivityModel))]
     [XmlInclude(typeof(TimelineTriggerModel))]
+    [XmlInclude(typeof(TimelineImportModel))]
     [XmlInclude(typeof(TimelineSubroutineModel))]
     public class TimelineSubroutineModel :
         TimelineBase
@@ -50,12 +52,75 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        /// <summary>
+        /// Imports
+        /// </summary>
+        /// <remarks>
+        /// 必ずNoでソートされる</remarks>
+        [XmlElement(ElementName = "import")]
+        public TimelineImportModel[] Imports
+        {
+            get => this.Statements
+                .Where(x => x.TimelineType == TimelineElementTypes.Import)
+                .Cast<TimelineImportModel>()
+                .ToArray();
+            set => this.AddRange(value);
+        }
+
+        /// <summary>
+        /// トリガのインポートを実行する
+        /// </summary>
+        public void ExecuteImports()
+        {
+            var imports = this.Imports
+                .Where(x => x.Enabled.GetValueOrDefault());
+
+            if (!imports.Any())
+            {
+                return;
+            }
+
+            var timeline = this.Parent as TimelineModel;
+            if (timeline == null)
+            {
+                return;
+            }
+
+            var subs = timeline.Subroutines
+                .Where(x => x.Enabled.GetValueOrDefault());
+
+            foreach (var import in imports)
+            {
+                if (string.IsNullOrEmpty(import.Source))
+                {
+                    continue;
+                }
+
+                var sub = subs.FirstOrDefault(x =>
+                    x.Name.Equals(import.Source, StringComparison.OrdinalIgnoreCase));
+
+                if (sub == null)
+                {
+                    continue;
+                }
+
+                var triggers = sub.Triggers.Where(x => x.Enabled.GetValueOrDefault());
+                if (triggers.Any())
+                {
+                    this.AddRange(triggers
+                        .Select(x => x.Clone())
+                        .ToArray());
+                }
+            }
+        }
+
         #region Methods
 
         public void Add(TimelineBase timeline)
         {
             if (timeline.TimelineType == TimelineElementTypes.Activity ||
-                timeline.TimelineType == TimelineElementTypes.Trigger)
+                timeline.TimelineType == TimelineElementTypes.Trigger ||
+                timeline.TimelineType == TimelineElementTypes.Import)
             {
                 timeline.Parent = this;
                 this.statements.Add(timeline);
@@ -74,5 +139,24 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         #endregion Methods
+    }
+
+    [XmlType(TypeName = "import")]
+    public class TimelineImportModel :
+        TimelineBase
+    {
+        [XmlIgnore]
+        public override TimelineElementTypes TimelineType => TimelineElementTypes.Import;
+
+        public override IList<TimelineBase> Children => null;
+
+        private string source = null;
+
+        [XmlElement(ElementName = "source")]
+        public string Source
+        {
+            get => this.source;
+            set => this.SetProperty(ref this.source, value);
+        }
     }
 }
