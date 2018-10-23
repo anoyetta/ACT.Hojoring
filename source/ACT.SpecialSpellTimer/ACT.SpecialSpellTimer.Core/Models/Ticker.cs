@@ -148,15 +148,205 @@ namespace ACT.SpecialSpellTimer.Models
         [XmlIgnore]
         public string MessageReplaced { get; set; } = string.Empty;
 
+        #region Keywords & Regex compiler
+
+        [XmlIgnore]
+        public bool IsRealtimeCompile { get; set; } = false;
+
+        private bool regexEnabled;
+        private string keyword;
+        private string keywordToHide;
+
+        public bool RegexEnabled
+        {
+            get => this.regexEnabled;
+            set
+            {
+                if (this.SetProperty(ref this.regexEnabled, value))
+                {
+                    this.KeywordReplaced = string.Empty;
+                    this.KeywordToHideReplaced = string.Empty;
+
+                    if (this.IsRealtimeCompile)
+                    {
+                        var ex = this.CompileRegex();
+                        if (ex != null)
+                        {
+                            ModernMessageBox.ShowDialog(
+                                "Regex compile error ! This is invalid keyword.",
+                                "Regex compiler",
+                                MessageBoxButton.OK,
+                                ex);
+                        }
+
+                        ex = this.CompileRegexToHide();
+                        if (ex != null)
+                        {
+                            ModernMessageBox.ShowDialog(
+                                "Regex compile error ! This is invalid keyword.",
+                                "Regex compiler",
+                                MessageBoxButton.OK,
+                                ex);
+                        }
+                    }
+                }
+            }
+        }
+
+        public string Keyword
+        {
+            get => this.keyword;
+            set
+            {
+                if (this.SetProperty(ref this.keyword, value))
+                {
+                    this.KeywordReplaced = string.Empty;
+                    if (this.IsRealtimeCompile)
+                    {
+                        var ex = this.CompileRegex();
+                        if (ex != null)
+                        {
+                            ModernMessageBox.ShowDialog(
+                                "Regex compile error ! This is invalid keyword.",
+                                "Regex compiler",
+                                MessageBoxButton.OK,
+                                ex);
+                        }
+                    }
+                }
+            }
+        }
+
+        public string KeywordToHide
+        {
+            get => this.keywordToHide;
+            set
+            {
+                if (this.SetProperty(ref this.keywordToHide, value))
+                {
+                    this.KeywordToHideReplaced = string.Empty;
+                    if (this.IsRealtimeCompile)
+                    {
+                        var ex = this.CompileRegexToHide();
+                        if (ex != null)
+                        {
+                            ModernMessageBox.ShowDialog(
+                                "Regex compile error ! This is invalid keyword.",
+                                "Regex compiler",
+                                MessageBoxButton.OK,
+                                ex);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 表示までのディレイ
+        /// </summary>
+        public double Delay { get; set; } = 0;
+
+        /// <summary>
+        /// 表示期間
+        /// </summary>
+        public double DisplayTime { get; set; } = 0;
+
+        [XmlIgnore]
+        public string KeywordReplaced { get; set; }
+
+        [XmlIgnore]
+        public string KeywordToHideReplaced { get; set; }
+
+        [XmlIgnore]
+        public Regex Regex { get; set; }
+
+        [XmlIgnore]
+        public Regex RegexToHide { get; set; }
+
+        [XmlIgnore]
+        public string RegexPattern { get; set; }
+
+        [XmlIgnore]
+        public string RegexPatternToHide { get; set; }
+
+        public Exception CompileRegex()
+        {
+            var pattern = string.Empty;
+
+            try
+            {
+                this.KeywordReplaced = TableCompiler.Instance.GetMatchingKeyword(
+                    this.KeywordReplaced,
+                    this.Keyword);
+
+                if (this.RegexEnabled)
+                {
+                    pattern = this.KeywordReplaced.ToRegexPattern();
+
+                    if (this.Regex == null ||
+                        this.RegexPattern != pattern)
+                    {
+                        this.Regex = pattern.ToRegex();
+                        this.RegexPattern = pattern;
+                    }
+                }
+                else
+                {
+                    this.Regex = null;
+                    this.RegexPattern = string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+
+            return null;
+        }
+
+        public Exception CompileRegexToHide()
+        {
+            var message = string.Empty;
+            var pattern = string.Empty;
+
+            try
+            {
+                this.KeywordToHideReplaced = TableCompiler.Instance.GetMatchingKeyword(
+                    this.KeywordToHideReplaced,
+                    this.KeywordToHide);
+
+                if (this.RegexEnabled)
+                {
+                    pattern = this.KeywordToHideReplaced.ToRegexPattern();
+
+                    if (this.RegexToHide == null ||
+                        this.RegexPatternToHide != pattern)
+                    {
+                        this.RegexToHide = pattern.ToRegex();
+                        this.RegexPatternToHide = pattern;
+                    }
+                }
+                else
+                {
+                    this.RegexToHide = null;
+                    this.RegexPatternToHide = string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+
+            return null;
+        }
+
+        #endregion Keywords & Regex compiler
+
         [XmlIgnore]
         public DateTime MatchDateTime { get; set; } = DateTime.MinValue;
 
         [XmlIgnore]
         public string MatchedLog { get; set; } = string.Empty;
-
-        public double Delay { get; set; } = 0;
-
-        public double DisplayTime { get; set; } = 0;
 
         public FontInfo Font { get; set; } = FontInfo.DefaultFont;
 
@@ -185,6 +375,11 @@ namespace ACT.SpecialSpellTimer.Models
             get => this.progressBarEnabled;
             set => this.SetProperty(ref this.progressBarEnabled, value);
         }
+
+        [XmlIgnore]
+        public bool ForceHide { get; set; }
+
+        #region Filters & Conditions
 
         private string jobFilter = string.Empty;
 
@@ -215,8 +410,7 @@ namespace ACT.SpecialSpellTimer.Models
 
         public Guid[] TimersMustStoppingForStart { get; set; } = new Guid[0];
 
-        [XmlIgnore]
-        public bool ForceHide { get; set; }
+        #endregion Filters & Conditions
 
         #region Sequential TTS
 
@@ -465,190 +659,6 @@ namespace ACT.SpecialSpellTimer.Models
         }
 
         #endregion NewTicker
-
-        #region Regex compiler
-
-        [XmlIgnore]
-        public bool IsRealtimeCompile { get; set; } = false;
-
-        private bool regexEnabled;
-        private string keyword;
-        private string keywordToHide;
-
-        public bool RegexEnabled
-        {
-            get => this.regexEnabled;
-            set
-            {
-                if (this.SetProperty(ref this.regexEnabled, value))
-                {
-                    this.KeywordReplaced = string.Empty;
-                    this.KeywordToHideReplaced = string.Empty;
-
-                    if (this.IsRealtimeCompile)
-                    {
-                        var ex = this.CompileRegex();
-                        if (ex != null)
-                        {
-                            ModernMessageBox.ShowDialog(
-                                "Regex compile error ! This is invalid keyword.",
-                                "Regex compiler",
-                                MessageBoxButton.OK,
-                                ex);
-                        }
-
-                        ex = this.CompileRegexToHide();
-                        if (ex != null)
-                        {
-                            ModernMessageBox.ShowDialog(
-                                "Regex compile error ! This is invalid keyword.",
-                                "Regex compiler",
-                                MessageBoxButton.OK,
-                                ex);
-                        }
-                    }
-                }
-            }
-        }
-
-        public string Keyword
-        {
-            get => this.keyword;
-            set
-            {
-                if (this.SetProperty(ref this.keyword, value))
-                {
-                    this.KeywordReplaced = string.Empty;
-                    if (this.IsRealtimeCompile)
-                    {
-                        var ex = this.CompileRegex();
-                        if (ex != null)
-                        {
-                            ModernMessageBox.ShowDialog(
-                                "Regex compile error ! This is invalid keyword.",
-                                "Regex compiler",
-                                MessageBoxButton.OK,
-                                ex);
-                        }
-                    }
-                }
-            }
-        }
-
-        public string KeywordToHide
-        {
-            get => this.keywordToHide;
-            set
-            {
-                if (this.SetProperty(ref this.keywordToHide, value))
-                {
-                    this.KeywordToHideReplaced = string.Empty;
-                    if (this.IsRealtimeCompile)
-                    {
-                        var ex = this.CompileRegexToHide();
-                        if (ex != null)
-                        {
-                            ModernMessageBox.ShowDialog(
-                                "Regex compile error ! This is invalid keyword.",
-                                "Regex compiler",
-                                MessageBoxButton.OK,
-                                ex);
-                        }
-                    }
-                }
-            }
-        }
-
-        [XmlIgnore]
-        public string KeywordReplaced { get; set; }
-
-        [XmlIgnore]
-        public string KeywordToHideReplaced { get; set; }
-
-        [XmlIgnore]
-        public Regex Regex { get; set; }
-
-        [XmlIgnore]
-        public Regex RegexToHide { get; set; }
-
-        [XmlIgnore]
-        public string RegexPattern { get; set; }
-
-        [XmlIgnore]
-        public string RegexPatternToHide { get; set; }
-
-        public Exception CompileRegex()
-        {
-            var pattern = string.Empty;
-
-            try
-            {
-                this.KeywordReplaced = TableCompiler.Instance.GetMatchingKeyword(
-                    this.KeywordReplaced,
-                    this.Keyword);
-
-                if (this.RegexEnabled)
-                {
-                    pattern = this.KeywordReplaced.ToRegexPattern();
-
-                    if (this.Regex == null ||
-                        this.RegexPattern != pattern)
-                    {
-                        this.Regex = pattern.ToRegex();
-                        this.RegexPattern = pattern;
-                    }
-                }
-                else
-                {
-                    this.Regex = null;
-                    this.RegexPattern = string.Empty;
-                }
-            }
-            catch (Exception ex)
-            {
-                return ex;
-            }
-
-            return null;
-        }
-
-        public Exception CompileRegexToHide()
-        {
-            var message = string.Empty;
-            var pattern = string.Empty;
-
-            try
-            {
-                this.KeywordToHideReplaced = TableCompiler.Instance.GetMatchingKeyword(
-                    this.KeywordToHideReplaced,
-                    this.KeywordToHide);
-
-                if (this.RegexEnabled)
-                {
-                    pattern = this.KeywordToHideReplaced.ToRegexPattern();
-
-                    if (this.RegexToHide == null ||
-                        this.RegexPatternToHide != pattern)
-                    {
-                        this.RegexToHide = pattern.ToRegex();
-                        this.RegexPatternToHide = pattern;
-                    }
-                }
-                else
-                {
-                    this.RegexToHide = null;
-                    this.RegexPatternToHide = string.Empty;
-                }
-            }
-            catch (Exception ex)
-            {
-                return ex;
-            }
-
-            return null;
-        }
-
-        #endregion Regex compiler
 
         public void SimulateMatch()
         {

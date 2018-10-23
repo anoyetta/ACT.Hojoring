@@ -134,11 +134,14 @@ namespace ACT.SpecialSpellTimer.Models
                     Directory.CreateDirectory(dir);
                 }
 
+                var ns = new XmlSerializerNamespaces();
+                ns.Add(string.Empty, string.Empty);
+
                 var sb = new StringBuilder();
                 using (var sw = new StringWriter(sb))
                 {
                     var xs = new XmlSerializer(this.table.GetType());
-                    xs.Serialize(sw, this.table);
+                    xs.Serialize(sw, this.table, ns);
                 }
 
                 sb.Replace("utf-16", "utf-8");

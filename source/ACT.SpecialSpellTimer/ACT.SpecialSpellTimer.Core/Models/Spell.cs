@@ -176,32 +176,11 @@ namespace ACT.SpecialSpellTimer.Models
             set => this.SetProperty(ref this.isTest, value);
         }
 
-        private string jobFilter = string.Empty;
-
-        public string JobFilter
-        {
-            get => this.jobFilter;
-            set => this.SetProperty(ref this.jobFilter, value);
-        }
-
-        private string partyJobFilter = string.Empty;
-
-        public string PartyJobFilter
-        {
-            get => this.partyJobFilter;
-            set => this.SetProperty(ref this.partyJobFilter, value);
-        }
-
-        private string zoneFilter = string.Empty;
-
-        public string ZoneFilter
-        {
-            get => this.zoneFilter;
-            set => this.SetProperty(ref this.zoneFilter, value);
-        }
-
         private string spellTitle = string.Empty;
 
+        /// <summary>
+        /// スペルタイトル（スペル表示名）
+        /// </summary>
         public string SpellTitle
         {
             get => this.spellTitle;
@@ -222,6 +201,306 @@ namespace ACT.SpecialSpellTimer.Models
             get => this.spellTitleReplaced;
             set => this.SetProperty(ref this.spellTitleReplaced, value);
         }
+
+        #region Keywords & Regex compiler
+
+        [XmlIgnore]
+        public bool IsRealtimeCompile { get; set; } = false;
+
+        private bool regexEnabled;
+        private string keyword;
+        private string keywordForExtend1;
+        private string keywordForExtend2;
+
+        public bool RegexEnabled
+        {
+            get => this.regexEnabled;
+            set
+            {
+                if (this.SetProperty(ref this.regexEnabled, value))
+                {
+                    this.KeywordReplaced = string.Empty;
+                    this.KeywordForExtendReplaced1 = string.Empty;
+                    this.KeywordForExtendReplaced2 = string.Empty;
+
+                    if (this.IsRealtimeCompile)
+                    {
+                        var ex = this.CompileRegex();
+                        if (ex != null)
+                        {
+                            ModernMessageBox.ShowDialog(
+                                "Regex compile error ! This is invalid keyword.",
+                                "Regex compiler",
+                                MessageBoxButton.OK,
+                                ex);
+                        }
+
+                        ex = this.CompileRegexExtend1();
+                        if (ex != null)
+                        {
+                            ModernMessageBox.ShowDialog(
+                                "Regex compile error ! This is invalid keyword.",
+                                "Regex compiler",
+                                MessageBoxButton.OK,
+                                ex);
+                        }
+
+                        ex = this.CompileRegexExtend2();
+                        if (ex != null)
+                        {
+                            ModernMessageBox.ShowDialog(
+                                "Regex compile error ! This is invalid keyword.",
+                                "Regex compiler",
+                                MessageBoxButton.OK,
+                                ex);
+                        }
+                    }
+                }
+            }
+        }
+
+        public string Keyword
+        {
+            get => this.keyword;
+            set
+            {
+                if (this.SetProperty(ref this.keyword, value))
+                {
+                    this.KeywordReplaced = string.Empty;
+                    if (this.IsRealtimeCompile)
+                    {
+                        var ex = this.CompileRegex();
+                        if (ex != null)
+                        {
+                            ModernMessageBox.ShowDialog(
+                                "Regex compile error ! This is invalid keyword.",
+                                "Regex compiler",
+                                MessageBoxButton.OK,
+                                ex);
+                        }
+                    }
+                }
+            }
+        }
+
+        public string KeywordForExtend1
+        {
+            get => this.keywordForExtend1;
+            set
+            {
+                if (this.SetProperty(ref this.keywordForExtend1, value))
+                {
+                    this.KeywordForExtendReplaced1 = string.Empty;
+                    if (this.IsRealtimeCompile)
+                    {
+                        var ex = this.CompileRegexExtend1();
+                        if (ex != null)
+                        {
+                            ModernMessageBox.ShowDialog(
+                                "Regex compile error ! This is invalid keyword.",
+                                "Regex compiler",
+                                MessageBoxButton.OK,
+                                ex);
+                        }
+                    }
+                }
+            }
+        }
+
+        public string KeywordForExtend2
+        {
+            get => this.keywordForExtend2;
+            set
+            {
+                if (this.SetProperty(ref this.keywordForExtend2, value))
+                {
+                    this.KeywordForExtendReplaced2 = string.Empty;
+                    if (this.IsRealtimeCompile)
+                    {
+                        var ex = this.CompileRegexExtend2();
+                        if (ex != null)
+                        {
+                            ModernMessageBox.ShowDialog(
+                                "Regex compile error ! This is invalid keyword.",
+                                "Regex compiler",
+                                MessageBoxButton.OK,
+                                ex);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// リキャスト時間
+        /// </summary>
+        public double RecastTime { get; set; } = 0;
+
+        /// <summary>
+        /// 延長する時間1
+        /// </summary>
+        public double RecastTimeExtending1 { get; set; } = 0;
+
+        /// <summary>
+        /// 延長する時間2
+        /// </summary>
+        public double RecastTimeExtending2 { get; set; } = 0;
+
+        private bool overlapRecastTime;
+
+        /// <summary>
+        /// 元のリキャスト時間を超えて延長するか？
+        /// </summary>
+        public bool OverlapRecastTime
+        {
+            get => this.overlapRecastTime;
+            set => this.SetProperty(ref this.overlapRecastTime, value);
+        }
+
+        private bool isNotResetBarOnExtended = false;
+
+        /// <summary>
+        /// 延長したときにバーをリセットしない？
+        /// </summary>
+        public bool IsNotResetBarOnExtended
+        {
+            get => this.isNotResetBarOnExtended;
+            set => this.SetProperty(ref this.isNotResetBarOnExtended, value);
+        }
+
+        [XmlIgnore]
+        public string KeywordReplaced { get; set; }
+
+        [XmlIgnore]
+        public string KeywordForExtendReplaced1 { get; set; }
+
+        [XmlIgnore]
+        public string KeywordForExtendReplaced2 { get; set; }
+
+        [XmlIgnore]
+        public Regex Regex { get; set; }
+
+        [XmlIgnore]
+        public Regex RegexForExtend1 { get; set; }
+
+        [XmlIgnore]
+        public Regex RegexForExtend2 { get; set; }
+
+        [XmlIgnore]
+        public string RegexPattern { get; set; }
+
+        [XmlIgnore]
+        public string RegexForExtendPattern1 { get; set; }
+
+        [XmlIgnore]
+        public string RegexForExtendPattern2 { get; set; }
+
+        public Exception CompileRegex()
+        {
+            var pattern = string.Empty;
+
+            try
+            {
+                this.KeywordReplaced = TableCompiler.Instance.GetMatchingKeyword(
+                    this.KeywordReplaced,
+                    this.Keyword);
+
+                if (this.RegexEnabled)
+                {
+                    pattern = this.KeywordReplaced.ToRegexPattern();
+
+                    if (this.Regex == null ||
+                        this.RegexPattern != pattern)
+                    {
+                        this.Regex = pattern.ToRegex();
+                        this.RegexPattern = pattern;
+                    }
+                }
+                else
+                {
+                    this.Regex = null;
+                    this.RegexPattern = string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+
+            return null;
+        }
+
+        public Exception CompileRegexExtend1()
+        {
+            var pattern = string.Empty;
+
+            try
+            {
+                this.KeywordForExtendReplaced1 = TableCompiler.Instance.GetMatchingKeyword(
+                    this.KeywordForExtendReplaced1,
+                    this.KeywordForExtend1);
+
+                if (this.RegexEnabled)
+                {
+                    pattern = this.KeywordForExtendReplaced1.ToRegexPattern();
+
+                    if (this.RegexForExtend1 == null ||
+                        this.RegexForExtendPattern1 != pattern)
+                    {
+                        this.RegexForExtend1 = pattern.ToRegex();
+                        this.RegexForExtendPattern1 = pattern;
+                    }
+                }
+                else
+                {
+                    this.RegexForExtend1 = null;
+                    this.RegexForExtendPattern1 = string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+
+            return null;
+        }
+
+        public Exception CompileRegexExtend2()
+        {
+            var pattern = string.Empty;
+
+            try
+            {
+                this.KeywordForExtendReplaced2 = TableCompiler.Instance.GetMatchingKeyword(
+                    this.KeywordForExtendReplaced2,
+                    this.KeywordForExtend2);
+
+                if (this.RegexEnabled)
+                {
+                    pattern = this.KeywordForExtendReplaced2.ToRegexPattern();
+
+                    if (this.RegexForExtend2 == null ||
+                        this.RegexForExtendPattern2 != pattern)
+                    {
+                        this.RegexForExtend2 = pattern.ToRegex();
+                        this.RegexForExtendPattern2 = pattern;
+                    }
+                }
+                else
+                {
+                    this.RegexForExtend2 = null;
+                    this.RegexForExtendPattern2 = string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+
+            return null;
+        }
+
+        #endregion Keywords & Regex compiler
 
         /// <summary>
         /// ※注意が必要な項目※
@@ -368,16 +647,6 @@ namespace ACT.SpecialSpellTimer.Models
         [XmlIgnore]
         public string MatchedLog { get; set; } = string.Empty;
 
-        private bool overlapRecastTime;
-
-        public bool OverlapRecastTime
-        {
-            get => this.overlapRecastTime;
-            set => this.SetProperty(ref this.overlapRecastTime, value);
-        }
-
-        public double RecastTime { get; set; } = 0;
-
         private bool useHotbarRecastTime = false;
 
         public bool UseHotbarRecastTime
@@ -392,21 +661,6 @@ namespace ACT.SpecialSpellTimer.Models
         {
             get => this.hotbarName;
             set => this.SetProperty(ref this.hotbarName, value);
-        }
-
-        public double RecastTimeExtending1 { get; set; } = 0;
-
-        public double RecastTimeExtending2 { get; set; } = 0;
-
-        private bool isNotResetBarOnExtended = false;
-
-        /// <summary>
-        /// 延長したときにバーをリセットしない？
-        /// </summary>
-        public bool IsNotResetBarOnExtended
-        {
-            get => this.isNotResetBarOnExtended;
-            set => this.SetProperty(ref this.isNotResetBarOnExtended, value);
         }
 
         private bool reduceIconBrightness;
@@ -457,10 +711,6 @@ namespace ACT.SpecialSpellTimer.Models
         [XmlIgnore]
         public string TargetName { get; set; } = string.Empty;
 
-        public Guid[] TimersMustRunningForStart { get; set; } = new Guid[0];
-
-        public Guid[] TimersMustStoppingForStart { get; set; } = new Guid[0];
-
         public bool TimeupHide { get; set; }
 
         /// <summary>インスタンス化する</summary>
@@ -492,6 +742,38 @@ namespace ACT.SpecialSpellTimer.Models
             get => this.visibility;
             set => this.SetProperty(ref this.visibility, value);
         }
+
+        #region Filters & Conditions
+
+        private string jobFilter = string.Empty;
+
+        public string JobFilter
+        {
+            get => this.jobFilter;
+            set => this.SetProperty(ref this.jobFilter, value);
+        }
+
+        private string partyJobFilter = string.Empty;
+
+        public string PartyJobFilter
+        {
+            get => this.partyJobFilter;
+            set => this.SetProperty(ref this.partyJobFilter, value);
+        }
+
+        private string zoneFilter = string.Empty;
+
+        public string ZoneFilter
+        {
+            get => this.zoneFilter;
+            set => this.SetProperty(ref this.zoneFilter, value);
+        }
+
+        public Guid[] TimersMustRunningForStart { get; set; } = new Guid[0];
+
+        public Guid[] TimersMustStoppingForStart { get; set; } = new Guid[0];
+
+        #endregion Filters & Conditions
 
         #region Sequential TTS
 
@@ -1168,269 +1450,6 @@ namespace ACT.SpecialSpellTimer.Models
         }
 
         #endregion NewSpell
-
-        #region Regex compiler
-
-        [XmlIgnore]
-        public bool IsRealtimeCompile { get; set; } = false;
-
-        private bool regexEnabled;
-        private string keyword;
-        private string keywordForExtend1;
-        private string keywordForExtend2;
-
-        public bool RegexEnabled
-        {
-            get => this.regexEnabled;
-            set
-            {
-                if (this.SetProperty(ref this.regexEnabled, value))
-                {
-                    this.KeywordReplaced = string.Empty;
-                    this.KeywordForExtendReplaced1 = string.Empty;
-                    this.KeywordForExtendReplaced2 = string.Empty;
-
-                    if (this.IsRealtimeCompile)
-                    {
-                        var ex = this.CompileRegex();
-                        if (ex != null)
-                        {
-                            ModernMessageBox.ShowDialog(
-                                "Regex compile error ! This is invalid keyword.",
-                                "Regex compiler",
-                                MessageBoxButton.OK,
-                                ex);
-                        }
-
-                        ex = this.CompileRegexExtend1();
-                        if (ex != null)
-                        {
-                            ModernMessageBox.ShowDialog(
-                                "Regex compile error ! This is invalid keyword.",
-                                "Regex compiler",
-                                MessageBoxButton.OK,
-                                ex);
-                        }
-
-                        ex = this.CompileRegexExtend2();
-                        if (ex != null)
-                        {
-                            ModernMessageBox.ShowDialog(
-                                "Regex compile error ! This is invalid keyword.",
-                                "Regex compiler",
-                                MessageBoxButton.OK,
-                                ex);
-                        }
-                    }
-                }
-            }
-        }
-
-        public string Keyword
-        {
-            get => this.keyword;
-            set
-            {
-                if (this.SetProperty(ref this.keyword, value))
-                {
-                    this.KeywordReplaced = string.Empty;
-                    if (this.IsRealtimeCompile)
-                    {
-                        var ex = this.CompileRegex();
-                        if (ex != null)
-                        {
-                            ModernMessageBox.ShowDialog(
-                                "Regex compile error ! This is invalid keyword.",
-                                "Regex compiler",
-                                MessageBoxButton.OK,
-                                ex);
-                        }
-                    }
-                }
-            }
-        }
-
-        public string KeywordForExtend1
-        {
-            get => this.keywordForExtend1;
-            set
-            {
-                if (this.SetProperty(ref this.keywordForExtend1, value))
-                {
-                    this.KeywordForExtendReplaced1 = string.Empty;
-                    if (this.IsRealtimeCompile)
-                    {
-                        var ex = this.CompileRegexExtend1();
-                        if (ex != null)
-                        {
-                            ModernMessageBox.ShowDialog(
-                                "Regex compile error ! This is invalid keyword.",
-                                "Regex compiler",
-                                MessageBoxButton.OK,
-                                ex);
-                        }
-                    }
-                }
-            }
-        }
-
-        public string KeywordForExtend2
-        {
-            get => this.keywordForExtend2;
-            set
-            {
-                if (this.SetProperty(ref this.keywordForExtend2, value))
-                {
-                    this.KeywordForExtendReplaced2 = string.Empty;
-                    if (this.IsRealtimeCompile)
-                    {
-                        var ex = this.CompileRegexExtend2();
-                        if (ex != null)
-                        {
-                            ModernMessageBox.ShowDialog(
-                                "Regex compile error ! This is invalid keyword.",
-                                "Regex compiler",
-                                MessageBoxButton.OK,
-                                ex);
-                        }
-                    }
-                }
-            }
-        }
-
-        [XmlIgnore]
-        public string KeywordReplaced { get; set; }
-
-        [XmlIgnore]
-        public string KeywordForExtendReplaced1 { get; set; }
-
-        [XmlIgnore]
-        public string KeywordForExtendReplaced2 { get; set; }
-
-        [XmlIgnore]
-        public Regex Regex { get; set; }
-
-        [XmlIgnore]
-        public Regex RegexForExtend1 { get; set; }
-
-        [XmlIgnore]
-        public Regex RegexForExtend2 { get; set; }
-
-        [XmlIgnore]
-        public string RegexPattern { get; set; }
-
-        [XmlIgnore]
-        public string RegexForExtendPattern1 { get; set; }
-
-        [XmlIgnore]
-        public string RegexForExtendPattern2 { get; set; }
-
-        public Exception CompileRegex()
-        {
-            var pattern = string.Empty;
-
-            try
-            {
-                this.KeywordReplaced = TableCompiler.Instance.GetMatchingKeyword(
-                    this.KeywordReplaced,
-                    this.Keyword);
-
-                if (this.RegexEnabled)
-                {
-                    pattern = this.KeywordReplaced.ToRegexPattern();
-
-                    if (this.Regex == null ||
-                        this.RegexPattern != pattern)
-                    {
-                        this.Regex = pattern.ToRegex();
-                        this.RegexPattern = pattern;
-                    }
-                }
-                else
-                {
-                    this.Regex = null;
-                    this.RegexPattern = string.Empty;
-                }
-            }
-            catch (Exception ex)
-            {
-                return ex;
-            }
-
-            return null;
-        }
-
-        public Exception CompileRegexExtend1()
-        {
-            var pattern = string.Empty;
-
-            try
-            {
-                this.KeywordForExtendReplaced1 = TableCompiler.Instance.GetMatchingKeyword(
-                    this.KeywordForExtendReplaced1,
-                    this.KeywordForExtend1);
-
-                if (this.RegexEnabled)
-                {
-                    pattern = this.KeywordForExtendReplaced1.ToRegexPattern();
-
-                    if (this.RegexForExtend1 == null ||
-                        this.RegexForExtendPattern1 != pattern)
-                    {
-                        this.RegexForExtend1 = pattern.ToRegex();
-                        this.RegexForExtendPattern1 = pattern;
-                    }
-                }
-                else
-                {
-                    this.RegexForExtend1 = null;
-                    this.RegexForExtendPattern1 = string.Empty;
-                }
-            }
-            catch (Exception ex)
-            {
-                return ex;
-            }
-
-            return null;
-        }
-
-        public Exception CompileRegexExtend2()
-        {
-            var pattern = string.Empty;
-
-            try
-            {
-                this.KeywordForExtendReplaced2 = TableCompiler.Instance.GetMatchingKeyword(
-                    this.KeywordForExtendReplaced2,
-                    this.KeywordForExtend2);
-
-                if (this.RegexEnabled)
-                {
-                    pattern = this.KeywordForExtendReplaced2.ToRegexPattern();
-
-                    if (this.RegexForExtend2 == null ||
-                        this.RegexForExtendPattern2 != pattern)
-                    {
-                        this.RegexForExtend2 = pattern.ToRegex();
-                        this.RegexForExtendPattern2 = pattern;
-                    }
-                }
-                else
-                {
-                    this.RegexForExtend2 = null;
-                    this.RegexForExtendPattern2 = string.Empty;
-                }
-            }
-            catch (Exception ex)
-            {
-                return ex;
-            }
-
-            return null;
-        }
-
-        #endregion Regex compiler
 
         public void SimulateMatch()
         {
