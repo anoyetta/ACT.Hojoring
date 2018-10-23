@@ -503,7 +503,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         Clipboard.SetDataObject(this.Tag + Environment.NewLine);
                         break;
                     }
-                    catch (COMException)
+                    catch (Exception ex) when (ex is InvalidOperationException || ex is COMException)
                     {
                         Thread.Sleep(10);
                     }

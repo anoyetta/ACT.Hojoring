@@ -225,7 +225,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                             Clipboard.SetDataObject(text);
                             break;
                         }
-                        catch (COMException)
+                        catch (Exception ex) when (ex is InvalidOperationException || ex is COMException)
                         {
                             Thread.Sleep(10);
                         }
