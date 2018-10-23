@@ -451,10 +451,13 @@ namespace ACT.TTSYukkuri.Config
                 // ステータスアラートの対象を初期化する
                 this.StatusAlertSettings.SetDefaultAlertTargets();
 
+                var ns = new XmlSerializerNamespaces();
+                ns.Add(string.Empty, string.Empty);
+
                 using (var sw = new StreamWriter(file, false, new UTF8Encoding(false)))
                 {
                     var xs = new XmlSerializer(typeof(Settings));
-                    xs.Serialize(sw, Default);
+                    xs.Serialize(sw, Default, ns);
                 }
             }
         }
