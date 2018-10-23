@@ -129,6 +129,8 @@ namespace ACT.SpecialSpellTimer.Config.Models
 
         public abstract ICollectionView Children { get; }
 
+        public void ExecuteRaisePropertyChanged(string name) => this.RaisePropertyChanged(name);
+
         #region Commands
 
         private ICommand createNewSpellPanelCommand;

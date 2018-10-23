@@ -176,11 +176,14 @@ namespace ACT.UltraScouter.Config
                     this.MPTicker.TargetJobs.AddRange(missingJobs);
                 }
 
+                var ns = new XmlSerializerNamespaces();
+                ns.Add(string.Empty, string.Empty);
+
                 using (var xw = XmlWriter.Create(
                     this.FileName,
                     this.XmlWriterSettings))
                 {
-                    this.Serializer.Serialize(xw, instance);
+                    this.Serializer.Serialize(xw, instance, ns);
                 }
             }
         }
