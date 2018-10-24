@@ -94,6 +94,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     $references = @(
         "System.Windows.Interactivity.dll",
         "ICSharpCode.SharpZipLib.dll",
+        "ICSharpCode.AvalonEdit.dll"
         "CommonServiceLocator.dll",
         "ReactiveProperty*.dll",
         "System.Reactive.*.dll",
