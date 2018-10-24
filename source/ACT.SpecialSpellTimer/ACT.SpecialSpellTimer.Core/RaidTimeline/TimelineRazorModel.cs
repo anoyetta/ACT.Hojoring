@@ -75,8 +75,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (!File.Exists(file))
                 {
-                    throw new FileNotFoundException(
-                        $"{file} not found.");
+                    return null;
                 }
             }
 
@@ -87,9 +86,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public string Include(
             string file)
         {
+            var fileToLog = file;
+
             if (string.IsNullOrEmpty(file))
             {
-                return null;
+                return string.Empty;
             }
 
             if (!File.Exists(file))
@@ -100,8 +101,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (!File.Exists(file))
                 {
-                    throw new FileNotFoundException(
-                        $"{file} not found.");
+                    return $"<!-- include file not found. {fileToLog} -->\n";
                 }
             }
 
