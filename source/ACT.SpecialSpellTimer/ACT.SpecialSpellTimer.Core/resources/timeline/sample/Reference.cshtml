@@ -5,6 +5,7 @@
 
 変更履歴はファイル末尾に。
 -->
+@{ var rev = "rev25"; }
 
 <!-- ●●この辺は Razor構文（非常に高度な機能）の説明なので読み飛ばして良い●● ↓ここから -->
 @using ACT.SpecialSpellTimer.RaidTimeline
@@ -73,7 +74,7 @@
   Job  : PLD, WAR, DRK, WHM, SCH, AST...
   Role : Tank, Healer, MeleeDPS, RangeDPS, MagicDPS, Crafter, Gatherer
 
-  Zone の判定
+  * Zone の判定
     if (Model.Zone == "Sigmascape")
     と通常の条件式を使用してもよいが判定用のメソッドも提供されている。
 
@@ -81,7 +82,7 @@
     現在のゾーンが引数で与えられたゾーンのリストのいずれかに該当するかを返す。
     大文字/小文字は識別しない。現在のゾーン名に引数のゾーン名が含まれるとき、真を返す。
 
-  Job の判定
+  * Job の判定
     Zone と同様に専用の判定メソッドが提供されている。
 
     bool Model.Player.InJob(param string[] jobs)
@@ -93,7 +94,7 @@
         do something...
     }
 
-  Role の判定
+  * Role の判定
     Zone と同様に専用の判定メソッドが提供されている。
 
     bool Model.Player.InRole(param string[] jobs)
@@ -117,10 +118,16 @@
         do something...
     }
 
-  JSON ファイルの読み込み
-    dynamic Model.ParseJsonFile(strinf file)
+  * JSON ファイルの読み込み
+    dynamic Model.ParseJsonFile(string file)
 
     JSON ファイルを読み込みます。
+    パスは timeline フォルダからの相対パスまたは絶対パスで指定します。
+
+  * Include
+    string Model.Include(string file)
+
+    指定したファイルを読み込みその内容を返す。
     パスは timeline フォルダからの相対パスまたは絶対パスで指定します。
 -->
 <!-- ●●この辺は Razor構文（非常に高度な機能）の説明なので読み飛ばして良い●● ↑ここまで -->
@@ -147,7 +154,7 @@
     それぞれ設定画面で参照できる。
     作者はイニシャルでも偽名でも何でも良いので何かしら識別できるものを記載することを推奨します。
   -->
-  <rev>rev24</rev>
+  <rev>@rev</rev>
   <description>
     スペスペたいむの定義ファイルの説明書です。
     これ自体をタイムラインとして使用することは出来ません。
@@ -740,11 +747,38 @@
   子要素
     <a> : サブルーチン内部のタイムラインを定義する。時間はサブルーチン開始時点からのオフセットで定義する
     <t> : サブルーチン内部でのみ稼働するトリガを定義する。
+    <import> : 後述
 
   name :
     string
     このサブルーチンの名前および識別子。goto, callのターゲットとなる。
     またこのサブルーチンの実行中はオーバーレイに表示される。
+
+  enabled :
+    bool, 任意項目, 既定値true
+    このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
+  -->
+
+  <!-- サブルーチン+import -->
+  <s name="トリガ定義">
+    <t sync="starts using パンチ" notice="パンチ！" />
+    <t sync="starts using キック" notice="キック！" />
+  </s>
+
+  <s name="フェーズ2">
+    <import source="トリガ定義" />
+    <a time="00:15" text="パンチ" notice="次は、パンチ。" />
+    <a time="00:21" text="キック" notice="次は、キック。" />
+    <a time="00:28" text="アルテマ" notice="次は、アルテマ。" />
+  </s>
+  <!--
+  <import> タグ
+    s タグ配下でのみ使用できる。
+    source で指定されたサブルーチンからトリガだけをインポートする。
+
+  source :
+    string
+    トリガのインポート元のサブルーチン名（name）を指定する。
 
   enabled :
     bool, 任意項目, 既定値true
@@ -794,6 +828,10 @@
 
 <!--
 変更履歴
+
+2018-10-24 rev25
+  * import タグを追加した
+  * Razorモデルに Include メソッドを追加した
 
 2018-10-22 rev24
   * a タグ, t タグにサウンド通知の音量を個別に指定できる notice-vol 属性を追加した
