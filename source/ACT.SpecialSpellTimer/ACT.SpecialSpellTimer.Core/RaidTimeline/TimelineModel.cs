@@ -508,6 +508,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static StringBuilder CompileRazor(
             string file)
         {
+            // Razorモデルに対象のファイルパスを設定する
+            razorModel.UpdateCurrentTimelineFile(file);
+
             var sb = new StringBuilder();
 
             using (var sw = new StringWriter(sb))
