@@ -370,6 +370,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             void initElement(TimelineBase element)
             {
+                // サブルーチンにトリガをインポートする
+                if (element is TimelineSubroutineModel sub)
+                {
+                    sub.ExecuteImports();
+                }
+
                 // トリガのマッチカウンタを初期化する
                 if (element is TimelineTriggerModel tri)
                 {
