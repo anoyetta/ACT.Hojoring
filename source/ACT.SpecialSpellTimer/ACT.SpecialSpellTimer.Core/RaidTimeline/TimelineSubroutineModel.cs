@@ -19,8 +19,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public override IList<TimelineBase> Children => this.statements;
 
-        private List<TimelineBase> statements = new List<TimelineBase>();
-        private List<TimelineBase> importTriggers = new List<TimelineBase>();
+        private readonly List<TimelineBase> statements = new List<TimelineBase>();
+        private readonly List<TimelineBase> importTriggers = new List<TimelineBase>();
 
         [XmlIgnore]
         public IReadOnlyList<TimelineBase> Statements => this.statements;
@@ -165,7 +165,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private string source = null;
 
-        [XmlElement(ElementName = "source")]
+        [XmlAttribute(AttributeName = "source")]
         public string Source
         {
             get => this.source;
