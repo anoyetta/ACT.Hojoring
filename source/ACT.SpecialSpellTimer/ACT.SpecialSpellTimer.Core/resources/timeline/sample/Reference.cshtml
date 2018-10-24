@@ -74,7 +74,7 @@
   Job  : PLD, WAR, DRK, WHM, SCH, AST...
   Role : Tank, Healer, MeleeDPS, RangeDPS, MagicDPS, Crafter, Gatherer
 
-  Zone の判定
+  * Zone の判定
     if (Model.Zone == "Sigmascape")
     と通常の条件式を使用してもよいが判定用のメソッドも提供されている。
 
@@ -82,7 +82,7 @@
     現在のゾーンが引数で与えられたゾーンのリストのいずれかに該当するかを返す。
     大文字/小文字は識別しない。現在のゾーン名に引数のゾーン名が含まれるとき、真を返す。
 
-  Job の判定
+  * Job の判定
     Zone と同様に専用の判定メソッドが提供されている。
 
     bool Model.Player.InJob(param string[] jobs)
@@ -94,7 +94,7 @@
         do something...
     }
 
-  Role の判定
+  * Role の判定
     Zone と同様に専用の判定メソッドが提供されている。
 
     bool Model.Player.InRole(param string[] jobs)
@@ -118,10 +118,16 @@
         do something...
     }
 
-  JSON ファイルの読み込み
-    dynamic Model.ParseJsonFile(strinf file)
+  * JSON ファイルの読み込み
+    dynamic Model.ParseJsonFile(string file)
 
     JSON ファイルを読み込みます。
+    パスは timeline フォルダからの相対パスまたは絶対パスで指定します。
+
+  * Include
+    string Model.Include(string file)
+
+    指定したファイルを読み込みその内容を返す。
     パスは timeline フォルダからの相対パスまたは絶対パスで指定します。
 -->
 <!-- ●●この辺は Razor構文（非常に高度な機能）の説明なので読み飛ばして良い●● ↑ここまで -->
@@ -825,6 +831,7 @@
 
 2018-10-24 rev25
   * import タグを追加した
+  * Razorモデルに Include メソッドを追加した
 
 2018-10-22 rev24
   * a タグ, t タグにサウンド通知の音量を個別に指定できる notice-vol 属性を追加した
