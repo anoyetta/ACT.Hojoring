@@ -61,7 +61,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                                 MessageBoxButton.OK,
                                 ex.InnerException);
                         }
-                    });
+                    }, DispatcherPriority.ApplicationIdle);
                 }
             }
 
