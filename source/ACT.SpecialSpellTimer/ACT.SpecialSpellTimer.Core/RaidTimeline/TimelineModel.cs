@@ -17,6 +17,7 @@ using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.Globalization;
 using FFXIV.Framework.WPF.Views;
@@ -443,7 +444,23 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public static TimelineModel Load(
             string file)
         {
+            const string IgnoreLoadKeyword = "#ignore";
+
             if (!File.Exists(file))
+            {
+                return null;
+            }
+
+            // ファイルサイズ0？
+            var fi = new FileInfo(file);
+            if (fi.Length <= 0)
+            {
+                return null;
+            }
+
+            // 読込無効キーワード #ignore がある？
+            var text = File.ReadAllText(file, new UTF8Encoding(false));
+            if (text.ContainsIgnoreCase(IgnoreLoadKeyword))
             {
                 return null;
             }
