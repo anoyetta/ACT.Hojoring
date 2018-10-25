@@ -205,7 +205,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 try
                 {
                     var tl = TimelineModel.Load(file);
-                    list.Add(tl);
+                    if (tl != null)
+                    {
+                        list.Add(tl);
+                    }
                 }
                 catch (Exception ex)
                 {
