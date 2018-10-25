@@ -34,6 +34,16 @@ namespace ACT.SpecialSpellTimer.Models
         {
             try
             {
+                // サイズ0のファイルがもしも存在したら消す
+                if (File.Exists(this.DefaultFile))
+                {
+                    var fi = new FileInfo(this.DefaultFile);
+                    if (fi.Length <= 0)
+                    {
+                        File.Delete(this.DefaultFile);
+                    }
+                }
+
                 if (!File.Exists(this.DefaultFile))
                 {
                     return;
