@@ -411,6 +411,16 @@ namespace ACT.TTSYukkuri.Config
 
                     var activeConfig = this;
 
+                    // サイズ0のファイルがもしも存在したら消す
+                    if (File.Exists(file))
+                    {
+                        var fi = new FileInfo(file);
+                        if (fi.Length <= 0)
+                        {
+                            File.Delete(file);
+                        }
+                    }
+
                     if (File.Exists(file))
                     {
                         using (var sr = new StreamReader(file, new UTF8Encoding(false)))
