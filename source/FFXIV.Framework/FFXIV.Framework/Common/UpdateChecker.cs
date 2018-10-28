@@ -176,10 +176,7 @@ namespace FFXIV.Framework.Common
 
                 var html = string.Empty;
 
-                var client = new GitHubClient(new ProductHeaderValue("ACT.Hojoring"))
-                {
-                    Credentials = new Credentials("4a380243ea7a6894be1c1cfc154f4fecd1a46bd0")
-                };
+                var client = new GitHubClient(new ProductHeaderValue("ACT.Hojoring"));
 
                 if (GetHojoring() != null)
                 {
