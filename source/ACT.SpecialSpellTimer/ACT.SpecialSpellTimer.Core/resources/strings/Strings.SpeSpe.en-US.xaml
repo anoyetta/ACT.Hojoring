@@ -212,6 +212,7 @@
 
   <system:String x:Key="Info_Placeholders">Placeholders</system:String>
   <system:String x:Key="Info_Triggers">Active triggers</system:String>
+  <system:String x:Key="Info_Hotbar">Hotbar Info</system:String>
   <system:String x:Key="Info_TriggerCount">Active trigger count (include instanced spell)</system:String>
 
   <system:String x:Key="Icon_BrowseIcon">Browse icon</system:String>

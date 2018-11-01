@@ -212,6 +212,7 @@
 
   <system:String x:Key="Info_Placeholders">유효한 대체식</system:String>
   <system:String x:Key="Info_Triggers">활성 트리거</system:String>
+  <system:String x:Key="Info_Hotbar">Hotbar Info</system:String>
   <system:String x:Key="Info_TriggerCount">활성 트리거 수 (인스턴스 포함)</system:String>
 
   <system:String x:Key="Icon_BrowseIcon">아이콘을 선택</system:String>
