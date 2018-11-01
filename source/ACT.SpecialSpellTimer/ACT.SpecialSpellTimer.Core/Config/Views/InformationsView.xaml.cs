@@ -1,13 +1,18 @@
+using ACT.SpecialSpellTimer.Models;
+using ACT.SpecialSpellTimer.resources;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.Globalization;
+using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Threading;
-using ACT.SpecialSpellTimer.Models;
-using ACT.SpecialSpellTimer.resources;
-using FFXIV.Framework.Globalization;
+using TamanegiMage.FFXIV_MemoryReader.Model;
 
 namespace ACT.SpecialSpellTimer.Config.Views
 {
@@ -24,6 +29,22 @@ namespace ACT.SpecialSpellTimer.Config.Views
             this.InitializeComponent();
             this.SetLocale(Settings.Default.UILocale);
             this.LoadConfigViewResources();
+
+            this.hotbarInfoListSource.Source = this.HotbarInfoList;
+            this.hotbarInfoListSource.IsLiveSortingRequested = true;
+            this.hotbarInfoListSource.SortDescriptions.AddRange(new[]
+            {
+                new SortDescription()
+                {
+                    PropertyName = nameof(HotbarInfoContainer.Remain),
+                    Direction = ListSortDirection.Descending,
+                },
+                new SortDescription()
+                {
+                    PropertyName = nameof(HotbarInfoContainer.ID),
+                    Direction = ListSortDirection.Ascending,
+                },
+            });
 
             this.timer.Interval = TimeSpan.FromSeconds(5);
             this.timer.Tick += (x, y) =>
@@ -55,6 +76,16 @@ namespace ACT.SpecialSpellTimer.Config.Views
             get;
             private set;
         } = new ObservableCollection<TriggerContainer>();
+
+        public ICollectionView HotbarInfoListView => this.hotbarInfoListSource?.View;
+
+        private CollectionViewSource hotbarInfoListSource = new CollectionViewSource();
+
+        private ObservableCollection<HotbarInfoContainer> HotbarInfoList
+        {
+            get;
+            set;
+        } = new ObservableCollection<HotbarInfoContainer>();
 
         public long ActiveTriggerCount { get; private set; } = 0;
 
@@ -187,6 +218,35 @@ namespace ACT.SpecialSpellTimer.Config.Views
             }
         }
 
+        private void RefreshHotbarInfo()
+        {
+            if (!FFXIVReader.Instance.IsAvailable)
+            {
+                if (this.HotbarInfoList.Any())
+                {
+                    this.HotbarInfoList.Clear();
+                }
+
+                return;
+            }
+
+            var newList = FFXIVReader.Instance.GetHotbarRecastV1();
+
+            // 更新する
+            newList.Walk(x =>
+            {
+                var toUpdate = this.HotbarInfoList.FirstOrDefault(y => y.ID == x.ID);
+                toUpdate?.UpdateSourceInfo(x);
+            });
+
+            // 追加と削除を実施する
+            var toAdds = newList.Where(x => !this.HotbarInfoList.Any(y => y.ID == x.ID)).ToArray();
+            var toRemoves = this.HotbarInfoList.Where(x => !newList.Any(y => y.ID == x.ID)).ToArray();
+
+            this.HotbarInfoList.AddRange(toAdds.Select(x => new HotbarInfoContainer(x)));
+            toRemoves.Walk(x => this.HotbarInfoList.Remove(x));
+        }
+
         #region INotifyPropertyChanged
 
         [field: NonSerialized]
@@ -291,6 +351,64 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     }
                 }
             }
+        }
+
+        public class HotbarInfoContainer :
+            BindableBase
+        {
+            /*
+            public class HotbarRecastV1
+            {
+                public HotbarRecastV1();
+
+                public HotbarType HotbarType { get; set; }
+                public int ID { get; set; }
+                public int Slot { get; set; }
+                public string Name { get; set; }
+                public int Category { get; set; }
+                public int Type { get; set; }
+                public int Icon { get; set; }
+                public int CoolDownPercent { get; set; }
+                public bool IsAvailable { get; set; }
+                public int RemainingOrCost { get; set; }
+                public int Amount { get; set; }
+                public bool InRange { get; set; }
+                public bool IsProcOrCombo { get; set; }
+            }
+            */
+
+            public HotbarInfoContainer(
+                HotbarRecastV1 source)
+                => this.UpdateSourceInfo(source);
+
+            public void UpdateSourceInfo(
+                HotbarRecastV1 source)
+            {
+                if (this.source == null ||
+                    this.source != source)
+                {
+                    this.source = source;
+                    this.RaisePropertyChanged(nameof(this.ID));
+                    this.RaisePropertyChanged(nameof(this.Name));
+                    this.RaisePropertyChanged(nameof(this.Remain));
+                }
+                else
+                {
+                    if (this.source.ID == source.ID)
+                    {
+                        this.source = source;
+                        this.RaisePropertyChanged(nameof(this.Remain));
+                    }
+                }
+            }
+
+            private HotbarRecastV1 source;
+
+            public int ID => this.source?.ID ?? 0;
+
+            public string Name => this.source?.Name;
+
+            public int Remain => this.source?.RemainingOrCost ?? 0;
         }
     }
 }

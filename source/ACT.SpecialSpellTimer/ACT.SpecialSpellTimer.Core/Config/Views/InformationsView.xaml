@@ -198,5 +198,44 @@
         </DataGrid>
       </StackPanel>
     </TabItem>
+
+    <TabItem Header="{DynamicResource Info_Hotbar}">
+      <StackPanel Margin="8">
+        <DataGrid
+          MaxHeight="{Binding ElementName=BaseTab, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.95}"
+          Margin="0 5 0 0"
+          BorderThickness="0"
+          AutoGenerateColumns="False"
+          IsReadOnly="True"
+          Background="Transparent"
+          HorizontalGridLinesBrush="Transparent"
+          VerticalGridLinesBrush="Transparent"
+          HorizontalAlignment="Stretch"
+          HeadersVisibility="Column"
+          VirtualizingPanel.IsVirtualizing="True"
+          VirtualizingPanel.VirtualizationMode="Recycling"
+          ItemsSource="{Binding HotbarInfoListView, Mode=OneWay}">
+          <DataGrid.Columns>
+            <DataGridTextColumn
+              IsReadOnly="True"
+              Header="Name"
+              Binding="{Binding Name}"
+              MinWidth="300" />
+            <DataGridTemplateColumn
+              IsReadOnly="True"
+              Header="Remain"
+              MinWidth="100">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <TextBlock
+                    Text="{Binding Remain}"
+                    HorizontalAlignment="Right" />
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+          </DataGrid.Columns>
+        </DataGrid>
+      </StackPanel>
+    </TabItem>
   </TabControl>
 </UserControl>
