@@ -212,6 +212,7 @@
 
   <system:String x:Key="Info_Placeholders">有効なプレースホルダ</system:String>
   <system:String x:Key="Info_Triggers">アクティブなトリガ</system:String>
+  <system:String x:Key="Info_Hotbar">ホットバー情報</system:String>
   <system:String x:Key="Info_TriggerCount">アクティブなトリガ数（インスタンスを含む）</system:String>
 
   <system:String x:Key="Icon_BrowseIcon">アイコンを選ぶ</system:String>
