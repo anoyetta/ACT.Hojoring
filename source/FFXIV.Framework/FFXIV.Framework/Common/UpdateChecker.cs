@@ -405,7 +405,7 @@ namespace FFXIV.Framework.Common
             => Registry.GetValue(keyname, valuename, string.Empty).ToString();
 
         private const int Windows10BuildNo = 10240;
-        private const int Windows81BuildNo = 9200;
+        private const int Windows81BuildNo = 9600;
         private static int osBuildNo;
 
         private static void DumpEnvironment()
