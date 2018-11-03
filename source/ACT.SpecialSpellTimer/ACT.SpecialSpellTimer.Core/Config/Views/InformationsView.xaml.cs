@@ -36,8 +36,18 @@ namespace ACT.SpecialSpellTimer.Config.Views
             {
                 new SortDescription()
                 {
-                    PropertyName = nameof(HotbarInfoContainer.Remain),
+                    PropertyName = nameof(HotbarInfoContainer.Type),
                     Direction = ListSortDirection.Descending,
+                },
+                new SortDescription()
+                {
+                    PropertyName = nameof(HotbarInfoContainer.DisplayOrder),
+                    Direction = ListSortDirection.Ascending,
+                },
+                new SortDescription()
+                {
+                    PropertyName = nameof(HotbarInfoContainer.Remain),
+                    Direction = ListSortDirection.Ascending,
                 },
                 new SortDescription()
                 {
@@ -45,6 +55,8 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     Direction = ListSortDirection.Ascending,
                 },
             });
+
+            this.RaisePropertyChanged(nameof(this.HotbarInfoListView));
 
             this.timer.Interval = TimeSpan.FromSeconds(5);
             this.timer.Tick += (x, y) =>
@@ -232,17 +244,32 @@ namespace ACT.SpecialSpellTimer.Config.Views
             }
 
             var newList = FFXIVReader.Instance.GetHotbarRecastV1();
+            if (newList == null ||
+                !newList.Any())
+            {
+                if (this.HotbarInfoList.Any())
+                {
+                    this.HotbarInfoList.Clear();
+                }
+
+                return;
+            }
+
+            // 名前でグループ化する
+            var newSource = newList
+                .GroupBy(x => x.Name)
+                .Select(g => g.First());
 
             // 更新する
-            newList.Walk(x =>
+            newSource.Walk(x =>
             {
                 var toUpdate = this.HotbarInfoList.FirstOrDefault(y => y.ID == x.ID);
                 toUpdate?.UpdateSourceInfo(x);
             });
 
             // 追加と削除を実施する
-            var toAdds = newList.Where(x => !this.HotbarInfoList.Any(y => y.ID == x.ID)).ToArray();
-            var toRemoves = this.HotbarInfoList.Where(x => !newList.Any(y => y.ID == x.ID)).ToArray();
+            var toAdds = newSource.Where(x => !this.HotbarInfoList.Any(y => y.ID == x.ID)).ToArray();
+            var toRemoves = this.HotbarInfoList.Where(x => !newSource.Any(y => y.ID == x.ID)).ToArray();
 
             this.HotbarInfoList.AddRange(toAdds.Select(x => new HotbarInfoContainer(x)));
             toRemoves.Walk(x => this.HotbarInfoList.Remove(x));
@@ -385,31 +412,60 @@ namespace ACT.SpecialSpellTimer.Config.Views
             public void UpdateSourceInfo(
                 HotbarRecastV1 source)
             {
-                if (this.source == null ||
-                    this.source != source)
+                this.ID = source.ID;
+                this.Name = source.Name;
+                this.Type = source.Type;
+
+                if (this.Remain != source.RemainingOrCost)
                 {
-                    this.source = source;
-                    this.RaisePropertyChanged(nameof(this.ID));
-                    this.RaisePropertyChanged(nameof(this.Name));
-                    this.RaisePropertyChanged(nameof(this.Remain));
+                    this.Remain = source.RemainingOrCost;
+                    this.DisplayOrder = 0;
                 }
                 else
                 {
-                    if (this.source.ID == source.ID)
-                    {
-                        this.source = source;
-                        this.RaisePropertyChanged(nameof(this.Remain));
-                    }
+                    this.DisplayOrder = 1;
                 }
             }
 
-            private HotbarRecastV1 source;
+            private int id;
 
-            public int ID => this.source?.ID ?? 0;
+            public int ID
+            {
+                get => this.id;
+                set => this.SetProperty(ref this.id, value);
+            }
 
-            public string Name => this.source?.Name;
+            private string name;
 
-            public int Remain => this.source?.RemainingOrCost ?? 0;
+            public string Name
+            {
+                get => this.name;
+                set => this.SetProperty(ref this.name, value);
+            }
+
+            private int type;
+
+            public int Type
+            {
+                get => this.type;
+                set => this.SetProperty(ref this.type, value);
+            }
+
+            private int remain;
+
+            public int Remain
+            {
+                get => this.remain;
+                set => this.SetProperty(ref this.remain, value);
+            }
+
+            private int displayOrder = 0;
+
+            public int DisplayOrder
+            {
+                get => this.displayOrder;
+                set => this.SetProperty(ref this.displayOrder, value);
+            }
         }
     }
 }

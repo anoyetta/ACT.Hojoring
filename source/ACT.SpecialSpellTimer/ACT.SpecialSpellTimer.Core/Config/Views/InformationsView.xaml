@@ -221,6 +221,11 @@
               Header="Name"
               Binding="{Binding Name}"
               MinWidth="300" />
+            <DataGridTextColumn
+              IsReadOnly="True"
+              Header="Type"
+              Binding="{Binding Type}"
+              MinWidth="50" />
             <DataGridTemplateColumn
               IsReadOnly="True"
               Header="Remain"
