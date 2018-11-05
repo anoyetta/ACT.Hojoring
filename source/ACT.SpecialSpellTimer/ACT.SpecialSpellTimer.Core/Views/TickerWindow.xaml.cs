@@ -1,12 +1,10 @@
-using System;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Models;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.WPF.Views;
+using System;
+using System.Windows;
+using System.Windows.Media;
 
 namespace ACT.SpecialSpellTimer.Views
 {
@@ -26,11 +24,11 @@ namespace ACT.SpecialSpellTimer.Views
             this.Ticker = ticker;
 
             this.InitializeComponent();
+            this.ToNonActive();
+            this.Opacity = 0;
 
             this.MouseLeftButtonDown += (x, y) => this.DragMove();
-
-            this.Opacity = 0;
-            this.Topmost = false;
+            this.Loaded += (x, y) => this.SubscribeZOrderCorrector();
         }
 
         private bool overlayVisible;
@@ -206,26 +204,5 @@ namespace ACT.SpecialSpellTimer.Views
         }
 
         #endregion Animation
-
-        #region フォーカスを奪わない対策
-
-        private const int GWL_EXSTYLE = -20;
-
-        private const int WS_EX_NOACTIVATE = 0x08000000;
-
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            base.OnSourceInitialized(e);
-            WindowInteropHelper helper = new WindowInteropHelper(this);
-            SetWindowLong(helper.Handle, GWL_EXSTYLE, GetWindowLong(helper.Handle, GWL_EXSTYLE) | WS_EX_NOACTIVATE);
-        }
-
-        [DllImport("user32.dll")]
-        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
-        #endregion フォーカスを奪わない対策
     }
 }
