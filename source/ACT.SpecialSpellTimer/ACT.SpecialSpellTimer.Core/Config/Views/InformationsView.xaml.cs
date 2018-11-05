@@ -1,3 +1,9 @@
+using ACT.SpecialSpellTimer.Models;
+using ACT.SpecialSpellTimer.resources;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.Globalization;
+using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -6,12 +12,6 @@ using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
-using ACT.SpecialSpellTimer.Models;
-using ACT.SpecialSpellTimer.resources;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
-using FFXIV.Framework.Globalization;
-using Prism.Mvvm;
 using TamanegiMage.FFXIV_MemoryReader.Model;
 
 namespace ACT.SpecialSpellTimer.Config.Views
@@ -72,7 +72,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
             this.timer.Start();
         }
 
-        private DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.Background);
+        private DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.ContextIdle);
 
         public void SetLocale(Locales locale) => this.ReloadLocaleDictionary(locale);
 
