@@ -1,3 +1,4 @@
+using FFXIV.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +8,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
-using FFXIV.Framework.Common;
 
 namespace FFXIV.Framework.WPF.Views
 {
@@ -76,7 +76,6 @@ namespace FFXIV.Framework.WPF.Views
                 if (w.Opacity <= 0)
                 {
                     w.Opacity = opacity;
-                    w.Topmost = true;
                     r = true;
                 }
             }
@@ -94,7 +93,6 @@ namespace FFXIV.Framework.WPF.Views
             if (overlay is Window w)
             {
                 w.Opacity = 0;
-                w.Topmost = false;
             }
         }
 

@@ -1,3 +1,6 @@
+using ACT.SpecialSpellTimer.Config;
+using ACT.SpecialSpellTimer.Models;
+using FFXIV.Framework.WPF.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,9 +12,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using ACT.SpecialSpellTimer.Config;
-using ACT.SpecialSpellTimer.Models;
-using FFXIV.Framework.WPF.Views;
 
 namespace ACT.SpecialSpellTimer.Views
 {
@@ -66,7 +66,9 @@ namespace ACT.SpecialSpellTimer.Views
 
             this.InitializeComponent();
             this.ToNonActive();
+            this.Opacity = 0;
 
+            this.Loaded += (x, y) => this.SubscribeZOrderCorrector();
             this.MouseLeftButtonDown += (x, y) => this.DragMove();
 
             for (int r = 0; r < this.GuidRulerGrid.RowDefinitions.Count; r++)
