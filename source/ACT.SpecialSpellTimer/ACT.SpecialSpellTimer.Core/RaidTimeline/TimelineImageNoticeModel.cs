@@ -1,3 +1,6 @@
+using ACT.SpecialSpellTimer.RaidTimeline.Views;
+using FFXIV.Framework.Common;
+using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,9 +13,6 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml.Serialization;
-using ACT.SpecialSpellTimer.RaidTimeline.Views;
-using FFXIV.Framework.Common;
-using Prism.Commands;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -243,6 +243,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (this.SynqToHideRegex == null)
             {
                 return false;
+            }
+
+            if (this.toHide)
+            {
+                return true;
             }
 
             var match = this.SynqToHideRegex.Match(logLine);
