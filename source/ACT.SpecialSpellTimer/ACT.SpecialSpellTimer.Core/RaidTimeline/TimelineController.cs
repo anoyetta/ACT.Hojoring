@@ -1,3 +1,12 @@
+using ACT.SpecialSpellTimer.Config;
+using ACT.SpecialSpellTimer.RaidTimeline.Views;
+using ACT.SpecialSpellTimer.Sound;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.FFXIVHelper;
+using Prism.Mvvm;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -8,15 +17,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using ACT.SpecialSpellTimer.Config;
-using ACT.SpecialSpellTimer.RaidTimeline.Views;
-using ACT.SpecialSpellTimer.Sound;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Bridge;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
-using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -944,8 +944,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     x.Enabled.GetValueOrDefault() &&
                     !string.IsNullOrEmpty(x.SyncKeyword) &&
                     x.SyncRegex != null &&
-                    this.CurrentTime >= x.Time + TimeSpan.FromSeconds(x.SyncOffsetStart.Value) &&
-                    this.CurrentTime <= x.Time + TimeSpan.FromSeconds(x.SyncOffsetEnd.Value) &&
+                    this.CurrentTime >= (x.Time + TimeSpan.FromSeconds(x.SyncOffsetStart.Value)) &&
+                    this.CurrentTime < (x.Time + TimeSpan.FromSeconds(x.SyncOffsetEnd.Value)) &&
                     !x.IsSynced
                     select
                     x).ToArray();
@@ -988,13 +988,20 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             Task.WaitAll(
                 // 開始・終了の判定とスタートトリガの判定行う
+                // 非表示判定も合わせて実施する
                 Task.Run(() =>
                 {
                     logs.AsParallel().ForAll(xivlog =>
                     {
+                        // 開始・終了のトリガの判定
                         this.DetectStartEnd(xivlog, keywords);
                         this.DetectStartTrigger(xivlog);
-                        Thread.Yield();
+
+                        // 非表示待ち判定
+                        foreach (var hide in hides)
+                        {
+                            this.Detect(xivlog, hide, detectTime);
+                        }
                     });
                 }),
 
@@ -1019,19 +1026,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         foreach (var tri in tris)
                         {
                             this.Detect(xivlog, tri, detectTime);
-                            Thread.Yield();
-                        }
-                    }
-                }),
-
-                // 非表示判定対象のイメージ通知トリガ
-                Task.Run(() =>
-                {
-                    foreach (var xivlog in logs)
-                    {
-                        foreach (var hide in hides)
-                        {
-                            this.Detect(xivlog, hide, detectTime);
                             Thread.Yield();
                         }
                     }
