@@ -1004,6 +1004,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         foreach (var hide in hides)
                         {
                             this.Detect(xivlog, hide, detectTime);
+                            Thread.Yield();
                         }
                     }
                 }
@@ -1013,30 +1014,34 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
             });
 
-            // ActivityとTriggerを判定する
-            foreach (var xivlog in logs)
+            // Activityを判定する
+            var t1 = Task.Run(() =>
             {
-                var t1 = Task.Run(() =>
+                foreach (var xivlog in logs)
                 {
                     foreach (var act in acts)
                     {
                         this.Detect(xivlog, act, detectTime);
+                        Thread.Yield();
                     }
-                });
+                }
+            });
 
-                var t2 = Task.Run(() =>
+            // Triggerを判定する
+            var t2 = Task.Run(() =>
+            {
+                foreach (var xivlog in logs)
                 {
                     foreach (var tri in tris)
                     {
                         this.Detect(xivlog, tri, detectTime);
+                        Thread.Yield();
                     }
-                });
+                }
+            });
 
-                Task.WaitAll(t1, t2);
-            }
-
-            // バックグランドタスクの終了を待つ
-            background.Wait();
+            // タスクの完了を待つ
+            Task.WaitAll(t1, t2, background);
 
             // 判定オブジェクトをマージするためのメソッド
             IEnumerable<TimelineBase> mergeDetectors(
