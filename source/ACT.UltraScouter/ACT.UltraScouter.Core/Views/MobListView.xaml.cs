@@ -1,9 +1,9 @@
-using System.Windows;
-using System.Windows.Data;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels;
 using FFXIV.Framework.WPF.Views;
+using System.Windows;
+using System.Windows.Data;
 
 namespace ACT.UltraScouter.Views
 {
@@ -20,6 +20,7 @@ namespace ACT.UltraScouter.Views
 
             // アクティブにさせないようにする
             this.ToNonActive();
+            this.Loaded += (s, e) => this.SubscribeZOrderCorrector();
 
             // ドラッグによる移動を設定する
             this.MouseLeftButtonDown += (s, e) => this.DragMove();
