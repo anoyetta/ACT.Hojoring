@@ -158,9 +158,9 @@ namespace FFXIV.Framework.WPF.Views
 
         #region ZOrder Corrector
 
-        private static readonly DispatcherTimer ZOrderCorrector = new DispatcherTimer(DispatcherPriority.Background)
+        private static readonly DispatcherTimer ZOrderCorrector = new DispatcherTimer(DispatcherPriority.ContextIdle)
         {
-            Interval = TimeSpan.FromSeconds(1)
+            Interval = TimeSpan.FromSeconds(1.5)
         };
 
         private static readonly List<IOverlay> ToCorrectOverlays = new List<IOverlay>(64);
@@ -191,7 +191,10 @@ namespace FFXIV.Framework.WPF.Views
                     };
                 }
 
-                ToCorrectOverlays.Add(overlay);
+                if (!ToCorrectOverlays.Contains(overlay))
+                {
+                    ToCorrectOverlays.Add(overlay);
+                }
 
                 if (ToCorrectOverlays.Any() &&
                     !ZOrderCorrector.IsEnabled)
