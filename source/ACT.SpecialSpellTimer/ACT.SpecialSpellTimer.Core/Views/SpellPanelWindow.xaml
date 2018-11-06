@@ -10,7 +10,6 @@
   AllowsTransparency="True"
   Background="Transparent"
   Opacity="0"
-  Topmost="True"
   ShowInTaskbar="False"
   SizeToContent="WidthAndHeight"
   RenderOptions.BitmapScalingMode="HighQuality"

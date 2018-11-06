@@ -24,7 +24,6 @@
   TextOptions.TextRenderingMode="ClearType"
   mc:Ignorable="d"
   Opacity="0"
-  Topmost="True"
   ResizeMode="NoResize"
   ShowInTaskbar="False"
   WindowStyle="None"

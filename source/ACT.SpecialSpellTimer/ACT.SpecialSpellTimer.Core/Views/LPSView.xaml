@@ -22,7 +22,6 @@
   RenderOptions.EdgeMode="Unspecified"
   FontFamily="Arial"
   FontWeight="Black"
-  Topmost="True"
   Top="{Binding Config.LPSViewY, Mode=TwoWay}"
   Left="{Binding Config.LPSViewX, Mode=TwoWay}"
   d:DataContext="{d:DesignInstance Type=local:LPSViewModel, IsDesignTimeCreatable=True}">
