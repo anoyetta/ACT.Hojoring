@@ -17,7 +17,6 @@
   TextOptions.TextFormattingMode="Ideal"
   TextOptions.TextHintingMode="Animated"
   TextOptions.TextRenderingMode="ClearType"
-  Topmost="True"
   WindowStyle="None">
 
   <Grid Name="BackgroundColorGrid">

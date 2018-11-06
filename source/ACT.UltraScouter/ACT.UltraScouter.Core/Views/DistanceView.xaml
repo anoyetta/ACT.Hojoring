@@ -22,7 +22,6 @@
   RenderOptions.ClearTypeHint="Enabled"
   RenderOptions.BitmapScalingMode="HighQuality"
   RenderOptions.EdgeMode="Unspecified"
-  Topmost="True"
   WindowStyle="None"
   MinWidth="350"
   Left="{Binding Path=Config.Location.X, Mode=TwoWay}"

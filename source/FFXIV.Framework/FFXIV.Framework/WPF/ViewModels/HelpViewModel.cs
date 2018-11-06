@@ -1,3 +1,13 @@
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.WPF.Views;
+using Microsoft.VisualBasic.FileIO;
+using NLog;
+using NLog.Targets;
+using Prism.Commands;
+using Prism.Mvvm;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -9,16 +19,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
-using FFXIV.Framework.WPF.Views;
-using Microsoft.VisualBasic.FileIO;
-using NLog;
-using NLog.Targets;
-using Prism.Commands;
-using Prism.Mvvm;
 
 namespace FFXIV.Framework.WPF.ViewModels
 {
@@ -186,7 +186,7 @@ namespace FFXIV.Framework.WPF.ViewModels
             set => this.SetProperty(ref this.zone, value);
         }
 
-        private DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.Background)
+        private DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.ContextIdle)
         {
             Interval = TimeSpan.FromSeconds(0.25),
         };

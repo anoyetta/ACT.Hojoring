@@ -23,7 +23,6 @@
   FontFamily="Arial"
   FontWeight="Black"
   FontSize="16"
-  Topmost="True"
   Top="{Binding Config.POSViewY, Mode=TwoWay}"
   Left="{Binding Config.POSViewX, Mode=TwoWay}"
   d:DataContext="{d:DesignInstance Type=local:POSViewModel, IsDesignTimeCreatable=True}">
