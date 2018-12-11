@@ -134,16 +134,21 @@ namespace ACT.SpecialSpellTimer.Image
             return this.iconFiles;
         }
 
+        public void DisposeIcon()
+        {
+            lock (this)
+            {
+                IconFile.Dispose();
+                this.iconFiles = null;
+            }
+        }
+
         /// <summary>
         /// キャッシュされたアイコン情報を更新する
         /// </summary>
         public void RefreshIcon()
         {
-            lock (this)
-            {
-                this.iconFiles = null;
-            }
-
+            this.DisposeIcon();
             this.EnumerateIcon();
         }
 
@@ -290,6 +295,9 @@ namespace ACT.SpecialSpellTimer.Image
             }
 
             private static Dictionary<string, BitmapSource> iconDictionary = new Dictionary<string, BitmapSource>();
+
+            public static void Dispose()
+                => iconDictionary.Clear();
         }
     }
 }

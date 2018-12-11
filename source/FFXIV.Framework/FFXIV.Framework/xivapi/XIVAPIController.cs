@@ -99,6 +99,11 @@ namespace FFXIV.Framework.xivapi
                 if (!string.IsNullOrEmpty(json))
                 {
                     result = JsonConvert.DeserializeObject<ApiResultModel<List<ActionModel>>>(json);
+#if DEBUG
+                    /*
+                    System.Diagnostics.Debug.WriteLine(json);
+                    */
+#endif
                 }
 
                 if (result == null ||
@@ -111,8 +116,7 @@ namespace FFXIV.Framework.xivapi
                     from x in result.Results
                     where
                     x.ActionCategory.ID.HasValue &&
-                    x.ClassJob.ID.HasValue &&
-                    x.ClassJob.ID != (int)JobIDs.ADV &&
+                    x.ClassJobCategory.ID.HasValue &&
                     x.ActionCategory.ID != (int)ActionCategory.AutoAttack &&
                     x.ActionCategory.ID != (int)ActionCategory.Item &&
                     x.ActionCategory.ID != (int)ActionCategory.Event &&
@@ -120,8 +124,7 @@ namespace FFXIV.Framework.xivapi
                     x.ActionCategory.ID != (int)ActionCategory.Mount &&
                     x.ActionCategory.ID != (int)ActionCategory.Glamour &&
                     x.ActionCategory.ID != (int)ActionCategory.AdrenalineRush &&
-                    !string.IsNullOrEmpty(x.Name) &&
-                    x.ClassJob.ToLocalCategory() != ActionUserCategory.Nothing
+                    !string.IsNullOrEmpty(x.Name)
                     select
                     x);
 
@@ -140,13 +143,20 @@ namespace FFXIV.Framework.xivapi
                 await Task.Delay(TimeSpan.FromSeconds(1.05));
             } while (result.Pagination.Page < result.Pagination.PageTotal);
 
-            return
+            var sorted =
                 from x in actionList
                 orderby
-                x.ClassJob.ToLocalCategory(),
+                x.ClassJob.ID,
                 x.ID
                 select
                 x;
+#if DEBUG
+            foreach (var action in sorted)
+            {
+                System.Diagnostics.Debug.WriteLine(action.ToString());
+            }
+#endif
+            return sorted;
         }
 
         public async Task DownloadActionIcons(
@@ -161,34 +171,50 @@ namespace FFXIV.Framework.xivapi
                 saveDirectory,
                 "Action icons");
 
-            var actionsByCategory =
-                from x in actions
-                orderby
-                x.ClassJob.ToLocalCategory(),
-                x.ID
-                group x by
-                x.ClassJob.ToLocalCategory();
+            var iconBaseDirectoryBack = iconBaseDirectory + ".back";
+            if (Directory.Exists(iconBaseDirectory))
+            {
+                if (Directory.Exists(iconBaseDirectoryBack))
+                {
+                    Directory.Delete(iconBaseDirectoryBack, true);
+                }
 
-            var current = 1;
+                Directory.Move(iconBaseDirectory, iconBaseDirectoryBack);
+            }
+
+            var i = 1;
+            var jobIDs = Jobs.PopularJobIDs
+                .Select(x => new
+                {
+                    No = i++,
+                    ID = x,
+                    Name = Jobs.Find(x)?.NameEN
+                });
+
             using (var wc = new WebClient())
             {
-                foreach (var category in actionsByCategory)
+                foreach (var jobID in jobIDs)
                 {
-                    var key = category.Key;
+                    var actionsByJob =
+                        from x in actions
+                        where
+                        x.ContainsJob(jobID.ID)
+                        group x by
+                        x.Name;
 
-                    var dirName =
-                        $"{((int)key).ToString("00")}_{Enum.GetName(typeof(ActionUserCategory), key)}";
-
+                    var dirName = $"{jobID.No:00}_{jobID.Name}";
                     var dir = Path.Combine(iconBaseDirectory, dirName);
                     if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
                     }
 
-                    foreach (var skill in category)
+                    var current = 1;
+                    foreach (var group in actionsByJob)
                     {
-                        var fileName =
-                            $"{skill.ID.ToString("0000")}_{skill.Name}.png";
+                        var action = group.First();
+
+                        var fileName = $"{action.ID:0000}_{action.Name}.png";
 
                         // ファイル名に使えない文字を除去する
                         fileName = string.Concat(fileName.Where(c =>
@@ -200,7 +226,7 @@ namespace FFXIV.Framework.xivapi
                             File.Delete(file);
                         }
 
-                        var uri = BaseAddress.ToString() + "/" + skill.Icon;
+                        var uri = BaseAddress.ToString() + "/" + action.Icon;
                         await wc.DownloadFileTaskAsync(uri, file);
 
                         if (callback != null)
@@ -208,15 +234,20 @@ namespace FFXIV.Framework.xivapi
                             callback.Invoke(new DownloadProgressEventArgs()
                             {
                                 Current = current,
-                                Max = actions.Count(),
+                                Max = actionsByJob.Count(),
                                 CurrentObject = Path.Combine(dirName, fileName),
                             });
                         }
 
                         current++;
-                        await Task.Delay(TimeSpan.FromSeconds(0.05));
+                        await Task.Delay(1);
                     }
                 }
+            }
+
+            if (Directory.Exists(iconBaseDirectoryBack))
+            {
+                Directory.Delete(iconBaseDirectoryBack, true);
             }
         }
 

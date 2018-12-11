@@ -1,4 +1,5 @@
 using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using ACT.SpecialSpellTimer.Config.Views;
@@ -170,11 +171,13 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
                 {
                     this.InProgress = true;
 
+                    // APIクライアントにロケールを設定する
+                    XIVAPIController.Instance.Language = Settings.Default.UILocale;
+
                     this.MaxValue = 100;
                     this.CurrentValue = 0;
                     this.ProgressMessage = $"Downloading Actions...";
 
-                    XIVAPIController.Instance.Language = Settings.Default.UILocale;
                     var actionList = await XIVAPIController.Instance.GetActionsAsync(async (e) =>
                     {
                         await WPFHelper.InvokeAsync(() =>
@@ -188,6 +191,8 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
                     this.MaxValue = 100;
                     this.CurrentValue = 0;
                     this.ProgressMessage = $"Downloading Action Icons...";
+
+                    IconController.Instance.DisposeIcon();
 
                     await XIVAPIController.Instance.DownloadActionIcons(
                         DirectoryHelper.FindSubDirectory(@"resources\xivdb"),
@@ -204,13 +209,23 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
                                     $"{e.Current:N0} / {e.Max:N0}";
                             });
                         });
+
+                    IconController.Instance.RefreshIcon();
+                }
+                catch (Exception ex)
+                {
+                    ModernMessageBox.ShowDialog(
+                        "Download Error!",
+                        "Action Icons Downloader",
+                        MessageBoxButton.OK,
+                        ex);
+
+                    return;
                 }
                 finally
                 {
                     this.InProgress = false;
                 }
-
-                IconController.Instance.RefreshIcon();
 
                 ModernMessageBox.ShowDialog(
                     "Download completed!",

@@ -997,9 +997,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="resources\icon\Rampart.png" />
-    <Content Include="resources\icon\_blank.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="resources\icon\_blank.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Config\BaseView.xaml">
