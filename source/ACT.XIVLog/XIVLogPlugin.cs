@@ -193,7 +193,13 @@ namespace ACT.XIVLog
                 return;
             }
 
-            LogQueue.Enqueue(new XIVLog(isImport, logInfo));
+            var xivlog = new XIVLog(isImport, logInfo);
+            if (string.IsNullOrEmpty(xivlog.Log))
+            {
+                return;
+            }
+
+            LogQueue.Enqueue(xivlog);
 
             if (!isImport)
             {
@@ -373,7 +379,7 @@ namespace ACT.XIVLog
                 return;
             }
 
-            var combatants = FFXIVPlugin.Instance?.GetCombatantList()
+            var combatants = FFXIVPlugin.Instance?.GetCombatantList()?
                 .Where(x => x.type == ObjectType.PC);
 
             if (combatants == null)
