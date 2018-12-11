@@ -62,7 +62,10 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
         public string SelectedIconName { get; set; } = string.Empty;
 
-        public IconController.IconFile[] Icons => IconController.Instance.EnumerateIcon();
+        public IconController.IconFile[] Icons =>
+            IconController.Instance.EnumerateIcon()
+            .OrderBy(x => x.SkillID)
+            .ToArray();
 
         public IReadOnlyList<IGrouping<string, IconController.IconFile>> IconGroups => (
             from x in this.Icons

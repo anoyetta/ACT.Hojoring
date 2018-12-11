@@ -201,7 +201,7 @@ namespace ACT.SpecialSpellTimer.Image
             IEquatable<IconFile>
         {
             private static readonly Regex SkillNameRegex = new Regex(
-                @"\d\d\d\d_(?<skillName>.+?)\.png",
+                @"(?<skillID>\d{4,5})_(?<skillName>.+?)\.png",
                 RegexOptions.Compiled);
 
             private string fullPath;
@@ -218,10 +218,17 @@ namespace ACT.SpecialSpellTimer.Image
                             return;
                         }
 
+                        this.SkillID = int.MaxValue;
+
                         var match = SkillNameRegex.Match(this.Name);
                         if (match.Success)
                         {
                             this.SkillName = match.Groups["skillName"].Value;
+                            var text = match.Groups["skillID"].Value;
+                            if (int.TryParse(text, out int id))
+                            {
+                                this.SkillID = id;
+                            }
                         }
                         else
                         {
@@ -246,6 +253,8 @@ namespace ACT.SpecialSpellTimer.Image
                 !string.IsNullOrWhiteSpace(this.FullPath) ?
                     Path.GetFileName(this.FullPath) :
                     string.Empty;
+
+            public int SkillID { get; private set; } = 0;
 
             public string SkillName { get; private set; } = string.Empty;
 
