@@ -921,5 +921,28 @@
       </TextBlock>
     </DockPanel>
     <!-- Bottom Buttons end -->
+
+    <!-- Progress Panel -->
+    <Border
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center"
+      BorderBrush="Gray"
+      BorderThickness="4"
+      CornerRadius="6"
+      Padding="13"
+      MinWidth="500"
+      Background="White"
+      Visibility="{Binding InProgress, Converter={StaticResource VisibilityConverter}, Mode=OneWay}">
+      <StackPanel>
+        <TextBlock
+          Text="{Binding ProgressMessage, Mode=OneWay}" />
+        <ProgressBar
+          Margin="0 10 0 0"
+          VerticalAlignment="Bottom"
+          Height="20"
+          Value="{Binding CurrentValue, Mode=OneWay}"
+          Maximum="{Binding MaxValue, Mode=OneWay}" />
+      </StackPanel>
+    </Border>
   </Grid>
 </UserControl>
