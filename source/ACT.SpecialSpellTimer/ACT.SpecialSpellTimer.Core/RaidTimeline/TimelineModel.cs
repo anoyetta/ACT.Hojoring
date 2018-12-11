@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config;
@@ -726,19 +725,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.isActivitiesVisible, value);
         }
 
-        public void StopLive()
-        {
-            this.IsActivitiesVisible = false;
-        }
-
-        public void ResumeLive()
-        {
-            if (!this.IsActivitiesVisible)
-            {
-                this.RefreshActivitiesView();
-                this.IsActivitiesVisible = true;
-            }
-        }
+        public IDisposable DeferRefresh()
+            => this.ActivitySource.DeferRefresh();
 
         private CollectionViewSource CreateActivityView()
         {
@@ -764,18 +752,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             });
 
             return cvs;
-        }
-
-        public void RefreshActivitiesView()
-        {
-            if (!TimelineSettings.Instance.IsTimelineLiveUpdate)
-            {
-                WPFHelper.BeginInvoke(() =>
-                {
-                    this.ActivityView?.Refresh();
-                },
-                DispatcherPriority.Background);
-            }
         }
 
         #endregion To View
