@@ -1,12 +1,3 @@
-using ACT.SpecialSpellTimer.Config;
-using ACT.SpecialSpellTimer.RaidTimeline.Views;
-using ACT.SpecialSpellTimer.Sound;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Bridge;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
-using Prism.Mvvm;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,6 +8,15 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using ACT.SpecialSpellTimer.Config;
+using ACT.SpecialSpellTimer.RaidTimeline.Views;
+using ACT.SpecialSpellTimer.Sound;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.FFXIVHelper;
+using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -264,7 +264,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 CurrentController = this;
 
                 this.LoadActivityLine();
-                this.Model.RefreshActivitiesView();
 
                 if (!this.Model.IsGlobalZone)
                 {
@@ -294,14 +293,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (Locker)
             {
-                this.isLogWorkerRunning = false;
+                using (this.Model.DeferRefresh())
+                {
+                    this.isLogWorkerRunning = false;
 
-                TimelineOverlay.CloseTimeline();
-                TimelineNoticeOverlay.CloseNotice();
+                    TimelineOverlay.CloseTimeline();
+                    TimelineNoticeOverlay.CloseNotice();
 
-                this.CurrentTime = TimeSpan.Zero;
-                this.ClearActivity();
-                this.Model.RefreshActivitiesView();
+                    this.CurrentTime = TimeSpan.Zero;
+                    this.ClearActivity();
+                }
 
                 if (this.LogWorker != null)
                 {
@@ -334,48 +335,51 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private void LoadActivityLine()
         {
-            this.CurrentTime = TimeSpan.Zero;
-            TimelineActivityModel.CurrentTime = TimeSpan.Zero;
-            this.ClearActivity();
-
-            // 初期化する
-            TimelineManager.Instance.InitElements(this.Model);
-
-            var acts = new List<TimelineActivityModel>();
-            int seq = 1;
-
-            // entryポイントの指定がある？
-            var entry = string.IsNullOrEmpty(this.Model.Entry) ?
-                null :
-                this.Model.Subroutines.FirstOrDefault(x =>
-                    x.Enabled.GetValueOrDefault() &&
-                    string.Equals(
-                        x.Name,
-                        this.Model.Entry,
-                        StringComparison.OrdinalIgnoreCase));
-
-            // entryサブルーチンをロードする
-            var srcs = entry?.Activities ?? this.Model.Activities;
-            foreach (var src in srcs
-                .Where(x => x.Enabled.GetValueOrDefault()))
+            using (this.Model.DeferRefresh())
             {
-                var act = src.Clone();
-                act.Init(seq++);
-                acts.Add(act);
+                this.CurrentTime = TimeSpan.Zero;
+                TimelineActivityModel.CurrentTime = TimeSpan.Zero;
+                this.ClearActivity();
+
+                // 初期化する
+                TimelineManager.Instance.InitElements(this.Model);
+
+                var acts = new List<TimelineActivityModel>();
+                int seq = 1;
+
+                // entryポイントの指定がある？
+                var entry = string.IsNullOrEmpty(this.Model.Entry) ?
+                    null :
+                    this.Model.Subroutines.FirstOrDefault(x =>
+                        x.Enabled.GetValueOrDefault() &&
+                        string.Equals(
+                            x.Name,
+                            this.Model.Entry,
+                            StringComparison.OrdinalIgnoreCase));
+
+                // entryサブルーチンをロードする
+                var srcs = entry?.Activities ?? this.Model.Activities;
+                foreach (var src in srcs
+                    .Where(x => x.Enabled.GetValueOrDefault()))
+                {
+                    var act = src.Clone();
+                    act.Init(seq++);
+                    acts.Add(act);
+                }
+
+                // 一括して登録する
+                this.AddRangeActivity(acts);
+
+                // toHideリストを初期化する
+                TimelineVisualNoticeModel.ClearSyncToHideList();
+                TimelineImageNoticeModel.ClearSyncToHideList();
+
+                // タイムライン制御フラグを初期化する
+                TimelineExpressionsModel.Clear();
+
+                // 表示設定を更新しておく
+                this.RefreshActivityLineVisibility();
             }
-
-            // 一括して登録する
-            this.AddRangeActivity(acts);
-
-            // toHideリストを初期化する
-            TimelineVisualNoticeModel.ClearSyncToHideList();
-            TimelineImageNoticeModel.ClearSyncToHideList();
-
-            // タイムライン制御フラグを初期化する
-            TimelineExpressionsModel.Clear();
-
-            // 表示設定を更新しておく
-            this.RefreshActivityLineVisibility();
         }
 
         #region Activityライン捌き
@@ -486,13 +490,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return false;
                 }
 
-                try
+                // 差し込まれる次のシーケンスを取得する
+                var nextSeq = currnetSeq + 1;
+
+                using (this.Model.DeferRefresh())
                 {
-                    this.Model.StopLive();
-
-                    // 差し込まれる次のシーケンスを取得する
-                    var nextSeq = currnetSeq + 1;
-
                     // 差し込まれる後のActivityのシーケンスを振り直す
                     var seq = nextSeq + acts.Count();
                     foreach (var item in this.ActivityLine.Where(x =>
@@ -511,10 +513,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
 
                     this.ActivityLine.AddRange(toInsert);
-                }
-                finally
-                {
-                    this.Model.ResumeLive();
                 }
 
                 return true;
@@ -551,10 +549,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (targetAct != null)
                 {
-                    try
+                    using (this.Model.DeferRefresh())
                     {
-                        this.Model.StopLive();
-
                         // ジャンプ後のアクティビティを初期化する
                         foreach (var item in this.ActivityLine.Where(x =>
                             x.IsDone &&
@@ -564,10 +560,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
 
                         this.CurrentTime = targetAct.Time;
-                    }
-                    finally
-                    {
-                        this.Model.ResumeLive();
                     }
 
                     return true;
@@ -600,10 +592,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return false;
                 }
 
-                try
+                using (this.Model.DeferRefresh())
                 {
-                    this.Model.StopLive();
-
                     // 差し込まれる次のシーケンスを取得する
                     var nextSeq = currnetSeq + 1;
 
@@ -620,10 +610,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
 
                     this.ActivityLine.AddRange(toInsert);
-                }
-                finally
-                {
-                    this.Model.ResumeLive();
                 }
 
                 return true;
@@ -680,10 +666,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            try
+            using (this.Model.DeferRefresh())
             {
-                this.Model.StopLive();
-
                 // truncateする？
                 if (load.IsTruncate)
                 {
@@ -717,10 +701,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 this.ActivityLine.AddRange(toInsert);
-            }
-            finally
-            {
-                this.Model.ResumeLive();
             }
         }
 
@@ -1615,7 +1595,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 GC.Collect();
 
                 this.LoadActivityLine();
-                this.Model.RefreshActivitiesView();
 
                 this.isRunning = false;
                 this.Status = TimelineStatus.Loaded;
@@ -1739,13 +1718,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (toDoneTop != null)
             {
-                foreach (var act in this.ActivityLine
-                    .Where(x =>
-                        !x.IsDone &&
-                        x.Seq <= toDoneTop.Seq))
+                using (this.Model.DeferRefresh())
                 {
-                    act.IsDone = true;
-                    act.SetExpressions();
+                    foreach (var act in this.ActivityLine
+                        .Where(x =>
+                            !x.IsDone &&
+                            x.Seq <= toDoneTop.Seq))
+                    {
+                        act.IsDone = true;
+                        act.SetExpressions();
+                    }
                 }
             }
 
@@ -1774,10 +1756,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
             }
 
-            // 表示を更新する
-            if (this.RefreshActivityLineVisibility())
+            using (this.Model.DeferRefresh())
             {
-                this.Model.RefreshActivitiesView();
+                // 表示を更新する
+                this.RefreshActivityLineVisibility();
             }
         }
 
@@ -1947,21 +1929,36 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return;
                 }
 
+                var refreshHandler = default(IDisposable);
                 var exists = false;
-                while (NotifyQueue.TryDequeue(out TimelineBase element))
+
+                try
                 {
-                    switch (element)
+                    WPFHelper.Invoke(
+                        () => refreshHandler = TimelineNoticeOverlay.DeferRefresh(),
+                        DispatcherPriority.Normal);
+
+                    while (NotifyQueue.TryDequeue(out TimelineBase element))
                     {
-                        case TimelineActivityModel act:
-                            this.NotifyActivity(act);
-                            break;
+                        switch (element)
+                        {
+                            case TimelineActivityModel act:
+                                this.NotifyActivity(act);
+                                break;
 
-                        case TimelineTriggerModel tri:
-                            this.NotifyTrigger(tri);
-                            break;
+                            case TimelineTriggerModel tri:
+                                this.NotifyTrigger(tri);
+                                break;
+                        }
+
+                        exists = true;
                     }
-
-                    exists = true;
+                }
+                finally
+                {
+                    WPFHelper.Invoke(
+                        () => refreshHandler?.Dispose(),
+                        DispatcherPriority.Background);
                 }
 
                 if (exists)

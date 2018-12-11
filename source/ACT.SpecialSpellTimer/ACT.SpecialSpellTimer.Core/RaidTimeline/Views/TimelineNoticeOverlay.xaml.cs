@@ -121,6 +121,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
             });
         }
 
+        public static IDisposable DeferRefresh()
+            => NoticeView?.noticesSource.DeferRefresh();
+
         #endregion View
 
         private readonly TimelineVisualNoticeModel FirstNotice = new TimelineVisualNoticeModel()
