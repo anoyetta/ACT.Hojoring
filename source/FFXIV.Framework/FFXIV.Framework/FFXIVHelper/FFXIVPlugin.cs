@@ -1224,30 +1224,28 @@ namespace FFXIV.Framework.FFXIVHelper
 
             using (var st = asm.GetManifestResourceStream(resourcesName))
             {
-                if (st == null)
-                {
-                    return;
-                }
-
                 var newList = new Dictionary<int, Buff>();
 
-                using (var sr = new StreamReader(st))
+                if (st != null)
                 {
-                    while (!sr.EndOfStream)
+                    using (var sr = new StreamReader(st))
                     {
-                        var line = sr.ReadLine();
-                        if (!string.IsNullOrWhiteSpace(line))
+                        while (!sr.EndOfStream)
                         {
-                            var values = line.Split('|');
-                            if (values.Length >= 2)
+                            var line = sr.ReadLine();
+                            if (!string.IsNullOrWhiteSpace(line))
                             {
-                                var buff = new Buff()
+                                var values = line.Split('|');
+                                if (values.Length >= 2)
                                 {
-                                    ID = int.Parse(values[0], NumberStyles.HexNumber),
-                                    Name = values[1].Trim()
-                                };
+                                    var buff = new Buff()
+                                    {
+                                        ID = int.Parse(values[0], NumberStyles.HexNumber),
+                                        Name = values[1].Trim()
+                                    };
 
-                                newList.Add(buff.ID, buff);
+                                    newList.Add(buff.ID, buff);
+                                }
                             }
                         }
                     }
@@ -1277,30 +1275,28 @@ namespace FFXIV.Framework.FFXIVHelper
 
             using (var st = asm.GetManifestResourceStream(resourcesName))
             {
-                if (st == null)
-                {
-                    return;
-                }
-
                 var newList = new Dictionary<int, Skill>();
 
-                using (var sr = new StreamReader(st))
+                if (st != null)
                 {
-                    while (!sr.EndOfStream)
+                    using (var sr = new StreamReader(st))
                     {
-                        var line = sr.ReadLine();
-                        if (!string.IsNullOrWhiteSpace(line))
+                        while (!sr.EndOfStream)
                         {
-                            var values = line.Split('|');
-                            if (values.Length >= 2)
+                            var line = sr.ReadLine();
+                            if (!string.IsNullOrWhiteSpace(line))
                             {
-                                var skill = new Skill()
+                                var values = line.Split('|');
+                                if (values.Length >= 2)
                                 {
-                                    ID = int.Parse(values[0], NumberStyles.HexNumber),
-                                    Name = values[1].Trim()
-                                };
+                                    var skill = new Skill()
+                                    {
+                                        ID = int.Parse(values[0], NumberStyles.HexNumber),
+                                        Name = values[1].Trim()
+                                    };
 
-                                newList.Add(skill.ID, skill);
+                                    newList.Add(skill.ID, skill);
+                                }
                             }
                         }
                     }
@@ -1332,28 +1328,26 @@ namespace FFXIV.Framework.FFXIVHelper
 
             using (var st = asm.GetManifestResourceStream(resourcesName))
             {
-                if (st == null)
+                if (st != null)
                 {
-                    return;
-                }
-
-                using (var sr = new StreamReader(st))
-                {
-                    while (!sr.EndOfStream)
+                    using (var sr = new StreamReader(st))
                     {
-                        var line = sr.ReadLine();
-                        if (!string.IsNullOrWhiteSpace(line))
+                        while (!sr.EndOfStream)
                         {
-                            var values = line.Split('|');
-                            if (values.Length >= 2)
+                            var line = sr.ReadLine();
+                            if (!string.IsNullOrWhiteSpace(line))
                             {
-                                var zone = new Zone()
+                                var values = line.Split('|');
+                                if (values.Length >= 2)
                                 {
-                                    ID = int.Parse(values[0]),
-                                    Name = values[1].Trim()
-                                };
+                                    var zone = new Zone()
+                                    {
+                                        ID = int.Parse(values[0]),
+                                        Name = values[1].Trim()
+                                    };
 
-                                newList.Add(zone);
+                                    newList.Add(zone);
+                                }
                             }
                         }
                     }
@@ -1477,7 +1471,7 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             if (!this.isMergedSkillList)
             {
-                if (this.skillList.Any() &&
+                if (this.skillList != null &&
                     XIVDB.Instance.ActionList.Any())
                 {
                     foreach (var action in XIVDB.Instance.ActionList)
