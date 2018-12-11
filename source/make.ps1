@@ -60,9 +60,11 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     '●Hojoring.dll を削除する'
     Remove-Item -Force ACT.Hojoring.dll
 
+    <#
     Copy-Item -Recurse -Force -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\ -Exclude *.pdb
     Remove-Item -Recurse .\tools\XIVDBDownloader\*.config
     Remove-Item -Recurse .\tools\XIVDBDownloader\resources
+    #>
     Remove-Item -Recurse * -Include *.pdb
 
     '●不要なロケールを削除する'
@@ -119,7 +121,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     
     '●TTSYukkuri のAssemblyをマージする'
     $libs = @(
-#        "DSharpPlus*.dll",
+        #        "DSharpPlus*.dll",
         "Discord.*.dll",
         "RucheHome*.dll"
     )
