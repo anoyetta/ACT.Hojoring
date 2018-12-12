@@ -56,7 +56,7 @@
 
   <Grid
     Margin="15"
-    Visibility="{Binding Config.HPBarVisible, Converter={StaticResource BoolToHiddenConverter}}">
+    Visibility="{Binding Config.HPBarVisible, Converter={StaticResource BoolToHiddenConverter}, Mode=OneWay}">
 
     <!-- HP Bar -->
     <ctrl:RichProgressBar
@@ -65,8 +65,8 @@
       VerticalAlignment="Center"
       Height="{Binding Config.ProgressBar.Height, Mode=OneWay}"
       Width="{Binding Config.ProgressBar.Width, Mode=OneWay}"
-      Fill="{Binding ProgressBarForeColor, Converter={StaticResource ColorToBrushConverter}}"
-      Stroke="{Binding ProgressBarOutlineColor, Converter={StaticResource ColorToBrushConverter}}"
+      Fill="{Binding ProgressBarForeColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+      Stroke="{Binding ProgressBarOutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
       IsStrokeBackground="False" />
 
     <!-- HP Text -->
@@ -74,7 +74,7 @@
       Margin="0 0 20 0"
       VerticalAlignment="Center"
       HorizontalAlignment="Right"
-      Visibility="{Binding Path=Config.IsHPValueOnHPBar, Converter={StaticResource BoolToVisibilityConverter}}">
+      Visibility="{Binding Path=Config.IsHPValueOnHPBar, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
 
       <StackPanel
         Orientation="Horizontal">
