@@ -228,8 +228,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
             this.noticesSource = new CollectionViewSource()
             {
                 Source = this.noticeList,
-                IsLiveFilteringRequested = this.Config.IsTimelineLiveUpdate,
-                IsLiveSortingRequested = this.Config.IsTimelineLiveUpdate,
+                IsLiveFilteringRequested = true,
+                IsLiveSortingRequested = true,
             };
 
             this.noticesSource.Filter += (x, y) =>

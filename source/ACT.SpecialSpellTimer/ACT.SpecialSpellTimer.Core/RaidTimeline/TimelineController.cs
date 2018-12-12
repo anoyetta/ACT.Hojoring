@@ -1942,8 +1942,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 NotifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
 
-                TimelineNoticeOverlay.NoticeView?.RefreshNotices();
-
                 if (NotifyQueue.IsEmpty)
                 {
                     return;
