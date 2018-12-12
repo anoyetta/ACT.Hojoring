@@ -1,12 +1,3 @@
-using ACT.SpecialSpellTimer.Config;
-using ACT.SpecialSpellTimer.RaidTimeline.Views;
-using ACT.SpecialSpellTimer.Sound;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Bridge;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
-using Prism.Mvvm;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,6 +8,15 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using ACT.SpecialSpellTimer.Config;
+using ACT.SpecialSpellTimer.RaidTimeline.Views;
+using ACT.SpecialSpellTimer.Sound;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.FFXIVHelper;
+using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -1941,6 +1941,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 NotifyWorker.Interval = TimelineSettings.Instance.NotifyInterval;
+
+                TimelineNoticeOverlay.NoticeView?.RefreshNotices();
 
                 if (NotifyQueue.IsEmpty)
                 {
