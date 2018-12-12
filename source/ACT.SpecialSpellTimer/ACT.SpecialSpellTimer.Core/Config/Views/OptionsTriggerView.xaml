@@ -77,7 +77,7 @@
     <xctk:DoubleUpDown Value="{Binding Config.WaitingTimeToSyncTTS, Mode=TwoWay}" MinWidth="75" FormatString="F0" Maximum="1000" Minimum="20" />
 
     <CheckBox Margin="0 20 0 0" Content="{DynamicResource Options_EnabledPartyPlaceholder}" IsChecked="{Binding Config.EnabledPartyMemberPlaceholder, Mode=TwoWay}" />
-    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledNotifyDefaultSpellTimer}" IsChecked="{Binding Config.NotifyNormalSpellTimerPrefix, Mode=TwoWay}" />
+    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledNotifyDefaultSpellTimer}" IsChecked="{Binding Config.EnabledNotifyNormalSpellTimer, Mode=TwoWay}" />
     <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledSimplyRegex}" IsChecked="{Binding Config.SimpleRegex, Mode=TwoWay}" />
     <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledRemoveTooltipSymbol}" IsChecked="{Binding Config.RemoveTooltipSymbols, Mode=TwoWay}" />
     <!--

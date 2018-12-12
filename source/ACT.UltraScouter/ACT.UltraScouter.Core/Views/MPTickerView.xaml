@@ -27,7 +27,7 @@
   Left="{Binding Path=Config.Location.X, Mode=TwoWay}"
   Top="{Binding Path=Config.Location.Y, Mode=TwoWay}"
   d:DataContext="{d:DesignInstance Type=vm:MPTickerViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  DataContext="{x:Type vm:MPTickerViewModel}">
 
   <Window.Resources>
     <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />
