@@ -19,6 +19,7 @@
   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
   d:DataContext="{d:DesignInstance Type=vm:SpellPanelConfigViewModel, IsDesignTimeCreatable=True}"
+  DataContext="{x:Type vm:SpellPanelConfigViewModel}"
   d:DesignWidth="800"
   Background="White"
   FontFamily="{DynamicResource UIFont}"
