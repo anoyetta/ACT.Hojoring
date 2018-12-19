@@ -55,6 +55,11 @@
         Margin="0 5 0 0"
         Content="{DynamicResource MobList_VisibleMePosition}"
         IsChecked="{Binding MobList.VisibleMe, Mode=TwoWay}" />
+      
+      <CheckBox
+        Margin="0 5 0 0"
+        Content="{DynamicResource MobList_UngroupSameNameMobs}"
+        IsChecked="{Binding MobList.UngroupSameNameMobs, Mode=TwoWay}" />
 
       <CheckBox
         Margin="0 5 0 0"
