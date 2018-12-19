@@ -110,6 +110,16 @@ namespace ACT.UltraScouter.Config
             get => this.visibleMe;
             set => this.SetProperty(ref this.visibleMe, value);
         }
+ 
+        /// <summary>
+        /// 同名のモブを個別表示するか？
+        /// </summary>
+        [DataMember]
+        public bool UngroupSameNameMobs
+        {
+            get => this.ungroupSameNameMobs;
+            set => this.SetProperty(ref this.ungroupSameNameMobs, value);
+        }
 
         /// <summary>
         /// 方向の基準
