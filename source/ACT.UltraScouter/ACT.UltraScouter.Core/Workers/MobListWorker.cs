@@ -320,7 +320,7 @@ namespace ACT.UltraScouter.Workers
                 if (Settings.Instance.MobList.UngroupSameNameMobs)
                 {
                     moblist = (
-                        from x in this.targetMobList.OrderBy(y => y.Distance)).ToList();     
+                        this.targetMobList.OrderBy(y => y.Distance)).ToList();     
                 }
                 else
                 {
