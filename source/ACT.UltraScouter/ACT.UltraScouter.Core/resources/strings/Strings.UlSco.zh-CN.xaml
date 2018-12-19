@@ -80,6 +80,7 @@
 
   <system:String x:Key="MobList_VisibleMePosition">显示玩家位置</system:String>
   <system:String x:Key="MobList_SimpleView">简单显示</system:String>
+  <system:String x:Key="MobList_UngroupSameNameMobs">Ungroup same name mobs</system:String>
   <system:String x:Key="MobList_VisibleZPosition">显示Z轴位置</system:String>
   <system:String x:Key="MobList_DirectionOrigin">方向显示</system:String>
   <system:String x:Key="MobList_DirectionAdjustmentAngle">箭头指向基准角度</system:String>
