@@ -80,6 +80,7 @@
 
   <system:String x:Key="MobList_VisibleMePosition">自分の座標を表示する</system:String>
   <system:String x:Key="MobList_SimpleView">シンプル表示にする</system:String>
+  <system:String x:Key="MobList_UngroupSameNameMobs">同名のモブを個別表示</system:String>
   <system:String x:Key="MobList_VisibleZPosition">Z軸を表示する</system:String>
   <system:String x:Key="MobList_DirectionOrigin">方向表示の基準</system:String>
   <system:String x:Key="MobList_DirectionAdjustmentAngle">方向の補正角度</system:String>
