@@ -80,6 +80,7 @@
 
   <system:String x:Key="MobList_VisibleMePosition">Visible Me position</system:String>
   <system:String x:Key="MobList_SimpleView">Simple View</system:String>
+  <system:String x:Key="MobList_UngroupSameNameMobs">Ungroup same name mobs</system:String>
   <system:String x:Key="MobList_VisibleZPosition">Visible Z position</system:String>
   <system:String x:Key="MobList_DirectionOrigin">Origin of Direction</system:String>
   <system:String x:Key="MobList_DirectionAdjustmentAngle">Direction adjustment angle</system:String>
