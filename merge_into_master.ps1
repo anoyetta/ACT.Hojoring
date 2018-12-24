@@ -10,6 +10,9 @@ $buidno = (Get-Date).ToString("yyMMdd.HHmm")
 $tag = ($version + "-" + $buidno)
 Write-Output ("-> " + $tag + " merge and tag")
 
+'-> commit'
+git commit -a -m ("release " + $tag)
+
 '-> checkout master'
 git checkout master
 
@@ -19,5 +22,6 @@ git merge develop -m ("Merge branch develop " + $tag)
 Write-Output ("-> tag " + $tag)
 git tag $tag
 
+git checkout develop
 '<- done!'
 pause
