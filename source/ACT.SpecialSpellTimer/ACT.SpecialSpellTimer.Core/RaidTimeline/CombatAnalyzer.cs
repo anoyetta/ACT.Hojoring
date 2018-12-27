@@ -1099,7 +1099,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         time.Second,
                         time.Millisecond);
 
-                    this.AnalyzeLogLine(new XIVLog(detectTime.Date, log));
+                    this.AnalyzeLogLine(new XIVLog(detectTime, log));
                 }
 
                 var startCombat = this.CurrentCombatLogList.FirstOrDefault(x => x.Raw.Contains(ConstantKeywords.CombatStartNow));
