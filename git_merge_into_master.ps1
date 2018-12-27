@@ -17,7 +17,7 @@ git commit -a -m ("release " + $tag)
 git checkout master
 
 '-> merge develop into master'
-git merge develop -m ("Merge branch develop " + $tag)
+git merge develop -m ("Merge branch develop " + $tag) --no-ff
 
 Write-Output ("-> tag " + $tag)
 git tag $tag
