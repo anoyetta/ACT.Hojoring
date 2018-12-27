@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -11,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Utility;
-using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
@@ -47,11 +45,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             this.CurrentCombatLogList = new ObservableCollection<CombatLog>();
             BindingOperations.EnableCollectionSynchronization(this.CurrentCombatLogList, new object());
         }
-
-        /// <summary>
-        /// ログ一時バッファ
-        /// </summary>
-        private readonly ConcurrentQueue<LogLineEventArgs> logInfoQueue = new ConcurrentQueue<LogLineEventArgs>();
 
         /// <summary>
         /// ログのID
@@ -90,9 +83,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (Settings.Default.AutoCombatLogAnalyze)
             {
+                this.GetLogs = XIVLogBuffer.Instance.Subscribe(
+                    this,
+                    this.IsIgnoreLog,
+                    LogBuffer.RemoveTooltipSynbols);
+
                 this.StartPoller();
-                ActGlobals.oFormActMain.OnLogLineRead -= this.FormActMain_OnLogLineRead;
-                ActGlobals.oFormActMain.OnLogLineRead += this.FormActMain_OnLogLineRead;
                 Logger.Write("Start Timeline Analyze.");
             }
         }
@@ -102,7 +98,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         public void End()
         {
-            ActGlobals.oFormActMain.OnLogLineRead -= this.FormActMain_OnLogLineRead;
+            this.GetLogs = null;
+            XIVLogBuffer.Instance.Unsubscribe(this);
 
             this.EndPoller();
             this.ClearLogBuffer();
@@ -114,7 +111,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         private void StartPoller()
         {
-            this.ClearLogInfoQueue();
             this.inCombat = false;
 
             lock (this)
@@ -144,8 +140,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.storeLogWorker?.Abort();
                 this.storeLogWorker = null;
             }
-
-            this.ClearLogInfoQueue();
         }
 
         /// <summary>
@@ -155,46 +149,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (this.CurrentCombatLogList)
             {
-                this.ClearLogInfoQueue();
                 this.CurrentCombatLogList.Clear();
                 this.ActorHPRate.Clear();
-            }
-        }
-
-        /// <summary>
-        /// ログキューを消去する
-        /// </summary>
-        private void ClearLogInfoQueue()
-        {
-            while (this.logInfoQueue.TryDequeue(out LogLineEventArgs l))
-            {
-            }
-        }
-
-        /// <summary>
-        /// ログを1行読取った
-        /// </summary>
-        /// <param name="isImport">Importか？</param>
-        /// <param name="logInfo">ログ情報</param>
-        private void FormActMain_OnLogLineRead(
-            bool isImport,
-            LogLineEventArgs logInfo)
-        {
-            try
-            {
-                if (!Settings.Default.AutoCombatLogAnalyze)
-                {
-                    return;
-                }
-
-                // キューに貯める
-                this.logInfoQueue.Enqueue(logInfo);
-            }
-            catch (Exception ex)
-            {
-                Logger.Write(
-                    "catch exception at Timeline Analyzer OnLogLineRead.",
-                    ex);
             }
         }
 
@@ -332,81 +288,63 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private long no;
         private bool isImporting;
 
+        private Func<IEnumerable<XIVLog>> GetLogs;
+
+        private bool IsIgnoreLog(
+            string line)
+        {
+            var ignores = TimelineSettings.Instance.IgnoreLogTypes.Where(x => x.IsIgnore);
+            if (ignores.Any(x => line.Contains(x.Keyword)))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// ログを格納するスレッド
         /// </summary>
         private void StoreLogPoller()
         {
-            if (this.logInfoQueue.IsEmpty)
+            var existsLog = false;
+
+            if (this.GetLogs != null)
             {
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-                return;
+                foreach (var log in this.GetLogs())
+                {
+                    existsLog = true;
+                    this.AnalyzeLogLine(log);
+                    Thread.Yield();
+                }
             }
 
-            var preLog = new string[3];
-            var preLogIndex = 0;
-            var ignores = TimelineSettings.Instance.IgnoreLogTypes.Where(x => x.IsIgnore);
-
-            var logs = new List<LogLineEventArgs>(this.logInfoQueue.Count);
-
-            while (this.logInfoQueue.TryDequeue(out LogLineEventArgs log))
+            if (!existsLog)
             {
-                // 直前とまったく同じ行はカットする
-                if (preLog[0] == log.logLine ||
-                    preLog[1] == log.logLine ||
-                    preLog[2] == log.logLine)
-                {
-                    continue;
-                }
-
-                preLog[preLogIndex++] = log.logLine;
-                if (preLogIndex >= 3)
-                {
-                    preLogIndex = 0;
-                }
-
-                // 無効なログ？
-                if (ignores.Any(x => log.logLine.Contains(x.Keyword)))
-                {
-                    continue;
-                }
-
-                logs.Add(log);
-            }
-
-            foreach (var log in logs)
-            {
-                // ダメージ系の不要なログか？
-                if (LogBuffer.IsDamageLog(log.logLine))
-                {
-                    continue;
-                }
-
-                this.AnalyzeLogLine(log);
-                Thread.Yield();
+                Thread.Sleep(1000);
             }
         }
 
         /// <summary>
         /// ログ行を分析する
         /// </summary>
-        /// <param name="logLine">ログ行</param>
+        /// <param name="xivLog">ログ行</param>
         private void AnalyzeLogLine(
-            LogLineEventArgs logLine)
+            XIVLog xivLog)
         {
-            if (logLine == null)
+            if (xivLog == null)
             {
                 return;
             }
 
             // ログを分類する
-            var category = analyzeLogLine(logLine.logLine, ConstantKeywords.Keywords);
+            var category = analyzeLogLine(xivLog.LogLine, ConstantKeywords.Keywords);
             switch (category)
             {
                 case KewordTypes.Record:
                     if (this.inCombat)
                     {
-                        this.StoreRecordLog(logLine);
+                        this.StoreRecordLog(xivLog);
                     }
                     break;
 
@@ -416,7 +354,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 case KewordTypes.Cast:
                     if (this.inCombat)
                     {
-                        this.StoreCastLog(logLine);
+                        this.StoreCastLog(xivLog);
                     }
                     break;
 
@@ -433,35 +371,35 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 case KewordTypes.Action:
                     if (this.inCombat)
                     {
-                        this.StoreActionLog(logLine);
+                        this.StoreActionLog(xivLog);
                     }
                     break;
 
                 case KewordTypes.Effect:
                     if (this.inCombat)
                     {
-                        this.StoreEffectLog(logLine);
+                        this.StoreEffectLog(xivLog);
                     }
                     break;
 
                 case KewordTypes.Marker:
                     if (this.inCombat)
                     {
-                        this.StoreMarkerLog(logLine);
+                        this.StoreMarkerLog(xivLog);
                     }
                     break;
 
                 case KewordTypes.HPRate:
                     if (this.inCombat)
                     {
-                        this.StoreHPRateLog(logLine);
+                        this.StoreHPRateLog(xivLog);
                     }
                     break;
 
                 case KewordTypes.Added:
                     if (this.inCombat)
                     {
-                        this.StoreAddedLog(logLine);
+                        this.StoreAddedLog(xivLog);
                     }
                     break;
 
@@ -469,24 +407,24 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 case KewordTypes.NetworkAOEAbility:
                     if (this.inCombat)
                     {
-                        this.StoreNewwork(logLine, category);
+                        this.StoreNewwork(xivLog, category);
                     }
                     break;
 
                 case KewordTypes.Dialogue:
                     if (this.inCombat)
                     {
-                        this.StoreDialog(logLine);
+                        this.StoreDialog(xivLog);
                     }
                     break;
 
                 case KewordTypes.Start:
-                    this.StartCombat(logLine);
+                    this.StartCombat(xivLog);
                     break;
 
                 case KewordTypes.End:
                 case KewordTypes.AnalyzeEnd:
-                    this.EndCombat(logLine);
+                    this.EndCombat(xivLog);
                     break;
 
                 default:
@@ -514,7 +452,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <param name="logLine">
         /// 対象のログ行</param>
         private void StartCombat(
-            LogLineEventArgs logLine = null)
+            XIVLog xivLog = null)
         {
             lock (this.CurrentCombatLogList)
             {
@@ -538,7 +476,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.inCombat = true;
             }
 
-            this.StoreStartCombat(logLine);
+            this.StoreStartCombat(xivLog);
         }
 
         /// <summary>
@@ -547,7 +485,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <param name="logLine">
         /// 対象のログ行</param>
         private void EndCombat(
-            LogLineEventArgs logLine = null)
+            XIVLog xivLog = null)
         {
             lock (this.CurrentCombatLogList)
             {
@@ -555,9 +493,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     this.inCombat = false;
 
-                    if (logLine != null)
+                    if (xivLog != null)
                     {
-                        this.StoreEndCombat(logLine);
+                        this.StoreEndCombat(xivLog);
                     }
 
                     this.AutoSaveToSpreadsheetAsync();
@@ -575,9 +513,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <param name="logLine">ログイベント引数</param>
         private void StoreLog(
             CombatLog log,
-            LogLineEventArgs logLine)
+            XIVLog xivLog)
         {
-            var zone = logLine.detectedZone;
+            var zone = xivLog.ZoneName;
             zone = string.IsNullOrEmpty(zone) ?
                 "UNKNOWN" :
                 zone;
@@ -628,16 +566,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="logInfo">ログ情報</param>
         private void StoreRecordLog(
-            LogLineEventArgs logInfo)
+            XIVLog xivLog)
         {
             var log = new CombatLog()
             {
-                TimeStamp = logInfo.detectedTime,
-                Raw = logInfo.logLine,
+                TimeStamp = xivLog.DetectTime,
+                Raw = xivLog.LogLine,
                 LogType = LogTypes.Unknown
             };
 
-            this.StoreLog(log, logInfo);
+            this.StoreLog(log, xivLog);
         }
 
         /// <summary>
@@ -645,9 +583,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="logInfo">ログ情報</param>
         private void StoreActionLog(
-            LogLineEventArgs logInfo)
+            XIVLog xivLog)
         {
-            var match = ConstantKeywords.ActionRegex.Match(logInfo.logLine);
+            var match = ConstantKeywords.ActionRegex.Match(xivLog.LogLine);
             if (!match.Success)
             {
                 return;
@@ -655,8 +593,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var log = new CombatLog()
             {
-                TimeStamp = logInfo.detectedTime,
-                Raw = logInfo.logLine,
+                TimeStamp = xivLog.DetectTime,
+                Raw = xivLog.LogLine,
                 Actor = match.Groups["actor"].ToString(),
                 Activity = $"{match.Groups["skill"].ToString()}",
                 Skill = match.Groups["skill"].ToString(),
@@ -668,7 +606,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (this.ToStoreActor(log.Actor))
             {
-                this.StoreLog(log, logInfo);
+                this.StoreLog(log, xivLog);
             }
         }
 
@@ -677,9 +615,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="logInfo">ログ情報</param>
         private void StoreAddedLog(
-            LogLineEventArgs logInfo)
+            XIVLog xivLog)
         {
-            var match = ConstantKeywords.AddedRegex.Match(logInfo.logLine);
+            var match = ConstantKeywords.AddedRegex.Match(xivLog.LogLine);
             if (!match.Success)
             {
                 return;
@@ -687,8 +625,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var log = new CombatLog()
             {
-                TimeStamp = logInfo.detectedTime,
-                Raw = logInfo.logLine,
+                TimeStamp = xivLog.DetectTime,
+                Raw = xivLog.LogLine,
                 Actor = match.Groups["actor"].ToString(),
                 Activity = $"Added",
                 LogType = LogTypes.Added,
@@ -699,7 +637,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (this.ToStoreActor(log.Actor))
             {
-                this.StoreLog(log, logInfo);
+                this.StoreLog(log, xivLog);
             }
         }
 
@@ -708,12 +646,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="logInfo">ログ情報</param>
         private void StoreCastLog(
-            LogLineEventArgs logInfo)
+            XIVLog xivLog)
         {
-            var match = ConstantKeywords.CastRegex.Match(logInfo.logLine);
+            var match = ConstantKeywords.CastRegex.Match(xivLog.LogLine);
             if (!match.Success)
             {
-                match = ConstantKeywords.StartsUsingRegex.Match(logInfo.logLine);
+                match = ConstantKeywords.StartsUsingRegex.Match(xivLog.LogLine);
                 if (!match.Success)
                 {
                     return;
@@ -722,8 +660,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var log = new CombatLog()
             {
-                TimeStamp = logInfo.detectedTime,
-                Raw = logInfo.logLine,
+                TimeStamp = xivLog.DetectTime,
+                Raw = xivLog.LogLine,
                 Actor = match.Groups["actor"].ToString(),
                 Activity = $"{match.Groups["skill"].ToString()} Start",
                 Skill = match.Groups["skill"].ToString(),
@@ -735,7 +673,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (this.ToStoreActor(log.Actor))
             {
-                this.StoreLog(log, logInfo);
+                this.StoreLog(log, xivLog);
             }
         }
 
@@ -744,9 +682,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="logInfo">ログ情報</param>
         private void StoreCastStartsUsingLog(
-            LogLineEventArgs logInfo)
+            XIVLog xivLog)
         {
-            var match = ConstantKeywords.StartsUsingRegex.Match(logInfo.logLine);
+            var match = ConstantKeywords.StartsUsingRegex.Match(xivLog.LogLine);
             if (!match.Success)
             {
                 return;
@@ -754,8 +692,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var log = new CombatLog()
             {
-                TimeStamp = logInfo.detectedTime,
-                Raw = logInfo.logLine,
+                TimeStamp = xivLog.DetectTime,
+                Raw = xivLog.LogLine,
                 Actor = match.Groups["actor"].ToString(),
                 Activity = $"starts using {match.Groups["skill"].ToString()}",
                 Skill = match.Groups["skill"].ToString(),
@@ -767,7 +705,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (this.ToStoreActor(log.Actor))
             {
-                this.StoreLog(log, logInfo);
+                this.StoreLog(log, xivLog);
             }
         }
 
@@ -776,9 +714,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="logInfo">ログ情報</param>
         private void StoreEffectLog(
-            LogLineEventArgs logInfo)
+            XIVLog xivLog)
         {
-            var match = ConstantKeywords.EffectRegex.Match(logInfo.logLine);
+            var match = ConstantKeywords.EffectRegex.Match(xivLog.LogLine);
             if (!match.Success)
             {
                 return;
@@ -793,8 +731,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var log = new CombatLog()
             {
-                TimeStamp = logInfo.detectedTime,
-                Raw = logInfo.logLine
+                TimeStamp = xivLog.DetectTime,
+                Raw = xivLog.LogLine
                     .Replace(victim, victimJobName),
                 Actor = actor,
                 Activity = $"effect {effect}",
@@ -808,7 +746,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 if (this.ToStoreActor(log.Actor))
                 {
-                    this.StoreLog(log, logInfo);
+                    this.StoreLog(log, xivLog);
                 }
             }
         }
@@ -821,11 +759,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="logInfo">ログ情報</param>
         private void StoreMarkerLog(
-            LogLineEventArgs logInfo)
+            XIVLog xivLog)
         {
             var log = default(CombatLog);
 
-            var match = ConstantKeywords.MarkerRegex.Match(logInfo.logLine);
+            var match = ConstantKeywords.MarkerRegex.Match(xivLog.LogLine);
             if (match.Success)
             {
                 // ログなしマーカ
@@ -835,8 +773,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 log = new CombatLog()
                 {
-                    TimeStamp = logInfo.detectedTime,
-                    Raw = logInfo.logLine
+                    TimeStamp = xivLog.DetectTime,
+                    Raw = xivLog.LogLine
                         .Replace(id, PCIDPlaceholder)
                         .Replace(target, targetJobName),
                     Activity = $"Marker:{match.Groups["type"].ToString()}",
@@ -846,7 +784,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             else
             {
                 // マーキング
-                match = ConstantKeywords.MarkingRegex.Match(logInfo.logLine);
+                match = ConstantKeywords.MarkingRegex.Match(xivLog.LogLine);
                 if (!match.Success)
                 {
                     return;
@@ -857,8 +795,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 log = new CombatLog()
                 {
-                    TimeStamp = logInfo.detectedTime,
-                    Raw = logInfo.logLine
+                    TimeStamp = xivLog.DetectTime,
+                    Raw = xivLog.LogLine
                         .Replace(target, targetJobName),
                     Activity = $"Marking",
                     LogType = LogTypes.Marker
@@ -872,7 +810,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (this.ToStoreActor(log.Actor))
                 {
-                    this.StoreLog(log, logInfo);
+                    this.StoreLog(log, xivLog);
                 }
             }
         }
@@ -894,12 +832,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <param name="logInfo">ログ情報</param>
         /// <param name="keywordType">キーワードのタイプ</param>
         private void StoreNewwork(
-            LogLineEventArgs logInfo,
+            XIVLog xivLog,
             KewordTypes keywordType)
         {
             var log = default(CombatLog);
 
-            var targetLogLine = logInfo.logLine.Substring(15);
+            var targetLogLine = xivLog.LogLine.Substring(15);
             var match = keywordType == KewordTypes.NetworkAbility ?
                 ConstantKeywords.NetworkAbility.Match(targetLogLine) :
                 ConstantKeywords.NetworkAOEAbility.Match(targetLogLine);
@@ -919,7 +857,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return;
                 }
 
-                var raw = logInfo.logLine.Substring(0, 15) + match.Value;
+                var raw = xivLog.LogLine.Substring(0, 15) + match.Value;
                 raw = raw
                     .Replace(actorID, ActorIDPlaceholder)
                     .Replace(victimID, PCIDPlaceholder);
@@ -931,7 +869,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 log = new CombatLog()
                 {
-                    TimeStamp = logInfo.detectedTime,
+                    TimeStamp = xivLog.DetectTime,
                     Raw = raw,
                     Actor = actor,
                     Skill = action,
@@ -961,7 +899,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 log.Text = log.Activity;
                 log.SyncKeyword = log.RawWithoutTimestamp;
 
-                this.StoreLog(log, logInfo);
+                this.StoreLog(log, xivLog);
             }
         }
 
@@ -970,9 +908,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="logInfo">ログ情報</param>
         private void StoreHPRateLog(
-            LogLineEventArgs logInfo)
+            XIVLog xivLog)
         {
-            var match = ConstantKeywords.HPRateRegex.Match(logInfo.logLine);
+            var match = ConstantKeywords.HPRateRegex.Match(xivLog.LogLine);
             if (!match.Success)
             {
                 return;
@@ -997,9 +935,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="logInfo">ログ情報</param>
         private void StoreDialog(
-            LogLineEventArgs logInfo)
+            XIVLog xivLog)
         {
-            var match = ConstantKeywords.DialogRegex.Match(logInfo.logLine);
+            var match = ConstantKeywords.DialogRegex.Match(xivLog.LogLine);
             if (!match.Success)
             {
                 return;
@@ -1007,12 +945,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var dialog = match.Groups["dialog"].ToString();
 
-            var isSystem = logInfo.logLine.Contains(":0839");
+            var isSystem = xivLog.LogLine.Contains(":0839");
 
             var log = new CombatLog()
             {
-                TimeStamp = logInfo.detectedTime,
-                Raw = logInfo.logLine,
+                TimeStamp = xivLog.DetectTime,
+                Raw = xivLog.LogLine,
                 Actor = string.Empty,
                 Activity = isSystem ? "System" : "Dialog",
                 LogType = LogTypes.Dialog
@@ -1021,7 +959,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             log.Text = null;
             log.SyncKeyword = log.RawWithoutTimestamp.Substring(8);
 
-            this.StoreLog(log, logInfo);
+            this.StoreLog(log, xivLog);
         }
 
         /// <summary>
@@ -1029,9 +967,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="logInfo">ログ情報</param>
         private void StoreStartCombat(
-            LogLineEventArgs logInfo)
+            XIVLog xivLog)
         {
-            var match = ConstantKeywords.CombatStartRegex.Match(logInfo.logLine);
+            var match = ConstantKeywords.CombatStartRegex.Match(xivLog.LogLine);
             if (!match.Success)
             {
                 return;
@@ -1041,14 +979,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var log = new CombatLog()
             {
-                TimeStamp = logInfo.detectedTime,
-                Raw = logInfo.logLine,
+                TimeStamp = xivLog.DetectTime,
+                Raw = xivLog.LogLine,
                 Actor = string.Empty,
                 Activity = LogTypes.CombatStart.ToString(),
                 LogType = LogTypes.CombatStart
             };
 
-            this.StoreLog(log, logInfo);
+            this.StoreLog(log, xivLog);
         }
 
         /// <summary>
@@ -1056,9 +994,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="logInfo">ログ情報</param>
         private void StoreEndCombat(
-            LogLineEventArgs logInfo)
+            XIVLog xivLog)
         {
-            var match = ConstantKeywords.CombatEndRegex.Match(logInfo.logLine);
+            var match = ConstantKeywords.CombatEndRegex.Match(xivLog.LogLine);
             if (!match.Success)
             {
                 return;
@@ -1068,14 +1006,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var log = new CombatLog()
             {
-                TimeStamp = logInfo.detectedTime,
-                Raw = logInfo.logLine,
+                TimeStamp = xivLog.DetectTime,
+                Raw = xivLog.LogLine,
                 Actor = string.Empty,
                 Activity = LogTypes.CombatEnd.ToString(),
                 LogType = LogTypes.CombatEnd
             };
 
-            this.StoreLog(log, logInfo);
+            this.StoreLog(log, xivLog);
         }
 
         #endregion Store Log
@@ -1120,12 +1058,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.isImporting = true;
 
                 // 冒頭にインポートを示すログを発生させる
-                this.AnalyzeLogLine(new LogLineEventArgs(
-                    $"[00:00:00.000] {ConstantKeywords.ImportLog}",
-                    0,
-                    DateTime.Now,
-                    string.Empty,
-                    true));
+                this.AnalyzeLogLine(new XIVLog(DateTime.Now, $"[00:00:00.000] {ConstantKeywords.ImportLog}"));
 
                 var now = DateTime.Now;
 
@@ -1166,14 +1099,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         time.Second,
                         time.Millisecond);
 
-                    var arg = new LogLineEventArgs(
-                        log,
-                        0,
-                        detectTime,
-                        string.Empty,
-                        true);
-
-                    this.AnalyzeLogLine(arg);
+                    this.AnalyzeLogLine(new XIVLog(detectTime.Date, log));
                 }
 
                 var startCombat = this.CurrentCombatLogList.FirstOrDefault(x => x.Raw.Contains(ConstantKeywords.CombatStartNow));
@@ -1205,12 +1131,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.isImporting = true;
 
                 // 冒頭にインポートを示すログを発生させる
-                this.AnalyzeLogLine(new LogLineEventArgs(
-                    $"[00:00:00.000] {ConstantKeywords.ImportLog}",
-                    0,
-                    DateTime.Now,
-                    string.Empty,
-                    true));
+                this.AnalyzeLogLine(new XIVLog(DateTime.Now, $"[00:00:00.000] {ConstantKeywords.ImportLog}"));
 
                 // 各種初期化
                 this.inCombat = false;
@@ -1292,14 +1213,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         // タイムスタンプを付与し直す
                         log = $"[{detectTime.ToString("HH:mm:ss.fff")}] {log}";
 
-                        var arg = new LogLineEventArgs(
-                            log,
-                            0,
-                            detectTime,
-                            zone,
-                            true);
-
-                        this.AnalyzeLogLine(arg);
+                        this.AnalyzeLogLine(new XIVLog(detectTime, log));
                     }
                 }
 
