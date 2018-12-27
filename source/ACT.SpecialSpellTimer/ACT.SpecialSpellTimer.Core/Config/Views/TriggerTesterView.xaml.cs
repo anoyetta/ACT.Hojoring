@@ -384,7 +384,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                         string.Empty,
                         true);
 
-                    XIVLogBuffer.Instance.EnqueueLogLine(logInfo);
+                    PluginMainWorker.Instance.LogBuffer.LogInfoQueue.Enqueue(logInfo);
 
                     log.IsDone = true;
                     Thread.Yield();
@@ -412,7 +412,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 string.Empty,
                 true);
 
-            XIVLogBuffer.Instance.EnqueueLogLine(logInfo);
+            PluginMainWorker.Instance.LogBuffer.LogInfoQueue.Enqueue(logInfo);
 
             await WPFHelper.InvokeAsync(() =>
             {
