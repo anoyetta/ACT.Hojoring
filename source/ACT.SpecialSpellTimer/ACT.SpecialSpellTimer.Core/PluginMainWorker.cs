@@ -281,11 +281,7 @@ namespace ACT.SpecialSpellTimer
                     {
 #if !DEBUG
                         // importログの解析用にログを取り出しておく
-                        if (!this.LogBuffer.IsEmpty)
-                        {
-                            this.LogBuffer.GetLogLines();
-                        }
-
+                        this.LogBuffer.GetLogLines();
                         Thread.Sleep(TimeSpan.FromSeconds(3));
                         return;
 #endif
@@ -300,47 +296,35 @@ namespace ACT.SpecialSpellTimer
                 resetTask = Task.Run(() => this.ResetCountAtRestart());
             }
 
-            // ログがないなら抜ける
-            if (this.LogBuffer.IsEmpty)
-            {
-                resetTask?.Wait();
-                Thread.Sleep(TimeSpan.FromMilliseconds(Settings.Default.LogPollSleepInterval));
-                return;
-            }
 #if DEBUG
             var sw = System.Diagnostics.Stopwatch.StartNew();
 #endif
             // ログを取り出す
             // 0D: 残HP率 のログは判定から除外する
-            var logsTask = Task.Run(() => this.LogBuffer.GetLogLines());
+            var logs = this.LogBuffer.GetLogLines();
 
             // 有効なスペルとテロップのリストを取得する
             var triggers = TableCompiler.Instance.TriggerList;
             this.lastActiveTriggerCount = triggers.Count;
 
-            var logs = logsTask.Result;
-            if (logs.Count > 0)
+            if (triggers.Count > 0)
             {
-                if (triggers.Count > 0)
+                triggers.AsParallel().ForAll((trigger) =>
                 {
-                    triggers.AsParallel().ForAll((trigger) =>
+                    foreach (var log in logs)
                     {
-                        foreach (var log in logs)
-                        {
-                            trigger.MatchTrigger(log.Log);
-                        }
-                    });
-                }
-
-                existsLog = true;
+                        trigger.MatchTrigger(log.Log);
+                        existsLog = true;
+                    }
+                });
             }
 
 #if DEBUG
             sw.Stop();
-            if (logs.Count != 0)
+            if (logs.Any())
             {
                 var time = sw.ElapsedMilliseconds;
-                var count = logs.Count;
+                var count = logs.Count();
                 System.Diagnostics.Debug.WriteLine(
                     $"●DetectLogs\t{time:N1} ms\t{count:N0} lines\tavg {time / count:N2}");
             }

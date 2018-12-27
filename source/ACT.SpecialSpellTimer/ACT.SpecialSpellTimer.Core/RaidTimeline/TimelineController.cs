@@ -61,6 +61,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         #endregion Logger
 
         private static readonly object Locker = new object();
+        private static readonly object XIVLogListenerSymbol = new object();
 
         /// <summary>
         /// タイムラインから発生するログのSymbol
@@ -69,13 +70,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public static void Init()
         {
-            ActGlobals.oFormActMain.OnLogLineRead -= OnLogLineRead;
-            ActGlobals.oFormActMain.OnLogLineRead += OnLogLineRead;
+            GetLogs = XIVLogBuffer.Instance.Subscribe(
+                XIVLogListenerSymbol,
+                IsIgnoreLog,
+                (x) => LogBuffer.RemoveTooltipSynbols(x));
         }
 
         public static void Free()
         {
-            ActGlobals.oFormActMain.OnLogLineRead -= OnLogLineRead;
+            XIVLogBuffer.Free();
         }
 
         private static void OnLogLineRead(
@@ -728,6 +731,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region Log 関係のスレッド
 
+        private static Func<IEnumerable<XIVLog>> GetLogs;
         private ConcurrentQueue<LogLineEventArgs> logInfoQueue;
         private volatile bool isLogWorkerRunning = false;
 
@@ -816,14 +820,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         continue;
                     }
 
-                    var logs = this.GetLogs();
-                    if (!logs.Any())
-                    {
-                        continue;
-                    }
+                    var logs = GetLogs();
+                    isExistsLog = logs.Any();
 
-                    isExistsLog = true;
-                    this.DetectLogs(logs);
+                    if (isExistsLog)
+                    {
+                        this.DetectLogs(logs);
+                    }
                 }
                 catch (ThreadAbortException)
                 {
@@ -851,72 +854,29 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
-        private long no = 0L;
-
-        private IReadOnlyList<XIVLog> GetLogs()
+        private static bool IsIgnoreLog(
+            string line)
         {
-            var list = new List<XIVLog>(this.logInfoQueue.Count);
-
-            if (this.logInfoQueue != null)
+            // [TL]キーワードが含まれていればスキップする
+            if (line.Contains(TLSymbol))
             {
-                var prelog = new string[3];
-                var prelogIndex = 0;
-
-                var ignores = TimelineSettings.Instance.IgnoreLogTypes.Where(x => x.IsIgnore);
-
-                while (this.logInfoQueue.TryDequeue(out LogLineEventArgs logInfo))
-                {
-                    var logLine = logInfo.logLine;
-
-                    // 直前とまったく同じログはスキップする
-                    if (prelog[0] == logLine ||
-                        prelog[1] == logLine ||
-                        prelog[2] == logLine)
-                    {
-                        continue;
-                    }
-
-                    prelog[prelogIndex++] = logLine;
-                    if (prelogIndex >= 3)
-                    {
-                        prelogIndex = 0;
-                    }
-
-                    // [TL]キーワードが含まれていればスキップする
-                    if (logLine.Contains(TLSymbol))
-                    {
-                        continue;
-                    }
-
-                    // ダメージ系ログをカットする
-                    if (LogBuffer.IsDamageLog(logLine))
-                    {
-                        continue;
-                    }
-
-                    // 無効キーワードが含まれていればスキップする
-                    if (ignores.Any(x => logLine.Contains(x.Keyword)))
-                    {
-                        continue;
-                    }
-
-                    // パーティメンバに対するHPログならばスキップする
-                    if (LogBuffer.IsHPLogByPartyMember(logLine))
-                    {
-                        continue;
-                    }
-
-                    // エフェクトに付与されるツールチップ文字を除去する
-                    logLine = LogBuffer.RemoveTooltipSynbols(logLine);
-
-                    list.Add(new XIVLog(logLine)
-                    {
-                        No = this.no++
-                    });
-                }
+                return false;
             }
 
-            return list;
+            // 無効キーワードが含まれていればスキップする
+            var ignores = TimelineSettings.Instance.IgnoreLogTypes.Where(x => x.IsIgnore);
+            if (ignores.Any(x => line.Contains(x.Keyword)))
+            {
+                return false;
+            }
+
+            // パーティメンバに対するHPログならばスキップする
+            if (LogBuffer.IsHPLogByPartyMember(line))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private static readonly TimelineActivityModel[] EmptyActivities = new TimelineActivityModel[0];
@@ -927,7 +887,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="logs">ログ</param>
         private void DetectLogs(
-            IReadOnlyList<XIVLog> logs)
+            IEnumerable<XIVLog> logs)
         {
             var detectTime = DateTime.Now;
 
@@ -1238,7 +1198,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 var toNotice = tri.Clone();
-                toNotice.LogSeq = xivlog.No;
+                toNotice.LogSeq = xivlog.ID;
 
                 var vnotices = toNotice.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
                 if (vnotices.Any())

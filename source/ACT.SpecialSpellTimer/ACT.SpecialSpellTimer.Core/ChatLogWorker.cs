@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ACT.SpecialSpellTimer.Config;
+using FFXIV.Framework.FFXIVHelper;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -38,13 +39,13 @@ namespace ACT.SpecialSpellTimer
             string.Empty;
 
         public Task AppendLinesAsync(
-            List<XIVLog> logList)
+            IEnumerable<XIVLog> logList)
             => Task.Run(() => this.AppendLines(logList));
 
         private StreamWriter outputStream;
 
         public void AppendLines(
-            List<XIVLog> logList)
+            IEnumerable<XIVLog> logList)
         {
             try
             {
