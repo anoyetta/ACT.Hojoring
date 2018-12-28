@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Media;
+using ACT.UltraScouter.Config;
+using ACT.UltraScouter.Models.FFLogs;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
+using FFXIV.Framework.FFXIVHelper;
 using NLog;
 using Prism.Mvvm;
 
@@ -155,6 +159,30 @@ namespace ACT.UltraScouter.Models
             }
         }
 
+        private JobIDs jobID = JobIDs.Unknown;
+
+        public JobIDs JobID
+        {
+            get => this.jobID;
+            set => this.SetProperty(ref this.jobID, value);
+        }
+
+        private int worldID;
+
+        public int WorldID
+        {
+            get => this.worldID;
+            set => this.SetProperty(ref this.worldID, value);
+        }
+
+        private string worldName;
+
+        public string WorldName
+        {
+            get => this.worldName;
+            set => this.SetProperty(ref this.worldName, value);
+        }
+
         public string NameFI { get; protected set; } = string.Empty;
         public string NameIF { get; protected set; } = string.Empty;
         public string NameII { get; protected set; } = string.Empty;
@@ -241,7 +269,7 @@ namespace ACT.UltraScouter.Models
             InCrossPlus     // メレーAAの射程内
         }
 
-        public static readonly IList<(string symbol, Color color)> DistanceIndicators = new(string symbol, Color color)[]
+        public static readonly IList<(string symbol, Color color)> DistanceIndicators = new (string symbol, Color color)[]
         {
             /*
             (null, Colors.Transparent),           // Unknown
@@ -353,5 +381,38 @@ namespace ACT.UltraScouter.Models
             => DistanceIndicators[(int)this.DistanceIndicator].color.ToBrush();
 
         #endregion Distance
+
+        #region FFLogs
+
+        private static readonly ParseTotalModel DesigntimeParseTotal = new ParseTotalModel()
+        {
+            CharacterName = "Naoki Yoshida",
+            Server = "Chocobo",
+            Region = FFLogsRegions.JP,
+        };
+
+        public ParseTotalModel ParseTotal { get; }
+            = WPFHelper.IsDesignMode ? DesigntimeParseTotal : new ParseTotalModel();
+
+        public void RefreshFFLogsInfo()
+        {
+            var config = Settings.Instance.FFLogs;
+            if (!config.Visible ||
+                string.IsNullOrEmpty(config.ApiKey))
+            {
+                return;
+            }
+
+            Task.Run(async () =>
+            {
+                await this.ParseTotal.GetParseAsync(
+                    this.Name,
+                    this.WorldName,
+                    config.ServerRegion,
+                    Jobs.Find(this.JobID));
+            });
+        }
+
+        #endregion FFLogs
     }
 }
