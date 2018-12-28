@@ -92,15 +92,6 @@ namespace ACT.UltraScouter.Config
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"anoyetta\ACT\ACT.UltraScouter.config");
 
-        /*
-        /// <summary>
-        /// 保存先ファイル名（旧）
-        /// </summary>
-        public readonly string FileNameOld = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            @"anoyetta\ACT\ACT.TargetOverlay.config");
-        */
-
         /// <summary>
         /// シリアライザ
         /// </summary>
@@ -478,6 +469,12 @@ namespace ACT.UltraScouter.Config
         [DataMember(Order = 106)]
         public double HoverLifeLimit { get; set; }
 
+        /// <summary>
+        /// FFLogs情報
+        /// </summary>
+        [DataMember(Order = 107)]
+        public FFLogs FFLogs { get; set; }
+
         #endregion Target
 
         #region Focus Target
@@ -792,6 +789,18 @@ namespace ACT.UltraScouter.Config
                     LinkOutlineColor = true,
                     OutlineColor = DefaultColorStroke,
                 }
+            }},
+
+            { nameof(Settings.FFLogs), new FFLogs()
+            {
+                Visible = false,
+                Location = new Location() { X = 0, Y = 0 },
+                DisplayText = new DisplayText()
+                {
+                    Font = DefaultFont,
+                    Color = Colors.White,
+                    OutlineColor = Color.FromRgb(0x11, 0x13, 0x2b)
+                },
             }},
 
             #endregion Target
