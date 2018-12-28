@@ -37,6 +37,15 @@ namespace ACT.UltraScouter.Models.FFLogs
             };
         }
 
+        public static string CreateDataKey(
+            string characterName,
+            string server,
+            FFLogsRegions region,
+            Job characterJob)
+            => $"{characterName}-{server}-{region}-{characterJob}";
+
+        public string DataKey => CreateDataKey(this.characterName, this.server, this.region, this.job);
+
         private string characterName;
 
         public string CharacterName
@@ -76,8 +85,6 @@ namespace ACT.UltraScouter.Models.FFLogs
             get => this.timestamp;
             set => this.SetProperty(ref this.timestamp, value);
         }
-
-        public string DataID => $"{this.CharacterName}-{this.Server}-{this.Region}-{this.Job}";
 
         public ObservableCollection<ParseModel> ParseList { get; } = new ObservableCollection<ParseModel>();
 
