@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Media;
+using ACT.UltraScouter.Config;
+using ACT.UltraScouter.Models.FFLogs;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
+using FFXIV.Framework.FFXIVHelper;
 using NLog;
 using Prism.Mvvm;
+using TamanegiMage.FFXIV_MemoryReader.Model;
 
 namespace ACT.UltraScouter.Models
 {
@@ -155,6 +160,38 @@ namespace ACT.UltraScouter.Models
             }
         }
 
+        private ObjectType objectType = ObjectType.Unknown;
+
+        public ObjectType ObjectType
+        {
+            get => this.objectType;
+            set => this.SetProperty(ref this.objectType, value);
+        }
+
+        private JobIDs job = JobIDs.Unknown;
+
+        public JobIDs Job
+        {
+            get => this.job;
+            set => this.SetProperty(ref this.job, value);
+        }
+
+        private int worldID;
+
+        public int WorldID
+        {
+            get => this.worldID;
+            set => this.SetProperty(ref this.worldID, value);
+        }
+
+        private string worldName;
+
+        public string WorldName
+        {
+            get => this.worldName;
+            set => this.SetProperty(ref this.worldName, value);
+        }
+
         public string NameFI { get; protected set; } = string.Empty;
         public string NameIF { get; protected set; } = string.Empty;
         public string NameII { get; protected set; } = string.Empty;
@@ -241,7 +278,7 @@ namespace ACT.UltraScouter.Models
             InCrossPlus     // メレーAAの射程内
         }
 
-        public static readonly IList<(string symbol, Color color)> DistanceIndicators = new(string symbol, Color color)[]
+        public static readonly IList<(string symbol, Color color)> DistanceIndicators = new (string symbol, Color color)[]
         {
             /*
             (null, Colors.Transparent),           // Unknown
@@ -353,5 +390,129 @@ namespace ACT.UltraScouter.Models
             => DistanceIndicators[(int)this.DistanceIndicator].color.ToBrush();
 
         #endregion Distance
+
+        #region FFLogs
+
+        private static ParseTotalModel designtimeParseTotal;
+
+        private static ParseTotalModel DesigntimeParseTotal
+        {
+            get
+            {
+                if (designtimeParseTotal == null)
+                {
+                    designtimeParseTotal = new ParseTotalModel()
+                    {
+                        CharacterName = "Naoki Yoshida",
+                        Server = "Chocobo",
+                        Region = FFLogsRegions.JP,
+                        Job = Jobs.Find(JobIDs.BLM),
+                    };
+
+                    designtimeParseTotal.AddRangeParse(new[]
+                    {
+                        new ParseModel()
+                        {
+                            EncounterID = 1,
+                            EncounterName = "BOSS 1",
+                            Percentile = 79.1f,
+                            Total = 6451f,
+                        },
+                        new ParseModel()
+                        {
+                            EncounterID = 2,
+                            EncounterName = "BOSS 2",
+                            Percentile = 71.3f,
+                            Total = 5234f,
+                        },
+                        new ParseModel()
+                        {
+                            EncounterID = 3,
+                            EncounterName = "BOSS 3",
+                            Percentile = 64.8f,
+                            Total = 5912f,
+                        },
+                        new ParseModel()
+                        {
+                            EncounterID = 4,
+                            EncounterName = "BOSS 4",
+                            Percentile = 72.2f,
+                            Total = 4987f,
+                        },
+                        new ParseModel()
+                        {
+                            EncounterID = 5,
+                            EncounterName = "BOSS 4 EX",
+                            Percentile = 81.4f,
+                            Total = 6166f,
+                        },
+                    });
+                }
+
+                return designtimeParseTotal;
+            }
+        }
+
+        public static ParseTotalModel APITestResultParseTotal { get; set; } = null;
+
+        private ParseTotalModel parseTotal = WPFHelper.IsDesignMode ? DesigntimeParseTotal : new ParseTotalModel();
+
+        public ParseTotalModel ParseTotal
+        {
+            get => this.parseTotal;
+            private set => this.SetProperty(ref this.parseTotal, value);
+        }
+
+        private static readonly Dictionary<string, ParseTotalModel> ParseTotalDictionary = new Dictionary<string, ParseTotalModel>();
+
+        public void RefreshFFLogsInfo()
+        {
+            var config = Settings.Instance.FFLogs;
+            if (!config.Visible)
+            {
+                return;
+            }
+
+            if (config.IsDesignMode)
+            {
+                this.ParseTotal = APITestResultParseTotal ?? DesigntimeParseTotal;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(config.ApiKey))
+            {
+                return;
+            }
+
+            var job = Jobs.Find(this.job);
+
+            lock (ParseTotalDictionary)
+            {
+                var model = default(ParseTotalModel);
+                var key = ParseTotalModel.CreateDataKey(this.name, this.worldName, config.ServerRegion, job);
+                if (!ParseTotalDictionary.ContainsKey(key))
+                {
+                    model = new ParseTotalModel();
+                    ParseTotalDictionary[key] = model;
+                }
+                else
+                {
+                    model = ParseTotalDictionary[key];
+                }
+
+                this.ParseTotal = model;
+            }
+
+            Task.Run(async () =>
+            {
+                await this.ParseTotal.GetParseAsync(
+                    this.Name,
+                    this.WorldName,
+                    config.ServerRegion,
+                    job);
+            });
+        }
+
+        #endregion FFLogs
     }
 }

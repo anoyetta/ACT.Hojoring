@@ -52,6 +52,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Presentation" />
@@ -78,6 +79,7 @@
     <Compile Include="Config\ProgressBarColorRange.cs" />
     <Compile Include="Config\ProgressBar.cs" />
     <Compile Include="Config\Settings.cs" />
+    <Compile Include="Config\FFLogs.cs" />
     <Compile Include="Config\TargetAction.cs" />
     <Compile Include="Config\TargetDistance.cs" />
     <Compile Include="Config\TargetHP.cs" />
@@ -110,6 +112,9 @@
     <Compile Include="Config\UI\Views\MPTickerConfigView.xaml.cs">
       <DependentUpon>MPTickerConfigView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Config\UI\Views\FFLogsConfigView.xaml.cs">
+      <DependentUpon>FFLogsConfigView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Config\UI\Views\TargetDistanceConfigView.xaml.cs">
       <DependentUpon>TargetDistanceConfigView.xaml</DependentUpon>
     </Compile>
@@ -134,6 +139,9 @@
     <Compile Include="Config\UI\Views\ViewExtensions.cs" />
     <Compile Include="Models\Arrows.cs" />
     <Compile Include="Models\CastingEventArgs.cs" />
+    <Compile Include="Models\FFLogs\Enums.cs" />
+    <Compile Include="Models\FFLogs\ParseModel.cs" />
+    <Compile Include="Models\FFLogs\ParseTotalModel.cs" />
     <Compile Include="Models\FTInfoModel.cs" />
     <Compile Include="Models\MeInfoModel.cs" />
     <Compile Include="Models\MobInfo.cs" />
@@ -148,6 +156,7 @@
     <Compile Include="ViewModels\HPBarViewModel.cs" />
     <Compile Include="ViewModels\MobListViewModel.cs" />
     <Compile Include="ViewModels\MPTickerViewModel.cs" />
+    <Compile Include="ViewModels\FFLogsViewModel.cs" />
     <Compile Include="Views\Converters\ToTopMarginConverter.cs" />
     <Compile Include="Views\Converters\WidthToRadiusConverter.cs" />
     <Compile Include="Views\HPBarView.xaml.cs">
@@ -158,6 +167,9 @@
     </Compile>
     <Compile Include="Views\MPTickerView.xaml.cs">
       <DependentUpon>MPTickerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FFLogsView.xaml.cs">
+      <DependentUpon>FFLogsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Workers\MainWorker.cs" />
     <Compile Include="Workers\MobListWorker.cs" />
@@ -215,6 +227,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Config\UI\Views\MPTickerConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Config\UI\Views\FFLogsConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -290,6 +306,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\FFLogsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\NameView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -310,6 +330,9 @@
     </PackageReference>
     <PackageReference Include="FontAwesome.WPF">
       <Version>4.7.0.9</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>10.0.3</Version>
     </PackageReference>
     <PackageReference Include="NLog.Config">
       <Version>4.4.12</Version>

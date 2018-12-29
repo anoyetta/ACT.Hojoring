@@ -24,6 +24,8 @@
 
   <system:String x:Key="Common_Visible">Visible</system:String>
   <system:String x:Key="Common_Location">Location</system:String>
+  <system:String x:Key="Common_Scale">Scale</system:String>
+  <system:String x:Key="Common_Background">Background</system:String>
   <system:String x:Key="Common_Font">Font</system:String>
   <system:String x:Key="Common_FillColor">Fill Color</system:String>
   <system:String x:Key="Common_StrokeColor">Stroke Color</system:String>
@@ -31,7 +33,7 @@
   <system:String x:Key="Common_Change">change</system:String>
   <system:String x:Key="Common_Delete">delete</system:String>
   <system:String x:Key="Common_TTS">Text to speak</system:String>
-  <system:String x:Key="Common_TestMode">Test mode (Always display)</system:String>
+  <system:String x:Key="Common_TestMode">Design mode (Always display)</system:String>
 
   <system:String x:Key="Target_UserHoverTarget">Use hover target</system:String>
 

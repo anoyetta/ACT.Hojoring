@@ -51,15 +51,18 @@ namespace FFXIV.Framework.Common
                 });
 
             var logs = Path.Combine(appdata, "logs");
-            Directory.GetFiles(logs, "*.log", SearchOption.TopDirectoryOnly)
-                .Walk((file) =>
-                {
-                    var timestamp = File.GetCreationTime(file);
-                    if ((DateTime.Now - timestamp).TotalDays > 30)
+            if (Directory.Exists(logs))
+            {
+                Directory.GetFiles(logs, "*.log", SearchOption.TopDirectoryOnly)
+                    .Walk((file) =>
                     {
-                        File.Delete(file);
-                    }
-                });
+                        var timestamp = File.GetCreationTime(file);
+                        if ((DateTime.Now - timestamp).TotalDays > 30)
+                        {
+                            File.Delete(file);
+                        }
+                    });
+            }
 
             var archives = Path.Combine(logs, "archives");
             if (Directory.Exists(archives))
