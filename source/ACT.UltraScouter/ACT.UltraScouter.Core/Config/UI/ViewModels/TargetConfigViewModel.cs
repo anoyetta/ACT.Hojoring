@@ -1,15 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
-using ACT.UltraScouter.Common;
+using ACT.UltraScouter.Models.FFLogs;
 using ACT.UltraScouter.ViewModels;
 using ACT.UltraScouter.ViewModels.Bases;
 using ACT.UltraScouter.Workers;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -27,6 +31,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         public virtual TargetHP HP => Settings.Instance.TargetHP;
         public virtual TargetAction Action => Settings.Instance.TargetAction;
         public virtual TargetDistance Distance => Settings.Instance.TargetDistance;
+        public virtual FFLogs FFLogs => Settings.Instance.FFLogs;
 
         private OpenFileDialog selectWaveSoundDialog = new OpenFileDialog()
         {
@@ -257,5 +262,102 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                 () => this.GetViewModel<HPViewModel>()?.RaiseAllPropertiesChanged()));
 
         #endregion TargetHP
+
+        #region FFLogs
+
+        public IEnumerable<FFLogsRegions> FFLogsRegions => Enum.GetValues(typeof(FFLogsRegions)).Cast<FFLogsRegions>();
+
+        private ICommand ffLogsDisplayTextFontCommand;
+        private ICommand ffLogsDisplayTextColorCommand;
+        private ICommand ffLogsDisplayTextOutlineColorCommand;
+        private ICommand ffLogsBackgroundColorCommand;
+        private ICommand ffLogsTestAPICommand;
+
+        public ICommand FFLogsDisplayTextFontCommand =>
+            this.ffLogsDisplayTextFontCommand ??
+            (this.ffLogsDisplayTextFontCommand =
+            new ChangeFontCommand((font) => this.FFLogs.DisplayText.Font = font));
+
+        public ICommand FFLogsDisplayTextColorCommand =>
+            this.ffLogsDisplayTextColorCommand ??
+            (this.ffLogsDisplayTextColorCommand =
+            new ChangeColorCommand((color) => this.FFLogs.DisplayText.Color = color));
+
+        public ICommand FFLogsDisplayTextOutlineColorCommand =>
+            this.ffLogsDisplayTextOutlineColorCommand ??
+            (this.ffLogsDisplayTextOutlineColorCommand =
+            new ChangeColorCommand((color) => this.FFLogs.DisplayText.OutlineColor = color));
+
+        public ICommand FFLogsBackgroundColorCommand =>
+            this.ffLogsBackgroundColorCommand ??
+            (this.ffLogsBackgroundColorCommand =
+            new ChangeColorCommand((color) => this.FFLogs.Background = color));
+
+        public ICommand FFLogsTestAPICommand =>
+            this.ffLogsTestAPICommand ??
+            (this.ffLogsTestAPICommand =
+            new DelegateCommand(this.ExecuteTestAPI));
+
+        public ParseTotalModel FFLogsTestParseTotalModel { get; } = new ParseTotalModel();
+
+        private string ffLogsTestResult;
+
+        public string FFLogsTestResult
+        {
+            get => this.ffLogsTestResult;
+            set => this.SetProperty(ref this.ffLogsTestResult, value);
+        }
+
+        private async void ExecuteTestAPI()
+        {
+            var model = this.FFLogsTestParseTotalModel;
+
+            try
+            {
+                this.FFLogsTestResult = string.Empty;
+
+                if (string.IsNullOrEmpty(this.FFLogs.ApiKey))
+                {
+                    this.FFLogsTestResult = @"""API Key"" required.";
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(model.CharacterName))
+                {
+                    this.FFLogsTestResult = @"""Character Name"" required.";
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(model.Server))
+                {
+                    this.FFLogsTestResult = @"""Server"" required.";
+                    return;
+                }
+
+                await model.GetParseAsync(
+                    model.CharacterName,
+                    model.Server,
+                    this.FFLogs.ServerRegion,
+                    null,
+                    true);
+
+                this.FFLogsTestResult += $"Status Code : {model.HttpStatusCode} ({(int)model.HttpStatusCode})\n";
+
+                if (model.HttpStatusCode != HttpStatusCode.OK)
+                {
+                    return;
+                }
+
+                this.FFLogsTestResult += $"\n";
+                this.FFLogsTestResult += $"Content :\n";
+                this.FFLogsTestResult += JValue.Parse(model.ResponseContent).ToString(Formatting.Indented) + Environment.NewLine;
+            }
+            catch (Exception ex)
+            {
+                this.FFLogsTestResult = ex.ToString();
+            }
+        }
+
+        #endregion FFLogs
     }
 }

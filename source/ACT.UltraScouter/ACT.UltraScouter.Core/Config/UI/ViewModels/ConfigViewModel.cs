@@ -38,8 +38,9 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         {
             TreeSource createTargetSubset(
                 string parentText,
-                object viewModell = null,
-                Page parentView = null)
+                object viewModel = null,
+                Page parentView = null,
+                IEnumerable<TreeSource> additionalChildren = null)
             {
                 var general = parentView != null ?
                     parentView :
@@ -50,14 +51,22 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                 var action = new TargetActionConfigView();
                 var distance = new TargetDistanceConfigView();
 
-                if (viewModell != null)
+                if (viewModel != null)
                 {
                     general.DataContext = new ConfigViewModel();
 
-                    name.DataContext = viewModell;
-                    hp.DataContext = viewModell;
-                    action.DataContext = viewModell;
-                    distance.DataContext = viewModell;
+                    name.DataContext = viewModel;
+                    hp.DataContext = viewModel;
+                    action.DataContext = viewModel;
+                    distance.DataContext = viewModel;
+
+                    if (additionalChildren != null)
+                    {
+                        foreach (var c in additionalChildren)
+                        {
+                            c.Content.DataContext = viewModel;
+                        }
+                    }
                 }
 
                 var parent = new TreeSource(parentText)
@@ -65,7 +74,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                     Content = general
                 };
 
-                parent.Child = new ObservableCollection<TreeSource>()
+                var children = new ObservableCollection<TreeSource>()
                 {
                     new TreeSource("Name", parent)
                     {
@@ -88,8 +97,25 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                     },
                 };
 
+                if (additionalChildren != null)
+                {
+                    foreach (var c in additionalChildren)
+                    {
+                        c.Parent = parent;
+                    }
+
+                    children.AddRange(additionalChildren);
+                }
+
+                parent.Child = children;
+
                 return parent;
             }
+
+            var ffLogsView = new TreeSource("FFLogs")
+            {
+                Content = new FFLogsConfigView()
+            };
 
             menuTreeViewItems = new ObservableCollection<TreeSource>()
             {
@@ -102,7 +128,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                     IsSelected = true,
                 },
 
-                createTargetSubset("Target", new TargetConfigViewModel(), new TargetGeneralConfigView()),
+                createTargetSubset("Target", new TargetConfigViewModel(), new TargetGeneralConfigView(), new[] { ffLogsView }),
                 createTargetSubset("Focus Target", new FTConfigViewModel()),
                 createTargetSubset("Target of Target", new ToTConfigViewModel()),
                 createTargetSubset("BOSS", new BossConfigViewModel(), new BossGeneralConfigView()),

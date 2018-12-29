@@ -1,6 +1,7 @@
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
+using TamanegiMage.FFXIV_MemoryReader.Model;
 
 namespace ACT.UltraScouter.ViewModels
 {
@@ -19,6 +20,9 @@ namespace ACT.UltraScouter.ViewModels
             this.config = config ?? Settings.Instance.FFLogs;
             this.model = model ?? TargetInfoModel.Instance;
 
+            this.RaisePropertyChanged(nameof(Config));
+            this.RaisePropertyChanged(nameof(Model));
+
             this.Initialize();
         }
 
@@ -34,6 +38,9 @@ namespace ACT.UltraScouter.ViewModels
 
         public bool OverlayVisible =>
             this.Config.Visible &&
-            !string.IsNullOrEmpty(this.Config.ApiKey);
+            (
+                this.Config.IsDesignMode ||
+                (!string.IsNullOrEmpty(this.Config.ApiKey) && this.Model?.ObjectType == ObjectType.PC)
+            );
     }
 }

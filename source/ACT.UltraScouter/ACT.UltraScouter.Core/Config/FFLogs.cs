@@ -1,5 +1,7 @@
 using System;
 using System.Runtime.Serialization;
+using System.Windows.Media;
+using System.Xml.Serialization;
 using ACT.UltraScouter.Models.FFLogs;
 using Prism.Mvvm;
 
@@ -23,6 +25,33 @@ namespace ACT.UltraScouter.Config
         {
             get => this.visible;
             set => this.SetProperty(ref this.visible, value);
+        }
+
+        private double scale = 1.0d;
+
+        [DataMember]
+        public double Scale
+        {
+            get => this.scale;
+            set => this.SetProperty(ref this.scale, value);
+        }
+
+        private Color background = Colors.Transparent;
+
+        [DataMember]
+        public Color Background
+        {
+            get => this.background;
+            set => this.SetProperty(ref this.background, value);
+        }
+
+        private bool isDesignMode;
+
+        [XmlIgnore]
+        public bool IsDesignMode
+        {
+            get => this.isDesignMode;
+            set => this.SetProperty(ref this.isDesignMode, value);
         }
 
         private string apiKey;

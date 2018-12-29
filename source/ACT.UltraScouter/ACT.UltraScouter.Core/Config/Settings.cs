@@ -643,6 +643,18 @@ namespace ACT.UltraScouter.Config
         };
 
         /// <summary>
+        /// 初期フォントL
+        /// </summary>
+        public static readonly FontInfo DefaultFontL = new FontInfo()
+        {
+            FontFamily = new FontFamily("Arial"),
+            Size = 20,
+            Style = FontStyles.Normal,
+            Weight = FontWeights.Bold,
+            Stretch = FontStretches.Normal,
+        };
+
+        /// <summary>
         /// 初期プログレスバー高さ
         /// </summary>
         public static readonly double DefaultProgressBarHeight = 18;
@@ -795,11 +807,13 @@ namespace ACT.UltraScouter.Config
             {
                 Visible = false,
                 Location = new Location() { X = 0, Y = 0 },
+                Scale = 1.0d,
+                IsDesignMode = false,
                 DisplayText = new DisplayText()
                 {
-                    Font = DefaultFont,
+                    Font = DefaultFontL,
                     Color = Colors.White,
-                    OutlineColor = Color.FromRgb(0x11, 0x13, 0x2b)
+                    OutlineColor = Color.FromRgb(0x11, 0x13, 0x2b),
                 },
             }},
 

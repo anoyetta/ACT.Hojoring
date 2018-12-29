@@ -112,6 +112,9 @@
     <Compile Include="Config\UI\Views\MPTickerConfigView.xaml.cs">
       <DependentUpon>MPTickerConfigView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Config\UI\Views\FFLogsConfigView.xaml.cs">
+      <DependentUpon>FFLogsConfigView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Config\UI\Views\TargetDistanceConfigView.xaml.cs">
       <DependentUpon>TargetDistanceConfigView.xaml</DependentUpon>
     </Compile>
@@ -224,6 +227,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Config\UI\Views\MPTickerConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Config\UI\Views\FFLogsConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
