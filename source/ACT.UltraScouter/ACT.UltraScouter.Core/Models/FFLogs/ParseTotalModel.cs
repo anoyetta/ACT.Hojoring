@@ -98,7 +98,7 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         public ObservableCollection<ParseModel> ParseList { get; } = new ObservableCollection<ParseModel>();
 
-        public bool ExistsParses => this.ParseList.Any();
+        public bool ExistsParses => this.ParseList.Count > 0;
 
         public void AddRangeParse(
             IEnumerable<ParseModel> parses)
@@ -248,7 +248,7 @@ namespace ACT.UltraScouter.Models.FFLogs
 
             if (string.IsNullOrEmpty(Settings.Instance.FFLogs.ApiKey))
             {
-                await WPFHelper.InvokeAsync(this.ParseList.Clear);
+                Clear();
                 return;
             }
 
@@ -282,7 +282,7 @@ namespace ACT.UltraScouter.Models.FFLogs
             this.HttpStatusCode = res.StatusCode;
             if (res.StatusCode != HttpStatusCode.OK)
             {
-                await WPFHelper.InvokeAsync(this.ParseList.Clear);
+                Clear();
                 return;
             }
 
@@ -292,7 +292,7 @@ namespace ACT.UltraScouter.Models.FFLogs
             if (parses == null ||
                 parses.Length < 1)
             {
-                await WPFHelper.InvokeAsync(this.ParseList.Clear);
+                Clear();
                 return;
             }
 
@@ -317,6 +317,18 @@ namespace ACT.UltraScouter.Models.FFLogs
                 this.AddRangeParse(bests);
                 this.Timestamp = DateTime.Now;
             });
+
+            async void Clear()
+            {
+                await WPFHelper.InvokeAsync(() =>
+                {
+                    this.CharacterName = characterName;
+                    this.Server = server;
+                    this.Region = region;
+                    this.Job = job;
+                    this.ParseList.Clear();
+                });
+            }
         }
     }
 }
