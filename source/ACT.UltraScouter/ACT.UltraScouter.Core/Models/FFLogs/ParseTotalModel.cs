@@ -77,8 +77,16 @@ namespace ACT.UltraScouter.Models.FFLogs
         public Job Job
         {
             get => this.job;
-            set => this.SetProperty(ref this.job, value);
+            set
+            {
+                if (this.SetProperty(ref this.job, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.JobName));
+                }
+            }
         }
+
+        public string JobName => this.Job?.NameEN ?? "All Job";
 
         private DateTime timestamp = DateTime.MinValue;
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
+using ACT.UltraScouter.Models;
 using ACT.UltraScouter.Models.FFLogs;
 using ACT.UltraScouter.ViewModels;
 using ACT.UltraScouter.ViewModels.Bases;
@@ -314,8 +315,6 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
             try
             {
-                this.FFLogsTestResult = string.Empty;
-
                 if (string.IsNullOrEmpty(this.FFLogs.ApiKey))
                 {
                     this.FFLogsTestResult = @"""API Key"" required.";
@@ -341,16 +340,20 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                     null,
                     true);
 
+                this.FFLogsTestResult = string.Empty;
                 this.FFLogsTestResult += $"Status Code : {model.HttpStatusCode} ({(int)model.HttpStatusCode})\n";
 
                 if (model.HttpStatusCode != HttpStatusCode.OK)
                 {
+                    TargetInfoModel.APITestResultParseTotal = null;
                     return;
                 }
 
                 this.FFLogsTestResult += $"\n";
                 this.FFLogsTestResult += $"Content :\n";
                 this.FFLogsTestResult += JValue.Parse(model.ResponseContent).ToString(Formatting.Indented) + Environment.NewLine;
+
+                TargetInfoModel.APITestResultParseTotal = model;
             }
             catch (Exception ex)
             {
