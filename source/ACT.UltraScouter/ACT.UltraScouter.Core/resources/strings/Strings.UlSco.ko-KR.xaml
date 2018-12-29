@@ -24,6 +24,8 @@
 
   <system:String x:Key="Common_Visible">표시하는</system:String>
   <system:String x:Key="Common_Location">위치</system:String>
+  <system:String x:Key="Common_Scale">규모</system:String>
+  <system:String x:Key="Common_Background">배경</system:String>
   <system:String x:Key="Common_Font">폰트</system:String>
   <system:String x:Key="Common_FillColor">글자색</system:String>
   <system:String x:Key="Common_StrokeColor">윤곽색</system:String>
@@ -80,6 +82,7 @@
 
   <system:String x:Key="MobList_VisibleMePosition">자신의 좌표 표시</system:String>
   <system:String x:Key="MobList_SimpleView">간략 하게 표시</system:String>
+  <system:String x:Key="MobList_UngroupSameNameMobs">Ungroup same name mobs</system:String>
   <system:String x:Key="MobList_VisibleZPosition">Z축 표시</system:String>
   <system:String x:Key="MobList_DirectionOrigin">방향 표시 기준</system:String>
   <system:String x:Key="MobList_DirectionAdjustmentAngle">방향 보정 각도</system:String>

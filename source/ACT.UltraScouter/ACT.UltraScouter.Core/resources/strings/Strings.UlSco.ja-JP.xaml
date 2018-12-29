@@ -24,6 +24,8 @@
 
   <system:String x:Key="Common_Visible">表示する</system:String>
   <system:String x:Key="Common_Location">ロケーション</system:String>
+  <system:String x:Key="Common_Scale">スケール</system:String>
+  <system:String x:Key="Common_Background">背景色</system:String>
   <system:String x:Key="Common_Font">フォント</system:String>
   <system:String x:Key="Common_FillColor">塗りつぶし(内側)のカラー</system:String>
   <system:String x:Key="Common_StrokeColor">アウトラインのカラー</system:String>
@@ -31,7 +33,7 @@
   <system:String x:Key="Common_Change">変更</system:String>
   <system:String x:Key="Common_Delete">削除</system:String>
   <system:String x:Key="Common_TTS">TTSを使用する</system:String>
-  <system:String x:Key="Common_TestMode">テストモード (常に表示する)</system:String>
+  <system:String x:Key="Common_TestMode">デザインモード (常に表示する)</system:String>
 
   <system:String x:Key="Target_UserHoverTarget">ホバーターゲットを使用する</system:String>
 
@@ -80,7 +82,7 @@
 
   <system:String x:Key="MobList_VisibleMePosition">自分の座標を表示する</system:String>
   <system:String x:Key="MobList_SimpleView">シンプル表示にする</system:String>
-  <system:String x:Key="MobList_UngroupSameNameMobs">同名のモブを個別表示</system:String>
+  <system:String x:Key="MobList_UngroupSameNameMobs">同名のモブをグループ化しない</system:String>
   <system:String x:Key="MobList_VisibleZPosition">Z軸を表示する</system:String>
   <system:String x:Key="MobList_DirectionOrigin">方向表示の基準</system:String>
   <system:String x:Key="MobList_DirectionAdjustmentAngle">方向の補正角度</system:String>

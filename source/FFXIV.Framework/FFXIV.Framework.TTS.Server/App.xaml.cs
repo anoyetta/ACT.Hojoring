@@ -1,5 +1,3 @@
-using FFXIV.Framework.Common;
-using NLog;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Threading;
+using FFXIV.Framework.Common;
+using NLog;
 
 namespace FFXIV.Framework.TTS.Server
 {
@@ -81,15 +81,17 @@ namespace FFXIV.Framework.TTS.Server
             try
             {
                 var message = "Dispatcher Unhandled Exception";
-                ShowMessageBoxException(message, e.Exception);
 
                 try
                 {
                     this.Logger.Fatal(e.Exception, message);
+                    LogManager.Flush();
                 }
                 catch (Exception)
                 {
                 }
+
+                ShowMessageBoxException(message, e.Exception);
             }
             finally
             {

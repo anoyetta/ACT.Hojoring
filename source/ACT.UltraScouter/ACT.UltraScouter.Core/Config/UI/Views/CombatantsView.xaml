@@ -69,6 +69,11 @@
           MinWidth="350" />
         <DataGridTextColumn
           IsReadOnly="True"
+          Header="World"
+          Binding="{Binding WorldName, Mode=OneWay}"
+          MinWidth="200" />
+        <DataGridTextColumn
+          IsReadOnly="True"
           Header="X"
           Binding="{Binding PosXMap, Mode=OneWay, StringFormat={}{0:N2}}"
           MinWidth="65" />
