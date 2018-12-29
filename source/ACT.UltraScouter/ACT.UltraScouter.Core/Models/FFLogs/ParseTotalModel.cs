@@ -42,9 +42,11 @@ namespace ACT.UltraScouter.Models.FFLogs
             string server,
             FFLogsRegions region,
             Job characterJob)
-            => $"{characterName}-{server}-{region}-{characterJob}";
+            => $"{characterName ?? "Unknown"}-{server ?? "Unknown"}-{region}-{characterJob?.ToString() ?? "Unknown"}";
 
         public string DataKey => CreateDataKey(this.characterName, this.server, this.region, this.job);
+
+        public void RaiseAllPropertiesChange() => this.RaiseAllPropertiesChange();
 
         private string characterName;
 
@@ -167,15 +169,7 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         public static SolidColorBrush GetCategoryBrush(
             float perf)
-        {
-            var brush = CategoryBrushesDictionary[GetCategory(perf)].Brush;
-            if (!brush.IsFrozen)
-            {
-                brush.Freeze();
-            }
-
-            return brush;
-        }
+            => CategoryBrushesDictionary[GetCategory(perf)].Brush;
 
         private static readonly Color Category1Color = (Color)ColorConverter.ConvertFromString("#E9D086");
         private static readonly Color Category2Color = (Color)ColorConverter.ConvertFromString("#FC9E3E");
@@ -184,15 +178,30 @@ namespace ACT.UltraScouter.Models.FFLogs
         private static readonly Color Category5Color = (Color)ColorConverter.ConvertFromString("#219D1E");
         private static readonly Color Category6Color = (Color)ColorConverter.ConvertFromString("#C8C2B7");
 
-        private static readonly Dictionary<string, (Color Color, SolidColorBrush Brush)> CategoryBrushesDictionary = new Dictionary<string, (Color, SolidColorBrush)>()
+        private static Dictionary<string, (Color Color, SolidColorBrush Brush)> categoryBrushesDictionary;
+
+        private static Dictionary<string, (Color Color, SolidColorBrush Brush)> CategoryBrushesDictionary =>
+            categoryBrushesDictionary ?? (categoryBrushesDictionary = CreateCategoryBrushesDictionary());
+
+        private static Dictionary<string, (Color Color, SolidColorBrush Brush)> CreateCategoryBrushesDictionary()
         {
-            { "A", (Category1Color, new SolidColorBrush(Category1Color)) },
-            { "B", (Category2Color, new SolidColorBrush(Category2Color)) },
-            { "C", (Category3Color, new SolidColorBrush(Category3Color)) },
-            { "D", (Category4Color, new SolidColorBrush(Category4Color)) },
-            { "E", (Category5Color, new SolidColorBrush(Category5Color)) },
-            { "F", (Category6Color, new SolidColorBrush(Category6Color)) },
-        };
+            var result = default(Dictionary<string, (Color Color, SolidColorBrush Brush)>);
+
+            WPFHelper.Invoke(() =>
+            {
+                result = new Dictionary<string, (Color, SolidColorBrush)>()
+                {
+                    { "A", (Category1Color, new SolidColorBrush(Category1Color)) },
+                    { "B", (Category2Color, new SolidColorBrush(Category2Color)) },
+                    { "C", (Category3Color, new SolidColorBrush(Category3Color)) },
+                    { "D", (Category4Color, new SolidColorBrush(Category4Color)) },
+                    { "E", (Category5Color, new SolidColorBrush(Category5Color)) },
+                    { "F", (Category6Color, new SolidColorBrush(Category6Color)) },
+                };
+            });
+
+            return result;
+        }
 
         private static HttpClient httpClient;
 
@@ -206,7 +215,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                 }
 
                 httpClient = new HttpClient();
-                httpClient.BaseAddress = new Uri("https://www.fflogs.com/v1");
+                httpClient.BaseAddress = new Uri("https://www.fflogs.com/v1/");
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
@@ -215,50 +224,62 @@ namespace ACT.UltraScouter.Models.FFLogs
             }
         }
 
+        public HttpStatusCode HttpStatusCode { get; private set; }
+
+        public string ResponseContent { get; private set; }
+
         public async Task GetParseAsync(
             string characterName,
             string server,
             FFLogsRegions region,
-            Job job)
+            Job job,
+            bool isTest = false)
         {
+            this.HttpStatusCode = HttpStatusCode.Continue;
+            this.ResponseContent = string.Empty;
+
             if (string.IsNullOrEmpty(Settings.Instance.FFLogs.ApiKey))
             {
                 await WPFHelper.InvokeAsync(this.ParseList.Clear);
                 return;
             }
 
-            // 同じ条件で6分以内ならば再取得しない
-            if (this.ExistsParses &&
-                characterName == this.CharacterName &&
-                server == this.Server &&
-                region == this.Region)
+            if (!isTest)
             {
-                if ((DateTime.Now - this.Timestamp).TotalMinutes <= 6.0)
+                // 同じ条件で6分以内ならば再取得しない
+                if (this.ExistsParses &&
+                    characterName == this.CharacterName &&
+                    server == this.Server &&
+                    region == this.Region)
                 {
-                    return;
+                    if ((DateTime.Now - this.Timestamp).TotalMinutes <= 6.0)
+                    {
+                        return;
+                    }
                 }
             }
 
             var uri = string.Format(
                 "parses/character/{0}/{1}/{2}",
-                HttpUtility.HtmlEncode(characterName),
-                server,
+                Uri.EscapeUriString(characterName),
+                Uri.EscapeUriString(server),
                 region.ToString());
 
             var query = HttpUtility.ParseQueryString(string.Empty);
             query["api_key"] = Settings.Instance.FFLogs.ApiKey;
 
-            uri += $"{uri}?{query.ToString()}";
+            uri += $"?{query.ToString()}";
 
             var res = await this.HttpClient.GetAsync(uri);
+            this.HttpStatusCode = res.StatusCode;
             if (res.StatusCode != HttpStatusCode.OK)
             {
                 await WPFHelper.InvokeAsync(this.ParseList.Clear);
                 return;
             }
 
-            var s = await res.Content.ReadAsStringAsync();
-            var parses = JsonConvert.DeserializeObject<ParseModel[]>(s);
+            this.ResponseContent = await res.Content.ReadAsStringAsync();
+            var parses = JsonConvert.DeserializeObject<ParseModel[]>(this.ResponseContent);
 
             if (parses == null ||
                 parses.Length < 1)
@@ -272,6 +293,9 @@ namespace ACT.UltraScouter.Models.FFLogs
                 where
                 job == null ||
                 string.Equals(x.Spec, job.NameEN, StringComparison.OrdinalIgnoreCase)
+                orderby
+                x.EncounterID,
+                x.Percentile descending
                 group x by x.EncounterName into g
                 select
                 g.OrderByDescending(y => y.Percentile).First();

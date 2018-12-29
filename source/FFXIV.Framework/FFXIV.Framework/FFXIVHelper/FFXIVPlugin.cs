@@ -1501,22 +1501,25 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             if (!this.isMergedSkillList)
             {
-                if (this.skillList != null &&
-                    XIVDB.Instance.ActionList.Any())
+                lock (XIVDB.Instance.ActionList)
                 {
-                    foreach (var action in XIVDB.Instance.ActionList)
+                    if (this.skillList != null &&
+                        XIVDB.Instance.ActionList.Any())
                     {
-                        var skill = new Skill()
+                        foreach (var action in XIVDB.Instance.ActionList)
                         {
-                            ID = action.Key,
-                            Name = action.Value.Name
-                        };
+                            var skill = new Skill()
+                            {
+                                ID = action.Key,
+                                Name = action.Value.Name
+                            };
 
-                        this.skillList[action.Key] = skill;
+                            this.skillList[action.Key] = skill;
+                        }
+
+                        this.isMergedSkillList = true;
+                        AppLogger.Trace("XIVDB Action list merged.");
                     }
-
-                    this.isMergedSkillList = true;
-                    AppLogger.Trace("XIVDB Action list merged.");
                 }
             }
 

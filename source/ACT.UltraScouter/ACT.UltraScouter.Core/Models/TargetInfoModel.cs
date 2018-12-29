@@ -9,6 +9,7 @@ using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using NLog;
 using Prism.Mvvm;
+using TamanegiMage.FFXIV_MemoryReader.Model;
 
 namespace ACT.UltraScouter.Models
 {
@@ -159,12 +160,20 @@ namespace ACT.UltraScouter.Models
             }
         }
 
-        private JobIDs jobID = JobIDs.Unknown;
+        private ObjectType objectType = ObjectType.Unknown;
 
-        public JobIDs JobID
+        public ObjectType ObjectType
         {
-            get => this.jobID;
-            set => this.SetProperty(ref this.jobID, value);
+            get => this.objectType;
+            set => this.SetProperty(ref this.objectType, value);
+        }
+
+        private JobIDs job = JobIDs.Unknown;
+
+        public JobIDs Job
+        {
+            get => this.job;
+            set => this.SetProperty(ref this.job, value);
         }
 
         private int worldID;
@@ -384,23 +393,112 @@ namespace ACT.UltraScouter.Models
 
         #region FFLogs
 
-        private static readonly ParseTotalModel DesigntimeParseTotal = new ParseTotalModel()
-        {
-            CharacterName = "Naoki Yoshida",
-            Server = "Chocobo",
-            Region = FFLogsRegions.JP,
-        };
+        private static ParseTotalModel designtimeParseTotal;
 
-        public ParseTotalModel ParseTotal { get; }
-            = WPFHelper.IsDesignMode ? DesigntimeParseTotal : new ParseTotalModel();
+        private static ParseTotalModel DesigntimeParseTotal
+        {
+            get
+            {
+                if (designtimeParseTotal == null)
+                {
+                    designtimeParseTotal = new ParseTotalModel()
+                    {
+                        CharacterName = "Naoki Yoshida",
+                        Server = "Chocobo",
+                        Region = FFLogsRegions.JP,
+                        Job = Jobs.Find(JobIDs.BLM),
+                    };
+
+                    designtimeParseTotal.AddRangeParse(new[]
+                    {
+                        new ParseModel()
+                        {
+                            EncounterID = 1,
+                            EncounterName = "BOSS 1",
+                            Percentile = 79.1f,
+                            Total = 6451f,
+                        },
+                        new ParseModel()
+                        {
+                            EncounterID = 2,
+                            EncounterName = "BOSS 2",
+                            Percentile = 71.3f,
+                            Total = 5234f,
+                        },
+                        new ParseModel()
+                        {
+                            EncounterID = 3,
+                            EncounterName = "BOSS 3",
+                            Percentile = 64.8f,
+                            Total = 5912f,
+                        },
+                        new ParseModel()
+                        {
+                            EncounterID = 4,
+                            EncounterName = "BOSS 4",
+                            Percentile = 72.2f,
+                            Total = 4987f,
+                        },
+                        new ParseModel()
+                        {
+                            EncounterID = 5,
+                            EncounterName = "BOSS 4 EX",
+                            Percentile = 81.4f,
+                            Total = 6166f,
+                        },
+                    });
+                }
+
+                return designtimeParseTotal;
+            }
+        }
+
+        private ParseTotalModel parseTotal = WPFHelper.IsDesignMode ? DesigntimeParseTotal : new ParseTotalModel();
+
+        public ParseTotalModel ParseTotal
+        {
+            get => this.parseTotal;
+            private set => this.SetProperty(ref this.parseTotal, value);
+        }
+
+        private static readonly Dictionary<string, ParseTotalModel> ParseTotalDictionary = new Dictionary<string, ParseTotalModel>();
 
         public void RefreshFFLogsInfo()
         {
             var config = Settings.Instance.FFLogs;
-            if (!config.Visible ||
-                string.IsNullOrEmpty(config.ApiKey))
+            if (!config.Visible)
             {
                 return;
+            }
+
+            if (config.IsDesignMode)
+            {
+                this.ParseTotal = DesigntimeParseTotal;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(config.ApiKey))
+            {
+                return;
+            }
+
+            var job = Jobs.Find(this.job);
+
+            lock (ParseTotalDictionary)
+            {
+                var model = default(ParseTotalModel);
+                var key = ParseTotalModel.CreateDataKey(this.name, this.worldName, config.ServerRegion, job);
+                if (!ParseTotalDictionary.ContainsKey(key))
+                {
+                    model = new ParseTotalModel();
+                    ParseTotalDictionary[key] = model;
+                }
+                else
+                {
+                    model = ParseTotalDictionary[key];
+                }
+
+                this.ParseTotal = model;
             }
 
             Task.Run(async () =>
@@ -409,7 +507,7 @@ namespace ACT.UltraScouter.Models
                     this.Name,
                     this.WorldName,
                     config.ServerRegion,
-                    Jobs.Find(this.JobID));
+                    job);
             });
         }
 
