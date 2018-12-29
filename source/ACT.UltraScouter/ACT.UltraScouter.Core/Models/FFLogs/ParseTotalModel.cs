@@ -46,7 +46,16 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         public string DataKey => CreateDataKey(this.characterName, this.server, this.region, this.job);
 
-        public void RaiseAllPropertiesChange() => this.RaiseAllPropertiesChange();
+        /// <summary>
+        /// すべてのPropertiesの変更通知を発生させる
+        /// </summary>
+        public void RaiseAllPropertiesChanged()
+        {
+            foreach (var pi in this.GetType().GetProperties())
+            {
+                this.RaisePropertyChanged(pi.Name);
+            }
+        }
 
         private string characterName;
 

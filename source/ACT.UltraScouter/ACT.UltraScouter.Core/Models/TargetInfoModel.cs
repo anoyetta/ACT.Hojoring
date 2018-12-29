@@ -460,7 +460,13 @@ namespace ACT.UltraScouter.Models
         public ParseTotalModel ParseTotal
         {
             get => this.parseTotal;
-            private set => this.SetProperty(ref this.parseTotal, value);
+            private set
+            {
+                if (this.SetProperty(ref this.parseTotal, value))
+                {
+                    this.parseTotal.RaiseAllPropertiesChanged();
+                }
+            }
         }
 
         private static readonly Dictionary<string, ParseTotalModel> ParseTotalDictionary = new Dictionary<string, ParseTotalModel>();
