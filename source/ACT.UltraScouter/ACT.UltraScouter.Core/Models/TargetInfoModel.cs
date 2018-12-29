@@ -453,6 +453,8 @@ namespace ACT.UltraScouter.Models
             }
         }
 
+        public static ParseTotalModel APITestResultParseTotal { get; set; } = null;
+
         private ParseTotalModel parseTotal = WPFHelper.IsDesignMode ? DesigntimeParseTotal : new ParseTotalModel();
 
         public ParseTotalModel ParseTotal
@@ -473,7 +475,7 @@ namespace ACT.UltraScouter.Models
 
             if (config.IsDesignMode)
             {
-                this.ParseTotal = DesigntimeParseTotal;
+                this.ParseTotal = APITestResultParseTotal ?? DesigntimeParseTotal;
                 return;
             }
 
