@@ -27,6 +27,15 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.visible, value);
         }
 
+        private bool hideInCombat = true;
+
+        [DataMember]
+        public bool HideInCombat
+        {
+            get => this.hideInCombat;
+            set => this.SetProperty(ref this.hideInCombat, value);
+        }
+
         private double scale = 1.0d;
 
         [DataMember]
