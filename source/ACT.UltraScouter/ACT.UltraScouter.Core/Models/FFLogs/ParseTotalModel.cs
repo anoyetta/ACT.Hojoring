@@ -338,6 +338,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                     region.ToString());
 
                 var query = HttpUtility.ParseQueryString(string.Empty);
+                query["timeframe"] = "historical";
                 query["api_key"] = Settings.Instance.FFLogs.ApiKey;
 
                 uri += $"?{query.ToString()}";
