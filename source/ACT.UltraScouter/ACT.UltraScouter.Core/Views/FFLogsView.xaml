@@ -29,6 +29,8 @@
   d:DataContext="{d:DesignInstance Type=vm:FFLogsViewModel, IsDesignTimeCreatable=True}">
 
   <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+    <fwcnv:BoolToCollapsedNegativeConverter x:Key="NotVisibilityConverter" />
     <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />
     <cnv:StrokeThicknessToBlurRadiusConverter x:Key="StrokeThicknessToBlurRadiusConverter" />
     <fwcnv:MultipleConverter x:Key="MultipleConverter" />
@@ -45,6 +47,10 @@
       <Setter Property="BlurRadius" Value="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}" />
       <Setter Property="BlurOpacity" Value="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
       <Setter Property="StrokeOpacity" Value="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+    </Style>
+
+    <Style x:Key="OutlineSStyle" TargetType="{x:Type ctrl:LightOutlineTextBlock}" BasedOn="{StaticResource OutlineStyle}">
+      <Setter Property="FontSize" Value="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
     </Style>
 
     <Style x:Key="OutlineXSStyle" TargetType="{x:Type ctrl:LightOutlineTextBlock}" BasedOn="{StaticResource OutlineStyle}">
@@ -96,7 +102,17 @@
       </StackPanel>
 
       <!-- Row1 -->
-      <Grid Grid.Row="1" Margin="5 15 0 0">
+      <ctrl:LightOutlineTextBlock
+        Grid.Row="1"
+        Style="{DynamicResource OutlineXSStyle}"
+        Margin="0 15 0 0"
+        Text="NO DATA"
+        Visibility="{Binding Model.ParseTotal.ExistsParses, Mode=OneWay, Converter={StaticResource NotVisibilityConverter}}" />
+
+      <Grid
+        Grid.Row="1"
+        Margin="5 15 0 0"
+        Visibility="{Binding Model.ParseTotal.ExistsParses, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
         <Grid.RowDefinitions>
           <RowDefinition />
           <RowDefinition />
@@ -148,7 +164,8 @@
         Margin="5 12 0 0"
         Focusable="False"
         IsTabStop="False"
-        ItemsSource="{Binding Model.ParseTotal.ParseList, Mode=OneWay}">
+        ItemsSource="{Binding Model.ParseTotal.ParseList, Mode=OneWay}"
+        Visibility="{Binding Model.ParseTotal.ExistsParses, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
 
         <ItemsControl.Resources>
           <Style x:Key="EncounterLabelStyle" TargetType="{x:Type ctrl:LightOutlineTextBlock}">
