@@ -806,6 +806,7 @@ namespace ACT.UltraScouter.Config
             { nameof(Settings.FFLogs), new FFLogs()
             {
                 Visible = false,
+                HideInCombat = true,
                 Location = new Location() { X = 0, Y = 0 },
                 Scale = 1.0d,
                 IsDesignMode = false,
@@ -815,6 +816,7 @@ namespace ACT.UltraScouter.Config
                     Color = Colors.White,
                     OutlineColor = Color.FromRgb(0x11, 0x13, 0x2b),
                 },
+                RefreshInterval = 8.0d,
             }},
 
             #endregion Target

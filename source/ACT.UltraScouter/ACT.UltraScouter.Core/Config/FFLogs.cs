@@ -27,6 +27,15 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.visible, value);
         }
 
+        private bool hideInCombat = true;
+
+        [DataMember]
+        public bool HideInCombat
+        {
+            get => this.hideInCombat;
+            set => this.SetProperty(ref this.hideInCombat, value);
+        }
+
         private double scale = 1.0d;
 
         [DataMember]
@@ -70,6 +79,15 @@ namespace ACT.UltraScouter.Config
         {
             get => this.serverRegion;
             set => this.SetProperty(ref this.serverRegion, value);
+        }
+
+        private double refreshInterval = 8.0d;
+
+        [DataMember]
+        public double RefreshInterval
+        {
+            get => this.refreshInterval;
+            set => this.SetProperty(ref this.refreshInterval, value);
         }
     }
 }

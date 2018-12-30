@@ -342,16 +342,11 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
                 this.FFLogsTestResult = string.Empty;
                 this.FFLogsTestResult += $"Status Code : {model.HttpStatusCode} ({(int)model.HttpStatusCode})\n";
-
-                if (model.HttpStatusCode != HttpStatusCode.OK)
-                {
-                    TargetInfoModel.APITestResultParseTotal = null;
-                    return;
-                }
-
                 this.FFLogsTestResult += $"\n";
-                this.FFLogsTestResult += $"Content :\n";
-                this.FFLogsTestResult += JValue.Parse(model.ResponseContent).ToString(Formatting.Indented) + Environment.NewLine;
+                this.FFLogsTestResult +=
+                    model.HttpStatusCode == HttpStatusCode.OK ?
+                    $"Content :\n{JValue.Parse(model.ResponseContent).ToString(Formatting.Indented)}\n" :
+                    $"Content : NO DATA\n";
 
                 TargetInfoModel.APITestResultParseTotal = model;
             }

@@ -313,6 +313,14 @@ namespace FFXIV.Framework.FFXIVHelper
         private readonly object playerLocker = new object();
         private Combatant player;
 
+        /// <summary>
+        /// 戦闘中か？
+        /// </summary>
+        /// <remarks>
+        /// パーティメンバのHP, MP, TPのいずれかが最大値でないとき簡易的に戦闘中と判断する
+        /// </remarks>
+        public bool InCombat { get; private set; } = false;
+
 #if DEBUG
 
         #region Dummy Combatants
@@ -687,6 +695,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
             if (partyList == null)
             {
+                this.InCombat = this.RefreshInCombat();
                 return;
             }
 
@@ -694,6 +703,39 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 this.currentPartyIDList = partyList;
             }
+
+            this.InCombat = this.RefreshInCombat();
+        }
+
+        public bool RefreshInCombat()
+        {
+            var result = false;
+
+            var combatants = this.GetPartyList();
+            if (combatants.Any())
+            {
+                result = (
+                    from x in combatants
+                    where
+                    x.CurrentHP != x.MaxHP ||
+                    x.CurrentMP != x.MaxMP ||
+                    x.CurrentTP != x.MaxTP
+                    select
+                    x).Any();
+            }
+            else
+            {
+                var player = this.GetPlayer();
+                if (player != null)
+                {
+                    result =
+                        player.CurrentHP != player.MaxHP ||
+                        player.CurrentMP != player.MaxMP ||
+                        player.CurrentTP != player.MaxTP;
+                }
+            }
+
+            return result;
         }
 
         public void SetSkillName(
