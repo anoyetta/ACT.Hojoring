@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using ACT.UltraScouter.Config;
@@ -517,6 +518,34 @@ namespace ACT.UltraScouter.Models
                     config.ServerRegion,
                     job);
             });
+
+            this.GarbageParseTotalDictionary();
+        }
+
+        private DateTime lastGarbageTimestamp = DateTime.MinValue;
+
+        private void GarbageParseTotalDictionary()
+        {
+            if ((DateTime.Now - this.lastGarbageTimestamp).TotalMinutes < 2.0)
+            {
+                return;
+            }
+
+            var ttl = Settings.Instance.FFLogs.RefreshInterval * 1.5d * -1;
+
+            lock (ParseTotalDictionary)
+            {
+                var targets = ParseTotalDictionary
+                    .Where(x => x.Value.Timestamp < DateTime.Now.AddMinutes(ttl))
+                    .ToArray();
+
+                foreach (var item in targets)
+                {
+                    ParseTotalDictionary.Remove(item.Key);
+                }
+            }
+
+            this.lastGarbageTimestamp = DateTime.Now;
         }
 
         #endregion FFLogs

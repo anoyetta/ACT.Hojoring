@@ -84,9 +84,9 @@ namespace ACT.UltraScouter.Models.FFLogs
         public string Category => ParseTotalModel.GetCategory(this.Percentile);
 
         [JsonIgnore]
-        public Color CategoryColor => ParseTotalModel.GetCategoryColor(this.Percentile);
+        public SolidColorBrush CategoryFillBrush => ParseTotalModel.GetCategoryFillBrush(this.Percentile);
 
         [JsonIgnore]
-        public SolidColorBrush CategoryBrush => ParseTotalModel.GetCategoryBrush(this.Percentile);
+        public SolidColorBrush CategoryStrokeBrush => ParseTotalModel.GetCategoryStrokeBrush(this.Percentile);
     }
 }

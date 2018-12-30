@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
 using System.Xml.Serialization;
@@ -89,5 +91,88 @@ namespace ACT.UltraScouter.Config
             get => this.refreshInterval;
             set => this.SetProperty(ref this.refreshInterval, value);
         }
+
+        private ColorSet[] categoryColors = DefaultCategoryColors;
+
+        [DataMember]
+        [XmlArray]
+        [XmlArrayItem(ElementName = "color")]
+        public ColorSet[] CategoryColors
+        {
+            get => this.categoryColors;
+            set
+            {
+                if (this.SetProperty(ref this.categoryColors, value))
+                {
+                    this.categoryColorDictionary = value?.ToDictionary(x => x.ID);
+                    this.RaisePropertyChanged(nameof(this.CategoryColorDictionary));
+                }
+            }
+        }
+
+        private Dictionary<string, ColorSet> categoryColorDictionary = DefaultCategoryColors.ToDictionary(x => x.ID);
+
+        [XmlIgnore]
+        public Dictionary<string, ColorSet> CategoryColorDictionary => this.categoryColorDictionary;
+
+        public static readonly ColorSet[] DefaultCategoryColors = new[]
+        {
+            new ColorSet() { ID = "A", Fill = "#e5cc80", Stroke = "#ccf0f0f0" },
+            new ColorSet() { ID = "B", Fill = "#ff8000", Stroke = "#ccf0f0f0" },
+            new ColorSet() { ID = "C", Fill = "#a335ee", Stroke = "#ccf0f0f0" },
+            new ColorSet() { ID = "D", Fill = "#0070ff", Stroke = "#ccf0f0f0" },
+            new ColorSet() { ID = "E", Fill = "#1eff00", Stroke = "#ccf0f0f0" },
+            new ColorSet() { ID = "F", Fill = "#666666", Stroke = "#ccf0f0f0" },
+        };
+    }
+
+    [Serializable]
+    public class ColorSet :
+        BindableBase
+    {
+        private string id;
+
+        [XmlAttribute(AttributeName = "id")]
+        public string ID
+        {
+            get => this.id;
+            set => this.SetProperty(ref this.id, value);
+        }
+
+        private string fill;
+
+        [XmlAttribute(AttributeName = "fill")]
+        public string Fill
+        {
+            get => this.fill;
+            set
+            {
+                if (this.SetProperty(ref this.fill, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.FillColor));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public Color FillColor => (Color)ColorConverter.ConvertFromString(this.fill);
+
+        private string stroke;
+
+        [XmlAttribute(AttributeName = "stroke")]
+        public string Stroke
+        {
+            get => this.stroke;
+            set
+            {
+                if (this.SetProperty(ref this.stroke, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.StrokeColor));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public Color StrokeColor => (Color)ColorConverter.ConvertFromString(this.stroke);
     }
 }
