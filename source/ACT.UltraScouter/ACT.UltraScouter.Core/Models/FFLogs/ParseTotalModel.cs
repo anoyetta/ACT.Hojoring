@@ -268,6 +268,22 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         public string ResponseContent { get; private set; }
 
+        private const string LoadingMessage = "Loading...";
+        private const string NoAPIKeyMessage = "API Key Nothing";
+        private const string TimeoutMessage = "Timeout";
+        private const string NoDataMessage = "NO DATA";
+        private string message = LoadingMessage;
+
+        public string Message
+        {
+            get => this.message;
+            private set => this.SetProperty(ref this.message, value);
+        }
+
+        private async void SetMessage(
+            string message)
+            => await WPFHelper.InvokeAsync(() => this.Message = message);
+
         private static volatile bool isDownloading = false;
 
         public async Task GetParseAsync(
@@ -277,6 +293,8 @@ namespace ACT.UltraScouter.Models.FFLogs
             Job job,
             bool isTest = false)
         {
+            this.SetMessage(LoadingMessage);
+
             // 前の処理の完了を1.5秒間待つ
             for (int i = 0; i < 15; i++)
             {
@@ -290,18 +308,21 @@ namespace ACT.UltraScouter.Models.FFLogs
 
             if (isDownloading)
             {
+                this.SetMessage(TimeoutMessage);
                 return;
             }
 
             isDownloading = true;
 
+            var code = HttpStatusCode.Continue;
+            var json = string.Empty;
+            var message = string.Empty;
+
             try
             {
-                this.HttpStatusCode = HttpStatusCode.Continue;
-                this.ResponseContent = string.Empty;
-
                 if (string.IsNullOrEmpty(Settings.Instance.FFLogs.ApiKey))
                 {
+                    this.SetMessage(NoAPIKeyMessage);
                     Clear();
                     return;
                 }
@@ -344,19 +365,21 @@ namespace ACT.UltraScouter.Models.FFLogs
                 uri += $"?{query.ToString()}";
 
                 var res = await this.HttpClient.GetAsync(uri);
-                this.HttpStatusCode = res.StatusCode;
-                if (res.StatusCode != HttpStatusCode.OK)
+                code = res.StatusCode;
+                if (code != HttpStatusCode.OK)
                 {
+                    this.SetMessage(NoDataMessage);
                     Clear();
                     return;
                 }
 
-                this.ResponseContent = await res.Content.ReadAsStringAsync();
-                var parses = JsonConvert.DeserializeObject<ParseModel[]>(this.ResponseContent);
+                json = await res.Content.ReadAsStringAsync();
+                var parses = JsonConvert.DeserializeObject<ParseModel[]>(json);
 
                 if (parses == null ||
                     parses.Length < 1)
                 {
+                    this.SetMessage(NoDataMessage);
                     Clear();
                     return;
                 }
@@ -387,6 +410,14 @@ namespace ACT.UltraScouter.Models.FFLogs
                     this.Job = filter != null ? job : null;
                     this.AddRangeParse(bests);
                     this.Timestamp = DateTime.Now;
+
+                    if (!bests.Any())
+                    {
+                        this.Message = NoDataMessage;
+                    }
+
+                    this.HttpStatusCode = code;
+                    this.ResponseContent = json;
                 });
             }
             finally
@@ -403,6 +434,8 @@ namespace ACT.UltraScouter.Models.FFLogs
                     this.Region = region;
                     this.Job = job;
                     this.ParseList.Clear();
+                    this.HttpStatusCode = code;
+                    this.ResponseContent = json;
                 });
             }
         }

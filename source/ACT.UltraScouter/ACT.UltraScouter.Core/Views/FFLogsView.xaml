@@ -108,7 +108,7 @@
         Grid.Row="1"
         Style="{DynamicResource OutlineXSStyle}"
         Margin="0 15 0 0"
-        Text="NO DATA"
+        Text="{Binding Model.ParseTotal.Message, Mode=OneWay}"
         Visibility="{Binding Model.ParseTotal.ExistsParses, Mode=OneWay, Converter={StaticResource NotVisibilityConverter}}" />
 
       <Grid
