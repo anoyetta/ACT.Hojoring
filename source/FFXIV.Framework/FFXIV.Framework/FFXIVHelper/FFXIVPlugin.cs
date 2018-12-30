@@ -695,7 +695,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
             if (partyList == null)
             {
-                this.InCombat = false;
+                this.InCombat = this.RefreshInCombat();
                 return;
             }
 
@@ -709,15 +709,33 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public bool RefreshInCombat()
         {
+            var result = false;
+
             var combatants = this.GetPartyList();
-            return (
-                from x in combatants
-                where
-                x.CurrentHP != x.MaxHP &&
-                x.CurrentMP != x.MaxMP &&
-                x.CurrentTP != x.MaxTP
-                select
-                x).Any();
+            if (combatants.Any())
+            {
+                result = (
+                    from x in combatants
+                    where
+                    x.CurrentHP != x.MaxHP ||
+                    x.CurrentMP != x.MaxMP ||
+                    x.CurrentTP != x.MaxTP
+                    select
+                    x).Any();
+            }
+            else
+            {
+                var player = this.GetPlayer();
+                if (player != null)
+                {
+                    result =
+                        player.CurrentHP != player.MaxHP ||
+                        player.CurrentMP != player.MaxMP ||
+                        player.CurrentTP != player.MaxTP;
+                }
+            }
+
+            return result;
         }
 
         public void SetSkillName(

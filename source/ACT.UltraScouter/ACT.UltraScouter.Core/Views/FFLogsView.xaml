@@ -83,7 +83,9 @@
       </Grid.RowDefinitions>
 
       <!-- Row0 -->
-      <StackPanel Grid.Row="0">
+      <StackPanel
+        Grid.Row="0"
+        Visibility="{Binding Model.ParseTotal.ExistsName, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
         <StackPanel Orientation="Horizontal">
           <ctrl:LightOutlineTextBlock
             x:Name="NameLabel"
@@ -97,7 +99,7 @@
             Text="{Binding Model.ParseTotal.JobName, Mode=OneWay}" />
           <ctrl:LightOutlineTextBlock
             Style="{DynamicResource OutlineXSStyle}"
-            Text="{Binding Model.ParseTotal.Server, Mode=OneWay, StringFormat={}  ({0})}" />
+            Text="{Binding Model.ParseTotal.ServerToDisplay, Mode=OneWay, StringFormat={}  {0}}" />
         </StackPanel>
       </StackPanel>
 
@@ -196,7 +198,7 @@
 
         <ItemsControl.ItemTemplate>
           <DataTemplate DataType="{x:Type logs_model:ParseModel}">
-            <Grid Margin="0 0 0 2">
+            <Grid Margin="0 0 0 1">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition SharedSizeGroup="A" />
                 <ColumnDefinition Width="Auto" SharedSizeGroup="B" />
