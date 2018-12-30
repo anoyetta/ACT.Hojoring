@@ -108,7 +108,7 @@
         Grid.Row="1"
         Style="{DynamicResource OutlineXSStyle}"
         Margin="0 15 0 0"
-        Text="NO DATA"
+        Text="{Binding Model.ParseTotal.Message, Mode=OneWay}"
         Visibility="{Binding Model.ParseTotal.ExistsParses, Mode=OneWay, Converter={StaticResource NotVisibilityConverter}}" />
 
       <Grid
@@ -136,9 +136,10 @@
           Margin="30 0 0 0"
           Text="{Binding Model.ParseTotal.BestPerfAvg, Mode=OneWay, StringFormat=N1}"
           TextAlignment="Right"
-          Fill="{Binding Model.ParseTotal.CategoryBrush, Mode=OneWay}"
-          Stroke="{DynamicResource CategoryStrokeBrush}"
-          StrokeOpacity="0.9"
+          Fill="{Binding Model.ParseTotal.CategoryFillBrush, Mode=OneWay}"
+          Stroke="{Binding Model.ParseTotal.CategoryStrokeBrush, Mode=OneWay}"
+          StrokeOpacity="{Binding Model.ParseTotal.CategoryStrokeBrush.Color.ScA, Mode=OneWay}"
+          BlurOpacity="{Binding Model.ParseTotal.CategoryStrokeBrush.Color.ScA, Mode=OneWay}"
           FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.1}" />
 
         <ctrl:LightOutlineTextBlock
@@ -153,9 +154,10 @@
           Style="{DynamicResource OutlineStyle}"
           Text="{Binding Model.ParseTotal.DPSAvg, Mode=OneWay, StringFormat=N0}"
           TextAlignment="Right"
-          Fill="{Binding Model.ParseTotal.CategoryBrush, Mode=OneWay}"
-          Stroke="{DynamicResource CategoryStrokeBrush}"
-          StrokeOpacity="0.9"
+          Fill="{Binding Model.ParseTotal.CategoryFillBrush, Mode=OneWay}"
+          Stroke="{Binding Model.ParseTotal.CategoryStrokeBrush, Mode=OneWay}"
+          StrokeOpacity="{Binding Model.ParseTotal.CategoryStrokeBrush.Color.ScA, Mode=OneWay}"
+          BlurOpacity="{Binding Model.ParseTotal.CategoryStrokeBrush.Color.ScA, Mode=OneWay}"
           FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.1}" />
       </Grid>
 
@@ -174,13 +176,13 @@
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Fill" Value="{Binding ElementName=NameLabel, Path=Fill, Mode=OneWay}" />
             <Setter Property="Stroke" Value="{Binding ElementName=NameLabel, Path=Stroke, Mode=OneWay}" />
-            <Setter Property="StrokeThickness" Value="{Binding ElementName=NameLabel, Path=StrokeThickness, Mode=OneWay}" />
+            <Setter Property="StrokeThickness" Value="{Binding ElementName=NameLabel, Path=StrokeThickness, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" />
             <Setter Property="FontFamily" Value="{Binding ElementName=NameLabel, Path=FontFamily, Mode=OneWay}" />
             <Setter Property="FontSize" Value="{Binding ElementName=NameLabel, Path=FontSize, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" />
             <Setter Property="FontStretch" Value="{Binding ElementName=NameLabel, Path=FontStretch, Mode=OneWay}" />
             <Setter Property="FontWeight" Value="{Binding ElementName=NameLabel, Path=FontWeight, Mode=OneWay}" />
             <Setter Property="FontStyle" Value="{Binding ElementName=NameLabel, Path=FontStyle, Mode=OneWay}" />
-            <Setter Property="BlurRadius" Value="{Binding ElementName=NameLabel, Path=BlurRadius, Mode=OneWay}" />
+            <Setter Property="BlurRadius" Value="{Binding ElementName=NameLabel, Path=BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" />
             <Setter Property="BlurOpacity" Value="{Binding ElementName=NameLabel, Path=BlurOpacity, Mode=OneWay}" />
             <Setter Property="StrokeOpacity" Value="{Binding ElementName=NameLabel, Path=StrokeOpacity, Mode=OneWay}" />
           </Style>
@@ -198,7 +200,7 @@
 
         <ItemsControl.ItemTemplate>
           <DataTemplate DataType="{x:Type logs_model:ParseModel}">
-            <Grid Margin="0 0 0 1">
+            <Grid Margin="0 0 0 0">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition SharedSizeGroup="A" />
                 <ColumnDefinition Width="Auto" SharedSizeGroup="B" />
@@ -214,18 +216,20 @@
                 Style="{DynamicResource EncounterLabelStyle}"
                 Text="{Binding Percentile, Mode=OneWay, StringFormat=N0}"
                 TextAlignment="Right"
-                Fill="{Binding CategoryBrush, Mode=OneWay}"
-                Stroke="{DynamicResource CategoryStrokeBrush}"
-                StrokeOpacity="0.9" />
+                Fill="{Binding CategoryFillBrush, Mode=OneWay}"
+                Stroke="{Binding CategoryStrokeBrush, Mode=OneWay}"
+                StrokeOpacity="{Binding CategoryStrokeBrush.Color.ScA, Mode=OneWay}"
+                BlurOpacity="{Binding CategoryStrokeBrush.Color.ScA, Mode=OneWay}" />
               <ctrl:LightOutlineTextBlock
                 Grid.Column="2"
                 Margin="15 0 0 0"
                 Style="{DynamicResource EncounterLabelStyle}"
                 Text="{Binding Total, Mode=OneWay, StringFormat=N0}"
                 TextAlignment="Right"
-                Fill="{Binding CategoryBrush, Mode=OneWay}"
-                Stroke="{DynamicResource CategoryStrokeBrush}"
-                StrokeOpacity="0.9" />
+                Fill="{Binding CategoryFillBrush, Mode=OneWay}"
+                Stroke="{Binding CategoryStrokeBrush, Mode=OneWay}"
+                StrokeOpacity="{Binding CategoryStrokeBrush.Color.ScA, Mode=OneWay}"
+                BlurOpacity="{Binding CategoryStrokeBrush.Color.ScA, Mode=OneWay}" />
             </Grid>
           </DataTemplate>
         </ItemsControl.ItemTemplate>

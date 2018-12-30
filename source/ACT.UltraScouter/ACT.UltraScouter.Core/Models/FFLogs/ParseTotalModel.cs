@@ -10,6 +10,7 @@ using System.Web;
 using System.Windows.Media;
 using ACT.UltraScouter.Config;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using Newtonsoft.Json;
 using Prism.Mvvm;
@@ -30,8 +31,8 @@ namespace ACT.UltraScouter.Models.FFLogs
                     this.RaisePropertyChanged(nameof(this.BestPerfAvg));
                     this.RaisePropertyChanged(nameof(this.DPSAvg));
                     this.RaisePropertyChanged(nameof(this.Category));
-                    this.RaisePropertyChanged(nameof(this.CategoryColor));
-                    this.RaisePropertyChanged(nameof(this.CategoryBrush));
+                    this.RaisePropertyChanged(nameof(this.CategoryFillBrush));
+                    this.RaisePropertyChanged(nameof(this.CategoryStrokeBrush));
                     this.RaisePropertyChanged(nameof(this.ExistsParses));
                 }
             };
@@ -153,8 +154,8 @@ namespace ACT.UltraScouter.Models.FFLogs
             this.RaisePropertyChanged(nameof(this.BestPerfAvg));
             this.RaisePropertyChanged(nameof(this.DPSAvg));
             this.RaisePropertyChanged(nameof(this.Category));
-            this.RaisePropertyChanged(nameof(this.CategoryColor));
-            this.RaisePropertyChanged(nameof(this.CategoryBrush));
+            this.RaisePropertyChanged(nameof(this.CategoryFillBrush));
+            this.RaisePropertyChanged(nameof(this.CategoryStrokeBrush));
             this.RaisePropertyChanged(nameof(this.ExistsParses));
         }
 
@@ -170,9 +171,9 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         public string Category => GetCategory(this.BestPerfAvg);
 
-        public Color CategoryColor => GetCategoryColor(this.BestPerfAvg);
+        public SolidColorBrush CategoryFillBrush => GetCategoryFillBrush(this.BestPerfAvg);
 
-        public SolidColorBrush CategoryBrush => GetCategoryBrush(this.BestPerfAvg);
+        public SolidColorBrush CategoryStrokeBrush => GetCategoryStrokeBrush(this.BestPerfAvg);
 
         public static string GetCategory(
             float perf)
@@ -203,45 +204,21 @@ namespace ACT.UltraScouter.Models.FFLogs
             }
         }
 
-        public static Color GetCategoryColor(
+        public static Color GetCategoryFillColor(
             float perf)
-            => CategoryBrushesDictionary[GetCategory(perf)].Color;
+            => Settings.Instance.FFLogs.CategoryColorDictionary[GetCategory(perf)].FillColor;
 
-        public static SolidColorBrush GetCategoryBrush(
+        public static Color GetCategoryStrokeColor(
             float perf)
-            => CategoryBrushesDictionary[GetCategory(perf)].Brush;
+            => Settings.Instance.FFLogs.CategoryColorDictionary[GetCategory(perf)].StrokeColor;
 
-        private static readonly Color Category1Color = (Color)ColorConverter.ConvertFromString("#E9D086");
-        private static readonly Color Category2Color = (Color)ColorConverter.ConvertFromString("#FC9E3E");
-        private static readonly Color Category3Color = (Color)ColorConverter.ConvertFromString("#A83DB8");
-        private static readonly Color Category4Color = (Color)ColorConverter.ConvertFromString("#064ECC");
-        private static readonly Color Category5Color = (Color)ColorConverter.ConvertFromString("#219D1E");
-        private static readonly Color Category6Color = (Color)ColorConverter.ConvertFromString("#C8C2B7");
+        public static SolidColorBrush GetCategoryFillBrush(
+            float perf)
+            => GetCategoryFillColor(perf).ToBrush();
 
-        private static Dictionary<string, (Color Color, SolidColorBrush Brush)> categoryBrushesDictionary;
-
-        private static Dictionary<string, (Color Color, SolidColorBrush Brush)> CategoryBrushesDictionary =>
-            categoryBrushesDictionary ?? (categoryBrushesDictionary = CreateCategoryBrushesDictionary());
-
-        private static Dictionary<string, (Color Color, SolidColorBrush Brush)> CreateCategoryBrushesDictionary()
-        {
-            var result = default(Dictionary<string, (Color Color, SolidColorBrush Brush)>);
-
-            WPFHelper.Invoke(() =>
-            {
-                result = new Dictionary<string, (Color, SolidColorBrush)>()
-                {
-                    { "A", (Category1Color, new SolidColorBrush(Category1Color)) },
-                    { "B", (Category2Color, new SolidColorBrush(Category2Color)) },
-                    { "C", (Category3Color, new SolidColorBrush(Category3Color)) },
-                    { "D", (Category4Color, new SolidColorBrush(Category4Color)) },
-                    { "E", (Category5Color, new SolidColorBrush(Category5Color)) },
-                    { "F", (Category6Color, new SolidColorBrush(Category6Color)) },
-                };
-            });
-
-            return result;
-        }
+        public static SolidColorBrush GetCategoryStrokeBrush(
+            float perf)
+            => GetCategoryStrokeColor(perf).ToBrush();
 
         private static HttpClient httpClient;
 
@@ -268,6 +245,22 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         public string ResponseContent { get; private set; }
 
+        private const string LoadingMessage = "Loading...";
+        private const string NoAPIKeyMessage = "API Key Nothing";
+        private const string TimeoutMessage = "Timeout";
+        private const string NoDataMessage = "NO DATA";
+        private string message = LoadingMessage;
+
+        public string Message
+        {
+            get => this.message;
+            private set => this.SetProperty(ref this.message, value);
+        }
+
+        private async void SetMessage(
+            string message)
+            => await WPFHelper.InvokeAsync(() => this.Message = message);
+
         private static volatile bool isDownloading = false;
 
         public async Task GetParseAsync(
@@ -277,6 +270,8 @@ namespace ACT.UltraScouter.Models.FFLogs
             Job job,
             bool isTest = false)
         {
+            this.SetMessage(LoadingMessage);
+
             // 前の処理の完了を1.5秒間待つ
             for (int i = 0; i < 15; i++)
             {
@@ -290,18 +285,21 @@ namespace ACT.UltraScouter.Models.FFLogs
 
             if (isDownloading)
             {
+                this.SetMessage(TimeoutMessage);
                 return;
             }
 
             isDownloading = true;
 
+            var code = HttpStatusCode.Continue;
+            var json = string.Empty;
+            var message = string.Empty;
+
             try
             {
-                this.HttpStatusCode = HttpStatusCode.Continue;
-                this.ResponseContent = string.Empty;
-
                 if (string.IsNullOrEmpty(Settings.Instance.FFLogs.ApiKey))
                 {
+                    this.SetMessage(NoAPIKeyMessage);
                     Clear();
                     return;
                 }
@@ -344,19 +342,21 @@ namespace ACT.UltraScouter.Models.FFLogs
                 uri += $"?{query.ToString()}";
 
                 var res = await this.HttpClient.GetAsync(uri);
-                this.HttpStatusCode = res.StatusCode;
-                if (res.StatusCode != HttpStatusCode.OK)
+                code = res.StatusCode;
+                if (code != HttpStatusCode.OK)
                 {
+                    this.SetMessage(NoDataMessage);
                     Clear();
                     return;
                 }
 
-                this.ResponseContent = await res.Content.ReadAsStringAsync();
-                var parses = JsonConvert.DeserializeObject<ParseModel[]>(this.ResponseContent);
+                json = await res.Content.ReadAsStringAsync();
+                var parses = JsonConvert.DeserializeObject<ParseModel[]>(json);
 
                 if (parses == null ||
                     parses.Length < 1)
                 {
+                    this.SetMessage(NoDataMessage);
                     Clear();
                     return;
                 }
@@ -387,6 +387,14 @@ namespace ACT.UltraScouter.Models.FFLogs
                     this.Job = filter != null ? job : null;
                     this.AddRangeParse(bests);
                     this.Timestamp = DateTime.Now;
+
+                    if (!bests.Any())
+                    {
+                        this.Message = NoDataMessage;
+                    }
+
+                    this.HttpStatusCode = code;
+                    this.ResponseContent = json;
                 });
             }
             finally
@@ -403,6 +411,8 @@ namespace ACT.UltraScouter.Models.FFLogs
                     this.Region = region;
                     this.Job = job;
                     this.ParseList.Clear();
+                    this.HttpStatusCode = code;
+                    this.ResponseContent = json;
                 });
             }
         }
