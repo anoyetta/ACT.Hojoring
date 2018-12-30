@@ -50,6 +50,11 @@
         IsChecked="{Binding FFLogs.Visible, Mode=TwoWay}" />
       <CheckBox
         Margin="0 5 0 0"
+        Content="{DynamicResource FFLogs_HideInCombat}"
+        IsChecked="{Binding FFLogs.HideInCombat, Mode=TwoWay}"
+        ToolTip="{DynamicResource FFLogs_HideInCombatDescription}" />
+      <CheckBox
+        Margin="0 5 0 0"
         Content="{DynamicResource Common_TestMode}"
         IsChecked="{Binding FFLogs.IsDesignMode, Mode=TwoWay}" />
 
@@ -72,7 +77,7 @@
           Width="75"
           Minimum="0.01"
           Maximum="4.00"
-          Increment="0.01"
+          Increment="0.10"
           FormatString="N1" />
       </StackPanel>
 

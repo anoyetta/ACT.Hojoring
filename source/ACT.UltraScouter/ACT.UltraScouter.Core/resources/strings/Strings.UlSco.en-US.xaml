@@ -99,6 +99,13 @@
   <system:String x:Key="MobList_MobBColor">Mob B Color</system:String>
   <system:String x:Key="MobList_MobOtherColor">Mob Other Color</system:String>
 
+  <system:String x:Key="FFLogs_HideInCombat">Hide in combat</system:String>
+  <system:String x:Key="FFLogs_HideInCombatDescription" xml:space="preserve">
+Judgment during battle is simple.
+When one of the party members HP, MP, TP is not the maximum value,
+it is judged that it is in battle.
+  </system:String>
+
   <system:String x:Key="Help_GotoLastestRelease">Go to Lastest release on GitHub</system:String>
   <system:String x:Key="Help_ContactToAnoyetta">Contact to anoyetta on Discord</system:String>
   <system:String x:Key="Help_OpenConfig">Open Config</system:String>
