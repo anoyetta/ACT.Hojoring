@@ -816,6 +816,7 @@ namespace ACT.UltraScouter.Config
                     Color = Colors.White,
                     OutlineColor = Color.FromRgb(0x11, 0x13, 0x2b),
                 },
+                RefreshInterval = 8.0d,
             }},
 
             #endregion Target

@@ -62,16 +62,35 @@ namespace ACT.UltraScouter.Models.FFLogs
         public string CharacterName
         {
             get => this.characterName;
-            set => this.SetProperty(ref this.characterName, value);
+            set
+            {
+                if (this.SetProperty(ref this.characterName, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.ExistsName));
+                }
+            }
         }
+
+        public bool ExistsName => !string.IsNullOrEmpty(this.CharacterName);
 
         private string server;
 
         public string Server
         {
             get => this.server;
-            set => this.SetProperty(ref this.server, value);
+            set
+            {
+                if (this.SetProperty(ref this.server, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.ServerToDisplay));
+                }
+            }
         }
+
+        public string ServerToDisplay =>
+            !string.IsNullOrEmpty(this.Server) ?
+            $"({this.Server})" :
+            null;
 
         private FFLogsRegions region = FFLogsRegions.JP;
 
@@ -95,7 +114,11 @@ namespace ACT.UltraScouter.Models.FFLogs
             }
         }
 
-        public string JobName => this.Job?.NameEN ?? "All Job";
+        public string JobName =>
+            this.Job == null ? "All" :
+                this.Job.ID == JobIDs.Unknown ?
+                    string.Empty :
+                    this.Job.NameEN;
 
         private DateTime timestamp = DateTime.MinValue;
 
@@ -245,6 +268,8 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         public string ResponseContent { get; private set; }
 
+        private static volatile bool isDownloading = false;
+
         public async Task GetParseAsync(
             string characterName,
             string server,
@@ -252,80 +277,115 @@ namespace ACT.UltraScouter.Models.FFLogs
             Job job,
             bool isTest = false)
         {
-            this.HttpStatusCode = HttpStatusCode.Continue;
-            this.ResponseContent = string.Empty;
-
-            if (string.IsNullOrEmpty(Settings.Instance.FFLogs.ApiKey))
+            // 前の処理の完了を1.5秒間待つ
+            for (int i = 0; i < 15; i++)
             {
-                Clear();
+                if (!isDownloading)
+                {
+                    break;
+                }
+
+                await Task.Delay(TimeSpan.FromSeconds(0.1));
+            }
+
+            if (isDownloading)
+            {
                 return;
             }
 
-            if (!isTest)
+            isDownloading = true;
+
+            try
             {
-                // 同じ条件で6分以内ならば再取得しない
-                if (this.ExistsParses &&
-                    characterName == this.CharacterName &&
-                    server == this.Server &&
-                    region == this.Region)
+                this.HttpStatusCode = HttpStatusCode.Continue;
+                this.ResponseContent = string.Empty;
+
+                if (string.IsNullOrEmpty(Settings.Instance.FFLogs.ApiKey))
                 {
-                    if ((DateTime.Now - this.Timestamp).TotalMinutes <= 6.0)
+                    Clear();
+                    return;
+                }
+
+                if (!isTest)
+                {
+                    // 同じ条件でn分以内ならば再取得しない
+                    if (characterName == this.CharacterName &&
+                        server == this.Server &&
+                        region == this.Region)
                     {
-                        return;
+                        var interval = Settings.Instance.FFLogs.RefreshInterval;
+                        if (!this.ExistsParses)
+                        {
+                            interval /= 2.0;
+                        }
+
+                        if (interval < 1.0d)
+                        {
+                            interval = 1.0d;
+                        }
+
+                        if ((DateTime.Now - this.Timestamp).TotalMinutes <= interval)
+                        {
+                            return;
+                        }
                     }
                 }
+
+                var uri = string.Format(
+                    "parses/character/{0}/{1}/{2}",
+                    Uri.EscapeUriString(characterName),
+                    Uri.EscapeUriString(server),
+                    region.ToString());
+
+                var query = HttpUtility.ParseQueryString(string.Empty);
+                query["api_key"] = Settings.Instance.FFLogs.ApiKey;
+
+                uri += $"?{query.ToString()}";
+
+                var res = await this.HttpClient.GetAsync(uri);
+                this.HttpStatusCode = res.StatusCode;
+                if (res.StatusCode != HttpStatusCode.OK)
+                {
+                    Clear();
+                    return;
+                }
+
+                this.ResponseContent = await res.Content.ReadAsStringAsync();
+                var parses = JsonConvert.DeserializeObject<ParseModel[]>(this.ResponseContent);
+
+                if (parses == null ||
+                    parses.Length < 1)
+                {
+                    Clear();
+                    return;
+                }
+
+                var bests =
+                    from x in parses
+                    where
+                    job == null ||
+                    string.Equals(x.Spec, job.NameEN, StringComparison.OrdinalIgnoreCase)
+                    orderby
+                    x.EncounterID,
+                    x.Percentile descending
+                    group x by x.EncounterName into g
+                    select
+                    g.OrderByDescending(y => y.Percentile).First();
+
+                await WPFHelper.InvokeAsync(() =>
+                {
+                    this.CharacterName = characterName;
+                    this.Server = server;
+                    this.Region = region;
+                    this.Job = job;
+                    this.AddRangeParse(bests);
+                    this.Timestamp = DateTime.Now;
+                });
             }
-
-            var uri = string.Format(
-                "parses/character/{0}/{1}/{2}",
-                Uri.EscapeUriString(characterName),
-                Uri.EscapeUriString(server),
-                region.ToString());
-
-            var query = HttpUtility.ParseQueryString(string.Empty);
-            query["api_key"] = Settings.Instance.FFLogs.ApiKey;
-
-            uri += $"?{query.ToString()}";
-
-            var res = await this.HttpClient.GetAsync(uri);
-            this.HttpStatusCode = res.StatusCode;
-            if (res.StatusCode != HttpStatusCode.OK)
+            finally
             {
-                Clear();
-                return;
+                isDownloading = false;
             }
-
-            this.ResponseContent = await res.Content.ReadAsStringAsync();
-            var parses = JsonConvert.DeserializeObject<ParseModel[]>(this.ResponseContent);
-
-            if (parses == null ||
-                parses.Length < 1)
-            {
-                Clear();
-                return;
-            }
-
-            var bests =
-                from x in parses
-                where
-                job == null ||
-                string.Equals(x.Spec, job.NameEN, StringComparison.OrdinalIgnoreCase)
-                orderby
-                x.EncounterID,
-                x.Percentile descending
-                group x by x.EncounterName into g
-                select
-                g.OrderByDescending(y => y.Percentile).First();
-
-            await WPFHelper.InvokeAsync(() =>
-            {
-                this.CharacterName = characterName;
-                this.Server = server;
-                this.Region = region;
-                this.Job = job;
-                this.AddRangeParse(bests);
-                this.Timestamp = DateTime.Now;
-            });
 
             async void Clear()
             {
