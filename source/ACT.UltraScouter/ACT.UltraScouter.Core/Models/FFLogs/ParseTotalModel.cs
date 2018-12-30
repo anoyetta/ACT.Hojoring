@@ -361,11 +361,17 @@ namespace ACT.UltraScouter.Models.FFLogs
                     return;
                 }
 
+                var filter = default(Predicate<ParseModel>);
+                if (job != null &&
+                    parses.Any(x => string.Equals(x.Spec, job.NameEN, StringComparison.OrdinalIgnoreCase)))
+                {
+                    filter = (x) => string.Equals(x.Spec, job.NameEN, StringComparison.OrdinalIgnoreCase);
+                }
+
                 var bests =
                     from x in parses
                     where
-                    job == null ||
-                    string.Equals(x.Spec, job.NameEN, StringComparison.OrdinalIgnoreCase)
+                    filter?.Invoke(x) ?? true
                     orderby
                     x.EncounterID,
                     x.Percentile descending
@@ -378,7 +384,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                     this.CharacterName = characterName;
                     this.Server = server;
                     this.Region = region;
-                    this.Job = job;
+                    this.Job = filter != null ? job : null;
                     this.AddRangeParse(bests);
                     this.Timestamp = DateTime.Now;
                 });
