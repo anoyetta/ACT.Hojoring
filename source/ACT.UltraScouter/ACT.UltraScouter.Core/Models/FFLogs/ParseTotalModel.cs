@@ -121,6 +121,22 @@ namespace ACT.UltraScouter.Models.FFLogs
                     string.Empty :
                     this.Job.NameEN;
 
+        private string bestJobName;
+
+        public string BestJobName
+        {
+            get => this.bestJobName;
+            set
+            {
+                if (this.SetProperty(ref this.bestJobName, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.IsExistsBestJobName));
+                }
+            }
+        }
+
+        public bool IsExistsBestJobName => !string.IsNullOrEmpty(this.bestJobName);
+
         private DateTime timestamp = DateTime.MinValue;
 
         public DateTime Timestamp
@@ -270,8 +286,6 @@ namespace ACT.UltraScouter.Models.FFLogs
             Job job,
             bool isTest = false)
         {
-            this.SetMessage(LoadingMessage);
-
             // 前の処理の完了を1.5秒間待つ
             for (int i = 0; i < 15; i++)
             {
@@ -329,6 +343,9 @@ namespace ACT.UltraScouter.Models.FFLogs
                     }
                 }
 
+                this.Timestamp = DateTime.Now;
+                this.SetMessage(LoadingMessage);
+
                 var uri = string.Format(
                     "parses/character/{0}/{1}/{2}",
                     Uri.EscapeUriString(characterName),
@@ -338,7 +355,6 @@ namespace ACT.UltraScouter.Models.FFLogs
                 var query = HttpUtility.ParseQueryString(string.Empty);
                 query["timeframe"] = "historical";
                 query["api_key"] = Settings.Instance.FFLogs.ApiKey;
-
                 uri += $"?{query.ToString()}";
 
                 var res = await this.HttpClient.GetAsync(uri);
@@ -379,14 +395,23 @@ namespace ACT.UltraScouter.Models.FFLogs
                     select
                     g.OrderByDescending(y => y.Percentile).First();
 
+                var bestJob = string.Empty;
+                if (filter == null)
+                {
+                    bestJob = parses
+                        .OrderByDescending(x => x.Percentile)
+                        .FirstOrDefault()?
+                        .Spec;
+                }
+
                 await WPFHelper.InvokeAsync(() =>
                 {
                     this.CharacterName = characterName;
                     this.Server = server;
                     this.Region = region;
                     this.Job = filter != null ? job : null;
+                    this.BestJobName = bestJob;
                     this.AddRangeParse(bests);
-                    this.Timestamp = DateTime.Now;
 
                     if (!bests.Any())
                     {
@@ -410,6 +435,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                     this.Server = server;
                     this.Region = region;
                     this.Job = job;
+                    this.BestJobName = string.Empty;
                     this.ParseList.Clear();
                     this.HttpStatusCode = code;
                     this.ResponseContent = json;
