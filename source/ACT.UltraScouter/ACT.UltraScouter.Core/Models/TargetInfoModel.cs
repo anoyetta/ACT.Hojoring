@@ -408,6 +408,7 @@ namespace ACT.UltraScouter.Models
                         Server = "Chocobo",
                         Region = FFLogsRegions.JP,
                         Job = Jobs.Find(JobIDs.BLM),
+                        BestJobName = "Black Mage"
                     };
 
                     designtimeParseTotal.AddRangeParse(new[]
@@ -415,6 +416,7 @@ namespace ACT.UltraScouter.Models
                         new ParseModel()
                         {
                             EncounterID = 1,
+                            Spec = "Black Mage",
                             EncounterName = "BOSS 1",
                             Percentile = 100.0f,
                             Total = 6451f,
@@ -422,6 +424,7 @@ namespace ACT.UltraScouter.Models
                         new ParseModel()
                         {
                             EncounterID = 2,
+                            Spec = "Black Mage",
                             EncounterName = "BOSS 2",
                             Percentile = 95.0f,
                             Total = 5234f,
@@ -429,6 +432,7 @@ namespace ACT.UltraScouter.Models
                         new ParseModel()
                         {
                             EncounterID = 3,
+                            Spec = "Black Mage",
                             EncounterName = "BOSS 3",
                             Percentile = 75.0f,
                             Total = 5912f,
@@ -436,6 +440,7 @@ namespace ACT.UltraScouter.Models
                         new ParseModel()
                         {
                             EncounterID = 4,
+                            Spec = "Black Mage",
                             EncounterName = "BOSS 4",
                             Percentile = 50.0f,
                             Total = 4987f,
@@ -443,6 +448,7 @@ namespace ACT.UltraScouter.Models
                         new ParseModel()
                         {
                             EncounterID = 5,
+                            Spec = "Black Mage",
                             EncounterName = "BOSS 5",
                             Percentile = 25.0f,
                             Total = 6166f,
@@ -450,6 +456,7 @@ namespace ACT.UltraScouter.Models
                         new ParseModel()
                         {
                             EncounterID = 6,
+                            Spec = "Black Mage",
                             EncounterName = "BOSS 6",
                             Percentile = 14.0f,
                             Total = 3167f,
