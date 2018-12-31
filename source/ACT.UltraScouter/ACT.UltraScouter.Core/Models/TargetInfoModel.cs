@@ -416,36 +416,43 @@ namespace ACT.UltraScouter.Models
                         {
                             EncounterID = 1,
                             EncounterName = "BOSS 1",
-                            Percentile = 79.1f,
+                            Percentile = 100.0f,
                             Total = 6451f,
                         },
                         new ParseModel()
                         {
                             EncounterID = 2,
                             EncounterName = "BOSS 2",
-                            Percentile = 71.3f,
+                            Percentile = 95.0f,
                             Total = 5234f,
                         },
                         new ParseModel()
                         {
                             EncounterID = 3,
                             EncounterName = "BOSS 3",
-                            Percentile = 64.8f,
+                            Percentile = 75.0f,
                             Total = 5912f,
                         },
                         new ParseModel()
                         {
                             EncounterID = 4,
                             EncounterName = "BOSS 4",
-                            Percentile = 72.2f,
+                            Percentile = 50.0f,
                             Total = 4987f,
                         },
                         new ParseModel()
                         {
                             EncounterID = 5,
-                            EncounterName = "BOSS 4 EX",
-                            Percentile = 81.4f,
+                            EncounterName = "BOSS 5",
+                            Percentile = 25.0f,
                             Total = 6166f,
+                        },
+                        new ParseModel()
+                        {
+                            EncounterID = 6,
+                            EncounterName = "BOSS 6",
+                            Percentile = 14.0f,
+                            Total = 3167f,
                         },
                     });
                 }
