@@ -299,7 +299,6 @@ namespace ACT.UltraScouter.Models.FFLogs
 
             if (isDownloading)
             {
-                this.SetMessage(TimeoutMessage);
                 return;
             }
 
