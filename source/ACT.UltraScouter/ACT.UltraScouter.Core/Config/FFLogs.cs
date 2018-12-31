@@ -117,12 +117,12 @@ namespace ACT.UltraScouter.Config
 
         public static readonly ColorSet[] DefaultCategoryColors = new[]
         {
-            new ColorSet() { ID = "A", Fill = "#e5cc80", Stroke = "#ccf0f0f0" },
-            new ColorSet() { ID = "B", Fill = "#ff8000", Stroke = "#ccf0f0f0" },
-            new ColorSet() { ID = "C", Fill = "#a335ee", Stroke = "#ccf0f0f0" },
-            new ColorSet() { ID = "D", Fill = "#0070ff", Stroke = "#ccf0f0f0" },
-            new ColorSet() { ID = "E", Fill = "#1eff00", Stroke = "#ccf0f0f0" },
-            new ColorSet() { ID = "F", Fill = "#666666", Stroke = "#ccf0f0f0" },
+            new ColorSet() { ID = "A", Fill = "#e5cc80", Stroke = "#cc101010" },
+            new ColorSet() { ID = "B", Fill = "#ff8000", Stroke = "#cc101010" },
+            new ColorSet() { ID = "C", Fill = "#cc7eb1", Stroke = "#cc101010" },
+            new ColorSet() { ID = "D", Fill = "#38a1db", Stroke = "#cc101010" },
+            new ColorSet() { ID = "E", Fill = "#3eb370", Stroke = "#cc101010" },
+            new ColorSet() { ID = "F", Fill = "#d3ccd6", Stroke = "#cc101010" },
         };
     }
 
