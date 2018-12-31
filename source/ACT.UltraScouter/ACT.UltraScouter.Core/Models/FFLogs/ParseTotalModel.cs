@@ -270,8 +270,6 @@ namespace ACT.UltraScouter.Models.FFLogs
             Job job,
             bool isTest = false)
         {
-            this.SetMessage(LoadingMessage);
-
             // 前の処理の完了を1.5秒間待つ
             for (int i = 0; i < 15; i++)
             {
@@ -328,6 +326,8 @@ namespace ACT.UltraScouter.Models.FFLogs
                         }
                     }
                 }
+
+                this.SetMessage(LoadingMessage);
 
                 var uri = string.Format(
                     "parses/character/{0}/{1}/{2}",
