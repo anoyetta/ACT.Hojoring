@@ -51,10 +51,14 @@
 
     <Style x:Key="OutlineSStyle" TargetType="{x:Type ctrl:LightOutlineTextBlock}" BasedOn="{StaticResource OutlineStyle}">
       <Setter Property="FontSize" Value="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
+      <Setter Property="StrokeThickness" Value="{Binding Path=Config.DisplayText.Font.OutlineThickness, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" />
+      <Setter Property="BlurRadius" Value="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" />
     </Style>
 
     <Style x:Key="OutlineXSStyle" TargetType="{x:Type ctrl:LightOutlineTextBlock}" BasedOn="{StaticResource OutlineStyle}">
       <Setter Property="FontSize" Value="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.7}" />
+      <Setter Property="StrokeThickness" Value="{Binding Path=Config.DisplayText.Font.OutlineThickness, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
+      <Setter Property="BlurRadius" Value="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
     </Style>
 
     <SolidColorBrush x:Key="CategoryStrokeBrush">Black</SolidColorBrush>
@@ -116,22 +120,42 @@
         Margin="5 15 0 0"
         Visibility="{Binding Model.ParseTotal.ExistsParses, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
         <Grid.RowDefinitions>
-          <RowDefinition />
-          <RowDefinition />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
           <ColumnDefinition />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
+        <StackPanel
+          Grid.Row="0"
+          Grid.Column="0"
+          Grid.ColumnSpan="2"
+          Orientation="Horizontal"
+          Visibility="{Binding Model.ParseTotal.IsExistsBestJobName, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+          <ctrl:LightOutlineTextBlock
+            Style="{DynamicResource OutlineXSStyle}"
+            Text="Best Job"
+            VerticalAlignment="Center"
+            FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
+          <ctrl:LightOutlineTextBlock
+            Style="{DynamicResource OutlineXSStyle}"
+            TextAlignment="Right"
+            Text="{Binding Model.ParseTotal.BestJobName, Mode=OneWay, StringFormat={}  {0}}"
+            VerticalAlignment="Center"
+            FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
+        </StackPanel>
+
         <ctrl:LightOutlineTextBlock
-          Grid.Row="0" Grid.Column="0"
+          Grid.Row="1" Grid.Column="0"
           Style="{DynamicResource OutlineStyle}"
           Text="Best Perf Avg."
           VerticalAlignment="Center"
           FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
         <ctrl:LightOutlineTextBlock
-          Grid.Row="0" Grid.Column="1"
+          Grid.Row="1" Grid.Column="1"
           Style="{DynamicResource OutlineStyle}"
           Margin="30 0 0 0"
           Text="{Binding Model.ParseTotal.BestPerfAvg, Mode=OneWay, StringFormat=N1}"
@@ -143,13 +167,13 @@
           FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.1}" />
 
         <ctrl:LightOutlineTextBlock
-          Grid.Row="1" Grid.Column="0"
+          Grid.Row="2" Grid.Column="0"
           Style="{DynamicResource OutlineStyle}"
           Text="Best DPS Avg."
           VerticalAlignment="Center"
           FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
         <ctrl:LightOutlineTextBlock
-          Grid.Row="1" Grid.Column="1"
+          Grid.Row="2" Grid.Column="1"
           Margin="30 0 0 0"
           Style="{DynamicResource OutlineStyle}"
           Text="{Binding Model.ParseTotal.DPSAvg, Mode=OneWay, StringFormat=N0}"
