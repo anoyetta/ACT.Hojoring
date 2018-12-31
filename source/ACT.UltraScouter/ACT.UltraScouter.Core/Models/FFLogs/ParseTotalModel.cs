@@ -13,6 +13,7 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using Newtonsoft.Json;
+using NLog;
 using Prism.Mvvm;
 
 namespace ACT.UltraScouter.Models.FFLogs
@@ -20,6 +21,12 @@ namespace ACT.UltraScouter.Models.FFLogs
     public class ParseTotalModel :
         BindableBase
     {
+        #region Logger
+
+        private static Logger Logger => AppLog.DefaultLogger;
+
+        #endregion Logger
+
         private bool isInitializing = false;
 
         public ParseTotalModel()
@@ -263,7 +270,9 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         private const string LoadingMessage = "Loading...";
         private const string NoAPIKeyMessage = "API Key Nothing";
-        private const string TimeoutMessage = "Timeout";
+        private const string NoCharacterNameMessage = "Character Name Nothing";
+        private const string NoServerMessage = "Server Nothing";
+        private const string ErrorMessage = "ERROR";
         private const string NoDataMessage = "NO DATA";
         private string message = LoadingMessage;
 
@@ -277,7 +286,12 @@ namespace ACT.UltraScouter.Models.FFLogs
             string message)
             => await WPFHelper.InvokeAsync(() => this.Message = message);
 
+        private static object DownlodingLocker = new object();
         private static volatile bool isDownloading = false;
+
+        private const int CheckLimit = 2500;
+        private const int CheckInterval = 250;
+        private static readonly Random Random = new Random(DateTime.Now.Second);
 
         public async Task GetParseAsync(
             string characterName,
@@ -286,23 +300,27 @@ namespace ACT.UltraScouter.Models.FFLogs
             Job job,
             bool isTest = false)
         {
-            // 前の処理の完了を1.5秒間待つ
-            for (int i = 0; i < 15; i++)
+            // 前の処理の完了を待つ
+            for (int i = 0; i < (CheckLimit / CheckInterval); i++)
             {
                 if (!isDownloading)
                 {
                     break;
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(0.1));
+                var wait = Random.Next(CheckInterval - 50, CheckInterval);
+                await Task.Delay(wait);
             }
 
-            if (isDownloading)
+            lock (DownlodingLocker)
             {
-                return;
-            }
+                if (isDownloading)
+                {
+                    return;
+                }
 
-            isDownloading = true;
+                isDownloading = true;
+            }
 
             var code = HttpStatusCode.Continue;
             var json = string.Empty;
@@ -313,6 +331,20 @@ namespace ACT.UltraScouter.Models.FFLogs
                 if (string.IsNullOrEmpty(Settings.Instance.FFLogs.ApiKey))
                 {
                     this.SetMessage(NoAPIKeyMessage);
+                    Clear();
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(characterName))
+                {
+                    this.SetMessage(NoCharacterNameMessage);
+                    Clear();
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(server))
+                {
+                    this.SetMessage(NoServerMessage);
                     Clear();
                     return;
                 }
@@ -356,22 +388,45 @@ namespace ACT.UltraScouter.Models.FFLogs
                 query["api_key"] = Settings.Instance.FFLogs.ApiKey;
                 uri += $"?{query.ToString()}";
 
-                var res = await this.HttpClient.GetAsync(uri);
-                code = res.StatusCode;
-                if (code != HttpStatusCode.OK)
+                var parses = default(ParseModel[]);
+
+                try
                 {
-                    this.SetMessage(NoDataMessage);
-                    Clear();
-                    return;
+                    var res = await this.HttpClient.GetAsync(uri);
+                    code = res.StatusCode;
+                    if (code != HttpStatusCode.OK)
+                    {
+                        if (code != HttpStatusCode.BadRequest)
+                        {
+                            this.SetMessage($"{NoDataMessage} ({(int)code})");
+                        }
+                        else
+                        {
+                            this.SetMessage(NoDataMessage);
+                        }
+
+                        Clear();
+                        return;
+                    }
+
+                    json = await res.Content.ReadAsStringAsync();
+                    parses = JsonConvert.DeserializeObject<ParseModel[]>(json);
+
+                    if (parses == null ||
+                        parses.Length < 1)
+                    {
+                        this.SetMessage(NoDataMessage);
+                        Clear();
+                        return;
+                    }
                 }
-
-                json = await res.Content.ReadAsStringAsync();
-                var parses = JsonConvert.DeserializeObject<ParseModel[]>(json);
-
-                if (parses == null ||
-                    parses.Length < 1)
+                catch (Exception ex)
                 {
-                    this.SetMessage(NoDataMessage);
+                    Logger.Error(
+                        ex,
+                        $"Error FFLogs API. charactername={characterName} server={server} region={region} uri={uri}");
+
+                    this.SetMessage(ErrorMessage);
                     Clear();
                     return;
                 }
@@ -423,7 +478,10 @@ namespace ACT.UltraScouter.Models.FFLogs
             }
             finally
             {
-                isDownloading = false;
+                lock (DownlodingLocker)
+                {
+                    isDownloading = false;
+                }
             }
 
             async void Clear()
