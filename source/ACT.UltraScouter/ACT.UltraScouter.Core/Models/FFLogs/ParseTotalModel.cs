@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using ACT.UltraScouter.Config;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
@@ -118,6 +119,8 @@ namespace ACT.UltraScouter.Models.FFLogs
                 if (this.SetProperty(ref this.job, value))
                 {
                     this.RaisePropertyChanged(nameof(this.JobName));
+                    this.RaisePropertyChanged(nameof(this.JobIcon));
+                    this.RaisePropertyChanged(nameof(this.IsExistsJobIcon));
                 }
             }
         }
@@ -127,6 +130,10 @@ namespace ACT.UltraScouter.Models.FFLogs
                 this.Job.ID == JobIDs.Unknown ?
                     string.Empty :
                     this.Job.NameEN;
+
+        public BitmapSource JobIcon => JobIconDictionary.Instance.GetIcon(this.job?.ID ?? JobIDs.Unknown);
+
+        public bool IsExistsJobIcon => JobIconDictionary.Instance.Icons.ContainsKey(this.job?.ID ?? JobIDs.Unknown);
 
         private string bestJobName;
 
@@ -138,7 +145,26 @@ namespace ACT.UltraScouter.Models.FFLogs
                 if (this.SetProperty(ref this.bestJobName, value))
                 {
                     this.RaisePropertyChanged(nameof(this.IsExistsBestJobName));
+                    this.RaisePropertyChanged(nameof(this.BestJobIcon));
                 }
+            }
+        }
+
+        public BitmapSource BestJobIcon
+        {
+            get
+            {
+                var result = default(BitmapSource);
+
+                var job = Jobs.List
+                    .FirstOrDefault(x =>
+                        string.Equals(x.NameEN, this.bestJobName, StringComparison.OrdinalIgnoreCase));
+                if (job != null)
+                {
+                    result = JobIconDictionary.Instance.GetIcon(job.ID);
+                }
+
+                return result;
             }
         }
 

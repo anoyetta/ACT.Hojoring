@@ -91,6 +91,13 @@
         Grid.Row="0"
         Visibility="{Binding Model.ParseTotal.ExistsName, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
         <StackPanel Orientation="Horizontal">
+          <Viewbox
+            Margin="0 0 5 0"
+            Stretch="Uniform"
+            Visibility="{Binding Model.ParseTotal.IsExistsJobIcon, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
+            Height="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay}">
+            <Image Source="{Binding Model.ParseTotal.JobIcon, Mode=OneWay}" />
+          </Viewbox>
           <ctrl:LightOutlineTextBlock
             x:Name="NameLabel"
             Style="{DynamicResource OutlineStyle}"
@@ -98,12 +105,14 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Margin="0 2 0 0">
+          <!--
           <ctrl:LightOutlineTextBlock
             Style="{DynamicResource OutlineXSStyle}"
             Text="{Binding Model.ParseTotal.JobName, Mode=OneWay}" />
+          -->
           <ctrl:LightOutlineTextBlock
             Style="{DynamicResource OutlineXSStyle}"
-            Text="{Binding Model.ParseTotal.ServerToDisplay, Mode=OneWay, StringFormat={}  {0}}" />
+            Text="{Binding Model.ParseTotal.Server, Mode=OneWay}" />
         </StackPanel>
       </StackPanel>
 
@@ -136,21 +145,32 @@
           Orientation="Horizontal"
           Visibility="{Binding Model.ParseTotal.IsExistsBestJobName, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
           <ctrl:LightOutlineTextBlock
+            x:Name="BestJobLabel"
             Style="{DynamicResource OutlineXSStyle}"
             Text="Best Job"
             VerticalAlignment="Center"
             FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
+          <!--
           <ctrl:LightOutlineTextBlock
             Style="{DynamicResource OutlineXSStyle}"
             TextAlignment="Right"
             Text="{Binding Model.ParseTotal.BestJobName, Mode=OneWay, StringFormat={}  {0}}"
             VerticalAlignment="Center"
             FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
+          -->
+          <Viewbox
+            Stretch="Uniform"
+            Margin="10 0 0 0"
+            Height="{Binding ElementName=BestJobLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.1}">
+            <Image Source="{Binding Model.ParseTotal.BestJobIcon, Mode=OneWay}" />
+          </Viewbox>
         </StackPanel>
 
         <ctrl:LightOutlineTextBlock
+          x:Name="BestPerfAvgLabel"
           Grid.Row="1" Grid.Column="0"
           Style="{DynamicResource OutlineStyle}"
+          HorizontalAlignment="Left"
           Text="Best Perf Avg."
           VerticalAlignment="Center"
           FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
@@ -213,6 +233,8 @@
 
           <Style x:Key="EncounterSmallLabelStyle" TargetType="{x:Type ctrl:LightOutlineTextBlock}" BasedOn="{StaticResource EncounterLabelStyle}">
             <Setter Property="FontSize" Value="{Binding ElementName=NameLabel, Path=FontSize, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Setter Property="MaxWidth" Value="{Binding ElementName=BestPerfAvgLabel, Path=ActualWidth, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.2}" />
           </Style>
         </ItemsControl.Resources>
 
