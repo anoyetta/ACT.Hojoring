@@ -228,26 +228,28 @@ namespace ACT.XIVLog
             return result;
         }
 
+        private const string CommandKeyword = "/xivlog open";
+
         private Task OpenXIVLogAsync(
-            string logLine) => Task.Run(() =>
+            string logLine)
+        {
+            if (string.IsNullOrEmpty(logLine))
             {
-                const string CommandKeyword = "/xivlog open";
+                return null;
+            }
 
-                if (string.IsNullOrEmpty(logLine))
-                {
-                    return;
-                }
+            if (!File.Exists(this.LogfileName))
+            {
+                return null;
+            }
 
-                if (!File.Exists(this.LogfileName))
-                {
-                    return;
-                }
+            if (logLine.ContainsIgnoreCase(CommandKeyword))
+            {
+                return Task.Run(() => Process.Start(this.LogfileName));
+            }
 
-                if (logLine.ContainsIgnoreCase(CommandKeyword))
-                {
-                    Process.Start(this.LogfileName);
-                }
-            });
+            return null;
+        }
 
         #region INotifyPropertyChanged
 
