@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -468,6 +469,10 @@ namespace ACT.UltraScouter.Models
             }
         }
 
+        public static bool IsAvailableParseTotalTextCommand { get; private set; } = false;
+
+        private static ParseTotalModel TextCommandParseTotal { get; } = new ParseTotalModel();
+
         public static ParseTotalModel APITestResultParseTotal { get; set; } = null;
 
         private ParseTotalModel parseTotal = WPFHelper.IsDesignMode ? DesigntimeParseTotal : new ParseTotalModel();
@@ -502,6 +507,12 @@ namespace ACT.UltraScouter.Models
 
             if (string.IsNullOrEmpty(config.ApiKey))
             {
+                return;
+            }
+
+            if (IsAvailableParseTotalTextCommand)
+            {
+                this.ParseTotal = TextCommandParseTotal;
                 return;
             }
 
@@ -560,6 +571,53 @@ namespace ACT.UltraScouter.Models
             }
 
             this.lastGarbageTimestamp = DateTime.Now;
+        }
+
+        private static System.Timers.Timer textCommandTTLTimer;
+
+        private static System.Timers.Timer TextCommandTTLTimer =>
+            textCommandTTLTimer ?? (textCommandTTLTimer = CreateTextCommandTTLTimer());
+
+        private static System.Timers.Timer CreateTextCommandTTLTimer()
+        {
+            var timer = new System.Timers.Timer();
+
+            timer.AutoReset = false;
+            timer.Interval = 30d * 1000d;
+            timer.Elapsed += (x, y) =>
+            {
+                IsAvailableParseTotalTextCommand = false;
+            };
+
+            return timer;
+        }
+
+        public static void GetFFLogsInfoFromTextCommand(
+            string characterName,
+            string serverName)
+        {
+            try
+            {
+                TextCommandTTLTimer.Stop();
+                IsAvailableParseTotalTextCommand = true;
+
+                var ti = CultureInfo.CurrentCulture.TextInfo;
+                characterName = ti.ToTitleCase(characterName);
+                serverName = ti.ToTitleCase(serverName);
+
+                Task.Run(async () =>
+                {
+                    await TextCommandParseTotal.GetParseAsync(
+                        characterName,
+                        serverName,
+                        Settings.Instance.FFLogs.ServerRegion,
+                        null);
+                });
+            }
+            finally
+            {
+                TextCommandTTLTimer.Start();
+            }
         }
 
         #endregion FFLogs

@@ -1,14 +1,18 @@
 using System;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using ACT.UltraScouter.Common;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Config.UI.Views;
+using ACT.UltraScouter.Models;
 using ACT.UltraScouter.Workers;
 using Advanced_Combat_Tracker;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.WPF.Views;
 using NLog;
@@ -148,6 +152,9 @@ namespace ACT.UltraScouter
                     // タブページを登録する
                     this.SetupPluginTabPages(pluginScreenSpace);
 
+                    // テキストコマンドの購読を追加する
+                    this.SubscribeTextCommands();
+
                     this.PluginStatusLabel.Text = "Plugin started.";
                     this.Logger.Trace("[ULTRA SCOUTER] End InitPlugin");
 
@@ -224,5 +231,55 @@ namespace ACT.UltraScouter
                 Settings.Instance.Save();
             }
         }
+
+        #region TextCommands
+
+        private const string ParseCommand = "/parse";
+
+        private static readonly Regex ParseCommandRegex = new Regex(
+            $@"{ParseCommand} ""(?<characterName>.+)"" (?<serverName>.+)",
+            RegexOptions.Compiled |
+            RegexOptions.IgnoreCase);
+
+        private void SubscribeTextCommands()
+        {
+            // /parse コマンド
+            TextCommandBridge.Instance.Subscribe(new TextCommand(
+                (string logLine, out Match match) =>
+                {
+                    match = null;
+
+                    if (!logLine.ContainsIgnoreCase(ParseCommand))
+                    {
+                        return false;
+                    }
+
+                    match = ParseCommandRegex.Match(logLine);
+                    return match.Success;
+                },
+                (string logLine, Match match) =>
+                {
+                    if (match == null ||
+                        !match.Success)
+                    {
+                        return;
+                    }
+
+                    var charName = match.Groups["characterName"].ToString();
+                    var serverName = match.Groups["serverName"].ToString();
+
+                    if (string.IsNullOrEmpty(charName) ||
+                        string.IsNullOrEmpty(serverName))
+                    {
+                        return;
+                    }
+
+                    TargetInfoModel.GetFFLogsInfoFromTextCommand(
+                        charName,
+                        serverName);
+                }));
+        }
+
+        #endregion TextCommands
     }
 }
