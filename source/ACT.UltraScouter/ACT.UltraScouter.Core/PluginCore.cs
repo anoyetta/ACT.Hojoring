@@ -8,6 +8,7 @@ using ACT.UltraScouter.Common;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Config.UI.Views;
 using ACT.UltraScouter.Models;
+using ACT.UltraScouter.Models.FFLogs;
 using ACT.UltraScouter.Workers;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
@@ -160,6 +161,12 @@ namespace ACT.UltraScouter
 
                     // アップデートを確認する
                     await Task.Run(() => this.Update());
+
+#if DEBUG
+                    // FFLogsの統計データベースをロードする
+                    // [TBD] 但し未完成なのでデバッグ時のみとする
+                    await StatisticsDatabase.Instance.LoadAsync();
+#endif
                 }
                 catch (Exception ex)
                 {
@@ -237,7 +244,7 @@ namespace ACT.UltraScouter
         private const string ParseCommand = "/parse";
 
         private static readonly Regex ParseCommandRegex = new Regex(
-            $@"{ParseCommand} ""(?<characterName>.+)"" (?<serverName>.+)",
+            $@"{ParseCommand}(\s+""(?<characterName>.+)"")?(\s+(?<serverName>.+))?",
             RegexOptions.Compiled |
             RegexOptions.IgnoreCase);
 
@@ -267,12 +274,6 @@ namespace ACT.UltraScouter
 
                     var charName = match.Groups["characterName"].ToString();
                     var serverName = match.Groups["serverName"].ToString();
-
-                    if (string.IsNullOrEmpty(charName) ||
-                        string.IsNullOrEmpty(serverName))
-                    {
-                        return;
-                    }
 
                     TargetInfoModel.GetFFLogsInfoFromTextCommand(
                         charName,

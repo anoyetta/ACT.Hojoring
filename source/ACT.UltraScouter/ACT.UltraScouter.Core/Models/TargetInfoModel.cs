@@ -601,6 +601,22 @@ namespace ACT.UltraScouter.Models
                 TextCommandTTLTimer.Stop();
                 IsAvailableParseTotalTextCommand = true;
 
+                if (string.IsNullOrEmpty(characterName) ||
+                    string.IsNullOrEmpty(serverName))
+                {
+                    var player = FFXIVPlugin.Instance.GetPlayer();
+
+                    if (string.IsNullOrEmpty(characterName))
+                    {
+                        characterName = player.Name;
+                    }
+
+                    if (string.IsNullOrEmpty(serverName))
+                    {
+                        serverName = player.WorldName;
+                    }
+                }
+
                 var ti = CultureInfo.CurrentCulture.TextInfo;
                 characterName = ti.ToTitleCase(characterName);
                 serverName = ti.ToTitleCase(serverName);

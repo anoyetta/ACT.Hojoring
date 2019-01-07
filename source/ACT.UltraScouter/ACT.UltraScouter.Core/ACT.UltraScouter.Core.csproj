@@ -139,9 +139,15 @@
     <Compile Include="Config\UI\Views\ViewExtensions.cs" />
     <Compile Include="Models\Arrows.cs" />
     <Compile Include="Models\CastingEventArgs.cs" />
+    <Compile Include="Models\FFLogs\BasicEntryModel.cs" />
     <Compile Include="Models\FFLogs\Enums.cs" />
     <Compile Include="Models\FFLogs\ParseModel.cs" />
     <Compile Include="Models\FFLogs\ParseTotalModel.cs" />
+    <Compile Include="Models\FFLogs\ClassesModel.cs" />
+    <Compile Include="Models\FFLogs\RankingDatabase.cs" />
+    <Compile Include="Models\FFLogs\RankingsModel.cs" />
+    <Compile Include="Models\FFLogs\StatisticsDatabase.cs" />
+    <Compile Include="Models\FFLogs\ZonesModel.cs" />
     <Compile Include="Models\FTInfoModel.cs" />
     <Compile Include="Models\MeInfoModel.cs" />
     <Compile Include="Models\MobInfo.cs" />
