@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -273,6 +274,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         private ICommand ffLogsDisplayTextOutlineColorCommand;
         private ICommand ffLogsBackgroundColorCommand;
         private ICommand ffLogsTestAPICommand;
+        private ICommand ffLogsGetAPIKeyCommand;
 
         public ICommand FFLogsDisplayTextFontCommand =>
             this.ffLogsDisplayTextFontCommand ??
@@ -298,6 +300,11 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
             this.ffLogsTestAPICommand ??
             (this.ffLogsTestAPICommand =
             new DelegateCommand(this.ExecuteTestAPI));
+
+        public ICommand FFLogsGetAPIKeyCommand =>
+            this.ffLogsGetAPIKeyCommand ??
+            (this.ffLogsGetAPIKeyCommand =
+            new DelegateCommand(() => Process.Start("https://www.fflogs.com/profile")));
 
         public ParseTotalModel FFLogsTestParseTotalModel { get; } = new ParseTotalModel();
 
