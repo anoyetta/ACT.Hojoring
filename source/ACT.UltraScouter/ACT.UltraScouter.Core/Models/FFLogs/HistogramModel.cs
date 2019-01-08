@@ -1,9 +1,12 @@
 using System.Data.Linq.Mapping;
+using System.Windows.Media;
+using Prism.Mvvm;
 
 namespace ACT.UltraScouter.Models.FFLogs
 {
     [Table(Name = "histograms")]
-    public class HistogramModel
+    public class HistogramModel :
+        BindableBase
     {
         [Column(Name = "histogram_id", DbType = "INT", IsPrimaryKey = true)]
         public int ID { get; set; }
@@ -19,6 +22,10 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         [Column(Name = "rank_percentile", DbType = "REAL")]
         public double RankPercentile { get; set; } = 0;
+
+        public SolidColorBrush RankPercentileFillBrush => ParseTotalModel.GetCategoryFillBrush((float)this.RankPercentile);
+
+        public SolidColorBrush RankPercentileStrokeBrush => ParseTotalModel.GetCategoryStrokeBrush((float)this.RankPercentile);
 
         [Column(Name = "frequency_percent", DbType = "REAL")]
         public double FrequencyPercent { get; set; } = 0;
