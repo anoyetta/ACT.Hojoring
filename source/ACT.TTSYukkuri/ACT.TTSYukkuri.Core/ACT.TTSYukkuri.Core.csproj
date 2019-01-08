@@ -173,7 +173,6 @@
     <Compile Include="Sasara\SasaraSpeechController.cs" />
     <Compile Include="SoundPlayerWrapper.cs" />
     <Compile Include="SpeechController.cs" />
-    <Compile Include="StringExtension.cs" />
     <Compile Include="TTSServer\TTSServerController.cs" />
     <Compile Include="Voiceroid\VoiceroidSpeechController.cs" />
     <Compile Include="Yukkuri\AquesTalkParam.cs" />

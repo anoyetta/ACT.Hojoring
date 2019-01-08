@@ -1,12 +1,17 @@
 using System;
+using System.Collections.Generic;
+using System.Data.Linq;
+using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using ACT.UltraScouter.Config;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.FFXIVHelper;
 using Newtonsoft.Json;
 using NLog;
 
@@ -14,12 +19,6 @@ namespace ACT.UltraScouter.Models.FFLogs
 {
     public class StatisticsDatabase
     {
-        #region Logger
-
-        private static Logger Logger => AppLog.DefaultLogger;
-
-        #endregion Logger
-
         #region Singleton
 
         private static StatisticsDatabase instance;
@@ -32,11 +31,14 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         #endregion Singleton
 
+        public string APIKey { get; set; }
+
+        public Logger Logger { get; set; }
+
         private ZonesModel[] zones;
         private ClassesModel classes;
-        private RankingDatabase rankingDatabase;
 
-        private Config.FFLogs Config => Settings.Instance.FFLogs;
+        public Dictionary<int, BasicEntryModel> SpecDictionary { get; set; }
 
         private static HttpClient httpClient;
 
@@ -49,6 +51,10 @@ namespace ACT.UltraScouter.Models.FFLogs
                     return httpClient;
                 }
 
+                ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+                ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls11;
+                ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+
                 httpClient = new HttpClient();
                 httpClient.BaseAddress = new Uri("https://www.fflogs.com/v1/");
                 httpClient.DefaultRequestHeaders.Accept.Clear();
@@ -59,9 +65,10 @@ namespace ACT.UltraScouter.Models.FFLogs
             }
         }
 
-        public async Task LoadAsync()
+        public async Task CreateAsync(
+            string rankingFileName)
         {
-            if (string.IsNullOrEmpty(this.Config.ApiKey))
+            if (string.IsNullOrEmpty(this.APIKey))
             {
                 return;
             }
@@ -70,11 +77,23 @@ namespace ACT.UltraScouter.Models.FFLogs
             {
                 await this.LoadZonesAsync();
                 await this.LoadClassesAsync();
+                await this.CreateRankingsAsync(rankingFileName);
+            }
+            catch (Exception ex)
+            {
+                this.Log("[FFLogs] error statistics database.", ex);
+            }
+        }
+
+        public async Task LoadAsync()
+        {
+            try
+            {
                 await this.LoadRankingsAsync();
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "[FFLogs] error statistics database.");
+                this.Log("[FFLogs] error statistics database.", ex);
             }
         }
 
@@ -82,7 +101,7 @@ namespace ACT.UltraScouter.Models.FFLogs
         {
             var uri = "zones";
             var query = HttpUtility.ParseQueryString(string.Empty);
-            query["api_key"] = Settings.Instance.FFLogs.ApiKey;
+            query["api_key"] = this.APIKey;
             uri += $"?{query.ToString()}";
 
             var res = await this.HttpClient.GetAsync(uri);
@@ -94,14 +113,14 @@ namespace ACT.UltraScouter.Models.FFLogs
             var json = await res.Content.ReadAsStringAsync();
             this.zones = JsonConvert.DeserializeObject<ZonesModel[]>(json);
 
-            Logger.Trace("[FFLogs] zones loaded.");
+            this.Log("[FFLogs] zones loaded.");
         }
 
         public async Task LoadClassesAsync()
         {
             var uri = "classes";
             var query = HttpUtility.ParseQueryString(string.Empty);
-            query["api_key"] = Settings.Instance.FFLogs.ApiKey;
+            query["api_key"] = this.APIKey;
             uri += $"?{query.ToString()}";
 
             var res = await this.HttpClient.GetAsync(uri);
@@ -116,32 +135,35 @@ namespace ACT.UltraScouter.Models.FFLogs
                 classes.Any())
             {
                 this.classes = classes.FirstOrDefault();
-                Logger.Trace("[FFLogs] classes loaded.");
+                this.SpecDictionary = this.classes.Specs.ToDictionary(x => x.ID);
+                this.Log("[FFLogs] classes loaded.");
             }
         }
 
-        public async Task LoadRankingsAsync()
+        public async Task CreateRankingsAsync(
+            string rankingFileName)
         {
-            this.rankingDatabase = new RankingDatabase()
-            {
-                SpecDictionary = this.classes.Specs.ToDictionary(x => x.ID)
-            };
+            this.InitializeRankingsDatabase(rankingFileName);
 
             var targetEncounters = this.zones
                 .OrderByDescending(x => x.ID)
                 .FirstOrDefault()?
                 .Enconters;
 
+            var rankingBuffer = new List<RankingModel>(10000);
+
             foreach (var encounter in targetEncounters)
             {
-                var rankings = default(RankingsModel);
+                this.Log($@"[FFLogs] new rankings ""{encounter.Name}"".");
+
                 var page = 1;
+                var rankings = default(RankingsModel);
 
                 do
                 {
                     var uri = $"rankings/encounter/{encounter.ID}";
                     var query = HttpUtility.ParseQueryString(string.Empty);
-                    query["api_key"] = Settings.Instance.FFLogs.ApiKey;
+                    query["api_key"] = this.APIKey;
                     query["page"] = page.ToString();
                     uri += $"?{query.ToString()}";
 
@@ -153,24 +175,329 @@ namespace ACT.UltraScouter.Models.FFLogs
                         rankings = JsonConvert.DeserializeObject<RankingsModel>(json);
                         if (rankings != null)
                         {
-                            this.rankingDatabase.AddRankings(
-                                encounter.Name,
-                                rankings.Rankings);
+                            var targets = rankings.Rankings;
+                            targets.AsParallel().ForAll(item =>
+                            {
+                                item.Database = this;
+                                item.EncounterName = encounter.Name;
+
+                                if (this.SpecDictionary != null &&
+                                    this.SpecDictionary.ContainsKey(item.SpecID))
+                                {
+                                    item.Spec = this.SpecDictionary[item.SpecID].Name;
+                                }
+                            });
+
+                            rankingBuffer.AddRange(rankings.Rankings);
                         }
 
                         if (page % 100 == 0)
                         {
-                            Logger.Trace($"[FFLogs] rankings loaded. {encounter.Name} page {page}.");
+                            this.InsertRanking(rankingFileName, rankingBuffer);
+                            rankingBuffer.Clear();
+                            this.Log($@"[FFLogs] new rankings downloaded. ""{encounter.Name}"" page {page}.");
                         }
 
                         page++;
                     }
 
-                    await Task.Delay(TimeSpan.FromSeconds(0.51));
+                    await Task.Delay(TimeSpan.FromSeconds(0.50));
                 } while (rankings != null && rankings.HasMorePages);
+
+                this.InsertRanking(rankingFileName, rankingBuffer);
+                rankingBuffer.Clear();
+                this.Log($@"[FFLogs] new rankings downloaded. ""{encounter.Name}"" page {page}.");
             }
 
-            Logger.Trace("[FFLogs] rankings loaded.");
+            this.Log($@"[FFLogs] new rankings downloaded.");
+        }
+
+        public async Task CreateHistogramAsync(
+            string rankingFileName)
+        {
+            if (!File.Exists(rankingFileName))
+            {
+                return;
+            }
+
+            using (var cn = this.OpenRankingDatabaseConnection(rankingFileName))
+            {
+                using (var tran = cn.BeginTransaction())
+                {
+                    using (var cm = cn.CreateCommand())
+                    {
+                        cm.Transaction = tran;
+
+                        var q = new StringBuilder();
+                        q.AppendLine("DELETE FROM histograms;");
+                        cm.CommandText = q.ToString();
+                        await cm.ExecuteNonQueryAsync();
+                    }
+
+                    tran.Commit();
+                }
+
+                using (var db = new DataContext(cn))
+                using (var tran = cn.BeginTransaction())
+                {
+                    db.Transaction = tran;
+                    var rankings = db.GetTable<RankingModel>().ToArray();
+
+                    var averages =
+                        from x in rankings
+                        group x by
+                        x.CharacterHash
+                        into g
+                        select new
+                        {
+                            SpecName = g.First().Spec,
+                            DPSAverage = g.Average(z => z.Total),
+                            Rank = ((int)(g.Average(z => z.Total)) / 100) * 100,
+                        };
+
+                    var histograms =
+                        from x in averages
+                        group x by new
+                        {
+                            x.SpecName,
+                            x.Rank
+                        }
+                        into g
+                        select new
+                        {
+                            g.Key.SpecName,
+                            g.Key.Rank,
+                            RankFrom = g.Key.Rank,
+                            Frequency = (double)g.Count(),
+                        };
+
+                    var id = 1;
+                    var specs =
+                        from x in histograms
+                        orderby
+                        x.SpecName,
+                        x.Rank
+                        group x by
+                        x.SpecName;
+
+                    var entities = new List<HistogramModel>(histograms.Count());
+
+                    foreach (var spec in specs)
+                    {
+                        var totalCount = spec.Sum(x => x.Frequency);
+                        var count = 0d;
+                        var rankMin = spec.Min(x => x.Rank);
+                        var rankMax = spec.Max(x => x.Rank);
+
+                        for (int i = rankMin; i <= rankMax; i += 100)
+                        {
+                            var entry = spec.FirstOrDefault(x => x.Rank == i);
+                            var f = entry?.Frequency ?? 0;
+
+                            var hist = new HistogramModel()
+                            {
+                                ID = id++,
+                                SpecName = spec.Key,
+                                Rank = i,
+                                RankFrom = i,
+                                Frequency = f,
+                                FrequencyPercent = round(f / totalCount * 100d),
+                                RankPercentile = round(count / totalCount * 100d),
+                            };
+
+                            entities.Add(hist);
+                            count += f;
+                        }
+                    }
+
+                    var table = db.GetTable<HistogramModel>();
+                    table.InsertAllOnSubmit<HistogramModel>(entities);
+                    db.SubmitChanges();
+
+                    tran.Commit();
+                }
+            }
+
+            double round(double value)
+            {
+                return float.Parse(value.ToString("N3"));
+            }
+        }
+
+        public async Task LoadRankingsAsync()
+        {
+            const string TimestampFileUri = @"https://drive.google.com/uc?id=1bauam699-r3vfVgFLsUOSrVUnUy2BWsc&export=download";
+            const string DatabaseFileUri = @"https://drive.google.com/uc?id=1PZ8oPbk0XLgODI_PwoEXjAZllY2upzbm&export=download";
+
+            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls11;
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+
+            using (var client = new WebClient())
+            {
+                var timestampFileLocal = $"{this.RankingDatabaseFileName}.timestamp.txt";
+                var timestampFileTempLocal = $"{this.RankingDatabaseFileName}.timestamp_temp.txt";
+
+                if (File.Exists(timestampFileTempLocal))
+                {
+                    File.Delete(timestampFileTempLocal);
+                }
+
+                await client.DownloadFileTaskAsync(new Uri(TimestampFileUri), timestampFileTempLocal);
+
+                DateTime oldTimestamp = DateTime.MinValue, newTimestamp = DateTime.MinValue;
+                if (File.Exists(timestampFileLocal))
+                {
+                    DateTime.TryParse(File.ReadAllText(timestampFileLocal), out oldTimestamp);
+                }
+
+                DateTime.TryParse(File.ReadAllText(timestampFileTempLocal), out newTimestamp);
+
+                if (oldTimestamp >= newTimestamp)
+                {
+                    File.Delete(timestampFileTempLocal);
+                    return;
+                }
+
+                File.Copy(timestampFileTempLocal, timestampFileLocal, true);
+                File.Delete(timestampFileTempLocal);
+
+                if (File.Exists(this.RankingDatabaseFileName))
+                {
+                    File.Delete(this.RankingDatabaseFileName);
+                }
+
+                await client.DownloadFileTaskAsync(new Uri(DatabaseFileUri), this.RankingDatabaseFileName);
+            }
+        }
+
+        public IEnumerable<HistogramModel> GetHistogram(
+            JobIDs jobID)
+            => this.GetHistogram(Jobs.Find(jobID));
+
+        public IEnumerable<HistogramModel> GetHistogram(
+            Job job)
+        {
+            var targetSpec = job.NameEN;
+            using (var cn = this.OpenRankingDatabaseConnection(this.RankingDatabaseFileName))
+            using (var db = new DataContext(cn))
+            {
+                return
+                    db.GetTable<HistogramModel>()
+                    .Where(x => x.SpecName == targetSpec)
+                    .OrderBy(x => x.Rank);
+            }
+        }
+
+        private string RankingDatabaseFileName =>
+            Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                @"anoyetta\ACT\fflogs.db");
+
+        private string RankingDatabaseMasterFileName =>
+            Path.Combine(
+                DirectoryHelper.FindSubDirectory("resources"),
+                @"fflogs.master.db");
+
+        private SQLiteConnection OpenRankingDatabaseConnection(
+            string rankingDatabaseFileName)
+        {
+            var b = new SQLiteConnectionStringBuilder()
+            {
+                DataSource = rankingDatabaseFileName
+            };
+
+            var cn = new SQLiteConnection(b.ToString());
+            cn.Open();
+            return cn;
+        }
+
+        private void InitializeRankingsDatabase(
+            string rankingDatabaseFileName)
+        {
+            FileHelper.CreateDirectory(rankingDatabaseFileName);
+
+            if (!File.Exists(rankingDatabaseFileName))
+            {
+                File.Copy(
+                    this.RankingDatabaseMasterFileName,
+                    rankingDatabaseFileName,
+                    true);
+            }
+
+            using (var cn = this.OpenRankingDatabaseConnection(rankingDatabaseFileName))
+            using (var tran = cn.BeginTransaction())
+            {
+                using (var cm = cn.CreateCommand())
+                {
+                    cm.Transaction = tran;
+
+                    var q = new StringBuilder();
+                    q.AppendLine("DELETE FROM rankings;");
+                    q.AppendLine("DELETE FROM histograms;");
+                    cm.CommandText = q.ToString();
+                    cm.ExecuteNonQuery();
+                }
+
+                tran.Commit();
+            }
+        }
+
+        private void InsertRanking(
+            string rankingDatabaseFileName,
+            IEnumerable<RankingModel> rankings)
+        {
+            using (var cn = this.OpenRankingDatabaseConnection(rankingDatabaseFileName))
+            using (var tran = cn.BeginTransaction())
+            {
+                using (var cm = cn.CreateCommand())
+                {
+                    cm.Transaction = tran;
+
+                    var values = new List<string>();
+                    foreach (var entry in rankings)
+                    {
+                        values.Add($"('{entry.EncounterName}', '{entry.CreateCharacterHash()}', '{entry.Spec}', '{entry.Region}', {entry.Total})");
+                    }
+
+                    cm.CommandText =
+                        $"INSERT INTO rankings (encounter_name, character_hash, spec_name, region, total) VALUES \n{string.Join($",\n", values)}";
+                    cm.ExecuteNonQuery();
+                }
+
+                tran.Commit();
+            }
+        }
+
+        private async Task<IEnumerable<RankingModel>> LoadRankingsFileAsync()
+        {
+            if (!File.Exists(this.RankingDatabaseFileName))
+            {
+                return null;
+            }
+
+            using (var sr = new StreamReader(this.RankingDatabaseFileName, new UTF8Encoding(false)))
+            {
+                var json = await sr.ReadToEndAsync();
+                return JsonConvert.DeserializeObject<List<RankingModel>>(json);
+            }
+        }
+
+        private void Log(
+            string message,
+            Exception ex = null)
+        {
+            if (ex == null)
+            {
+                this.Logger?.Trace(message);
+                Console.WriteLine(message);
+            }
+            else
+            {
+                this.Logger?.Error(ex, message);
+                Console.WriteLine(message);
+                Console.WriteLine(ex);
+            }
         }
     }
 }

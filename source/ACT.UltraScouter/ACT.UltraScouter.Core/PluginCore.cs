@@ -252,33 +252,33 @@ namespace ACT.UltraScouter
         {
             // /parse コマンド
             TextCommandBridge.Instance.Subscribe(new TextCommand(
-                (string logLine, out Match match) =>
+            (string logLine, out Match match) =>
+            {
+                match = null;
+
+                if (!logLine.ContainsIgnoreCase(ParseCommand))
                 {
-                    match = null;
+                    return false;
+                }
 
-                    if (!logLine.ContainsIgnoreCase(ParseCommand))
-                    {
-                        return false;
-                    }
-
-                    match = ParseCommandRegex.Match(logLine);
-                    return match.Success;
-                },
-                (string logLine, Match match) =>
+                match = ParseCommandRegex.Match(logLine);
+                return match.Success;
+            },
+            (string logLine, Match match) =>
+            {
+                if (match == null ||
+                    !match.Success)
                 {
-                    if (match == null ||
-                        !match.Success)
-                    {
-                        return;
-                    }
+                    return;
+                }
 
-                    var charName = match.Groups["characterName"].ToString();
-                    var serverName = match.Groups["serverName"].ToString();
+                var charName = match.Groups["characterName"].ToString();
+                var serverName = match.Groups["serverName"].ToString();
 
-                    TargetInfoModel.GetFFLogsInfoFromTextCommand(
-                        charName,
-                        serverName);
-                }));
+                TargetInfoModel.GetFFLogsInfoFromTextCommand(
+                    charName,
+                    serverName);
+            }));
         }
 
         #endregion TextCommands
