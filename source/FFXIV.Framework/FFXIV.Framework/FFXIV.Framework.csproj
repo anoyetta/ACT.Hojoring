@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Bridge\DiscordBridge.cs" />
     <Compile Include="Bridge\PlayBridge.cs" />
+    <Compile Include="Bridge\TextCommandBridge.cs" />
     <Compile Include="Common\AppendedLogEventArgs.cs" />
     <Compile Include="Common\AppLog.cs" />
     <Compile Include="Common\AppLogEntry.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Common\CommonHelper.cs" />
     <Compile Include="Common\Crypter.cs" />
     <Compile Include="Common\Enumerator.cs" />
+    <Compile Include="Common\JobIconDictionary.cs" />
     <Compile Include="Common\XAudioPlayer.cs" />
     <Compile Include="Common\DirectoryHelper.cs" />
     <Compile Include="Common\EnvironmentHelper.cs" />

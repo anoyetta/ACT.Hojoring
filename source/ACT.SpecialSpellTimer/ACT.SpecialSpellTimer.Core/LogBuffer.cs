@@ -11,6 +11,7 @@ using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 
@@ -555,6 +556,7 @@ namespace ACT.SpecialSpellTimer
 
                 // コマンドとマッチングする
                 doneCommand |= TextCommandController.MatchCommandCore(logLine);
+                doneCommand |= TextCommandBridge.Instance.TryExecute(logLine);
 
                 list.Add(new XIVLog(logLine));
             }

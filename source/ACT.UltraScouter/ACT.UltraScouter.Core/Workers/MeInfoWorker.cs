@@ -62,6 +62,8 @@ namespace ACT.UltraScouter.Workers
 
         protected override DistanceViewModel DistanceVM => null;
 
+        protected override FFLogsViewModel FFLogsVM => null;
+
         #region MPTicker
 
         protected MPTickerView mpTickerView;

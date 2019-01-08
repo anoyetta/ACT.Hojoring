@@ -255,6 +255,8 @@ namespace ACT.UltraScouter.Workers
 
         protected override DistanceViewModel DistanceVM => null;
 
+        protected override FFLogsViewModel FFLogsVM => null;
+
         #region MobList
 
         protected MobListView mobListView;
@@ -320,7 +322,7 @@ namespace ACT.UltraScouter.Workers
                 if (Settings.Instance.MobList.UngroupSameNameMobs)
                 {
                     moblist = (
-                        this.targetMobList.OrderBy(y => y.Distance)).ToList();     
+                        this.targetMobList.OrderBy(y => y.Distance)).ToList();
                 }
                 else
                 {
