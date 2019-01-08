@@ -302,6 +302,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private object combatantListLock = new object();
         private volatile IReadOnlyDictionary<uint, Combatant> combatantDictionary;
+        private volatile IReadOnlyDictionary<uint, Combatant> combatantDictionaryFromFFXIVPlugin;
         private volatile IReadOnlyList<Combatant> combatantList;
 
         private object currentPartyIDListLock = new object();
@@ -311,6 +312,14 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private readonly object playerLocker = new object();
         private Combatant player;
+
+        /// <summary>
+        /// 戦闘中か？
+        /// </summary>
+        /// <remarks>
+        /// パーティメンバのHP, MP, TPのいずれかが最大値でないとき簡易的に戦闘中と判断する
+        /// </remarks>
+        public bool InCombat { get; private set; } = false;
 
 #if DEBUG
 
@@ -429,6 +438,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     this.player = DummyPlayer;
                     this.combatantList = this.DummyCombatants;
                     this.combatantDictionary = this.DummyCombatants.ToDictionary(x => x.ID);
+                    this.combatantDictionaryFromFFXIVPlugin = this.combatantDictionary;
 
                     if (addedCombatants.Any())
                     {
@@ -446,6 +456,13 @@ namespace FFXIV.Framework.FFXIVHelper
             }
             else
             {
+                // 3秒ごとにFFXIV_ACT_PluginからもCombatantを取得しておく
+                if (DateTime.Now.Second % 3 <= 0)
+                {
+                    var c = this.GetCombatantListFromFFXIVPlugin();
+                    this.combatantDictionaryFromFFXIVPlugin = c.Dictionary;
+                }
+
                 this.RefreshCombatantListFromFFXIVReader();
             }
         }
@@ -457,16 +474,57 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void RefreshCombatantListFromFFXIVPlugin()
         {
-            dynamic list = this.pluginScancombat.GetCombatantList();
-            var count = (int)list.Count;
+            var combatants = this.GetCombatantListFromFFXIVPlugin();
+            var newList = combatants.List;
+            var newDictionary = combatants.Dictionary;
+            var player = combatants.Player;
 
+            lock (this.combatantListLock)
+            {
+                var addedCombatants =
+                    this.combatantList == null ?
+                    newList.ToArray() :
+                    newList
+                        .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
+                        .ToArray();
+
+                this.combatantList = newList;
+                this.combatantDictionary = newDictionary;
+                this.combatantDictionaryFromFFXIVPlugin = newDictionary;
+
+                // TargetOfTargetを設定する
+                if (player != null &&
+                    player.TargetID != 0)
+                {
+                    if (this.combatantDictionary.ContainsKey(player.TargetID))
+                    {
+                        var target = this.combatantDictionary[player.TargetID];
+                        player.TargetOfTargetID = target.TargetID;
+                    }
+                }
+
+                if (addedCombatants.Any())
+                {
+                    Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
+                }
+            }
+
+            lock (this.playerLocker)
+            {
+                this.player = player;
+            }
+        }
+
+        private (List<Combatant> List, Dictionary<uint, Combatant> Dictionary, Combatant Player) GetCombatantListFromFFXIVPlugin()
+        {
+            dynamic sourceList = this.pluginScancombat.GetCombatantList();
+            var count = (int)sourceList.Count;
             var newList = new List<Combatant>(count);
             var newDictionary = new Dictionary<uint, Combatant>(count);
+            var pcCount = 0;
             var player = default(Combatant);
 
-            var pcCount = 0;
-
-            foreach (dynamic item in list.ToArray())
+            foreach (dynamic item in sourceList.ToArray())
             {
                 if (item == null)
                 {
@@ -490,6 +548,9 @@ namespace FFXIV.Framework.FFXIVHelper
                 combatant.CastBuffID = (int)item.CastBuffID;
                 combatant.CastDurationCurrent = (float)item.CastDurationCurrent;
                 combatant.CastDurationMax = (float)item.CastDurationMax;
+
+                combatant.WorldID = (int)item.WorldID;
+                combatant.WorldName = (string)item.WorldName;
 
                 // 扱うプレイヤー数の最大数を超えたらカットする
                 if (combatant.type == ObjectType.PC)
@@ -524,39 +585,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 newDictionary.Add(combatant.ID, combatant);
             }
 
-            lock (this.combatantListLock)
-            {
-                var addedCombatants =
-                    this.combatantList == null ?
-                    newList.ToArray() :
-                    newList
-                        .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
-                        .ToArray();
-
-                this.combatantList = newList;
-                this.combatantDictionary = newDictionary;
-
-                // TargetOfTargetを設定する
-                if (player != null &&
-                    player.TargetID != 0)
-                {
-                    if (this.combatantDictionary.ContainsKey(player.TargetID))
-                    {
-                        var target = this.combatantDictionary[player.TargetID];
-                        player.TargetOfTargetID = target.TargetID;
-                    }
-                }
-
-                if (addedCombatants.Any())
-                {
-                    Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
-                }
-            }
-
-            lock (this.playerLocker)
-            {
-                this.player = player;
-            }
+            return (newList, newDictionary, player);
         }
 
         private void RefreshCombatantListFromFFXIVReader()
@@ -582,6 +611,15 @@ namespace FFXIV.Framework.FFXIVHelper
 
                 this.SetSkillName(combatant);
                 combatant.SetName(combatant.Name);
+
+                // World情報を補完する
+                if (this.combatantDictionaryFromFFXIVPlugin != null &&
+                    this.combatantDictionaryFromFFXIVPlugin.ContainsKey(combatant.ID))
+                {
+                    var c = this.combatantDictionaryFromFFXIVPlugin[combatant.ID];
+                    combatant.WorldID = c.WorldID;
+                    combatant.WorldName = c.WorldName;
+                }
 
                 if (player == null)
                 {
@@ -657,6 +695,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
             if (partyList == null)
             {
+                this.InCombat = this.RefreshInCombat();
                 return;
             }
 
@@ -664,6 +703,39 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 this.currentPartyIDList = partyList;
             }
+
+            this.InCombat = this.RefreshInCombat();
+        }
+
+        public bool RefreshInCombat()
+        {
+            var result = false;
+
+            var combatants = this.GetPartyList();
+            if (combatants.Any())
+            {
+                result = (
+                    from x in combatants
+                    where
+                    x.CurrentHP != x.MaxHP ||
+                    x.CurrentMP != x.MaxMP ||
+                    x.CurrentTP != x.MaxTP
+                    select
+                    x).Any();
+            }
+            else
+            {
+                var player = this.GetPlayer();
+                if (player != null)
+                {
+                    result =
+                        player.CurrentHP != player.MaxHP ||
+                        player.CurrentMP != player.MaxMP ||
+                        player.CurrentTP != player.MaxTP;
+                }
+            }
+
+            return result;
         }
 
         public void SetSkillName(
@@ -1471,22 +1543,25 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             if (!this.isMergedSkillList)
             {
-                if (this.skillList != null &&
-                    XIVDB.Instance.ActionList.Any())
+                lock (XIVDB.Instance.ActionList)
                 {
-                    foreach (var action in XIVDB.Instance.ActionList)
+                    if (this.skillList != null &&
+                        XIVDB.Instance.ActionList.Any())
                     {
-                        var skill = new Skill()
+                        foreach (var action in XIVDB.Instance.ActionList)
                         {
-                            ID = action.Key,
-                            Name = action.Value.Name
-                        };
+                            var skill = new Skill()
+                            {
+                                ID = action.Key,
+                                Name = action.Value.Name
+                            };
 
-                        this.skillList[action.Key] = skill;
+                            this.skillList[action.Key] = skill;
+                        }
+
+                        this.isMergedSkillList = true;
+                        AppLogger.Trace("XIVDB Action list merged.");
                     }
-
-                    this.isMergedSkillList = true;
-                    AppLogger.Trace("XIVDB Action list merged.");
                 }
             }
 

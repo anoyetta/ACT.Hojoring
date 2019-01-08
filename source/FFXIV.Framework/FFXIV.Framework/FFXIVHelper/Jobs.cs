@@ -44,6 +44,7 @@ namespace FFXIV.Framework.FFXIVHelper
         AST = 33,
         SAM = 34,
         RDM = 35,
+        BLU = 36,
     }
 
     public enum Roles
@@ -179,6 +180,7 @@ namespace FFXIV.Framework.FFXIVHelper
             new Job() {ID = JobIDs.AST, Role = Roles.Healer, NameEN = "Astrologian", NameJA = "占星術師", NameFR = "Astromancien", NameDE = "Astrologe" , NameCN = "占星术士", IsPopular = true},
             new Job() {ID = JobIDs.SAM, Role = Roles.MeleeDPS, NameEN = "Samurai", NameJA = "侍", NameFR = "Samoura\u00ef", NameDE = "Samurai" , NameCN = "武士", IsPopular = true},
             new Job() {ID = JobIDs.RDM, Role = Roles.MagicDPS, NameEN = "Red Mage", NameJA = "赤魔道士", NameFR = "Mage Rouge", NameDE = "Rotmagier" , NameCN = "赤魔法师", IsPopular = true},
+            new Job() {ID = JobIDs.BLU, Role = Roles.MagicDPS, NameEN = "Blue Mage", NameJA = "青魔道士", NameFR = "Mage Bleu", NameDE = "Blaumagier" , NameCN = "青魔法师", IsPopular = false},
         };
 
         public static IEnumerable<JobIDs> PopularJobIDs =>

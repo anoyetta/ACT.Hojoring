@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
 using FFXIV.Framework.WPF.Views;
+using NLog;
 
 namespace FFXIV.Framework.Common
 {
@@ -111,6 +112,7 @@ namespace FFXIV.Framework.Common
                 AppLog.DefaultLogger.Fatal(
                     e.Exception,
                     "Unhandled Exception");
+                LogManager.Flush();
 
                 InvokeAsync(() => ModernMessageBox.ShowDialog(
                     "Fatal Error.\nUnhandled Exception.",

@@ -24,6 +24,8 @@
 
   <system:String x:Key="Common_Visible">表示する</system:String>
   <system:String x:Key="Common_Location">ロケーション</system:String>
+  <system:String x:Key="Common_Scale">スケール</system:String>
+  <system:String x:Key="Common_Background">背景色</system:String>
   <system:String x:Key="Common_Font">フォント</system:String>
   <system:String x:Key="Common_FillColor">塗りつぶし(内側)のカラー</system:String>
   <system:String x:Key="Common_StrokeColor">アウトラインのカラー</system:String>
@@ -31,7 +33,7 @@
   <system:String x:Key="Common_Change">変更</system:String>
   <system:String x:Key="Common_Delete">削除</system:String>
   <system:String x:Key="Common_TTS">TTSを使用する</system:String>
-  <system:String x:Key="Common_TestMode">テストモード (常に表示する)</system:String>
+  <system:String x:Key="Common_TestMode">デザインモード (常に表示する)</system:String>
 
   <system:String x:Key="Target_UserHoverTarget">ホバーターゲットを使用する</system:String>
 
@@ -96,6 +98,12 @@
   <system:String x:Key="MobList_MobAColor">モブA のカラー</system:String>
   <system:String x:Key="MobList_MobBColor">モブB のカラー</system:String>
   <system:String x:Key="MobList_MobOtherColor">その他のモブ のカラー</system:String>
+
+  <system:String x:Key="FFLogs_HideInCombat">戦闘中は表示しない</system:String>
+  <system:String x:Key="FFLogs_HideInCombatDescription" xml:space="preserve">
+戦闘中の判定は簡易的です。
+パーティメンバーのHP, TP, MPのいずれかが最大値でないとき戦闘中と判断します。
+  </system:String>
 
   <system:String x:Key="Help_GotoLastestRelease">GitHubの最終リリースを確認する</system:String>
   <system:String x:Key="Help_ContactToAnoyetta">Discordのフォーラムに参加する</system:String>

@@ -216,7 +216,8 @@ namespace ACT.UltraScouter.Workers
                 !Settings.Instance.TargetName.Visible &&
                 !Settings.Instance.TargetAction.Visible &&
                 !Settings.Instance.TargetHP.Visible &&
-                !Settings.Instance.TargetDistance.Visible
+                !Settings.Instance.TargetDistance.Visible &&
+                !Settings.Instance.FFLogs.Visible
             );
 
         public List<ViewAndViewModel> ViewList
@@ -230,18 +231,21 @@ namespace ACT.UltraScouter.Workers
         protected HPBarView hpBarView;
         protected ActionView actionView;
         protected DistanceView distanceView;
+        protected FFLogsView ffLogsView;
 
         public NameView NameView => this.nameView;
         public HPView HPView => this.hpView;
         public HPBarView HPBarView => this.hpBarView;
         public ActionView ActionView => this.actionView;
         public DistanceView DistanceView => this.distanceView;
+        public FFLogsView FFLogsView => this.ffLogsView;
 
         protected NameViewModel nameVM;
         protected HPViewModel hpVM;
         protected HPBarViewModel hpBarVM;
         protected ActionViewModel actionVM;
         protected DistanceViewModel distanceVM;
+        protected FFLogsViewModel ffLogsVM;
 
         protected virtual NameViewModel NameVM =>
             this.nameVM ?? (this.nameVM = new NameViewModel(Settings.Instance.TargetName, this.Model));
@@ -257,6 +261,9 @@ namespace ACT.UltraScouter.Workers
 
         protected virtual DistanceViewModel DistanceVM =>
             this.distanceVM ?? (this.distanceVM = new DistanceViewModel(Settings.Instance.TargetDistance, this.Model));
+
+        protected virtual FFLogsViewModel FFLogsVM =>
+            this.ffLogsVM ?? (this.ffLogsVM = new FFLogsViewModel(Settings.Instance.FFLogs, this.Model));
 
 #if false
         // 他のWindowオーダーに影響をあたえるので封印する
@@ -383,9 +390,17 @@ namespace ACT.UltraScouter.Workers
                     overlayVisible = true;
                 }
 
-                // MPTickerのテストモードの処理
-                if (Settings.Instance.MPTicker.TestMode)
+                // デザインモード？
+                if (Settings.Instance.MPTicker.TestMode ||
+                    Settings.Instance.FFLogs.IsDesignMode ||
+                    TargetInfoModel.IsAvailableParseTotalTextCommand)
                 {
+                    if (Settings.Instance.FFLogs.IsDesignMode ||
+                        TargetInfoModel.IsAvailableParseTotalTextCommand)
+                    {
+                        this.RefreshFFLogsView(null);
+                    }
+
                     overlayVisible = true;
                 }
             }
@@ -464,6 +479,7 @@ namespace ACT.UltraScouter.Workers
             this.CreateView<HPBarView>(ref this.hpBarView, this.HpBarVM);
             this.CreateView<ActionView>(ref this.actionView, this.ActionVM);
             this.CreateView<DistanceView>(ref this.distanceView, this.DistanceVM);
+            this.CreateView<FFLogsView>(ref this.ffLogsView, this.FFLogsVM);
 
             // Viewリストに登録する
             // HPBar→HPText の順番に登録しHPTextのほうがあとに開かれるようにする
@@ -472,6 +488,7 @@ namespace ACT.UltraScouter.Workers
             this.TryAddViewAndViewModel(this.HPView, this.HPView?.ViewModel);
             this.TryAddViewAndViewModel(this.ActionView, this.ActionView?.ViewModel);
             this.TryAddViewAndViewModel(this.DistanceView, this.DistanceView?.ViewModel);
+            this.TryAddViewAndViewModel(this.FFLogsView, this.FFLogsView?.ViewModel);
         }
 
         protected void CreateView<T>(ref T view, OverlayViewModelBase vm)
@@ -502,6 +519,7 @@ namespace ACT.UltraScouter.Workers
             this.RefreshHPView(targetInfo);
             this.RefreshActionView(targetInfo);
             this.RefreshDistanceView(targetInfo);
+            this.RefreshFFLogsView(targetInfo);
         }
 
         protected virtual void RefreshHPView(
@@ -566,6 +584,33 @@ namespace ACT.UltraScouter.Workers
                 targetInfo.IsAvailableEffectiveDictance ?
                 (double)targetInfo.EffectiveDistance :
                 targetInfo.HorizontalDistanceByPlayer;
+        }
+
+        private void RefreshFFLogsView(
+            Combatant targetInfo)
+        {
+            if (this.FFLogsView == null)
+            {
+                return;
+            }
+
+            this.Model.ObjectType = Settings.Instance.FFLogs.IsDesignMode || targetInfo == null ?
+                ObjectType.PC :
+                targetInfo.type;
+
+            if (targetInfo != null)
+            {
+                this.Model.Job = targetInfo.JobID;
+                this.Model.WorldID = targetInfo.WorldID;
+                this.Model.WorldName = targetInfo.WorldName;
+            }
+
+            if (!this.FFLogsView.ViewModel.OverlayVisible)
+            {
+                return;
+            }
+
+            this.Model.RefreshFFLogsInfo();
         }
 
         #endregion View Controllers

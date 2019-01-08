@@ -24,6 +24,8 @@
 
   <system:String x:Key="Common_Visible">표시하는</system:String>
   <system:String x:Key="Common_Location">위치</system:String>
+  <system:String x:Key="Common_Scale">규모</system:String>
+  <system:String x:Key="Common_Background">배경</system:String>
   <system:String x:Key="Common_Font">폰트</system:String>
   <system:String x:Key="Common_FillColor">글자색</system:String>
   <system:String x:Key="Common_StrokeColor">윤곽색</system:String>
@@ -96,6 +98,13 @@
   <system:String x:Key="MobList_MobAColor">몹 A 색</system:String>
   <system:String x:Key="MobList_MobBColor">몹 B 색</system:String>
   <system:String x:Key="MobList_MobOtherColor">몹 Other 색</system:String>
+
+  <system:String x:Key="FFLogs_HideInCombat">Hide in combat</system:String>
+  <system:String x:Key="FFLogs_HideInCombatDescription" xml:space="preserve">
+Judgment during battle is simple.
+When one of the party members HP, MP, TP is not the maximum value,
+it is judged that it is in battle.
+  </system:String>
 
   <system:String x:Key="Help_GotoLastestRelease">GitHub의 최종 릴리스를 확인 합니다</system:String>
   <system:String x:Key="Help_ContactToAnoyetta">anoyetta의 Discord의 포럼 참여</system:String>

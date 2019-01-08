@@ -83,6 +83,24 @@ namespace FFXIV.Framework.FFXIVHelper
         public float CastDurationMax;
         public string CastSkillName = string.Empty;
 
+        // FFXIV_ACT_Plugin v1.7.1.0
+        private int worldID;
+
+        public int WorldID
+        {
+            get => this.worldID;
+            set => this.SetProperty(ref this.worldID, value);
+        }
+
+        // FFXIV_ACT_Plugin v1.7.1.0
+        private string worldName;
+
+        public string WorldName
+        {
+            get => this.worldName;
+            set => this.SetProperty(ref this.worldName, value);
+        }
+
         /// <summary>イニシャル Naoki Y.</summary>
         public string NameFI = string.Empty;
 
