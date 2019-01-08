@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 using ACT.UltraScouter.Models.FFLogs;
 using FFXIV.Framework.Common;
 
@@ -12,7 +13,7 @@ namespace FFLogsRankingDonwloader
             string[] args)
         {
             // ダミーで FFXIV.Framework を読み込む
-            var span = CommonHelper.GetRandomTimeSpan();
+            var span = CommonHelper.GetRandomTimeSpan(0.25);
 
             if (args == null ||
                 args.Length < 2)
@@ -41,6 +42,9 @@ namespace FFLogsRankingDonwloader
                 new UTF8Encoding(false));
 
             Console.WriteLine($"[FFLogs] database completed. save to {fileName}.");
+
+            Thread.Sleep(span);
+            Environment.Exit(0);
         }
     }
 }

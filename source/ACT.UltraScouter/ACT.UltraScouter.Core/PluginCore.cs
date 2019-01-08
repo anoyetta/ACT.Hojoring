@@ -162,11 +162,8 @@ namespace ACT.UltraScouter
                     // アップデートを確認する
                     await Task.Run(() => this.Update());
 
-#if DEBUG
                     // FFLogsの統計データベースをロードする
-                    // [TBD] 但し未完成なのでデバッグ時のみとする
                     await StatisticsDatabase.Instance.LoadAsync();
-#endif
                 }
                 catch (Exception ex)
                 {
