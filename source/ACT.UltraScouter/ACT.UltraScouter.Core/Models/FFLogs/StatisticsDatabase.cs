@@ -371,22 +371,35 @@ namespace ACT.UltraScouter.Models.FFLogs
             }
         }
 
-        public IEnumerable<HistogramModel> GetHistogram(
+        public HistogramsModel GetHistogram(
             JobIDs jobID)
             => this.GetHistogram(Jobs.Find(jobID));
 
-        public IEnumerable<HistogramModel> GetHistogram(
+        public HistogramsModel GetHistogram(
             Job job)
         {
-            var targetSpec = job.NameEN;
+            var result = new HistogramsModel()
+            {
+                SpecName = job.NameEN,
+            };
+
             using (var cn = this.OpenRankingDatabaseConnection(this.RankingDatabaseFileName))
             using (var db = new DataContext(cn))
             {
-                return
+                result.Ranks =
                     db.GetTable<HistogramModel>()
-                    .Where(x => x.SpecName == targetSpec)
+                    .Where(x => x.SpecName == result.SpecName)
                     .OrderBy(x => x.Rank);
             }
+
+            if (result.Ranks.Any())
+            {
+                result.MaxRank = result.Ranks.Max(x => x.Rank);
+                result.MinRank = result.Ranks.Min(x => x.Rank);
+                result.MaxFrequencyPercent = result.Ranks.Max(x => x.FrequencyPercent);
+            }
+
+            return result;
         }
 
         private string RankingDatabaseFileName =>
