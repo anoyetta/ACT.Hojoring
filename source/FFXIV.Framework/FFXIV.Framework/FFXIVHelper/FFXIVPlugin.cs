@@ -482,6 +482,13 @@ namespace FFXIV.Framework.FFXIVHelper
             var newDictionary = combatants.Dictionary;
             var player = combatants.Player;
 
+            if (newList == null ||
+                newDictionary == null)
+            {
+                newList = this.EmptyCombatantList.ToList();
+                newDictionary = newList.ToDictionary(x => x.ID);
+            }
+
             lock (this.combatantListLock)
             {
                 var addedCombatants =
@@ -725,6 +732,8 @@ namespace FFXIV.Framework.FFXIVHelper
             }
             catch (Exception)
             {
+                this.currentPartyIDList = new List<uint>();
+                this.InCombat = false;
                 this.exceptionCounter++;
                 throw;
             }
