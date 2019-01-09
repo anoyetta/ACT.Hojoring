@@ -324,6 +324,8 @@ namespace ACT.UltraScouter.Models.FFLogs
             }
         }
 
+        private static readonly object DatabaseAccessLocker = new object();
+
         public async Task LoadRankingsAsync()
         {
             const string TimestampFileUri = @"https://drive.google.com/uc?id=1bauam699-r3vfVgFLsUOSrVUnUy2BWsc&export=download";
@@ -363,12 +365,16 @@ namespace ACT.UltraScouter.Models.FFLogs
                 File.Copy(timestampFileTempLocal, timestampFileLocal, true);
                 File.Delete(timestampFileTempLocal);
 
-                if (File.Exists(this.RankingDatabaseFileName))
+                lock (DatabaseAccessLocker)
                 {
-                    File.Delete(this.RankingDatabaseFileName);
+                    if (File.Exists(this.RankingDatabaseFileName))
+                    {
+                        File.Delete(this.RankingDatabaseFileName);
+                    }
+
+                    client.DownloadFileTaskAsync(new Uri(DatabaseFileUri), this.RankingDatabaseFileName).Wait();
                 }
 
-                await client.DownloadFileTaskAsync(new Uri(DatabaseFileUri), this.RankingDatabaseFileName);
                 this.Log("[FFLogs] statistics database is updated.");
             }
         }
@@ -399,13 +405,16 @@ namespace ACT.UltraScouter.Models.FFLogs
                 return result;
             }
 
-            using (var cn = this.OpenRankingDatabaseConnection(this.RankingDatabaseFileName))
-            using (var db = new DataContext(cn))
+            lock (DatabaseAccessLocker)
             {
-                result.Ranks =
-                    db.GetTable<HistogramModel>()
-                    .Where(x => x.SpecName == result.SpecName)
-                    .OrderBy(x => x.Rank);
+                using (var cn = this.OpenRankingDatabaseConnection(this.RankingDatabaseFileName))
+                using (var db = new DataContext(cn))
+                {
+                    result.Ranks =
+                        db.GetTable<HistogramModel>()
+                        .Where(x => x.SpecName == result.SpecName)
+                        .OrderBy(x => x.Rank);
+                }
             }
 
             if (result.Ranks.Any())
