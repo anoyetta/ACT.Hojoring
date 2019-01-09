@@ -584,7 +584,7 @@ namespace ACT.UltraScouter.Models
             var timer = new System.Timers.Timer();
 
             timer.AutoReset = false;
-            timer.Interval = 30d * 1000d;
+            timer.Interval = Settings.Instance.FFLogs.FromCommandTTL * 1000d;
             timer.Elapsed += (x, y) =>
             {
                 IsAvailableParseTotalTextCommand = false;
@@ -633,6 +633,7 @@ namespace ACT.UltraScouter.Models
             }
             finally
             {
+                TextCommandTTLTimer.Interval = Settings.Instance.FFLogs.FromCommandTTL * 1000d;
                 TextCommandTTLTimer.Start();
             }
         }

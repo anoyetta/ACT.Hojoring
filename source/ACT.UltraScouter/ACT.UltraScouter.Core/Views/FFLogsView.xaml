@@ -250,7 +250,7 @@
                   Background="{Binding RankPercentileFillBrush, Mode=OneWay}"
                   VerticalAlignment="Bottom" />
                 <TextBlock
-                  Width="2"
+                  Width="5"
                   Height="{StaticResource HistogramBarHeight}"
                   Background="#c9171e"
                   VerticalAlignment="Bottom"
