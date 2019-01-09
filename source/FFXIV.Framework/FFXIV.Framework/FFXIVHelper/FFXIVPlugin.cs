@@ -298,6 +298,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #region Refresh Combatants
 
+        private volatile int exceptionCounter = 0;
+        private const int ExceptionCountLimit = 10;
+
         private readonly IReadOnlyList<Combatant> EmptyCombatantList = new List<Combatant>();
 
         private object combatantListLock = new object();
@@ -479,6 +482,13 @@ namespace FFXIV.Framework.FFXIVHelper
             var newDictionary = combatants.Dictionary;
             var player = combatants.Player;
 
+            if (newList == null ||
+                newDictionary == null)
+            {
+                newList = this.EmptyCombatantList.ToList();
+                newDictionary = newList.ToDictionary(x => x.ID);
+            }
+
             lock (this.combatantListLock)
             {
                 var addedCombatants =
@@ -517,7 +527,23 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private (List<Combatant> List, Dictionary<uint, Combatant> Dictionary, Combatant Player) GetCombatantListFromFFXIVPlugin()
         {
-            dynamic sourceList = this.pluginScancombat.GetCombatantList();
+            dynamic sourceList;
+
+            try
+            {
+                if (this.exceptionCounter > ExceptionCountLimit)
+                {
+                    return (null, null, null);
+                }
+
+                sourceList = this.pluginScancombat.GetCombatantList();
+            }
+            catch (Exception)
+            {
+                this.exceptionCounter++;
+                throw;
+            }
+
             var count = (int)sourceList.Count;
             var newList = new List<Combatant>(count);
             var newDictionary = new Dictionary<uint, Combatant>(count);
@@ -688,10 +714,29 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            var dummyBuffer = new byte[51200];
-            var partyList = pluginScancombat?.GetCurrentPartyList(
-                dummyBuffer,
-                out int partyCount) as List<uint>;
+            var partyList = default(List<uint>);
+
+            try
+            {
+                if (this.exceptionCounter > ExceptionCountLimit)
+                {
+                    this.currentPartyIDList = new List<uint>();
+                    this.InCombat = false;
+                    return;
+                }
+
+                var dummyBuffer = new byte[51200];
+                partyList = pluginScancombat?.GetCurrentPartyList(
+                    dummyBuffer,
+                    out int partyCount) as List<uint>;
+            }
+            catch (Exception)
+            {
+                this.currentPartyIDList = new List<uint>();
+                this.InCombat = false;
+                this.exceptionCounter++;
+                throw;
+            }
 
             if (partyList == null)
             {
@@ -712,7 +757,8 @@ namespace FFXIV.Framework.FFXIVHelper
             var result = false;
 
             var combatants = this.GetPartyList();
-            if (combatants.Any())
+            if (combatants != null &&
+                combatants.Any())
             {
                 result = (
                     from x in combatants
@@ -819,6 +865,12 @@ namespace FFXIV.Framework.FFXIVHelper
 
             lock (this.currentPartyIDListLock)
             {
+                if (this.currentPartyIDList == null ||
+                    this.currentPartyIDList.Count < 1)
+                {
+                    return this.EmptyCombatantList;
+                }
+
                 partyIDs = new List<uint>(this.currentPartyIDList);
             }
 
@@ -1042,9 +1094,24 @@ namespace FFXIV.Framework.FFXIVHelper
                 return null;
             }
 
-            dynamic data = this.readCombatantMethodInfo?.Invoke(
-                this.overlayData,
-                new object[] { type });
+            dynamic data;
+
+            try
+            {
+                if (this.exceptionCounter > ExceptionCountLimit)
+                {
+                    return null;
+                }
+
+                data = this.readCombatantMethodInfo?.Invoke(
+                    this.overlayData,
+                    new object[] { type });
+            }
+            catch (Exception)
+            {
+                this.exceptionCounter++;
+                throw;
+            }
 
             if (data == null)
             {
