@@ -819,6 +819,11 @@ namespace FFXIV.Framework.FFXIVHelper
 
             lock (this.currentPartyIDListLock)
             {
+                if (this.currentPartyIDList == null)
+                {
+                    return this.EmptyCombatantList;
+                }
+
                 partyIDs = new List<uint>(this.currentPartyIDList);
             }
 
