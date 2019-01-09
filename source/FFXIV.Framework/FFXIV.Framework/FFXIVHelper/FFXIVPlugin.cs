@@ -527,6 +527,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private (List<Combatant> List, Dictionary<uint, Combatant> Dictionary, Combatant Player) GetCombatantListFromFFXIVPlugin()
         {
+            var targetID = this.GetTargetID(OverlayType.Target);
+
             dynamic sourceList;
 
             try
@@ -579,7 +581,9 @@ namespace FFXIV.Framework.FFXIVHelper
                 combatant.WorldName = (string)item.WorldName;
 
                 // 扱うプレイヤー数の最大数を超えたらカットする
-                if (combatant.type == ObjectType.PC)
+                if (combatant.type == ObjectType.PC &&
+                    targetID != 0 &&
+                    combatant.ID != targetID)
                 {
                     pcCount++;
                     if (pcCount >= MaxPCCount)
@@ -616,6 +620,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void RefreshCombatantListFromFFXIVReader()
         {
+            var targetID = this.GetTargetID(OverlayType.Target);
+
             var query = FFXIVReader.Instance.GetCombatantsV1()
                 .Select(x => new Combatant(x));
             var player = default(Combatant);
@@ -626,7 +632,9 @@ namespace FFXIV.Framework.FFXIVHelper
             foreach (var combatant in query)
             {
                 // 扱うプレイヤー数の最大数を超えたらカットする
-                if (combatant.type == ObjectType.PC)
+                if (combatant.type == ObjectType.PC &&
+                    targetID != 0 &&
+                    combatant.ID != targetID)
                 {
                     pcCount++;
                     if (pcCount >= MaxPCCount)
@@ -1085,13 +1093,13 @@ namespace FFXIV.Framework.FFXIVHelper
             return boss;
         }
 
-        public Combatant GetTargetInfo(
+        public uint GetTargetID(
             OverlayType type)
         {
             if (!this.IsAvailable ||
                 this.readCombatantMethodInfo == null)
             {
-                return null;
+                return 0;
             }
 
             dynamic data;
@@ -1100,7 +1108,7 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 if (this.exceptionCounter > ExceptionCountLimit)
                 {
-                    return null;
+                    return 0;
                 }
 
                 data = this.readCombatantMethodInfo?.Invoke(
@@ -1115,10 +1123,20 @@ namespace FFXIV.Framework.FFXIVHelper
 
             if (data == null)
             {
-                return null;
+                return 0;
             }
 
-            uint id = data.id;
+            return (uint)data.id;
+        }
+
+        public Combatant GetTargetInfo(
+            OverlayType type)
+        {
+            var id = this.GetTargetID(type);
+            if (id == 0)
+            {
+                return null;
+            }
 
             Combatant combatant = null;
             lock (this.combatantListLock)
