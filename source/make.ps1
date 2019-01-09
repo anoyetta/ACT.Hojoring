@@ -105,7 +105,8 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "System.Collections.Immutable.dll",
         "System.Interactive.Async.dll",
         "SuperSocket.ClientEngine.dll",
-        "WebSocket4Net.dll"
+        "WebSocket4Net.dll",
+        "System.Data*.dll"
     )
 
     New-Item -ItemType Directory "references" | Out-Null
