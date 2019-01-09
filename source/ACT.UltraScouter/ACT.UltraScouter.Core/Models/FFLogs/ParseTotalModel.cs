@@ -208,6 +208,22 @@ namespace ACT.UltraScouter.Models.FFLogs
             this.RaisePropertyChanged(nameof(this.ExistsParses));
         }
 
+        private static readonly HistogramsModel EmptyHistogram = new HistogramsModel();
+
+        private HistogramsModel histogram;
+
+        public HistogramsModel Histogram
+        {
+            get => this.histogram;
+            set
+            {
+                if (this.SetProperty(ref this.histogram, value))
+                {
+                    this.histogram.RaiseAllPropertiesChanged();
+                }
+            }
+        }
+
         public float BestPerfAvg =>
             this.ParseList.Any() ?
             this.ParseList.Average(x => x.Percentile) :
@@ -484,6 +500,15 @@ namespace ACT.UltraScouter.Models.FFLogs
                         .Spec;
                 }
 
+                // Histogramを編集する
+                var histogram = filter != null ?
+                    StatisticsDatabase.Instance.GetHistogram(job) :
+                    StatisticsDatabase.Instance.GetHistogram(bestJob);
+                if (histogram == null)
+                {
+                    histogram = EmptyHistogram;
+                }
+
                 await WPFHelper.InvokeAsync(() =>
                 {
                     this.CharacterName = characterName;
@@ -492,6 +517,16 @@ namespace ACT.UltraScouter.Models.FFLogs
                     this.Job = filter != null ? job : null;
                     this.BestJobName = bestJob;
                     this.AddRangeParse(bests);
+
+                    var currentRank = histogram.Ranks
+                        .OrderByDescending(x => x.Rank)
+                        .FirstOrDefault(x => x.Rank <= this.DPSAvg);
+                    if (currentRank != null)
+                    {
+                        currentRank.IsCurrent = true;
+                    }
+
+                    this.Histogram = histogram;
 
                     if (!bests.Any())
                     {
@@ -520,6 +555,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                     this.Job = job;
                     this.BestJobName = string.Empty;
                     this.ParseList.Clear();
+                    this.Histogram = EmptyHistogram;
                     this.HttpStatusCode = code;
                     this.ResponseContent = json;
                 });

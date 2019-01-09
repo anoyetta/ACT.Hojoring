@@ -409,7 +409,8 @@ namespace ACT.UltraScouter.Models
                         Server = "Chocobo",
                         Region = FFLogsRegions.JP,
                         Job = Jobs.Find(JobIDs.BLM),
-                        BestJobName = "Black Mage"
+                        BestJobName = "Black Mage",
+                        Histogram = HistogramsModel.DesigntimeModel,
                     };
 
                     designtimeParseTotal.AddRangeParse(new[]

@@ -57,6 +57,10 @@ namespace ACT.Hojoring.Updater
             this.Directories.Add(location);
             this.Directories.Add(Path.Combine(location, "references"));
 
+            var architect = Environment.Is64BitProcess ? "x64" : "x86";
+            this.Directories.Add(Path.Combine(location, $@"{architect}"));
+            this.Directories.Add(Path.Combine(location, $@"references\{architect}"));
+
             // Directories プロパティで指定されたディレクトリを基準にアセンブリを検索する
             foreach (var directory in this.Directories)
             {

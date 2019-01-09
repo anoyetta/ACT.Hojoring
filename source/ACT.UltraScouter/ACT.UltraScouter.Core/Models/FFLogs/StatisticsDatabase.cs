@@ -324,6 +324,8 @@ namespace ACT.UltraScouter.Models.FFLogs
             }
         }
 
+        private static readonly object DatabaseAccessLocker = new object();
+
         public async Task LoadRankingsAsync()
         {
             const string TimestampFileUri = @"https://drive.google.com/uc?id=1bauam699-r3vfVgFLsUOSrVUnUy2BWsc&export=download";
@@ -356,37 +358,78 @@ namespace ACT.UltraScouter.Models.FFLogs
                 if (oldTimestamp >= newTimestamp)
                 {
                     File.Delete(timestampFileTempLocal);
+                    this.Log("[FFLogs] statistics database is up-to-date.");
                     return;
                 }
 
                 File.Copy(timestampFileTempLocal, timestampFileLocal, true);
                 File.Delete(timestampFileTempLocal);
 
-                if (File.Exists(this.RankingDatabaseFileName))
+                lock (DatabaseAccessLocker)
                 {
-                    File.Delete(this.RankingDatabaseFileName);
+                    if (File.Exists(this.RankingDatabaseFileName))
+                    {
+                        File.Delete(this.RankingDatabaseFileName);
+                    }
+
+                    client.DownloadFileTaskAsync(new Uri(DatabaseFileUri), this.RankingDatabaseFileName).Wait();
                 }
 
-                await client.DownloadFileTaskAsync(new Uri(DatabaseFileUri), this.RankingDatabaseFileName);
+                this.Log("[FFLogs] statistics database is updated.");
             }
         }
 
-        public IEnumerable<HistogramModel> GetHistogram(
+        public HistogramsModel GetHistogram(
             JobIDs jobID)
             => this.GetHistogram(Jobs.Find(jobID));
 
-        public IEnumerable<HistogramModel> GetHistogram(
+        public HistogramsModel GetHistogram(
             Job job)
+            => this.GetHistogram(job?.NameEN);
+
+        public HistogramsModel GetHistogram(
+            string jobName)
         {
-            var targetSpec = job.NameEN;
-            using (var cn = this.OpenRankingDatabaseConnection(this.RankingDatabaseFileName))
-            using (var db = new DataContext(cn))
+            var result = new HistogramsModel()
             {
-                return
-                    db.GetTable<HistogramModel>()
-                    .Where(x => x.SpecName == targetSpec)
-                    .OrderBy(x => x.Rank);
+                SpecName = jobName ?? string.Empty,
+            };
+
+            if (string.IsNullOrEmpty(jobName))
+            {
+                return result;
             }
+
+            if (!File.Exists(this.RankingDatabaseFileName))
+            {
+                return result;
+            }
+
+            lock (DatabaseAccessLocker)
+            {
+                using (var cn = this.OpenRankingDatabaseConnection(this.RankingDatabaseFileName))
+                using (var db = new DataContext(cn))
+                {
+                    result.Ranks =
+                        db.GetTable<HistogramModel>()
+                        .Where(x => x.SpecName == result.SpecName)
+                        .OrderBy(x => x.Rank);
+                }
+            }
+
+            if (result.Ranks.Any())
+            {
+                result.MaxRank = result.Ranks.Max(x => x.Rank);
+                result.MinRank = result.Ranks.Min(x => x.Rank);
+                result.MaxFrequencyPercent = Math.Ceiling(result.Ranks.Max(x => x.FrequencyPercent));
+
+                foreach (var rank in result.Ranks)
+                {
+                    rank.FrequencyRatioToMaximum = rank.FrequencyPercent / result.MaxFrequencyPercent;
+                }
+            }
+
+            return result;
         }
 
         private string RankingDatabaseFileName =>
