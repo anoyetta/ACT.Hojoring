@@ -94,6 +94,8 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     '●外部参照用DLLを逃がす'
     $references = @(
+        "x64",
+        "x86",
         "System.Windows.Interactivity.dll",
         "ICSharpCode.SharpZipLib.dll",
         "ICSharpCode.AvalonEdit.dll"
@@ -103,8 +105,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "System.Collections.Immutable.dll",
         "System.Interactive.Async.dll",
         "SuperSocket.ClientEngine.dll",
-        "WebSocket4Net.dll",
-        "SQLite*.dll"
+        "WebSocket4Net.dll"
     )
 
     New-Item -ItemType Directory "references" | Out-Null

@@ -377,11 +377,25 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         public HistogramsModel GetHistogram(
             Job job)
+            => this.GetHistogram(job?.NameEN);
+
+        public HistogramsModel GetHistogram(
+            string jobName)
         {
             var result = new HistogramsModel()
             {
-                SpecName = job.NameEN,
+                SpecName = jobName ?? string.Empty,
             };
+
+            if (string.IsNullOrEmpty(jobName))
+            {
+                return result;
+            }
+
+            if (!File.Exists(this.RankingDatabaseFileName))
+            {
+                return result;
+            }
 
             using (var cn = this.OpenRankingDatabaseConnection(this.RankingDatabaseFileName))
             using (var db = new DataContext(cn))
@@ -396,7 +410,12 @@ namespace ACT.UltraScouter.Models.FFLogs
             {
                 result.MaxRank = result.Ranks.Max(x => x.Rank);
                 result.MinRank = result.Ranks.Min(x => x.Rank);
-                result.MaxFrequencyPercent = result.Ranks.Max(x => x.FrequencyPercent);
+                result.MaxFrequencyPercent = Math.Ceiling(result.Ranks.Max(x => x.FrequencyPercent));
+
+                foreach (var rank in result.Ranks)
+                {
+                    rank.FrequencyRatioToMaximum = rank.FrequencyPercent / result.MaxFrequencyPercent;
+                }
             }
 
             return result;

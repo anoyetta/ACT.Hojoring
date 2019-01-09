@@ -72,6 +72,10 @@ namespace ACT.UltraScouter
                 {
                     this.Directories.Add(pluginDirectory);
                     this.Directories.Add(Path.Combine(pluginDirectory, "references"));
+
+                    var architect = Environment.Is64BitProcess ? "x64" : "x86";
+                    this.Directories.Add(Path.Combine(pluginDirectory, $@"{architect}"));
+                    this.Directories.Add(Path.Combine(pluginDirectory, $@"references\{architect}"));
                 }
             }
 
