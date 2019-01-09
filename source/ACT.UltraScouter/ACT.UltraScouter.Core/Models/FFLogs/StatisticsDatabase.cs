@@ -356,6 +356,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                 if (oldTimestamp >= newTimestamp)
                 {
                     File.Delete(timestampFileTempLocal);
+                    this.Log("[FFLogs] statistics database is up-to-date.");
                     return;
                 }
 
@@ -368,6 +369,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                 }
 
                 await client.DownloadFileTaskAsync(new Uri(DatabaseFileUri), this.RankingDatabaseFileName);
+                this.Log("[FFLogs] statistics database is updated.");
             }
         }
 

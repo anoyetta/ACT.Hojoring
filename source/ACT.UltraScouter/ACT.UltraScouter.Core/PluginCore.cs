@@ -163,6 +163,7 @@ namespace ACT.UltraScouter
                     await Task.Run(() => this.Update());
 
                     // FFLogsの統計データベースをロードする
+                    StatisticsDatabase.Instance.Logger = Logger;
                     await StatisticsDatabase.Instance.LoadAsync();
                 }
                 catch (Exception ex)
@@ -232,7 +233,7 @@ namespace ACT.UltraScouter
                 }
 
                 Settings.Instance.LastUpdateDateTime = DateTime.Now;
-                Settings.Instance.Save();
+                WPFHelper.Invoke(() => Settings.Instance.Save());
             }
         }
 
