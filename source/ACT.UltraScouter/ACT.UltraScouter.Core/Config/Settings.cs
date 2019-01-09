@@ -828,6 +828,7 @@ namespace ACT.UltraScouter.Config
                     OutlineColor = Color.FromRgb(0x11, 0x13, 0x2b),
                 },
                 RefreshInterval = 8.0d,
+                FromCommandTTL = 14.0d,
                 CategoryColors = FFLogs.DefaultCategoryColors,
             }},
 
