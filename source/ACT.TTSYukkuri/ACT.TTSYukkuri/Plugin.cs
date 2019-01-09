@@ -30,10 +30,13 @@ namespace ACT.TTSYukkuri
                 {
                     var pluginDirectory = ActGlobals.oFormActMain.PluginGetSelfData(this)?.pluginFile.DirectoryName;
 
+                    var architect = Environment.Is64BitProcess ? "x64" : "x86";
                     var directories = new string[]
                     {
                         pluginDirectory,
                         Path.Combine(pluginDirectory, "references"),
+                        Path.Combine(pluginDirectory, $@"{architect}"),
+                        Path.Combine(pluginDirectory, $@"references\{architect}"),
                         Path.Combine(
                             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                             @"Advanced Combat Tracker\Plugins"),

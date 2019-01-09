@@ -6,11 +6,13 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:local="clr-namespace:ACT.UltraScouter.Views"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
   xmlns:cnv="clr-namespace:ACT.UltraScouter.Views.Converters"
   xmlns:vm="clr-namespace:ACT.UltraScouter.ViewModels"
   xmlns:logs_model="clr-namespace:ACT.UltraScouter.Models.FFLogs"
   xmlns:ctrl="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
   xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:fa="http://schemas.fontawesome.io/icons/"
   xmlns:debug="debug-mode"
   mc:Ignorable="d"
   AllowsTransparency="True"
@@ -30,6 +32,7 @@
 
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+    <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
     <fwcnv:BoolToCollapsedNegativeConverter x:Key="NotVisibilityConverter" />
     <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />
     <cnv:StrokeThicknessToBlurRadiusConverter x:Key="StrokeThicknessToBlurRadiusConverter" />
@@ -62,6 +65,9 @@
     </Style>
 
     <SolidColorBrush x:Key="CategoryStrokeBrush">Black</SolidColorBrush>
+
+    <system:Double x:Key="HistogramHeight">40</system:Double>
+    <system:Double x:Key="HistogramBarHeight">40</system:Double>
   </Window.Resources>
 
   <Border
@@ -84,9 +90,10 @@
         <RowDefinition />
         <RowDefinition />
         <RowDefinition />
+        <RowDefinition />
       </Grid.RowDefinitions>
 
-      <!-- Row0 -->
+      <!-- Row0 PC Info -->
       <StackPanel
         Grid.Row="0"
         Visibility="{Binding Model.ParseTotal.ExistsName, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
@@ -116,7 +123,7 @@
         </StackPanel>
       </StackPanel>
 
-      <!-- Row1 -->
+      <!-- Row1 Bests -->
       <ctrl:LightOutlineTextBlock
         Grid.Row="1"
         Style="{DynamicResource OutlineXSStyle}"
@@ -205,13 +212,64 @@
           FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.1}" />
       </Grid>
 
-      <!-- Row2 -->
-      <ItemsControl
+      <!-- Row2 Histogram -->
+      <Viewbox
         Grid.Row="2"
+        Stretch="Fill"
+        Height="{DynamicResource HistogramHeight}"
+        Width="{Binding ElementName=EncounterList, Mode=OneWay, Path=ActualWidth}"
+        Margin="5 10 0 0"
+        Visibility="{Binding Model.ParseTotal.Histogram.IsExistsRanks, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+        <ItemsControl
+          Focusable="False"
+          IsTabStop="False"
+          Height="{DynamicResource HistogramHeight}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Bottom"
+          ItemsSource="{Binding Model.ParseTotal.Histogram.Ranks, Mode=OneWay}"
+          Opacity="0.97">
+          <ItemsControl.ItemContainerStyle>
+            <Style TargetType="ContentPresenter">
+              <Setter Property="HorizontalAlignment" Value="Left" />
+              <Setter Property="VerticalAlignment" Value="Bottom" />
+            </Style>
+          </ItemsControl.ItemContainerStyle>
+
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Orientation="Horizontal" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+
+          <ItemsControl.ItemTemplate>
+            <DataTemplate DataType="{x:Type logs_model:HistogramModel}">
+              <Grid>
+                <TextBlock
+                  Width="10"
+                  Height="{Binding FrequencyRatioToMaximum, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter={StaticResource HistogramBarHeight}}"
+                  Background="{Binding RankPercentileFillBrush, Mode=OneWay}"
+                  VerticalAlignment="Bottom" />
+                <TextBlock
+                  Width="2"
+                  Height="{StaticResource HistogramBarHeight}"
+                  Background="#c9171e"
+                  VerticalAlignment="Bottom"
+                  Visibility="{Binding IsCurrent, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </Viewbox>
+
+      <!-- Row3 Encounter List -->
+      <ItemsControl
+        x:Name="EncounterList"
+        Grid.Row="3"
         Grid.IsSharedSizeScope="True"
         Margin="5 12 0 0"
         Focusable="False"
         IsTabStop="False"
+        HorizontalAlignment="Left"
         ItemsSource="{Binding Model.ParseTotal.ParseList, Mode=OneWay}"
         Visibility="{Binding Model.ParseTotal.ExistsParses, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
 
@@ -234,7 +292,7 @@
           <Style x:Key="EncounterSmallLabelStyle" TargetType="{x:Type ctrl:LightOutlineTextBlock}" BasedOn="{StaticResource EncounterLabelStyle}">
             <Setter Property="FontSize" Value="{Binding ElementName=NameLabel, Path=FontSize, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-            <Setter Property="MaxWidth" Value="{Binding ElementName=BestPerfAvgLabel, Path=ActualWidth, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.2}" />
+            <Setter Property="Width" Value="{Binding ElementName=BestPerfAvgLabel, Path=ActualWidth, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.1}" />
           </Style>
         </ItemsControl.Resources>
 

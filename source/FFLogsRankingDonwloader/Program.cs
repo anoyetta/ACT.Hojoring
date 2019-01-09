@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using ACT.UltraScouter.Models.FFLogs;
@@ -9,6 +10,12 @@ namespace FFLogsRankingDonwloader
 {
     public static class Program
     {
+        static Program()
+        {
+            AssemblyResolver.Instance.Initialize();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void Main(
             string[] args)
         {
