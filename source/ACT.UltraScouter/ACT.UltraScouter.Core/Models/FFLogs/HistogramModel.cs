@@ -31,5 +31,29 @@ namespace ACT.UltraScouter.Models.FFLogs
         public double FrequencyPercent { get; set; } = 0;
 
         public double Frequency { get; set; } = 0;
+
+        private double frequencyRatioToMaximum;
+
+        public double FrequencyRatioToMaximum
+        {
+            get => this.frequencyRatioToMaximum;
+            set => this.SetProperty(ref this.frequencyRatioToMaximum, value);
+        }
+
+        private bool isCurrent;
+
+        public bool IsCurrent
+        {
+            get => this.isCurrent;
+            set => this.SetProperty(ref this.isCurrent, value);
+        }
+
+        public void RaiseAllPropertiesChanged()
+        {
+            foreach (var pi in this.GetType().GetProperties())
+            {
+                this.RaisePropertyChanged(pi.Name);
+            }
+        }
     }
 }

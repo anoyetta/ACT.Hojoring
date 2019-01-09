@@ -142,6 +142,7 @@
     <Compile Include="Models\CastingEventArgs.cs" />
     <Compile Include="Models\FFLogs\BasicEntryModel.cs" />
     <Compile Include="Models\FFLogs\Enums.cs" />
+    <Compile Include="Models\FFLogs\HistogramsModel.cs" />
     <Compile Include="Models\FFLogs\HistogramModel.cs" />
     <Compile Include="Models\FFLogs\ParseModel.cs" />
     <Compile Include="Models\FFLogs\ParseTotalModel.cs" />

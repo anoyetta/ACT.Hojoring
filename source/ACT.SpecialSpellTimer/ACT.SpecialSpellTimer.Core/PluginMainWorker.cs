@@ -129,6 +129,9 @@ namespace ACT.SpecialSpellTimer
             this.backgroudWorker.Start();
         }
 
+        private volatile bool isRefreshingSpells = false;
+        private volatile bool isRefreshingTickers = false;
+
         public void BeginOverlaysThread()
         {
             // スペルのスレッドを開始する
@@ -139,6 +142,13 @@ namespace ACT.SpecialSpellTimer
 
             this.refreshSpellOverlaysWorker.Tick += (s, e) =>
             {
+                if (this.isRefreshingSpells)
+                {
+                    return;
+                }
+
+                this.isRefreshingSpells = true;
+
                 try
                 {
                     this.RefreshSpellOverlaysCore();
@@ -146,6 +156,10 @@ namespace ACT.SpecialSpellTimer
                 catch (Exception ex)
                 {
                     Logger.Write("refresh spell overlays error:", ex);
+                }
+                finally
+                {
+                    this.isRefreshingSpells = false;
                 }
             };
 
@@ -159,6 +173,13 @@ namespace ACT.SpecialSpellTimer
 
             this.refreshTickerOverlaysWorker.Tick += (s, e) =>
             {
+                if (this.isRefreshingTickers)
+                {
+                    return;
+                }
+
+                this.isRefreshingTickers = true;
+
                 try
                 {
                     this.RefreshTickerOverlaysCore();
@@ -166,6 +187,10 @@ namespace ACT.SpecialSpellTimer
                 catch (Exception ex)
                 {
                     Logger.Write("refresh ticker overlays error:", ex);
+                }
+                finally
+                {
+                    this.isRefreshingTickers = false;
                 }
             };
 

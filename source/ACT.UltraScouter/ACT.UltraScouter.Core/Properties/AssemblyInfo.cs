@@ -7,13 +7,13 @@ using System.Windows.Markup;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("anoyetta")]
 [assembly: AssemblyProduct("ACT.UltraScouter")]
-[assembly: AssemblyCopyright("Copyright (c) 2017-2018, anoyetta")]
+[assembly: AssemblyCopyright("Copyright (c) 2017-2019, anoyetta")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("6d17f2c1-f9bd-4c9c-96c9-1a60ad975e4b")]
-[assembly: AssemblyVersion("1.6.0.0")]
-[assembly: AssemblyFileVersion("1.6.0.0")]
+[assembly: AssemblyVersion("1.6.0.1")]
+[assembly: AssemblyFileVersion("1.6.0.1")]
 #if DEBUG
 [assembly: XmlnsDefinition("debug-mode", "Namespace")]
 #endif
