@@ -334,7 +334,18 @@ namespace ACT.UltraScouter.Config
         public DispatcherPriority UIThreadPriority
         {
             get => this.uiThreadPriority;
-            set => this.SetProperty(ref this.uiThreadPriority, value);
+            set
+            {
+                switch (value)
+                {
+                    case DispatcherPriority.Invalid:
+                    case DispatcherPriority.Inactive:
+                        value = DispatcherPriority.SystemIdle;
+                        break;
+                }
+
+                this.SetProperty(ref this.uiThreadPriority, value);
+            }
         }
 
         /// <summary>
