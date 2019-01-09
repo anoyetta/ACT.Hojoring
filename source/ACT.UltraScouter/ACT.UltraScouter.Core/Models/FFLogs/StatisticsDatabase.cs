@@ -365,6 +365,9 @@ namespace ACT.UltraScouter.Models.FFLogs
                 File.Copy(timestampFileTempLocal, timestampFileLocal, true);
                 File.Delete(timestampFileTempLocal);
 
+                var temp = this.RankingDatabaseFileName + ".temp";
+                await client.DownloadFileTaskAsync(new Uri(DatabaseFileUri), temp);
+
                 lock (DatabaseAccessLocker)
                 {
                     if (File.Exists(this.RankingDatabaseFileName))
@@ -372,7 +375,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                         File.Delete(this.RankingDatabaseFileName);
                     }
 
-                    client.DownloadFileTaskAsync(new Uri(DatabaseFileUri), this.RankingDatabaseFileName).Wait();
+                    File.Move(temp, this.RankingDatabaseFileName);
                 }
 
                 this.Log("[FFLogs] statistics database is updated.");
