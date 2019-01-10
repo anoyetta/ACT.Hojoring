@@ -36,9 +36,15 @@
       <HintPath>..\..\ACTv3\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FFXIV_MemoryReader.Model">
+    <Reference Include="FFXIV_MemoryReader.Base">
+      <HintPath>..\Thirdparty\FFXIV_MemoryReader.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="FFXIV_MemoryReader.Core">
+      <HintPath>..\Thirdparty\FFXIV_MemoryReader.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FFXIV_MemoryReader.Model, Version=1.4.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Thirdparty\FFXIV_MemoryReader.Model.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
@@ -219,9 +225,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Content Include="FFXIV_MemoryReader.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="resources\strings\Strings.Help.ko-KR.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -333,7 +336,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>@COPY /B /Y $(ProjectDir)..\ThirdParty\FFXIV_MemoryReader.dll $(ProjectDir) &gt;nul
-</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>
