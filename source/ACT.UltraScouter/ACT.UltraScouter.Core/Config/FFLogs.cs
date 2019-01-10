@@ -92,6 +92,15 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.refreshInterval, value);
         }
 
+        private double fromCommandTTL = 14.0d;
+
+        [DataMember]
+        public double FromCommandTTL
+        {
+            get => this.fromCommandTTL;
+            set => this.SetProperty(ref this.fromCommandTTL, value);
+        }
+
         private ColorSet[] categoryColors = DefaultCategoryColors;
 
         [DataMember]
