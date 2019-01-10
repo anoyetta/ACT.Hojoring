@@ -145,12 +145,13 @@ namespace ACT.SpecialSpellTimer
             WPFHelper.BeginInvoke(async () =>
             {
                 // FFXIV_MemoryReaderを先にロードさせる
-                await FFXIVReader.Instance.WaitForReaderToStartedAsync(pluginScreenSpace);
+                var result = await FFXIVReader.Instance.WaitForReaderToStartedAsync(pluginScreenSpace);
 
                 this.PluginStatusLabel = pluginStatusText;
 
                 AppLog.LoadConfiguration(AppLog.HojoringConfig);
                 this.AppLogger.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+                result.WriteLog(this.AppLogger);
 
                 try
                 {
