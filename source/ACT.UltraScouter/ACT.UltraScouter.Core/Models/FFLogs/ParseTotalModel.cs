@@ -501,9 +501,14 @@ namespace ACT.UltraScouter.Models.FFLogs
                 }
 
                 // Histogramを編集する
-                var histogram = filter != null ?
-                    StatisticsDatabase.Instance.GetHistogram(job) :
-                    StatisticsDatabase.Instance.GetHistogram(bestJob);
+                var histogram = default(HistogramsModel);
+                if (Settings.Instance.FFLogs.VisibleHistogram)
+                {
+                    histogram = filter != null ?
+                        StatisticsDatabase.Instance.GetHistogram(job) :
+                        StatisticsDatabase.Instance.GetHistogram(bestJob);
+                }
+
                 if (histogram == null)
                 {
                     histogram = EmptyHistogram;
