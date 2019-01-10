@@ -134,6 +134,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     '●その他のDLLをマージする'
     $libs = @(
+        "FFXIV_MemoryReader*.dll",
         "FontAwesome.WPF.dll",
         "System.Web.Razor.dll",
         "Newtonsoft.Json.dll",
@@ -144,7 +145,6 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "Prism*.dll",
         "Xceed.*.dll",
         "NPOI*.dll",
-        "FFXIV_MemoryReader.Model.dll",
         "AWSSDK.*.dll"
     )
 

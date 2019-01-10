@@ -817,6 +817,7 @@ namespace ACT.UltraScouter.Config
             { nameof(Settings.FFLogs), new FFLogs()
             {
                 Visible = false,
+                VisibleHistogram = true,
                 HideInCombat = true,
                 Location = new Location() { X = 0, Y = 0 },
                 Scale = 1.0d,
