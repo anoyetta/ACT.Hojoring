@@ -390,6 +390,8 @@ namespace ACT.UltraScouter.Models.FFLogs
             Job job)
             => this.GetHistogram(job?.NameEN);
 
+        private readonly Dictionary<string, HistogramsModel> HistogramDictionary = new Dictionary<string, HistogramsModel>(64);
+
         public HistogramsModel GetHistogram(
             string jobName)
         {
@@ -406,6 +408,11 @@ namespace ACT.UltraScouter.Models.FFLogs
             if (!File.Exists(this.RankingDatabaseFileName))
             {
                 return result;
+            }
+
+            if (this.HistogramDictionary.ContainsKey(jobName))
+            {
+                return this.HistogramDictionary[jobName];
             }
 
             lock (DatabaseAccessLocker)
@@ -431,6 +438,8 @@ namespace ACT.UltraScouter.Models.FFLogs
                     rank.FrequencyRatioToMaximum = rank.FrequencyPercent / result.MaxFrequencyPercent;
                 }
             }
+
+            this.HistogramDictionary[jobName] = result;
 
             return result;
         }
