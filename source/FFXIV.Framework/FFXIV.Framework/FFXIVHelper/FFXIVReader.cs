@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
@@ -39,22 +41,63 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #endregion Singleton
 
-        #region Logger
-
-        private static NLog.Logger AppLogger => AppLog.DefaultLogger;
-
-        #endregion Logger
-
         private MemoryPlugin MemoryPlugin { get; set; } = null;
 
-        public Task WaitForReaderToStartedAsync(
+        public Version Version => typeof(MemoryPlugin)?.Assembly?.GetName()?.Version;
+
+        public AssemblyName AssemblyName => typeof(MemoryPlugin)?.Assembly?.GetName();
+
+        public Task<FFXIVReaderStartingResult> WaitForReaderToStartedAsync(
             TabPage baseTabPage) => Task.Run(() =>
         {
+            var result = new FFXIVReaderStartingResult();
+
             lock (this)
             {
+                // 旧の単独DLL版が存在したら念のため削除する
+                var dll = Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    "FFXIV_MemoryReader.dll");
+                if (File.Exists(dll))
+                {
+                    var message = string.Empty;
+
+                    try
+                    {
+                        File.Delete(dll);
+
+                        message = string.Empty;
+                        message += $@"""FFXIV_MemoryReader.dll"" was deleted.\n";
+                        message += $@"Please, restart ACT.";
+                        WPFHelper.BeginInvoke(() => ModernMessageBox.ShowDialog(
+                            message,
+                            "Warning",
+                            MessageBoxButton.OK));
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    if (File.Exists(dll))
+                    {
+                        message = string.Empty;
+                        message += $@"""FFXIV_MemoryReader.dll"" is exists yet.\n";
+                        message += $@"You should delete ""FFXIV_MemoryReader.dll"".\n";
+                        message += Environment.NewLine;
+                        message += "Path:\n";
+                        message += dll;
+
+                        WPFHelper.BeginInvoke(() => ModernMessageBox.ShowDialog(
+                            message,
+                            "Warning",
+                            MessageBoxButton.OK));
+                    }
+                }
+
                 if (this.MemoryPlugin != null)
                 {
-                    return;
+                    result.Status = FFXIVReaderStartingStatus.AlreadyStarted;
+                    return result;
                 }
 
                 var succeeded = false;
@@ -80,31 +123,34 @@ namespace FFXIV.Framework.FFXIVHelper
 
                         if (succeeded)
                         {
-                            AppLogger.Trace("FFXIV_MemoryReader started.");
+                            result.Status = FFXIVReaderStartingStatus.Started;
                         }
                         else
                         {
-                            AppLogger.Error("Error occurred initializing FFXIV_MemoryReader.");
+                            result.Status = FFXIVReaderStartingStatus.Error;
+                            result.Message = "Error occurred initializing FFXIV_MemoryReader.";
                             this.MemoryPlugin?.DeInitPlugin();
                             this.MemoryPlugin = null;
                         }
                     }
                     catch (Exception ex)
                     {
-                        const string Message = "Fatal error occurred initializing FFXIV_MemoryReader.";
+                        result.Status = FFXIVReaderStartingStatus.Error;
+                        result.Message = "Fatal error occurred initializing FFXIV_MemoryReader.";
+                        result.Exception = ex;
 
-                        ModernMessageBox.ShowDialog(
-                            Message,
+                        WPFHelper.BeginInvoke(() => ModernMessageBox.ShowDialog(
+                            result.Message,
                             "Fatal Error",
                             MessageBoxButton.OK,
-                            ex);
-
-                        AppLogger.Error(ex, Message);
+                            ex));
                     }
                 });
 
                 WPFHelper.Invoke(() => this.IsAvailable = succeeded);
             }
+
+            return result;
         });
 
         private bool isAvailable;
@@ -133,6 +179,45 @@ namespace FFXIV.Framework.FFXIVHelper
             else
             {
                 action();
+            }
+        }
+    }
+
+    public enum FFXIVReaderStartingStatus
+    {
+        Started = 0,
+        AlreadyStarted,
+        Error
+    }
+
+    public class FFXIVReaderStartingResult
+    {
+        public FFXIVReaderStartingStatus Status { get; set; }
+
+        public string Message { get; set; }
+
+        public Exception Exception { get; set; }
+
+        public void WriteLog(
+            NLog.Logger logger)
+        {
+            if (logger == null)
+            {
+                return;
+            }
+
+            switch (this.Status)
+            {
+                case FFXIVReaderStartingStatus.AlreadyStarted:
+                    return;
+
+                case FFXIVReaderStartingStatus.Started:
+                    logger.Trace(FFXIVReader.Instance.AssemblyName + " start.");
+                    break;
+
+                case FFXIVReaderStartingStatus.Error:
+                    logger.Error(this.Exception, this.Message);
+                    break;
             }
         }
     }
