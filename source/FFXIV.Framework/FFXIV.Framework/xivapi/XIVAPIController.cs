@@ -37,7 +37,7 @@ namespace FFXIV.Framework.xivapi
 #if DEBUG
         private static readonly string ApiKey = "b1a9c1f77b9a434e8ac05f04";
 #else
-        private static readonly string ApiKey = null;
+        private static readonly string ApiKey = "3eb773dfd2bb43a18ac8";
 #endif
         private const int DefaultLimitCount = 3000;
 
