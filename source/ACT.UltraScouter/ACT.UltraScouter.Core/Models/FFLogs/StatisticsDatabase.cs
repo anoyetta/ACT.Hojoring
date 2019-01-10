@@ -335,50 +335,60 @@ namespace ACT.UltraScouter.Models.FFLogs
             ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls11;
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
-            using (var client = new WebClient())
+            var timestamp = $"{this.RankingDatabaseFileName}.timestamp.txt";
+            var timestampTemp = $"{this.RankingDatabaseFileName}.timestamp_temp.txt";
+            var database = this.RankingDatabaseFileName;
+            var databaseTemp = this.RankingDatabaseFileName + ".temp";
+
+            try
             {
-                var timestampFileLocal = $"{this.RankingDatabaseFileName}.timestamp.txt";
-                var timestampFileTempLocal = $"{this.RankingDatabaseFileName}.timestamp_temp.txt";
-
-                if (File.Exists(timestampFileTempLocal))
+                using (var client = new WebClient())
                 {
-                    File.Delete(timestampFileTempLocal);
-                }
+                    deleteFile(timestampTemp);
+                    await client.DownloadFileTaskAsync(new Uri(TimestampFileUri), timestampTemp);
 
-                await client.DownloadFileTaskAsync(new Uri(TimestampFileUri), timestampFileTempLocal);
-
-                DateTime oldTimestamp = DateTime.MinValue, newTimestamp = DateTime.MinValue;
-                if (File.Exists(timestampFileLocal))
-                {
-                    DateTime.TryParse(File.ReadAllText(timestampFileLocal), out oldTimestamp);
-                }
-
-                DateTime.TryParse(File.ReadAllText(timestampFileTempLocal), out newTimestamp);
-
-                if (oldTimestamp >= newTimestamp)
-                {
-                    File.Delete(timestampFileTempLocal);
-                    this.Log("[FFLogs] statistics database is up-to-date.");
-                    return;
-                }
-
-                File.Copy(timestampFileTempLocal, timestampFileLocal, true);
-                File.Delete(timestampFileTempLocal);
-
-                var temp = this.RankingDatabaseFileName + ".temp";
-                await client.DownloadFileTaskAsync(new Uri(DatabaseFileUri), temp);
-
-                lock (DatabaseAccessLocker)
-                {
-                    if (File.Exists(this.RankingDatabaseFileName))
+                    DateTime oldTimestamp = DateTime.MinValue, newTimestamp = DateTime.MinValue;
+                    if (File.Exists(timestamp))
                     {
-                        File.Delete(this.RankingDatabaseFileName);
+                        DateTime.TryParse(File.ReadAllText(timestamp), out oldTimestamp);
                     }
 
-                    File.Move(temp, this.RankingDatabaseFileName);
-                }
+                    DateTime.TryParse(File.ReadAllText(timestampTemp), out newTimestamp);
 
-                this.Log("[FFLogs] statistics database is updated.");
+                    if (oldTimestamp >= newTimestamp)
+                    {
+                        this.Log("[FFLogs] statistics database is up-to-date.");
+                        return;
+                    }
+
+                    deleteFile(databaseTemp);
+                    await client.DownloadFileTaskAsync(new Uri(DatabaseFileUri), databaseTemp);
+
+                    lock (DatabaseAccessLocker)
+                    {
+                        File.Copy(databaseTemp, database, true);
+                        File.Copy(timestampTemp, timestamp, true);
+                    }
+
+                    this.Log("[FFLogs] statistics database is updated.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "[FFLogs] error downloding statistics database.");
+            }
+            finally
+            {
+                deleteFile(timestampTemp);
+                deleteFile(databaseTemp);
+            }
+
+            void deleteFile(string path)
+            {
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
             }
         }
 
