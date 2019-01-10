@@ -51,8 +51,8 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
     * ACT.TTSYukkuri.dll
 
 ### FFXIV_MemoryReader
-補助輪は TamanegiMageさんが開発した [FFXIV_MemoryReader](https://github.com/TamanegiMage/FFXIV_MemoryReader) を利用しています。  
-FFXIV_MemoryReader は FFXIV_ACT_Plugin が取得していない情報をFFXIVから取得します。これによってスペル、ウルスカの方角関係の機能などを拡張しています。
+補助輪はTamanegiMageさんが開発した [FFXIV_MemoryReader](https://github.com/TamanegiMage/FFXIV_MemoryReader) を利用しています。  
+FFXIV_MemoryReader は FFXIV_ACT_Plugin が取得していない情報を FFXIV から取得します。これによってスペル、ウルスカの方角関係の機能などを拡張しています。
 
 ### 動作環境
 * [Windows 10](https://www.microsoft.com/software-download/windows10) 以降（Windows 7/8/8.1 では原則的に動作しません）
