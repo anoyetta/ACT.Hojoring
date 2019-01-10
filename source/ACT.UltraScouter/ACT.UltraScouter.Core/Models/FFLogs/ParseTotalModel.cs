@@ -518,6 +518,8 @@ namespace ACT.UltraScouter.Models.FFLogs
                     this.BestJobName = bestJob;
                     this.AddRangeParse(bests);
 
+                    this.Histogram = histogram;
+
                     foreach (var rank in histogram.Ranks)
                     {
                         rank.IsCurrent = false;
@@ -530,8 +532,6 @@ namespace ACT.UltraScouter.Models.FFLogs
                     {
                         currentRank.IsCurrent = true;
                     }
-
-                    this.Histogram = histogram;
 
                     if (!bests.Any())
                     {
