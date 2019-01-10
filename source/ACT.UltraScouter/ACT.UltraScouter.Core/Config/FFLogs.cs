@@ -29,6 +29,15 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.visible, value);
         }
 
+        private bool visibleHistogram = true;
+
+        [DataMember]
+        public bool VisibleHistogram
+        {
+            get => this.visibleHistogram;
+            set => this.SetProperty(ref this.visibleHistogram, value);
+        }
+
         private bool hideInCombat = true;
 
         [DataMember]

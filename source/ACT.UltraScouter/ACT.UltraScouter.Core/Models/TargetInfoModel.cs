@@ -396,78 +396,82 @@ namespace ACT.UltraScouter.Models
         #region FFLogs
 
         private static ParseTotalModel designtimeParseTotal;
+        private static ParseTotalModel designtimeParseTotalNoHistogram;
 
-        private static ParseTotalModel DesigntimeParseTotal
+        private static ParseTotalModel DesigntimeParseTotal =>
+            designtimeParseTotal ?? (designtimeParseTotal = CreateDesigntimeParseTotal());
+
+        private static ParseTotalModel DesigntimeParseTotalNoHistogram =>
+            designtimeParseTotalNoHistogram ?? (designtimeParseTotalNoHistogram = CreateDesigntimeParseTotal(true));
+
+        private static ParseTotalModel CreateDesigntimeParseTotal(
+            bool noHistogram = false)
         {
-            get
+            var model = new ParseTotalModel()
             {
-                if (designtimeParseTotal == null)
+                CharacterName = "Naoki Yoshida",
+                Server = "Chocobo",
+                Region = FFLogsRegions.JP,
+                Job = Jobs.Find(JobIDs.BLM),
+                BestJobName = "Black Mage",
+                Histogram = !noHistogram ?
+                    HistogramsModel.DesigntimeModel :
+                    new HistogramsModel(),
+            };
+
+            model.AddRangeParse(new[]
+            {
+                new ParseModel()
                 {
-                    designtimeParseTotal = new ParseTotalModel()
-                    {
-                        CharacterName = "Naoki Yoshida",
-                        Server = "Chocobo",
-                        Region = FFLogsRegions.JP,
-                        Job = Jobs.Find(JobIDs.BLM),
-                        BestJobName = "Black Mage",
-                        Histogram = HistogramsModel.DesigntimeModel,
-                    };
+                    EncounterID = 1,
+                    Spec = "Black Mage",
+                    EncounterName = "BOSS 1",
+                    Percentile = 100.0f,
+                    Total = 6451f,
+                },
+                new ParseModel()
+                {
+                    EncounterID = 2,
+                    Spec = "Black Mage",
+                    EncounterName = "BOSS 2",
+                    Percentile = 95.0f,
+                    Total = 5234f,
+                },
+                new ParseModel()
+                {
+                    EncounterID = 3,
+                    Spec = "Black Mage",
+                    EncounterName = "BOSS 3",
+                    Percentile = 75.0f,
+                    Total = 5912f,
+                },
+                new ParseModel()
+                {
+                    EncounterID = 4,
+                    Spec = "Black Mage",
+                    EncounterName = "BOSS 4",
+                    Percentile = 50.0f,
+                    Total = 4987f,
+                },
+                new ParseModel()
+                {
+                    EncounterID = 5,
+                    Spec = "Black Mage",
+                    EncounterName = "BOSS 5",
+                    Percentile = 25.0f,
+                    Total = 6166f,
+                },
+                new ParseModel()
+                {
+                    EncounterID = 6,
+                    Spec = "Black Mage",
+                    EncounterName = "BOSS 6",
+                    Percentile = 14.0f,
+                    Total = 3167f,
+                },
+            });
 
-                    designtimeParseTotal.AddRangeParse(new[]
-                    {
-                        new ParseModel()
-                        {
-                            EncounterID = 1,
-                            Spec = "Black Mage",
-                            EncounterName = "BOSS 1",
-                            Percentile = 100.0f,
-                            Total = 6451f,
-                        },
-                        new ParseModel()
-                        {
-                            EncounterID = 2,
-                            Spec = "Black Mage",
-                            EncounterName = "BOSS 2",
-                            Percentile = 95.0f,
-                            Total = 5234f,
-                        },
-                        new ParseModel()
-                        {
-                            EncounterID = 3,
-                            Spec = "Black Mage",
-                            EncounterName = "BOSS 3",
-                            Percentile = 75.0f,
-                            Total = 5912f,
-                        },
-                        new ParseModel()
-                        {
-                            EncounterID = 4,
-                            Spec = "Black Mage",
-                            EncounterName = "BOSS 4",
-                            Percentile = 50.0f,
-                            Total = 4987f,
-                        },
-                        new ParseModel()
-                        {
-                            EncounterID = 5,
-                            Spec = "Black Mage",
-                            EncounterName = "BOSS 5",
-                            Percentile = 25.0f,
-                            Total = 6166f,
-                        },
-                        new ParseModel()
-                        {
-                            EncounterID = 6,
-                            Spec = "Black Mage",
-                            EncounterName = "BOSS 6",
-                            Percentile = 14.0f,
-                            Total = 3167f,
-                        },
-                    });
-                }
-
-                return designtimeParseTotal;
-            }
+            return model;
         }
 
         public static bool IsAvailableParseTotalTextCommand { get; private set; } = false;
@@ -502,7 +506,17 @@ namespace ACT.UltraScouter.Models
 
             if (config.IsDesignMode)
             {
-                this.ParseTotal = APITestResultParseTotal ?? DesigntimeParseTotal;
+                if (APITestResultParseTotal != null)
+                {
+                    this.ParseTotal = APITestResultParseTotal;
+                }
+                else
+                {
+                    this.ParseTotal = config.VisibleHistogram ?
+                        DesigntimeParseTotal :
+                        DesigntimeParseTotalNoHistogram;
+                }
+
                 return;
             }
 

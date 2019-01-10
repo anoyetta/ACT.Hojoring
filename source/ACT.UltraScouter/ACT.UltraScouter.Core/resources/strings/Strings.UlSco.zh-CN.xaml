@@ -99,6 +99,7 @@
   <system:String x:Key="MobList_MobBColor">B级颜色</system:String>
   <system:String x:Key="MobList_MobOtherColor">其他颜色</system:String>
 
+  <system:String x:Key="FFLogs_VisibleHistogram">Visible histogram</system:String>
   <system:String x:Key="FFLogs_HideInCombat">Hide in combat</system:String>
   <system:String x:Key="FFLogs_HideInCombatDescription" xml:space="preserve">
 Judgment during battle is simple.

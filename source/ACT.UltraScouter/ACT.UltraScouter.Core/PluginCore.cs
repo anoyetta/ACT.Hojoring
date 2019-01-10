@@ -108,7 +108,7 @@ namespace ACT.UltraScouter
             WPFHelper.BeginInvoke(async () =>
             {
                 // FFXIV_MemoryReaderを先にロードさせる
-                await FFXIVReader.Instance.WaitForReaderToStartedAsync();
+                await FFXIVReader.Instance.WaitForReaderToStartedAsync(pluginScreenSpace);
 
                 AppLog.LoadConfiguration(AppLog.HojoringConfig);
                 this.Logger.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
