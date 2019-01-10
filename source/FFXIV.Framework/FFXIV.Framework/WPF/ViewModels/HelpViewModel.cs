@@ -1,13 +1,3 @@
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
-using FFXIV.Framework.WPF.Views;
-using Microsoft.VisualBasic.FileIO;
-using NLog;
-using NLog.Targets;
-using Prism.Commands;
-using Prism.Mvvm;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -19,6 +9,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.WPF.Views;
+using Microsoft.VisualBasic.FileIO;
+using NLog;
+using NLog.Targets;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace FFXIV.Framework.WPF.ViewModels
 {
@@ -90,18 +90,10 @@ namespace FFXIV.Framework.WPF.ViewModels
                     }
                 }
 
-                var memoryReader = ActGlobals.oFormActMain?.ActPlugins?
-                    .FirstOrDefault(
-                        x => x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"))?
-                    .pluginFile.FullName;
-
-                if (File.Exists(memoryReader))
+                var xivReaderVersion = FFXIVReader.Instance.Version;
+                if (xivReaderVersion != null)
                 {
-                    var vi = FileVersionInfo.GetVersionInfo(memoryReader);
-                    if (vi != null)
-                    {
-                        text.AppendLine($"FFXIV_MemoryReader v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FileBuildPart}.{vi.FilePrivatePart}");
-                    }
+                    text.AppendLine($"FFXIV_MemoryReader v{xivReaderVersion}");
                 }
 
                 var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

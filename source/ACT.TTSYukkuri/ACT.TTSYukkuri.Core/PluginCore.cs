@@ -295,10 +295,11 @@ namespace ACT.TTSYukkuri
             WPFHelper.BeginInvoke(async () =>
             {
                 // FFXIV_MemoryReaderを先にロードさせる
-                await FFXIVReader.Instance.WaitForReaderToStartedAsync(pluginScreenSpace);
+                var result = await FFXIVReader.Instance.WaitForReaderToStartedAsync(pluginScreenSpace);
 
                 AppLog.LoadConfiguration(AppLog.HojoringConfig);
                 this.Logger.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+                result.WriteLog(this.Logger);
 
                 try
                 {
