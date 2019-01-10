@@ -536,9 +536,24 @@ namespace ACT.SpecialSpellTimer
                 return;
             }
 
+            // 異常なデータ？
+            if (combatants.Count > 1)
+            {
+                var first = combatants.First();
+                if (combatants.Count ==
+                    combatants.Count(x =>
+                        x.CurrentHP == first.CurrentHP &&
+                        x.MaxHP == first.MaxHP))
+                {
+                    return;
+                }
+            }
+
             // 関係者が全員死んでる？
             if (combatants.Count ==
-                combatants.Count(x => x.CurrentHP <= 0))
+                combatants.Count(x =>
+                    x.CurrentHP <= 0 &&
+                    x.MaxHP > 0))
             {
                 // リセットするのは15秒に1回にする
                 // 暗転中もずっとリセットし続けてしまうので
