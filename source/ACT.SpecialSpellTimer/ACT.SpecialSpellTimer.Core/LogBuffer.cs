@@ -544,8 +544,9 @@ namespace ACT.SpecialSpellTimer
                     continue;
                 }
 
-                // ツールチップシンボルを除去する
+                // ツールチップシンボル, ワールド名を除去する
                 logLine = RemoveTooltipSynbols(logLine);
+                logLine = RemoveWorldName(logLine);
 
                 // ペットジョブで召喚をしたか？
                 if (!summoned &&
@@ -652,6 +653,32 @@ namespace ACT.SpecialSpellTimer
                 // 残ったReplacementCharを除去する
                 result = result.Replace(TooltipReplacementChar, string.Empty);
             }
+
+            return result;
+        }
+
+        public static string RemoveWorldName(
+            string logLine)
+        {
+            var result = logLine;
+
+            if (!Settings.Default.RemoveWorldName)
+            {
+                return result;
+            }
+
+            var regex = FFXIVPlugin.Instance.WorldNameRemoveRegex;
+            if (regex == null)
+            {
+                return result;
+            }
+
+            if (!logLine.Contains("] 00:"))
+            {
+                return result;
+            }
+
+            result = regex.Replace(result, string.Empty);
 
             return result;
         }

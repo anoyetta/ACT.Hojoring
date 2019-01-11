@@ -141,6 +141,7 @@ namespace ACT.SpecialSpellTimer
             // タイトルをセットする
             pluginScreenSpace.Text = "SPESPE";
 
+            MasterFilePublisher.Publish();
             WPFHelper.Start();
             WPFHelper.BeginInvoke(async () =>
             {

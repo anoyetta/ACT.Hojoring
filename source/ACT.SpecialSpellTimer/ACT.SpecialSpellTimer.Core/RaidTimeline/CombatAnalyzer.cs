@@ -1286,8 +1286,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             continue;
                         }
 
-                        // エフェクトに付与されるツールチップ文字を除去する
+                        // ツールチップシンボル, ワールド名を除去する
                         log = LogBuffer.RemoveTooltipSynbols(log);
+                        log = LogBuffer.RemoveWorldName(log);
 
                         // タイムスタンプを付与し直す
                         log = $"[{detectTime.ToString("HH:mm:ss.fff")}] {log}";

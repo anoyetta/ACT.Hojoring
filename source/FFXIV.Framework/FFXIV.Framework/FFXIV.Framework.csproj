@@ -80,6 +80,7 @@
     <Compile Include="Common\Crypter.cs" />
     <Compile Include="Common\Enumerator.cs" />
     <Compile Include="Common\JobIconDictionary.cs" />
+    <Compile Include="Common\MasterFilePublisher.cs" />
     <Compile Include="Common\XAudioPlayer.cs" />
     <Compile Include="Common\DirectoryHelper.cs" />
     <Compile Include="Common\EnvironmentHelper.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="FFXIVHelper\PCNameDictionary.cs" />
     <Compile Include="FFXIVHelper\PCOrder.cs" />
     <Compile Include="FFXIVHelper\Skill.cs" />
+    <Compile Include="FFXIVHelper\World.cs" />
     <Compile Include="FFXIVHelper\XIVDB.cs" />
     <Compile Include="FFXIVHelper\Zone.cs" />
     <Compile Include="Globalization\Locales.cs" />
