@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
@@ -146,7 +147,8 @@ namespace FFXIV.Framework.FFXIVHelper
                             MessageBoxButton.OK,
                             ex);
                     }
-                });
+                },
+                DispatcherPriority.Normal);
 
                 this.IsAvailable = succeeded;
             }
