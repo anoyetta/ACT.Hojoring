@@ -136,6 +136,7 @@
     <Compile Include="FFXIVHelper\PCNameDictionary.cs" />
     <Compile Include="FFXIVHelper\PCOrder.cs" />
     <Compile Include="FFXIVHelper\Skill.cs" />
+    <Compile Include="FFXIVHelper\World.cs" />
     <Compile Include="FFXIVHelper\XIVDB.cs" />
     <Compile Include="FFXIVHelper\Zone.cs" />
     <Compile Include="Globalization\Locales.cs" />
