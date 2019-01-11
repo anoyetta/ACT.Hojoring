@@ -186,6 +186,7 @@
   <system:String x:Key="Options_EnabledNotifyDefaultSpellTimer">Notify ACT's spell timer</system:String>
   <system:String x:Key="Options_EnabledSimplyRegex">Simply Regex</system:String>
   <system:String x:Key="Options_EnabledRemoveTooltipSymbol">Remove tooltip symbol</system:String>
+  <system:String x:Key="Options_EnabledRemoveWorldName">Remove world name from character name</system:String>
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">To complement unknown skill</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">Ignore Damage and Heal log</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">Ignore 15: or 16: Detail log</system:String>

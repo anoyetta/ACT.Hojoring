@@ -186,6 +186,7 @@
   <system:String x:Key="Options_EnabledNotifyDefaultSpellTimer">ACT본체의 스펠타이머에 알림 (시험적 기능)</system:String>
   <system:String x:Key="Options_EnabledSimplyRegex">정규 표현식을 간단하게</system:String>
   <system:String x:Key="Options_EnabledRemoveTooltipSymbol">툴팁 기호를 제거</system:String>
+  <system:String x:Key="Options_EnabledRemoveWorldName">Remove world name from character name</system:String>
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">UNKNOWN 기술을 보완하는</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">타격·회복에 관한 로그를 자른다</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">"15", "16"로 시작하는 세부 로그를 잘라낸다</system:String>

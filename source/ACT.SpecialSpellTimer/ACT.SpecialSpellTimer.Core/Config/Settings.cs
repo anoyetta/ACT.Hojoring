@@ -340,6 +340,14 @@ namespace ACT.SpecialSpellTimer.Config
             set => this.SetProperty(ref this.ignoreDamageLogs, value);
         }
 
+        private bool removeWorldName = true;
+
+        public bool RemoveWorldName
+        {
+            get => this.removeWorldName;
+            set => this.SetProperty(ref this.removeWorldName, value);
+        }
+
         public bool DetectPacketDump { get; set; }
 
         private bool resetOnWipeOut;
@@ -722,6 +730,7 @@ namespace ACT.SpecialSpellTimer.Config
             { nameof(Settings.ResetOnWipeOut), true },
             { nameof(Settings.WipeoutNotifyToACT), true },
             { nameof(Settings.RemoveTooltipSymbols), true },
+            { nameof(Settings.RemoveWorldName), true },
             { nameof(Settings.SimpleRegex), true },
             { nameof(Settings.DetectPacketDump), false },
             { nameof(Settings.TextBlurRate), 1.2d },

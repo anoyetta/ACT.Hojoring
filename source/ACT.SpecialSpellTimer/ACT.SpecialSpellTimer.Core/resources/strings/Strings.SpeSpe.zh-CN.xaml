@@ -186,6 +186,7 @@
   <system:String x:Key="Options_EnabledNotifyDefaultSpellTimer">提示ACT的触发器</system:String>
   <system:String x:Key="Options_EnabledSimplyRegex">简化的正则式</system:String>
   <system:String x:Key="Options_EnabledRemoveTooltipSymbol">不显示Tooltip</system:String>
+  <system:String x:Key="Options_EnabledRemoveWorldName">Remove world name from character name</system:String>
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">补全未知技能</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">忽略伤害和治疗日志</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">忽略15:或 16:开头日志</system:String>
