@@ -9,6 +9,11 @@ namespace FFXIV.Framework.Common
         public static void Publish()
         {
             var dir = DirectoryHelper.FindSubDirectory("resources");
+            if (!Directory.Exists(dir))
+            {
+                return;
+            }
+
             var masters = Directory.GetFiles(dir, "*.master*");
             if (masters == null)
             {
