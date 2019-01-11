@@ -1,4 +1,3 @@
-using FFXIV.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,6 +7,8 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.FFXIVHelper;
 
 namespace FFXIV.Framework.WPF.Views
 {
@@ -27,6 +28,16 @@ namespace FFXIV.Framework.WPF.Views
         public static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
 
         #endregion Win32 API
+
+        public static void ChangeTopMost(
+            this Window window,
+            bool value)
+        {
+            if (window.Topmost != value)
+            {
+                window.Topmost = value;
+            }
+        }
 
         /// <summary>
         /// オーバーレイの表示を切り替える
@@ -243,14 +254,19 @@ namespace FFXIV.Framework.WPF.Views
                         continue;
                     }
 
-                    if (overlay is Window window)
+                    if (overlay is Window window &&
+                        window.IsLoaded)
                     {
-                        if (window.IsLoaded)
+                        if (FFXIVPlugin.Instance.Process == null)
                         {
-                            if (!overlay.IsOverlaysGameWindow())
-                            {
-                                overlay.EnsureTopMost();
-                            }
+                            window.ChangeTopMost(true);
+                            continue;
+                        }
+
+                        window.ChangeTopMost(false);
+                        if (!overlay.IsOverlaysGameWindow())
+                        {
+                            overlay.EnsureTopMost();
                         }
                     }
                 }
