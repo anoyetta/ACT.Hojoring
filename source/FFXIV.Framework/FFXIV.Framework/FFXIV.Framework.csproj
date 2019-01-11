@@ -79,6 +79,7 @@
     <Compile Include="Common\CommonHelper.cs" />
     <Compile Include="Common\Crypter.cs" />
     <Compile Include="Common\Enumerator.cs" />
+    <Compile Include="Common\EnvironmentMigrater.cs" />
     <Compile Include="Common\JobIconDictionary.cs" />
     <Compile Include="Common\MasterFilePublisher.cs" />
     <Compile Include="Common\XAudioPlayer.cs" />
