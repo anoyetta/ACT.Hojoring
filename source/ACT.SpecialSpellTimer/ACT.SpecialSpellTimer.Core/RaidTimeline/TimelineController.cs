@@ -906,8 +906,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         continue;
                     }
 
-                    // エフェクトに付与されるツールチップ文字を除去する
+                    // ツールチップシンボル, ワールド名を除去する
                     logLine = LogBuffer.RemoveTooltipSynbols(logLine);
+                    logLine = LogBuffer.RemoveWorldName(logLine);
 
                     list.Add(new XIVLog(logLine)
                     {

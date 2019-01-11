@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Advanced_Combat_Tracker;
@@ -158,6 +159,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     {
                         this.LoadSkillList();
                         this.LoadZoneList();
+                        this.LoadWorldList();
                         this.MergeSkillList();
                         this.MergeBuffList();
                     }
@@ -1357,10 +1359,75 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private Dictionary<int, Buff> buffList = new Dictionary<int, Buff>();
         private Dictionary<int, Skill> skillList = new Dictionary<int, Skill>();
+        private Dictionary<int, World> worldList = new Dictionary<int, World>();
         private List<Zone> zoneList = new List<Zone>();
 
         public IReadOnlyList<Zone> ZoneList => this.zoneList;
         public IReadOnlyDictionary<int, Skill> SkillList => this.skillList;
+        public IReadOnlyDictionary<int, World> WorldList => this.worldList;
+
+        public Regex WorldNameRemoveRegex { get; private set; }
+
+        private void LoadWorldList()
+        {
+            if (this.worldList.Any())
+            {
+                return;
+            }
+
+            if (this.plugin == null)
+            {
+                return;
+            }
+
+            var asm = this.plugin.GetType().Assembly;
+
+            var resourcesName = $"FFXIV_ACT_Plugin.Resources.WorldList.txt";
+
+            using (var st = asm.GetManifestResourceStream(resourcesName))
+            {
+                var newList = new Dictionary<int, World>();
+
+                if (st != null)
+                {
+                    using (var sr = new StreamReader(st))
+                    {
+                        while (!sr.EndOfStream)
+                        {
+                            var line = sr.ReadLine();
+                            if (!string.IsNullOrWhiteSpace(line))
+                            {
+                                var values = line.Split('|');
+                                if (values.Length >= 2)
+                                {
+                                    var entry = new World()
+                                    {
+                                        ID = int.Parse(values[0]),
+                                        Name = values[1].Trim()
+                                    };
+
+                                    newList.Add(entry.ID, entry);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // ワールド名置換用正規表現を生成する
+                var names = newList.Values
+                    .Where(x =>
+                        (x.ID >= 23 && x.ID <= 99) ||
+                        (x.ID >= 1040 && x.ID <= 1172) ||
+                        (x.ID >= 2048 && x.ID <= 2079))
+                    .Select(x => x.Name);
+                this.WorldNameRemoveRegex = new Regex(
+                    $"({string.Join("|", names)})",
+                    RegexOptions.Compiled);
+
+                this.worldList = newList;
+                AppLogger.Trace("world list loaded.");
+            }
+        }
 
         private void LoadBuffList()
         {
