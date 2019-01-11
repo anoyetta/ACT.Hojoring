@@ -104,6 +104,7 @@ namespace ACT.UltraScouter
             // タイトルをセットする
             pluginScreenSpace.Text = "ULTRA SCOUTER";
 
+            MasterFilePublisher.Publish();
             WPFHelper.Start();
             WPFHelper.BeginInvoke(async () =>
             {

@@ -291,6 +291,7 @@ namespace ACT.TTSYukkuri
             // タイトルをセットする
             pluginScreenSpace.Text = "YUKKURI";
 
+            MasterFilePublisher.Publish();
             WPFHelper.Start();
             WPFHelper.BeginInvoke(async () =>
             {
