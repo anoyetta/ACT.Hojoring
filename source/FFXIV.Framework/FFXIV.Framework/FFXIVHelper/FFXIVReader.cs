@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
@@ -60,17 +62,17 @@ namespace FFXIV.Framework.FFXIVHelper
                     "FFXIV_MemoryReader.dll");
                 if (File.Exists(dll))
                 {
-                    var message = string.Empty;
+                    var message = new StringBuilder();
 
                     try
                     {
                         File.Delete(dll);
 
-                        message = string.Empty;
-                        message += $@"""FFXIV_MemoryReader.dll"" was deleted.\n";
-                        message += $@"Please, restart ACT.";
+                        message.Clear();
+                        message.AppendLine($@"""FFXIV_MemoryReader.dll"" was deleted.");
+                        message.AppendLine($@"Please, restart ACT.");
                         WPFHelper.BeginInvoke(() => ModernMessageBox.ShowDialog(
-                            message,
+                            message.ToString(),
                             "Warning",
                             MessageBoxButton.OK));
                     }
@@ -80,15 +82,15 @@ namespace FFXIV.Framework.FFXIVHelper
 
                     if (File.Exists(dll))
                     {
-                        message = string.Empty;
-                        message += $@"""FFXIV_MemoryReader.dll"" is exists yet.\n";
-                        message += $@"You should delete ""FFXIV_MemoryReader.dll"".\n";
-                        message += Environment.NewLine;
-                        message += "Path:\n";
-                        message += dll;
+                        message.Clear();
+                        message.AppendLine($@"""FFXIV_MemoryReader.dll"" is exists yet.");
+                        message.AppendLine($@"You should delete ""FFXIV_MemoryReader.dll"".");
+                        message.AppendLine();
+                        message.AppendLine("Path:");
+                        message.AppendLine(dll);
 
                         WPFHelper.BeginInvoke(() => ModernMessageBox.ShowDialog(
-                            message,
+                            message.ToString(),
                             "Warning",
                             MessageBoxButton.OK));
                     }
@@ -102,7 +104,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
                 var succeeded = false;
 
-                this.ActInvoke(() =>
+                WPFHelper.Invoke(() =>
                 {
                     var parentTabControl = baseTabPage.Parent as TabControl;
                     if (parentTabControl == null)
@@ -139,15 +141,16 @@ namespace FFXIV.Framework.FFXIVHelper
                         result.Message = "Fatal error occurred initializing FFXIV_MemoryReader.";
                         result.Exception = ex;
 
-                        WPFHelper.BeginInvoke(() => ModernMessageBox.ShowDialog(
+                        ModernMessageBox.ShowDialog(
                             result.Message,
                             "Fatal Error",
                             MessageBoxButton.OK,
-                            ex));
+                            ex);
                     }
-                });
+                },
+                DispatcherPriority.Normal);
 
-                WPFHelper.Invoke(() => this.IsAvailable = succeeded);
+                this.IsAvailable = succeeded;
             }
 
             return result;

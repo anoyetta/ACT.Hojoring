@@ -243,7 +243,7 @@
               <Label Content="{DynamicResource Spell_BlinkTime}" VerticalAlignment="Center" Margin="5 0 0 0" />
             </StackPanel>
             <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_BlinkIcon}" IsChecked="{Binding Model.BlinkIcon}" />
-            <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_BlinkBar}" IsChecked="{Binding Model.BlinkTime}" />
+            <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_BlinkBar}" IsChecked="{Binding Model.BlinkBar}" />
 
             <!-- Jobフィルタ start -->
             <Expander Margin="0 20 0 0" Expanded="FilterExpander_Expanded">
