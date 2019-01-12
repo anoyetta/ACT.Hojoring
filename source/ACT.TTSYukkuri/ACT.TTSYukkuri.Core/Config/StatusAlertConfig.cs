@@ -16,15 +16,15 @@ namespace ACT.TTSYukkuri.Config
     {
         private bool enabledHPAlert;
         private int hpThreshold;
-        private string hpTextToSpeack = "<pcname>,HP<hpp>%.";
+        private string hpTextToSpeack = "<pcname>,HP <hpp>%.";
 
         private bool enabledMPAlert;
         private int mpThreshold;
-        private string mpTextToSpeack = "<pcname>,MP<mpp>%.";
+        private string mpTextToSpeack = "<pcname>,MP <mpp>%.";
 
         private bool enabledTPAlert;
         private int tpThreshold;
-        private string tpTextToSpeack = "<pcname>,TP<tpp>%.";
+        private string tpTextToSpeack = "<pcname>,TP <tpp>%.";
 
         private ObservableCollection<AlertTarget> alertTargetsHP = new ObservableCollection<AlertTarget>();
         private ObservableCollection<AlertTarget> alertTargetsMP = new ObservableCollection<AlertTarget>();

@@ -106,13 +106,13 @@
   <system:String x:Key="Spell_TextToMatch">匹配内容</system:String>
   <system:String x:Key="Spell_UserRegex">使用正则</system:String>
   <system:String x:Key="Spell_RecastTime">复唱时间</system:String>
-  <system:String x:Key="Spell_UseHotbrRecastTime">使用MemoryReader数据</system:String>
-  <system:String x:Key="Spell_HotbarItemName">Name of Hotbar Item</system:String>
+  <system:String x:Key="Spell_UseHotbrRecastTime">使用快捷栏中复唱数据</system:String>
+  <system:String x:Key="Spell_HotbarItemName">快捷栏名称</system:String>
   <system:String x:Key="Spell_TextToExtend">匹配以延长</system:String>
   <system:String x:Key="Spell_Secounds">秒</system:String>
   <system:String x:Key="Spell_ExtendSecounds">秒,延长.</system:String>
   <system:String x:Key="Spell_ExtendRecastTimeOverOrigal">可延长至原时间上限以上</system:String>
-  <system:String x:Key="Spell_IsNotResetBarOnExtended">Don't reset bar on extended</system:String>
+  <system:String x:Key="Spell_IsNotResetBarOnExtended">延长时维持条长度</system:String>
   <system:String x:Key="Spell_UpperLimitOfRecastTime">延长时间上限</system:String>
   <system:String x:Key="Spell_WarningTime">秒时改为警告颜色.</system:String>
   <system:String x:Key="Spell_WarningTimeChangeFontColor">字体颜色改为警告色</system:String>
@@ -213,7 +213,7 @@
 
   <system:String x:Key="Info_Placeholders">占位符</system:String>
   <system:String x:Key="Info_Triggers">活动触发器</system:String>
-  <system:String x:Key="Info_Hotbar">Hotbar Info</system:String>
+  <system:String x:Key="Info_Hotbar">快捷栏信息</system:String>
   <system:String x:Key="Info_TriggerCount">活动触发器计数 (包括额外目标触发器)</system:String>
 
   <system:String x:Key="Icon_BrowseIcon">浏览图标</system:String>
