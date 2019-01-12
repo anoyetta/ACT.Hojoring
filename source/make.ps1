@@ -60,9 +60,11 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     '●Hojoring.dll を削除する'
     Remove-Item -Force ACT.Hojoring.dll
 
+    <#
     Copy-Item -Recurse -Force -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\ -Exclude *.pdb
     Remove-Item -Recurse .\tools\XIVDBDownloader\*.config
     Remove-Item -Recurse .\tools\XIVDBDownloader\resources
+    #>
     Remove-Item -Recurse * -Include *.pdb
 
     '●不要なロケールを削除する'
@@ -92,15 +94,19 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     '●外部参照用DLLを逃がす'
     $references = @(
+        "x64",
+        "x86",
         "System.Windows.Interactivity.dll",
         "ICSharpCode.SharpZipLib.dll",
+        "ICSharpCode.AvalonEdit.dll"
         "CommonServiceLocator.dll",
         "ReactiveProperty*.dll",
         "System.Reactive.*.dll",
         "System.Collections.Immutable.dll",
         "System.Interactive.Async.dll",
         "SuperSocket.ClientEngine.dll",
-        "WebSocket4Net.dll"
+        "WebSocket4Net.dll",
+        "System.Data*.dll"
     )
 
     New-Item -ItemType Directory "references" | Out-Null
@@ -118,7 +124,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     
     '●TTSYukkuri のAssemblyをマージする'
     $libs = @(
-#        "DSharpPlus*.dll",
+        #        "DSharpPlus*.dll",
         "Discord.*.dll",
         "RucheHome*.dll"
     )
@@ -128,6 +134,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     '●その他のDLLをマージする'
     $libs = @(
+        "FFXIV_MemoryReader*.dll",
         "FontAwesome.WPF.dll",
         "System.Web.Razor.dll",
         "Newtonsoft.Json.dll",
@@ -138,7 +145,6 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "Prism*.dll",
         "Xceed.*.dll",
         "NPOI*.dll",
-        "FFXIV_MemoryReader.Model.dll",
         "AWSSDK.*.dll"
     )
 

@@ -411,6 +411,16 @@ namespace ACT.TTSYukkuri.Config
 
                     var activeConfig = this;
 
+                    // サイズ0のファイルがもしも存在したら消す
+                    if (File.Exists(file))
+                    {
+                        var fi = new FileInfo(file);
+                        if (fi.Length <= 0)
+                        {
+                            File.Delete(file);
+                        }
+                    }
+
                     if (File.Exists(file))
                     {
                         using (var sr = new StreamReader(file, new UTF8Encoding(false)))
@@ -451,10 +461,13 @@ namespace ACT.TTSYukkuri.Config
                 // ステータスアラートの対象を初期化する
                 this.StatusAlertSettings.SetDefaultAlertTargets();
 
+                var ns = new XmlSerializerNamespaces();
+                ns.Add(string.Empty, string.Empty);
+
                 using (var sw = new StreamWriter(file, false, new UTF8Encoding(false)))
                 {
                     var xs = new XmlSerializer(typeof(Settings));
-                    xs.Serialize(sw, Default);
+                    xs.Serialize(sw, Default, ns);
                 }
             }
         }

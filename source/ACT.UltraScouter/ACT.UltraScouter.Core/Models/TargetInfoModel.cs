@@ -1,10 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media;
+using ACT.UltraScouter.Config;
+using ACT.UltraScouter.Models.FFLogs;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
+using FFXIV.Framework.FFXIVHelper;
 using NLog;
 using Prism.Mvvm;
+using TamanegiMage.FFXIV_MemoryReader.Model;
 
 namespace ACT.UltraScouter.Models
 {
@@ -155,6 +162,38 @@ namespace ACT.UltraScouter.Models
             }
         }
 
+        private ObjectType objectType = ObjectType.Unknown;
+
+        public ObjectType ObjectType
+        {
+            get => this.objectType;
+            set => this.SetProperty(ref this.objectType, value);
+        }
+
+        private JobIDs job = JobIDs.Unknown;
+
+        public JobIDs Job
+        {
+            get => this.job;
+            set => this.SetProperty(ref this.job, value);
+        }
+
+        private int worldID;
+
+        public int WorldID
+        {
+            get => this.worldID;
+            set => this.SetProperty(ref this.worldID, value);
+        }
+
+        private string worldName;
+
+        public string WorldName
+        {
+            get => this.worldName;
+            set => this.SetProperty(ref this.worldName, value);
+        }
+
         public string NameFI { get; protected set; } = string.Empty;
         public string NameIF { get; protected set; } = string.Empty;
         public string NameII { get; protected set; } = string.Empty;
@@ -241,7 +280,7 @@ namespace ACT.UltraScouter.Models
             InCrossPlus     // メレーAAの射程内
         }
 
-        public static readonly IList<(string symbol, Color color)> DistanceIndicators = new(string symbol, Color color)[]
+        public static readonly IList<(string symbol, Color color)> DistanceIndicators = new (string symbol, Color color)[]
         {
             /*
             (null, Colors.Transparent),           // Unknown
@@ -353,5 +392,266 @@ namespace ACT.UltraScouter.Models
             => DistanceIndicators[(int)this.DistanceIndicator].color.ToBrush();
 
         #endregion Distance
+
+        #region FFLogs
+
+        private static ParseTotalModel designtimeParseTotal;
+        private static ParseTotalModel designtimeParseTotalNoHistogram;
+
+        private static ParseTotalModel DesigntimeParseTotal =>
+            designtimeParseTotal ?? (designtimeParseTotal = CreateDesigntimeParseTotal());
+
+        private static ParseTotalModel DesigntimeParseTotalNoHistogram =>
+            designtimeParseTotalNoHistogram ?? (designtimeParseTotalNoHistogram = CreateDesigntimeParseTotal(true));
+
+        private static ParseTotalModel CreateDesigntimeParseTotal(
+            bool noHistogram = false)
+        {
+            var model = new ParseTotalModel()
+            {
+                CharacterName = "Naoki Yoshida",
+                Server = "Chocobo",
+                Region = FFLogsRegions.JP,
+                Job = Jobs.Find(JobIDs.BLM),
+                BestJobName = "Black Mage",
+                Histogram = !noHistogram ?
+                    HistogramsModel.DesigntimeModel :
+                    new HistogramsModel(),
+            };
+
+            model.AddRangeParse(new[]
+            {
+                new ParseModel()
+                {
+                    EncounterID = 1,
+                    Spec = "Black Mage",
+                    EncounterName = "BOSS 1",
+                    Percentile = 100.0f,
+                    Total = 6451f,
+                },
+                new ParseModel()
+                {
+                    EncounterID = 2,
+                    Spec = "Black Mage",
+                    EncounterName = "BOSS 2",
+                    Percentile = 95.0f,
+                    Total = 5234f,
+                },
+                new ParseModel()
+                {
+                    EncounterID = 3,
+                    Spec = "Black Mage",
+                    EncounterName = "BOSS 3",
+                    Percentile = 75.0f,
+                    Total = 5912f,
+                },
+                new ParseModel()
+                {
+                    EncounterID = 4,
+                    Spec = "Black Mage",
+                    EncounterName = "BOSS 4",
+                    Percentile = 50.0f,
+                    Total = 4987f,
+                },
+                new ParseModel()
+                {
+                    EncounterID = 5,
+                    Spec = "Black Mage",
+                    EncounterName = "BOSS 5",
+                    Percentile = 25.0f,
+                    Total = 6166f,
+                },
+                new ParseModel()
+                {
+                    EncounterID = 6,
+                    Spec = "Black Mage",
+                    EncounterName = "BOSS 6",
+                    Percentile = 14.0f,
+                    Total = 3167f,
+                },
+            });
+
+            return model;
+        }
+
+        public static bool IsAvailableParseTotalTextCommand { get; private set; } = false;
+
+        private static ParseTotalModel TextCommandParseTotal { get; } = new ParseTotalModel();
+
+        public static ParseTotalModel APITestResultParseTotal { get; set; } = null;
+
+        private ParseTotalModel parseTotal = WPFHelper.IsDesignMode ? DesigntimeParseTotal : new ParseTotalModel();
+
+        public ParseTotalModel ParseTotal
+        {
+            get => this.parseTotal;
+            private set
+            {
+                if (this.SetProperty(ref this.parseTotal, value))
+                {
+                    this.parseTotal.RaiseAllPropertiesChanged();
+                }
+            }
+        }
+
+        private static readonly Dictionary<string, ParseTotalModel> ParseTotalDictionary = new Dictionary<string, ParseTotalModel>();
+
+        public void RefreshFFLogsInfo()
+        {
+            var config = Settings.Instance.FFLogs;
+            if (!config.Visible)
+            {
+                return;
+            }
+
+            if (config.IsDesignMode)
+            {
+                if (APITestResultParseTotal != null)
+                {
+                    this.ParseTotal = APITestResultParseTotal;
+                }
+                else
+                {
+                    this.ParseTotal = config.VisibleHistogram ?
+                        DesigntimeParseTotal :
+                        DesigntimeParseTotalNoHistogram;
+                }
+
+                return;
+            }
+
+            if (string.IsNullOrEmpty(config.ApiKey))
+            {
+                return;
+            }
+
+            if (IsAvailableParseTotalTextCommand)
+            {
+                this.ParseTotal = TextCommandParseTotal;
+                return;
+            }
+
+            var job = Jobs.Find(this.job);
+
+            lock (ParseTotalDictionary)
+            {
+                var model = default(ParseTotalModel);
+                var key = ParseTotalModel.CreateDataKey(this.name, this.worldName, config.ServerRegion, job);
+                if (!ParseTotalDictionary.ContainsKey(key))
+                {
+                    model = new ParseTotalModel();
+                    ParseTotalDictionary[key] = model;
+                }
+                else
+                {
+                    model = ParseTotalDictionary[key];
+                }
+
+                this.ParseTotal = model;
+            }
+
+            Task.Run(async () =>
+            {
+                await this.ParseTotal.GetParseAsync(
+                    this.Name,
+                    this.WorldName,
+                    config.ServerRegion,
+                    job);
+            });
+
+            this.GarbageParseTotalDictionary();
+        }
+
+        private DateTime lastGarbageTimestamp = DateTime.MinValue;
+
+        private void GarbageParseTotalDictionary()
+        {
+            if ((DateTime.Now - this.lastGarbageTimestamp).TotalMinutes < 2.0)
+            {
+                return;
+            }
+
+            var ttl = Settings.Instance.FFLogs.RefreshInterval * 1.5d * -1;
+
+            lock (ParseTotalDictionary)
+            {
+                var targets = ParseTotalDictionary
+                    .Where(x => x.Value.Timestamp < DateTime.Now.AddMinutes(ttl))
+                    .ToArray();
+
+                foreach (var item in targets)
+                {
+                    ParseTotalDictionary.Remove(item.Key);
+                }
+            }
+
+            this.lastGarbageTimestamp = DateTime.Now;
+        }
+
+        private static System.Timers.Timer textCommandTTLTimer;
+
+        private static System.Timers.Timer TextCommandTTLTimer =>
+            textCommandTTLTimer ?? (textCommandTTLTimer = CreateTextCommandTTLTimer());
+
+        private static System.Timers.Timer CreateTextCommandTTLTimer()
+        {
+            var timer = new System.Timers.Timer();
+
+            timer.AutoReset = false;
+            timer.Interval = Settings.Instance.FFLogs.FromCommandTTL * 1000d;
+            timer.Elapsed += (x, y) =>
+            {
+                IsAvailableParseTotalTextCommand = false;
+            };
+
+            return timer;
+        }
+
+        public static void GetFFLogsInfoFromTextCommand(
+            string characterName,
+            string serverName)
+        {
+            try
+            {
+                TextCommandTTLTimer.Stop();
+                IsAvailableParseTotalTextCommand = true;
+
+                if (string.IsNullOrEmpty(characterName) ||
+                    string.IsNullOrEmpty(serverName))
+                {
+                    var player = FFXIVPlugin.Instance.GetPlayer();
+
+                    if (string.IsNullOrEmpty(characterName))
+                    {
+                        characterName = player.Name;
+                    }
+
+                    if (string.IsNullOrEmpty(serverName))
+                    {
+                        serverName = player.WorldName;
+                    }
+                }
+
+                var ti = CultureInfo.CurrentCulture.TextInfo;
+                characterName = ti.ToTitleCase(characterName);
+                serverName = ti.ToTitleCase(serverName);
+
+                Task.Run(async () =>
+                {
+                    await TextCommandParseTotal.GetParseAsync(
+                        characterName,
+                        serverName,
+                        Settings.Instance.FFLogs.ServerRegion,
+                        null);
+                });
+            }
+            finally
+            {
+                TextCommandTTLTimer.Interval = Settings.Instance.FFLogs.FromCommandTTL * 1000d;
+                TextCommandTTLTimer.Start();
+            }
+        }
+
+        #endregion FFLogs
     }
 }

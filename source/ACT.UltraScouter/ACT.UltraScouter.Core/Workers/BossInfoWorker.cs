@@ -87,6 +87,8 @@ namespace ACT.UltraScouter.Workers
         protected override DistanceViewModel DistanceVM =>
             this.distanceVM ?? (this.distanceVM = new DistanceViewModel(Settings.Instance.BossDistance, this.Model));
 
+        protected override FFLogsViewModel FFLogsVM => null;
+
         protected override bool IsAllViewOff =>
             !FFXIVPlugin.Instance.IsFFXIVActive ||
             (

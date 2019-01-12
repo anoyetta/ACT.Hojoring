@@ -255,6 +255,8 @@ namespace ACT.UltraScouter.Workers
 
         protected override DistanceViewModel DistanceVM => null;
 
+        protected override FFLogsViewModel FFLogsVM => null;
+
         #region MobList
 
         protected MobListView mobListView;
@@ -317,13 +319,21 @@ namespace ACT.UltraScouter.Workers
             var moblist = default(IReadOnlyList<MobInfo>);
             lock (this.TargetInfoLock)
             {
-                moblist = (
-                    from x in this.targetMobList.OrderBy(y => y.Distance)
-                    group x by x.Name into g
-                    select g.First().Clone((clone =>
-                    {
-                        clone.DuplicateCount = g.Count();
-                    }))).ToList();
+                if (Settings.Instance.MobList.UngroupSameNameMobs)
+                {
+                    moblist = (
+                        this.targetMobList.OrderBy(y => y.Distance)).ToList();
+                }
+                else
+                {
+                    moblist = (
+                        from x in this.targetMobList.OrderBy(y => y.Distance)
+                        group x by x.Name into g
+                        select g.First().Clone((clone =>
+                        {
+                            clone.DuplicateCount = g.Count();
+                        }))).ToList();
+                }
             }
 
             // 表示件数によるフィルタをかけるメソッド

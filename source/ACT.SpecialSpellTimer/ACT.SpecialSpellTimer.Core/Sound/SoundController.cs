@@ -113,11 +113,13 @@ namespace ACT.SpecialSpellTimer.Sound
         /// <summary>
         /// 再生する
         /// </summary>
-        /// <param name="source">
-        /// 再生する対象</param>
+        /// <param name="source">再生する対象</param>
+        /// <param name="isSync">同期再生する？</param>
+        /// <param name="volume">再生ボリューム</param>
         public void Play(
             string source,
-            bool isSync = false)
+            bool isSync = false,
+            float? volume = null)
         {
             try
             {
@@ -127,16 +129,16 @@ namespace ACT.SpecialSpellTimer.Sound
                 }
 
                 // wav？
-                if (source.EndsWith(".wav") ||
-                    source.EndsWith(".wave") ||
-                    source.EndsWith(".mp3"))
+                if (source.EndsWith(".wav", StringComparison.OrdinalIgnoreCase) ||
+                    source.EndsWith(".wave", StringComparison.OrdinalIgnoreCase) ||
+                    source.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase))
                 {
                     // ファイルが存在する？
                     if (File.Exists(source))
                     {
                         if (PlayBridge.Instance.IsAvailable)
                         {
-                            PlayBridge.Instance.Play(source, isSync);
+                            PlayBridge.Instance.Play(source, isSync, volume);
                         }
                         else
                         {
@@ -150,7 +152,7 @@ namespace ACT.SpecialSpellTimer.Sound
 
                     if (PlayBridge.Instance.IsAvailable)
                     {
-                        PlayBridge.Instance.Play(source, isSync);
+                        PlayBridge.Instance.Play(source, isSync, volume);
                     }
                     else
                     {

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using System.Net;
 using ACT.TTSYukkuri.Config;
+using FFXIV.Framework.Common;
 using VoiceTextWebAPI.Client;
 
 namespace ACT.TTSYukkuri.HOYA
@@ -27,7 +27,8 @@ namespace ACT.TTSYukkuri.HOYA
         public void Speak(
             string text,
             PlayDevices playDevice = PlayDevices.Both,
-            bool isSync = false)
+            bool isSync = false,
+            float? volume = null)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -57,7 +58,7 @@ namespace ACT.TTSYukkuri.HOYA
             }
 
             // 再生する
-            SoundPlayerWrapper.Play(wave, playDevice, isSync);
+            SoundPlayerWrapper.Play(wave, playDevice, isSync, volume);
         }
 
         /// <summary>
@@ -83,9 +84,8 @@ namespace ACT.TTSYukkuri.HOYA
                 Format = Format.WAV,
             };
 
-            // TLS1.2を有効にする
-            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
-            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+            // TLSプロトコルを設定する
+            EnvironmentHelper.SetTLSProtocol();
 
             var waveData = client.GetVoice(textToSpeak);
 

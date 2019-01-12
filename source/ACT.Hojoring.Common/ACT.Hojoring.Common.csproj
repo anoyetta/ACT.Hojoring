@@ -86,13 +86,13 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Content Include="resources\MobList.en-US.txt">
+    <Content Include="resources\MobList.en-US.master.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\MobList.ja-JP.txt">
+    <Content Include="resources\MobList.ja-JP.master.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\Moblist.zh-CN.txt">
+    <Content Include="resources\Moblist.zh-CN.master.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\wav\alarm.wav">
@@ -167,7 +167,7 @@
     <Content Include="resources\xivdb\Instance.ja-JP.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\Zones.csv">
+    <Content Include="resources\Zones.master.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\xivdb\Action.ko-KR.csv">
@@ -199,10 +199,10 @@
     <Folder Include="resources\strings\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="resources\TTSDictionary.en-US.txt">
+    <Content Include="resources\TTSDictionary.en-US.master.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\TTSDictionary.ja-JP.txt">
+    <Content Include="resources\TTSDictionary.ja-JP.master.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

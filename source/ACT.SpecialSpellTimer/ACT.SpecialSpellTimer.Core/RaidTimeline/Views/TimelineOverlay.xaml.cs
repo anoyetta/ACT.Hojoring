@@ -1,10 +1,10 @@
+using FFXIV.Framework.Common;
+using FFXIV.Framework.WPF.Views;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.WPF.Views;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline.Views
 {
@@ -161,11 +161,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
             this.LoadResourcesDictionary();
 
             this.ToNonActive();
+            this.Opacity = 0;
 
             this.MouseLeftButtonDown += (x, y) => this.DragMove();
-
-            this.Opacity = 0;
-            this.Topmost = false;
 
             this.Loaded += (x, y) =>
             {

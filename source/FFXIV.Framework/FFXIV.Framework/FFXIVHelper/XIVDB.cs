@@ -122,44 +122,47 @@ namespace FFXIV.Framework.FFXIVHelper
             // 先にENリストをロードする
             this.LoadAreaEN();
 
-            this.areaList.Clear();
+            lock (this.areaENList)
+            {
+                this.areaList.Clear();
 
-            // UTF-8 BOMあり
-            using (var sr = new StreamReader(this.AreaFile, new UTF8Encoding(true)))
-            using (var parser = new TextFieldParser(sr)
-            {
-                TextFieldType = FieldType.Delimited,
-                Delimiters = new[] { "," },
-                HasFieldsEnclosedInQuotes = true,
-                TrimWhiteSpace = true,
-                CommentTokens = new[] { "#" },
-            })
-            {
-                while (!parser.EndOfData)
+                // UTF-8 BOMあり
+                using (var sr = new StreamReader(this.AreaFile, new UTF8Encoding(true)))
+                using (var parser = new TextFieldParser(sr)
                 {
-                    var fields = parser.ReadFields();
-
-                    if (fields == null ||
-                        fields.Length < 5)
+                    TextFieldType = FieldType.Delimited,
+                    Delimiters = new[] { "," },
+                    HasFieldsEnclosedInQuotes = true,
+                    TrimWhiteSpace = true,
+                    CommentTokens = new[] { "#" },
+                })
+                {
+                    while (!parser.EndOfData)
                     {
-                        continue;
+                        var fields = parser.ReadFields();
+
+                        if (fields == null ||
+                            fields.Length < 5)
+                        {
+                            continue;
+                        }
+
+                        int id;
+                        if (!int.TryParse(fields[0], out id) ||
+                            string.IsNullOrEmpty(fields[4]))
+                        {
+                            continue;
+                        }
+
+                        var entry = new Area()
+                        {
+                            ID = id,
+                            NameEn = this.areaENList[id]?.Name ?? string.Empty,
+                            Name = fields[4]
+                        };
+
+                        this.areaList.Add(entry);
                     }
-
-                    int id;
-                    if (!int.TryParse(fields[0], out id) ||
-                        string.IsNullOrEmpty(fields[4]))
-                    {
-                        continue;
-                    }
-
-                    var entry = new Area()
-                    {
-                        ID = id,
-                        NameEn = this.areaENList[id]?.Name ?? string.Empty,
-                        Name = fields[4]
-                    };
-
-                    this.areaList.Add(entry);
                 }
             }
 
@@ -173,44 +176,47 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            this.areaENList.Clear();
+            lock (this.areaENList)
+            {
+                this.areaENList.Clear();
 
-            // UTF-8 BOMあり
-            using (var sr = new StreamReader(this.AreaENFile, new UTF8Encoding(true)))
-            using (var parser = new TextFieldParser(sr)
-            {
-                TextFieldType = FieldType.Delimited,
-                Delimiters = new[] { "," },
-                HasFieldsEnclosedInQuotes = true,
-                TrimWhiteSpace = true,
-                CommentTokens = new[] { "#" },
-            })
-            {
-                while (!parser.EndOfData)
+                // UTF-8 BOMあり
+                using (var sr = new StreamReader(this.AreaENFile, new UTF8Encoding(true)))
+                using (var parser = new TextFieldParser(sr)
                 {
-                    var fields = parser.ReadFields();
-
-                    if (fields == null ||
-                        fields.Length < 5)
+                    TextFieldType = FieldType.Delimited,
+                    Delimiters = new[] { "," },
+                    HasFieldsEnclosedInQuotes = true,
+                    TrimWhiteSpace = true,
+                    CommentTokens = new[] { "#" },
+                })
+                {
+                    while (!parser.EndOfData)
                     {
-                        continue;
+                        var fields = parser.ReadFields();
+
+                        if (fields == null ||
+                            fields.Length < 5)
+                        {
+                            continue;
+                        }
+
+                        int id;
+                        if (!int.TryParse(fields[0], out id) ||
+                            string.IsNullOrEmpty(fields[4]))
+                        {
+                            continue;
+                        }
+
+                        var entry = new Area()
+                        {
+                            ID = id,
+                            NameEn = fields[4],
+                            Name = fields[4]
+                        };
+
+                        this.areaENList[entry.ID] = entry;
                     }
-
-                    int id;
-                    if (!int.TryParse(fields[0], out id) ||
-                        string.IsNullOrEmpty(fields[4]))
-                    {
-                        continue;
-                    }
-
-                    var entry = new Area()
-                    {
-                        ID = id,
-                        NameEn = fields[4],
-                        Name = fields[4]
-                    };
-
-                    this.areaENList[entry.ID] = entry;
                 }
             }
 
@@ -224,28 +230,31 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            this.placenameList.Clear();
-
-            using (var sr = new StreamReader(this.PlacenameFile, new UTF8Encoding(false)))
+            lock (this.placenameList)
             {
-                // ヘッダを飛ばす
-                sr.ReadLine();
+                this.placenameList.Clear();
 
-                while (!sr.EndOfStream)
+                using (var sr = new StreamReader(this.PlacenameFile, new UTF8Encoding(false)))
                 {
-                    var line = sr.ReadLine();
+                    // ヘッダを飛ばす
+                    sr.ReadLine();
 
-                    var values = line.Split(',');
-                    if (values.Length >= 3)
+                    while (!sr.EndOfStream)
                     {
-                        var entry = new Placename()
-                        {
-                            ID = int.Parse(values[0]),
-                            NameEn = values[1],
-                            Name = values[2]
-                        };
+                        var line = sr.ReadLine();
 
-                        this.placenameList.Add(entry);
+                        var values = line.Split(',');
+                        if (values.Length >= 3)
+                        {
+                            var entry = new Placename()
+                            {
+                                ID = int.Parse(values[0]),
+                                NameEn = values[1],
+                                Name = values[2]
+                            };
+
+                            this.placenameList.Add(entry);
+                        }
                     }
                 }
             }
@@ -260,50 +269,53 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            this.actionList.Clear();
+            lock (this.actionList)
+            {
+                this.actionList.Clear();
 
-            // UTF-8 BOMあり
-            using (var sr = new StreamReader(this.SkillFile, new UTF8Encoding(true)))
-            using (var parser = new TextFieldParser(sr)
-            {
-                TextFieldType = FieldType.Delimited,
-                Delimiters = new[] { "," },
-                HasFieldsEnclosedInQuotes = true,
-                TrimWhiteSpace = true,
-                CommentTokens = new[] { "#" },
-            })
-            {
-                while (!parser.EndOfData)
+                // UTF-8 BOMあり
+                using (var sr = new StreamReader(this.SkillFile, new UTF8Encoding(true)))
+                using (var parser = new TextFieldParser(sr)
                 {
-                    var fields = parser.ReadFields();
-
-                    if (fields == null ||
-                        fields.Length < 2)
+                    TextFieldType = FieldType.Delimited,
+                    Delimiters = new[] { "," },
+                    HasFieldsEnclosedInQuotes = true,
+                    TrimWhiteSpace = true,
+                    CommentTokens = new[] { "#" },
+                })
+                {
+                    while (!parser.EndOfData)
                     {
-                        continue;
+                        var fields = parser.ReadFields();
+
+                        if (fields == null ||
+                            fields.Length < 2)
+                        {
+                            continue;
+                        }
+
+                        int id;
+                        if (!int.TryParse(fields[0], out id) ||
+                            string.IsNullOrEmpty(fields[1]))
+                        {
+                            continue;
+                        }
+
+                        var entry = new XIVDBAction()
+                        {
+                            ID = id,
+                            Name = fields[1]
+                        };
+
+                        this.actionList[entry.ID] = entry;
                     }
-
-                    int id;
-                    if (!int.TryParse(fields[0], out id) ||
-                        string.IsNullOrEmpty(fields[1]))
-                    {
-                        continue;
-                    }
-
-                    var entry = new XIVDBAction()
-                    {
-                        ID = id,
-                        Name = fields[1]
-                    };
-
-                    this.actionList[entry.ID] = entry;
                 }
+
+                this.AppLogger.Trace($"XIVDB Action list loaded. {this.SkillFile}");
+
+                // Userリストの方も読み込む
+                this.LoadUserAction();
             }
-
-            this.AppLogger.Trace($"XIVDB Action list loaded. {this.SkillFile}");
-
-            // Userリストの方も読み込む
-            this.LoadUserAction();
         }
 
         private void LoadUserAction()
@@ -366,43 +378,46 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            this.buffList.Clear();
+            lock (this.buffList)
+            {
+                this.buffList.Clear();
 
-            // UTF-8 BOMあり
-            using (var sr = new StreamReader(this.BuffFile, new UTF8Encoding(true)))
-            using (var parser = new TextFieldParser(sr)
-            {
-                TextFieldType = FieldType.Delimited,
-                Delimiters = new[] { "," },
-                HasFieldsEnclosedInQuotes = true,
-                TrimWhiteSpace = true,
-                CommentTokens = new[] { "#" },
-            })
-            {
-                while (!parser.EndOfData)
+                // UTF-8 BOMあり
+                using (var sr = new StreamReader(this.BuffFile, new UTF8Encoding(true)))
+                using (var parser = new TextFieldParser(sr)
                 {
-                    var fields = parser.ReadFields();
-
-                    if (fields == null ||
-                        fields.Length < 2)
+                    TextFieldType = FieldType.Delimited,
+                    Delimiters = new[] { "," },
+                    HasFieldsEnclosedInQuotes = true,
+                    TrimWhiteSpace = true,
+                    CommentTokens = new[] { "#" },
+                })
+                {
+                    while (!parser.EndOfData)
                     {
-                        continue;
+                        var fields = parser.ReadFields();
+
+                        if (fields == null ||
+                            fields.Length < 2)
+                        {
+                            continue;
+                        }
+
+                        int id;
+                        if (!int.TryParse(fields[0], out id) ||
+                            string.IsNullOrEmpty(fields[1]))
+                        {
+                            continue;
+                        }
+
+                        var entry = new Buff()
+                        {
+                            ID = id,
+                            Name = fields[1]
+                        };
+
+                        this.buffList[entry.ID] = entry;
                     }
-
-                    int id;
-                    if (!int.TryParse(fields[0], out id) ||
-                        string.IsNullOrEmpty(fields[1]))
-                    {
-                        continue;
-                    }
-
-                    var entry = new Buff()
-                    {
-                        ID = id,
-                        Name = fields[1]
-                    };
-
-                    this.buffList[entry.ID] = entry;
                 }
             }
 

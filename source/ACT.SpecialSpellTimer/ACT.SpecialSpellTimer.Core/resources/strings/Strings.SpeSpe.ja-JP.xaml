@@ -186,6 +186,7 @@
   <system:String x:Key="Options_EnabledNotifyDefaultSpellTimer">ACT本体のスペルタイマにも通知する（試験的機能）</system:String>
   <system:String x:Key="Options_EnabledSimplyRegex">正規表現を単純にする</system:String>
   <system:String x:Key="Options_EnabledRemoveTooltipSymbol">ツールチップ記号を除去する</system:String>
+  <system:String x:Key="Options_EnabledRemoveWorldName">キャラ名に付与されるワールド名を除去する</system:String>
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">UNKNOWNスキルを補完する</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">ダメージ・回復に関するログをカットする</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">"15:", "16:" から始まる詳細なログをカットする</system:String>
@@ -212,6 +213,7 @@
 
   <system:String x:Key="Info_Placeholders">有効なプレースホルダ</system:String>
   <system:String x:Key="Info_Triggers">アクティブなトリガ</system:String>
+  <system:String x:Key="Info_Hotbar">ホットバー情報</system:String>
   <system:String x:Key="Info_TriggerCount">アクティブなトリガ数（インスタンスを含む）</system:String>
 
   <system:String x:Key="Icon_BrowseIcon">アイコンを選ぶ</system:String>

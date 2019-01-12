@@ -186,6 +186,7 @@
   <system:String x:Key="Options_EnabledNotifyDefaultSpellTimer">Notify ACT's spell timer</system:String>
   <system:String x:Key="Options_EnabledSimplyRegex">Simply Regex</system:String>
   <system:String x:Key="Options_EnabledRemoveTooltipSymbol">Remove tooltip symbol</system:String>
+  <system:String x:Key="Options_EnabledRemoveWorldName">Remove world name from character name</system:String>
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">To complement unknown skill</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">Ignore Damage and Heal log</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">Ignore 15: or 16: Detail log</system:String>
@@ -212,6 +213,7 @@
 
   <system:String x:Key="Info_Placeholders">Placeholders</system:String>
   <system:String x:Key="Info_Triggers">Active triggers</system:String>
+  <system:String x:Key="Info_Hotbar">Hotbar Info</system:String>
   <system:String x:Key="Info_TriggerCount">Active trigger count (include instanced spell)</system:String>
 
   <system:String x:Key="Icon_BrowseIcon">Browse icon</system:String>

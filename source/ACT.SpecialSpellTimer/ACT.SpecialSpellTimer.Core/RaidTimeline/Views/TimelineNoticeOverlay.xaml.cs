@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Threading;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.WPF.Views;
 
@@ -258,6 +259,18 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
             });
 
             this.RaisePropertyChanged(nameof(this.NoticeList));
+        }
+
+        public void RefreshNotices()
+        {
+            if (!this.Config.IsTimelineLiveUpdate)
+            {
+                WPFHelper.BeginInvoke(() =>
+                {
+                    this.noticesSource?.View?.Refresh();
+                },
+                DispatcherPriority.Background);
+            }
         }
 
         #region Resources Dictionary

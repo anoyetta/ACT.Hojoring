@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -172,16 +171,12 @@ namespace FFXIV.Framework.Common
 
             try
             {
-                // TLS1.2を有効にする
-                ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
-                ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+                // TLSプロトコルを設定する
+                EnvironmentHelper.SetTLSProtocol();
 
                 var html = string.Empty;
 
-                var client = new GitHubClient(new ProductHeaderValue("ACT.Hojoring"))
-                {
-                    Credentials = new Credentials("4a380243ea7a6894be1c1cfc154f4fecd1a46bd0")
-                };
+                var client = new GitHubClient(new ProductHeaderValue("ACT.Hojoring"));
 
                 if (GetHojoring() != null)
                 {
@@ -410,7 +405,7 @@ namespace FFXIV.Framework.Common
             => Registry.GetValue(keyname, valuename, string.Empty).ToString();
 
         private const int Windows10BuildNo = 10240;
-        private const int Windows81BuildNo = 9200;
+        private const int Windows81BuildNo = 9600;
         private static int osBuildNo;
 
         private static void DumpEnvironment()

@@ -324,6 +324,38 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.NoticeOffset = double.TryParse(value, out var v) ? v : (double?)null;
         }
 
+        private float? noticeVolume = null;
+
+        [XmlIgnore]
+        public float? NoticeVolume
+        {
+            get => this.noticeVolume;
+            set => this.SetProperty(ref this.noticeVolume, value);
+        }
+
+        [XmlAttribute(AttributeName = "notice-vol")]
+        public string NoticeVolumeXML
+        {
+            get => this.NoticeVolume?.ToString();
+            set => this.NoticeVolume = float.TryParse(value, out var v) ? v : (float?)null;
+        }
+
+        private bool? noticeSync = null;
+
+        [XmlIgnore]
+        public bool? NoticeSync
+        {
+            get => this.noticeSync;
+            set => this.SetProperty(ref this.noticeSync, value);
+        }
+
+        [XmlAttribute(AttributeName = "notice-sync")]
+        public string NoticeSyncXML
+        {
+            get => this.NoticeSync?.ToString();
+            set => this.NoticeSync = bool.TryParse(value, out var v) ? v : (bool?)null;
+        }
+
         private string style = null;
 
         [XmlAttribute(AttributeName = "style")]

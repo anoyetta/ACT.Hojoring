@@ -141,16 +141,19 @@ namespace ACT.SpecialSpellTimer
             // タイトルをセットする
             pluginScreenSpace.Text = "SPESPE";
 
+            EnvironmentMigrater.Migrate();
+            MasterFilePublisher.Publish();
             WPFHelper.Start();
             WPFHelper.BeginInvoke(async () =>
             {
                 // FFXIV_MemoryReaderを先にロードさせる
-                await FFXIVReader.Instance.WaitForReaderToStartedAsync();
+                var result = await FFXIVReader.Instance.WaitForReaderToStartedAsync(pluginScreenSpace);
 
                 this.PluginStatusLabel = pluginStatusText;
 
                 AppLog.LoadConfiguration(AppLog.HojoringConfig);
                 this.AppLogger.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+                result.WriteLog(this.AppLogger);
 
                 try
                 {

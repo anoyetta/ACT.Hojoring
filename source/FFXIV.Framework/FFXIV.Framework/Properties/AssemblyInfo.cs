@@ -7,7 +7,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("FFXIV.Framework")]
-[assembly: AssemblyCopyright("Copyright © 2017-2018, anoyetta")]
+[assembly: AssemblyCopyright("Copyright © 2017-2019, anoyetta")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
@@ -15,5 +15,5 @@ using System.Windows;
     ResourceDictionaryLocation.None,
     ResourceDictionaryLocation.SourceAssembly
 )]
-[assembly: AssemblyVersion("1.7.0.4")]
-[assembly: AssemblyFileVersion("1.7.0.4")]
+[assembly: AssemblyVersion("1.7.0.6")]
+[assembly: AssemblyFileVersion("1.7.0.6")]

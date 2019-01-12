@@ -15,7 +15,6 @@
   TextOptions.TextFormattingMode="Display"
   TextOptions.TextHintingMode="Animated"
   TextOptions.TextRenderingMode="ClearType"
-  Topmost="True"
   WindowStyle="None"
   AllowsTransparency="True"
   ShowInTaskbar="False"
