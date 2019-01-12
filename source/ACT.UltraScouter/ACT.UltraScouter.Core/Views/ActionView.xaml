@@ -21,13 +21,12 @@
   RenderOptions.ClearTypeHint="Enabled"
   RenderOptions.BitmapScalingMode="HighQuality"
   RenderOptions.EdgeMode="Unspecified"
-  Topmost="True"
   WindowStyle="None"
   Background="Transparent"
   Left="{Binding Path=Config.Location.X, Mode=TwoWay}"
   Top="{Binding Path=Config.Location.Y, Mode=TwoWay}"
   d:DataContext="{d:DesignInstance Type=vm:ActionViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  DataContext="{x:Type vm:ActionViewModel}">
 
   <Window.Resources>
     <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />

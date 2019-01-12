@@ -33,7 +33,7 @@ namespace FFXIV.Framework.TTS.Server
 
         private TaskTrayComponent taskTrayComponet = new TaskTrayComponent();
 
-        private DispatcherTimer shutdownTimer = new DispatcherTimer(DispatcherPriority.Background)
+        private DispatcherTimer shutdownTimer = new DispatcherTimer(DispatcherPriority.ContextIdle)
         {
             Interval = TimeSpan.FromSeconds(10),
         };
@@ -81,15 +81,17 @@ namespace FFXIV.Framework.TTS.Server
             try
             {
                 var message = "Dispatcher Unhandled Exception";
-                ShowMessageBoxException(message, e.Exception);
 
                 try
                 {
                     this.Logger.Fatal(e.Exception, message);
+                    LogManager.Flush();
                 }
                 catch (Exception)
                 {
                 }
+
+                ShowMessageBoxException(message, e.Exception);
             }
             finally
             {

@@ -16,10 +16,11 @@
   xmlns:vm="clr-namespace:ACT.SpecialSpellTimer.Config.ViewModels"
   xmlns:fa="http://schemas.fontawesome.io/icons/"
   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+  xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
   d:DataContext="{d:DesignInstance Type=vm:SpellConfigViewModel}"
+  DataContext="{x:Type vm:SpellConfigViewModel}"
   d:DesignWidth="1000"
   Background="White"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}"
   FontFamily="{DynamicResource UIFont}"
   FontSize="{DynamicResource UIFontSize}"
   FontWeight="{DynamicResource UIFontWeight}"
@@ -242,7 +243,7 @@
               <Label Content="{DynamicResource Spell_BlinkTime}" VerticalAlignment="Center" Margin="5 0 0 0" />
             </StackPanel>
             <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_BlinkIcon}" IsChecked="{Binding Model.BlinkIcon}" />
-            <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_BlinkBar}" IsChecked="{Binding Model.BlinkTime}" />
+            <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_BlinkBar}" IsChecked="{Binding Model.BlinkBar}" />
 
             <!-- Jobフィルタ start -->
             <Expander Margin="0 20 0 0" Expanded="FilterExpander_Expanded">
@@ -860,6 +861,50 @@
         </Grid>
       </TabItem>
       <!-- Notice タブ end -->
+
+      <!-- XMLタブ start -->
+      <TabItem Header="XML"  Padding="20 2 20 2">
+        <Grid Margin="5">
+          <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+
+          <avalonEdit:TextEditor
+            x:Name="XMLEditor"
+            Grid.Row="0"
+            ShowLineNumbers="True"
+            SyntaxHighlighting="XML"
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Auto"
+            FontFamily="Consolas, Yu Gothic UI"
+            FontSize="12pt"
+            Loaded="XMLEditorOnLoaded">
+            <avalonEdit:TextEditor.Options>
+              <avalonEdit:TextEditorOptions
+                ConvertTabsToSpaces="True"
+                ShowSpaces="True"
+                ShowTabs="True"
+                IndentationSize="2" />
+            </avalonEdit:TextEditor.Options>
+          </avalonEdit:TextEditor>
+
+          <DockPanel Grid.Row="1" Margin="5 10">
+            <TextBlock DockPanel.Dock="Left" Margin="0 0 0 0">
+              <Hyperlink Click="XMLCopyOnClick">Copy</Hyperlink>
+            </TextBlock>
+
+            <TextBlock DockPanel.Dock="Left" Margin="15 0 0 0">
+              <Hyperlink Click="XMLPasteOnClick">Paste</Hyperlink>
+            </TextBlock>
+
+            <TextBlock DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="15 0 0 0">
+              <Hyperlink Click="XMLApplyOnClick">Apply</Hyperlink>
+            </TextBlock>
+          </DockPanel>
+        </Grid>
+      </TabItem>
+      <!-- XMLタブ end -->
     </TabControl>
 
     <!-- Bottom Buttons start -->
@@ -877,5 +922,28 @@
       </TextBlock>
     </DockPanel>
     <!-- Bottom Buttons end -->
+
+    <!-- Progress Panel -->
+    <Border
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center"
+      BorderBrush="Gray"
+      BorderThickness="4"
+      CornerRadius="6"
+      Padding="13"
+      MinWidth="500"
+      Background="White"
+      Visibility="{Binding InProgress, Converter={StaticResource VisibilityConverter}, Mode=OneWay}">
+      <StackPanel>
+        <TextBlock
+          Text="{Binding ProgressMessage, Mode=OneWay}" />
+        <ProgressBar
+          Margin="0 10 0 0"
+          VerticalAlignment="Bottom"
+          Height="20"
+          Value="{Binding CurrentValue, Mode=OneWay}"
+          Maximum="{Binding MaxValue, Mode=OneWay}" />
+      </StackPanel>
+    </Border>
   </Grid>
 </UserControl>

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Advanced_Combat_Tracker;
@@ -158,6 +159,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     {
                         this.LoadSkillList();
                         this.LoadZoneList();
+                        this.LoadWorldList();
                         this.MergeSkillList();
                         this.MergeBuffList();
                     }
@@ -298,10 +300,14 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #region Refresh Combatants
 
+        private volatile int exceptionCounter = 0;
+        private const int ExceptionCountLimit = 10;
+
         private readonly IReadOnlyList<Combatant> EmptyCombatantList = new List<Combatant>();
 
         private object combatantListLock = new object();
         private volatile IReadOnlyDictionary<uint, Combatant> combatantDictionary;
+        private volatile IReadOnlyDictionary<uint, Combatant> combatantDictionaryFromFFXIVPlugin;
         private volatile IReadOnlyList<Combatant> combatantList;
 
         private object currentPartyIDListLock = new object();
@@ -311,6 +317,14 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private readonly object playerLocker = new object();
         private Combatant player;
+
+        /// <summary>
+        /// 戦闘中か？
+        /// </summary>
+        /// <remarks>
+        /// パーティメンバのHP, MP, TPのいずれかが最大値でないとき簡易的に戦闘中と判断する
+        /// </remarks>
+        public bool InCombat { get; private set; } = false;
 
 #if DEBUG
 
@@ -429,6 +443,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     this.player = DummyPlayer;
                     this.combatantList = this.DummyCombatants;
                     this.combatantDictionary = this.DummyCombatants.ToDictionary(x => x.ID);
+                    this.combatantDictionaryFromFFXIVPlugin = this.combatantDictionary;
 
                     if (addedCombatants.Any())
                     {
@@ -446,6 +461,13 @@ namespace FFXIV.Framework.FFXIVHelper
             }
             else
             {
+                // 3秒ごとにFFXIV_ACT_PluginからもCombatantを取得しておく
+                if (DateTime.Now.Second % 3 <= 0)
+                {
+                    var c = this.GetCombatantListFromFFXIVPlugin();
+                    this.combatantDictionaryFromFFXIVPlugin = c.Dictionary;
+                }
+
                 this.RefreshCombatantListFromFFXIVReader();
             }
         }
@@ -457,16 +479,82 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void RefreshCombatantListFromFFXIVPlugin()
         {
-            dynamic list = this.pluginScancombat.GetCombatantList();
-            var count = (int)list.Count;
+            var combatants = this.GetCombatantListFromFFXIVPlugin();
+            var newList = combatants.List;
+            var newDictionary = combatants.Dictionary;
+            var player = combatants.Player;
 
+            if (newList == null ||
+                newDictionary == null)
+            {
+                newList = this.EmptyCombatantList.ToList();
+                newDictionary = newList.ToDictionary(x => x.ID);
+            }
+
+            lock (this.combatantListLock)
+            {
+                var addedCombatants =
+                    this.combatantList == null ?
+                    newList.ToArray() :
+                    newList
+                        .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
+                        .ToArray();
+
+                this.combatantList = newList;
+                this.combatantDictionary = newDictionary;
+                this.combatantDictionaryFromFFXIVPlugin = newDictionary;
+
+                // TargetOfTargetを設定する
+                if (player != null &&
+                    player.TargetID != 0)
+                {
+                    if (this.combatantDictionary.ContainsKey(player.TargetID))
+                    {
+                        var target = this.combatantDictionary[player.TargetID];
+                        player.TargetOfTargetID = target.TargetID;
+                    }
+                }
+
+                if (addedCombatants.Any())
+                {
+                    Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
+                }
+            }
+
+            lock (this.playerLocker)
+            {
+                this.player = player;
+            }
+        }
+
+        private (List<Combatant> List, Dictionary<uint, Combatant> Dictionary, Combatant Player) GetCombatantListFromFFXIVPlugin()
+        {
+            var targetID = this.GetTargetID(OverlayType.Target);
+
+            dynamic sourceList;
+
+            try
+            {
+                if (this.exceptionCounter > ExceptionCountLimit)
+                {
+                    return (null, null, null);
+                }
+
+                sourceList = this.pluginScancombat.GetCombatantList();
+            }
+            catch (Exception)
+            {
+                this.exceptionCounter++;
+                throw;
+            }
+
+            var count = (int)sourceList.Count;
             var newList = new List<Combatant>(count);
             var newDictionary = new Dictionary<uint, Combatant>(count);
+            var pcCount = 0;
             var player = default(Combatant);
 
-            var pcCount = 0;
-
-            foreach (dynamic item in list.ToArray())
+            foreach (dynamic item in sourceList.ToArray())
             {
                 if (item == null)
                 {
@@ -491,8 +579,13 @@ namespace FFXIV.Framework.FFXIVHelper
                 combatant.CastDurationCurrent = (float)item.CastDurationCurrent;
                 combatant.CastDurationMax = (float)item.CastDurationMax;
 
+                combatant.WorldID = (int)item.WorldID;
+                combatant.WorldName = (string)item.WorldName;
+
                 // 扱うプレイヤー数の最大数を超えたらカットする
-                if (combatant.type == ObjectType.PC)
+                if (combatant.type == ObjectType.PC &&
+                    targetID != 0 &&
+                    combatant.ID != targetID)
                 {
                     pcCount++;
                     if (pcCount >= MaxPCCount)
@@ -524,43 +617,13 @@ namespace FFXIV.Framework.FFXIVHelper
                 newDictionary.Add(combatant.ID, combatant);
             }
 
-            lock (this.combatantListLock)
-            {
-                var addedCombatants =
-                    this.combatantList == null ?
-                    newList.ToArray() :
-                    newList
-                        .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
-                        .ToArray();
-
-                this.combatantList = newList;
-                this.combatantDictionary = newDictionary;
-
-                // TargetOfTargetを設定する
-                if (player != null &&
-                    player.TargetID != 0)
-                {
-                    if (this.combatantDictionary.ContainsKey(player.TargetID))
-                    {
-                        var target = this.combatantDictionary[player.TargetID];
-                        player.TargetOfTargetID = target.TargetID;
-                    }
-                }
-
-                if (addedCombatants.Any())
-                {
-                    Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
-                }
-            }
-
-            lock (this.playerLocker)
-            {
-                this.player = player;
-            }
+            return (newList, newDictionary, player);
         }
 
         private void RefreshCombatantListFromFFXIVReader()
         {
+            var targetID = this.GetTargetID(OverlayType.Target);
+
             var query = FFXIVReader.Instance.GetCombatantsV1()
                 .Select(x => new Combatant(x));
             var player = default(Combatant);
@@ -571,7 +634,9 @@ namespace FFXIV.Framework.FFXIVHelper
             foreach (var combatant in query)
             {
                 // 扱うプレイヤー数の最大数を超えたらカットする
-                if (combatant.type == ObjectType.PC)
+                if (combatant.type == ObjectType.PC &&
+                    targetID != 0 &&
+                    combatant.ID != targetID)
                 {
                     pcCount++;
                     if (pcCount >= MaxPCCount)
@@ -582,6 +647,15 @@ namespace FFXIV.Framework.FFXIVHelper
 
                 this.SetSkillName(combatant);
                 combatant.SetName(combatant.Name);
+
+                // World情報を補完する
+                if (this.combatantDictionaryFromFFXIVPlugin != null &&
+                    this.combatantDictionaryFromFFXIVPlugin.ContainsKey(combatant.ID))
+                {
+                    var c = this.combatantDictionaryFromFFXIVPlugin[combatant.ID];
+                    combatant.WorldID = c.WorldID;
+                    combatant.WorldName = c.WorldName;
+                }
 
                 if (player == null)
                 {
@@ -650,13 +724,33 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            var dummyBuffer = new byte[51200];
-            var partyList = pluginScancombat?.GetCurrentPartyList(
-                dummyBuffer,
-                out int partyCount) as List<uint>;
+            var partyList = default(List<uint>);
+
+            try
+            {
+                if (this.exceptionCounter > ExceptionCountLimit)
+                {
+                    this.currentPartyIDList = new List<uint>();
+                    this.InCombat = false;
+                    return;
+                }
+
+                var dummyBuffer = new byte[51200];
+                partyList = pluginScancombat?.GetCurrentPartyList(
+                    dummyBuffer,
+                    out int partyCount) as List<uint>;
+            }
+            catch (Exception)
+            {
+                this.currentPartyIDList = new List<uint>();
+                this.InCombat = false;
+                this.exceptionCounter++;
+                throw;
+            }
 
             if (partyList == null)
             {
+                this.InCombat = this.RefreshInCombat();
                 return;
             }
 
@@ -664,6 +758,40 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 this.currentPartyIDList = partyList;
             }
+
+            this.InCombat = this.RefreshInCombat();
+        }
+
+        public bool RefreshInCombat()
+        {
+            var result = false;
+
+            var combatants = this.GetPartyList();
+            if (combatants != null &&
+                combatants.Any())
+            {
+                result = (
+                    from x in combatants
+                    where
+                    x.CurrentHP != x.MaxHP ||
+                    x.CurrentMP != x.MaxMP ||
+                    x.CurrentTP != x.MaxTP
+                    select
+                    x).Any();
+            }
+            else
+            {
+                var player = this.GetPlayer();
+                if (player != null)
+                {
+                    result =
+                        player.CurrentHP != player.MaxHP ||
+                        player.CurrentMP != player.MaxMP ||
+                        player.CurrentTP != player.MaxTP;
+                }
+            }
+
+            return result;
         }
 
         public void SetSkillName(
@@ -747,6 +875,12 @@ namespace FFXIV.Framework.FFXIVHelper
 
             lock (this.currentPartyIDListLock)
             {
+                if (this.currentPartyIDList == null ||
+                    this.currentPartyIDList.Count < 1)
+                {
+                    return this.EmptyCombatantList;
+                }
+
                 partyIDs = new List<uint>(this.currentPartyIDList);
             }
 
@@ -961,25 +1095,50 @@ namespace FFXIV.Framework.FFXIVHelper
             return boss;
         }
 
-        public Combatant GetTargetInfo(
+        public uint GetTargetID(
             OverlayType type)
         {
             if (!this.IsAvailable ||
                 this.readCombatantMethodInfo == null)
             {
-                return null;
+                return 0;
             }
 
-            dynamic data = this.readCombatantMethodInfo?.Invoke(
-                this.overlayData,
-                new object[] { type });
+            dynamic data;
+
+            try
+            {
+                if (this.exceptionCounter > ExceptionCountLimit)
+                {
+                    return 0;
+                }
+
+                data = this.readCombatantMethodInfo?.Invoke(
+                    this.overlayData,
+                    new object[] { type });
+            }
+            catch (Exception)
+            {
+                this.exceptionCounter++;
+                throw;
+            }
 
             if (data == null)
             {
-                return null;
+                return 0;
             }
 
-            uint id = data.id;
+            return (uint)data.id;
+        }
+
+        public Combatant GetTargetInfo(
+            OverlayType type)
+        {
+            var id = this.GetTargetID(type);
+            if (id == 0)
+            {
+                return null;
+            }
 
             Combatant combatant = null;
             lock (this.combatantListLock)
@@ -1200,10 +1359,75 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private Dictionary<int, Buff> buffList = new Dictionary<int, Buff>();
         private Dictionary<int, Skill> skillList = new Dictionary<int, Skill>();
+        private Dictionary<int, World> worldList = new Dictionary<int, World>();
         private List<Zone> zoneList = new List<Zone>();
 
         public IReadOnlyList<Zone> ZoneList => this.zoneList;
         public IReadOnlyDictionary<int, Skill> SkillList => this.skillList;
+        public IReadOnlyDictionary<int, World> WorldList => this.worldList;
+
+        public Regex WorldNameRemoveRegex { get; private set; }
+
+        private void LoadWorldList()
+        {
+            if (this.worldList.Any())
+            {
+                return;
+            }
+
+            if (this.plugin == null)
+            {
+                return;
+            }
+
+            var asm = this.plugin.GetType().Assembly;
+
+            var resourcesName = $"FFXIV_ACT_Plugin.Resources.WorldList.txt";
+
+            using (var st = asm.GetManifestResourceStream(resourcesName))
+            {
+                var newList = new Dictionary<int, World>();
+
+                if (st != null)
+                {
+                    using (var sr = new StreamReader(st))
+                    {
+                        while (!sr.EndOfStream)
+                        {
+                            var line = sr.ReadLine();
+                            if (!string.IsNullOrWhiteSpace(line))
+                            {
+                                var values = line.Split('|');
+                                if (values.Length >= 2)
+                                {
+                                    var entry = new World()
+                                    {
+                                        ID = int.Parse(values[0]),
+                                        Name = values[1].Trim()
+                                    };
+
+                                    newList.Add(entry.ID, entry);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // ワールド名置換用正規表現を生成する
+                var names = newList.Values
+                    .Where(x =>
+                        (x.ID >= 23 && x.ID <= 99) ||
+                        (x.ID >= 1040 && x.ID <= 1172) ||
+                        (x.ID >= 2048 && x.ID <= 2079))
+                    .Select(x => x.Name);
+                this.WorldNameRemoveRegex = new Regex(
+                    $"({string.Join("|", names)})",
+                    RegexOptions.Compiled);
+
+                this.worldList = newList;
+                AppLogger.Trace("world list loaded.");
+            }
+        }
 
         private void LoadBuffList()
         {
@@ -1224,30 +1448,28 @@ namespace FFXIV.Framework.FFXIVHelper
 
             using (var st = asm.GetManifestResourceStream(resourcesName))
             {
-                if (st == null)
-                {
-                    return;
-                }
-
                 var newList = new Dictionary<int, Buff>();
 
-                using (var sr = new StreamReader(st))
+                if (st != null)
                 {
-                    while (!sr.EndOfStream)
+                    using (var sr = new StreamReader(st))
                     {
-                        var line = sr.ReadLine();
-                        if (!string.IsNullOrWhiteSpace(line))
+                        while (!sr.EndOfStream)
                         {
-                            var values = line.Split('|');
-                            if (values.Length >= 2)
+                            var line = sr.ReadLine();
+                            if (!string.IsNullOrWhiteSpace(line))
                             {
-                                var buff = new Buff()
+                                var values = line.Split('|');
+                                if (values.Length >= 2)
                                 {
-                                    ID = int.Parse(values[0], NumberStyles.HexNumber),
-                                    Name = values[1].Trim()
-                                };
+                                    var buff = new Buff()
+                                    {
+                                        ID = int.Parse(values[0], NumberStyles.HexNumber),
+                                        Name = values[1].Trim()
+                                    };
 
-                                newList.Add(buff.ID, buff);
+                                    newList.Add(buff.ID, buff);
+                                }
                             }
                         }
                     }
@@ -1277,30 +1499,28 @@ namespace FFXIV.Framework.FFXIVHelper
 
             using (var st = asm.GetManifestResourceStream(resourcesName))
             {
-                if (st == null)
-                {
-                    return;
-                }
-
                 var newList = new Dictionary<int, Skill>();
 
-                using (var sr = new StreamReader(st))
+                if (st != null)
                 {
-                    while (!sr.EndOfStream)
+                    using (var sr = new StreamReader(st))
                     {
-                        var line = sr.ReadLine();
-                        if (!string.IsNullOrWhiteSpace(line))
+                        while (!sr.EndOfStream)
                         {
-                            var values = line.Split('|');
-                            if (values.Length >= 2)
+                            var line = sr.ReadLine();
+                            if (!string.IsNullOrWhiteSpace(line))
                             {
-                                var skill = new Skill()
+                                var values = line.Split('|');
+                                if (values.Length >= 2)
                                 {
-                                    ID = int.Parse(values[0], NumberStyles.HexNumber),
-                                    Name = values[1].Trim()
-                                };
+                                    var skill = new Skill()
+                                    {
+                                        ID = int.Parse(values[0], NumberStyles.HexNumber),
+                                        Name = values[1].Trim()
+                                    };
 
-                                newList.Add(skill.ID, skill);
+                                    newList.Add(skill.ID, skill);
+                                }
                             }
                         }
                     }
@@ -1332,28 +1552,26 @@ namespace FFXIV.Framework.FFXIVHelper
 
             using (var st = asm.GetManifestResourceStream(resourcesName))
             {
-                if (st == null)
+                if (st != null)
                 {
-                    return;
-                }
-
-                using (var sr = new StreamReader(st))
-                {
-                    while (!sr.EndOfStream)
+                    using (var sr = new StreamReader(st))
                     {
-                        var line = sr.ReadLine();
-                        if (!string.IsNullOrWhiteSpace(line))
+                        while (!sr.EndOfStream)
                         {
-                            var values = line.Split('|');
-                            if (values.Length >= 2)
+                            var line = sr.ReadLine();
+                            if (!string.IsNullOrWhiteSpace(line))
                             {
-                                var zone = new Zone()
+                                var values = line.Split('|');
+                                if (values.Length >= 2)
                                 {
-                                    ID = int.Parse(values[0]),
-                                    Name = values[1].Trim()
-                                };
+                                    var zone = new Zone()
+                                    {
+                                        ID = int.Parse(values[0]),
+                                        Name = values[1].Trim()
+                                    };
 
-                                newList.Add(zone);
+                                    newList.Add(zone);
+                                }
                             }
                         }
                     }
@@ -1477,22 +1695,25 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             if (!this.isMergedSkillList)
             {
-                if (this.skillList.Any() &&
-                    XIVDB.Instance.ActionList.Any())
+                lock (XIVDB.Instance.ActionList)
                 {
-                    foreach (var action in XIVDB.Instance.ActionList)
+                    if (this.skillList != null &&
+                        XIVDB.Instance.ActionList.Any())
                     {
-                        var skill = new Skill()
+                        foreach (var action in XIVDB.Instance.ActionList)
                         {
-                            ID = action.Key,
-                            Name = action.Value.Name
-                        };
+                            var skill = new Skill()
+                            {
+                                ID = action.Key,
+                                Name = action.Value.Name
+                            };
 
-                        this.skillList[action.Key] = skill;
+                            this.skillList[action.Key] = skill;
+                        }
+
+                        this.isMergedSkillList = true;
+                        AppLogger.Trace("XIVDB Action list merged.");
                     }
-
-                    this.isMergedSkillList = true;
-                    AppLogger.Trace("XIVDB Action list merged.");
                 }
             }
 

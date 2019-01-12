@@ -193,7 +193,13 @@ namespace ACT.XIVLog
                 return;
             }
 
-            LogQueue.Enqueue(new XIVLog(isImport, logInfo));
+            var xivlog = new XIVLog(isImport, logInfo);
+            if (string.IsNullOrEmpty(xivlog.Log))
+            {
+                return;
+            }
+
+            LogQueue.Enqueue(xivlog);
 
             if (!isImport)
             {
@@ -222,26 +228,28 @@ namespace ACT.XIVLog
             return result;
         }
 
+        private const string CommandKeyword = "/xivlog open";
+
         private Task OpenXIVLogAsync(
-            string logLine) => Task.Run(() =>
+            string logLine)
+        {
+            if (string.IsNullOrEmpty(logLine))
             {
-                const string CommandKeyword = "/xivlog open";
+                return null;
+            }
 
-                if (string.IsNullOrEmpty(logLine))
-                {
-                    return;
-                }
+            if (!File.Exists(this.LogfileName))
+            {
+                return null;
+            }
 
-                if (!File.Exists(this.LogfileName))
-                {
-                    return;
-                }
+            if (logLine.ContainsIgnoreCase(CommandKeyword))
+            {
+                return Task.Run(() => Process.Start(this.LogfileName));
+            }
 
-                if (logLine.ContainsIgnoreCase(CommandKeyword))
-                {
-                    Process.Start(this.LogfileName);
-                }
-            });
+            return null;
+        }
 
         #region INotifyPropertyChanged
 
@@ -373,7 +381,7 @@ namespace ACT.XIVLog
                 return;
             }
 
-            var combatants = FFXIVPlugin.Instance?.GetCombatantList()
+            var combatants = FFXIVPlugin.Instance?.GetCombatantList()?
                 .Where(x => x.type == ObjectType.PC);
 
             if (combatants == null)

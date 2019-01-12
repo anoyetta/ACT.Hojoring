@@ -90,18 +90,10 @@ namespace FFXIV.Framework.WPF.ViewModels
                     }
                 }
 
-                var memoryReader = ActGlobals.oFormActMain?.ActPlugins?
-                    .FirstOrDefault(
-                        x => x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"))?
-                    .pluginFile.FullName;
-
-                if (File.Exists(memoryReader))
+                var xivReaderVersion = FFXIVReader.Instance.Version;
+                if (xivReaderVersion != null)
                 {
-                    var vi = FileVersionInfo.GetVersionInfo(memoryReader);
-                    if (vi != null)
-                    {
-                        text.AppendLine($"FFXIV_MemoryReader v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FileBuildPart}.{vi.FilePrivatePart}");
-                    }
+                    text.AppendLine($"FFXIV_MemoryReader v{xivReaderVersion}");
                 }
 
                 var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -186,7 +178,7 @@ namespace FFXIV.Framework.WPF.ViewModels
             set => this.SetProperty(ref this.zone, value);
         }
 
-        private DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.Background)
+        private DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.ContextIdle)
         {
             Interval = TimeSpan.FromSeconds(0.25),
         };

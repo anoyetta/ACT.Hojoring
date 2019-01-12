@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -8,6 +9,16 @@ namespace FFXIV.Framework.Common
     public static class EnvironmentHelper
     {
         private static volatile bool isGarbaged = false;
+
+        public static void SetTLSProtocol()
+        {
+            // TLS1.0, 1.1 を無効化する
+            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls11;
+
+            // TLS1.2を有効にする
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+        }
 
         public static async void GarbageLogs() => await Task.Run(() =>
         {
@@ -40,15 +51,18 @@ namespace FFXIV.Framework.Common
                 });
 
             var logs = Path.Combine(appdata, "logs");
-            Directory.GetFiles(logs, "*.log", SearchOption.TopDirectoryOnly)
-                .Walk((file) =>
-                {
-                    var timestamp = File.GetCreationTime(file);
-                    if ((DateTime.Now - timestamp).TotalDays > 30)
+            if (Directory.Exists(logs))
+            {
+                Directory.GetFiles(logs, "*.log", SearchOption.TopDirectoryOnly)
+                    .Walk((file) =>
                     {
-                        File.Delete(file);
-                    }
-                });
+                        var timestamp = File.GetCreationTime(file);
+                        if ((DateTime.Now - timestamp).TotalDays > 30)
+                        {
+                            File.Delete(file);
+                        }
+                    });
+            }
 
             var archives = Path.Combine(logs, "archives");
             if (Directory.Exists(archives))

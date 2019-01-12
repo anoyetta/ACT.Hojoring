@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.FFXIVHelper;
 
 namespace FFXIV.Framework.WPF.Views
 {
@@ -27,6 +28,16 @@ namespace FFXIV.Framework.WPF.Views
         public static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
 
         #endregion Win32 API
+
+        public static void ChangeTopMost(
+            this Window window,
+            bool value)
+        {
+            if (window.Topmost != value)
+            {
+                window.Topmost = value;
+            }
+        }
 
         /// <summary>
         /// オーバーレイの表示を切り替える
@@ -76,7 +87,6 @@ namespace FFXIV.Framework.WPF.Views
                 if (w.Opacity <= 0)
                 {
                     w.Opacity = opacity;
-                    w.Topmost = true;
                     r = true;
                 }
             }
@@ -94,7 +104,6 @@ namespace FFXIV.Framework.WPF.Views
             if (overlay is Window w)
             {
                 w.Opacity = 0;
-                w.Topmost = false;
             }
         }
 
@@ -160,9 +169,9 @@ namespace FFXIV.Framework.WPF.Views
 
         #region ZOrder Corrector
 
-        private static readonly DispatcherTimer ZOrderCorrector = new DispatcherTimer(DispatcherPriority.Background)
+        private static readonly DispatcherTimer ZOrderCorrector = new DispatcherTimer(DispatcherPriority.ContextIdle)
         {
-            Interval = TimeSpan.FromSeconds(1)
+            Interval = TimeSpan.FromSeconds(1.5)
         };
 
         private static readonly List<IOverlay> ToCorrectOverlays = new List<IOverlay>(64);
@@ -193,7 +202,10 @@ namespace FFXIV.Framework.WPF.Views
                     };
                 }
 
-                ToCorrectOverlays.Add(overlay);
+                if (!ToCorrectOverlays.Contains(overlay))
+                {
+                    ToCorrectOverlays.Add(overlay);
+                }
 
                 if (ToCorrectOverlays.Any() &&
                     !ZOrderCorrector.IsEnabled)
@@ -242,14 +254,19 @@ namespace FFXIV.Framework.WPF.Views
                         continue;
                     }
 
-                    if (overlay is Window window)
+                    if (overlay is Window window &&
+                        window.IsLoaded)
                     {
-                        if (window.IsLoaded)
+                        if (FFXIVPlugin.Instance.Process == null)
                         {
-                            if (!overlay.IsOverlaysGameWindow())
-                            {
-                                overlay.EnsureTopMost();
-                            }
+                            window.ChangeTopMost(true);
+                            continue;
+                        }
+
+                        window.ChangeTopMost(false);
+                        if (!overlay.IsOverlaysGameWindow())
+                        {
+                            overlay.EnsureTopMost();
                         }
                     }
                 }

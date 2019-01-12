@@ -34,6 +34,16 @@ namespace ACT.SpecialSpellTimer.Models
         {
             try
             {
+                // サイズ0のファイルがもしも存在したら消す
+                if (File.Exists(this.DefaultFile))
+                {
+                    var fi = new FileInfo(this.DefaultFile);
+                    if (fi.Length <= 0)
+                    {
+                        File.Delete(this.DefaultFile);
+                    }
+                }
+
                 if (!File.Exists(this.DefaultFile))
                 {
                     return;
@@ -134,11 +144,14 @@ namespace ACT.SpecialSpellTimer.Models
                     Directory.CreateDirectory(dir);
                 }
 
+                var ns = new XmlSerializerNamespaces();
+                ns.Add(string.Empty, string.Empty);
+
                 var sb = new StringBuilder();
                 using (var sw = new StringWriter(sb))
                 {
                     var xs = new XmlSerializer(this.table.GetType());
-                    xs.Serialize(sw, this.table);
+                    xs.Serialize(sw, this.table, ns);
                 }
 
                 sb.Replace("utf-16", "utf-8");

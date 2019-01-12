@@ -1,14 +1,19 @@
 using System;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using ACT.UltraScouter.Common;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Config.UI.Views;
+using ACT.UltraScouter.Models;
+using ACT.UltraScouter.Models.FFLogs;
 using ACT.UltraScouter.Workers;
 using Advanced_Combat_Tracker;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.WPF.Views;
 using NLog;
@@ -99,14 +104,17 @@ namespace ACT.UltraScouter
             // タイトルをセットする
             pluginScreenSpace.Text = "ULTRA SCOUTER";
 
+            EnvironmentMigrater.Migrate();
+            MasterFilePublisher.Publish();
             WPFHelper.Start();
             WPFHelper.BeginInvoke(async () =>
             {
                 // FFXIV_MemoryReaderを先にロードさせる
-                await FFXIVReader.Instance.WaitForReaderToStartedAsync();
+                var result = await FFXIVReader.Instance.WaitForReaderToStartedAsync(pluginScreenSpace);
 
                 AppLog.LoadConfiguration(AppLog.HojoringConfig);
                 this.Logger.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+                result.WriteLog(this.Logger);
 
                 try
                 {
@@ -148,11 +156,18 @@ namespace ACT.UltraScouter
                     // タブページを登録する
                     this.SetupPluginTabPages(pluginScreenSpace);
 
+                    // テキストコマンドの購読を追加する
+                    this.SubscribeTextCommands();
+
                     this.PluginStatusLabel.Text = "Plugin started.";
                     this.Logger.Trace("[ULTRA SCOUTER] End InitPlugin");
 
                     // アップデートを確認する
                     await Task.Run(() => this.Update());
+
+                    // FFLogsの統計データベースをロードする
+                    StatisticsDatabase.Instance.Logger = Logger;
+                    await StatisticsDatabase.Instance.LoadAsync();
                 }
                 catch (Exception ex)
                 {
@@ -221,8 +236,52 @@ namespace ACT.UltraScouter
                 }
 
                 Settings.Instance.LastUpdateDateTime = DateTime.Now;
-                Settings.Instance.Save();
+                WPFHelper.Invoke(() => Settings.Instance.Save());
             }
         }
+
+        #region TextCommands
+
+        private const string ParseCommand = "/parse";
+
+        private static readonly Regex ParseCommandRegex = new Regex(
+            $@"{ParseCommand}(\s+""(?<characterName>.+)"")?(\s+(?<serverName>.+))?",
+            RegexOptions.Compiled |
+            RegexOptions.IgnoreCase);
+
+        private void SubscribeTextCommands()
+        {
+            // /parse コマンド
+            TextCommandBridge.Instance.Subscribe(new TextCommand(
+            (string logLine, out Match match) =>
+            {
+                match = null;
+
+                if (!logLine.ContainsIgnoreCase(ParseCommand))
+                {
+                    return false;
+                }
+
+                match = ParseCommandRegex.Match(logLine);
+                return match.Success;
+            },
+            (string logLine, Match match) =>
+            {
+                if (match == null ||
+                    !match.Success)
+                {
+                    return;
+                }
+
+                var charName = match.Groups["characterName"].ToString();
+                var serverName = match.Groups["serverName"].ToString();
+
+                TargetInfoModel.GetFFLogsInfoFromTextCommand(
+                    charName,
+                    serverName);
+            }));
+        }
+
+        #endregion TextCommands
     }
 }

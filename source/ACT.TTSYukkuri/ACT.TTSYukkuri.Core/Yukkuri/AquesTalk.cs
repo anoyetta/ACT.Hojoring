@@ -46,11 +46,25 @@ namespace ACT.TTSYukkuri.Yukkuri
         {
             if (this.yukkuri == null)
             {
+                if (!File.Exists(YukkuriDllName))
+                {
+                    throw new FileNotFoundException(
+                        $"{Path.GetFileName(YukkuriDllName)} が見つかりません。アプリケーションの配置を確認してください。",
+                        YukkuriDllName);
+                }
+
                 this.yukkuri = new UnmanagedLibrary(YukkuriDllName);
             }
 
             if (this.yukkuriDriver == null)
             {
+                if (!File.Exists(YukkuriDriverDllName))
+                {
+                    throw new FileNotFoundException(
+                        $"{Path.GetFileName(YukkuriDriverDllName)} が見つかりません。アプリケーションの配置を確認してください。",
+                        YukkuriDriverDllName);
+                }
+
                 this.yukkuriDriver = new UnmanagedLibrary(YukkuriDriverDllName);
             }
 

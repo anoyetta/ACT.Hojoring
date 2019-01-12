@@ -45,7 +45,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public string TextToDisplay
         {
             get => this.textToDisplay;
-            set => this.SetProperty(ref this.textToDisplay, value);
+            set
+            {
+                var text = value?.Replace("\\n", Environment.NewLine);
+                this.SetProperty(ref this.textToDisplay, text);
+            }
         }
 
         private double? duration = null;

@@ -168,6 +168,8 @@ namespace ACT.UltraScouter.Workers
             }
         }
 
+        private volatile bool isRefreshingViews = false;
+
         /// <summary>
         /// Viewの更新タイマをリスタートする
         /// </summary>
@@ -186,7 +188,23 @@ namespace ACT.UltraScouter.Workers
                     Interval = TimeSpan.FromMilliseconds(Settings.Instance.OverlayRefreshRate)
                 };
 
-                this.refreshViewWorker.Tick += (x, y) => this.UpdateOverlayDataMethod?.Invoke();
+                this.refreshViewWorker.Tick += (x, y) =>
+                {
+                    if (this.isRefreshingViews)
+                    {
+                        return;
+                    }
+
+                    try
+                    {
+                        this.isRefreshingViews = true;
+                        this.UpdateOverlayDataMethod?.Invoke();
+                    }
+                    finally
+                    {
+                        this.isRefreshingViews = false;
+                    }
+                };
 
                 // 開始する
                 this.refreshViewWorker.Start();

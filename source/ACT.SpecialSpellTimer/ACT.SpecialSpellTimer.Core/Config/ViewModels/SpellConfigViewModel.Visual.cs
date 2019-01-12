@@ -1,7 +1,5 @@
 using System;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using ACT.SpecialSpellTimer.Config.Views;
@@ -9,6 +7,8 @@ using ACT.SpecialSpellTimer.Image;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Dialog;
 using FFXIV.Framework.Extensions;
+using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.xivapi;
 using Prism.Commands;
 
 namespace ACT.SpecialSpellTimer.Config.ViewModels
@@ -167,25 +167,101 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
         public ICommand GetIconsCommand =>
             this.getIconsCommand ?? (this.getIconsCommand = new DelegateCommand(async () =>
             {
-                var downlaoder = Path.Combine(
-                    PluginCore.Instance.Location,
-                    @"tools\XIVDBDownloader\XIVDBDownloader.exe");
-
-                if (!File.Exists(downlaoder))
+                try
                 {
+                    this.InProgress = true;
+
+                    // APIクライアントにロケールを設定する
+                    XIVAPIController.Instance.Language = Settings.Default.UILocale;
+
+                    this.MaxValue = 100;
+                    this.CurrentValue = 0;
+                    this.ProgressMessage = $"Downloading Actions...";
+
+                    var actionList = await XIVAPIController.Instance.GetActionsAsync(async (e) =>
+                    {
+                        await WPFHelper.InvokeAsync(() =>
+                        {
+                            this.MaxValue = e.Max;
+                            this.CurrentValue = e.Current;
+                            this.ProgressMessage = $"Downloading Actions...\n{e.Current} / {e.Max}";
+                        });
+                    });
+
+                    this.MaxValue = 100;
+                    this.CurrentValue = 0;
+                    this.ProgressMessage = $"Downloading Action Icons...";
+
+                    IconController.Instance.DisposeIcon();
+
+                    await XIVAPIController.Instance.DownloadActionIcons(
+                        DirectoryHelper.FindSubDirectory(@"resources\xivdb"),
+                        actionList,
+                        async (e) =>
+                        {
+                            await WPFHelper.InvokeAsync(() =>
+                            {
+                                this.MaxValue = e.Max;
+                                this.CurrentValue = e.Current;
+                                this.ProgressMessage =
+                                    $"Downloading Action Icons..." + Environment.NewLine +
+                                    $"{e.CurrentObject.ToString()}" + Environment.NewLine +
+                                    $"{e.Current:N0} / {e.Max:N0}";
+                            });
+                        });
+
+                    IconController.Instance.RefreshIcon();
+                }
+                catch (Exception ex)
+                {
+                    ModernMessageBox.ShowDialog(
+                        "Download Error!",
+                        "Action Icons Downloader",
+                        MessageBoxButton.OK,
+                        ex);
+
                     return;
                 }
-
-                await Task.Run(async () =>
+                finally
                 {
-                    using (var p = Process.Start(downlaoder))
-                    {
-                        p.WaitForExit();
-                    }
+                    this.InProgress = false;
+                }
 
-                    await Task.Delay(TimeSpan.FromSeconds(0.5));
-                    IconController.Instance.RefreshIcon();
-                });
+                ModernMessageBox.ShowDialog(
+                    "Download completed!",
+                    "Action Icons Downloader");
             }));
+
+        private bool inProgress;
+
+        public bool InProgress
+        {
+            get => this.inProgress;
+            set => this.SetProperty(ref this.inProgress, value);
+        }
+
+        private double currentValue;
+
+        public double CurrentValue
+        {
+            get => this.currentValue;
+            set => this.SetProperty(ref this.currentValue, value);
+        }
+
+        private double maxValue;
+
+        public double MaxValue
+        {
+            get => this.maxValue;
+            set => this.SetProperty(ref this.maxValue, value);
+        }
+
+        private string progressMessage;
+
+        public string ProgressMessage
+        {
+            get => this.progressMessage;
+            set => this.SetProperty(ref this.progressMessage, value);
+        }
     }
 }

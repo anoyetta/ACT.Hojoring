@@ -1,16 +1,18 @@
+using ACT.SpecialSpellTimer.RaidTimeline.Views;
+using FFXIV.Framework.Common;
+using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml.Serialization;
-using ACT.SpecialSpellTimer.RaidTimeline.Views;
-using FFXIV.Framework.Common;
-using Prism.Commands;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -241,6 +243,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (this.SynqToHideRegex == null)
             {
                 return false;
+            }
+
+            if (this.toHide)
+            {
+                return true;
             }
 
             var match = this.SynqToHideRegex.Match(logLine);
@@ -494,7 +501,18 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public ICommand CcopyTagCommand =>
             this.copyTagCommand ?? (this.copyTagCommand = new DelegateCommand(() =>
             {
-                Clipboard.SetText(this.Tag + Environment.NewLine);
+                for (int i = 0; i < 10; i++)
+                {
+                    try
+                    {
+                        Clipboard.SetDataObject(this.Tag + Environment.NewLine);
+                        break;
+                    }
+                    catch (Exception ex) when (ex is InvalidOperationException || ex is COMException)
+                    {
+                        Thread.Sleep(10);
+                    }
+                }
             }));
 
         #endregion Commmands

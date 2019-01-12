@@ -24,12 +24,12 @@
   RenderOptions.BitmapScalingMode="HighQuality"
   RenderOptions.EdgeMode="Unspecified"
   UseLayoutRounding="True"
-  Topmost="True"
   WindowStyle="None"
   Background="Transparent"
   Left="{Binding Path=Config.Location.X, Mode=TwoWay}"
   Top="{Binding Path=Config.Location.Y, Mode=TwoWay}"
-  d:DataContext="{d:DesignInstance Type=vm:MobListViewModel, IsDesignTimeCreatable=True}">
+  d:DataContext="{d:DesignInstance Type=vm:MobListViewModel, IsDesignTimeCreatable=True}"
+  DataContext="{x:Type vm:MobListViewModel}">
 
   <Window.Resources>
     <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />

@@ -277,6 +277,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             return totalResult;
         }
 
+        #region Inner class Flag
+
         public class Flag
         {
             /// <summary>
@@ -308,6 +310,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             public DateTime Expiration { get; set; } = DateTime.MaxValue;
         }
+
+        #endregion Inner class Flag
     }
 
     [XmlType(TypeName = "set")]
