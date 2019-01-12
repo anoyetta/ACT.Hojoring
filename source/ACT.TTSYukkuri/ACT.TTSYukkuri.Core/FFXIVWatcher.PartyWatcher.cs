@@ -103,11 +103,16 @@ namespace ACT.TTSYukkuri
                         case Locales.JA:
                             pcname = "自分";
                             break;
+
+                        case Locales.CN:
+                            pcname = "你";
+                            break;
                     }
                 }
                 else
                 {
-                    pcname = $"{partyMember.JobID.GetPhonetic()} { partyMember.Name.Trim().Substring(0, 1)}";
+                    if (Settings.Default.UILocale == Locales.CN) pcname = $"{ partyMember.Name.Trim()}";
+                    else pcname = $"{partyMember.JobID.GetPhonetic()} { partyMember.Name.Trim().Substring(0, 1)}";
                 }
 
                 // 読上げ用のテキストを編集する
