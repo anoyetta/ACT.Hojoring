@@ -29,6 +29,17 @@
     <sys:Double x:Key="TitleSize">60</sys:Double>
     <sys:Double x:Key="CopySize">15</sys:Double>
     <sys:Double x:Key="VersionSize">30</sys:Double>
+
+    <Style x:Key="FFXIVLabelStyle" TargetType="Label">
+      <Setter Property="HorizontalAlignment" Value="{Binding ElementName=FFXIVLabel, Path=HorizontalAlignment, Mode=OneWay}" />
+      <Setter Property="VerticalAlignment" Value="{Binding ElementName=FFXIVLabel, Path=VerticalAlignment, Mode=OneWay}" />
+      <Setter Property="Content" Value="{Binding ElementName=FFXIVLabel, Path=Content, Mode=OneWay}" />
+      <Setter Property="Foreground" Value="{Binding ElementName=FFXIVLabel, Path=Foreground, Mode=OneWay}" />
+      <Setter Property="FontFamily" Value="{Binding ElementName=FFXIVLabel, Path=FontFamily, Mode=OneWay}" />
+      <Setter Property="FontWeight" Value="{Binding ElementName=FFXIVLabel, Path=FontWeight, Mode=OneWay}" />
+      <Setter Property="FontSize" Value="{Binding ElementName=FFXIVLabel, Path=FontSize, Mode=OneWay}" />
+      <Setter Property="Effect" Value="{Binding ElementName=FFXIVLabel, Path=Effect, Mode=OneWay}" />
+    </Style>
   </Window.Resources>
 
   <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5 0.5">
@@ -199,6 +210,25 @@
         FontWeight="{Binding ElementName=CopyrightLabel, Path=FontWeight, Mode=OneWay}"
         FontSize="{Binding ElementName=CopyrightLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=CopyrightLabel, Path=Effect, Mode=OneWay}" />
+    </Grid>
+
+    <Grid>
+      <Label x:Name="FFXIVLabel" HorizontalAlignment="Right" VerticalAlignment="Center" Content="{Binding FFXIVVersion, Mode=OneWay}" Foreground="White" FontFamily="{StaticResource Font}"  FontSize="{DynamicResource CopySize}">
+        <Label.Effect>
+          <DropShadowEffect
+            Opacity="1"
+            Direction="0"
+            ShadowDepth="0"
+            Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
+            BlurRadius="6" />
+        </Label.Effect>
+      </Label>
+      <Label Style="{DynamicResource FFXIVLabelStyle}" />
+      <Label Style="{DynamicResource FFXIVLabelStyle}" />
+      <Label Style="{DynamicResource FFXIVLabelStyle}" />
+      <Label Style="{DynamicResource FFXIVLabelStyle}" />
+      <Label Style="{DynamicResource FFXIVLabelStyle}" />
+      <Label Style="{DynamicResource FFXIVLabelStyle}" />
     </Grid>
   </StackPanel>
 </Window>

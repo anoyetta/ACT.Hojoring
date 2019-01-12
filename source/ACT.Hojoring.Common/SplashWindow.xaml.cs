@@ -15,6 +15,8 @@ namespace ACT.Hojoring.Common
     /// </summary>
     public partial class SplashWindow : Window
     {
+        public string FFXIVVersion => "for FFXIV patch 4.5x";
+
         public static Version HojoringVersion => Assembly.GetExecutingAssembly()?.GetName()?.Version;
 
         private static readonly TimeSpan SplashDuration = TimeSpan.FromSeconds(2);
