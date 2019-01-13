@@ -667,18 +667,13 @@ namespace ACT.SpecialSpellTimer
                 return result;
             }
 
-            var regex = FFXIVPlugin.Instance.WorldNameRemoveRegex;
-            if (regex == null)
+            if (!logLine.Contains("] 00:") &&
+                !logLine.StartsWith("00:"))
             {
                 return result;
             }
 
-            if (!logLine.Contains("] 00:"))
-            {
-                return result;
-            }
-
-            result = regex.Replace(result, string.Empty);
+            result = FFXIVPlugin.Instance.RemoveWorldName(logLine);
 
             return result;
         }
