@@ -99,7 +99,13 @@
     </Grid>
 
     <Grid>
-      <Label HorizontalAlignment="Right" x:Name="VersionLabel" Content="v1.0.0" Foreground="White" FontFamily="{StaticResource Font}" FontSize="{DynamicResource VersionSize}">
+      <Label
+        HorizontalAlignment="Right"
+        x:Name="VersionLabel"
+        Content="v1.0.0"
+        Foreground="White"
+        FontFamily="Consolas"
+        FontSize="{DynamicResource VersionSize}">
         <Label.Effect>
           <DropShadowEffect
             Opacity="1"
@@ -155,7 +161,14 @@
         FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
         Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
 
-      <Label HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="CopyrightLabel" Content="©anoyetta" Foreground="White" FontFamily="{StaticResource Font}"  FontSize="{DynamicResource CopySize}">
+      <Label
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        x:Name="CopyrightLabel"
+        Content="©anoyetta"
+        Foreground="White"
+        FontFamily="Consolas"
+        FontSize="{DynamicResource CopySize}">
         <Label.Effect>
           <DropShadowEffect
             Opacity="1"
@@ -212,8 +225,15 @@
         Effect="{Binding ElementName=CopyrightLabel, Path=Effect, Mode=OneWay}" />
     </Grid>
 
-    <Grid>
-      <Label x:Name="FFXIVLabel" HorizontalAlignment="Right" VerticalAlignment="Center" Content="{Binding FFXIVVersion, Mode=OneWay}" Foreground="White" FontFamily="{StaticResource Font}"  FontSize="{DynamicResource CopySize}">
+    <Grid Margin="0 -10 0 0">
+      <Label
+        x:Name="FFXIVLabel"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Center"
+        Content="{Binding FFXIVVersion, Mode=OneWay}"
+        Foreground="White"
+        FontFamily="Consolas"
+        FontSize="18">
         <Label.Effect>
           <DropShadowEffect
             Opacity="1"

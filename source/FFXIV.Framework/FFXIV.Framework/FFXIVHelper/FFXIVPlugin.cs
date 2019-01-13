@@ -1421,12 +1421,40 @@ namespace FFXIV.Framework.FFXIVHelper
                         (x.ID >= 2048 && x.ID <= 2079))
                     .Select(x => x.Name);
                 this.WorldNameRemoveRegex = new Regex(
-                    $"({string.Join("|", names)})",
+                    $@"(?<name>[A-Za-z'\-\.]+ [A-Za-z'\-\.]+)(?<world>{string.Join("|", names)})",
                     RegexOptions.Compiled);
 
                 this.worldList = newList;
                 AppLogger.Trace("world list loaded.");
             }
+        }
+
+        public string RemoveWorldName(
+            string text)
+        {
+            if (this.WorldNameRemoveRegex == null)
+            {
+                return text;
+            }
+
+            var matches = this.WorldNameRemoveRegex.Matches(text);
+            if (matches == null ||
+                matches.Count < 1)
+            {
+                return text;
+            }
+
+            foreach (Match match in matches)
+            {
+                var world = match.Groups["world"];
+                if (world != null &&
+                    world.Success)
+                {
+                    text = text.Remove(world.Index, world.Length);
+                }
+            }
+
+            return text;
         }
 
         private void LoadBuffList()
