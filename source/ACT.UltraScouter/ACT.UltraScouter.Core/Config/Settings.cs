@@ -170,12 +170,18 @@ namespace ACT.UltraScouter.Config
                 var ns = new XmlSerializerNamespaces();
                 ns.Add(string.Empty, string.Empty);
 
-                using (var xw = XmlWriter.Create(
-                    this.FileName,
-                    this.XmlWriterSettings))
+                var buffer = new StringBuilder();
+                using (var sw = new StringWriter(buffer))
+                using (var xw = XmlWriter.Create(sw, this.XmlWriterSettings))
                 {
                     this.Serializer.Serialize(xw, instance, ns);
                 }
+
+                buffer.Replace("utf-16", "utf-8");
+                File.WriteAllText(
+                    this.FileName,
+                    buffer.ToString() + Environment.NewLine,
+                    new UTF8Encoding(false));
             }
         }
 
