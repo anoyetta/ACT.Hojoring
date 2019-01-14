@@ -259,11 +259,10 @@ namespace FFXIV.Framework.WPF.Views
                     {
                         if (FFXIVPlugin.Instance.Process == null)
                         {
-                            window.ChangeTopMost(true);
+                            overlay.EnsureTopMost();
                             continue;
                         }
 
-                        window.ChangeTopMost(false);
                         if (!overlay.IsOverlaysGameWindow())
                         {
                             overlay.EnsureTopMost();
