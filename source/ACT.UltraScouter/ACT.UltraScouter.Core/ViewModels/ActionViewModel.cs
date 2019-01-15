@@ -37,6 +37,9 @@ namespace ACT.UltraScouter.ViewModels
             this.config = config ?? Settings.Instance.TargetAction;
             this.model = model ?? TargetInfoModel.Instance;
 
+            this.RaisePropertyChanged(nameof(Config));
+            this.RaisePropertyChanged(nameof(Model));
+
             this.Initialize();
         }
 
@@ -51,6 +54,8 @@ namespace ACT.UltraScouter.ViewModels
             this.Model.Casting += this.Model_Casting;
             this.countdownTimer.Tick += this.CountdownTimer_Tick;
             this.Config.PropertyChanged += this.Config_PropertyChanged;
+
+            this.RaisePropertyChanged(nameof(this.CounterFontSize));
         }
 
         public override void Dispose()

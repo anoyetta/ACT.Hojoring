@@ -20,7 +20,19 @@ namespace ACT.UltraScouter.Models
     {
         #region Singleton
 
-        private static TargetInfoModel instance = new TargetInfoModel();
+        private readonly static TargetInfoModel DesigntimeTargetInfo = new TargetInfoModel()
+        {
+            Name = "Naoki Yoshida",
+            IsCasting = true,
+            CastSkillName = "とても強い攻撃とても強い攻撃とても強い攻撃",
+            CastDurationMax = 100,
+            castDurationCurrent = 74,
+        };
+
+        private static TargetInfoModel instance = WPFHelper.IsDesignMode ?
+            DesigntimeTargetInfo :
+            new TargetInfoModel();
+
         public static TargetInfoModel Instance => instance;
 
         #endregion Singleton
