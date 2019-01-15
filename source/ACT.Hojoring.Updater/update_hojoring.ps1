@@ -22,7 +22,7 @@ $updateExclude = @(
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev6'
+'* rev7'
 '* (c) anoyetta, 2018'
 '***************************************************'
 '* Start Update Hojoring'
@@ -65,6 +65,13 @@ else {
 
 '-> Download Lastest Version'
 $updater = Join-Path $cd ".\ACT.Hojoring.Updater.exe"
+if (!(Test-Path $updater)) {
+    Write-Error ("-> ERROR! ""ACT.Hojoring.Updater.exe"" not found!")
+    Stop-Transcript | Out-Null
+    Read-Host "press any key to exit..."
+    exit 1
+}
+
 $updateDir = Join-Path $cd "update"
 
 if (Test-Path $updateDir) {
@@ -98,6 +105,15 @@ $archive = Get-Item ".\update\*.7z"
 & $7za x $archive ("-o" + $updateDir)
 Remove-Item $archive
 '-> Extracted!'
+
+# Clean ->
+if (Test-Path ".\references") {
+    Get-ChildItem -Path ".\references" -Recurse | Remove-Item -Force -Recurse
+    Remove-Item -Recurse -Force ".\references"
+}
+
+Get-ChildItem -Path ".\*.dll" | Remove-Item -Force
+# Clean <-
 
 ''
 '-> Update Assets'
