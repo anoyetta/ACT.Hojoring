@@ -431,19 +431,17 @@ namespace FFXIV.Framework.WPF.ViewModels
                 await Task.Run(() =>
                     this.SaveSupportInfoCore(this.saveFileDialog.FileName));
 
-                MessageBox.Show(
+                ModernMessageBox.ShowDialog(
                     "SupportInfo Saved.",
-                    "ACT.Hojoring",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                    "ACT.Hojoring");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    ex.ToString(),
+                ModernMessageBox.ShowDialog(
+                    "Fatal Error.",
                     "ACT.Hojoring",
                     MessageBoxButton.OK,
-                    MessageBoxImage.Exclamation);
+                    ex);
             }
             finally
             {
@@ -491,6 +489,23 @@ namespace FFXIV.Framework.WPF.ViewModels
                 anySrc,
                 anyDest,
                 true);
+
+            // ツリーを保存する
+            var pluginDirectory = Path.Combine(temp, "ACT.Hojoring");
+            if (!Directory.Exists(pluginDirectory))
+            {
+                Directory.CreateDirectory(pluginDirectory);
+            }
+
+            var here = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            var p = new Process();
+            p.StartInfo.FileName = "cmd.exe";
+            p.StartInfo.Arguments = $@"/c ""tree ""{here}"" /F > ""{pluginDirectory}\tree.txt""";
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.CreateNoWindow = true;
+            p.Start();
+            p.WaitForExit();
 
             // 追加バックアップを行う
             HelpBridge.Instance.BackupCallback?.Invoke(temp);
