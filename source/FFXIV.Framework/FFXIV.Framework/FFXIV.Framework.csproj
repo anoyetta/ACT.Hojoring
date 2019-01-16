@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bridge\DiscordBridge.cs" />
+    <Compile Include="Bridge\HelpBridge.cs" />
     <Compile Include="Bridge\PlayBridge.cs" />
     <Compile Include="Bridge\TextCommandBridge.cs" />
     <Compile Include="Common\AppendedLogEventArgs.cs" />

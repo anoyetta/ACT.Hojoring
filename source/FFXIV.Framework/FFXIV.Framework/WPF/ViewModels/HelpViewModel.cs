@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Advanced_Combat_Tracker;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
@@ -490,6 +491,9 @@ namespace FFXIV.Framework.WPF.ViewModels
                 anySrc,
                 anyDest,
                 true);
+
+            // 追加バックアップを行う
+            HelpBridge.Instance.BackupCallback?.Invoke(temp);
 
             if (File.Exists(file))
             {
