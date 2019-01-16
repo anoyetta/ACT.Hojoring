@@ -22,11 +22,8 @@ namespace ACT.Hojoring.Updater
         {
             try
             {
-                // TLS1.0, 1.1 を無効化する
                 ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
                 ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls11;
-
-                // TLS1.2を有効にする
                 ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
                 var dest = "update";
@@ -105,29 +102,6 @@ namespace ACT.Hojoring.Updater
                 Thread.Sleep(200);
 
                 DownloadAssets(asset.BrowserDownloadUrl, file);
-#if false
-                if (!File.Exists(file))
-                {
-                    return;
-                }
-
-                Thread.Sleep(200);
-
-                var dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                SevenZipBase.SetLibraryPath(Path.Combine(
-                    dir,
-                    @"tools\7z\7z.dll"));
-
-                var extractor = new SevenZipExtractor(file);
-                extractor.ExtractArchive(dest);
-
-                Console.WriteLine("Extracted!");
-
-                if (File.Exists(file))
-                {
-                    File.Delete(file);
-                }
-#endif
             }
             catch (Exception ex)
             {
