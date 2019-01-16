@@ -97,23 +97,13 @@ namespace ACT.UltraScouter.ViewModels
             {
                 var size = this.Config.DisplayText.Font.Size;
 
-                if (!this.Config.UseCircle)
+                if (this.Config.CastingRateVisible && this.Config.CastingRemainVisible)
                 {
-                    if (this.Config.CastingRateVisible && this.Config.CastingRemainVisible)
-                    {
-                        size *= Settings.Instance.ActionCounterFontSizeRatio;
-                    }
-                    else
-                    {
-                        size *= Settings.Instance.ActionCounterSingleFontSizeRatio;
-                    }
+                    size *= Settings.Instance.ActionCounterFontSizeRatio;
                 }
                 else
                 {
-                    if (this.Config.CastingRateVisible && this.Config.CastingRemainVisible)
-                    {
-                        size *= Settings.Instance.ActionCounterSingleFontSizeRatio;
-                    }
+                    size *= Settings.Instance.ActionCounterSingleFontSizeRatio;
                 }
 
                 return Math.Round(size, 1);
