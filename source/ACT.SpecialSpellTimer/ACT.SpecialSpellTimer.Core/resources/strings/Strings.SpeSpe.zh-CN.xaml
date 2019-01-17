@@ -210,6 +210,7 @@
   <system:String x:Key="Options_ReloadTTSDictionary">重载TTS替换字典</system:String>
 
   <system:String x:Key="Options_MinimizeOnStart">启动ACT时最小化</system:String>
+  <system:String x:Key="Options_Polon">Sounds "Polon♪" every 15 seconds</system:String>
 
   <system:String x:Key="Info_Placeholders">占位符</system:String>
   <system:String x:Key="Info_Triggers">活动触发器</system:String>
