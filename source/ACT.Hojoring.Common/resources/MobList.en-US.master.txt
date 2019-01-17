@@ -156,3 +156,6 @@ Gatling                         B
 "Flame Sergeant Dalvag"         B
 Naul                            B
 "Leech King"                    B
+
+# Detect dead men in party
+[DEADMEN] DEAD 1000 false

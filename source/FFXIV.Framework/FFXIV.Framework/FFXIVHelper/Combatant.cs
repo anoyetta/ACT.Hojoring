@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using TamanegiMage.FFXIV_MemoryReader.Model;
 
@@ -109,6 +110,34 @@ namespace FFXIV.Framework.FFXIVHelper
 
         /// <summary>イニシャル N. Y.</summary>
         public string NameII = string.Empty;
+
+        public string NameForDisplay
+        {
+            get
+            {
+                var name = this.Name;
+
+                if (this.type == ObjectType.PC)
+                {
+                    switch (ConfigBridge.Instance.PCNameStyle)
+                    {
+                        case NameStyles.FullInitial:
+                            name = this.NameFI;
+                            break;
+
+                        case NameStyles.InitialFull:
+                            name = this.NameIF;
+                            break;
+
+                        case NameStyles.InitialInitial:
+                            name = this.NameII;
+                            break;
+                    }
+                }
+
+                return name;
+            }
+        }
 
         public bool IsAvailableEffectiveDictance;
         public Combatant Player;
@@ -236,15 +265,37 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            var blocks = this.Name.Split(' ');
+            this.NameFI = NameToInitial(this.Name, NameStyles.FullInitial);
+            this.NameIF = NameToInitial(this.Name, NameStyles.InitialFull);
+            this.NameII = NameToInitial(this.Name, NameStyles.InitialInitial);
+        }
+
+        public static string NameToInitial(
+            string name,
+            NameStyles style)
+        {
+            var blocks = name.Split(' ');
             if (blocks.Length < 2)
             {
-                return;
+                return name;
             }
 
-            this.NameFI = $"{blocks[0]} {blocks[1].Substring(0, 1)}.";
-            this.NameIF = $"{blocks[0].Substring(0, 1)}. {blocks[1]}";
-            this.NameII = $"{blocks[0].Substring(0, 1)}. {blocks[1].Substring(0, 1)}.";
+            switch (style)
+            {
+                case NameStyles.FullInitial:
+                    name = $"{blocks[0]} {blocks[1].Substring(0, 1)}.";
+                    break;
+
+                case NameStyles.InitialFull:
+                    name = $"{blocks[0].Substring(0, 1)}. {blocks[1]}";
+                    break;
+
+                case NameStyles.InitialInitial:
+                    name = $"{blocks[0].Substring(0, 1)}. {blocks[1].Substring(0, 1)}.";
+                    break;
+            }
+
+            return name;
         }
 
         public override string ToString() =>

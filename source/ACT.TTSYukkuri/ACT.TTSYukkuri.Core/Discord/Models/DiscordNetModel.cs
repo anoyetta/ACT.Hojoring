@@ -562,6 +562,11 @@ namespace ACT.TTSYukkuri.Discord.Models
 
         private void SetupLibrary()
         {
+            if (string.IsNullOrEmpty(PluginCore.Instance?.PluginDirectory))
+            {
+                return;
+            }
+
             var entryDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             var libDirectory = Path.Combine(PluginCore.Instance.PluginDirectory, "lib");
 

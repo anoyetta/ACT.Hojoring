@@ -328,7 +328,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                     return;
                 }
 
-                if (string.IsNullOrEmpty(model.CharacterName))
+                if (string.IsNullOrEmpty(model.CharacterNameFull))
                 {
                     this.FFLogsTestResult = @"""Character Name"" required.";
                     return;
@@ -341,7 +341,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                 }
 
                 await model.GetParseAsync(
-                    model.CharacterName,
+                    model.CharacterNameFull,
                     model.Server,
                     this.FFLogs.ServerRegion,
                     null,

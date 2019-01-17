@@ -37,6 +37,9 @@ namespace ACT.UltraScouter.ViewModels
             this.config = config ?? Settings.Instance.TargetAction;
             this.model = model ?? TargetInfoModel.Instance;
 
+            this.RaisePropertyChanged(nameof(Config));
+            this.RaisePropertyChanged(nameof(Model));
+
             this.Initialize();
         }
 
@@ -51,6 +54,8 @@ namespace ACT.UltraScouter.ViewModels
             this.Model.Casting += this.Model_Casting;
             this.countdownTimer.Tick += this.CountdownTimer_Tick;
             this.Config.PropertyChanged += this.Config_PropertyChanged;
+
+            this.RaisePropertyChanged(nameof(this.CounterFontSize));
         }
 
         public override void Dispose()
@@ -92,23 +97,13 @@ namespace ACT.UltraScouter.ViewModels
             {
                 var size = this.Config.DisplayText.Font.Size;
 
-                if (!this.Config.UseCircle)
+                if (this.Config.CastingRateVisible && this.Config.CastingRemainVisible)
                 {
-                    if (this.Config.CastingRateVisible && this.Config.CastingRemainVisible)
-                    {
-                        size *= Settings.Instance.ActionCounterFontSizeRatio;
-                    }
-                    else
-                    {
-                        size *= Settings.Instance.ActionCounterSingleFontSizeRatio;
-                    }
+                    size *= Settings.Instance.ActionCounterFontSizeRatio;
                 }
                 else
                 {
-                    if (this.Config.CastingRateVisible && this.Config.CastingRemainVisible)
-                    {
-                        size *= Settings.Instance.ActionCounterSingleFontSizeRatio;
-                    }
+                    size *= Settings.Instance.ActionCounterSingleFontSizeRatio;
                 }
 
                 return Math.Round(size, 1);

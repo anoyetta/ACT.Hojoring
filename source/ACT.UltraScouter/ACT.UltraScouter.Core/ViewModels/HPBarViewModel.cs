@@ -25,6 +25,9 @@ namespace ACT.UltraScouter.ViewModels
             this.config = config ?? Settings.Instance.TargetHP;
             this.model = model ?? TargetInfoModel.Instance;
 
+            this.RaisePropertyChanged(nameof(Config));
+            this.RaisePropertyChanged(nameof(Model));
+
             if (WPFHelper.IsDesignMode)
             {
                 this.FontColor = Colors.White;

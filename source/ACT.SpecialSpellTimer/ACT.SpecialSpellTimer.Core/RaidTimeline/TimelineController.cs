@@ -71,10 +71,23 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             ActGlobals.oFormActMain.OnLogLineRead -= OnLogLineRead;
             ActGlobals.oFormActMain.OnLogLineRead += OnLogLineRead;
+
+            isDetectLogWorking = true;
+            if (!LogWorker.IsAlive)
+            {
+                LogWorker.Start();
+            }
         }
 
         public static void Free()
         {
+            isDetectLogWorking = false;
+            LogWorker.Join(100);
+            if (LogWorker.IsAlive)
+            {
+                LogWorker.Abort();
+            }
+
             ActGlobals.oFormActMain.OnLogLineRead -= OnLogLineRead;
         }
 
@@ -273,19 +286,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 TimelineNoticeOverlay.ShowNotice();
 
-                this.LogWorker = new Thread(this.DetectLogLoop)
-                {
-                    IsBackground = true
-                };
-
-                this.isLogWorkerRunning = true;
-                this.LogWorker.Start();
-
                 this.logInfoQueue = new ConcurrentQueue<LogLineEventArgs>();
 
                 this.StartNotifyWorker();
 
                 this.Status = TimelineStatus.Loaded;
+                this.IsReady = true;
                 this.AppLogger.Trace($"[TL] Timeline loaded. name={this.Model.TimelineName}");
             }
         }
@@ -294,29 +300,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (Locker)
             {
-                this.isLogWorkerRunning = false;
-
                 TimelineOverlay.CloseTimeline();
                 TimelineNoticeOverlay.CloseNotice();
 
                 this.CurrentTime = TimeSpan.Zero;
                 this.ClearActivity();
                 this.Model.RefreshActivitiesView();
-
-                if (this.LogWorker != null)
-                {
-                    if (this.LogWorker.IsAlive)
-                    {
-                        this.LogWorker.Join(TimeSpan.FromSeconds(0.2));
-                    }
-
-                    if (this.LogWorker.IsAlive)
-                    {
-                        this.LogWorker.Abort();
-                    }
-
-                    this.LogWorker = null;
-                }
 
                 this.logInfoQueue = null;
 
@@ -325,6 +314,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 CurrentController = null;
 
                 this.Status = TimelineStatus.Unloaded;
+                this.IsReady = false;
                 this.AppLogger.Trace($"[TL] Timeline unloaded. name={this.Model.TimelineName}");
 
                 // GC
@@ -729,18 +719,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         #region Log 関係のスレッド
 
         private ConcurrentQueue<LogLineEventArgs> logInfoQueue;
-        private volatile bool isLogWorkerRunning = false;
-
-        private Thread LogWorker
-        {
-            get;
-            set;
-        } = null;
 
         public void EnqueueLog(
             LogLineEventArgs logInfo)
         {
-            if (!this.isLogWorkerRunning)
+            if (!this.IsReady)
             {
                 return;
             }
@@ -759,7 +742,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return;
                 }
 
-                if (!this.isLogWorkerRunning)
+                if (!this.IsReady)
                 {
                     return;
                 }
@@ -781,49 +764,30 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
-        private DateTime lastPSyncDetectTimestamp = DateTime.MinValue;
+        private static volatile bool isDetectLogWorking = false;
 
-        private void DetectLogLoop()
+        private static readonly Thread LogWorker = new Thread(DetectLogLoopRoot)
         {
-            while (this.isLogWorkerRunning)
+            IsBackground = true
+        };
+
+        private static void DetectLogLoopRoot()
+        {
+            while (isDetectLogWorking)
             {
-                var isExistsLog = false;
-                var detectPSyncTask = default(Task);
+                var existsLog = false;
 
                 try
                 {
-                    if (!TimelineSettings.Instance.Enabled)
+                    if (CurrentController != null &&
+                        CurrentController.IsReady)
+                    {
+                        existsLog = CurrentController?.DetectLogCore() ?? false;
+                    }
+                    else
                     {
                         Thread.Sleep(TimeSpan.FromSeconds(5));
-                        continue;
                     }
-
-                    // グローバル変数を更新する
-                    TimelineExpressionsModel.RefreshIsToTMe();
-
-                    // P-Syncを判定する
-                    if ((DateTime.Now - this.lastPSyncDetectTimestamp).TotalMilliseconds
-                        > TimelineSettings.Instance.PSyncDetectInterval)
-                    {
-                        this.lastPSyncDetectTimestamp = DateTime.Now;
-                        detectPSyncTask = Task.Run(() => this.DetectPSyncTriggers());
-                    }
-
-                    // 以後ログに対して判定する
-                    if (this.logInfoQueue == null ||
-                        this.logInfoQueue.IsEmpty)
-                    {
-                        continue;
-                    }
-
-                    var logs = this.GetLogs();
-                    if (!logs.Any())
-                    {
-                        continue;
-                    }
-
-                    isExistsLog = true;
-                    this.DetectLogs(logs);
                 }
                 catch (ThreadAbortException)
                 {
@@ -831,13 +795,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
                 catch (Exception ex)
                 {
-                    this.AppLogger.Error(
+                    var model = CurrentController?.Model;
+                    AppLog.DefaultLogger.Error(
                         ex,
-                        $"[TL] Error DetectLog. name={this.Model.TimelineName}, zone={this.Model.Zone}, file={this.Model.SourceFile}");
+                        $"[TL] Error DetectLog. name={model?.TimelineName}, zone={model?.Zone}, file={model?.SourceFile}");
                 }
                 finally
                 {
-                    if (isExistsLog)
+                    if (existsLog)
                     {
                         Thread.Yield();
                     }
@@ -845,10 +810,61 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         Thread.Sleep(TimeSpan.FromMilliseconds(Settings.Default.LogPollSleepInterval));
                     }
-
-                    detectPSyncTask?.Wait();
                 }
             }
+        }
+
+        private DateTime lastPSyncDetectTimestamp = DateTime.MinValue;
+
+        private bool IsReady { get; set; } = false;
+
+        private bool DetectLogCore()
+        {
+            var existsLog = false;
+
+            if (!TimelineSettings.Instance.Enabled)
+            {
+                Thread.Sleep(TimeSpan.FromSeconds(5));
+                return existsLog;
+            }
+
+            // グローバル変数を更新する
+            TimelineExpressionsModel.RefreshIsToTMe();
+
+            // P-Syncを判定する
+            var detectPSyncTask = default(Task);
+
+            try
+            {
+                if ((DateTime.Now - this.lastPSyncDetectTimestamp).TotalMilliseconds
+                    > TimelineSettings.Instance.PSyncDetectInterval)
+                {
+                    this.lastPSyncDetectTimestamp = DateTime.Now;
+                    detectPSyncTask = Task.Run(() => this.DetectPSyncTriggers());
+                }
+
+                // 以後ログに対して判定する
+                if (this.logInfoQueue == null ||
+                    this.logInfoQueue.IsEmpty)
+                {
+                    return existsLog;
+                }
+
+                var logs = this.GetLogs();
+                if (!logs.Any())
+                {
+                    return existsLog;
+                }
+
+                existsLog = true;
+                this.DetectLogs(logs);
+            }
+            finally
+            {
+                detectPSyncTask?.Wait();
+            }
+
+            return existsLog;
         }
 
         private long no = 0L;

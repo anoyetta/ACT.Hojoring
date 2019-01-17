@@ -19,6 +19,9 @@ namespace ACT.UltraScouter.ViewModels
             this.config = config ?? Settings.Instance.TargetName;
             this.model = model ?? TargetInfoModel.Instance;
 
+            this.RaisePropertyChanged(nameof(Config));
+            this.RaisePropertyChanged(nameof(Model));
+
             this.Initialize();
         }
 

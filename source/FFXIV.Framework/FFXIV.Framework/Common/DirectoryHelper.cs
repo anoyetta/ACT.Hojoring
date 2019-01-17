@@ -27,5 +27,27 @@ namespace FFXIV.Framework.Common
 
             return string.Empty;
         }
+
+        public static void DirectoryCopy(string sourcePath, string destinationPath)
+        {
+            var sourceDirectory = new DirectoryInfo(sourcePath);
+            var destinationDirectory = new DirectoryInfo(destinationPath);
+
+            if (destinationDirectory.Exists == false)
+            {
+                destinationDirectory.Create();
+                destinationDirectory.Attributes = sourceDirectory.Attributes;
+            }
+
+            foreach (FileInfo fileInfo in sourceDirectory.GetFiles())
+            {
+                fileInfo.CopyTo(destinationDirectory.FullName + @"\" + fileInfo.Name, true);
+            }
+
+            foreach (DirectoryInfo directoryInfo in sourceDirectory.GetDirectories())
+            {
+                DirectoryCopy(directoryInfo.FullName, destinationDirectory.FullName + @"\" + directoryInfo.Name);
+            }
+        }
     }
 }

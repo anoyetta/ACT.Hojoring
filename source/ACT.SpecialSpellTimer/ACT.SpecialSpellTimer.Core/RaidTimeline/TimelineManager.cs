@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ACT.SpecialSpellTimer.Models;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
 
@@ -54,6 +55,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // テーブルコンパイラにイベントを設定する
             TableCompiler.Instance.ZoneChanged -= this.OnTimelineConditionChanged;
             TableCompiler.Instance.ZoneChanged += this.OnTimelineConditionChanged;
+
+            // Help機能にバックアップコールバックを追加する
+            HelpBridge.Instance.BackupCallback -= this.BackupTimelineDirectory;
+            HelpBridge.Instance.BackupCallback += this.BackupTimelineDirectory;
         }
 
         private volatile bool isLoading = false;
@@ -458,6 +463,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 sync.SyncKeywordReplaced = replacedKeyword;
             }
+        }
+
+        public void BackupTimelineDirectory(
+             string destination)
+        {
+            var backup = Path.Combine(destination, @"ACT.Hojoring\resources\timeline");
+            DirectoryHelper.DirectoryCopy(this.TimelineDirectory, backup);
         }
     }
 }

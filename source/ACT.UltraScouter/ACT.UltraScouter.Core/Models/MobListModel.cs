@@ -144,5 +144,18 @@ namespace ACT.UltraScouter.Models
                 this.MobList.Clear();
             }
         }
+
+        public void RaiseAllPropertiesChanged()
+        {
+            foreach (var pi in this.GetType().GetProperties())
+            {
+                this.RaisePropertyChanged(pi.Name);
+            }
+
+            foreach (var mob in this.MobList)
+            {
+                mob.RaiseAllPropertiesChanged();
+            }
+        }
     }
 }

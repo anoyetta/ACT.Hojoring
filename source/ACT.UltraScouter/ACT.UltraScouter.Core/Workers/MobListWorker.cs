@@ -7,6 +7,7 @@ using ACT.UltraScouter.Config.UI.ViewModels;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels;
 using ACT.UltraScouter.Views;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
 using TamanegiMage.FFXIV_MemoryReader.Model;
@@ -175,14 +176,15 @@ namespace ACT.UltraScouter.Workers
 
                 dummyTargets.Add(new MobInfo()
                 {
-                    Name = "TEST:どこかのヒメちゃん",
-                    Rank = string.Empty,
+                    Name = Combatant.NameToInitial("Himeko Flower", ConfigBridge.Instance.PCNameStyle),
+                    Rank = "DEAD",
                     Combatant = new Combatant()
                     {
-                        ID = 6,
-                        Name = "TEST:どこかのヒメちゃん",
-                        type = ObjectType.Monster,
-                        MaxHP = 1,
+                        ID = 7,
+                        Name = Combatant.NameToInitial("Himeko Flower", ConfigBridge.Instance.PCNameStyle),
+                        type = ObjectType.PC,
+                        Job = (byte)JobIDs.BLM,
+                        MaxHP = 43462,
                         Player = dummyPlayer,
                         PosX = -100,
                         PosY = -100,
@@ -223,6 +225,28 @@ namespace ACT.UltraScouter.Workers
                         MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
                         TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
                     };
+
+                // 戦闘不能者を検出する？
+                if (Settings.Instance.MobList.IsEnabledDetectDeadmen)
+                {
+                    var deadmenInfo = Settings.Instance.MobList.GetDetectDeadmenInfo;
+                    var party = FFXIVPlugin.Instance.GetPartyList();
+                    var deadmen =
+                        from x in party
+                        where
+                        !x.IsPlayer &&
+                        x.MaxHP > 0 && x.CurrentHP <= 0
+                        select new MobInfo()
+                        {
+                            Name = x.NameForDisplay,
+                            Combatant = x,
+                            Rank = deadmenInfo.Rank,
+                            MaxDistance = deadmenInfo.MaxDistance,
+                            TTSEnabled = deadmenInfo.TTSEnabled,
+                        };
+
+                    targets = targets.Concat(deadmen);
+                }
 
                 // 距離で絞り込む
                 targets = targets.Where(x => x.Distance <= x.MaxDistance);
