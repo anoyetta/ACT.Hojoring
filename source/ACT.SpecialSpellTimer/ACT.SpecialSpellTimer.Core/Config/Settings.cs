@@ -574,7 +574,7 @@ namespace ACT.SpecialSpellTimer.Config
                             else
                             {
                                 var tts = this.PolonMessages[index];
-                                PlayBridge.Instance.Play(tts);
+                                PlayBridge.Instance.Play(tts, false, 1.0f);
                             }
                         }
                     }
@@ -596,10 +596,10 @@ namespace ACT.SpecialSpellTimer.Config
             "ポリネシア！",
             "ポンキッキ！",
             "びろーん",
-            "ぽぽぽーん！",
-            "AC",
+            "ぽぽぽぽーん！",
+            "えーしー",
             "ねぇ、いっしょにポロンしよ？",
-            "せーの！",
+            "せーのっ！",
             "さっきのはフェイント",
             "つぎはほんとうにいっしょに！",
             "ぽろん！",
