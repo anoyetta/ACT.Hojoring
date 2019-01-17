@@ -7,6 +7,7 @@ using ACT.UltraScouter.Config.UI.ViewModels;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels;
 using ACT.UltraScouter.Views;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
 using TamanegiMage.FFXIV_MemoryReader.Model;
@@ -175,29 +176,12 @@ namespace ACT.UltraScouter.Workers
 
                 dummyTargets.Add(new MobInfo()
                 {
-                    Name = "TEST:どこかのヒメちゃん",
-                    Rank = string.Empty,
-                    Combatant = new Combatant()
-                    {
-                        ID = 6,
-                        Name = "TEST:どこかのヒメちゃん",
-                        type = ObjectType.Monster,
-                        MaxHP = 1,
-                        Player = dummyPlayer,
-                        PosX = -100,
-                        PosY = -100,
-                        PosZ = 0,
-                    },
-                });
-
-                dummyTargets.Add(new MobInfo()
-                {
-                    Name = "Naoki Yoshida",
-                    Rank = string.Empty,
+                    Name = Combatant.NameToInitial("Himeko Flower", ConfigBridge.Instance.PCNameStyle),
+                    Rank = "DEAD",
                     Combatant = new Combatant()
                     {
                         ID = 7,
-                        Name = "Naoki Yoshida",
+                        Name = Combatant.NameToInitial("Himeko Flower", ConfigBridge.Instance.PCNameStyle),
                         type = ObjectType.PC,
                         Job = (byte)JobIDs.BLM,
                         MaxHP = 43462,
