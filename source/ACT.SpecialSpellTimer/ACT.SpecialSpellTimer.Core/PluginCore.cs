@@ -108,6 +108,7 @@ namespace ACT.SpecialSpellTimer
                 // 設定ファイルを保存する
                 TimelineSettings.Save();
                 Settings.Default.Save();
+                Settings.Default.DeInit();
 
                 Logger.Write("Plugin Exited.");
             }
