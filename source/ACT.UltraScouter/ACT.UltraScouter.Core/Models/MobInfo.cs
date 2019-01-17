@@ -147,7 +147,7 @@ namespace ACT.UltraScouter.Models
                     return;
                 }
 
-                this.Name = this.combatant.Name;
+                this.Name = this.combatant.NameForDisplay;
                 this.X = this.combatant.PosX;
                 this.Y = this.combatant.PosY;
                 this.Z = this.combatant.PosZ;
