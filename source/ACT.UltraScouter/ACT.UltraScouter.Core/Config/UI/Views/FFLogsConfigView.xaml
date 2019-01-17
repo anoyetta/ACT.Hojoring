@@ -149,7 +149,7 @@
       <StackPanel Margin="8 0 0 0">
         <StackPanel Orientation="Horizontal">
           <Label Content="Character Name" Width="200" />
-          <TextBox Width="200" Text="{Binding FFLogsTestParseTotalModel.CharacterName, Mode=TwoWay}" />
+          <TextBox Width="200" Text="{Binding FFLogsTestParseTotalModel.CharacterNameFull, Mode=TwoWay}" />
         </StackPanel>
         <StackPanel Orientation="Horizontal">
           <Label Content="Server" Width="200" />

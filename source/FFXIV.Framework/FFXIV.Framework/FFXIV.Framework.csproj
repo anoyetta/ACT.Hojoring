@@ -69,6 +69,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bridge\ConfigBridge.cs" />
     <Compile Include="Bridge\DiscordBridge.cs" />
     <Compile Include="Bridge\HelpBridge.cs" />
     <Compile Include="Bridge\PlayBridge.cs" />

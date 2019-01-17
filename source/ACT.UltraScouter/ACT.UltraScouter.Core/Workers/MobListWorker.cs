@@ -232,10 +232,11 @@ namespace ACT.UltraScouter.Workers
                     var deadmen =
                         from x in party
                         where
+                        !x.IsPlayer &&
                         x.MaxHP > 0 && x.CurrentHP <= 0
                         select new MobInfo()
                         {
-                            Name = x.Name,
+                            Name = x.NameForDisplay,
                             Combatant = x,
                             Rank = deadmenInfo.Rank,
                             MaxDistance = deadmenInfo.MaxDistance,

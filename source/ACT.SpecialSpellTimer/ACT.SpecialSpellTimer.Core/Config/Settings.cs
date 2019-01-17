@@ -251,7 +251,13 @@ namespace ACT.SpecialSpellTimer.Config
         public NameStyles PCNameInitialOnDisplayStyle
         {
             get => this.pcNameInitialOnDisplayStyle;
-            set => this.SetProperty(ref pcNameInitialOnDisplayStyle, value);
+            set
+            {
+                if (this.SetProperty(ref pcNameInitialOnDisplayStyle, value))
+                {
+                    ConfigBridge.Instance.PCNameStyle = value;
+                }
+            }
         }
 
         public double TextBlurRate

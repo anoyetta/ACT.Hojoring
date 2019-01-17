@@ -251,4 +251,4 @@
 ペンテシレイア                          EX
 
 # パーティ内の戦闘不能者を検知する
-[DEADMEN] D 1000 false
+[DEADMEN] DEAD 1000 false
