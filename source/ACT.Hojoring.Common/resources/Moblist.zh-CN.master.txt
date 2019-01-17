@@ -154,3 +154,6 @@
 加特林针鼹																B级
 阴沟毒液																B级
 纳乌尔																	B级
+
+# Detect dead men in party
+[DEADMEN] D 1000 false

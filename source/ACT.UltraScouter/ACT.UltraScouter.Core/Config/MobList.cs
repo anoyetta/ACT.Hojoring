@@ -110,7 +110,7 @@ namespace ACT.UltraScouter.Config
             get => this.visibleMe;
             set => this.SetProperty(ref this.visibleMe, value);
         }
- 
+
         /// <summary>
         /// 同名のモブを個別表示するか？
         /// </summary>
@@ -292,6 +292,18 @@ namespace ACT.UltraScouter.Config
         public string MobListFile => Path.Combine(
             this.ResourcesDirectory,
             string.Format(MobListFileName, Settings.Instance.FFXIVLocale.ToResourcesName()));
+
+        [XmlIgnore]
+        public const string DetectDeadmenKeyword = "[DEADMEN]";
+
+        [XmlIgnore]
+        public (string Rank, double MaxDistance, bool TTSEnabled) GetDetectDeadmenInfo =>
+            this.targetMobList.ContainsKey(DetectDeadmenKeyword) ?
+            this.targetMobList[DetectDeadmenKeyword] :
+            (string.Empty, 0, false);
+
+        [XmlIgnore]
+        public bool IsEnabledDetectDeadmen => this.targetMobList.ContainsKey(DetectDeadmenKeyword);
 
         [XmlIgnore]
         private readonly Dictionary<string, (string Rank, double MaxDistance, bool TTSEnabled)> targetMobList = new Dictionary<string, (string Rank, double MaxDistance, bool TTSEnabled)>();
