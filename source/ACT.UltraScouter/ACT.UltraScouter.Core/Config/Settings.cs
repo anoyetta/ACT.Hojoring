@@ -1207,6 +1207,7 @@ namespace ACT.UltraScouter.Config
             { nameof(Settings.MobList), new MobList()
             {
                 Visible = false,
+                Scale = 1.0d,
                 RefreshRateMin = 300,
                 VisibleZ = true,
                 VisibleMe = true,

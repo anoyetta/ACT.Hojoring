@@ -55,7 +55,7 @@
         Margin="0 5 0 0"
         Content="{DynamicResource MobList_VisibleMePosition}"
         IsChecked="{Binding MobList.VisibleMe, Mode=TwoWay}" />
-      
+
       <CheckBox
         Margin="0 5 0 0"
         Content="{DynamicResource MobList_UngroupSameNameMobs}"
@@ -104,13 +104,18 @@
 
       <Label
         Margin="0 10 0 0"
-        Content="{DynamicResource Common_Visible}" />
+        Content="{DynamicResource Common_Location}" />
       <StackPanel Orientation="Horizontal">
         <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
         <TextBox Margin="0,0,0,0" TextAlignment="Right" Text="{Binding MobList.Location.X, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
         <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
         <TextBox Margin="0,0,0,0" TextAlignment="Right" Text="{Binding MobList.Location.Y, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
       </StackPanel>
+
+      <Label
+        Margin="0 10 0 0"
+        Content="{DynamicResource Common_Scale}" />
+      <xctk:DoubleUpDown Value="{Binding MobList.Scale, Mode=TwoWay}" Increment="0.1" Minimum="0.01" Maximum="9.99" FormatString="N2" Width="80" HorizontalAlignment="Left" />
 
       <TextBlock Margin="7 15 0 0">
         <Hyperlink

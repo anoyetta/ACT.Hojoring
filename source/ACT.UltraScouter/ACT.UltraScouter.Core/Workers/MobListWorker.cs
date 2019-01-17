@@ -190,6 +190,24 @@ namespace ACT.UltraScouter.Workers
                     },
                 });
 
+                dummyTargets.Add(new MobInfo()
+                {
+                    Name = "Naoki Yoshida",
+                    Rank = string.Empty,
+                    Combatant = new Combatant()
+                    {
+                        ID = 7,
+                        Name = "Naoki Yoshida",
+                        type = ObjectType.PC,
+                        Job = (byte)JobIDs.BLM,
+                        MaxHP = 43462,
+                        Player = dummyPlayer,
+                        PosX = -100,
+                        PosY = -100,
+                        PosZ = 0,
+                    },
+                });
+
                 lock (this.TargetInfoLock)
                 {
                     this.TargetInfo = dummyTargets.First().Combatant;
