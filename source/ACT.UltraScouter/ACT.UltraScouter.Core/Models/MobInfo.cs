@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using ACT.UltraScouter.Common;
 using ACT.UltraScouter.Config;
 using FFXIV.Framework.Common;
@@ -182,8 +183,15 @@ namespace ACT.UltraScouter.Models
 
                 // 距離は最後にセットする
                 this.Distance = Math.Round(this.combatant.DistanceByPlayer, 1);
+
+                this.RaisePropertyChanged(nameof(this.IsPC));
+                this.RaisePropertyChanged(nameof(this.JobIcon));
             }
         }
+
+        public bool IsPC => this.combatant?.type == TamanegiMage.FFXIV_MemoryReader.Model.ObjectType.PC;
+
+        public BitmapSource JobIcon => JobIconDictionary.Instance.GetIcon(this.combatant?.JobID ?? JobIDs.Unknown);
 
         public string Name
         {
@@ -459,5 +467,13 @@ namespace ACT.UltraScouter.Models
                 var text = mob.ToNoticeString();
                 Clipboard.SetDataObject(text);
             }));
+
+        public void RaiseAllPropertiesChanged()
+        {
+            foreach (var pi in this.GetType().GetProperties())
+            {
+                this.RaisePropertyChanged(pi.Name);
+            }
+        }
     }
 }

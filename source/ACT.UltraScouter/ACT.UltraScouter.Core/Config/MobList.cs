@@ -48,6 +48,7 @@ namespace ACT.UltraScouter.Config
         #endregion Logger
 
         [XmlIgnore] private bool visible = false;
+        [XmlIgnore] private double scale = 1.0d;
         [XmlIgnore] private double refreshRateMin = 300;
         [XmlIgnore] private bool testMode = false;
         [XmlIgnore] private bool visibleZ = true;
@@ -69,6 +70,16 @@ namespace ACT.UltraScouter.Config
         {
             get => this.visible;
             set => this.SetProperty(ref this.visible, value);
+        }
+
+        /// <summary>
+        /// スケール
+        /// </summary>
+        [DataMember]
+        public double Scale
+        {
+            get => this.scale;
+            set => this.SetProperty(ref this.scale, value);
         }
 
         /// <summary>

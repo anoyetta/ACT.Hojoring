@@ -23,6 +23,8 @@ namespace ACT.UltraScouter.ViewModels
                 this.refreshTimer.Tick += (x, y) => this.RefreshOriginAngle();
                 this.refreshTimer.Start();
             }
+
+            this.Model.RaiseAllPropertiesChanged();
         }
 
         public override void Dispose()

@@ -59,6 +59,12 @@
     Orientation="Vertical"
     Margin="10">
 
+    <StackPanel.LayoutTransform>
+      <ScaleTransform
+        ScaleX="{Binding Config.Scale, Mode=OneWay}"
+        ScaleY="{Binding Config.Scale, Mode=OneWay}" />
+    </StackPanel.LayoutTransform>
+
     <!-- Me Panel -->
     <StackPanel
       x:Name="MePanel"
@@ -215,8 +221,18 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+                  <!-- Job Icon -->
+                  <Viewbox
+                      Margin="0 0 5 0"
+                      Stretch="Uniform"
+                      Visibility="{Binding IsPC, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                      Height="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay}">
+                    <Image Source="{Binding JobIcon, Mode=OneWay}" />
+                  </Viewbox>
+
                   <!-- Name -->
                   <ctrl:LightOutlineTextBlock
+                    x:Name="NameLabel"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Margin="0 0 0 0"
@@ -291,6 +307,15 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Orientation="Horizontal" MinWidth="{Binding ElementName=DirectionTextBlock, Path=ActualWidth, Mode=OneWay}">
+                  <!-- Job Icon -->
+                  <Viewbox
+                    Margin="0 0 5 0"
+                    Stretch="Uniform"
+                    Visibility="{Binding IsPC, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                    Height="{Binding ElementName=NameTextBlock, Path=ActualHeight, Mode=OneWay}">
+                    <Image Source="{Binding JobIcon, Mode=OneWay}" />
+                  </Viewbox>
+
                   <!-- Name -->
                   <ctrl:LightOutlineTextBlock
                     x:Name="NameTextBlock"
