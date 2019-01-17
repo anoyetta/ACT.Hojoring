@@ -224,6 +224,27 @@ namespace ACT.UltraScouter.Workers
                         TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
                     };
 
+                // 戦闘不能者を検出する？
+                if (Settings.Instance.MobList.IsEnabledDetectDeadmen)
+                {
+                    var deadmenInfo = Settings.Instance.MobList.GetDetectDeadmenInfo;
+                    var party = FFXIVPlugin.Instance.GetPartyList();
+                    var deadmen =
+                        from x in party
+                        where
+                        x.MaxHP > 0 && x.CurrentHP <= 0
+                        select new MobInfo()
+                        {
+                            Name = x.Name,
+                            Combatant = x,
+                            Rank = deadmenInfo.Rank,
+                            MaxDistance = deadmenInfo.MaxDistance,
+                            TTSEnabled = deadmenInfo.TTSEnabled,
+                        };
+
+                    targets = targets.Concat(deadmen);
+                }
+
                 // 距離で絞り込む
                 targets = targets.Where(x => x.Distance <= x.MaxDistance);
             });
