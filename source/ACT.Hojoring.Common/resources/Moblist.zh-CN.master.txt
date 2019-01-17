@@ -156,4 +156,4 @@
 纳乌尔																	B级
 
 # Detect dead men in party
-[DEADMEN] D 1000 false
+[DEADMEN] DEAD 1000 false

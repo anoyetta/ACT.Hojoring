@@ -421,7 +421,7 @@ namespace ACT.UltraScouter.Models
         {
             var model = new ParseTotalModel()
             {
-                CharacterName = "Naoki Yoshida",
+                CharacterNameFull = "Naoki Yoshida",
                 Server = "Chocobo",
                 Region = FFLogsRegions.JP,
                 Job = Jobs.Find(JobIDs.BLM),
@@ -527,6 +527,8 @@ namespace ACT.UltraScouter.Models
                     this.ParseTotal = config.VisibleHistogram ?
                         DesigntimeParseTotal :
                         DesigntimeParseTotalNoHistogram;
+
+                    this.ParseTotal.RefreshCharacterName();
                 }
 
                 return;
