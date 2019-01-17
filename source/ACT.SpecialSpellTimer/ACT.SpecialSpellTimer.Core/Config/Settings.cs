@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Media;
 using System.Text;
 using System.Windows.Interop;
 using System.Xml;
@@ -10,6 +11,7 @@ using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config.Models;
 using ACT.SpecialSpellTimer.Config.Views;
 using ACT.SpecialSpellTimer.Views;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
@@ -60,6 +62,13 @@ namespace ACT.SpecialSpellTimer.Config
         public readonly string FileName = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"anoyetta\ACT\ACT.SpecialSpellTimer.config");
+
+        public void DeInit()
+        {
+            this.polonTimer.Stop();
+            this.polonTimer.Dispose();
+            this.polonTimer = null;
+        }
 
         #region Constants
 
@@ -242,7 +251,13 @@ namespace ACT.SpecialSpellTimer.Config
         public NameStyles PCNameInitialOnDisplayStyle
         {
             get => this.pcNameInitialOnDisplayStyle;
-            set => this.SetProperty(ref pcNameInitialOnDisplayStyle, value);
+            set
+            {
+                if (this.SetProperty(ref pcNameInitialOnDisplayStyle, value))
+                {
+                    ConfigBridge.Instance.PCNameStyle = value;
+                }
+            }
         }
 
         public double TextBlurRate
@@ -501,6 +516,98 @@ namespace ACT.SpecialSpellTimer.Config
             set => this.SetProperty(ref this.isMinimizeOnStart, value);
         }
 
+        #region Polon
+
+        private System.Timers.Timer polonTimer = new System.Timers.Timer();
+        private bool isEnabledPolon = false;
+
+        public bool IsEnabledPolon
+        {
+            get => this.isEnabledPolon;
+            set
+            {
+                if (this.SetProperty(ref this.isEnabledPolon, value))
+                {
+                    lock (this.polonTimer)
+                    {
+                        if (!this.isEnabledPolon)
+                        {
+                            this.polonTimer.Stop();
+                        }
+                        else
+                        {
+                            this.polonCounter = 0;
+                            this.polonTimer.Elapsed -= this.PolonTimer_Elapsed;
+                            this.polonTimer.Elapsed += this.PolonTimer_Elapsed;
+                            this.polonTimer.Interval = 15 * 1000;
+                            this.polonTimer.AutoReset = true;
+                            this.polonTimer.Start();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void PolonTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            lock (this.polonTimer)
+            {
+                if (this.isEnabledPolon)
+                {
+                    if (this.polonCounter < NomarlPolonCount)
+                    {
+                        SystemSounds.Asterisk.Play();
+                    }
+                    else
+                    {
+                        var index = this.polonCounter - NomarlPolonCount;
+                        if (index >= this.PolonMessages.Length)
+                        {
+                            SystemSounds.Asterisk.Play();
+                        }
+                        else
+                        {
+                            if (!PlayBridge.Instance.IsAvailable)
+                            {
+                                SystemSounds.Asterisk.Play();
+                            }
+                            else
+                            {
+                                var tts = this.PolonMessages[index];
+                                PlayBridge.Instance.Play(tts);
+                            }
+                        }
+                    }
+
+                    this.polonCounter++;
+                }
+            }
+        }
+
+        private int polonCounter = 0;
+        private const int NomarlPolonCount = 3;
+
+        private readonly string[] PolonMessages = new[]
+        {
+            "ぽろん",
+            "ぽろろーん",
+            "ぴろーん？",
+            "ぽぽろん！",
+            "ポリネシア！",
+            "ポンキッキ！",
+            "びろーん",
+            "ぽぽぽーん！",
+            "AC",
+            "ねぇ、いっしょにポロンしよ？",
+            "せーの！",
+            "さっきのはフェイント",
+            "つぎはほんとうにいっしょに！",
+            "ぽろん！",
+            "あしたもいっしょにポロンしてね。",
+        };
+
+        #endregion Polon
+
         #region Data - Timeline
 
         private bool timelineTotalSecoundsFormat = false;
@@ -672,18 +779,17 @@ namespace ACT.SpecialSpellTimer.Config
                 var ns = new XmlSerializerNamespaces();
                 ns.Add(string.Empty, string.Empty);
 
-                var sb = new StringBuilder();
-                using (var sw = new StringWriter(sb))
+                var buffer = new StringBuilder();
+                using (var sw = new StringWriter(buffer))
                 {
                     var xs = new XmlSerializer(this.GetType());
                     xs.Serialize(sw, this, ns);
                 }
 
-                sb.Replace("utf-16", "utf-8");
-
+                buffer.Replace("utf-16", "utf-8");
                 File.WriteAllText(
                     this.FileName,
-                    sb.ToString(),
+                    buffer.ToString() + Environment.NewLine,
                     new UTF8Encoding(false));
             }
         }
@@ -741,6 +847,7 @@ namespace ACT.SpecialSpellTimer.Config
             { nameof(Settings.DisableStartCondition), false },
             { nameof(Settings.EnableMultiLineMaching), false },
             { nameof(Settings.MaxFPS), 30 },
+            { nameof(Settings.IsEnabledPolon), false },
 
             { nameof(Settings.LPSViewVisible), false },
             { nameof(Settings.LPSViewX), 0 },

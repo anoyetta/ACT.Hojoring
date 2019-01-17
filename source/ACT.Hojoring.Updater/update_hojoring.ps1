@@ -5,24 +5,10 @@ Start-Transcript update.log | Out-Null
 $isUsePreRelease = $FALSE
 # $isUsePreRelease = $TRUE
 
-# 更新の除外リスト
-## UPDATEスクリプトは自動更新されないので自分で更新してください
-$updateExclude = @(
-    "update_hojoring.ps1",
-    "start_ffxiv_tools.ps1",
-    "TTSDictionary.en-US.txt",
-    "TTSDictionary.ja-JP.txt",
-    "TTSDictionary.fr-FR.txt",
-    "TTSDictionary.de-DE.txt",
-    "TTSDictionary.ko-KR.txt",
-    "_dummy.txt",
-    "_sample.txt"
-)
-
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev6'
+'* rev7'
 '* (c) anoyetta, 2018'
 '***************************************************'
 '* Start Update Hojoring'
@@ -30,6 +16,12 @@ $updateExclude = @(
 # 現在のディレクトリを取得する
 $cd = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $cd
+
+# 更新の除外リストを読み込む
+$updateExclude = @()
+if (Test-Path ".\update_hojoring_ignores.txt") {
+    $updateExclude = (Get-Content ".\update_hojoring_ignores.txt" -Encoding UTF8) -as [string[]]
+}
 
 # 引数があればアップデートチャンネルを書き換える
 if ($args.Length -gt 0) {
@@ -65,6 +57,13 @@ else {
 
 '-> Download Lastest Version'
 $updater = Join-Path $cd ".\ACT.Hojoring.Updater.exe"
+if (!(Test-Path $updater)) {
+    Write-Error ("-> ERROR! ""ACT.Hojoring.Updater.exe"" not found!")
+    Stop-Transcript | Out-Null
+    Read-Host "press any key to exit..."
+    exit 1
+}
+
 $updateDir = Join-Path $cd "update"
 
 if (Test-Path $updateDir) {
@@ -98,6 +97,15 @@ $archive = Get-Item ".\update\*.7z"
 & $7za x $archive ("-o" + $updateDir)
 Remove-Item $archive
 '-> Extracted!'
+
+# Clean ->
+if (Test-Path ".\references") {
+    Get-ChildItem -Path ".\references" -Recurse | Remove-Item -Force -Recurse
+    Remove-Item -Recurse -Force ".\references"
+}
+
+Get-ChildItem -Path ".\*.dll" | Remove-Item -Force
+# Clean <-
 
 ''
 '-> Update Assets'

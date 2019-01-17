@@ -10,6 +10,7 @@ using System.Web;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ACT.UltraScouter.Config;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
@@ -53,7 +54,7 @@ namespace ACT.UltraScouter.Models.FFLogs
             Job characterJob)
             => $"{characterName ?? "Unknown"}-{server ?? "Unknown"}-{region}-{characterJob?.ToString() ?? "Unknown"}";
 
-        public string DataKey => CreateDataKey(this.characterName, this.server, this.region, this.job);
+        public string DataKey => CreateDataKey(this.CharacterNameFull, this.server, this.region, this.job);
 
         /// <summary>
         /// すべてのPropertiesの変更通知を発生させる
@@ -71,13 +72,32 @@ namespace ACT.UltraScouter.Models.FFLogs
         public string CharacterName
         {
             get => this.characterName;
-            set
+            private set
             {
                 if (this.SetProperty(ref this.characterName, value))
                 {
                     this.RaisePropertyChanged(nameof(this.ExistsName));
                 }
             }
+        }
+
+        private string characterNameFull;
+
+        public string CharacterNameFull
+        {
+            get => this.characterNameFull;
+            set
+            {
+                if (this.SetProperty(ref this.characterNameFull, value))
+                {
+                    this.RefreshCharacterName();
+                }
+            }
+        }
+
+        public void RefreshCharacterName()
+        {
+            this.CharacterName = Combatant.NameToInitial(this.characterNameFull, ConfigBridge.Instance.PCNameStyle);
         }
 
         public bool ExistsName => !string.IsNullOrEmpty(this.CharacterName);
@@ -394,7 +414,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                 if (!isTest)
                 {
                     // 同じ条件でn分以内ならば再取得しない
-                    if (characterName == this.CharacterName &&
+                    if (characterName == this.CharacterNameFull &&
                         server == this.Server &&
                         region == this.Region)
                     {
@@ -516,7 +536,8 @@ namespace ACT.UltraScouter.Models.FFLogs
 
                 await WPFHelper.InvokeAsync(() =>
                 {
-                    this.CharacterName = characterName;
+                    this.CharacterNameFull = characterName;
+                    this.RefreshCharacterName();
                     this.Server = server;
                     this.Region = region;
                     this.Job = filter != null ? job : null;
@@ -559,7 +580,8 @@ namespace ACT.UltraScouter.Models.FFLogs
             {
                 await WPFHelper.InvokeAsync(() =>
                 {
-                    this.CharacterName = characterName;
+                    this.CharacterNameFull = characterName;
+                    this.RefreshCharacterName();
                     this.Server = server;
                     this.Region = region;
                     this.Job = job;

@@ -210,6 +210,7 @@
   <system:String x:Key="Options_ReloadTTSDictionary">外部のTTS辞書ファイルを再読込する</system:String>
 
   <system:String x:Key="Options_MinimizeOnStart">ACTを最小化して起動する</system:String>
+  <system:String x:Key="Options_Polon">15秒ごとにポロン♪と鳴らす</system:String>
 
   <system:String x:Key="Info_Placeholders">有効なプレースホルダ</system:String>
   <system:String x:Key="Info_Triggers">アクティブなトリガ</system:String>

@@ -34,6 +34,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 if (instance.MemoryPlugin != null)
                 {
                     instance.MemoryPlugin.DeInitPlugin();
+                    instance.tab?.TabPages.Remove(instance.tabPage);
                     instance.MemoryPlugin = null;
                 }
 
@@ -42,6 +43,9 @@ namespace FFXIV.Framework.FFXIVHelper
         }
 
         #endregion Singleton
+
+        private TabControl tab;
+        private TabPage tabPage;
 
         private MemoryPlugin MemoryPlugin { get; set; } = null;
 
@@ -115,6 +119,9 @@ namespace FFXIV.Framework.FFXIVHelper
                     var memoryReaderTabPage = new TabPage();
                     var dummyLabel = new Label();
                     parentTabControl.TabPages.Add(memoryReaderTabPage);
+
+                    this.tab = parentTabControl;
+                    this.tabPage = memoryReaderTabPage;
 
                     try
                     {

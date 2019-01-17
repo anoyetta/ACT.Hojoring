@@ -38,6 +38,20 @@
     <fwcnv:ThicknessToMarginConverter x:Key="ThicknessToMarginConverter" />
 
     <cnv:StrokeThicknessToBlurRadiusConverter x:Key="StrokeThicknessToBlurRadiusConverter" />
+
+    <Style x:Key="OutlineStyle" TargetType="ctrl:LightOutlineTextBlock">
+      <Setter Property="Fill" Value="{Binding Path=Config.DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+      <Setter Property="Stroke" Value="{Binding Path=Config.DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+      <Setter Property="StrokeThickness" Value="{Binding Path=Config.DisplayText.Font.OutlineThickness, Mode=OneWay}" />
+      <Setter Property="FontFamily" Value="{Binding Path=Config.DisplayText.Font.FontFamily, Mode=OneWay}" />
+      <Setter Property="FontSize" Value="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay}" />
+      <Setter Property="FontStretch" Value="{Binding Path=Config.DisplayText.Font.Stretch, Mode=OneWay}" />
+      <Setter Property="FontWeight" Value="{Binding Path=Config.DisplayText.Font.Weight, Mode=OneWay}" />
+      <Setter Property="FontStyle" Value="{Binding Path=Config.DisplayText.Font.Style, Mode=OneWay}" />
+      <Setter Property="BlurRadius" Value="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}" />
+      <Setter Property="BlurOpacity" Value="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+      <Setter Property="StrokeOpacity" Value="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+    </Style>
   </Window.Resources>
 
   <Grid>
@@ -50,6 +64,7 @@
         Margin="13"
         Visibility="{Binding Model.IsCasting, Converter={StaticResource BoolToHiddenConverter}, Mode=OneWay}">
         <Grid.RowDefinitions>
+          <RowDefinition />
           <RowDefinition />
           <RowDefinition />
         </Grid.RowDefinitions>
@@ -83,82 +98,51 @@
             IsStrokeBackground="False" />
         </StackPanel>
 
-        <!--テキスト -->
-        <DockPanel Grid.Row="0" Grid.Column="0">
+        <!-- スキル名 -->
+        <ctrl:LightOutlineTextBlock
+          Grid.Row="0"
+          x:Name="ActionTextBlock"
+          Margin="0 0 0 0"
+          HorizontalAlignment="Center"
+          HorizontalContentAlignment="Center"
+          TextTrimming="CharacterEllipsis"
+          Width="{Binding Config.ProgressBar.Width, Mode=OneWay}"
+          Style="{StaticResource OutlineStyle}"
+          Text="{Binding Model.CastSkillName, Mode=OneWay}"
+          Visibility="{Binding Config.CastingActionNameVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
 
-          <!-- スキル名 -->
+        <Grid
+          Grid.Row="2"
+          Margin="0 0 0 0">
+          <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+          </Grid.RowDefinitions>
+
+          <!-- 残り秒数 -->
           <ctrl:LightOutlineTextBlock
-            DockPanel.Dock="Left"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Bottom"
-            Margin="2 0 15 0"
-            x:Name="ActionTextBlock"
-            Fill="{Binding Path=Config.DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
-            Stroke="{Binding Path=Config.DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
-            StrokeThickness="{Binding Path=Config.DisplayText.Font.OutlineThickness, Mode=OneWay}"
-            Text="{Binding Model.CastSkillName, Mode=OneWay}"
-            FontFamily="{Binding Path=Config.DisplayText.Font.FontFamily, Mode=OneWay}"
-            FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay}"
-            FontStretch="{Binding Path=Config.DisplayText.Font.Stretch, Mode=OneWay}"
-            FontWeight="{Binding Path=Config.DisplayText.Font.Weight, Mode=OneWay}"
-            FontStyle="{Binding Path=Config.DisplayText.Font.Style, Mode=OneWay}"
-            Visibility="{Binding Config.CastingActionNameVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
-            BlurRadius="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}"
-            BlurOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
-            StrokeOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
-            TextWrapping="NoWrap" />
+            Grid.Row="0"
+            Margin="0 0 0 0"
+            x:Name="RemainTextBlock"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            Style="{StaticResource OutlineStyle}"
+            Text="{Binding CastingRemainText, Mode=OneWay}"
+            FontSize="{Binding CounterFontSize, Mode=OneWay}"
+            Visibility="{Binding Config.CastingRemainVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-          <Grid
-            DockPanel.Dock="Right"
-            VerticalAlignment="Bottom">
-            <Grid.RowDefinitions>
-              <RowDefinition />
-              <RowDefinition />
-            </Grid.RowDefinitions>
-
-            <!-- 残り秒数 -->
-            <ctrl:LightOutlineTextBlock
-              Grid.Row="0"
-              HorizontalAlignment="Right"
-              Margin="0 0 2 0"
-              x:Name="RemainTextBlock"
-              Fill="{Binding ElementName=ActionTextBlock, Path=Fill, Mode=OneWay}"
-              Stroke="{Binding ElementName=ActionTextBlock, Path=Stroke, Mode=OneWay}"
-              StrokeThickness="{Binding ElementName=ActionTextBlock, Path=StrokeThickness, Mode=OneWay}"
-              FontFamily="{Binding ElementName=ActionTextBlock, Path=FontFamily, Mode=OneWay}"
-              FontStretch="{Binding ElementName=ActionTextBlock, Path=FontStretch, Mode=OneWay}"
-              FontWeight="{Binding ElementName=ActionTextBlock, Path=FontWeight, Mode=OneWay}"
-              FontStyle="{Binding ElementName=ActionTextBlock, Path=FontStyle, Mode=OneWay}"
-              Text="{Binding CastingRemainText, Mode=OneWay}"
-              FontSize="{Binding CounterFontSize, Mode=OneWay}"
-              Visibility="{Binding Config.CastingRemainVisible, Converter={StaticResource BoolToVisibilityConverter}}"
-              BlurRadius="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}"
-              BlurOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
-              StrokeOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
-              TextWrapping="NoWrap" />
-
-            <!-- 進捗率 -->
-            <ctrl:LightOutlineTextBlock
-              Grid.Row="1"
-              HorizontalAlignment="Right"
-              Margin="0 0 2 0"
-              x:Name="RateTextBlock"
-              Fill="{Binding ElementName=ActionTextBlock, Path=Fill, Mode=OneWay}"
-              Stroke="{Binding ElementName=ActionTextBlock, Path=Stroke, Mode=OneWay}"
-              StrokeThickness="{Binding ElementName=ActionTextBlock, Path=StrokeThickness, Mode=OneWay}"
-              FontFamily="{Binding ElementName=ActionTextBlock, Path=FontFamily, Mode=OneWay}"
-              FontStretch="{Binding ElementName=ActionTextBlock, Path=FontStretch, Mode=OneWay}"
-              FontWeight="{Binding ElementName=ActionTextBlock, Path=FontWeight, Mode=OneWay}"
-              FontStyle="{Binding ElementName=ActionTextBlock, Path=FontStyle, Mode=OneWay}"
-              Text="{Binding CastingProgressRateToDisplay, Mode=OneWay, StringFormat=N0}"
-              FontSize="{Binding CounterFontSize, Mode=OneWay}"
-              Visibility="{Binding Config.CastingRateVisible, Converter={StaticResource BoolToVisibilityConverter}}"
-              BlurRadius="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}"
-              BlurOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
-              StrokeOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
-              TextWrapping="NoWrap" />
-          </Grid>
-        </DockPanel>
+          <!-- 進捗率 -->
+          <ctrl:LightOutlineTextBlock
+            Grid.Row="1"
+            Margin="0 0 1 0"
+            x:Name="RateTextBlock"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            Style="{StaticResource OutlineStyle}"
+            Text="{Binding CastingProgressRateToDisplay, Mode=OneWay, StringFormat=N0}"
+            FontSize="{Binding CounterFontSize, Mode=OneWay}"
+            Visibility="{Binding Config.CastingRateVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+        </Grid>
       </Grid>
     </Grid>
     <!-- end Square Style Grid -->

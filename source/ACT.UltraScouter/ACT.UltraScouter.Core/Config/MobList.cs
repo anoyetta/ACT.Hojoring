@@ -48,6 +48,7 @@ namespace ACT.UltraScouter.Config
         #endregion Logger
 
         [XmlIgnore] private bool visible = false;
+        [XmlIgnore] private double scale = 1.0d;
         [XmlIgnore] private double refreshRateMin = 300;
         [XmlIgnore] private bool testMode = false;
         [XmlIgnore] private bool visibleZ = true;
@@ -69,6 +70,16 @@ namespace ACT.UltraScouter.Config
         {
             get => this.visible;
             set => this.SetProperty(ref this.visible, value);
+        }
+
+        /// <summary>
+        /// スケール
+        /// </summary>
+        [DataMember]
+        public double Scale
+        {
+            get => this.scale;
+            set => this.SetProperty(ref this.scale, value);
         }
 
         /// <summary>
@@ -110,7 +121,7 @@ namespace ACT.UltraScouter.Config
             get => this.visibleMe;
             set => this.SetProperty(ref this.visibleMe, value);
         }
- 
+
         /// <summary>
         /// 同名のモブを個別表示するか？
         /// </summary>
@@ -292,6 +303,18 @@ namespace ACT.UltraScouter.Config
         public string MobListFile => Path.Combine(
             this.ResourcesDirectory,
             string.Format(MobListFileName, Settings.Instance.FFXIVLocale.ToResourcesName()));
+
+        [XmlIgnore]
+        public const string DetectDeadmenKeyword = "[DEADMEN]";
+
+        [XmlIgnore]
+        public (string Rank, double MaxDistance, bool TTSEnabled) GetDetectDeadmenInfo =>
+            this.targetMobList.ContainsKey(DetectDeadmenKeyword) ?
+            this.targetMobList[DetectDeadmenKeyword] :
+            (string.Empty, 0, false);
+
+        [XmlIgnore]
+        public bool IsEnabledDetectDeadmen => this.targetMobList.ContainsKey(DetectDeadmenKeyword);
 
         [XmlIgnore]
         private readonly Dictionary<string, (string Rank, double MaxDistance, bool TTSEnabled)> targetMobList = new Dictionary<string, (string Rank, double MaxDistance, bool TTSEnabled)>();

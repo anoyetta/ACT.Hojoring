@@ -559,18 +559,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 var ns = new XmlSerializerNamespaces();
                 ns.Add(string.Empty, string.Empty);
 
-                var sb = new StringBuilder();
-                using (var sw = new StringWriter(sb))
+                var buffer = new StringBuilder();
+                using (var sw = new StringWriter(buffer))
                 {
                     var xs = new XmlSerializer(this.GetType());
                     xs.Serialize(sw, this, ns);
                 }
 
-                sb.Replace("utf-16", "utf-8");
-
+                buffer.Replace("utf-16", "utf-8");
                 File.WriteAllText(
                     file,
-                    sb.ToString() + Environment.NewLine,
+                    buffer.ToString() + Environment.NewLine,
                     new UTF8Encoding(false));
             }
         }
