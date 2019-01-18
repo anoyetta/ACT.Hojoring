@@ -88,6 +88,9 @@
     <PackageReference Include="FontAwesome.WPF">
       <Version>4.7.0.9</Version>
     </PackageReference>
+    <PackageReference Include="NAudio">
+      <Version>1.8.5</Version>
+    </PackageReference>
     <PackageReference Include="NLog.Config">
       <Version>4.5.11</Version>
     </PackageReference>
