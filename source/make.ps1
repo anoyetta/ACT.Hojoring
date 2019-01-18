@@ -124,7 +124,6 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     
     '●TTSYukkuri のAssemblyをマージする'
     $libs = @(
-        #        "DSharpPlus*.dll",
         "Discord.*.dll",
         "RucheHome*.dll"
     )

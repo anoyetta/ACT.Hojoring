@@ -116,6 +116,9 @@
     <PackageReference Include="FontAwesome.WPF">
       <Version>4.7.0.9</Version>
     </PackageReference>
+    <PackageReference Include="NAudio">
+      <Version>1.8.5</Version>
+    </PackageReference>
     <PackageReference Include="NPOI">
       <Version>2.4.1</Version>
     </PackageReference>
