@@ -42,6 +42,9 @@ namespace FFXIV.Framework.TTS.Server
         {
             instance = this;
 
+            AssemblyResolver.Instance.Initialize();
+            Assembly.Load("FFXIV.Framework");
+
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             this.Startup += this.App_Startup;
@@ -123,6 +126,7 @@ namespace FFXIV.Framework.TTS.Server
             }
             finally
             {
+                AssemblyResolver.Free();
                 this.Logger.Trace("end.");
             }
         }
