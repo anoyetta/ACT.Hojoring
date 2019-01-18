@@ -8,10 +8,53 @@ $isUsePreRelease = $FALSE
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev7'
+'* rev8'
 '* (c) anoyetta, 2018'
 '***************************************************'
 '* Start Update Hojoring'
+
+## functions ->
+function New-TemporaryDirectory {
+    $tempDirectoryBase = [System.IO.Path]::GetTempPath();
+    $newTempDirPath = [String]::Empty;
+
+    do {
+        [string] $name = [System.Guid]::NewGuid();
+        $newTempDirPath = (Join-Path $tempDirectoryBase $name);
+    } while (Test-Path $newTempDirPath);
+  
+    New-Item -ItemType Directory -Path $newTempDirPath;
+    return $newTempDirPath;
+}
+
+function Remove-Directory (
+    [string] $path) {
+    if (Test-Path $path) {
+        Remove-Item ($path + "\*") -Recurse -Force
+        Remove-Item $path -Recurse -Force
+    }
+}
+
+function Exit-Update (
+    [int] $exitCode) {
+
+    $targets = @(
+        ".\update"
+    )
+
+    foreach ($d in $targets) {
+        Remove-Directory $d
+    }
+
+    ''
+    '* End Update Hojoring'
+    ''
+    Stop-Transcript | Out-Null
+    Read-Host "press any key to exit..."
+
+    exit $exitCode
+}
+## functions <-
 
 # 現在のディレクトリを取得する
 $cd = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -53,24 +96,27 @@ if ($isUsePreRelease) {
 else {
     Write-Host ("-> Update Channel: Release")
 }
-''
 
-'-> Download Lastest Version'
 $updater = Join-Path $cd ".\ACT.Hojoring.Updater.exe"
 if (!(Test-Path $updater)) {
     Write-Error ("-> ERROR! ""ACT.Hojoring.Updater.exe"" not found!")
-    Stop-Transcript | Out-Null
-    Read-Host "press any key to exit..."
-    exit 1
+    Exit-Update 1
 }
+
+''
+'-> Backup Current Version'
+$temp = (New-TemporaryDirectory).FullName
+Copy-Item .\ $temp -Recurse -Force
+Remove-Directory ".\backup"
+Move-Item $temp ".\backup" -Force
 
 $updateDir = Join-Path $cd "update"
-
 if (Test-Path $updateDir) {
-    Remove-Item ($updateDir + "/*") -Recurse -Force
-    Remove-Item $updateDir -Recurse -Force
+    Remove-Directory $updateDir
 }
 
+''
+'-> Download Lastest Version'
 & $updater $updateDir $isUsePreRelease
 '-> Downloaded!'
 
@@ -85,7 +131,8 @@ do {
     }
 
     if ($in -eq "N") {
-        exit
+        'Update canceled.'
+        Exit-Update 0
     }
 } while ($TRUE)
 
@@ -99,12 +146,10 @@ Remove-Item $archive
 '-> Extracted!'
 
 # Clean ->
-if (Test-Path ".\references") {
-    Get-ChildItem -Path ".\references" -Recurse | Remove-Item -Force -Recurse
-    Remove-Item -Recurse -Force ".\references"
+Remove-Directory ".\references"
+if (Test-Path ".\*.dll") {
+    Remove-Item ".\*.dll" -Force
 }
-
-Get-ChildItem -Path ".\*.dll" | Remove-Item -Force
 # Clean <-
 
 ''
@@ -120,13 +165,4 @@ foreach ($src in $srcs) {
 }
 '-> Updated'
 
-if (Test-Path $updateDir) {
-    Remove-Item ($updateDir + "/*") -Recurse -Force
-    Remove-Item $updateDir -Recurse -Force
-}
-
-''
-'* End Update Hojoring'
-''
-Stop-Transcript | Out-Null
-Read-Host "press any key to exit..."
+Exit-Update 0
