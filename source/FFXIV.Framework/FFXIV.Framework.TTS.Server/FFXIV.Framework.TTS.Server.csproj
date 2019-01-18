@@ -69,6 +69,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AssemblyResolver.cs" />
     <Compile Include="Models\CevioModel.cs" />
     <Compile Include="Models\TTSModel.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

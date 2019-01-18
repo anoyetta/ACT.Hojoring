@@ -395,10 +395,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.Core">
-      <Version>3.3.31.2</Version>
+      <Version>3.3.31.3</Version>
     </PackageReference>
     <PackageReference Include="AWSSDK.Polly">
-      <Version>3.3.9.15</Version>
+      <Version>3.3.9.16</Version>
     </PackageReference>
     <PackageReference Include="CommonServiceLocator">
       <Version>2.0.4</Version>
