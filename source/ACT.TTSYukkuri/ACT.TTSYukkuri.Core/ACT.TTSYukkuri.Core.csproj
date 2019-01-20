@@ -143,7 +143,6 @@
     <Compile Include="Discord\Converters\BoolConverter.cs" />
     <Compile Include="Discord\Models\DiscordClientModel.cs" />
     <Compile Include="Discord\Models\DiscordNetModel.cs" />
-    <Compile Include="Discord\Models\DSharpPlusModel.cs" />
     <Compile Include="Discord\Models\IDiscordClientModel.cs" />
     <Compile Include="Discord\Models\WaveModel.cs" />
     <Compile Include="Discord\ViewModels\DiscordViewModel.cs" />
@@ -404,9 +403,6 @@
       <Version>2.0.4</Version>
     </PackageReference>
     <PackageReference Include="Discord.Net">
-      <Version>2.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Discord.Net.Providers.WS4Net">
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="FontAwesome.WPF">
