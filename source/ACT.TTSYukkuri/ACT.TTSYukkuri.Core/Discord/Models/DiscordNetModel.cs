@@ -430,7 +430,7 @@ namespace ACT.TTSYukkuri.Discord.Models
             this.EnumerateGuilds();
             this.EnumerateChannels();
 
-            await WPFHelper.BeginInvoke(() =>
+            await WPFHelper.InvokeAsync(() =>
             {
                 this.IsConnected = true;
             });
@@ -448,7 +448,7 @@ namespace ACT.TTSYukkuri.Discord.Models
             this.ClearGuilds();
             this.ClearChannels();
 
-            await WPFHelper.BeginInvoke(() =>
+            await WPFHelper.InvokeAsync(() =>
             {
                 this.IsConnected = false;
             });
@@ -466,9 +466,9 @@ namespace ACT.TTSYukkuri.Discord.Models
 
         private readonly List<SocketGuild> guilds = new List<SocketGuild>();
 
-        private void ClearGuilds()
+        private async void ClearGuilds()
         {
-            WPFHelper.BeginInvoke(() =>
+            await WPFHelper.InvokeAsync(() =>
             {
                 this.guilds.Clear();
 
@@ -477,9 +477,9 @@ namespace ACT.TTSYukkuri.Discord.Models
             });
         }
 
-        private void EnumerateGuilds()
+        private async void EnumerateGuilds()
         {
-            WPFHelper.BeginInvoke(() =>
+            await WPFHelper.InvokeAsync(() =>
             {
                 this.guilds.Clear();
                 this.guilds.AddRange(this.discordClient.Guilds);
@@ -489,9 +489,9 @@ namespace ACT.TTSYukkuri.Discord.Models
             });
         }
 
-        private void ClearChannels()
+        private async void ClearChannels()
         {
-            WPFHelper.BeginInvoke(() =>
+            await WPFHelper.InvokeAsync(() =>
             {
                 this.channels.Clear();
                 this.textChannels.Clear();
@@ -499,7 +499,7 @@ namespace ACT.TTSYukkuri.Discord.Models
             });
         }
 
-        private void EnumerateChannels()
+        private async void EnumerateChannels()
         {
             var textChID = this.Config.DefaultTextChannelID != "0" ?
                 this.Config.DefaultTextChannelID :
@@ -509,7 +509,7 @@ namespace ACT.TTSYukkuri.Discord.Models
                 this.Config.DefaultVoiceChannelID :
                 this.previousAvailableVoiceChannelID;
 
-            WPFHelper.BeginInvoke(() =>
+            await WPFHelper.InvokeAsync(() =>
             {
                 this.channels.Clear();
                 this.textChannels.Clear();
@@ -522,10 +522,14 @@ namespace ACT.TTSYukkuri.Discord.Models
                     Type = ChannelType.Text
                 });
 
-                foreach (var g in this.guilds)
+                foreach (var g in this.discordClient.Guilds)
                 {
+                    this.AppendLogLine($"[{g.Name}]");
+
                     foreach (var ch in g.TextChannels.OrderBy(x => x.Position))
                     {
+                        this.AppendLogLine($"-> #{ch.Name}");
+
                         this.textChannels.Add(new DiscordChannelContainer()
                         {
                             ChannelObject = ch,
@@ -538,6 +542,8 @@ namespace ACT.TTSYukkuri.Discord.Models
 
                     foreach (var ch in g.VoiceChannels.OrderBy(x => x.Position))
                     {
+                        this.AppendLogLine($"-> #{ch.Name}");
+
                         this.voiceChannels.Add(new DiscordChannelContainer()
                         {
                             ChannelObject = ch,

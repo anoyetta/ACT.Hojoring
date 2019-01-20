@@ -96,17 +96,18 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     $references = @(
         "x64",
         "x86",
-        "System.Windows.Interactivity.dll",
+        "System.*.dll",
+        "Microsoft.*.dll",
+        "Newtonsoft.Json.dll",
+        "NLog*.dll",
         "ICSharpCode.SharpZipLib.dll",
         "ICSharpCode.AvalonEdit.dll"
         "CommonServiceLocator.dll",
         "ReactiveProperty*.dll",
-        "System.Reactive.*.dll",
-        "System.Collections.Immutable.dll",
-        "System.Interactive.Async.dll",
         "SuperSocket.ClientEngine.dll",
         "WebSocket4Net.dll",
-        "System.Data*.dll"
+        "Discord.*.dll",
+        "RucheHome*.dll"
     )
 
     New-Item -ItemType Directory "references" | Out-Null
@@ -122,25 +123,13 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     # ●作業ディレクトリを作る
     New-Item -ItemType Directory "temp" | Out-Null
     
-    '●TTSYukkuri のAssemblyをマージする'
-    $libs = @(
-        "Discord.*.dll",
-        "RucheHome*.dll"
-    )
-
-    Move-Item -Path $libs -Destination "temp" | Out-Null
-    (& $libz inject-dll -a "ACT.TTSYukkuri.Core.dll" -i "temp\*.dll" --move) | Select-String "Injecting"
-
     '●その他のDLLをマージする'
     $libs = @(
         "FFXIV_MemoryReader*.dll",
         "FontAwesome.WPF.dll",
-        "System.Web.Razor.dll",
-        "Newtonsoft.Json.dll",
         "Octokit.dll",
         "NAudio.dll",
         "Hjson.dll",
-        "NLog*.dll",
         "Prism*.dll",
         "Xceed.*.dll",
         "NPOI*.dll",
@@ -154,8 +143,6 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Remove-Item -Force -Recurse "temp"
 
     '●不要なファイルを削除する'
-    Remove-Item -Force System.*.dll
-    Remove-Item -Force Microsoft.*.dll
     Remove-Item -Force *.exe.config
 
     '●フォルダをリネームする'
