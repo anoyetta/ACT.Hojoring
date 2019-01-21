@@ -84,7 +84,7 @@
         FormatString="N0" />
 
       <Label
-        Margin="0 20 0 0"
+        Margin="0 5 0 0"
         Content="{DynamicResource Common_Scale}" />
       <xctk:DoubleUpDown
         HorizontalAlignment="Left"
