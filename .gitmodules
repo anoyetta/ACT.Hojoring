@@ -1,3 +1,7 @@
 [submodule "FFXIV_MemoryReader"]
-	path = source/FFXIV_MemoryReader
-	url = https://github.com/TamanegiMage/FFXIV_MemoryReader.git
+    path = source/FFXIV_MemoryReader
+    url = https://github.com/TamanegiMage/FFXIV_MemoryReader.git
+
+[submodule "ACT_EnmityPlugin"]
+    path = source/ACT_EnmityPlugin
+    url = https://github.com/TamanegiMage/ACT_EnmityPlugin.git
