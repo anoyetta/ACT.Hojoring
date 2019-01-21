@@ -99,6 +99,10 @@
   <system:String x:Key="MobList_MobBColor">B级颜色</system:String>
   <system:String x:Key="MobList_MobOtherColor">其他颜色</system:String>
 
+  <system:String x:Key="Enmity_HideInNotCombat">Hide when not combat</system:String>
+  <system:String x:Key="Enmity_HideInSolo">Hide in solo</system:String>
+  <system:String x:Key="Enmity_MaxCountOfDisplay">Max count of display</system:String>
+
   <system:String x:Key="FFLogs_VisibleHistogram">显示直方图</system:String>
   <system:String x:Key="FFLogs_HideInCombat">战斗中隐藏</system:String>
   <system:String x:Key="FFLogs_HideInCombatDescription" xml:space="preserve">

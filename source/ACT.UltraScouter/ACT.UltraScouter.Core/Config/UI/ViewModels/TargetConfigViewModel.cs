@@ -34,6 +34,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         public virtual TargetAction Action => Settings.Instance.TargetAction;
         public virtual TargetDistance Distance => Settings.Instance.TargetDistance;
         public virtual FFLogs FFLogs => Settings.Instance.FFLogs;
+        public virtual Enmity Enmity => Settings.Instance.Enmity;
 
         private OpenFileDialog selectWaveSoundDialog = new OpenFileDialog()
         {
@@ -364,5 +365,36 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         }
 
         #endregion FFLogs
+
+        #region Enmity
+
+        private ICommand enmityDisplayTextFontCommand;
+        private ICommand enmityDisplayTextColorCommand;
+        private ICommand enmityDisplayTextOutlineColorCommand;
+        private ICommand enmityBackgroundColorCommand;
+        private ICommand enmityTestAPICommand;
+        private ICommand enmityGetAPIKeyCommand;
+
+        public ICommand EnmityDisplayTextFontCommand =>
+            this.enmityDisplayTextFontCommand ??
+            (this.enmityDisplayTextFontCommand =
+            new ChangeFontCommand((font) => this.Enmity.DisplayText.Font = font));
+
+        public ICommand EnmityDisplayTextColorCommand =>
+            this.enmityDisplayTextColorCommand ??
+            (this.enmityDisplayTextColorCommand =
+            new ChangeColorCommand((color) => this.Enmity.DisplayText.Color = color));
+
+        public ICommand EnmityDisplayTextOutlineColorCommand =>
+            this.enmityDisplayTextOutlineColorCommand ??
+            (this.enmityDisplayTextOutlineColorCommand =
+            new ChangeColorCommand((color) => this.Enmity.DisplayText.OutlineColor = color));
+
+        public ICommand EnmityBackgroundColorCommand =>
+            this.enmityBackgroundColorCommand ??
+            (this.enmityBackgroundColorCommand =
+            new ChangeColorCommand((color) => this.Enmity.Background = color));
+
+        #endregion Enmity
     }
 }

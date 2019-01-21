@@ -99,6 +99,10 @@
   <system:String x:Key="MobList_MobBColor">モブB のカラー</system:String>
   <system:String x:Key="MobList_MobOtherColor">その他のモブ のカラー</system:String>
 
+  <system:String x:Key="Enmity_HideInNotCombat">非戦闘時は表示しない</system:String>
+  <system:String x:Key="Enmity_HideInSolo">ソロ時は表示しない</system:String>
+  <system:String x:Key="Enmity_MaxCountOfDisplay">リストの最大表示数</system:String>
+
   <system:String x:Key="FFLogs_VisibleHistogram">ヒストグラムを表示する</system:String>
   <system:String x:Key="FFLogs_HideInCombat">戦闘中は表示しない</system:String>
   <system:String x:Key="FFLogs_HideInCombatDescription" xml:space="preserve">
