@@ -75,15 +75,14 @@
       <Label
         Margin="0 20 0 0"
         Content="{DynamicResource Common_Scale}" />
-      <StackPanel Orientation="Horizontal">
-        <xctk:DoubleUpDown
-          Value="{Binding FFLogs.Scale, Mode=TwoWay}"
-          Width="75"
-          Minimum="0.01"
-          Maximum="4.00"
-          Increment="0.10"
-          FormatString="N1" />
-      </StackPanel>
+      <xctk:DoubleUpDown
+        HorizontalAlignment="Left"
+        Value="{Binding FFLogs.Scale, Mode=TwoWay}"
+        Width="80"
+        Minimum="0.01"
+        Maximum="4.00"
+        Increment="0.01"
+        FormatString="N2" />
 
       <Label
         Margin="0 20 0 0"

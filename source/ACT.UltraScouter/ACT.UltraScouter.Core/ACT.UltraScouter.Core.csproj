@@ -41,6 +41,10 @@
       <HintPath>..\..\ACTv3\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="EnmityOverlay, Version=1.13.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\FFXIV.Framework\Thirdparty\EnmityOverlay.dll</HintPath>
+    </Reference>
     <Reference Include="FFXIV_MemoryReader.Model">
       <HintPath>..\..\FFXIV.Framework\Thirdparty\FFXIV_MemoryReader.Model.dll</HintPath>
       <Private>False</Private>
@@ -144,6 +148,7 @@
     <Compile Include="Config\UI\Views\ViewExtensions.cs" />
     <Compile Include="Models\Arrows.cs" />
     <Compile Include="Models\CastingEventArgs.cs" />
+    <Compile Include="Models\Enmity\EnmityModel.cs" />
     <Compile Include="Models\FFLogs\BasicEntryModel.cs" />
     <Compile Include="Models\FFLogs\Enums.cs" />
     <Compile Include="Models\FFLogs\HistogramsModel.cs" />
@@ -165,12 +170,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="resources\ILocalizable.cs" />
     <Compile Include="resources\LocalizeExtensions.cs" />
+    <Compile Include="ViewModels\EnmityViewModel.cs" />
     <Compile Include="ViewModels\HPBarViewModel.cs" />
     <Compile Include="ViewModels\MobListViewModel.cs" />
     <Compile Include="ViewModels\MPTickerViewModel.cs" />
     <Compile Include="ViewModels\FFLogsViewModel.cs" />
     <Compile Include="Views\Converters\ToTopMarginConverter.cs" />
     <Compile Include="Views\Converters\WidthToRadiusConverter.cs" />
+    <Compile Include="Views\EnmityView.xaml.cs">
+      <DependentUpon>EnmityView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\HPBarView.xaml.cs">
       <DependentUpon>HPBarView.xaml</DependentUpon>
     </Compile>
@@ -299,6 +308,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Page Include="Views\DistanceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\EnmityView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

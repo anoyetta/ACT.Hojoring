@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Media;
 using ACT.UltraScouter.Config;
+using ACT.UltraScouter.Models.Enmity;
 using ACT.UltraScouter.Models.FFLogs;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
@@ -62,6 +67,7 @@ namespace ACT.UltraScouter.Models
 
         public TargetInfoModel()
         {
+            this.CreateEnmityViewSource();
         }
 
         public bool IsCasting
@@ -667,5 +673,266 @@ namespace ACT.UltraScouter.Models
         }
 
         #endregion FFLogs
+
+        #region Enmity
+
+        private volatile bool isEnmityDesignMode = false;
+        private volatile int previousMaxCountOfDisplay = 0;
+
+        private static ObservableCollection<EnmityModel> designtimeEnmityList;
+
+        private static ObservableCollection<EnmityModel> DesigntimeEnmityList => designtimeEnmityList ?? (designtimeEnmityList = new ObservableCollection<EnmityModel>()
+        {
+            new EnmityModel()
+            {
+                Index = 1,
+                ID = 1,
+                Name = "Taro Yamada",
+                JobID = JobIDs.WAR,
+                HateRate = 1.0f,
+                Enmity = 3214405,
+            },
+            new EnmityModel()
+            {
+                Index = 2,
+                ID = 2,
+                Name = "Jiro Suzuki",
+                JobID = JobIDs.PLD,
+                HateRate = 0.85f,
+                Enmity = (uint)(3214405 * 0.85f),
+            },
+            new EnmityModel()
+            {
+                Index = 3,
+                ID = 3,
+                Name = "Hanako Hime",
+                JobID = JobIDs.WHM,
+                HateRate = 0.52f,
+                Enmity = (uint)(3214405 * 0.52f),
+            },
+            new EnmityModel()
+            {
+                Index = 4,
+                ID = 4,
+                Name = "Cookie Cream",
+                JobID = JobIDs.SCH,
+                HateRate = 0.48f,
+                Enmity = (uint)(3214405 * 0.48f),
+                IsMe = true,
+            },
+            new EnmityModel()
+            {
+                Index = 5,
+                ID = 5,
+                Name = "Ryusan Sky",
+                JobID = JobIDs.DRG,
+                HateRate = 0.32f,
+                Enmity = (uint)(3214405 * 0.32f),
+            },
+            new EnmityModel()
+            {
+                Index = 6,
+                ID = 6,
+                Name = "Utako Song",
+                JobID = JobIDs.BRD,
+                HateRate = 0.31f,
+                Enmity = (uint)(3214405 * 0.31f),
+            },
+            new EnmityModel()
+            {
+                Index = 7,
+                ID = 7,
+                Name = "Red Yoshida",
+                JobID = JobIDs.RDM,
+                HateRate = 0.29f,
+                Enmity = (uint)(3214405 * 0.29f),
+            },
+            new EnmityModel()
+            {
+                Index = 8,
+                ID = 8,
+                Name = "Ridea Numako",
+                JobID = JobIDs.SMN,
+                HateRate = 0.10f,
+                Enmity = (uint)(3214405 * 0.10f),
+            },
+        });
+
+        private ObservableCollection<EnmityModel> enmityList = WPFHelper.IsDesignMode ?
+            DesigntimeEnmityList :
+            new ObservableCollection<EnmityModel>();
+
+        private CollectionViewSource EnmityViewSource { get; set; }
+
+        public ICollectionView EnmityView => this.EnmityViewSource?.View;
+
+        private async void CreateEnmityViewSource() => await WPFHelper.InvokeAsync(() =>
+        {
+            var source = new CollectionViewSource()
+            {
+                Source = this.enmityList,
+            };
+
+            source.SortDescriptions.AddRange(new[]
+            {
+                new SortDescription(nameof(EnmityModel.Index), ListSortDirection.Ascending),
+            });
+
+            source.LiveFilteringProperties.AddRange(new[]
+            {
+                nameof(EnmityModel.Index),
+            });
+
+            source.Filter += (_, e) =>
+            {
+                var enmity = e.Item as EnmityModel;
+                e.Accepted = (enmity?.Index ?? int.MaxValue) <= Settings.Instance.Enmity.MaxCountOfDisplay;
+            };
+
+            this.EnmityViewSource = source;
+            this.EnmityView.Refresh();
+            this.RaisePropertyChanged(nameof(this.EnmityView));
+
+            this.enmityList.Walk(x => x.RaiseAllPropertiesChanged());
+        });
+
+        public void RefreshEnmityList()
+        {
+            var config = Settings.Instance.Enmity;
+            if (!config.Visible)
+            {
+                this.enmityList.Clear();
+                return;
+            }
+
+            EnmityPlugin.Instance.Initialize();
+
+            if (config.IsDesignMode)
+            {
+                if (!this.isEnmityDesignMode)
+                {
+                    this.enmityList.Clear();
+                    this.enmityList.AddRange(DesigntimeEnmityList);
+                    this.EnmityView?.Refresh();
+                }
+
+                this.isEnmityDesignMode = true;
+
+                foreach (var x in this.enmityList)
+                {
+                    x.Name = Combatant.NameToInitial(x.Name, ConfigBridge.Instance.PCNameStyle);
+                }
+
+                if (this.previousMaxCountOfDisplay != config.MaxCountOfDisplay)
+                {
+                    this.EnmityView?.Refresh();
+                }
+
+                this.previousMaxCountOfDisplay = config.MaxCountOfDisplay;
+                return;
+            }
+
+            this.isEnmityDesignMode = false;
+
+            if (config.HideInNotCombat &&
+                !FFXIVPlugin.Instance.InCombat)
+            {
+                this.enmityList.Clear();
+                return;
+            }
+
+            if (config.HideInSolo)
+            {
+                var party = FFXIVPlugin.Instance.GetPartyList();
+                if (party == null ||
+                    party.Count <= 1)
+                {
+                    this.enmityList.Clear();
+                    return;
+                }
+            }
+
+            var rawEnmityList = EnmityPlugin.Instance.GetEnmityEntryList();
+            if (rawEnmityList == null ||
+                rawEnmityList.Count < 1)
+            {
+                this.enmityList.Clear();
+                return;
+            }
+
+            var index = 1;
+            var newEnmityList =
+                from x in rawEnmityList
+                where
+                !x.isPet
+                orderby
+                x.Enmity descending
+                select new EnmityModel()
+                {
+                    Index = index++,
+                    ID = x.ID,
+                    Name = x.isMe ?
+                        "YOU" :
+                        Combatant.NameToInitial(x.Name, ConfigBridge.Instance.PCNameStyle),
+                    JobID = (JobIDs)x.Job,
+                    Enmity = x.Enmity,
+                    HateRate = x.HateRate / 100f,
+                    IsMe = x.isMe,
+                    IsPet = x.isPet,
+                };
+
+            var toUpdates =
+                from x in this.enmityList
+                where
+                newEnmityList.Any(y => y.ID == x.ID)
+                select new
+                {
+                    Destination = x,
+                    Source = newEnmityList.FirstOrDefault(y => y.ID == x.ID)
+                };
+
+            var needsRefresh = false;
+            foreach (var x in toUpdates)
+            {
+                if (x.Source == null)
+                {
+                    continue;
+                }
+
+                if (x.Destination.Index != x.Source.Index)
+                {
+                    x.Destination.Index = x.Source.Index;
+                    needsRefresh = true;
+                }
+
+                x.Destination.Name = x.Source.Name;
+                x.Destination.JobID = x.Source.JobID;
+                x.Destination.Enmity = x.Source.Enmity;
+                x.Destination.HateRate = x.Source.HateRate;
+                x.Destination.IsMe = x.Source.IsMe;
+                x.Destination.IsPet = x.Source.IsPet;
+            }
+
+            var toAdds = newEnmityList.Where(x => !this.enmityList.Any(y => y.ID == x.ID));
+            this.enmityList.AddRange(toAdds);
+
+            var toRemoves = this.enmityList.Where(x => !newEnmityList.Any(y => y.ID == x.ID)).ToArray();
+            foreach (var enmity in toRemoves)
+            {
+                this.enmityList.Remove(enmity);
+            }
+
+            if (needsRefresh ||
+                toAdds.Any() ||
+                toRemoves.Any() ||
+                this.previousMaxCountOfDisplay != config.MaxCountOfDisplay)
+            {
+                this.EnmityView?.Refresh();
+            }
+
+            this.previousMaxCountOfDisplay = config.MaxCountOfDisplay;
+        }
+
+        #endregion Enmity
     }
 }
