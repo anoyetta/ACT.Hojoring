@@ -72,6 +72,7 @@
     <Compile Include="Common\TTSDictionary.cs" />
     <Compile Include="Common\TTSWrapper.cs" />
     <Compile Include="Config\DisplayText.cs" />
+    <Compile Include="Config\Enmity.cs" />
     <Compile Include="Config\FontColor.cs" />
     <Compile Include="Config\JobAvailablity.cs" />
     <Compile Include="Config\Location.cs" />
@@ -109,6 +110,9 @@
     </Compile>
     <Compile Include="Config\UI\Views\CombatantsView.xaml.cs">
       <DependentUpon>CombatantsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\UI\Views\EnmityConfigView.xaml.cs">
+      <DependentUpon>EnmityConfigView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Config\UI\Views\MPTickerConfigView.xaml.cs">
       <DependentUpon>MPTickerConfigView.xaml</DependentUpon>
@@ -231,6 +235,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Config\UI\Views\BossGeneralConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Config\UI\Views\EnmityConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

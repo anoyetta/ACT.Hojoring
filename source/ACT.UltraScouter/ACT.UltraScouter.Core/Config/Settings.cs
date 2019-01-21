@@ -487,9 +487,15 @@ namespace ACT.UltraScouter.Config
         public double HoverLifeLimit { get; set; }
 
         /// <summary>
-        /// FFLogs情報
+        /// 敵視情報
         /// </summary>
         [DataMember(Order = 107)]
+        public Enmity Enmity { get; set; }
+
+        /// <summary>
+        /// FFLogs情報
+        /// </summary>
+        [DataMember(Order = 108)]
         public FFLogs FFLogs { get; set; }
 
         #endregion Target
@@ -818,6 +824,23 @@ namespace ACT.UltraScouter.Config
                     LinkOutlineColor = true,
                     OutlineColor = DefaultColorStroke,
                 }
+            }},
+
+            { nameof(Settings.Enmity), new Enmity()
+            {
+                Visible = false,
+                HideInNotCombat = true,
+                HideInSolo = true,
+                MaxCountOfDisplay = 8,
+                IsDesignMode = false,
+                Location = new Location() { X = 0, Y = 0 },
+                Scale = 1.0d,
+                DisplayText = new DisplayText()
+                {
+                    Font = DefaultFontL,
+                    Color = Colors.White,
+                    OutlineColor = Color.FromRgb(0x11, 0x13, 0x2b),
+                },
             }},
 
             { nameof(Settings.FFLogs), new FFLogs()
