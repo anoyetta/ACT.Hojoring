@@ -1,7 +1,3 @@
-using ACT.SpecialSpellTimer.Config;
-using ACT.SpecialSpellTimer.Models;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.WPF.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,6 +8,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using ACT.SpecialSpellTimer.Config;
+using ACT.SpecialSpellTimer.Models;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.WPF.Views;
 
 namespace ACT.SpecialSpellTimer.Views
 {
@@ -170,7 +170,8 @@ namespace ACT.SpecialSpellTimer.Views
             var now = DateTime.Now;
 
             // 表示するものがなければ何もしない
-            if (this.Spells == null)
+            if (this.Spells == null ||
+                this.Panel == null)
             {
                 this.HideOverlay();
                 this.activeSpells.Clear();
