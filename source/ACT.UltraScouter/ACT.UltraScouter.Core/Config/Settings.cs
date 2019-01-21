@@ -835,6 +835,7 @@ namespace ACT.UltraScouter.Config
                 IsDesignMode = false,
                 Location = new Location() { X = 0, Y = 0 },
                 Scale = 1.0d,
+                BarWidth = 250d,
                 DisplayText = new DisplayText()
                 {
                     Font = DefaultFontL,

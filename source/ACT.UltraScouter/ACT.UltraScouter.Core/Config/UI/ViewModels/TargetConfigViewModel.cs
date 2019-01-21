@@ -372,8 +372,6 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         private ICommand enmityDisplayTextColorCommand;
         private ICommand enmityDisplayTextOutlineColorCommand;
         private ICommand enmityBackgroundColorCommand;
-        private ICommand enmityTestAPICommand;
-        private ICommand enmityGetAPIKeyCommand;
 
         public ICommand EnmityDisplayTextFontCommand =>
             this.enmityDisplayTextFontCommand ??

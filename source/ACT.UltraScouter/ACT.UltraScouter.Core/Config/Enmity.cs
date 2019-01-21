@@ -53,6 +53,15 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.scale, value);
         }
 
+        private double barWidth = 250d;
+
+        [DataMember]
+        public double BarWidth
+        {
+            get => this.barWidth;
+            set => this.SetProperty(ref this.barWidth, value);
+        }
+
         private int maxCountOfDisplay = 8;
 
         [DataMember]

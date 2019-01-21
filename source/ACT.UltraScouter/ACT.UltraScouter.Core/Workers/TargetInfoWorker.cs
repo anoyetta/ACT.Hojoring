@@ -217,7 +217,8 @@ namespace ACT.UltraScouter.Workers
                 !Settings.Instance.TargetAction.Visible &&
                 !Settings.Instance.TargetHP.Visible &&
                 !Settings.Instance.TargetDistance.Visible &&
-                !Settings.Instance.FFLogs.Visible
+                !Settings.Instance.FFLogs.Visible &&
+                !Settings.Instance.Enmity.Visible
             );
 
         public List<ViewAndViewModel> ViewList
@@ -232,6 +233,7 @@ namespace ACT.UltraScouter.Workers
         protected ActionView actionView;
         protected DistanceView distanceView;
         protected FFLogsView ffLogsView;
+        protected EnmityView enmityView;
 
         public NameView NameView => this.nameView;
         public HPView HPView => this.hpView;
@@ -239,6 +241,7 @@ namespace ACT.UltraScouter.Workers
         public ActionView ActionView => this.actionView;
         public DistanceView DistanceView => this.distanceView;
         public FFLogsView FFLogsView => this.ffLogsView;
+        public EnmityView EnmityView => this.enmityView;
 
         protected NameViewModel nameVM;
         protected HPViewModel hpVM;
@@ -246,6 +249,7 @@ namespace ACT.UltraScouter.Workers
         protected ActionViewModel actionVM;
         protected DistanceViewModel distanceVM;
         protected FFLogsViewModel ffLogsVM;
+        protected EnmityViewModel enmityVM;
 
         protected virtual NameViewModel NameVM =>
             this.nameVM ?? (this.nameVM = new NameViewModel(Settings.Instance.TargetName, this.Model));
@@ -264,6 +268,9 @@ namespace ACT.UltraScouter.Workers
 
         protected virtual FFLogsViewModel FFLogsVM =>
             this.ffLogsVM ?? (this.ffLogsVM = new FFLogsViewModel(Settings.Instance.FFLogs, this.Model));
+
+        protected virtual EnmityViewModel EnmityVM =>
+            this.enmityVM ?? (this.enmityVM = new EnmityViewModel(Settings.Instance.Enmity, this.Model));
 
 #if false
         // 他のWindowオーダーに影響をあたえるので封印する
@@ -393,12 +400,18 @@ namespace ACT.UltraScouter.Workers
                 // デザインモード？
                 if (Settings.Instance.MPTicker.TestMode ||
                     Settings.Instance.FFLogs.IsDesignMode ||
+                    Settings.Instance.Enmity.IsDesignMode ||
                     TargetInfoModel.IsAvailableParseTotalTextCommand)
                 {
                     if (Settings.Instance.FFLogs.IsDesignMode ||
                         TargetInfoModel.IsAvailableParseTotalTextCommand)
                     {
                         this.RefreshFFLogsView(null);
+                    }
+
+                    if (Settings.Instance.Enmity.IsDesignMode)
+                    {
+                        this.RefreshEnmityView(null);
                     }
 
                     overlayVisible = true;
@@ -480,6 +493,7 @@ namespace ACT.UltraScouter.Workers
             this.CreateView<ActionView>(ref this.actionView, this.ActionVM);
             this.CreateView<DistanceView>(ref this.distanceView, this.DistanceVM);
             this.CreateView<FFLogsView>(ref this.ffLogsView, this.FFLogsVM);
+            this.CreateView<EnmityView>(ref this.enmityView, this.EnmityVM);
 
             // Viewリストに登録する
             // HPBar→HPText の順番に登録しHPTextのほうがあとに開かれるようにする
@@ -489,6 +503,7 @@ namespace ACT.UltraScouter.Workers
             this.TryAddViewAndViewModel(this.ActionView, this.ActionView?.ViewModel);
             this.TryAddViewAndViewModel(this.DistanceView, this.DistanceView?.ViewModel);
             this.TryAddViewAndViewModel(this.FFLogsView, this.FFLogsView?.ViewModel);
+            this.TryAddViewAndViewModel(this.EnmityView, this.EnmityView?.ViewModel);
         }
 
         protected void CreateView<T>(ref T view, OverlayViewModelBase vm)
@@ -520,6 +535,7 @@ namespace ACT.UltraScouter.Workers
             this.RefreshActionView(targetInfo);
             this.RefreshDistanceView(targetInfo);
             this.RefreshFFLogsView(targetInfo);
+            this.RefreshEnmityView(targetInfo);
         }
 
         protected virtual void RefreshHPView(
@@ -611,6 +627,22 @@ namespace ACT.UltraScouter.Workers
             }
 
             this.Model.RefreshFFLogsInfo();
+        }
+
+        private void RefreshEnmityView(
+            Combatant targetInfo)
+        {
+            if (this.EnmityView == null)
+            {
+                return;
+            }
+
+            if (!this.EnmityView.ViewModel.OverlayVisible)
+            {
+                return;
+            }
+
+            this.Model.RefreshEnmityList();
         }
 
         #endregion View Controllers

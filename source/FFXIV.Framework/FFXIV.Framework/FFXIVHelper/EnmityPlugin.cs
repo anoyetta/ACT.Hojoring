@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using Tamagawa.EnmityPlugin;
 
@@ -19,18 +18,29 @@ namespace FFXIV.Framework.FFXIVHelper
         {
         }
 
+        public static void Free()
+        {
+            instance?.Dispose();
+            instance = null;
+        }
+
         #endregion Singleton
 
+        private volatile bool isInitialized = false;
         private EnmityOverlayConfig enmityConfig;
         private EnmityOverlay enmityOverlay;
         private FFXIVMemory enmityReader;
         private Timer timer;
 
-        public void Initialize(
-            Process ffxivProcess)
+        public void Initialize()
         {
             lock (this)
             {
+                if (this.isInitialized)
+                {
+                    return;
+                }
+
                 // ダミー設定を生成する
                 this.enmityConfig = new EnmityOverlayConfig("InnerEnmity")
                 {
@@ -45,7 +55,9 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.enmityOverlay = new EnmityOverlay(this.enmityConfig);
 
                 // タイマーを開始する
-                this.timer = new Timer(this.TimerCallback, null, TimeSpan.FromSeconds(3).Milliseconds, Timeout.Infinite);
+                this.timer = new Timer(this.TimerCallback, null, 100, Timeout.Infinite);
+
+                this.isInitialized = true;
             }
         }
 
@@ -63,6 +75,8 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.enmityOverlay = null;
 
                 this.enmityConfig = null;
+
+                this.isInitialized = false;
             }
         }
 
@@ -71,27 +85,34 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             lock (this)
             {
-                if (FFXIVPlugin.Instance.Process == null)
+                try
                 {
-                    if (this.enmityReader != null)
+                    if (FFXIVPlugin.Instance.Process == null)
                     {
-                        this.enmityReader.Dispose();
-                        this.enmityReader = null;
+                        if (this.enmityReader != null)
+                        {
+                            this.enmityReader.Dispose();
+                            this.enmityReader = null;
+                        }
+
+                        return;
                     }
 
-                    return;
+                    if (this.enmityReader == null ||
+                        this.enmityReader.Process.Id != FFXIVPlugin.Instance.Process.Id)
+                    {
+                        if (this.enmityReader != null)
+                        {
+                            this.enmityReader.Dispose();
+                            this.enmityReader = null;
+                        }
+
+                        this.enmityReader = new FFXIVMemory(this.enmityOverlay, FFXIVPlugin.Instance.Process);
+                    }
                 }
-
-                if (this.enmityReader == null ||
-                    this.enmityReader.Process.Id != FFXIVPlugin.Instance.Process.Id)
+                finally
                 {
-                    if (this.enmityReader != null)
-                    {
-                        this.enmityReader.Dispose();
-                        this.enmityReader = null;
-                    }
-
-                    this.enmityReader = new FFXIVMemory(this.enmityOverlay, FFXIVPlugin.Instance.Process);
+                    this.timer.Change(TimeSpan.FromSeconds(5).Milliseconds, Timeout.Infinite);
                 }
             }
         }

@@ -73,6 +73,7 @@ namespace ACT.UltraScouter
                 FFXIVPlugin.Instance.End();
                 FFXIVPlugin.Free();
                 FFXIVReader.Free();
+                EnmityPlugin.Free();
 
                 // 設定ファイルを保存する
                 Settings.Instance.Save();

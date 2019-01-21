@@ -24,6 +24,7 @@
 
   <system:String x:Key="Common_Visible">显示</system:String>
   <system:String x:Key="Common_Location">位置</system:String>
+  <system:String x:Key="Common_BarWidth">Bar width</system:String>
   <system:String x:Key="Common_Scale">尺度</system:String>
   <system:String x:Key="Common_Background">背景色</system:String>
   <system:String x:Key="Common_Font">字体</system:String>

@@ -24,6 +24,7 @@
 
   <system:String x:Key="Common_Visible">표시하는</system:String>
   <system:String x:Key="Common_Location">위치</system:String>
+  <system:String x:Key="Common_BarWidth">Bar width</system:String>
   <system:String x:Key="Common_Scale">규모</system:String>
   <system:String x:Key="Common_Background">배경</system:String>
   <system:String x:Key="Common_Font">폰트</system:String>
