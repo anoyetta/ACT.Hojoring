@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using FFXIV.Framework.Common;
 using Tamagawa.EnmityPlugin;
 
 namespace FFXIV.Framework.FFXIVHelper
@@ -32,7 +33,7 @@ namespace FFXIV.Framework.FFXIVHelper
         private EnmityOverlayConfig enmityConfig;
         private EnmityOverlay enmityOverlay;
         private FFXIVMemory enmityReader;
-        private Timer timer;
+        private ThreadWorker worker;
 
         public void Initialize()
         {
@@ -56,8 +57,11 @@ namespace FFXIV.Framework.FFXIVHelper
                 // ダミーオーバーレイを生成する
                 this.enmityOverlay = new EnmityOverlay(this.enmityConfig);
 
-                // タイマーを開始する
-                this.timer = new Timer(this.TimerCallback, null, 100, Timeout.Infinite);
+                this.worker = ThreadWorker.Run(
+                    DoWork,
+                    200,
+                    "EnmityPluginWorker",
+                    ThreadPriority.Lowest);
 
                 this.isInitialized = true;
             }
@@ -67,8 +71,8 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             lock (this)
             {
-                this.timer?.Dispose();
-                this.timer = null;
+                this.worker?.Abort();
+                this.worker = null;
 
                 this.enmityReader?.Dispose();
                 this.enmityReader = null;
@@ -82,14 +86,19 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        private void TimerCallback(
-            object state)
+        private void DoWork()
         {
             lock (this)
             {
                 try
                 {
-                    if (FFXIVPlugin.Instance.Process == null)
+                    if (this.enmityOverlay == null ||
+                        this.enmityConfig == null)
+                    {
+                        return;
+                    }
+
+                    if (FFXIVPlugin.Instance?.Process == null)
                     {
                         if (this.enmityReader != null)
                         {
@@ -114,7 +123,14 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
                 finally
                 {
-                    this.timer.Change(TimeSpan.FromSeconds(5).Milliseconds, Timeout.Infinite);
+                    if (this.enmityReader != null)
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(5));
+                    }
+                    else
+                    {
+                        Thread.Yield();
+                    }
                 }
             }
         }
