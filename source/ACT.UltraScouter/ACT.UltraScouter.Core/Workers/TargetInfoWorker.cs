@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
@@ -134,6 +135,8 @@ namespace ACT.UltraScouter.Workers
             {
                 this.GetCombatantHoverOff();
             }
+
+            this.GetEnmityList();
         }
 
         protected virtual void GetCombatantHoverOff()
@@ -189,6 +192,30 @@ namespace ACT.UltraScouter.Workers
             lock (this.TargetInfoLock)
             {
                 this.TargetInfo = info;
+            }
+        }
+
+        private DateTime enmityListTimestamp = DateTime.MinValue;
+
+        private async void GetEnmityList()
+        {
+            if (this.TargetInfo != null &&
+                Settings.Instance.Enmity.Visible &&
+                !Settings.Instance.Enmity.IsDesignMode &&
+                this.TargetInfo.type == ObjectType.Monster)
+            {
+                this.enmityListTimestamp = DateTime.Now;
+
+                EnmityPlugin.Instance.Initialize();
+                var enmityList = await Task.Run(() => EnmityPlugin.Instance.GetEnmityEntryList());
+                if (enmityList != null &&
+                    enmityList.Count > 0)
+                {
+                    lock (this.TargetInfoLock)
+                    {
+                        this.TargetInfo.EnmityEntryList.AddRange(enmityList);
+                    }
+                }
             }
         }
 

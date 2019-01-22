@@ -758,6 +758,8 @@ namespace ACT.UltraScouter.Models
             },
         });
 
+        public bool IsExistsEnmityList => this.enmityList.Any();
+
         private ObservableCollection<EnmityModel> enmityList = WPFHelper.IsDesignMode ?
             DesigntimeEnmityList :
             new ObservableCollection<EnmityModel>();
@@ -792,6 +794,7 @@ namespace ACT.UltraScouter.Models
             this.EnmityViewSource = source;
             this.EnmityView.Refresh();
             this.RaisePropertyChanged(nameof(this.EnmityView));
+            this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
 
             this.enmityList.Walk(x => x.RaiseAllPropertiesChanged());
         });
@@ -800,23 +803,15 @@ namespace ACT.UltraScouter.Models
 
         private DateTime lastRefreshEnmityTimestamp = DateTime.MinValue;
 
-        public async void RefreshEnmityList()
+        public async void RefreshEnmityList(
+            IEnumerable<Tamagawa.EnmityPlugin.EnmityEntry> enmityList)
         {
             var config = Settings.Instance.Enmity;
             if (!config.Visible)
             {
                 this.enmityList.Clear();
+                this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
                 return;
-            }
-
-            lock (EnmityLock)
-            {
-                if ((DateTime.Now - this.lastRefreshEnmityTimestamp).Milliseconds <= config.ScaningRate)
-                {
-                    return;
-                }
-
-                this.lastRefreshEnmityTimestamp = DateTime.Now;
             }
 
             if (config.IsDesignMode)
@@ -840,6 +835,7 @@ namespace ACT.UltraScouter.Models
                     this.EnmityView?.Refresh();
                 }
 
+                this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
                 this.RefreshEnmtiyHateRateBarWidth();
                 this.previousMaxCountOfDisplay = config.MaxCountOfDisplay;
                 return;
@@ -847,13 +843,11 @@ namespace ACT.UltraScouter.Models
 
             this.isEnmityDesignMode = false;
 
-            // EnmityPluginを初期化する
-            EnmityPlugin.Instance.Initialize();
-
             if (config.HideInNotCombat &&
                 !FFXIVPlugin.Instance.InCombat)
             {
                 this.enmityList.Clear();
+                this.RefreshEnmtiyHateRateBarWidth();
                 return;
             }
 
@@ -864,6 +858,7 @@ namespace ACT.UltraScouter.Models
                     party.Count <= 1)
                 {
                     this.enmityList.Clear();
+                    this.RefreshEnmtiyHateRateBarWidth();
                     return;
                 }
             }
@@ -873,6 +868,7 @@ namespace ACT.UltraScouter.Models
                 rawEnmityList.Count < 1)
             {
                 this.enmityList.Clear();
+                this.RefreshEnmtiyHateRateBarWidth();
                 return;
             }
 
@@ -946,6 +942,8 @@ namespace ACT.UltraScouter.Models
                 this.EnmityView?.Refresh();
             }
 
+            this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
+            this.RefreshEnmtiyHateRateBarWidth();
             this.RefreshEnmtiyHateRateBarWidth();
             this.previousMaxCountOfDisplay = config.MaxCountOfDisplay;
         }
