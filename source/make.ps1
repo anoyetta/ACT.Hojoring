@@ -125,7 +125,9 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     
     '●その他のDLLをマージする'
     $libs = @(
+        "OverlayPlugin.Core.dll",
         "FFXIV_MemoryReader*.dll",
+        "EnmityOverlay.dll",
         "FontAwesome.WPF.dll",
         "Octokit.dll",
         "NAudio.dll",

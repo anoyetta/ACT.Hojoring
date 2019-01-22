@@ -1,5 +1,5 @@
 <Page
-  x:Class="ACT.UltraScouter.Config.UI.Views.FFLogsConfigView"
+  x:Class="ACT.UltraScouter.Config.UI.Views.EnmityConfigView"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -10,7 +10,7 @@
   xmlns:local="clr-namespace:ACT.UltraScouter.Config.UI.Views"
   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   mc:Ignorable="d"
-  Title="FFLogsConfigView"
+  Title="EnmityConfigView"
   TextOptions.TextFormattingMode="Display"
   TextOptions.TextHintingMode="Animated"
   TextOptions.TextRenderingMode="ClearType"
@@ -47,37 +47,36 @@
       <CheckBox
         Margin="0 0 0 0"
         Content="{DynamicResource Common_Visible}"
-        IsChecked="{Binding FFLogs.Visible, Mode=TwoWay}" />
+        IsChecked="{Binding Enmity.Visible, Mode=TwoWay}" />
       <CheckBox
         Margin="0 5 0 0"
-        Content="{DynamicResource FFLogs_VisibleHistogram}"
-        IsChecked="{Binding FFLogs.VisibleHistogram, Mode=TwoWay}" />
+        Content="{DynamicResource Enmity_HideInNotCombat}"
+        IsChecked="{Binding Enmity.HideInNotCombat, Mode=TwoWay}" />
       <CheckBox
         Margin="0 5 0 0"
-        Content="{DynamicResource FFLogs_HideInCombat}"
-        IsChecked="{Binding FFLogs.HideInCombat, Mode=TwoWay}"
-        ToolTip="{DynamicResource FFLogs_HideInCombatDescription}" />
+        Content="{DynamicResource Enmity_HideInSolo}"
+        IsChecked="{Binding Enmity.HideInSolo, Mode=TwoWay}" />
       <CheckBox
         Margin="0 5 0 0"
         Content="{DynamicResource Common_TestMode}"
-        IsChecked="{Binding FFLogs.IsDesignMode, Mode=TwoWay}" />
+        IsChecked="{Binding Enmity.IsDesignMode, Mode=TwoWay}" />
 
       <Label
         Margin="0 20 0 0"
         Content="{DynamicResource Common_Location}" />
       <StackPanel Orientation="Horizontal">
         <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
-        <TextBox Margin="0,0,0,0" TextAlignment="Right" Text="{Binding FFLogs.Location.X, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+        <xctk:DoubleUpDown Value="{Binding Enmity.Location.X, Mode=TwoWay}" Width="75" Increment="1" />
         <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
-        <TextBox Margin="0,0,0,0" TextAlignment="Right" Text="{Binding FFLogs.Location.Y, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+        <xctk:DoubleUpDown Value="{Binding Enmity.Location.Y, Mode=TwoWay}" Width="75" Increment="1" />
       </StackPanel>
 
       <Label
-        Margin="0 20 0 0"
+        Margin="0 5 0 0"
         Content="{DynamicResource Common_Scale}" />
       <xctk:DoubleUpDown
         HorizontalAlignment="Left"
-        Value="{Binding FFLogs.Scale, Mode=TwoWay}"
+        Value="{Binding Enmity.Scale, Mode=TwoWay}"
         Width="80"
         Minimum="0.01"
         Maximum="4.00"
@@ -85,29 +84,41 @@
         FormatString="N2" />
 
       <Label
+        Margin="0 5 0 0"
+        Content="{DynamicResource Common_BarWidth}" />
+      <xctk:DoubleUpDown
+        HorizontalAlignment="Left"
+        Value="{Binding Enmity.BarWidth, Mode=TwoWay}"
+        Width="75"
+        Minimum="0"
+        Maximum="3000"
+        Increment="1"
+        FormatString="N0" />
+
+      <Label
         Margin="0 20 0 0"
         Content="{DynamicResource Common_Font}" />
 
       <TextBlock Margin="7,0,0,0" FontWeight="Bold">
         <Hyperlink
-          Command="{Binding FFLogsDisplayTextFontCommand}"
-          CommandParameter="{Binding FFLogs.DisplayText.Font}">
-          <TextBlock Text="{Binding FFLogs.DisplayText.Font.DisplayText}" />
+          Command="{Binding EnmityDisplayTextFontCommand}"
+          CommandParameter="{Binding Enmity.DisplayText.Font}">
+          <TextBlock Text="{Binding Enmity.DisplayText.Font.DisplayText}" />
         </Hyperlink>
       </TextBlock>
 
       <TextBlock Margin="7,8,0,0" FontWeight="Bold">
         <Hyperlink
-          Command="{Binding FFLogsDisplayTextColorCommand}"
-          CommandParameter="{Binding FFLogs.DisplayText.Color}">
+          Command="{Binding EnmityDisplayTextColorCommand}"
+          CommandParameter="{Binding Enmity.DisplayText.Color}">
           <TextBlock Text="{DynamicResource Common_FillColor}" />
         </Hyperlink>
       </TextBlock>
 
       <TextBlock Margin="7,0,0,0" FontWeight="Bold">
         <Hyperlink
-          Command="{Binding FFLogsDisplayTextOutlineColorCommand}"
-          CommandParameter="{Binding FFLogs.DisplayText.OutlineColor}">
+          Command="{Binding EnmityDisplayTextOutlineColorCommand}"
+          CommandParameter="{Binding Enmity.DisplayText.OutlineColor}">
           <TextBlock Text="{DynamicResource Common_StrokeColor}" />
         </Hyperlink>
       </TextBlock>
@@ -117,63 +128,33 @@
         Content="{DynamicResource Common_Background}" />
       <TextBlock Margin="7 0 0 0" FontWeight="Bold">
         <Hyperlink
-          Command="{Binding FFLogsBackgroundColorCommand, Mode=OneWay}"
-          CommandParameter="{Binding FFLogs.Background}">
+          Command="{Binding EnmityBackgroundColorCommand, Mode=OneWay}"
+          CommandParameter="{Binding Enmity.Background}">
           <TextBlock Text="{DynamicResource Common_FillColor}" />
         </Hyperlink>
       </TextBlock>
 
       <Label
         Margin="0 20 0 0"
-        Content="FFLogs API Key" />
-      <TextBox Text="{Binding FFLogs.ApiKey, Mode=TwoWay}" Width="350" />
-      <DockPanel Width="350" HorizontalAlignment="Left">
-        <TextBlock Margin="0 2 0 0" HorizontalAlignment="Right" FontSize="13">
-          <Hyperlink Command="{Binding FFLogsGetAPIKeyCommand, Mode=OneWay}">Get API Key</Hyperlink>
-        </TextBlock>
-      </DockPanel>
-
-      <Label
-        Margin="0 10 0 0"
-        Content="FFLogs Region" />
-      <ComboBox
+        Content="{DynamicResource Enmity_ScaningRate}" />
+      <xctk:IntegerUpDown
+        Value="{Binding Enmity.ScaningRate, Mode=TwoWay}"
         HorizontalAlignment="Left"
-        Width="80"
-        ItemsSource="{Binding FFLogsRegions, Mode=OneWay}"
-        SelectedItem="{Binding FFLogs.ServerRegion, Mode=TwoWay}" />
+        Increment="1"
+        Minimum="100"
+        Maximum="3000"
+        Width="85" />
 
       <Label
-        Margin="0 25 0 0"
-        Content="FFLogs API Tester" />
-      <StackPanel Margin="8 0 0 0">
-        <StackPanel Orientation="Horizontal">
-          <Label Content="Character Name" Width="200" />
-          <TextBox Width="200" Text="{Binding FFLogsTestParseTotalModel.CharacterNameFull, Mode=TwoWay}" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-          <Label Content="Server" Width="200" />
-          <TextBox Width="200" Text="{Binding FFLogsTestParseTotalModel.Server, Mode=TwoWay}" />
-        </StackPanel>
-        <Button
-          Content="Try GET"
-          Width="100"
-          HorizontalAlignment="Left"
-          Margin="0 10 0 0"
-          Command="{Binding FFLogsTestAPICommand, Mode=OneWay}" />
-
-        <TextBox
-          Margin="0 15 0 0"
-          HorizontalAlignment="Stretch"
-          BorderThickness="0"
-          IsReadOnly="True"
-          AcceptsReturn="True"
-          VerticalContentAlignment="Top"
-          HorizontalScrollBarVisibility="Auto"
-          Foreground="#1f3134"
-          FontSize="15"
-          Height="Auto"
-          Text="{Binding FFLogsTestResult, Mode=OneWay}" />
-      </StackPanel>
+        Margin="0 5 0 0"
+        Content="{DynamicResource Enmity_MaxCountOfDisplay}" />
+      <xctk:IntegerUpDown
+        Value="{Binding Enmity.MaxCountOfDisplay, Mode=TwoWay}"
+        HorizontalAlignment="Left"
+        Increment="1"
+        Minimum="1"
+        Maximum="32"
+        Width="70" />
     </StackPanel>
   </ScrollViewer>
 </Page>

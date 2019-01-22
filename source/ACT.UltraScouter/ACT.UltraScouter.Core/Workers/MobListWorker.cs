@@ -281,6 +281,8 @@ namespace ACT.UltraScouter.Workers
 
         protected override FFLogsViewModel FFLogsVM => null;
 
+        protected override EnmityViewModel EnmityVM => null;
+
         #region MobList
 
         protected MobListView mobListView;

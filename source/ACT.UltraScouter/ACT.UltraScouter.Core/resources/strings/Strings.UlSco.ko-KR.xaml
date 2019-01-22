@@ -24,6 +24,7 @@
 
   <system:String x:Key="Common_Visible">표시하는</system:String>
   <system:String x:Key="Common_Location">위치</system:String>
+  <system:String x:Key="Common_BarWidth">Bar width</system:String>
   <system:String x:Key="Common_Scale">규모</system:String>
   <system:String x:Key="Common_Background">배경</system:String>
   <system:String x:Key="Common_Font">폰트</system:String>
@@ -98,6 +99,11 @@
   <system:String x:Key="MobList_MobAColor">몹 A 색</system:String>
   <system:String x:Key="MobList_MobBColor">몹 B 색</system:String>
   <system:String x:Key="MobList_MobOtherColor">몹 Other 색</system:String>
+
+  <system:String x:Key="Enmity_HideInNotCombat">Hide when not combat</system:String>
+  <system:String x:Key="Enmity_HideInSolo">Hide in solo</system:String>
+  <system:String x:Key="Enmity_MaxCountOfDisplay">Max count of display</system:String>
+  <system:String x:Key="Enmity_ScaningRate">Enmity scaning rate (msec)</system:String>
 
   <system:String x:Key="FFLogs_VisibleHistogram">Visible histogram</system:String>
   <system:String x:Key="FFLogs_HideInCombat">Hide in combat</system:String>
