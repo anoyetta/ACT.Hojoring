@@ -41,7 +41,8 @@
 
   <Border
     CornerRadius="8"
-    Background="{Binding Config.Background, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}">
+    Background="{Binding Config.Background, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}"
+    Visibility="{Binding Model.IsExistsEnmityList, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
 
     <Border.LayoutTransform>
       <ScaleTransform
