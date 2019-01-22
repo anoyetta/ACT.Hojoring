@@ -110,6 +110,8 @@ namespace FFXIV.Framework.FFXIVHelper
                     }
 
                     if (this.enmityReader == null ||
+                        this.enmityReader.Process == null ||
+                        this.enmityReader.Process.HasExited ||
                         this.enmityReader.Process.Id != FFXIVPlugin.Instance.Process.Id)
                     {
                         if (this.enmityReader != null)

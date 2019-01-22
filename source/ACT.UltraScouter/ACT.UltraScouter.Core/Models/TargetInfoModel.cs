@@ -796,6 +796,8 @@ namespace ACT.UltraScouter.Models
             this.enmityList.Walk(x => x.RaiseAllPropertiesChanged());
         });
 
+        private static readonly object EnmityLock = new object();
+
         private DateTime lastRefreshEnmityTimestamp = DateTime.MinValue;
 
         public async void RefreshEnmityList()
@@ -807,12 +809,15 @@ namespace ACT.UltraScouter.Models
                 return;
             }
 
-            if ((DateTime.Now - this.lastRefreshEnmityTimestamp).Milliseconds <= config.ScaningRate)
+            lock (EnmityLock)
             {
-                return;
-            }
+                if ((DateTime.Now - this.lastRefreshEnmityTimestamp).Milliseconds <= config.ScaningRate)
+                {
+                    return;
+                }
 
-            this.lastRefreshEnmityTimestamp = DateTime.Now;
+                this.lastRefreshEnmityTimestamp = DateTime.Now;
+            }
 
             if (config.IsDesignMode)
             {
@@ -872,7 +877,7 @@ namespace ACT.UltraScouter.Models
             }
 
             var index = 1;
-            var newEnmityList =
+            var newEnmityList = (
                 from x in rawEnmityList
                 where
                 !x.isPet
@@ -890,7 +895,7 @@ namespace ACT.UltraScouter.Models
                     HateRate = x.HateRate / 100f,
                     IsMe = x.isMe,
                     IsPet = x.isPet,
-                };
+                }).ToArray();
 
             var toUpdates =
                 from x in this.enmityList
