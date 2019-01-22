@@ -59,12 +59,6 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     '●Hojoring.dll を削除する'
     Remove-Item -Force ACT.Hojoring.dll
-
-    <#
-    Copy-Item -Recurse -Force -Path ..\..\..\ACT.SpecialSpellTimer\XIVDBDownloader\bin\Release\* -Destination .\ -Exclude *.pdb
-    Remove-Item -Recurse .\tools\XIVDBDownloader\*.config
-    Remove-Item -Recurse .\tools\XIVDBDownloader\resources
-    #>
     Remove-Item -Recurse * -Include *.pdb
 
     '●不要なロケールを削除する'
@@ -105,9 +99,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "CommonServiceLocator.dll",
         "ReactiveProperty*.dll",
         "SuperSocket.ClientEngine.dll",
-        "WebSocket4Net.dll",
-        "Discord.*.dll",
-        "RucheHome*.dll"
+        "WebSocket4Net.dll"
     )
 
     New-Item -ItemType Directory "references" | Out-Null
@@ -122,6 +114,16 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     # ●作業ディレクトリを作る
     New-Item -ItemType Directory "temp" | Out-Null
+
+    '●TTSYukkuri のAssemblyをマージする'
+    $libs = @(
+        "Discord.*.dll",
+        "RucheHome*.dll"
+    )
+
+    Move-Item -Path $libs -Destination "temp" | Out-Null
+    (& $libz inject-dll -a "ACT.TTSYukkuri.Core.dll" -i "temp\*.dll" --move) | Select-String "Injecting"
+
     
     '●その他のDLLをマージする'
     $libs = @(
