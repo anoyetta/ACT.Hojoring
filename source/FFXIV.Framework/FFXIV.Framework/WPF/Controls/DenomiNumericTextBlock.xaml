@@ -1,0 +1,31 @@
+<UserControl
+  x:Class="FFXIV.Framework.WPF.Controls.DenomiNumericTextBlock"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:FFXIV.Framework.WPF.Controls"
+  xmlns:cnv="clr-namespace:FFXIV.Framework.WPF.Converters"
+  mc:Ignorable="d"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.ClearTypeHint="Auto"
+  RenderOptions.EdgeMode="Aliased"
+  TextOptions.TextFormattingMode="Ideal"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType">
+
+  <UserControl.Resources>
+    <cnv:MultipleConverter x:Key="MultipleConverter" />
+    <local:TopMarginAdjuster x:Key="TopMarginAdjuster" />
+  </UserControl.Resources>
+
+  <StackPanel Orientation="Horizontal">
+    <local:LightOutlineTextBlock
+      x:Name="UpperPartLabel" />
+    <local:LightOutlineTextBlock
+      x:Name="BottomPartLabel"
+      VerticalAlignment="Top"
+      FontSize="{Binding ElementName=UpperPartLabel, Mode=OneWay, Path=FontSize, Converter={StaticResource MultipleConverter}, ConverterParameter=0.6}"
+      Margin="{Binding ElementName=UpperPartLabel, Mode=OneWay, Path=FontSize, Converter={StaticResource TopMarginAdjuster}, ConverterParameter=0.6}" />
+  </StackPanel>
+</UserControl>

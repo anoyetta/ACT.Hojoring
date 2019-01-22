@@ -19,14 +19,6 @@ namespace FFXIV.Framework.WPF.Controls
         public LightOutlineTextBlock()
         {
             this.InitializeComponent();
-
-#if DEBUG
-            if (WPFHelper.IsDesignMode)
-            {
-                this.Text = "サンプルテキスト";
-            }
-#endif
-
             this.Render();
         }
 
@@ -41,7 +33,7 @@ namespace FFXIV.Framework.WPF.Controls
             typeof(string),
             typeof(LightOutlineTextBlock),
             new FrameworkPropertyMetadata(
-                string.Empty,
+                WPFHelper.IsDesignMode ? "サンプルテキスト" : string.Empty,
                 (s, e) => (s as LightOutlineTextBlock).Render()));
 
         /// <summary>

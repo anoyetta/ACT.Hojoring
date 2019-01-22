@@ -79,16 +79,20 @@
             <Setter Property="StrokeOpacity" Value="{Binding DisplayText.OutlineColor.ScA, Mode=OneWay}" />
           </Style>
 
-          <Style x:Key="OutlineSStyle" TargetType="{x:Type ctrl:LightOutlineTextBlock}" BasedOn="{StaticResource OutlineStyle}">
+          <Style x:Key="DenomiNumericStyle" TargetType="{x:Type ctrl:DenomiNumericTextBlock}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Fill" Value="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+            <Setter Property="Stroke" Value="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+            <Setter Property="FontFamily" Value="{Binding DisplayText.Font.FontFamily, Mode=OneWay}" />
+            <Setter Property="FontStretch" Value="{Binding DisplayText.Font.Stretch, Mode=OneWay}" />
+            <Setter Property="FontWeight" Value="{Binding DisplayText.Font.Weight, Mode=OneWay}" />
+            <Setter Property="FontStyle" Value="{Binding DisplayText.Font.Style, Mode=OneWay}" />
+            <Setter Property="BlurOpacity" Value="{Binding DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+            <Setter Property="StrokeOpacity" Value="{Binding DisplayText.OutlineColor.ScA, Mode=OneWay}" />
             <Setter Property="FontSize" Value="{Binding DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
-            <Setter Property="StrokeThickness" Value="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" />
-            <Setter Property="BlurRadius" Value="{Binding DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" />
-          </Style>
-
-          <Style x:Key="OutlineXSStyle" TargetType="{x:Type ctrl:LightOutlineTextBlock}" BasedOn="{StaticResource OutlineStyle}">
-            <Setter Property="FontSize" Value="{Binding DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.7}" />
-            <Setter Property="StrokeThickness" Value="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
-            <Setter Property="BlurRadius" Value="{Binding DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
+            <Setter Property="StrokeThickness" Value="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1}" />
+            <Setter Property="BlurRadius" Value="{Binding DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1}" />
           </Style>
         </ItemsControl.Resources>
 
@@ -107,62 +111,61 @@
         <ItemsControl.ItemTemplate>
           <DataTemplate>
             <Grid Margin="0 0 0 3">
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-              </Grid.RowDefinitions>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
-                <ColumnDefinition SharedSizeGroup="B" />
-                <ColumnDefinition Width="Auto" SharedSizeGroup="C" />
-              </Grid.ColumnDefinitions>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
 
-              <Viewbox
-                Grid.Row="0"
-                Grid.Column="0"
-                Grid.RowSpan="2"
-                Margin="0 0 5 0"
-                Stretch="Uniform"
-                Height="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.6}">
-                <Image Source="{Binding JobIcon, Mode=OneWay}" />
-              </Viewbox>
+                <!-- JobIcon -->
+                <Viewbox
+                  Grid.Column="0"
+                  Margin="0 0 5 0"
+                  Stretch="Uniform"
+                  Height="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.6}">
+                  <Image Source="{Binding JobIcon, Mode=OneWay}" />
+                </Viewbox>
 
-              <ctrl:LightOutlineTextBlock
-                x:Name="NameLabel"
-                Grid.Row="0"
-                Grid.Column="1"
-                Style="{DynamicResource OutlineStyle}"
-                Text="{Binding Name, Mode=OneWay}"
-                TextTrimming="CharacterEllipsis" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" MaxWidth="{Binding BarWidthMax, Mode=OneWay}">
+                  <DockPanel>
+                    <!-- Enmity Value -->
+                    <ctrl:DenomiNumericTextBlock
+                      DockPanel.Dock="Right"
+                      HorizontalAlignment="Right"
+                      Margin="30 0 0 0"
+                      Style="{DynamicResource DenomiNumericStyle}"
+                      Value="{Binding Enmity, Mode=OneWay}" />
 
-              <ctrl:LightOutlineTextBlock
-                Grid.Row="0"
-                Grid.Column="2"
-                Margin="30 0 0 0"
-                Style="{DynamicResource OutlineSStyle}"
-                TextAlignment="Right"
-                Text="{Binding Enmity, Mode=OneWay, StringFormat=N0}" />
+                    <!-- Name -->
+                    <ctrl:LightOutlineTextBlock
+                      DockPanel.Dock="Left"
+                      HorizontalAlignment="Left"
+                      x:Name="NameLabel"
+                      Style="{DynamicResource OutlineStyle}"
+                      Text="{Binding Name, Mode=OneWay}"
+                      TextTrimming="CharacterEllipsis" />
+                  </DockPanel>
 
-              <Rectangle
-                Grid.Row="1"
-                Grid.Column="1"
-                Grid.ColumnSpan="2"
-                HorizontalAlignment="Left"
-                Margin="0 0 0 0"
-                Height="4"
-                Width="{Binding BarWidth, Mode=OneWay}"
-                Fill="{Binding BarColorBrush, Mode=OneWay}"
-                RadiusX="2"
-                RadiusY="2">
-                <Rectangle.Effect>
-                  <DropShadowEffect
-                    RenderingBias="Performance"
-                    BlurRadius="4"
-                    Direction="0"
-                    ShadowDepth="0"
-                    Color="{Binding BarColorBrush.Color, Mode=OneWay}" />
-                </Rectangle.Effect>
-              </Rectangle>
+                  <!-- Hate Rate Bar -->
+                  <Rectangle
+                    HorizontalAlignment="Left"
+                    Margin="0 0 0 0"
+                    Height="3"
+                    Width="{Binding BarWidth, Mode=OneWay}"
+                    Fill="{Binding BarColorBrush, Mode=OneWay}"
+                    RadiusX="2"
+                    RadiusY="2">
+                    <Rectangle.Effect>
+                      <DropShadowEffect
+                        RenderingBias="Performance"
+                        BlurRadius="4"
+                        Direction="0"
+                        ShadowDepth="0"
+                        Color="{Binding BarColorBrush.Color, Mode=OneWay}" />
+                    </Rectangle.Effect>
+                  </Rectangle>
+                </StackPanel>
+              </Grid>
             </Grid>
           </DataTemplate>
         </ItemsControl.ItemTemplate>

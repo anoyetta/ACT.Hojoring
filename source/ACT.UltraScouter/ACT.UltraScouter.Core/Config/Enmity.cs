@@ -62,6 +62,15 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.barWidth, value);
         }
 
+        private double scaningRate = 250;
+
+        [DataMember]
+        public double ScaningRate
+        {
+            get => this.scaningRate;
+            set => this.SetProperty(ref this.scaningRate, value);
+        }
+
         private int maxCountOfDisplay = 8;
 
         [DataMember]

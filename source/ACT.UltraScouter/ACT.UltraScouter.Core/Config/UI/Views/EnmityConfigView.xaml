@@ -66,22 +66,10 @@
         Content="{DynamicResource Common_Location}" />
       <StackPanel Orientation="Horizontal">
         <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
-        <TextBox Margin="0,0,0,0" TextAlignment="Right" Text="{Binding Enmity.Location.X, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+        <xctk:DoubleUpDown Value="{Binding Enmity.Location.X, Mode=TwoWay}" Width="75" Increment="1" />
         <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
-        <TextBox Margin="0,0,0,0" TextAlignment="Right" Text="{Binding Enmity.Location.Y, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+        <xctk:DoubleUpDown Value="{Binding Enmity.Location.Y, Mode=TwoWay}" Width="75" Increment="1" />
       </StackPanel>
-
-      <Label
-        Margin="0 5 0 0"
-        Content="{DynamicResource Common_BarWidth}" />
-      <xctk:DoubleUpDown
-        HorizontalAlignment="Left"
-        Value="{Binding Enmity.BarWidth, Mode=TwoWay}"
-        Width="75"
-        Minimum="0"
-        Maximum="3000"
-        Increment="1"
-        FormatString="N0" />
 
       <Label
         Margin="0 5 0 0"
@@ -94,6 +82,18 @@
         Maximum="4.00"
         Increment="0.01"
         FormatString="N2" />
+
+      <Label
+        Margin="0 5 0 0"
+        Content="{DynamicResource Common_BarWidth}" />
+      <xctk:DoubleUpDown
+        HorizontalAlignment="Left"
+        Value="{Binding Enmity.BarWidth, Mode=TwoWay}"
+        Width="75"
+        Minimum="0"
+        Maximum="3000"
+        Increment="1"
+        FormatString="N0" />
 
       <Label
         Margin="0 20 0 0"
@@ -136,6 +136,17 @@
 
       <Label
         Margin="0 20 0 0"
+        Content="{DynamicResource Enmity_ScaningRate}" />
+      <xctk:IntegerUpDown
+        Value="{Binding Enmity.ScaningRate, Mode=TwoWay}"
+        HorizontalAlignment="Left"
+        Increment="1"
+        Minimum="100"
+        Maximum="3000"
+        Width="85" />
+
+      <Label
+        Margin="0 5 0 0"
         Content="{DynamicResource Enmity_MaxCountOfDisplay}" />
       <xctk:IntegerUpDown
         Value="{Binding Enmity.MaxCountOfDisplay, Mode=TwoWay}"

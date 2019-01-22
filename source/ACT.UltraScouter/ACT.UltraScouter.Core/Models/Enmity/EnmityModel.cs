@@ -106,9 +106,9 @@ namespace ACT.UltraScouter.Models.Enmity
             set => this.SetProperty(ref this.isPet, value);
         }
 
-        private uint enmity;
+        private double enmity;
 
-        public uint Enmity
+        public double Enmity
         {
             get => this.enmity;
             set => this.SetProperty(ref this.enmity, value);
@@ -131,6 +131,14 @@ namespace ACT.UltraScouter.Models.Enmity
         public DisplayText DisplayText => Settings.Instance.Enmity.DisplayText;
 
         public double BarWidth => Settings.Instance.Enmity.BarWidth * this.HateRate;
+
+        public double BarWidthMax => Settings.Instance.Enmity.BarWidth;
+
+        public async void RefreshBarWidth() => await WPFHelper.InvokeAsync(() =>
+        {
+            this.RaisePropertyChanged(nameof(this.BarWidthMax));
+            this.RaisePropertyChanged(nameof(this.BarWidth));
+        });
 
         /// <summary>
         /// すべてのPropertiesの変更通知を発生させる
