@@ -814,6 +814,24 @@ namespace ACT.UltraScouter.Models
                 return;
             }
 
+            if (!config.IsDesignMode &&
+                this.ObjectType != ObjectType.Monster)
+            {
+                this.enmityList.Clear();
+                this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
+                return;
+            }
+
+            lock (EnmityLock)
+            {
+                if ((DateTime.Now - this.lastRefreshEnmityTimestamp).Milliseconds <= config.ScaningRate)
+                {
+                    return;
+                }
+
+                this.lastRefreshEnmityTimestamp = DateTime.Now;
+            }
+
             if (config.IsDesignMode)
             {
                 if (!this.isEnmityDesignMode)
@@ -847,7 +865,7 @@ namespace ACT.UltraScouter.Models
                 !FFXIVPlugin.Instance.InCombat)
             {
                 this.enmityList.Clear();
-                this.RefreshEnmtiyHateRateBarWidth();
+                this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
                 return;
             }
 
@@ -858,7 +876,7 @@ namespace ACT.UltraScouter.Models
                     party.Count <= 1)
                 {
                     this.enmityList.Clear();
-                    this.RefreshEnmtiyHateRateBarWidth();
+                    this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
                     return;
                 }
             }
@@ -868,7 +886,7 @@ namespace ACT.UltraScouter.Models
                 rawEnmityList.Count < 1)
             {
                 this.enmityList.Clear();
-                this.RefreshEnmtiyHateRateBarWidth();
+                this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
                 return;
             }
 
