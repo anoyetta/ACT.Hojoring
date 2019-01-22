@@ -71,9 +71,9 @@ namespace ACT.UltraScouter
 
                 // FFXIVプラグインへのアクセスを終了する
                 FFXIVPlugin.Instance.End();
+                EnmityPlugin.Free();
                 FFXIVPlugin.Free();
                 FFXIVReader.Free();
-                EnmityPlugin.Free();
 
                 // 設定ファイルを保存する
                 Settings.Instance.Save();
@@ -81,7 +81,6 @@ namespace ACT.UltraScouter
                 // 参照を開放する
                 WavePlayer.Free();
                 MainWorker.Free();
-                FFXIVPlugin.Free();
                 Settings.Free();
 
                 this.PluginStatusLabel.Text = "Plugin exited.";
