@@ -26,6 +26,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #endregion Singleton
 
+        private const int ProcessScanInterval = 3000;
+
         private volatile bool isInitialized = false;
         private EnmityOverlayConfig enmityConfig;
         private EnmityOverlay enmityOverlay;
@@ -45,7 +47,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.enmityConfig = new EnmityOverlayConfig("InnerEnmity")
                 {
                     FollowFFXIVPlugin = true,
-                    ScanInterval = 150,
+                    ScanInterval = ProcessScanInterval,
                     DisableTarget = false,
                     DisableAggroList = true,
                     DisableEnmityList = true,

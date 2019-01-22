@@ -84,6 +84,7 @@
     <Compile Include="Config\MPTicker.cs" />
     <Compile Include="Config\ProgressBarColorRange.cs" />
     <Compile Include="Config\ProgressBar.cs" />
+    <Compile Include="Config\Settings.Defaults.cs" />
     <Compile Include="Config\Settings.cs" />
     <Compile Include="Config\FFLogs.cs" />
     <Compile Include="Config\TargetAction.cs" />

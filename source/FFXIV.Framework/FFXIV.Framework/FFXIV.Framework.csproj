@@ -168,6 +168,9 @@
       <DependentUpon>Arc.xaml</DependentUpon>
     </Compile>
     <Compile Include="WPF\Controls\FantImage.cs" />
+    <Compile Include="WPF\Controls\DenomiNumericTextBlock.xaml.cs">
+      <DependentUpon>DenomiNumericTextBlock.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WPF\Controls\OutlineTextBlock.cs" />
     <Compile Include="WPF\Controls\ProgressCircle.xaml.cs">
       <DependentUpon>ProgressCircle.xaml</DependentUpon>
@@ -262,6 +265,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="WPF\Controls\LightOutlineTextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WPF\Controls\DenomiNumericTextBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

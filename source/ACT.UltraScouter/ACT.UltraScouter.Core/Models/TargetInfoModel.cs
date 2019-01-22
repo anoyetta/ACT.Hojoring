@@ -699,7 +699,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Jiro Suzuki",
                 JobID = JobIDs.PLD,
                 HateRate = 0.85f,
-                Enmity = (uint)(3214405 * 0.85f),
+                Enmity = 3214405 * 0.85f,
             },
             new EnmityModel()
             {
@@ -708,7 +708,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Hanako Hime",
                 JobID = JobIDs.WHM,
                 HateRate = 0.52f,
-                Enmity = (uint)(3214405 * 0.52f),
+                Enmity = 3214405 * 0.52f,
             },
             new EnmityModel()
             {
@@ -717,7 +717,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Cookie Cream",
                 JobID = JobIDs.SCH,
                 HateRate = 0.48f,
-                Enmity = (uint)(3214405 * 0.48f),
+                Enmity = 3214405 * 0.48f,
                 IsMe = true,
             },
             new EnmityModel()
@@ -727,7 +727,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Ryusan Sky",
                 JobID = JobIDs.DRG,
                 HateRate = 0.32f,
-                Enmity = (uint)(3214405 * 0.32f),
+                Enmity = 3214405 * 0.32f,
             },
             new EnmityModel()
             {
@@ -736,7 +736,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Utako Song",
                 JobID = JobIDs.BRD,
                 HateRate = 0.31f,
-                Enmity = (uint)(3214405 * 0.31f),
+                Enmity = 3214405 * 0.31f,
             },
             new EnmityModel()
             {
@@ -745,7 +745,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Red Yoshida",
                 JobID = JobIDs.RDM,
                 HateRate = 0.29f,
-                Enmity = (uint)(3214405 * 0.29f),
+                Enmity = 3214405 * 0.29f,
             },
             new EnmityModel()
             {
@@ -754,7 +754,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Ridea Numako",
                 JobID = JobIDs.SMN,
                 HateRate = 0.10f,
-                Enmity = (uint)(3214405 * 0.10f),
+                Enmity = 3214405 * 0.10f,
             },
         });
 
@@ -796,7 +796,9 @@ namespace ACT.UltraScouter.Models
             this.enmityList.Walk(x => x.RaiseAllPropertiesChanged());
         });
 
-        public void RefreshEnmityList()
+        private DateTime lastRefreshEnmityTimestamp = DateTime.MinValue;
+
+        public async void RefreshEnmityList()
         {
             var config = Settings.Instance.Enmity;
             if (!config.Visible)
@@ -805,7 +807,12 @@ namespace ACT.UltraScouter.Models
                 return;
             }
 
-            EnmityPlugin.Instance.Initialize();
+            if ((DateTime.Now - this.lastRefreshEnmityTimestamp).Milliseconds <= config.ScaningRate)
+            {
+                return;
+            }
+
+            this.lastRefreshEnmityTimestamp = DateTime.Now;
 
             if (config.IsDesignMode)
             {
@@ -828,11 +835,15 @@ namespace ACT.UltraScouter.Models
                     this.EnmityView?.Refresh();
                 }
 
+                this.RefreshEnmtiyHateRateBarWidth();
                 this.previousMaxCountOfDisplay = config.MaxCountOfDisplay;
                 return;
             }
 
             this.isEnmityDesignMode = false;
+
+            // EnmityPluginを初期化する
+            EnmityPlugin.Instance.Initialize();
 
             if (config.HideInNotCombat &&
                 !FFXIVPlugin.Instance.InCombat)
@@ -843,7 +854,7 @@ namespace ACT.UltraScouter.Models
 
             if (config.HideInSolo)
             {
-                var party = FFXIVPlugin.Instance.GetPartyList();
+                var party = await Task.Run(() => FFXIVPlugin.Instance.GetPartyList());
                 if (party == null ||
                     party.Count <= 1)
                 {
@@ -852,7 +863,7 @@ namespace ACT.UltraScouter.Models
                 }
             }
 
-            var rawEnmityList = EnmityPlugin.Instance.GetEnmityEntryList();
+            var rawEnmityList = await Task.Run(() => EnmityPlugin.Instance.GetEnmityEntryList());
             if (rawEnmityList == null ||
                 rawEnmityList.Count < 1)
             {
@@ -875,7 +886,7 @@ namespace ACT.UltraScouter.Models
                         "YOU" :
                         Combatant.NameToInitial(x.Name, ConfigBridge.Instance.PCNameStyle),
                     JobID = (JobIDs)x.Job,
-                    Enmity = x.Enmity,
+                    Enmity = (double)x.Enmity,
                     HateRate = x.HateRate / 100f,
                     IsMe = x.isMe,
                     IsPet = x.isPet,
@@ -930,7 +941,26 @@ namespace ACT.UltraScouter.Models
                 this.EnmityView?.Refresh();
             }
 
+            this.RefreshEnmtiyHateRateBarWidth();
             this.previousMaxCountOfDisplay = config.MaxCountOfDisplay;
+        }
+
+        private double previousBarWidthMax = 0d;
+
+        private void RefreshEnmtiyHateRateBarWidth()
+        {
+            if (!this.enmityList.Any())
+            {
+                return;
+            }
+
+            var max = Settings.Instance.Enmity.BarWidth;
+
+            if (this.previousBarWidthMax != max)
+            {
+                this.previousBarWidthMax = max;
+                this.enmityList.Walk(x => x.RefreshBarWidth());
+            }
         }
 
         #endregion Enmity
