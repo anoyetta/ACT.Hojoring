@@ -298,6 +298,8 @@ namespace FFXIV.Framework.FFXIVHelper
             return name;
         }
 
+        public List<Tamagawa.EnmityPlugin.EnmityEntry> EnmityEntryList { get; set; } = new List<Tamagawa.EnmityPlugin.EnmityEntry>();
+
         public override string ToString() =>
             $"{this.Name}, {this.JobID}";
 
