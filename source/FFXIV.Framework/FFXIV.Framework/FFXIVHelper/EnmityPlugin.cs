@@ -92,6 +92,12 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 try
                 {
+                    if (this.enmityOverlay == null ||
+                        this.enmityConfig == null)
+                    {
+                        return;
+                    }
+
                     if (FFXIVPlugin.Instance?.Process == null)
                     {
                         if (this.enmityReader != null)
