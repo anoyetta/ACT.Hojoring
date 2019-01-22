@@ -59,7 +59,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
                 this.worker = ThreadWorker.Run(
                     DoWork,
-                    100,
+                    200,
                     "EnmityPluginWorker",
                     ThreadPriority.Lowest);
 
@@ -123,7 +123,14 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
                 finally
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
+                    if (this.enmityReader != null)
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(5));
+                    }
+                    else
+                    {
+                        Thread.Yield();
+                    }
                 }
             }
         }
