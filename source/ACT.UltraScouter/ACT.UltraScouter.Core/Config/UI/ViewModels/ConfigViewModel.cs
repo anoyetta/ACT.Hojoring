@@ -112,6 +112,11 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                 return parent;
             }
 
+            var enmityView = new TreeSource("Enmity")
+            {
+                Content = new EnmityConfigView()
+            };
+
             var ffLogsView = new TreeSource("FFLogs")
             {
                 Content = new FFLogsConfigView()
@@ -128,7 +133,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                     IsSelected = true,
                 },
 
-                createTargetSubset("Target", new TargetConfigViewModel(), new TargetGeneralConfigView(), new[] { ffLogsView }),
+                createTargetSubset("Target", new TargetConfigViewModel(), new TargetGeneralConfigView(), new[] { enmityView, ffLogsView }),
                 createTargetSubset("Focus Target", new FTConfigViewModel()),
                 createTargetSubset("Target of Target", new ToTConfigViewModel()),
                 createTargetSubset("BOSS", new BossConfigViewModel(), new BossGeneralConfigView()),

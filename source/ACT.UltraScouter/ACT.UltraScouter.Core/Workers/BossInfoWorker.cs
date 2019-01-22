@@ -89,6 +89,8 @@ namespace ACT.UltraScouter.Workers
 
         protected override FFLogsViewModel FFLogsVM => null;
 
+        protected override EnmityViewModel EnmityVM => null;
+
         protected override bool IsAllViewOff =>
             !FFXIVPlugin.Instance.IsFFXIVActive ||
             (
