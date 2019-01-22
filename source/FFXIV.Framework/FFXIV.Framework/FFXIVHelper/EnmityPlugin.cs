@@ -89,7 +89,7 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 try
                 {
-                    if (FFXIVPlugin.Instance.Process == null)
+                    if (FFXIVPlugin.Instance?.Process == null)
                     {
                         if (this.enmityReader != null)
                         {
@@ -114,7 +114,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
                 finally
                 {
-                    this.timer.Change(TimeSpan.FromSeconds(5).Milliseconds, Timeout.Infinite);
+                    this.timer?.Change(TimeSpan.FromSeconds(5).Milliseconds, Timeout.Infinite);
                 }
             }
         }
