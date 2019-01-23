@@ -195,18 +195,20 @@ namespace ACT.UltraScouter.Workers
             }
         }
 
-        private DateTime enmityListTimestamp = DateTime.MinValue;
-
         private async void GetEnmityList()
         {
+            if (!Settings.Instance.Enmity.Visible)
+            {
+                EnmityPlugin.Instance.Dispose();
+                return;
+            }
+
             if (this.TargetInfo != null &&
-                Settings.Instance.Enmity.Visible &&
                 !Settings.Instance.Enmity.IsDesignMode &&
                 this.TargetInfo.type == ObjectType.Monster)
             {
-                this.enmityListTimestamp = DateTime.Now;
-
                 EnmityPlugin.Instance.Initialize();
+
                 var enmityList = await Task.Run(() => EnmityPlugin.Instance.GetEnmityEntryList());
                 if (enmityList != null &&
                     enmityList.Count > 0)
@@ -669,7 +671,7 @@ namespace ACT.UltraScouter.Workers
                 return;
             }
 
-            this.Model.RefreshEnmityList();
+            this.Model.RefreshEnmityList(targetInfo?.EnmityEntryList);
         }
 
         #endregion View Controllers
