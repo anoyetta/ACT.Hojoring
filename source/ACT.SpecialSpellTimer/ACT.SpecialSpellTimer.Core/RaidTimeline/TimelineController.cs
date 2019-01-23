@@ -1683,7 +1683,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private DateTime lastTimelineRefreshTimestamp = DateTime.MinValue;
 
-        private void RefreshActivityLine()
+        private async void RefreshActivityLine()
         {
             if (this.CurrentTime == TimeSpan.Zero)
             {
@@ -1705,7 +1705,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             this.lastTimelineRefreshTimestamp = DateTime.Now;
 
             // 通知を判定する
-            var toNotify =
+            await Task.Run(() =>
+            {
+                var toNotify =
                 from x in this.ActivityLine
                 where
                 !x.IsNotified &&
@@ -1713,24 +1715,25 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 select
                 x;
 
-            // 通知キューを登録する
-            var now = DateTime.Now;
-            foreach (var act in toNotify)
-            {
-                var vnotices = act.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
-                foreach (var vnotice in vnotices)
+                // 通知キューを登録する
+                var now = DateTime.Now;
+                foreach (var act in toNotify)
                 {
-                    vnotice.Timestamp = now;
-                }
+                    var vnotices = act.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
+                    foreach (var vnotice in vnotices)
+                    {
+                        vnotice.Timestamp = now;
+                    }
 
-                var inotices = act.ImageNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
-                foreach (var inotice in inotices)
-                {
-                    inotice.Timestamp = now;
-                }
+                    var inotices = act.ImageNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
+                    foreach (var inotice in inotices)
+                    {
+                        inotice.Timestamp = now;
+                    }
 
-                NotifyQueue.Enqueue(act);
-            }
+                    NotifyQueue.Enqueue(act);
+                }
+            });
 
             // カウントアップ後の消去までの猶予時間
             // 1秒 - リフレッシュレートの補正値
@@ -1744,7 +1747,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // 表示を終了させる
-            var toDoneTop = (
+            var toDoneTop = await Task.Run(() => (
                 from x in this.ActivityLine
                 where
                 !x.IsDone &&
@@ -1752,7 +1755,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 orderby
                 x.Seq descending
                 select
-                x).FirstOrDefault();
+                x).FirstOrDefault());
 
             if (toDoneTop != null)
             {
@@ -1767,7 +1770,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // Activeなアクティビティを決める
-            var active = (
+            var active = await Task.Run(() => (
                 from x in this.ActivityLine
                 where
                 !x.IsActive &&
@@ -1776,7 +1779,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 orderby
                 x.Seq descending
                 select
-                x).FirstOrDefault();
+                x).FirstOrDefault());
 
             if (active != null)
             {
@@ -1801,16 +1804,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <summary>
         /// プログレスバーの進捗状況だけ更新する
         /// </summary>
-        public void RefreshProgress()
+        public async void RefreshProgress()
         {
-            var toRefresh =
+            var toRefresh = await Task.Run(() => (
                 from x in this.ActivityLine
                 where
                 x.Enabled.GetValueOrDefault() &&
                 !string.IsNullOrEmpty(x.Text) &&
                 x.IsVisible
                 select
-                x;
+                x).ToArray());
 
             foreach (var x in toRefresh)
             {
@@ -1831,7 +1834,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var maxTime = this.CurrentTime.Add(TimeSpan.FromSeconds(
                 TimelineSettings.Instance.ShowActivitiesTime));
 
-            var toShow =
+            var toShow = Task.Run(() => (
                 from x in this.ActivityLine
                 where
                 x.Enabled.GetValueOrDefault() &&
@@ -1839,7 +1842,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 orderby
                 x.Seq ascending
                 select
-                x;
+                x).ToArray()).Result;
 
             var count = 0;
             foreach (var x in toShow)
