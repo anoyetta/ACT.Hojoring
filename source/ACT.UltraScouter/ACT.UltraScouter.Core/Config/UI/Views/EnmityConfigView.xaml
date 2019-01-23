@@ -134,6 +134,7 @@
         </Hyperlink>
       </TextBlock>
 
+      <!--
       <Label
         Margin="0 20 0 0"
         Content="{DynamicResource Enmity_ScaningRate}" />
@@ -144,6 +145,7 @@
         Minimum="100"
         Maximum="3000"
         Width="85" />
+      -->
 
       <Label
         Margin="0 5 0 0"
