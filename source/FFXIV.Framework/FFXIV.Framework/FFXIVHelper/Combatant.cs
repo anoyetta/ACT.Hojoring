@@ -303,9 +303,19 @@ namespace FFXIV.Framework.FFXIVHelper
         public override string ToString() =>
             $"{this.Name}, {this.JobID}";
 
-        public Combatant Clone() => (Combatant)this.MemberwiseClone();
+        public Combatant Clone()
+        {
+            var clone = (Combatant)this.MemberwiseClone();
+            clone.EnmityEntryList = new List<Tamagawa.EnmityPlugin.EnmityEntry>(this.EnmityEntryList);
+            return clone;
+        }
 
-        object ICloneable.Clone() => this.MemberwiseClone();
+        object ICloneable.Clone()
+        {
+            var clone = this.MemberwiseClone() as Combatant;
+            clone.EnmityEntryList = new List<Tamagawa.EnmityPlugin.EnmityEntry>(this.EnmityEntryList);
+            return clone;
+        }
 
         #region Get Properties
 
