@@ -779,8 +779,6 @@ namespace ACT.UltraScouter.Models
             var source = new CollectionViewSource()
             {
                 Source = this.enmityList,
-                IsLiveFilteringRequested = true,
-                IsLiveSortingRequested = true,
             };
 
             source.SortDescriptions.AddRange(new[]
@@ -809,7 +807,7 @@ namespace ACT.UltraScouter.Models
 
         private volatile bool isEnmityRefreshing = false;
 
-        public async void RefreshEnmityList(
+        public void RefreshEnmityList(
             IEnumerable<Tamagawa.EnmityPlugin.EnmityEntry> enmityEntryList)
         {
             if (this.isEnmityRefreshing)
@@ -874,15 +872,22 @@ namespace ACT.UltraScouter.Models
                     return;
                 }
 
+                var partyCount = FFXIVPlugin.Instance.PartyMemberCount;
                 if (config.HideInSolo)
                 {
-                    var partyCount = FFXIVPlugin.Instance.PartyMemberCount;
                     if (partyCount <= 1)
                     {
                         this.enmityList.Clear();
                         this.IsExistsEnmityList = false;
                         return;
                     }
+                }
+
+                // パーティ状態で1人分しか取れなかったリストは無視する
+                if (partyCount >= 2 &&
+                    enmityEntryList.Count() <= 1)
+                {
+                    return;
                 }
 
                 if (enmityEntryList == null ||
@@ -894,7 +899,7 @@ namespace ACT.UltraScouter.Models
                 }
 
                 var index = 1;
-                var newEnmityList = await Task.Run(() => (
+                var newEnmityList = (
                     from x in enmityEntryList
                     where
                     !x.isPet
@@ -912,20 +917,23 @@ namespace ACT.UltraScouter.Models
                         HateRate = x.HateRate / 100f,
                         IsMe = x.isMe,
                         IsPet = x.isPet,
-                    }).ToArray());
+                    }).ToArray();
 
+                var needsRefresh = false;
                 foreach (var src in newEnmityList)
                 {
                     var dest = this.enmityList.FirstOrDefault(x => x.ID == src.ID);
                     if (dest == null)
                     {
                         this.enmityList.Add(src);
+                        needsRefresh = true;
                         continue;
                     }
 
                     if (dest.Index != src.Index)
                     {
                         dest.Index = src.Index;
+                        needsRefresh = true;
                     }
 
                     dest.Name = src.Name;
@@ -936,13 +944,16 @@ namespace ACT.UltraScouter.Models
                     dest.IsPet = src.IsPet;
                 }
 
-                var toRemoves = this.enmityList.Where(x => !newEnmityList.Any(y => y.ID == x.ID)).ToArray();
+                var party = FFXIVPlugin.Instance.GetPartyList();
+                var toRemoves = this.enmityList.Where(x => !party.Any(y => y.ID == x.ID)).ToArray();
                 foreach (var enmity in toRemoves)
                 {
                     this.enmityList.Remove(enmity);
                 }
 
-                if (this.previousMaxCountOfDisplay != config.MaxCountOfDisplay)
+                if (this.previousMaxCountOfDisplay != config.MaxCountOfDisplay ||
+                    needsRefresh ||
+                    toRemoves.Any())
                 {
                     this.EnmityView?.Refresh();
                 }
