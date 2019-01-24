@@ -868,9 +868,8 @@ namespace ACT.UltraScouter.Models
 
                 if (config.HideInSolo)
                 {
-                    var party = await Task.Run(() => FFXIVPlugin.Instance.GetPartyList());
-                    if (party == null ||
-                        party.Count <= 1)
+                    var partyCount = FFXIVPlugin.Instance.PartyMemberCount;
+                    if (partyCount <= 1)
                     {
                         this.enmityList.Clear();
                         this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
@@ -887,7 +886,7 @@ namespace ACT.UltraScouter.Models
                 }
 
                 var index = 1;
-                var newEnmityList = (
+                var newEnmityList = await Task.Run(() => (
                     from x in enmityEntryList
                     where
                     !x.isPet
@@ -905,42 +904,31 @@ namespace ACT.UltraScouter.Models
                         HateRate = x.HateRate / 100f,
                         IsMe = x.isMe,
                         IsPet = x.isPet,
-                    }).ToArray();
-
-                var toUpdates =
-                    from x in this.enmityList
-                    where
-                    newEnmityList.Any(y => y.ID == x.ID)
-                    select new
-                    {
-                        Destination = x,
-                        Source = newEnmityList.FirstOrDefault(y => y.ID == x.ID)
-                    };
+                    }).ToArray());
 
                 var needsRefresh = false;
-                foreach (var x in toUpdates)
+                foreach (var src in newEnmityList)
                 {
-                    if (x.Source == null)
+                    var dest = this.enmityList.FirstOrDefault(x => x.ID == src.ID);
+                    if (dest == null)
                     {
+                        this.enmityList.Add(src);
                         continue;
                     }
 
-                    if (x.Destination.Index != x.Source.Index)
+                    if (dest.Index != src.Index)
                     {
-                        x.Destination.Index = x.Source.Index;
+                        dest.Index = src.Index;
                         needsRefresh = true;
                     }
 
-                    x.Destination.Name = x.Source.Name;
-                    x.Destination.JobID = x.Source.JobID;
-                    x.Destination.Enmity = x.Source.Enmity;
-                    x.Destination.HateRate = x.Source.HateRate;
-                    x.Destination.IsMe = x.Source.IsMe;
-                    x.Destination.IsPet = x.Source.IsPet;
+                    dest.Name = src.Name;
+                    dest.JobID = src.JobID;
+                    dest.Enmity = src.Enmity;
+                    dest.HateRate = src.HateRate;
+                    dest.IsMe = src.IsMe;
+                    dest.IsPet = src.IsPet;
                 }
-
-                var toAdds = newEnmityList.Where(x => !this.enmityList.Any(y => y.ID == x.ID));
-                this.enmityList.AddRange(toAdds);
 
                 var toRemoves = this.enmityList.Where(x => !newEnmityList.Any(y => y.ID == x.ID)).ToArray();
                 foreach (var enmity in toRemoves)
@@ -949,8 +937,6 @@ namespace ACT.UltraScouter.Models
                 }
 
                 if (needsRefresh ||
-                    toAdds.Any() ||
-                    toRemoves.Any() ||
                     this.previousMaxCountOfDisplay != config.MaxCountOfDisplay)
                 {
                     this.EnmityView?.Refresh();
