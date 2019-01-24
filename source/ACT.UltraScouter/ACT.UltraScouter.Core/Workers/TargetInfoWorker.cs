@@ -127,28 +127,29 @@ namespace ACT.UltraScouter.Workers
 
         protected virtual void GetCombatant()
         {
+            var targetInfo = default(Combatant);
+
             if (Settings.Instance.UseHoverTarget)
             {
-                this.GetCombatantHoverOn();
+                this.GetCombatantHoverOn(ref targetInfo);
             }
             else
             {
-                this.GetCombatantHoverOff();
+                this.GetCombatantHoverOff(ref targetInfo);
             }
 
-            this.GetEnmityList();
-        }
+            this.GetEnmityList(ref targetInfo);
 
-        protected virtual void GetCombatantHoverOff()
-        {
-            var ti = FFXIVPlugin.Instance.GetTargetInfo(OverlayType.Target);
             lock (this.TargetInfoLock)
             {
-                this.TargetInfo = ti;
+                this.TargetInfo = targetInfo;
             }
         }
 
-        protected virtual void GetCombatantHoverOn()
+        protected virtual void GetCombatantHoverOff(ref Combatant targetInfo)
+            => targetInfo = FFXIVPlugin.Instance.GetTargetInfo(OverlayType.Target);
+
+        protected virtual void GetCombatantHoverOn(ref Combatant targetInfo)
         {
             var info = default(Combatant);
 
@@ -189,13 +190,10 @@ namespace ACT.UltraScouter.Workers
                 }
             }
 
-            lock (this.TargetInfoLock)
-            {
-                this.TargetInfo = info;
-            }
+            targetInfo = info;
         }
 
-        private async void GetEnmityList()
+        private void GetEnmityList(ref Combatant targetInfo)
         {
             if (!Settings.Instance.Enmity.Visible)
             {
@@ -203,20 +201,17 @@ namespace ACT.UltraScouter.Workers
                 return;
             }
 
-            if (this.TargetInfo != null &&
+            if (targetInfo != null &&
                 !Settings.Instance.Enmity.IsDesignMode &&
-                this.TargetInfo.type == ObjectType.Monster)
+                targetInfo.type == ObjectType.Monster)
             {
                 EnmityPlugin.Instance.Initialize();
 
-                var enmityList = await Task.Run(() => EnmityPlugin.Instance.GetEnmityEntryList());
+                var enmityList = Task.Run(() => EnmityPlugin.Instance.GetEnmityEntryList()).Result;
                 if (enmityList != null &&
                     enmityList.Count > 0)
                 {
-                    lock (this.TargetInfoLock)
-                    {
-                        this.TargetInfo.EnmityEntryList.AddRange(enmityList);
-                    }
+                    targetInfo.EnmityEntryList.AddRange(enmityList);
                 }
             }
         }
