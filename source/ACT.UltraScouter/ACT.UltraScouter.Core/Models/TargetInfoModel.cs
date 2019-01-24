@@ -758,7 +758,13 @@ namespace ACT.UltraScouter.Models
             },
         });
 
-        public bool IsExistsEnmityList => this.enmityList.Any();
+        private bool isExistsEnmityList = false;
+
+        public bool IsExistsEnmityList
+        {
+            get => this.isExistsEnmityList;
+            set => this.SetProperty(ref this.isExistsEnmityList, value);
+        }
 
         private ObservableCollection<EnmityModel> enmityList = WPFHelper.IsDesignMode ?
             DesigntimeEnmityList :
@@ -773,6 +779,8 @@ namespace ACT.UltraScouter.Models
             var source = new CollectionViewSource()
             {
                 Source = this.enmityList,
+                IsLiveFilteringRequested = true,
+                IsLiveSortingRequested = true,
             };
 
             source.SortDescriptions.AddRange(new[]
@@ -794,7 +802,7 @@ namespace ACT.UltraScouter.Models
             this.EnmityViewSource = source;
             this.EnmityView.Refresh();
             this.RaisePropertyChanged(nameof(this.EnmityView));
-            this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
+            this.IsExistsEnmityList = this.enmityList.Any();
 
             this.enmityList.Walk(x => x.RaiseAllPropertiesChanged());
         });
@@ -817,7 +825,7 @@ namespace ACT.UltraScouter.Models
                 if (!config.Visible)
                 {
                     this.enmityList.Clear();
-                    this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
+                    this.IsExistsEnmityList = false;
                     return;
                 }
 
@@ -825,7 +833,7 @@ namespace ACT.UltraScouter.Models
                     this.ObjectType != ObjectType.Monster)
                 {
                     this.enmityList.Clear();
-                    this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
+                    this.IsExistsEnmityList = false;
                     return;
                 }
 
@@ -850,7 +858,7 @@ namespace ACT.UltraScouter.Models
                         this.EnmityView?.Refresh();
                     }
 
-                    this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
+                    this.IsExistsEnmityList = true;
                     this.RefreshEnmtiyHateRateBarWidth();
                     this.previousMaxCountOfDisplay = config.MaxCountOfDisplay;
                     return;
@@ -862,7 +870,7 @@ namespace ACT.UltraScouter.Models
                     !FFXIVPlugin.Instance.InCombat)
                 {
                     this.enmityList.Clear();
-                    this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
+                    this.IsExistsEnmityList = false;
                     return;
                 }
 
@@ -872,7 +880,7 @@ namespace ACT.UltraScouter.Models
                     if (partyCount <= 1)
                     {
                         this.enmityList.Clear();
-                        this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
+                        this.IsExistsEnmityList = false;
                         return;
                     }
                 }
@@ -881,7 +889,7 @@ namespace ACT.UltraScouter.Models
                     enmityEntryList.Count() < 1)
                 {
                     this.enmityList.Clear();
-                    this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
+                    this.IsExistsEnmityList = false;
                     return;
                 }
 
@@ -906,7 +914,6 @@ namespace ACT.UltraScouter.Models
                         IsPet = x.isPet,
                     }).ToArray());
 
-                var needsRefresh = false;
                 foreach (var src in newEnmityList)
                 {
                     var dest = this.enmityList.FirstOrDefault(x => x.ID == src.ID);
@@ -919,7 +926,6 @@ namespace ACT.UltraScouter.Models
                     if (dest.Index != src.Index)
                     {
                         dest.Index = src.Index;
-                        needsRefresh = true;
                     }
 
                     dest.Name = src.Name;
@@ -936,14 +942,12 @@ namespace ACT.UltraScouter.Models
                     this.enmityList.Remove(enmity);
                 }
 
-                if (needsRefresh ||
-                    this.previousMaxCountOfDisplay != config.MaxCountOfDisplay)
+                if (this.previousMaxCountOfDisplay != config.MaxCountOfDisplay)
                 {
                     this.EnmityView?.Refresh();
                 }
 
-                this.RaisePropertyChanged(nameof(this.IsExistsEnmityList));
-                this.RefreshEnmtiyHateRateBarWidth();
+                this.IsExistsEnmityList = this.enmityList.Any();
                 this.RefreshEnmtiyHateRateBarWidth();
                 this.previousMaxCountOfDisplay = config.MaxCountOfDisplay;
             }
