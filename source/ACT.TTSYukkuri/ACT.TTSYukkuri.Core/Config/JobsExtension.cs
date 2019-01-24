@@ -25,6 +25,7 @@ namespace ACT.TTSYukkuri.Config
         BlackMage,
         Summoner,
         RedMage,
+        BlueMage,
 
         CrafterAndGatherer,
     }
@@ -33,43 +34,44 @@ namespace ACT.TTSYukkuri.Config
     {
         private static readonly string[,] JobPhonetics = new string[,]
         {
-          //{0-EN,              1-JP,              2-FR,              3-DE,             4-KR                 5,6-CN  }
-            { string.Empty,     string.Empty,      string.Empty,      string.Empty,     string.Empty,        string.Empty},
-            { "Gladiator",      "けんじゅつし",      "Gladiator",      "Gladiator",      "Gladiator",         "剑术师",},
-            { "Pugilist",       "かくとうし",        "Pugilist",       "Pugilist",       "Pugilist",          "格斗家",},
-            { "Marauder",       "ふじゅつし",        "Marauder",       "Marauder",       "Marauder",          "斧术师",},
-            { "Lancer",         "そうじゅつし",      "Lancer",         "Lancer",         "Lancer",            "枪术师",},
-            { "Archer",         "きゅうじゅつし",    "Archer",         "Archer",         "Archer",            "弓箭手",},
-            { "Conjurer",       "げんじゅつし",      "Conjurer",       "Conjurer",       "Conjurer",          "幻术师",},
-            { "Thaumaturge",    "じゅじゅつし",      "Thaumaturge",    "Thaumaturge",    "Thaumaturge",       "咒术师",},
-            { "Carpenter",      "もっこうし",        "Carpenter",      "Carpenter",      "Carpenter",        "刻木",},
-            { "Blacksmith",     "かじし",           "Blacksmith",      "Blacksmith",     "Blacksmith",       "锻铁",},
-            { "Armorer",        "かっちゅうし",      "Armorer",         "Armorer",        "Armorer",          "铸甲",},
-            { "Goldsmith",      "ちょうきんし",      "Goldsmith",       "Goldsmith",      "Goldsmith",        "雕金",},
-            { "Leatherworker",  "かわざいくし",      "Leatherworker",   "Leatherworker",  "Leatherworker",    "制革",},
+         // {0-EN,              1-JP,                2-FR,              3-DE,             4-KR                 5,6-CN  }
+            { string.Empty,     string.Empty,        string.Empty,      string.Empty,     string.Empty,        string.Empty},
+            { "Gladiator",      "けんじゅつし",      "Gladiator",       "Gladiator",      "Gladiator",         "剑术师",},
+            { "Pugilist",       "かくとうし",        "Pugilist",        "Pugilist",       "Pugilist",          "格斗家",},
+            { "Marauder",       "ふじゅつし",        "Marauder",        "Marauder",       "Marauder",          "斧术师",},
+            { "Lancer",         "そうじゅつし",      "Lancer",          "Lancer",         "Lancer",            "枪术师",},
+            { "Archer",         "きゅうじゅつし",    "Archer",          "Archer",         "Archer",            "弓箭手",},
+            { "Conjurer",       "げんじゅつし",      "Conjurer",        "Conjurer",       "Conjurer",          "幻术师",},
+            { "Thaumaturge",    "じゅじゅつし",      "Thaumaturge",     "Thaumaturge",    "Thaumaturge",       "咒术师",},
+            { "Carpenter",      "もっこうし",        "Carpenter",       "Carpenter",      "Carpenter",         "刻木",},
+            { "Blacksmith",     "かじし",            "Blacksmith",      "Blacksmith",     "Blacksmith",        "锻铁",},
+            { "Armorer",        "かっちゅうし",      "Armorer",         "Armorer",        "Armorer",           "铸甲",},
+            { "Goldsmith",      "ちょうきんし",      "Goldsmith",       "Goldsmith",      "Goldsmith",         "雕金",},
+            { "Leatherworker",  "かわざいくし",      "Leatherworker",   "Leatherworker",  "Leatherworker",     "制革",},
             { "Weaver",         "さいほうし",        "Weaver",          "Weaver",         "Weaver",            "裁衣",},
             { "Alchemist",      "れんきんじゅつし",  "Alchemist",       "Alchemist",      "Alchemist",         "炼金",},
-            { "Culinarian",     "ちょうりし",        "Culinarian",      "Culinarian",     "Culinarian",         "厨师",},
-            { "Miner",          "さいくつし",        "Miner",           "Miner",          "Miner",              "采矿",},
-            { "Botanist",       "えんげいし",        "Botanist",        "Botanist",       "Botanist",           "园艺",},
-            { "Fisher",         "りょうし",          "Fisher",          "Fisher",         "Fisher",             "渔夫",},
+            { "Culinarian",     "ちょうりし",        "Culinarian",      "Culinarian",     "Culinarian",        "厨师",},
+            { "Miner",          "さいくつし",        "Miner",           "Miner",          "Miner",             "采矿",},
+            { "Botanist",       "えんげいし",        "Botanist",        "Botanist",       "Botanist",          "园艺",},
+            { "Fisher",         "りょうし",          "Fisher",          "Fisher",         "Fisher",            "渔夫",},
             { "Paladin",        "ないと",            "Paladin",         "Paladin",        "Paladin",           "骑士",},
             { "Monk",           "もんく",            "Monk",            "Monk",           "Monk",              "武僧",},
             { "Warrior",        "せんし",            "Warrior",         "Warrior",        "Warrior",           "战士",},
-            { "Dragoon",        "りゅうきし",         "Dragoon",         "Dragoon",       "Dragoon",            "龙骑",},
-            { "Bard",           "ぎんゆうしじん",     "Bard",            "Bard",           "Bard",              "诗人",},
-            { "White Mage",     "しろまどうし",       "White Mage",     "White Mage",      "White Mage",        "白魔",},
-            { "Black Mage",     "くろまどうし",       "Black Mage",     "Black Mage",      "Black Mage",         "黑魔",},
-            { "Arcanist",       "はじゅつし",         "Arcanist",       "Arcanist",        "Arcanist",           "秘术师",},
-            { "Summoner",       "しょうかんし",       "Summoner",       "Summoner",        "Summoner",          "召唤",},
-            { "Scholar",        "がくしゃ",           "Scholar",        "Scholar",         "Scholar",           "学者",},
-            { "Rogue",          "そうけんし",         "Rogue",          "Rogue",           "Rogue",              "双剑师",},
-            { "Ninja",          "にんじゃ",           "Ninja",          "Ninja",           "Ninja",             "忍者",},
-            { "Machinist",      "きこうし",           "Machinist",      "Machinist",       "Machinist",          "机工",},
-            { "Dark Knight",    "あんこくきし",       "Dark Knight",    "Dark Knight",      "Dark Knight",      "黑骑",},
-            { "Astrologian",    "せんせいじゅつし",    "Astrologian",    "Astrologian",     "Astrologian",       "占星",},
-            { "Samurai",        "さむらい",           "Samurai",        "Samurai",         "Samurai",           "武士",},
-            { "Red Mage",       "あかまどうし",       "Red Mage",       "Red Mage",        "Red Mage",          "赤魔",},
+            { "Dragoon",        "りゅうきし",        "Dragoon",         "Dragoon",        "Dragoon",           "龙骑",},
+            { "Bard",           "ぎんゆうしじん",    "Bard",            "Bard",           "Bard",              "诗人",},
+            { "White Mage",     "しろまどうし",      "White Mage",      "White Mage",     "White Mage",        "白魔",},
+            { "Black Mage",     "くろまどうし",      "Black Mage",      "Black Mage",     "Black Mage",        "黑魔",},
+            { "Arcanist",       "はじゅつし",        "Arcanist",        "Arcanist",       "Arcanist",          "秘术师",},
+            { "Summoner",       "しょうかんし",      "Summoner",        "Summoner",       "Summoner",          "召唤",},
+            { "Scholar",        "がくしゃ",          "Scholar",         "Scholar",        "Scholar",           "学者",},
+            { "Rogue",          "そうけんし",        "Rogue",           "Rogue",          "Rogue",             "双剑师",},
+            { "Ninja",          "にんじゃ",          "Ninja",           "Ninja",          "Ninja",             "忍者",},
+            { "Machinist",      "きこうし",          "Machinist",       "Machinist",      "Machinist",         "机工",},
+            { "Dark Knight",    "あんこくきし",      "Dark Knight",     "Dark Knight",    "Dark Knight",       "黑骑",},
+            { "Astrologian",    "せんせいじゅつし",  "Astrologian",     "Astrologian",    "Astrologian",       "占星",},
+            { "Samurai",        "さむらい",          "Samurai",         "Samurai",        "Samurai",           "武士",},
+            { "Red Mage",       "あかまどうし",      "Red Mage",        "Red Mage",       "Red Mage",          "赤魔",},
+            { "Blue Mage",      "あおまどうし",      "Blue Mage",       "Blue Mage",      "Blue Mage",         "Blue Mage",},
         };
 
         public static readonly AlertCategories[] JobAlertCategories = new AlertCategories[]
@@ -110,6 +112,7 @@ namespace ACT.TTSYukkuri.Config
             AlertCategories.Astrologian,
             AlertCategories.Samurai,
             AlertCategories.RedMage,
+            AlertCategories.BlueMage,
         };
 
         public static string GetPhonetic(
@@ -127,7 +130,7 @@ namespace ACT.TTSYukkuri.Config
     {
         private static readonly string[,] AlertCategoriesTexts = new string[,]
         {
-          //{0-EN,              1-JP,              2-FR,              3-DE,             4-KR                 5,6-CN  }
+            // {0-EN,              1-JP,              2-FR,              3-DE,             4-KR                 5,6-CN  }
             { "Me","自分自身","Me","Me","Me","我", },
             { "Paladin/Gladiator", "ナイト・剣術士","Paladin/Gladiator","Paladin/Gladiator","Paladin/Gladiator","骑士", },
             { "Warrior/Marauder", "戦士・斧術士","Warrior/Marauder","Warrior/Marauder","Warrior/Marauder","战士", },
@@ -144,6 +147,7 @@ namespace ACT.TTSYukkuri.Config
             { "Black Mage/Thaumaturge", "黒魔道士・呪術師","Black Mage/Thaumaturge","Black Mage/Thaumaturge","Black Mage/Thaumaturge","黑魔", },
             { "Summoner/Arcanist", "召喚士・巴術士","Summoner/Arcanist","Summoner/Arcanist","Summoner/Arcanist","召唤", },
             { "Red Mage", "赤魔道士","Red Mage","Red Mage","Red Mage","赤魔", },
+            { "Blue Mage", "青魔道士","Blue Mage","Blue Mage","Blue Mage","Blue Mage", },
             { "Crafter/Gatherer", "クラフター・ギャザラー","Crafter/Gatherer","Crafter/Gatherer","Crafter/Gatherer","采集/制造", },
         };
 

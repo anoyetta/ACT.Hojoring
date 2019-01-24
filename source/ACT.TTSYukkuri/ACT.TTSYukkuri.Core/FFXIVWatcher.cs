@@ -125,7 +125,7 @@ namespace ACT.TTSYukkuri
                             }
                             catch (Exception ex)
                             {
-                                this.Logger.Error(ex, "FFXIVの監視スレッドで例外が発声しました。");
+                                this.Logger.Error(ex, "An exception occurred in the monitoring FFXIV.");
                                 Thread.Sleep(WatcherLongInterval);
                             }
 
