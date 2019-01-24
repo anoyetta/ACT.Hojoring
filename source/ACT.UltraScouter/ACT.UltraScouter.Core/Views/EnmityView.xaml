@@ -164,7 +164,8 @@
                           BlurRadius="5"
                           Direction="0"
                           ShadowDepth="0"
-                          Color="White" />
+                          Color="White"
+                          Opacity="0.9" />
                       </Rectangle.Effect>
                     </Rectangle>
                     <Rectangle
