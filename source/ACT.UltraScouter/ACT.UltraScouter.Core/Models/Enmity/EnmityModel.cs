@@ -51,32 +51,50 @@ namespace ACT.UltraScouter.Models.Enmity
 
         public BitmapSource JobIcon => JobIconDictionary.Instance.GetIcon(this.jobID);
 
-        private readonly SolidColorBrush MeBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e6b422"));
+        private static SolidColorBrush MeBrush;
+        private static SolidColorBrush TankBrush;
+        private static SolidColorBrush HealerBrush;
+        private static SolidColorBrush DPSBrush;
+
+        private static void CreateBrushes()
+        {
+            if (MeBrush != null)
+            {
+                return;
+            }
+
+            MeBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e6b422"));
+            TankBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00a1e9"));
+            HealerBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#82ae46"));
+            DPSBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e60033"));
+        }
 
         public SolidColorBrush BarColorBrush
         {
             get
             {
+                CreateBrushes();
+
                 if (this.isMe)
                 {
-                    return this.MeBrush;
+                    return MeBrush;
                 }
 
                 var role = Jobs.Find(this.jobID)?.Role ?? Roles.Unknown;
                 switch (role)
                 {
                     case Roles.Tank:
-                        return Brushes.Blue;
+                        return TankBrush;
 
                     case Roles.Healer:
-                        return Brushes.Green;
+                        return HealerBrush;
 
                     case Roles.MeleeDPS:
                     case Roles.RangeDPS:
                     case Roles.MagicDPS:
                     case Roles.PhysicalDPS:
                     case Roles.DPS:
-                        return Brushes.Red;
+                        return DPSBrush;
 
                     default:
                         return Brushes.Gray;

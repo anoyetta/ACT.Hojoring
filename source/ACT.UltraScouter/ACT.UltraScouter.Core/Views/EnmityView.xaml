@@ -148,23 +148,42 @@
                   </DockPanel>
 
                   <!-- Hate Rate Bar -->
-                  <Rectangle
-                    HorizontalAlignment="Left"
-                    Margin="0 0 0 0"
-                    Height="3"
-                    Width="{Binding BarWidth, Mode=OneWay}"
-                    Fill="{Binding BarColorBrush, Mode=OneWay}"
-                    RadiusX="2"
-                    RadiusY="2">
-                    <Rectangle.Effect>
-                      <DropShadowEffect
+                  <Grid
+                    Margin="0 0 0 0">
+                    <Rectangle
+                      Height="6"
+                      HorizontalAlignment="Left"
+                      Width="{Binding BarWidthMax, Mode=OneWay}"
+                      Fill="Black"
+                      RadiusX="3"
+                      RadiusY="3"
+                      Opacity="0.9">
+                      <Rectangle.Effect>
+                        <DropShadowEffect
+                          RenderingBias="Performance"
+                          BlurRadius="5"
+                          Direction="0"
+                          ShadowDepth="0"
+                          Color="White" />
+                      </Rectangle.Effect>
+                    </Rectangle>
+                    <Rectangle
+                      Height="6"
+                      HorizontalAlignment="Left"
+                      Width="{Binding BarWidth, Mode=OneWay}"
+                      Fill="{Binding BarColorBrush, Mode=OneWay}"
+                      RadiusX="3"
+                      RadiusY="3">
+                      <Rectangle.Effect>
+                        <DropShadowEffect
                         RenderingBias="Performance"
                         BlurRadius="4"
                         Direction="0"
                         ShadowDepth="0"
                         Color="{Binding BarColorBrush.Color, Mode=OneWay}" />
-                    </Rectangle.Effect>
-                  </Rectangle>
+                      </Rectangle.Effect>
+                    </Rectangle>
+                  </Grid>
                 </StackPanel>
               </Grid>
             </Grid>
