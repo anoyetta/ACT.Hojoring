@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
@@ -207,7 +206,7 @@ namespace ACT.UltraScouter.Workers
             {
                 EnmityPlugin.Instance.Initialize();
 
-                var enmityList = Task.Run(() => EnmityPlugin.Instance.GetEnmityEntryList()).Result;
+                var enmityList = EnmityPlugin.Instance.GetEnmityEntryList();
                 if (enmityList != null &&
                     enmityList.Count > 0)
                 {
@@ -295,11 +294,6 @@ namespace ACT.UltraScouter.Workers
 
         protected virtual EnmityViewModel EnmityVM =>
             this.enmityVM ?? (this.enmityVM = new EnmityViewModel(Settings.Instance.Enmity, this.Model));
-
-#if false
-        // 他のWindowオーダーに影響をあたえるので封印する
-        private DateTime timestamp;
-#endif
 
         /// <summary>
         /// Viewに接続されたデータモデルを更新する
@@ -511,13 +505,13 @@ namespace ACT.UltraScouter.Workers
         /// </summary>
         protected virtual void CreateViews()
         {
-            this.CreateView<NameView>(ref this.nameView, this.NameVM);
-            this.CreateView<HPView>(ref this.hpView, this.HpVM);
-            this.CreateView<HPBarView>(ref this.hpBarView, this.HpBarVM);
-            this.CreateView<ActionView>(ref this.actionView, this.ActionVM);
-            this.CreateView<DistanceView>(ref this.distanceView, this.DistanceVM);
-            this.CreateView<FFLogsView>(ref this.ffLogsView, this.FFLogsVM);
-            this.CreateView<EnmityView>(ref this.enmityView, this.EnmityVM);
+            this.CreateView(ref this.nameView, this.NameVM);
+            this.CreateView(ref this.hpView, this.HpVM);
+            this.CreateView(ref this.hpBarView, this.HpBarVM);
+            this.CreateView(ref this.actionView, this.ActionVM);
+            this.CreateView(ref this.distanceView, this.DistanceVM);
+            this.CreateView(ref this.ffLogsView, this.FFLogsVM);
+            this.CreateView(ref this.enmityView, this.EnmityVM);
 
             // Viewリストに登録する
             // HPBar→HPText の順番に登録しHPTextのほうがあとに開かれるようにする
@@ -555,11 +549,13 @@ namespace ACT.UltraScouter.Workers
         {
             this.Model.Name = targetInfo.Name;
 
-            this.RefreshHPView(targetInfo);
             this.RefreshActionView(targetInfo);
+            this.RefreshHPView(targetInfo);
             this.RefreshDistanceView(targetInfo);
-            this.RefreshFFLogsView(targetInfo);
             this.RefreshEnmityView(targetInfo);
+
+            // FFLogsの判定は最後に行う
+            this.RefreshFFLogsView(targetInfo);
         }
 
         protected virtual void RefreshHPView(

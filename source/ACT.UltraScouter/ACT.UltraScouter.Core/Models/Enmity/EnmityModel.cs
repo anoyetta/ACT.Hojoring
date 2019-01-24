@@ -152,11 +152,11 @@ namespace ACT.UltraScouter.Models.Enmity
 
         public double BarWidthMax => Settings.Instance.Enmity.BarWidth;
 
-        public async void RefreshBarWidth() => await WPFHelper.InvokeAsync(() =>
+        public void RefreshBarWidth()
         {
             this.RaisePropertyChanged(nameof(this.BarWidthMax));
             this.RaisePropertyChanged(nameof(this.BarWidth));
-        });
+        }
 
         /// <summary>
         /// すべてのPropertiesの変更通知を発生させる
