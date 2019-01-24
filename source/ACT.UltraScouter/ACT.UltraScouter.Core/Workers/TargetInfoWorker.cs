@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
@@ -126,26 +127,29 @@ namespace ACT.UltraScouter.Workers
 
         protected virtual void GetCombatant()
         {
+            var targetInfo = default(Combatant);
+
             if (Settings.Instance.UseHoverTarget)
             {
-                this.GetCombatantHoverOn();
+                this.GetCombatantHoverOn(ref targetInfo);
             }
             else
             {
-                this.GetCombatantHoverOff();
+                this.GetCombatantHoverOff(ref targetInfo);
             }
-        }
 
-        protected virtual void GetCombatantHoverOff()
-        {
-            var ti = FFXIVPlugin.Instance.GetTargetInfo(OverlayType.Target);
+            this.GetEnmityList(ref targetInfo);
+
             lock (this.TargetInfoLock)
             {
-                this.TargetInfo = ti;
+                this.TargetInfo = targetInfo;
             }
         }
 
-        protected virtual void GetCombatantHoverOn()
+        protected virtual void GetCombatantHoverOff(ref Combatant targetInfo)
+            => targetInfo = FFXIVPlugin.Instance.GetTargetInfo(OverlayType.Target);
+
+        protected virtual void GetCombatantHoverOn(ref Combatant targetInfo)
         {
             var info = default(Combatant);
 
@@ -186,9 +190,29 @@ namespace ACT.UltraScouter.Workers
                 }
             }
 
-            lock (this.TargetInfoLock)
+            targetInfo = info;
+        }
+
+        private void GetEnmityList(ref Combatant targetInfo)
+        {
+            if (!Settings.Instance.Enmity.Visible)
             {
-                this.TargetInfo = info;
+                EnmityPlugin.Instance.Dispose();
+                return;
+            }
+
+            if (targetInfo != null &&
+                !Settings.Instance.Enmity.IsDesignMode &&
+                targetInfo.type == ObjectType.Monster)
+            {
+                EnmityPlugin.Instance.Initialize();
+
+                var enmityList = Task.Run(() => EnmityPlugin.Instance.GetEnmityEntryList()).Result;
+                if (enmityList != null &&
+                    enmityList.Count > 0)
+                {
+                    targetInfo.EnmityEntryList.AddRange(enmityList);
+                }
             }
         }
 
@@ -642,7 +666,7 @@ namespace ACT.UltraScouter.Workers
                 return;
             }
 
-            this.Model.RefreshEnmityList();
+            this.Model.RefreshEnmityList(targetInfo?.EnmityEntryList);
         }
 
         #endregion View Controllers
