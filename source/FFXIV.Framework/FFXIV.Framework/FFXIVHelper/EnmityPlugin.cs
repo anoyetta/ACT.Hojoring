@@ -34,16 +34,19 @@ namespace FFXIV.Framework.FFXIVHelper
         private EnmityOverlay enmityOverlay;
         private FFXIVMemory enmityReader;
         private ThreadWorker worker;
+        private ThreadWorker scanWorker;
 
         public void Initialize()
         {
+            if (this.isInitialized)
+            {
+                return;
+            }
+
+            this.isInitialized = true;
+
             lock (this)
             {
-                if (this.isInitialized)
-                {
-                    return;
-                }
-
                 // ダミー設定を生成する
                 this.enmityConfig = new EnmityOverlayConfig("InnerEnmity")
                 {
@@ -59,19 +62,28 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.enmityOverlay = new EnmityOverlay(this.enmityConfig);
 
                 this.worker = ThreadWorker.Run(
-                    DoWork,
-                    200,
-                    "EnmityPluginWorker",
+                    this.AttachPlugin,
+                    200d,
+                    "EnmityPluginAttachWorker",
                     ThreadPriority.Lowest);
 
-                this.isInitialized = true;
+                this.scanWorker = ThreadWorker.Run(
+                    this.ScanEnmity,
+                    100d,
+                    "ScanEnmityWorker",
+                    ThreadPriority.BelowNormal);
             }
         }
 
         public void Dispose()
         {
+            this.isInitialized = false;
+
             lock (this)
             {
+                this.scanWorker?.Abort();
+                this.scanWorker = null;
+
                 this.worker?.Abort();
                 this.worker = null;
 
@@ -82,16 +94,14 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.enmityOverlay = null;
 
                 this.enmityConfig = null;
-
-                this.isInitialized = false;
             }
         }
 
-        private void DoWork()
+        private void AttachPlugin()
         {
-            lock (this)
+            try
             {
-                try
+                lock (this)
                 {
                     if (this.enmityOverlay == null ||
                         this.enmityConfig == null)
@@ -124,23 +134,39 @@ namespace FFXIV.Framework.FFXIVHelper
                         this.enmityReader = new FFXIVMemory(this.enmityOverlay, FFXIVPlugin.Instance.Process);
                     }
                 }
-                finally
+            }
+            finally
+            {
+                if (this.enmityReader != null)
                 {
-                    if (this.enmityReader != null)
-                    {
-                        Thread.Sleep(TimeSpan.FromSeconds(5));
-                    }
-                    else
-                    {
-                        Thread.Yield();
-                    }
+                    Thread.Sleep(TimeSpan.FromSeconds(5));
                 }
+                else
+                {
+                    Thread.Yield();
+                }
+            }
+        }
+
+        private List<EnmityEntry> enmityList;
+
+        private void ScanEnmity()
+        {
+            lock (this)
+            {
+                this.enmityList = this.enmityReader?.GetEnmityEntryList();
             }
         }
 
         /// <summary>
         /// カレントターゲットの敵視情報を取得する
         /// </summary>
-        public List<EnmityEntry> GetEnmityEntryList() => this.enmityReader?.GetEnmityEntryList();
+        public List<EnmityEntry> GetEnmityEntryList()
+        {
+            lock (this)
+            {
+                return this.enmityList?.Clone();
+            }
+        }
     }
 }
