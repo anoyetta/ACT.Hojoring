@@ -102,6 +102,7 @@
 
   <system:String x:Key="Enmity_HideInNotCombat">Hide when not combat</system:String>
   <system:String x:Key="Enmity_HideInSolo">Hide in solo</system:String>
+  <system:String x:Key="Enmity_DisplayPCasYou">Display PC as "You"</system:String>
   <system:String x:Key="Enmity_MaxCountOfDisplay">Max count of display</system:String>
   <system:String x:Key="Enmity_ScaningRate">Enmity scaning rate (msec)</system:String>
 

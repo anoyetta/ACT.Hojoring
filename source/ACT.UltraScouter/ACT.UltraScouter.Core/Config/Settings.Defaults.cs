@@ -206,6 +206,7 @@ namespace ACT.UltraScouter.Config
                 Visible = false,
                 HideInNotCombat = true,
                 HideInSolo = false,
+                IsSelfDisplayYou = true,
                 ScaningRate = 250d,
                 MaxCountOfDisplay = 8,
                 IsDesignMode = false,
