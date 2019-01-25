@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,14 +31,12 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Advanced Combat Tracker">
       <HintPath>..\..\ACTv3\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="EnmityOverlay">
-      <HintPath>..\Thirdparty\EnmityOverlay.dll</HintPath>
     </Reference>
     <Reference Include="FFXIV_MemoryReader.Base">
       <HintPath>..\Thirdparty\FFXIV_MemoryReader.Base.dll</HintPath>
@@ -50,9 +49,6 @@
       <HintPath>..\Thirdparty\FFXIV_MemoryReader.Model.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="OverlayPlugin.Core">
-      <HintPath>..\Thirdparty\OverlayPlugin.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -137,6 +133,7 @@
     <Compile Include="FFXIVHelper\Combatant.cs" />
     <Compile Include="FFXIVHelper\Effect.cs" />
     <Compile Include="FFXIVHelper\EnmityPlugin.cs" />
+    <Compile Include="FFXIVHelper\EnmityPlugin.Implementation.cs" />
     <Compile Include="FFXIVHelper\FFXIVPlugin.cs" />
     <Compile Include="FFXIVHelper\FFXIVReader.cs" />
     <Compile Include="FFXIVHelper\Jobs.cs" />
