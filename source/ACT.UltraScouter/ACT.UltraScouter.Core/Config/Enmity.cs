@@ -44,6 +44,15 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.hideInSolo, value);
         }
 
+        private bool isSelfDisplayYou = true;
+
+        [DataMember]
+        public bool IsSelfDisplayYou
+        {
+            get => this.isSelfDisplayYou;
+            set => this.SetProperty(ref this.isSelfDisplayYou, value);
+        }
+
         private double scale = 1.0d;
 
         [DataMember]
