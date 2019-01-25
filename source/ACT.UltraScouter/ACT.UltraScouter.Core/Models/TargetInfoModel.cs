@@ -824,6 +824,7 @@ namespace ACT.UltraScouter.Models
                 {
                     this.enmityList.Clear();
                     this.IsExistsEnmityList = false;
+                    this.logger.Trace("[Enmity] Visible off");
                     return;
                 }
 
@@ -832,6 +833,7 @@ namespace ACT.UltraScouter.Models
                 {
                     this.enmityList.Clear();
                     this.IsExistsEnmityList = false;
+                    this.logger.Trace("[Enmity] Target is not Mob");
                     return;
                 }
 
@@ -869,6 +871,7 @@ namespace ACT.UltraScouter.Models
                 {
                     this.enmityList.Clear();
                     this.IsExistsEnmityList = false;
+                    this.logger.Trace("[Enmity] Not in combat");
                     return;
                 }
 
@@ -879,6 +882,7 @@ namespace ACT.UltraScouter.Models
                     {
                         this.enmityList.Clear();
                         this.IsExistsEnmityList = false;
+                        this.logger.Trace("[Enmity] Solo");
                         return;
                     }
                 }
@@ -887,6 +891,7 @@ namespace ACT.UltraScouter.Models
                 if (partyCount >= 2 &&
                     enmityEntryList.Count() <= 1)
                 {
+                    this.logger.Trace("[Enmity] Not exists party member");
                     return;
                 }
 
@@ -895,6 +900,7 @@ namespace ACT.UltraScouter.Models
                 {
                     this.enmityList.Clear();
                     this.IsExistsEnmityList = false;
+                    this.logger.Trace("[Enmity] EnmityList empty");
                     return;
                 }
 
@@ -944,8 +950,7 @@ namespace ACT.UltraScouter.Models
                     dest.IsPet = src.IsPet;
                 }
 
-                var party = FFXIVPlugin.Instance.GetPartyList();
-                var toRemoves = this.enmityList.Where(x => !party.Any(y => y.ID == x.ID)).ToArray();
+                var toRemoves = this.enmityList.Where(x => !newEnmityList.Any(y => y.ID == x.ID)).ToArray();
                 foreach (var enmity in toRemoves)
                 {
                     this.enmityList.Remove(enmity);
