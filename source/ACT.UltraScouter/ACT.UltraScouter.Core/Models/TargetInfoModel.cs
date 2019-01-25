@@ -824,7 +824,6 @@ namespace ACT.UltraScouter.Models
                 {
                     this.enmityList.Clear();
                     this.IsExistsEnmityList = false;
-                    this.logger.Trace("[Enmity] Visible off");
                     return;
                 }
 
@@ -833,7 +832,6 @@ namespace ACT.UltraScouter.Models
                 {
                     this.enmityList.Clear();
                     this.IsExistsEnmityList = false;
-                    this.logger.Trace("[Enmity] Target is not Mob");
                     return;
                 }
 
@@ -871,7 +869,6 @@ namespace ACT.UltraScouter.Models
                 {
                     this.enmityList.Clear();
                     this.IsExistsEnmityList = false;
-                    this.logger.Trace("[Enmity] Not in combat");
                     return;
                 }
 
@@ -882,33 +879,30 @@ namespace ACT.UltraScouter.Models
                     {
                         this.enmityList.Clear();
                         this.IsExistsEnmityList = false;
-                        this.logger.Trace("[Enmity] Solo");
                         return;
                     }
                 }
 
+                /*
                 // パーティ状態で1人分しか取れなかったリストは無視する
                 if (partyCount >= 2 &&
                     enmityEntryList.Count() <= 1)
                 {
-                    this.logger.Trace("[Enmity] Not exists party member");
                     return;
                 }
+                */
 
                 if (enmityEntryList == null ||
                     enmityEntryList.Count() < 1)
                 {
                     this.enmityList.Clear();
                     this.IsExistsEnmityList = false;
-                    this.logger.Trace("[Enmity] EnmityList empty");
                     return;
                 }
 
                 var index = 1;
                 var newEnmityList = (
                     from x in enmityEntryList
-                    where
-                    !x.isPet
                     orderby
                     x.Enmity descending
                     select new EnmityModel()
