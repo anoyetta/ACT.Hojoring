@@ -704,6 +704,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private DateTime currentPartyIDListTimestamp = DateTime.MinValue;
 
+        public int PartyMemberCount { get; private set; }
+
         public void RefreshCurrentPartyIDList()
         {
             if ((DateTime.Now - this.currentPartyIDListTimestamp).TotalSeconds <= 1.0)
@@ -715,10 +717,12 @@ namespace FFXIV.Framework.FFXIVHelper
 
             if (!this.IsAvailable)
             {
+                this.PartyMemberCount = 0;
 #if DEBUG
                 lock (this.currentPartyIDListLock)
                 {
                     this.currentPartyIDList = new List<uint>(this.DummyPartyList);
+                    this.PartyMemberCount = this.currentPartyIDList.Count;
                 }
 #endif
                 return;
@@ -730,6 +734,7 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 if (this.exceptionCounter > ExceptionCountLimit)
                 {
+                    this.PartyMemberCount = 0;
                     this.currentPartyIDList = new List<uint>();
                     this.InCombat = false;
                     return;
@@ -750,12 +755,14 @@ namespace FFXIV.Framework.FFXIVHelper
 
             if (partyList == null)
             {
+                this.PartyMemberCount = 0;
                 this.InCombat = this.RefreshInCombat();
                 return;
             }
 
             lock (this.currentPartyIDListLock)
             {
+                this.PartyMemberCount = partyList.Count;
                 this.currentPartyIDList = partyList;
             }
 
