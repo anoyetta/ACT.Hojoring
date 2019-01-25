@@ -2,11 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using FFXIV.Framework.Common;
-using Tamagawa.EnmityPlugin;
 
 namespace FFXIV.Framework.FFXIVHelper
 {
-    public class EnmityPlugin :
+    public class EnmityEntry
+    {
+        public uint ID;
+        public uint OwnerID;
+        public string Name;
+        public uint Enmity;
+        public bool isMe;
+        public int HateRate;
+        public byte Job;
+        public JobIDs JobID => (JobIDs)Enum.ToObject(typeof(JobIDs), this.Job);
+        public string JobName => this.JobID.ToString();
+        public string EnmityString => Enmity.ToString("##,#");
+        public bool IsPet => (OwnerID != 0);
+    }
+
+    public partial class EnmityPlugin :
         IDisposable
     {
         #region Singleton
@@ -27,13 +41,13 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #endregion Singleton
 
-        private const int ProcessScanInterval = 3000;
+        #region Logger
+
+        private static NLog.Logger AppLogger => AppLog.DefaultLogger;
+
+        #endregion Logger
 
         private volatile bool isInitialized = false;
-        private EnmityOverlayConfig enmityConfig;
-        private EnmityOverlay enmityOverlay;
-        private FFXIVMemory enmityReader;
-        private ThreadWorker worker;
         private ThreadWorker scanWorker;
 
         public void Initialize()
@@ -47,29 +61,6 @@ namespace FFXIV.Framework.FFXIVHelper
 
             lock (this)
             {
-                // ダミー設定を生成する
-                this.enmityConfig = new EnmityOverlayConfig("InnerEnmity")
-                {
-                    IsVisible = true,
-                    IsClickThru = true,
-                    IsLocked = true,
-                    Size = new System.Drawing.Size(0, 0),
-                    FollowFFXIVPlugin = true,
-                    ScanInterval = ProcessScanInterval,
-                    DisableTarget = true,
-                    DisableAggroList = true,
-                    DisableEnmityList = true,
-                };
-
-                // ダミーオーバーレイを生成する
-                this.enmityOverlay = new EnmityOverlay(this.enmityConfig);
-
-                this.worker = ThreadWorker.Run(
-                    this.AttachPlugin,
-                    200d,
-                    "EnmityPluginAttachWorker",
-                    ThreadPriority.Lowest);
-
                 this.scanWorker = ThreadWorker.Run(
                     this.ScanEnmity,
                     100d,
@@ -86,67 +77,45 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 this.scanWorker?.Abort();
                 this.scanWorker = null;
-
-                this.worker?.Abort();
-                this.worker = null;
-
-                this.enmityReader?.Dispose();
-                this.enmityReader = null;
-
-                this.enmityOverlay?.Dispose();
-                this.enmityOverlay = null;
-
-                this.enmityConfig = null;
             }
         }
 
-        private void AttachPlugin()
+        private void AttachProcess()
         {
-            try
+            var process = FFXIVPlugin.Instance?.Process;
+
+            if (this._process == null ||
+                this._process.Id != process.Id)
             {
-                lock (this)
+                this.enmityAddress = IntPtr.Zero;
+
+                if (process != null)
                 {
-                    if (this.enmityOverlay == null ||
-                        this.enmityConfig == null)
+                    if (process.ProcessName == "ffxiv")
                     {
-                        return;
+                        this._mode = FFXIVClientMode.FFXIV_32;
+                        AppLogger.Error("[Enmity] DX9 is not supported.");
                     }
-
-                    if (FFXIVPlugin.Instance?.Process == null)
+                    else if (process.ProcessName == "ffxiv_dx11")
                     {
-                        if (this.enmityReader != null)
-                        {
-                            this.enmityReader.Dispose();
-                            this.enmityReader = null;
-                        }
-
-                        return;
+                        this._mode = FFXIVClientMode.FFXIV_64;
                     }
-
-                    if (this.enmityReader == null ||
-                        this.enmityReader.Process == null ||
-                        this.enmityReader.Process.HasExited ||
-                        this.enmityReader.Process.Id != FFXIVPlugin.Instance.Process.Id)
+                    else
                     {
-                        if (this.enmityReader != null)
-                        {
-                            this.enmityReader.Dispose();
-                            this.enmityReader = null;
-                        }
-
-                        this.enmityReader = new FFXIVMemory(this.enmityOverlay, FFXIVPlugin.Instance.Process);
+                        this._mode = FFXIVClientMode.Unknown;
                     }
                 }
+
+                this._process = process;
             }
-            finally
+
+            if (this._process != null &&
+                this.enmityAddress == IntPtr.Zero)
             {
-                if (this.enmityReader != null)
+                var result = this.GetPointerAddress();
+                if (result)
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
-                }
-                else
-                {
-                    Thread.Yield();
+                    AppLogger.Trace("[Enmity] Attached enmity pointer.");
                 }
             }
         }
@@ -157,18 +126,28 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             lock (this)
             {
-                this.enmityList = this.enmityReader?.GetEnmityEntryList();
+                this.AttachProcess();
+
+                if (this._process != null &&
+                    this.enmityAddress != IntPtr.Zero)
+                {
+                    this.enmityList = this.GetEnmityEntryList();
+                }
+                else
+                {
+                    this.enmityList = null;
+                }
             }
         }
 
-        /// <summary>
-        /// カレントターゲットの敵視情報を取得する
-        /// </summary>
-        public List<EnmityEntry> GetEnmityEntryList()
+        public List<EnmityEntry> EnmityEntryList
         {
-            lock (this)
+            get
             {
-                return this.enmityList?.Clone();
+                lock (this)
+                {
+                    return this.enmityList?.Clone();
+                }
             }
         }
     }

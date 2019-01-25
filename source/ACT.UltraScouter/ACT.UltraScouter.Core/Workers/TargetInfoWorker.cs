@@ -206,7 +206,7 @@ namespace ACT.UltraScouter.Workers
             {
                 EnmityPlugin.Instance.Initialize();
 
-                var enmityList = EnmityPlugin.Instance.GetEnmityEntryList();
+                var enmityList = EnmityPlugin.Instance.EnmityEntryList;
                 if (enmityList != null &&
                     enmityList.Count > 0)
                 {

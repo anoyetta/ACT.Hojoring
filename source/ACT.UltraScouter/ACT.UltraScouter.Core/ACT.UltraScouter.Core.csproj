@@ -41,10 +41,6 @@
       <HintPath>..\..\ACTv3\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="EnmityOverlay, Version=1.13.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\FFXIV.Framework\Thirdparty\EnmityOverlay.dll</HintPath>
-    </Reference>
     <Reference Include="FFXIV_MemoryReader.Model">
       <HintPath>..\..\FFXIV.Framework\Thirdparty\FFXIV_MemoryReader.Model.dll</HintPath>
       <Private>False</Private>
