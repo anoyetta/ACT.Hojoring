@@ -168,5 +168,8 @@ namespace ACT.UltraScouter.Models.Enmity
                 this.RaisePropertyChanged(pi.Name);
             }
         }
+
+        public override string ToString()
+            => $"ID={this.ID}, Name={this.Name}, Enmity={this.Enmity}";
     }
 }

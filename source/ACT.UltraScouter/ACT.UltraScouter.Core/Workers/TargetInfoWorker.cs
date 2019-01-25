@@ -547,7 +547,8 @@ namespace ACT.UltraScouter.Workers
         protected virtual void RefreshModel(
             Combatant targetInfo)
         {
-            this.Model.Name = targetInfo.Name;
+            this.Model.Name = targetInfo?.Name ?? string.Empty;
+            this.Model.ObjectType = targetInfo?.type ?? ObjectType.Unknown;
 
             this.RefreshActionView(targetInfo);
             this.RefreshHPView(targetInfo);
