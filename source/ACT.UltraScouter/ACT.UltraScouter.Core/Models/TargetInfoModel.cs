@@ -808,7 +808,7 @@ namespace ACT.UltraScouter.Models
         private volatile bool isEnmityRefreshing = false;
 
         public void RefreshEnmityList(
-            IEnumerable<Tamagawa.EnmityPlugin.EnmityEntry> enmityEntryList)
+            IEnumerable<EnmityEntry> enmityEntryList)
         {
             if (this.isEnmityRefreshing)
             {
@@ -883,15 +883,6 @@ namespace ACT.UltraScouter.Models
                     }
                 }
 
-                /*
-                // パーティ状態で1人分しか取れなかったリストは無視する
-                if (partyCount >= 2 &&
-                    enmityEntryList.Count() <= 1)
-                {
-                    return;
-                }
-                */
-
                 if (enmityEntryList == null ||
                     enmityEntryList.Count() < 1)
                 {
@@ -916,7 +907,7 @@ namespace ACT.UltraScouter.Models
                         Enmity = (double)x.Enmity,
                         HateRate = x.HateRate / 100f,
                         IsMe = x.isMe,
-                        IsPet = x.isPet,
+                        IsPet = x.IsPet,
                     }).ToArray();
 
                 var needsRefresh = false;
