@@ -50,7 +50,10 @@ namespace FFXIV.Framework.FFXIVHelper
                 // ダミー設定を生成する
                 this.enmityConfig = new EnmityOverlayConfig("InnerEnmity")
                 {
-                    IsVisible = false,
+                    IsVisible = true,
+                    IsClickThru = true,
+                    IsLocked = true,
+                    Size = new System.Drawing.Size(0, 0),
                     FollowFFXIVPlugin = true,
                     ScanInterval = ProcessScanInterval,
                     DisableTarget = true,
