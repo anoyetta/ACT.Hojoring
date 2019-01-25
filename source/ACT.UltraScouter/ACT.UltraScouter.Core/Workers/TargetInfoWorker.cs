@@ -210,6 +210,7 @@ namespace ACT.UltraScouter.Workers
                 if (enmityList != null &&
                     enmityList.Count > 0)
                 {
+                    targetInfo.EnmityEntryList.Clear();
                     targetInfo.EnmityEntryList.AddRange(enmityList);
                 }
             }
