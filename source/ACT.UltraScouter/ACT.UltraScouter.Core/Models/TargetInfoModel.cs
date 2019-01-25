@@ -900,7 +900,7 @@ namespace ACT.UltraScouter.Models
                     {
                         Index = index++,
                         ID = x.ID,
-                        Name = x.isMe ?
+                        Name = config.IsSelfDisplayYou && x.isMe ?
                             "YOU" :
                             Combatant.NameToInitial(x.Name, ConfigBridge.Instance.PCNameStyle),
                         JobID = (JobIDs)x.Job,
