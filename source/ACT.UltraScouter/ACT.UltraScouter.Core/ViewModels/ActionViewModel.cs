@@ -10,6 +10,7 @@ using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
 using ACT.UltraScouter.Views;
 using Advanced_Combat_Tracker;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using NLog;
@@ -260,17 +261,20 @@ namespace ACT.UltraScouter.ViewModels
         {
             if (this.Config.WaveSoundEnabled)
             {
-                if (Settings.Instance.UseNAudio)
+                var vol = Settings.Instance.WaveVolume / 100f;
+                switch (Settings.Instance.TTSDevice)
                 {
-                    BufferedWavePlayer.Instance.Play(
-                        this.Config.WaveFile,
-                        Settings.Instance.WaveVolume / 100f);
-                }
-                else
-                {
-                    ActGlobals.oFormActMain?.PlaySoundMethod(
-                        this.Config.WaveFile,
-                        (int)Settings.Instance.WaveVolume);
+                    case TTSDevices.Normal:
+                        ActGlobals.oFormActMain?.PlaySound(this.Config.WaveFile);
+                        break;
+
+                    case TTSDevices.OnlyMain:
+                        PlayBridge.Instance.PlayMain(this.Config.WaveFile, vol);
+                        break;
+
+                    case TTSDevices.OnlySub:
+                        PlayBridge.Instance.PlaySub(this.Config.WaveFile, vol);
+                        break;
                 }
             }
 
