@@ -182,10 +182,12 @@
       <Label
         Margin="0 20 0 0"
         Content="{DynamicResource GeneralConfig_Sound}" />
+      <!--
       <CheckBox
         Margin="0 10 0 0"
         Content="{DynamicResource GeneralConfig_UseNAudio}"
         IsChecked="{Binding Config.UseNAudio, Mode=TwoWay}" />
+      -->
 
       <Label
         Margin="0 10 0 0"
