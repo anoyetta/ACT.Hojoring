@@ -305,6 +305,10 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private readonly IReadOnlyList<Combatant> EmptyCombatantList = new List<Combatant>();
 
+        public int CombatantsCount { get; private set; } = 0;
+
+        public int CombatnatsPlayerCount { get; private set; } = 0;
+
         private object combatantListLock = new object();
         private volatile IReadOnlyDictionary<uint, Combatant> combatantDictionary;
         private volatile IReadOnlyDictionary<uint, Combatant> combatantDictionaryFromFFXIVPlugin;
@@ -503,6 +507,8 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.combatantList = newList;
                 this.combatantDictionary = newDictionary;
                 this.combatantDictionaryFromFFXIVPlugin = newDictionary;
+                this.CombatantsCount = newList.Count;
+                this.CombatnatsPlayerCount = newList.Count(x => x.type == ObjectType.PC);
 
                 // TargetOfTargetを設定する
                 if (player != null &&
@@ -678,6 +684,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
                 this.combatantList = list;
                 this.combatantDictionary = list.ToDictionary(x => x.ID);
+                this.CombatantsCount = list.Count;
+                this.CombatnatsPlayerCount = list.Count(x => x.type == ObjectType.PC);
 
                 // TargetOfTargetを設定する
                 if (player != null &&

@@ -86,6 +86,7 @@
     -->
     <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledIgnoreDamageLogs}" IsChecked="{Binding Config.IgnoreDamageLogs, Mode=TwoWay}" />
     <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledIgnoreDetailLogs}" IsChecked="{Binding Config.IgnoreDetailLogs, Mode=TwoWay}" />
+    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledAutoIgnore}" IsChecked="{Binding Config.IsAutoIgnoreLogs, Mode=TwoWay}" />
     <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledDetectPacketDump}" IsChecked="{Binding Config.DetectPacketDump, Mode=TwoWay}" />
 
     <Label Margin="0 20 0 0" Content="{DynamicResource Options_ReadyText}" />
