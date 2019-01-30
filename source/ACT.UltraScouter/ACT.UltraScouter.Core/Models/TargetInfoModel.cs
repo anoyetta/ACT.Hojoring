@@ -75,24 +75,22 @@ namespace ACT.UltraScouter.Models
             get => this.isCasting;
             set
             {
-                if (this.SetProperty(ref this.isCasting, value))
+                if (value &&
+                    this.isCasting != value)
                 {
-                    if (this.isCasting)
+                    this.Casting?.Invoke(this, new CastingEventArgs()
                     {
-                        var args = new CastingEventArgs()
-                        {
-                            Source = this,
-                            Actor = this.Name,
-                            CastingDateTime = DateTime.Now,
-                            CastSkillID = this.CastSkillID,
-                            CastSkillName = this.CastSkillName,
-                            CastDurationMax = this.CastDurationMax,
-                            CastDurationCurrent = this.CastDurationCurrent,
-                        };
-
-                        this.Casting?.Invoke(this, args);
-                    }
+                        Source = this,
+                        Actor = this.Name,
+                        CastingDateTime = DateTime.Now,
+                        CastSkillID = this.CastSkillID,
+                        CastSkillName = this.CastSkillName,
+                        CastDurationMax = this.CastDurationMax,
+                        CastDurationCurrent = this.CastDurationCurrent,
+                    });
                 }
+
+                this.SetProperty(ref this.isCasting, value);
             }
         }
 
