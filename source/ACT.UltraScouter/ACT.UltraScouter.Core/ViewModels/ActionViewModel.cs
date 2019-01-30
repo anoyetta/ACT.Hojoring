@@ -46,7 +46,7 @@ namespace ACT.UltraScouter.ViewModels
 
         public override void Initialize()
         {
-            this.countdownTimer.Interval = TimeSpan.FromMilliseconds(100);
+            this.countdownTimer.Interval = TimeSpan.FromSeconds(5);
 
             this.Model.Casting -= this.Model_Casting;
             this.countdownTimer.Tick -= this.CountdownTimer_Tick;
@@ -131,7 +131,7 @@ namespace ACT.UltraScouter.ViewModels
         private Stopwatch castingStopwatch = new Stopwatch();
 
         private readonly DispatcherTimer countdownTimer =
-            new DispatcherTimer(DispatcherPriority.Background);
+            new DispatcherTimer(DispatcherPriority.Send);
 
         private float castDurationMax;
         private double castingProgressRate;
@@ -169,12 +169,11 @@ namespace ACT.UltraScouter.ViewModels
 
             // カウントダウンの開始
             this.castingStopwatch.Restart();
-            if (this.countdownTimer.IsEnabled)
+            this.countdownTimer.Interval = TimeSpan.FromMilliseconds(50);
+            if (!this.countdownTimer.IsEnabled)
             {
-                this.countdownTimer.Stop();
+                this.countdownTimer.Start();
             }
-
-            this.countdownTimer.Start();
 
             // アニメーション開始
             view.BeginAnimation(this.castDurationMax);
@@ -192,16 +191,16 @@ namespace ACT.UltraScouter.ViewModels
         private void RefreshCountdown()
         {
             var current = this.castingStopwatch.Elapsed.TotalSeconds;
-
-            if (current >= this.castDurationMax)
-            {
-                this.countdownTimer.Stop();
-                this.castingStopwatch.Stop();
-            }
-
             var remain = this.castDurationMax - current;
             if (remain < 0)
             {
+                if (remain <= -2.0d)
+                {
+                    this.castingStopwatch.Stop();
+                    this.countdownTimer.Interval = TimeSpan.FromSeconds(5);
+                    return;
+                }
+
                 remain = 0;
             }
 
