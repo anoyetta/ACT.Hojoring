@@ -10,6 +10,7 @@ using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
 using ACT.UltraScouter.Views;
 using Advanced_Combat_Tracker;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using NLog;
@@ -45,7 +46,7 @@ namespace ACT.UltraScouter.ViewModels
 
         public override void Initialize()
         {
-            this.countdownTimer.Interval = TimeSpan.FromMilliseconds(100);
+            this.countdownTimer.Interval = TimeSpan.FromSeconds(5);
 
             this.Model.Casting -= this.Model_Casting;
             this.countdownTimer.Tick -= this.CountdownTimer_Tick;
@@ -130,7 +131,7 @@ namespace ACT.UltraScouter.ViewModels
         private Stopwatch castingStopwatch = new Stopwatch();
 
         private readonly DispatcherTimer countdownTimer =
-            new DispatcherTimer(DispatcherPriority.Background);
+            new DispatcherTimer(DispatcherPriority.Send);
 
         private float castDurationMax;
         private double castingProgressRate;
@@ -168,12 +169,11 @@ namespace ACT.UltraScouter.ViewModels
 
             // カウントダウンの開始
             this.castingStopwatch.Restart();
-            if (this.countdownTimer.IsEnabled)
+            this.countdownTimer.Interval = TimeSpan.FromMilliseconds(50);
+            if (!this.countdownTimer.IsEnabled)
             {
-                this.countdownTimer.Stop();
+                this.countdownTimer.Start();
             }
-
-            this.countdownTimer.Start();
 
             // アニメーション開始
             view.BeginAnimation(this.castDurationMax);
@@ -191,16 +191,16 @@ namespace ACT.UltraScouter.ViewModels
         private void RefreshCountdown()
         {
             var current = this.castingStopwatch.Elapsed.TotalSeconds;
-
-            if (current >= this.castDurationMax)
-            {
-                this.countdownTimer.Stop();
-                this.castingStopwatch.Stop();
-            }
-
             var remain = this.castDurationMax - current;
             if (remain < 0)
             {
+                if (remain <= -2.0d)
+                {
+                    this.castingStopwatch.Stop();
+                    this.countdownTimer.Interval = TimeSpan.FromSeconds(5);
+                    return;
+                }
+
                 remain = 0;
             }
 
@@ -260,17 +260,20 @@ namespace ACT.UltraScouter.ViewModels
         {
             if (this.Config.WaveSoundEnabled)
             {
-                if (Settings.Instance.UseNAudio)
+                var vol = Settings.Instance.WaveVolume / 100f;
+                switch (Settings.Instance.TTSDevice)
                 {
-                    BufferedWavePlayer.Instance.Play(
-                        this.Config.WaveFile,
-                        Settings.Instance.WaveVolume / 100f);
-                }
-                else
-                {
-                    ActGlobals.oFormActMain?.PlaySoundMethod(
-                        this.Config.WaveFile,
-                        (int)Settings.Instance.WaveVolume);
+                    case TTSDevices.Normal:
+                        ActGlobals.oFormActMain?.PlaySound(this.Config.WaveFile);
+                        break;
+
+                    case TTSDevices.OnlyMain:
+                        PlayBridge.Instance.PlayMain(this.Config.WaveFile, vol);
+                        break;
+
+                    case TTSDevices.OnlySub:
+                        PlayBridge.Instance.PlaySub(this.Config.WaveFile, vol);
+                        break;
                 }
             }
 
