@@ -190,6 +190,7 @@
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">To complement unknown skill</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">Ignore Damage and Heal log</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">Ignore 15: or 16: Detail log</system:String>
+  <system:String x:Key="Options_EnabledAutoIgnore">Auto filter the 15: or 16: logs when there are many people</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">Detect FC:Packet dump (not recommend)</system:String>
   <system:String x:Key="Options_ReadyText">Text to display at the completion of the forward direction timer (default: "Ready")</system:String>
   <system:String x:Key="Options_OverText">Text to display at the completion of the back direction timer (default: "Over")</system:String>

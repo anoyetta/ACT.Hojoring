@@ -132,19 +132,15 @@ namespace ACT.UltraScouter.Models
             set => this.SetProperty(ref this.castSkillID, value);
         }
 
-        public double CastingRemain
-        {
-            get => this.CastDurationMax != 0 ?
+        public double CastingRemain =>
+            this.CastDurationMax != 0 ?
                 this.CastDurationMax - this.CastDurationCurrent :
                 0;
-        }
 
-        public double CastingProgressRate
-        {
-            get => this.CastDurationMax != 0 ?
+        public double CastingProgressRate =>
+            this.CastDurationMax != 0 ?
                 this.CastDurationCurrent / this.CastDurationMax :
                 0;
-        }
 
         public double CurrentHP
         {

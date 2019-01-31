@@ -355,6 +355,14 @@ namespace ACT.SpecialSpellTimer.Config
             set => this.SetProperty(ref this.ignoreDamageLogs, value);
         }
 
+        private bool isAutoIgnoreLogs = false;
+
+        public bool IsAutoIgnoreLogs
+        {
+            get => this.isAutoIgnoreLogs;
+            set => this.SetProperty(ref this.isAutoIgnoreLogs, value);
+        }
+
         private bool removeWorldName = true;
 
         public bool RemoveWorldName
@@ -827,6 +835,7 @@ namespace ACT.SpecialSpellTimer.Config
             { nameof(Settings.ClickThroughEnabled), false },
             { nameof(Settings.AutoSortReverse), false },
             { nameof(Settings.EnabledPartyMemberPlaceholder), true },
+            { nameof(Settings.IsAutoIgnoreLogs), false },
             { nameof(Settings.AutoCombatLogAnalyze), false },
             { nameof(Settings.EnabledSpellTimerNoDecimal), true },
             { nameof(Settings.EnabledNotifyNormalSpellTimer), false },
