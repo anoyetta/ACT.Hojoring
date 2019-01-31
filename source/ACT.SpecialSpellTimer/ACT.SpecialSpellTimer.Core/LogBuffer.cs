@@ -544,6 +544,11 @@ namespace ACT.SpecialSpellTimer
                     continue;
                 }
 
+                if (IsAutoIgnoreLog(logLine))
+                {
+                    continue;
+                }
+
                 // ツールチップシンボル, ワールド名を除去する
                 logLine = RemoveTooltipSynbols(logLine);
                 logLine = RemoveWorldName(logLine);
@@ -619,6 +624,27 @@ namespace ACT.SpecialSpellTimer
 
                 return r;
             }
+        }
+
+        /// <summary>
+        /// 自動カット対象のログか？
+        /// </summary>
+        /// <param name="logLine"></param>
+        /// <returns></returns>
+        public static bool IsAutoIgnoreLog(
+            string logLine)
+        {
+            if (!Settings.Default.IsAutoIgnoreLogs)
+            {
+                return false;
+            }
+
+            if (FFXIVPlugin.Instance.CombatnatsPlayerCount <= 16)
+            {
+                return false;
+            }
+
+            return IgnoreDetailLogKeywords.Any(x => logLine.Contains(x));
         }
 
         /// <summary>
