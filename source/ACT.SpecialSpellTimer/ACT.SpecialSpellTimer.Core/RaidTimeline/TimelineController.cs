@@ -916,6 +916,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         continue;
                     }
 
+                    // 自動カット対象ならばスキップする
+                    if (LogBuffer.IsAutoIgnoreLog(logLine))
+                    {
+                        continue;
+                    }
+
                     // パーティメンバに対するHPログならばスキップする
                     if (LogBuffer.IsHPLogByPartyMember(logLine))
                     {
