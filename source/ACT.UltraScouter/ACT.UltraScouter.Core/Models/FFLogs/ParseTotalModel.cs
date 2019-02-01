@@ -568,6 +568,11 @@ namespace ACT.UltraScouter.Models.FFLogs
                     this.ResponseContent = json;
                 });
             }
+            catch (Exception)
+            {
+                Clear();
+                throw;
+            }
             finally
             {
                 lock (DownlodingLocker)
