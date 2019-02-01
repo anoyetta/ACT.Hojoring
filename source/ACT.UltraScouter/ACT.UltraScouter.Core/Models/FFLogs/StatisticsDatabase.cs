@@ -314,7 +314,28 @@ namespace ACT.UltraScouter.Models.FFLogs
                     table.InsertAllOnSubmit<HistogramModel>(entities);
                     db.SubmitChanges();
 
+                    // ランキングテーブルを消去する
+                    using (var cm = cn.CreateCommand())
+                    {
+                        cm.Transaction = tran;
+
+                        var q = new StringBuilder();
+                        q.AppendLine("DELETE FROM rankings;");
+                        cm.CommandText = q.ToString();
+                        await cm.ExecuteNonQueryAsync();
+                    }
+
                     tran.Commit();
+                }
+
+                // DBを最適化する
+                using (var cm = cn.CreateCommand())
+                {
+                    var q = new StringBuilder();
+                    q.AppendLine("VACUUM;");
+                    q.AppendLine("PRAGMA Optimize;");
+                    cm.CommandText = q.ToString();
+                    await cm.ExecuteNonQueryAsync();
                 }
             }
 
