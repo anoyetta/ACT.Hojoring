@@ -106,8 +106,8 @@ if (!(Test-Path $updater)) {
 ''
 '-> Backup Current Version'
 $temp = (New-TemporaryDirectory).FullName
-Copy-Item .\ $temp -Recurse -Force
 Remove-Directory ".\backup"
+Copy-Item .\ $temp -Recurse -Force
 Move-Item $temp ".\backup" -Force
 
 $updateDir = Join-Path $cd "update"
