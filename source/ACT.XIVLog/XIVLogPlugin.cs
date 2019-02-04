@@ -81,6 +81,7 @@ namespace ACT.XIVLog
         private StreamWriter writter;
         private StringBuilder writeBuffer = new StringBuilder(5120);
         private DateTime lastFlushTimestamp = DateTime.MinValue;
+        private volatile bool isForceFlush = false;
 
         private void InitTask()
         {
@@ -114,6 +115,12 @@ namespace ACT.XIVLog
                 {
                     if (this.writter != null)
                     {
+                        if (this.writeBuffer.Length > 0)
+                        {
+                            this.writter.Write(this.writeBuffer.ToString());
+                            this.writeBuffer.Clear();
+                        }
+
                         this.writter.Flush();
                         this.writter.Close();
                         this.writter.Dispose();
@@ -139,7 +146,6 @@ namespace ACT.XIVLog
 
                 XIVLog.RefreshPCNameDictionary();
 
-                this.writeBuffer.Clear();
                 while (LogQueue.TryDequeue(out XIVLog xivlog))
                 {
                     if (this.currentZoneName != xivlog.ZoneName)
@@ -152,15 +158,19 @@ namespace ACT.XIVLog
                     Thread.Yield();
                 }
 
-                if (this.writeBuffer.Length > 0)
+                if (isNeedsFlush ||
+                    this.isForceFlush ||
+                    this.writeBuffer.Length > 5000)
                 {
                     this.writter.Write(this.writeBuffer.ToString());
-                }
+                    this.writeBuffer.Clear();
 
-                if (isNeedsFlush)
-                {
-                    this.lastFlushTimestamp = DateTime.Now;
-                    this.writter?.Flush();
+                    if (isNeedsFlush || this.isForceFlush)
+                    {
+                        this.isForceFlush = false;
+                        this.lastFlushTimestamp = DateTime.Now;
+                        this.writter?.Flush();
+                    }
                 }
             }
         }
@@ -251,7 +261,8 @@ namespace ACT.XIVLog
 
             if (logLine.ContainsIgnoreCase(CommandKeywordFlush))
             {
-                return Task.Run(() => this.writter?.Flush());
+                this.isForceFlush = true;
+                return Task.CompletedTask;
             }
 
             return null;
