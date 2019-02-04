@@ -22,7 +22,7 @@ function New-TemporaryDirectory {
         [string] $name = [System.Guid]::NewGuid();
         $newTempDirPath = (Join-Path $tempDirectoryBase $name);
     } while (Test-Path $newTempDirPath);
-  
+
     New-Item -ItemType Directory -Path $newTempDirPath;
     return $newTempDirPath;
 }
@@ -37,7 +37,6 @@ function Remove-Directory (
 
 function Exit-Update (
     [int] $exitCode) {
-
     $targets = @(
         ".\update"
     )
@@ -105,8 +104,9 @@ if (!(Test-Path $updater)) {
 
 ''
 '-> Backup Current Version'
-$temp = (New-TemporaryDirectory).FullName
 Remove-Directory ".\backup"
+Start-Sleep -Milliseconds 10
+$temp = (New-TemporaryDirectory).FullName
 Copy-Item .\ $temp -Recurse -Force
 Move-Item $temp ".\backup" -Force
 
@@ -136,16 +136,20 @@ do {
     }
 } while ($TRUE)
 
+Start-Sleep -Milliseconds 10
+
 $7za = Get-Item ".\tools\7z\7za.exe"
 $archive = Get-Item ".\update\*.7z"
 
 ''
 '-> Extract New Assets'
 & $7za x $archive ("-o" + $updateDir)
+Start-Sleep -Milliseconds 10
 Remove-Item $archive
 '-> Extracted!'
 
 # Clean ->
+Start-Sleep -Milliseconds 10
 Remove-Directory ".\references"
 if (Test-Path ".\*.dll") {
     Remove-Item ".\*.dll" -Force
@@ -154,6 +158,7 @@ if (Test-Path ".\*.dll") {
 
 ''
 '-> Update Assets'
+Start-Sleep -Milliseconds 10
 $srcs = Get-ChildItem $updateDir -Recurse -Exclude $updateExclude
 foreach ($src in $srcs) {
     if ($src.GetType().Name -ne "DirectoryInfo") {
@@ -161,6 +166,7 @@ foreach ($src in $srcs) {
         New-Item (Split-Path $dst -Parent) -ItemType Directory -Force | Out-Null
         Copy-Item -Force $src $dst | Write-Output
         Write-Output ("--> " + $dst)
+		Start-Sleep -Milliseconds 1
     }
 }
 '-> Updated'
