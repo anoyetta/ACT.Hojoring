@@ -228,7 +228,8 @@ namespace ACT.XIVLog
             return result;
         }
 
-        private const string CommandKeyword = "/xivlog open";
+        private const string CommandKeywordOpen = "/xivlog open";
+        private const string CommandKeywordFlush = "/xivlog flush";
 
         private Task OpenXIVLogAsync(
             string logLine)
@@ -243,9 +244,14 @@ namespace ACT.XIVLog
                 return null;
             }
 
-            if (logLine.ContainsIgnoreCase(CommandKeyword))
+            if (logLine.ContainsIgnoreCase(CommandKeywordOpen))
             {
                 return Task.Run(() => Process.Start(this.LogfileName));
+            }
+
+            if (logLine.ContainsIgnoreCase(CommandKeywordFlush))
+            {
+                return Task.Run(() => this.writter?.Flush());
             }
 
             return null;

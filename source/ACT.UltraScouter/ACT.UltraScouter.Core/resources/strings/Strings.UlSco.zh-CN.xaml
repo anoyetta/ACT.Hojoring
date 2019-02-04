@@ -103,6 +103,9 @@
   <system:String x:Key="Enmity_HideInNotCombat">Hide when not combat</system:String>
   <system:String x:Key="Enmity_HideInSolo">Hide in solo</system:String>
   <system:String x:Key="Enmity_DisplayPCasYou">Display PC as "You"</system:String>
+  <system:String x:Key="Enmity_IsDenomi">Cut the value less than 1,000</system:String>
+  <system:String x:Key="Enmity_IsVisibleJobIcon">Visible job icon</system:String>
+  <system:String x:Key="Enmity_JobIconScale">Job icon scale</system:String>
   <system:String x:Key="Enmity_MaxCountOfDisplay">Max count of display</system:String>
   <system:String x:Key="Enmity_ScaningRate">Enmity scaning rate (msec)</system:String>
 
