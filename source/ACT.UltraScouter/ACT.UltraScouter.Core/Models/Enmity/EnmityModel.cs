@@ -10,6 +10,8 @@ namespace ACT.UltraScouter.Models.Enmity
     public class EnmityModel :
         BindableBase
     {
+        public UltraScouter.Config.Enmity Config => Settings.Instance.Enmity;
+
         private int index;
 
         public int Index
