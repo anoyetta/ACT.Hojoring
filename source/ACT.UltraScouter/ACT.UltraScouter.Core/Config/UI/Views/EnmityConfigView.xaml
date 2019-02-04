@@ -58,10 +58,6 @@
         IsChecked="{Binding Enmity.HideInSolo, Mode=TwoWay}" />
       <CheckBox
         Margin="0 5 0 0"
-        Content="{DynamicResource Enmity_DisplayPCasYou}"
-        IsChecked="{Binding Enmity.IsSelfDisplayYou, Mode=TwoWay}" />
-      <CheckBox
-        Margin="0 5 0 0"
         Content="{DynamicResource Common_TestMode}"
         IsChecked="{Binding Enmity.IsDesignMode, Mode=TwoWay}" />
 
@@ -98,6 +94,41 @@
         Maximum="3000"
         Increment="1"
         FormatString="N0" />
+
+      <Label
+        Margin="0 5 0 0"
+        Content="{DynamicResource Enmity_MaxCountOfDisplay}" />
+      <xctk:IntegerUpDown
+        Value="{Binding Enmity.MaxCountOfDisplay, Mode=TwoWay}"
+        HorizontalAlignment="Left"
+        Increment="1"
+        Minimum="1"
+        Maximum="32"
+        Width="70" />
+
+      <CheckBox
+        Margin="0 15 0 0"
+        Content="{DynamicResource Enmity_DisplayPCasYou}"
+        IsChecked="{Binding Enmity.IsSelfDisplayYou, Mode=TwoWay}" />
+      <CheckBox
+        Margin="0 5 0 0"
+        Content="{DynamicResource Enmity_IsDenomi}"
+        IsChecked="{Binding Enmity.IsDenomi, Mode=TwoWay}" />
+      <CheckBox
+        Margin="0 5 0 0"
+        Content="{DynamicResource Enmity_IsVisibleJobIcon}"
+        IsChecked="{Binding Enmity.IsVisibleIcon, Mode=TwoWay}" />
+      <Label
+        Margin="0 5 0 0"
+        Content="{DynamicResource Enmity_JobIconScale}" />
+      <xctk:DoubleUpDown
+        HorizontalAlignment="Left"
+        Value="{Binding Enmity.IconScale, Mode=TwoWay}"
+        Width="80"
+        Minimum="0.01"
+        Maximum="4.00"
+        Increment="0.01"
+        FormatString="N2" />
 
       <Label
         Margin="0 20 0 0"
@@ -150,17 +181,6 @@
         Maximum="3000"
         Width="85" />
       -->
-
-      <Label
-        Margin="0 5 0 0"
-        Content="{DynamicResource Enmity_MaxCountOfDisplay}" />
-      <xctk:IntegerUpDown
-        Value="{Binding Enmity.MaxCountOfDisplay, Mode=TwoWay}"
-        HorizontalAlignment="Left"
-        Increment="1"
-        Minimum="1"
-        Maximum="32"
-        Width="70" />
     </StackPanel>
   </ScrollViewer>
 </Page>

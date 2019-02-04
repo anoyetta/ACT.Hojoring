@@ -53,6 +53,33 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.isSelfDisplayYou, value);
         }
 
+        private bool isDenomi = false;
+
+        [DataMember]
+        public bool IsDenomi
+        {
+            get => this.isDenomi;
+            set => this.SetProperty(ref this.isDenomi, value);
+        }
+
+        private bool isVisibleIcon = true;
+
+        [DataMember]
+        public bool IsVisibleIcon
+        {
+            get => this.isVisibleIcon;
+            set => this.SetProperty(ref this.isVisibleIcon, value);
+        }
+
+        private double iconScale = 1.0d;
+
+        [DataMember]
+        public double IconScale
+        {
+            get => this.iconScale;
+            set => this.SetProperty(ref this.iconScale, value);
+        }
+
         private double scale = 1.0d;
 
         [DataMember]
