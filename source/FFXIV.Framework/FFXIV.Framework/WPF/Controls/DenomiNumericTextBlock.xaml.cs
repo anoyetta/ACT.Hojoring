@@ -23,6 +23,31 @@ namespace FFXIV.Framework.WPF.Controls
             this.Render();
         }
 
+        #region IsDenomi 依存関係プロパティ
+
+        /// <summary>
+        /// IsDenomi 依存関係プロパティ
+        /// </summary>
+        public static readonly DependencyProperty IsDenomiProperty
+            = DependencyProperty.Register(
+            nameof(IsDenomi),
+            typeof(bool),
+            typeof(DenomiNumericTextBlock),
+            new FrameworkPropertyMetadata(
+                false,
+                (s, e) => (s as DenomiNumericTextBlock).Render()));
+
+        /// <summary>
+        /// IsDenomi
+        /// </summary>
+        public bool IsDenomi
+        {
+            get => (bool)this.GetValue(IsDenomiProperty);
+            set => this.SetValue(IsDenomiProperty, value);
+        }
+
+        #endregion IsDenomi 依存関係プロパティ
+
         #region Value 依存関係プロパティ
 
         /// <summary>
@@ -224,7 +249,7 @@ namespace FFXIV.Framework.WPF.Controls
                 Visibility.Collapsed :
                 Visibility.Visible;
 
-            this.BottomPartLabel.Visibility = string.IsNullOrEmpty(this.BottomPartLabel.Text) ?
+            this.BottomPartLabel.Visibility = this.IsDenomi || string.IsNullOrEmpty(this.BottomPartLabel.Text) ?
                 Visibility.Collapsed :
                 Visibility.Visible;
         }
