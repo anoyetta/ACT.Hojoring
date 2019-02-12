@@ -25,7 +25,7 @@
     <local:LightOutlineTextBlock
       x:Name="BottomPartLabel"
       VerticalAlignment="Top"
-      FontSize="{Binding ElementName=UpperPartLabel, Mode=OneWay, Path=FontSize, Converter={StaticResource MultipleConverter}, ConverterParameter=0.6}"
-      Margin="{Binding ElementName=UpperPartLabel, Mode=OneWay, Path=FontSize, Converter={StaticResource TopMarginAdjuster}, ConverterParameter=0.6}" />
+      FontSize="{Binding ElementName=UpperPartLabel, Mode=OneWay, Path=FontSize, Converter={StaticResource MultipleConverter}, ConverterParameter=0.7}"
+      Margin="{Binding ElementName=UpperPartLabel, Mode=OneWay, Path=FontSize, Converter={StaticResource TopMarginAdjuster}, ConverterParameter=0.7}" />
   </StackPanel>
 </UserControl>

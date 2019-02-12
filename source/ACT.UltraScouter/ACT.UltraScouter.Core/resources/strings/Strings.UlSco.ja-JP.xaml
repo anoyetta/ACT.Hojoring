@@ -103,6 +103,9 @@
   <system:String x:Key="Enmity_HideInNotCombat">非戦闘時は表示しない</system:String>
   <system:String x:Key="Enmity_HideInSolo">ソロ時は表示しない</system:String>
   <system:String x:Key="Enmity_DisplayPCasYou">自キャラを"You"と表記する</system:String>
+  <system:String x:Key="Enmity_IsDenomi">1,000未満の値をカットする</system:String>
+  <system:String x:Key="Enmity_IsVisibleJobIcon">ジョブアイコンを表示する</system:String>
+  <system:String x:Key="Enmity_JobIconScale">ジョブアイコンのスケール</system:String>
   <system:String x:Key="Enmity_MaxCountOfDisplay">リストの最大表示数</system:String>
   <system:String x:Key="Enmity_ScaningRate">敵視情報のスキャンレート (msec)</system:String>
 
