@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -56,8 +57,8 @@ namespace FFXIV.Framework.Dialog.Views
 
                 var t = (s as TextBox).Text;
 
-                double d;
-                if (double.TryParse(t, out d))
+                var ci = CultureInfo.InstalledUICulture;
+                if (double.TryParse(t, NumberStyles.Any, ci.NumberFormat, out double d))
                 {
                     if (d < MinSize)
                     {
@@ -107,23 +108,24 @@ namespace FFXIV.Framework.Dialog.Views
         {
             var t = sender as TextBox;
 
-            decimal d;
+            double d;
+            var ci = CultureInfo.InstalledUICulture;
 
             if (e.Key == Key.Up)
             {
-                if (decimal.TryParse(t.Text, out d))
+                if (double.TryParse(t.Text, NumberStyles.Any, ci.NumberFormat, out d))
                 {
-                    t.Text = (d + 0.1m).ToString("N1");
+                    t.Text = (d + 0.1d).ToString("N1");
                 }
             }
 
             if (e.Key == Key.Down)
             {
-                if (decimal.TryParse(t.Text, out d))
+                if (double.TryParse(t.Text, NumberStyles.Any, ci.NumberFormat, out d))
                 {
-                    if ((d - 0.1m) >= 1.0m)
+                    if ((d - 0.1d) >= 1.0d)
                     {
-                        t.Text = (d - 0.1m).ToString("N1");
+                        t.Text = (d - 0.1d).ToString("N1");
                     }
                 }
             }
