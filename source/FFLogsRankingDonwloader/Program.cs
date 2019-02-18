@@ -31,12 +31,13 @@ namespace FFLogsRankingDonwloader
             var apiKey = args[0];
             var fileName = args[1];
             var isOnlyHistogram = args.Length >= 3 ? bool.Parse(args[2]) : false;
+            var targetZoneID = args.Length >= 4 ? int.Parse(args[3]) : 0;
 
             StatisticsDatabase.Instance.APIKey = apiKey;
 
             if (!isOnlyHistogram)
             {
-                StatisticsDatabase.Instance.CreateAsync(fileName).Wait();
+                StatisticsDatabase.Instance.CreateAsync(fileName, targetZoneID).Wait();
                 Console.WriteLine($"[FFLogs] rankings downloaded.");
             }
 
