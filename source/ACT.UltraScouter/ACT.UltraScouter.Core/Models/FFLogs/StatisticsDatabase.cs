@@ -66,7 +66,8 @@ namespace ACT.UltraScouter.Models.FFLogs
         }
 
         public async Task CreateAsync(
-            string rankingFileName)
+            string rankingFileName,
+            int targetZoneID = 0)
         {
             if (string.IsNullOrEmpty(this.APIKey))
             {
@@ -77,7 +78,7 @@ namespace ACT.UltraScouter.Models.FFLogs
             {
                 await this.LoadZonesAsync();
                 await this.LoadClassesAsync();
-                await this.CreateRankingsAsync(rankingFileName);
+                await this.CreateRankingsAsync(rankingFileName, targetZoneID);
             }
             catch (Exception ex)
             {
@@ -141,14 +142,25 @@ namespace ACT.UltraScouter.Models.FFLogs
         }
 
         public async Task CreateRankingsAsync(
-            string rankingFileName)
+            string rankingFileName,
+            int targetZoneID = 0)
         {
             this.InitializeRankingsDatabase(rankingFileName);
 
-            var targetEncounters = this.zones
-                .OrderByDescending(x => x.ID)
-                .FirstOrDefault()?
-                .Enconters;
+            var targetEncounters = default(BasicEntryModel[]);
+            if (targetZoneID == 0)
+            {
+                targetEncounters = this.zones
+                    .OrderByDescending(x => x.ID)
+                    .FirstOrDefault()?
+                    .Enconters;
+            }
+            else
+            {
+                targetEncounters = this.zones
+                    .FirstOrDefault(x => x.ID == targetZoneID)?
+                    .Enconters;
+            }
 
             var rankingBuffer = new List<RankingModel>(10000);
 
@@ -199,6 +211,13 @@ namespace ACT.UltraScouter.Models.FFLogs
                         }
 
                         page++;
+                    }
+                    else
+                    {
+                        this.LogError(
+                            $"[FFLogs] Error, REST API Response not OK. status_code={res.StatusCode}");
+                        this.LogError(await res?.Content.ReadAsStringAsync());
+                        break;
                     }
 
                     await Task.Delay(TimeSpan.FromSeconds(0.50));
@@ -533,6 +552,11 @@ namespace ACT.UltraScouter.Models.FFLogs
             string rankingDatabaseFileName,
             IEnumerable<RankingModel> rankings)
         {
+            if (!rankings.Any())
+            {
+                return;
+            }
+
             using (var cn = this.OpenRankingDatabaseConnection(rankingDatabaseFileName))
             using (var tran = cn.BeginTransaction())
             {
@@ -576,6 +600,23 @@ namespace ACT.UltraScouter.Models.FFLogs
             if (ex == null)
             {
                 this.Logger?.Trace(message);
+                Console.WriteLine(message);
+            }
+            else
+            {
+                this.Logger?.Error(ex, message);
+                Console.WriteLine(message);
+                Console.WriteLine(ex);
+            }
+        }
+
+        private void LogError(
+            string message,
+            Exception ex = null)
+        {
+            if (ex == null)
+            {
+                this.Logger?.Error(ex, message);
                 Console.WriteLine(message);
             }
             else
