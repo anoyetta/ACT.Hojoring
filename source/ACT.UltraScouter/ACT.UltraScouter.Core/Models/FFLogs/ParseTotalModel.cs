@@ -316,8 +316,33 @@ namespace ACT.UltraScouter.Models.FFLogs
                     return httpClient;
                 }
 
+                var lang = "www";
+                switch (Settings.Instance.UILocale)
+                {
+                    case FFXIV.Framework.Globalization.Locales.JA:
+                        lang = "ja";
+                        break;
+
+                    case FFXIV.Framework.Globalization.Locales.FR:
+                        lang = "fr";
+                        break;
+
+                    case FFXIV.Framework.Globalization.Locales.DE:
+                        lang = "de";
+                        break;
+
+                    case FFXIV.Framework.Globalization.Locales.KO:
+                        lang = "ko";
+                        break;
+
+                    case FFXIV.Framework.Globalization.Locales.TW:
+                    case FFXIV.Framework.Globalization.Locales.CN:
+                        lang = "cn";
+                        break;
+                }
+
                 httpClient = new HttpClient();
-                httpClient.BaseAddress = new Uri("https://www.fflogs.com/v1/");
+                httpClient.BaseAddress = new Uri($"https://{lang}.fflogs.com/v1/");
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
