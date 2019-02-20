@@ -106,12 +106,23 @@ namespace FFXIV.Framework.FFXIVHelper
     public class Job
     {
         public JobIDs ID { get; set; } = JobIDs.Unknown;
-        public string NameDE { get; set; } = string.Empty;
         public string NameEN { get; set; } = string.Empty;
+        public string NameDE { get; set; } = string.Empty;
         public string NameFR { get; set; } = string.Empty;
         public string NameJA { get; set; } = string.Empty;
         public string NameCN { get; set; } = string.Empty;
         public string NameKO { get; set; } = string.Empty;
+
+        public string[] Names => new[]
+        {
+            this.NameEN,
+            this.NameDE,
+            this.NameFR,
+            this.NameJA,
+            this.NameCN,
+            this.NameKO,
+        };
+
         public Roles Role { get; set; } = Roles.Unknown;
 
         /// <summary>
