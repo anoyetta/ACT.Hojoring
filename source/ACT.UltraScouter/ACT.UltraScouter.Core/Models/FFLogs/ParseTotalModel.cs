@@ -149,7 +149,7 @@ namespace ACT.UltraScouter.Models.FFLogs
             this.Job == null ? "All" :
                 this.Job.ID == JobIDs.Unknown ?
                     string.Empty :
-                    this.Job.NameEN;
+                    this.Job.GetName(Settings.Instance.UILocale);
 
         public BitmapSource JobIcon => JobIconDictionary.Instance.GetIcon(this.job?.ID ?? JobIDs.Unknown);
 
@@ -520,9 +520,9 @@ namespace ACT.UltraScouter.Models.FFLogs
 
                 var filter = default(Predicate<ParseModel>);
                 if (job != null &&
-                    parses.Any(x => string.Equals(x.Spec, job.NameEN, StringComparison.OrdinalIgnoreCase)))
+                    parses.Any(x => x.IsEqualToSpec(job)))
                 {
-                    filter = (x) => string.Equals(x.Spec, job.NameEN, StringComparison.OrdinalIgnoreCase);
+                    filter = x => x.IsEqualToSpec(job);
                 }
 
                 var bests =

@@ -54,14 +54,14 @@
 
     <Style x:Key="OutlineSStyle" TargetType="{x:Type ctrl:LightOutlineTextBlock}" BasedOn="{StaticResource OutlineStyle}">
       <Setter Property="FontSize" Value="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
-      <Setter Property="StrokeThickness" Value="{Binding Path=Config.DisplayText.Font.OutlineThickness, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" />
-      <Setter Property="BlurRadius" Value="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" />
+      <Setter Property="StrokeThickness" Value="{Binding Path=Config.DisplayText.Font.OutlineThickness, Mode=OneWay}" />
+      <Setter Property="BlurRadius" Value="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}" />
     </Style>
 
     <Style x:Key="OutlineXSStyle" TargetType="{x:Type ctrl:LightOutlineTextBlock}" BasedOn="{StaticResource OutlineStyle}">
       <Setter Property="FontSize" Value="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.7}" />
-      <Setter Property="StrokeThickness" Value="{Binding Path=Config.DisplayText.Font.OutlineThickness, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
-      <Setter Property="BlurRadius" Value="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
+      <Setter Property="StrokeThickness" Value="{Binding Path=Config.DisplayText.Font.OutlineThickness, Mode=OneWay}" />
+      <Setter Property="BlurRadius" Value="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}" />
     </Style>
 
     <SolidColorBrush x:Key="CategoryStrokeBrush">Black</SolidColorBrush>
@@ -249,12 +249,23 @@
                   Height="{Binding FrequencyRatioToMaximum, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter={StaticResource HistogramBarHeight}}"
                   Background="{Binding RankPercentileFillBrush, Mode=OneWay}"
                   VerticalAlignment="Bottom" />
-                <TextBlock
-                  Width="5"
+                <Border
+                  Width="2"
                   Height="{StaticResource HistogramBarHeight}"
+                  BorderThickness="0"
+                  CornerRadius="1"
                   Background="#c9171e"
+                  Opacity="0.9"
                   VerticalAlignment="Bottom"
-                  Visibility="{Binding IsCurrent, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+                  Visibility="{Binding IsCurrent, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+                  <Border.Effect>
+                    <DropShadowEffect
+                      Direction="0"
+                      ShadowDepth="0"
+                      BlurRadius="4"
+                      Color="#c9171e" />
+                  </Border.Effect>
+                </Border>
               </Grid>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
