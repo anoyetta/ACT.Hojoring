@@ -43,7 +43,7 @@
   <system:String x:Key="Common_Font">글꼴</system:String>
   <system:String x:Key="Common_FillColor">글자색</system:String>
   <system:String x:Key="Common_StrokeColor">외각선색</system:String>
-  <system:String x:Key="Common_BlurRadius">Blur radius</system:String>
+  <system:String x:Key="Common_BlurRadius">블러 반경</system:String>
   <system:String x:Key="Common_WarningFillColor">경고시 글자색</system:String>
   <system:String x:Key="Common_WarningStrokeColor">경고시 외곽선색</system:String>
   <system:String x:Key="Common_ProgressBar">진행 바</system:String>
@@ -106,13 +106,13 @@
   <system:String x:Key="Spell_TextToMatch">매칭 워드</system:String>
   <system:String x:Key="Spell_UserRegex">정규식을 사용한다</system:String>
   <system:String x:Key="Spell_RecastTime">재생 시간</system:String>
-  <system:String x:Key="Spell_UseHotbrRecastTime">핫바에서 재생시간을 구한다</system:String>
-  <system:String x:Key="Spell_HotbarItemName">핫바의 등록명칭</system:String>
+  <system:String x:Key="Spell_UseHotbrRecastTime">단축바에서 재생시간을 구한다</system:String>
+  <system:String x:Key="Spell_HotbarItemName">단축바의 등록명칭</system:String>
   <system:String x:Key="Spell_TextToExtend">연장 매칭 워드</system:String>
   <system:String x:Key="Spell_Secounds">초</system:String>
   <system:String x:Key="Spell_ExtendSecounds">초 연장</system:String>
   <system:String x:Key="Spell_ExtendRecastTimeOverOrigal">원래 재생 시간을 초과하여 연장</system:String>
-  <system:String x:Key="Spell_IsNotResetBarOnExtended">Don't reset bar on extended</system:String>
+  <system:String x:Key="Spell_IsNotResetBarOnExtended">연장했을 때 바를 리셋하지 않는다</system:String>
   <system:String x:Key="Spell_UpperLimitOfRecastTime">재생 시간의 최대 값</system:String>
   <system:String x:Key="Spell_WarningTime">초 미만의 경우 경고색으로 변경</system:String>
   <system:String x:Key="Spell_WarningTimeChangeFontColor">글꼴의 경계색을 변경</system:String>
@@ -120,7 +120,7 @@
   <system:String x:Key="Spell_BlinkIcon">아이콘을 깜박하기</system:String>
   <system:String x:Key="Spell_BlinkBar">바 깜박이기</system:String>
   <system:String x:Key="Spell_HideCounter">재생 시간을 숨긴다</system:String>
-  <system:String x:Key="Spell_NotResetAtWipeout">Don't reset at Wipeout</system:String>
+  <system:String x:Key="Spell_NotResetAtWipeout">전멸시에 리셋하지 않는다</system:String>
   <system:String x:Key="Spell_NoticeOnMatch">시작시 알림</system:String>
   <system:String x:Key="Spell_NoticeOnOver">시작시 n초 후 알림</system:String>
   <system:String x:Key="Spell_NoticeOnBefore">완료 n초 전에 알림</system:String>
@@ -186,11 +186,11 @@
   <system:String x:Key="Options_EnabledNotifyDefaultSpellTimer">ACT본체의 스펠타이머에 알림 (시험적 기능)</system:String>
   <system:String x:Key="Options_EnabledSimplyRegex">정규 표현식을 간단하게</system:String>
   <system:String x:Key="Options_EnabledRemoveTooltipSymbol">툴팁 기호를 제거</system:String>
-  <system:String x:Key="Options_EnabledRemoveWorldName">Remove world name from character name</system:String>
+  <system:String x:Key="Options_EnabledRemoveWorldName">캐릭터 이름에 부여되는 월드명을 제거한다</system:String>
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">UNKNOWN 기술을 보완하는</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">타격·회복에 관한 로그를 자른다</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">"15", "16"로 시작하는 세부 로그를 잘라낸다</system:String>
-  <system:String x:Key="Options_EnabledAutoIgnore">Auto filter the 15: or 16: logs when there are many people</system:String>
+  <system:String x:Key="Options_EnabledAutoIgnore">주위의 PC가 많을 때 자동적으로 "15:", "16:"부터 시작되는 로그를 차단한다.</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">"FC :"로 시작하는 패킷 덤프도 분석 대상으로한다 (비추천 : 고부하)</system:String>
   <system:String x:Key="Options_ReadyText">정방향 스펠 계산 완료시 텍스트 (기본값 : Ready)</system:String>
   <system:String x:Key="Options_OverText">역방향 스펠 계산 완료시 텍스트 (기본값 : Over)</system:String>
@@ -211,11 +211,11 @@
   <system:String x:Key="Options_ReloadTTSDictionary">외부 TTS 사전 파일을 다시 불러오기</system:String>
 
   <system:String x:Key="Options_MinimizeOnStart">ACT시작 시 최소화</system:String>
-  <system:String x:Key="Options_Polon">Sounds "Polon♪" every 15 seconds</system:String>
+  <system:String x:Key="Options_Polon">15초마다 "포롱"♪ 하고 알린다</system:String>
 
   <system:String x:Key="Info_Placeholders">유효한 대체식</system:String>
   <system:String x:Key="Info_Triggers">활성 트리거</system:String>
-  <system:String x:Key="Info_Hotbar">Hotbar Info</system:String>
+  <system:String x:Key="Info_Hotbar">단축바 정보</system:String>
   <system:String x:Key="Info_TriggerCount">활성 트리거 수 (인스턴스 포함)</system:String>
 
   <system:String x:Key="Icon_BrowseIcon">아이콘을 선택</system:String>
@@ -254,7 +254,7 @@
   <system:String x:Key="Timeline_Enable">스뻬스뻬 타임 ™ 를 사용하는</system:String>
   <system:String x:Key="Timeline_Folder">타임 라인의 참조 폴더</system:String>
   <system:String x:Key="Timeline_Visual">스뻬스뻬 타임 ™ 설정</system:String>
-  <system:String x:Key="Timeline_NotifyInterval">Notify interval (ms)</system:String>
+  <system:String x:Key="Timeline_NotifyInterval">통지 스레드의 간격 (ms)</system:String>
   <system:String x:Key="Timeline_OverlayVisible">오버레이를 표시하려면</system:String>
   <system:String x:Key="Timeline_Opacity">불투명도</system:String>
   <system:String x:Key="Timeline_OverlayScale">오버레이 비율</system:String>
