@@ -347,6 +347,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 if (this.SetProperty(ref this.overlayBackgroundString, value))
                 {
                     this.RaisePropertyChanged(nameof(this.OverlayBackground));
+                    this.RaisePropertyChanged(nameof(this.OverlayBackgroundColor));
                 }
             }
         }
@@ -392,6 +393,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
             }
         }
+
+        [XmlIgnore]
+        public Color OverlayBackgroundColor => (this.OverlayBackground as SolidColorBrush)?.Color ?? Colors.Black;
 
         public ObservableCollection<TimelineStyle> Styles
         {
