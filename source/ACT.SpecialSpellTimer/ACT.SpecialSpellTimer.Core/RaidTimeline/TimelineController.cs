@@ -360,6 +360,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // toHideリストを初期化する
             TimelineVisualNoticeModel.ClearSyncToHideList();
             TimelineImageNoticeModel.ClearSyncToHideList();
+            TimelineVisualNoticeModel.ClearToHideEntry();
 
             // タイムライン制御フラグを初期化する
             TimelineExpressionsModel.Clear();
