@@ -1,6 +1,3 @@
-using ACT.SpecialSpellTimer.RaidTimeline.Views;
-using FFXIV.Framework.Common;
-using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,8 +8,10 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using System.Xml.Serialization;
+using ACT.SpecialSpellTimer.RaidTimeline.Views;
+using FFXIV.Framework.Common;
+using Prism.Commands;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -325,8 +324,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             => this.Timestamp.AddSeconds(this.Duration.GetValueOrDefault());
 
         private TimelineImageNoticeOverlay overlay;
-
-        private DispatcherTimer timer;
         private volatile bool toHide = false;
 
         public void StanbyNotice()
@@ -352,40 +349,32 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public void StartNotice()
         {
-            lock (this)
-            {
-                if (this.timer == null)
+            TimelineVisualNoticeModel.EnqueueToHide(
+                this,
+                (sender, model) =>
                 {
-                    this.timer = new DispatcherTimer(DispatcherPriority.Background)
-                    {
-                        Interval = TimeSpan.FromSeconds(0.3d)
-                    };
+                    var result = false;
+                    var notice = model as TimelineImageNoticeModel;
 
-                    this.timer.Tick += (x, y) =>
+                    lock (notice)
                     {
-                        lock (this)
+                        if (DateTime.Now >= notice.TimeToHide.AddSeconds(0.1d) ||
+                            notice.toHide)
                         {
-                            if (DateTime.Now >= this.TimeToHide.AddSeconds(0.1d) ||
-                                this.toHide)
+                            if (notice.overlay != null)
                             {
-                                if (this.overlay != null)
-                                {
-                                    this.overlay.OverlayVisible = false;
-                                }
-
-                                this.toHide = false;
-                                this.RemoveSyncToHide();
-
-                                (x as DispatcherTimer)?.Stop();
+                                notice.overlay.OverlayVisible = false;
                             }
-                        }
-                    };
-                }
 
-                this.overlay?.ShowNotice();
-                this.timer.Stop();
-                this.timer.Start();
-            }
+                            notice.toHide = false;
+                            notice.RemoveSyncToHide();
+                        }
+                    }
+
+                    return result;
+                });
+
+            this.overlay?.ShowNotice();
         }
 
         public void CloseNotice()
@@ -522,12 +511,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public TimelineImageNoticeModel Clone()
         {
             var clone = this.MemberwiseClone() as TimelineImageNoticeModel;
-
-            if (clone.timer != null)
-            {
-                clone.timer.Stop();
-                clone.timer = null;
-            }
 
             clone.ClearToHide();
 

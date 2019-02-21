@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml.Serialization;
@@ -325,47 +326,105 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public DateTime TimeToHide
             => this.Timestamp.AddSeconds(this.Duration.GetValueOrDefault());
 
-        private DispatcherTimer timer;
         private volatile bool toHide = false;
 
         public void StartNotice(
-            Action<TimelineVisualNoticeModel> removeAction,
-            bool dummyMode = false)
+            Action<TimelineVisualNoticeModel> removeCallback,
+            bool isDummyMode = false)
         {
             this.IsVisible = true;
+            this.RefreshDuration();
 
-            if (this.timer == null)
-            {
-                this.timer = new DispatcherTimer(DispatcherPriority.Normal)
+            EnqueueToHide(
+                this,
+                (sender, model) =>
                 {
-                    Interval = TimeSpan.FromSeconds(0.3d)
-                };
+                    var result = false;
+                    var notice = model as TimelineVisualNoticeModel;
 
-                this.timer.Tick += (x, y) =>
-                {
-                    this.RefreshDuration();
+                    notice.RefreshDuration();
 
-                    lock (this)
+                    if (DateTime.Now >= notice.TimeToHide.AddSeconds(1.0d) ||
+                        notice.toHide)
                     {
-                        if (DateTime.Now >= this.TimeToHide.AddSeconds(1.0d) ||
-                            this.toHide)
+                        if (!sender.IsDummyMode)
                         {
-                            if (!dummyMode)
-                            {
-                                this.toHide = false;
-                                this.IsVisible = false;
-                                removeAction?.Invoke(this);
-                                this.RemoveSyncToHide();
-                            }
-
-                            (x as DispatcherTimer)?.Stop();
+                            notice.toHide = false;
+                            notice.IsVisible = false;
+                            removeCallback?.Invoke(notice);
+                            notice.RemoveSyncToHide();
                         }
+
+                        result = true;
                     }
-                };
+
+                    return result;
+                },
+                isDummyMode);
+        }
+
+        private static readonly double ToHideSubscriberInterval = 0.1d;
+
+        private static readonly DispatcherTimer ToHideTimer = new DispatcherTimer(
+            TimeSpan.FromSeconds(ToHideSubscriberInterval),
+            DispatcherPriority.Normal,
+            ToHideTimerOnTick,
+            Application.Current.Dispatcher);
+
+        private static readonly List<TimelineVisualNoticeToHideEntry> ToHideEntryList = new List<TimelineVisualNoticeToHideEntry>(32);
+
+        private static void ToHideTimerOnTick(
+            object sender,
+            EventArgs e)
+        {
+            var list = default(IEnumerable<TimelineVisualNoticeToHideEntry>);
+
+            lock (ToHideEntryList)
+            {
+                list = ToHideEntryList.ToArray();
             }
 
-            this.RefreshDuration();
-            this.timer.Start();
+            foreach (var entry in list)
+            {
+                if (entry.TryHideCallback(entry, entry.NoticeModel))
+                {
+                    lock (ToHideEntryList)
+                    {
+                        ToHideEntryList.Remove(entry);
+                    }
+                }
+            }
+        }
+
+        public static void EnqueueToHide(
+            TimelineBase noticeModel,
+            Func<TimelineVisualNoticeToHideEntry, TimelineBase, bool> tryHideCallback,
+            bool isDummyMode = false)
+        {
+            lock (ToHideEntryList)
+            {
+                ToHideEntryList.Add(new TimelineVisualNoticeToHideEntry()
+                {
+                    NoticeModel = noticeModel,
+                    IsDummyMode = isDummyMode,
+                    TryHideCallback = tryHideCallback
+                });
+            }
+
+            if (!ToHideTimer.IsEnabled)
+            {
+                ToHideTimer.Start();
+            }
+        }
+
+        public static void ClearToHideEntry()
+        {
+            lock (ToHideEntryList)
+            {
+                ToHideEntryList.Clear();
+            }
+
+            ToHideTimer.Stop();
         }
 
         #region IStylable
@@ -484,12 +543,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             var clone = this.MemberwiseClone() as TimelineVisualNoticeModel;
 
-            if (clone.timer != null)
-            {
-                clone.timer.Stop();
-                clone.timer = null;
-            }
-
             clone.ClearToHide();
 
             return clone;
@@ -561,5 +614,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         #endregion Dummy Notice
+    }
+
+    public class TimelineVisualNoticeToHideEntry
+    {
+        public TimelineBase NoticeModel { get; set; }
+
+        public bool IsDummyMode { get; set; }
+
+        public Func<TimelineVisualNoticeToHideEntry, TimelineBase, bool> TryHideCallback { get; set; }
     }
 }
