@@ -34,7 +34,7 @@
           BlurRadius="0"
           Direction="0"
           ShadowDepth="0"
-          Color="White" />
+          Color="{Binding Path=Config.OverlayBackgroundColor, Mode=OneWay}" />
       </Setter.Value>
     </Setter>
   </Style>
