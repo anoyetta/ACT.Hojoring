@@ -7,8 +7,8 @@
   <system:String x:Key="Help_GotoWiki">Wiki를 본다</system:String>
   <system:String x:Key="Help_GotoLastestRelease">최신 자료를 확인한다</system:String>
   <system:String x:Key="Help_GotoIssues">과제 목록을 확인한다</system:String>
-  <system:String x:Key="Help_Update">Update</system:String>
-  <system:String x:Key="Help_UsePreReleaase">Use Pre-Release</system:String>
+  <system:String x:Key="Help_Update">업데이트</system:String>
+  <system:String x:Key="Help_UsePreReleaase">선행 릴리즈를 사용한다</system:String>
 
   <system:String x:Key="Help_ContactToAnoyetta">DISCORD 포럼에 참석한다</system:String>
   <system:String x:Key="Help_ContactToAnoyettaTwitter">Twitter 로 연락한다</system:String>

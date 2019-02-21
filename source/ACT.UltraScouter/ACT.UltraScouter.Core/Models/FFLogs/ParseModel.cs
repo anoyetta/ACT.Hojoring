@@ -1,5 +1,8 @@
+using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
+using FFXIV.Framework.FFXIVHelper;
 using Newtonsoft.Json;
 using Prism.Mvvm;
 
@@ -88,5 +91,9 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         [JsonIgnore]
         public SolidColorBrush CategoryStrokeBrush => ParseTotalModel.GetCategoryStrokeBrush(this.Percentile);
+
+        public bool IsEqualToSpec(
+            Job job)
+            => job.Names.Any(x => this.Spec.Equals(x, StringComparison.OrdinalIgnoreCase));
     }
 }

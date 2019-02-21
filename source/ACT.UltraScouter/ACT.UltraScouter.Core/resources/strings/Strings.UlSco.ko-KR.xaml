@@ -24,7 +24,7 @@
 
   <system:String x:Key="Common_Visible">표시하는</system:String>
   <system:String x:Key="Common_Location">위치</system:String>
-  <system:String x:Key="Common_BarWidth">Bar width</system:String>
+  <system:String x:Key="Common_BarWidth">바의 폭</system:String>
   <system:String x:Key="Common_Scale">규모</system:String>
   <system:String x:Key="Common_Background">배경</system:String>
   <system:String x:Key="Common_Font">폰트</system:String>
@@ -83,7 +83,7 @@
 
   <system:String x:Key="MobList_VisibleMePosition">자신의 좌표 표시</system:String>
   <system:String x:Key="MobList_SimpleView">간략 하게 표시</system:String>
-  <system:String x:Key="MobList_UngroupSameNameMobs">Ungroup same name mobs</system:String>
+  <system:String x:Key="MobList_UngroupSameNameMobs">같은 이름의 몹의 그룹화 해제</system:String>
   <system:String x:Key="MobList_VisibleZPosition">Z축 표시</system:String>
   <system:String x:Key="MobList_DirectionOrigin">방향 표시 기준</system:String>
   <system:String x:Key="MobList_DirectionAdjustmentAngle">방향 보정 각도</system:String>
@@ -100,21 +100,20 @@
   <system:String x:Key="MobList_MobBColor">몹 B 색</system:String>
   <system:String x:Key="MobList_MobOtherColor">몹 Other 색</system:String>
 
-  <system:String x:Key="Enmity_HideInNotCombat">Hide when not combat</system:String>
-  <system:String x:Key="Enmity_HideInSolo">Hide in solo</system:String>
-  <system:String x:Key="Enmity_DisplayPCasYou">Display PC as "You"</system:String>
-  <system:String x:Key="Enmity_IsDenomi">Cut the value less than 1,000</system:String>
-  <system:String x:Key="Enmity_IsVisibleJobIcon">Visible job icon</system:String>
-  <system:String x:Key="Enmity_JobIconScale">Job icon scale</system:String>
-  <system:String x:Key="Enmity_MaxCountOfDisplay">Max count of display</system:String>
-  <system:String x:Key="Enmity_ScaningRate">Enmity scaning rate (msec)</system:String>
+  <system:String x:Key="Enmity_HideInNotCombat">비전투시 표시하지 않는다</system:String>
+  <system:String x:Key="Enmity_HideInSolo">혼자 일때는 표시하지 않는다</system:String>
+  <system:String x:Key="Enmity_DisplayPCasYou">캐릭을 You로 표기한다</system:String>
+  <system:String x:Key="Enmity_IsDenomi">1,000 미만의 값을 잘라낸다</system:String>
+  <system:String x:Key="Enmity_IsVisibleJobIcon">잡 아이콘을 표시한다</system:String>
+  <system:String x:Key="Enmity_JobIconScale">잡 아이콘의 크기</system:String>
+  <system:String x:Key="Enmity_MaxCountOfDisplay">리스트 최대 표시수</system:String>
+  <system:String x:Key="Enmity_ScaningRate">Enmity 검색 시간 (msec)</system:String>
 
-  <system:String x:Key="FFLogs_VisibleHistogram">Visible histogram</system:String>
-  <system:String x:Key="FFLogs_HideInCombat">Hide in combat</system:String>
+  <system:String x:Key="FFLogs_VisibleHistogram">히스토그램을 표시</system:String>
+  <system:String x:Key="FFLogs_HideInCombat">전투 중에는 숨김</system:String>
   <system:String x:Key="FFLogs_HideInCombatDescription" xml:space="preserve">
-Judgment during battle is simple.
-When one of the party members HP, MP, TP is not the maximum value,
-it is judged that it is in battle.
+전투중의 판정은 간단합니다.
+파티 멤버의 HP, TP, MP의 어느쪽이 최대치가 아닐 때 전투중이라고 판단합니다.
   </system:String>
 
   <system:String x:Key="Help_GotoLastestRelease">GitHub의 최종 릴리스를 확인 합니다</system:String>
