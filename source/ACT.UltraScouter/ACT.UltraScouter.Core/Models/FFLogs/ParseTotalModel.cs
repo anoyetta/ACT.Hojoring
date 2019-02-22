@@ -176,9 +176,7 @@ namespace ACT.UltraScouter.Models.FFLogs
             {
                 var result = default(BitmapSource);
 
-                var job = Jobs.List
-                    .FirstOrDefault(x =>
-                        string.Equals(x.NameEN, this.bestJobName, StringComparison.OrdinalIgnoreCase));
+                var job = Jobs.FindFromName(this.bestJobName);
                 if (job != null)
                 {
                     result = JobIconDictionary.Instance.GetIcon(job.ID);

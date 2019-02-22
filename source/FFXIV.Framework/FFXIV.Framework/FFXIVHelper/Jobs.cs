@@ -235,6 +235,12 @@ namespace FFXIV.Framework.FFXIVHelper
             return Jobs.Find(idAsInt);
         }
 
+        public static Job FindFromName(
+            string jobName)
+            => jobs.FirstOrDefault(job =>
+                job.Names.Any(name =>
+                    string.Equals(name, jobName, StringComparison.OrdinalIgnoreCase))) ?? new Job();
+
         public static JobIDs IntToID(
             int id)
         {
