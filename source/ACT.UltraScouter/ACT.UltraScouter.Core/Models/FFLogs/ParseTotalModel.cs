@@ -178,7 +178,7 @@ namespace ACT.UltraScouter.Models.FFLogs
 
                 var job = Jobs.List
                     .FirstOrDefault(x =>
-                        string.Equals(x.NameEN, this.bestJobName, StringComparison.OrdinalIgnoreCase));
+                        x.Names.Any(name => string.Equals(name, this.bestJobName, StringComparison.OrdinalIgnoreCase)));
                 if (job != null)
                 {
                     result = JobIconDictionary.Instance.GetIcon(job.ID);
