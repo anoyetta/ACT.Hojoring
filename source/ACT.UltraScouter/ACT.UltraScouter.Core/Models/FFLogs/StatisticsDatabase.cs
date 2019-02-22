@@ -432,22 +432,20 @@ namespace ACT.UltraScouter.Models.FFLogs
             }
         }
 
-        public HistogramsModel GetHistogram(
-            JobIDs jobID)
-            => this.GetHistogram(Jobs.Find(jobID));
-
-        public HistogramsModel GetHistogram(
-            Job job)
-            => this.GetHistogram(job?.NameEN);
-
         private readonly Dictionary<string, HistogramsModel> HistogramDictionary = new Dictionary<string, HistogramsModel>(64);
 
         public HistogramsModel GetHistogram(
             string jobName)
+            => this.GetHistogram(Jobs.FindFromName(jobName));
+
+        public HistogramsModel GetHistogram(
+            Job job)
         {
+            var jobName = job?.NameEN ?? string.Empty;
+
             var result = new HistogramsModel()
             {
-                SpecName = jobName ?? string.Empty,
+                SpecName = jobName,
             };
 
             if (string.IsNullOrEmpty(jobName))
