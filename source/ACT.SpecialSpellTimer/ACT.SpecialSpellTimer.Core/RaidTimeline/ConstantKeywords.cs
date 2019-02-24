@@ -500,7 +500,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(MarkingRegex),
-                CreateRegex(@"00:(?<id>....):(?<target>.+?)に「マーキング」の効果。")
             },
             {
                 nameof(NetworkAbility),
