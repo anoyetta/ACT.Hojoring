@@ -430,7 +430,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "HP at", Category = KewordTypes.HPRate },
             new AnalyzeKeyword() { Keyword = "[EX] Added new combatant", Category = KewordTypes.Added },
             new AnalyzeKeyword() { Keyword = "] 1B:", Category = KewordTypes.Marker },
-            new AnalyzeKeyword() { Keyword = "「マーキング」", Category = KewordTypes.Marker },
+            new AnalyzeKeyword() { Keyword = "표식 효과를", Category = KewordTypes.Marker },
             new AnalyzeKeyword() { Keyword = "] 1A:", Category = KewordTypes.Effect },
             new AnalyzeKeyword() { Keyword = "] 15:", Category = KewordTypes.NetworkAbility },
             new AnalyzeKeyword() { Keyword = "] 16:", Category = KewordTypes.NetworkAOEAbility },
@@ -500,7 +500,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(MarkingRegex),
-                CreateRegex(@"00:(?<id>....):(?<target>.+?)に「マーキング」の効果。")
+                CreateRegex(@"00:(?<id>....):(?<target>.+?)가 표식 효과를 받았습니다.")
             },
             {
                 nameof(NetworkAbility),
