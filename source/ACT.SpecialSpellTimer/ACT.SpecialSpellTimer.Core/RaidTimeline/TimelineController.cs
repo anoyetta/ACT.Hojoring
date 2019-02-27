@@ -300,6 +300,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (Locker)
             {
+                TimelineTickCallback = null;
+
                 TimelineOverlay.CloseTimeline();
                 TimelineNoticeOverlay.CloseNotice();
 
@@ -1552,12 +1554,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region 時間進行関係のスレッド
 
-        private DispatcherTimer TimelineTimer
-        {
-            get;
-            set;
-        } = null;
-
         private volatile bool isRunning = false;
 
         public bool IsRunning => this.isRunning;
@@ -1598,21 +1594,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 this.CurrentTime = TimeSpan.Zero;
-
-                if (this.TimelineTimer == null)
-                {
-                    this.TimelineTimer = new DispatcherTimer(
-                        TimelineSettings.Instance.TimelineThreadPriority)
-                    {
-                        Interval = TimeSpan.FromMilliseconds(
-                            TimelineSettings.Instance.ProgressBarRefreshInterval),
-                    };
-
-                    this.TimelineTimer.Tick += this.TimelineTimer_Tick;
-                }
-
                 this.PreviouseDetectTime = DateTime.Now;
-                this.TimelineTimer.Start();
+
+                TimelineTickCallback = this.DoTimelineTick;
+                TimelineTimer.Interval = TimelineDefaultInterval;
+                if (!TimelineTimer.IsEnabled)
+                {
+                    TimelineTimer.Start();
+                }
 
                 this.isRunning = true;
                 this.Status = TimelineStatus.Runnning;
@@ -1629,7 +1618,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return;
                 }
 
-                this.TimelineTimer.Stop();
+                TimelineTickCallback = null;
 
                 // リソースを開放する
                 TimelineExpressionsModel.Clear();
@@ -1647,18 +1636,32 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
-        private volatile bool isTimelineTicking = false;
+        private static volatile bool isTimelineTicking = false;
+        private static volatile Action TimelineTickCallback;
+        private static TimeSpan TimelineDefaultInterval => TimeSpan.FromMilliseconds(TimelineSettings.Instance.ProgressBarRefreshInterval);
+        private static readonly TimeSpan TimelineIdleInterval = TimeSpan.FromSeconds(5);
 
-        private void TimelineTimer_Tick(
+        private static DispatcherTimer TimelineTimer => LazyTimelineTimer.Value;
+
+        private static readonly Lazy<DispatcherTimer> LazyTimelineTimer = new Lazy<DispatcherTimer>(() =>
+        {
+            var timer = new DispatcherTimer(TimelineSettings.Instance.TimelineThreadPriority);
+            timer.Tick += TimelineTimer_Tick;
+            return timer;
+        });
+
+        private static void TimelineTimer_Tick(
             object sender,
             EventArgs e)
         {
-            if (this.isTimelineTicking)
+            if (isTimelineTicking)
             {
                 return;
             }
 
-            this.isTimelineTicking = true;
+            isTimelineTicking = true;
+
+            var interval = TimelineDefaultInterval;
 
             try
             {
@@ -1667,6 +1670,29 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return;
                 }
 
+                if (TimelineTickCallback == null)
+                {
+                    interval = TimelineIdleInterval;
+                    return;
+                }
+
+                TimelineTickCallback.Invoke();
+            }
+            finally
+            {
+                if (TimelineTimer.Interval != interval)
+                {
+                    TimelineTimer.Interval = interval;
+                }
+
+                isTimelineTicking = false;
+            }
+        }
+
+        private void DoTimelineTick()
+        {
+            try
+            {
                 lock (this)
                 {
                     var now = DateTime.Now;
@@ -1681,10 +1707,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.AppLogger.Error(
                     ex,
                     $"[TL] Error Timeline ticker. name={this.Model.TimelineName}, zone={this.Model.Zone}, file={this.Model.SourceFile}");
-            }
-            finally
-            {
-                this.isTimelineTicking = false;
             }
         }
 
