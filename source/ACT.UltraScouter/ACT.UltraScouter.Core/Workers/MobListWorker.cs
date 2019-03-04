@@ -327,8 +327,9 @@ namespace ACT.UltraScouter.Workers
                 }
                 else
                 {
+                    var actorsArray = actors.ToArray();
                     CombatantsViewModel.RefreshCombatants(combatants.Concat(
-                        from x in actors
+                        from x in actorsArray
                         where
                         !combatants.Any(y => y.ID == x.ID)
                         select
