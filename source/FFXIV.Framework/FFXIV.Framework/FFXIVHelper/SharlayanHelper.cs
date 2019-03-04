@@ -109,6 +109,11 @@ namespace FFXIV.Framework.FFXIVHelper
                     break;
             }
 
+            if (ffxiv == null)
+            {
+                return;
+            }
+
             lock (this)
             {
                 if (!MemoryHandler.Instance.IsAttached ||
@@ -147,6 +152,11 @@ namespace FFXIV.Framework.FFXIVHelper
         private void GetActors()
         {
             var result = Reader.GetActors();
+            if (result == null)
+            {
+                this.Actors.Clear();
+                return;
+            }
 
             var news = result.NewMonsters
                 .Concat(result.NewNPCs)
