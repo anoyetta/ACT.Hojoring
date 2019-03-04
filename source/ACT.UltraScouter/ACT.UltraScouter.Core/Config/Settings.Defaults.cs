@@ -615,6 +615,7 @@ namespace ACT.UltraScouter.Config
                 RefreshRateMin = 300,
                 VisibleZ = true,
                 VisibleMe = true,
+                IsNotScanNPCinFullParty = true,
                 DisplayCount = 10,
                 NearDistance = 20,
                 TTSEnabled = true,
