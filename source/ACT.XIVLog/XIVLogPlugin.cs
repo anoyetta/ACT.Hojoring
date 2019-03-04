@@ -15,7 +15,7 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
-using TamanegiMage.FFXIV_MemoryReader.Model;
+using Sharlayan.Core.Enums;
 
 namespace ACT.XIVLog
 {
@@ -399,7 +399,7 @@ namespace ACT.XIVLog
             }
 
             var combatants = FFXIVPlugin.Instance?.GetCombatantList()?
-                .Where(x => x.type == ObjectType.PC);
+                .Where(x => x.ObjectType == Actor.Type.PC);
 
             if (combatants == null)
             {
