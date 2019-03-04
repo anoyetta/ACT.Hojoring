@@ -88,6 +88,7 @@
   <system:String x:Key="MobList_DirectionOrigin">방향 표시 기준</system:String>
   <system:String x:Key="MobList_DirectionAdjustmentAngle">방향 보정 각도</system:String>
   <system:String x:Key="MobList_DirectionOriginDescription">Me, Camera를 사용하는 경우는 FFXIV_MemoryReader가 필요합니다.</system:String>
+  <system:String x:Key="MobList_ScanNPC">Scan NPC</system:String>
   <system:String x:Key="MobList_NotScanNPCInFullParty">Not scan NPC in full party</system:String>
   <system:String x:Key="MobList_OpenTargetMobList">대상 몹 리스트를 열기</system:String>
   <system:String x:Key="MobList_ReloadTargetMobList">대상 몹 리스트를 다시 불러오기</system:String>

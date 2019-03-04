@@ -179,9 +179,16 @@ namespace FFXIV.Framework.FFXIVHelper
                     this.GetActors();
                 }
             }
+
+            if (this.IsSkips.All(x => x))
+            {
+                Thread.Sleep((int)ProcessSubscribeInterval);
+            }
         }
 
         public bool IsSkipActor { get; set; } = false;
+
+        private bool[] IsSkips => new[] { this.IsSkipActor };
 
         private void GetActors()
         {
