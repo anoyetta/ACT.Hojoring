@@ -32,6 +32,11 @@ namespace ACT.UltraScouter.Workers
 
         #endregion Singleton
 
+        /// <summary>
+        /// 任意ターゲット系のオーバーレイではない
+        /// </summary>
+        protected override bool IsTargetOverlay => false;
+
         public override TargetInfoModel Model => MobListModel.Instance;
         private List<MobInfo> targetMobList;
 
@@ -203,10 +208,14 @@ namespace ACT.UltraScouter.Workers
 
             #endregion Test Mode
 
+            var player = FFXIVPlugin.Instance.GetPlayer();
             var combatants = FFXIVPlugin.Instance.GetCombatantList();
 
-            // 画面ダンプ用のCombatantsを更新する
-            CombatantsViewModel.RefreshCombatants(combatants);
+            // sharlayanからNPCを補完する
+            var actors = SharlayanHelper.Instance.Actors.Values.Where(x =>
+                x.Type == Actor.Type.NPC ||
+                x.Type == Actor.Type.TreasureCoffer ||
+                x.Type == Actor.Type.EventObject);
 
             var targets = default(IEnumerable<MobInfo>);
 
@@ -248,12 +257,6 @@ namespace ACT.UltraScouter.Workers
                     targets = targets.Concat(deadmen);
                 }
 
-                // sharlayanからNPCを補完する
-                var actors = SharlayanHelper.Instance.Actors.Values.Where(x =>
-                    x.Type == Actor.Type.NPC ||
-                    x.Type == Actor.Type.TreasureCoffer ||
-                    x.Type == Actor.Type.EventObject);
-
                 var addActors =
                     from x in actors
                     where
@@ -262,7 +265,7 @@ namespace ACT.UltraScouter.Workers
                     select new MobInfo()
                     {
                         Name = x.Name,
-                        Combatant = x.ToCombatant(),
+                        Combatant = x.ToCombatant(player),
                         Rank = Settings.Instance.MobList.TargetMobList[x.Name].Rank,
                         MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
                         TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
@@ -289,6 +292,14 @@ namespace ACT.UltraScouter.Workers
                     }
                 }
             }
+
+            // 画面ダンプ用のCombatantsを更新する
+            CombatantsViewModel.RefreshCombatants(combatants.Concat(
+                from x in actors
+                where
+                !combatants.Any(y => y.ID == x.ID)
+                select
+                x.ToCombatant(player)));
         }
 
         protected override NameViewModel NameVM => null;
