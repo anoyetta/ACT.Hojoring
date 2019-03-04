@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -22,6 +22,7 @@ namespace FFXIV.Framework.FFXIVHelper
         private static readonly double ProcessSubscribeInterval = 5000;
 
         private ThreadWorker memorySubscriber;
+        private static readonly double MemorySubscribeInterval = 500;
 
         public void Start()
         {
@@ -46,9 +47,9 @@ namespace FFXIV.Framework.FFXIVHelper
                 {
                     this.memorySubscriber = new ThreadWorker(
                         this.ScanMemory,
-                        FFXIVPlugin.Instance.MemorySubscriberInterval,
+                        MemorySubscribeInterval,
                         "sharlayan Memory Subscriber",
-                        ThreadPriority.BelowNormal);
+                        ThreadPriority.Lowest);
 
                     this.memorySubscriber.Run();
                 }
@@ -75,7 +76,10 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void ClearData()
         {
-            this.Actors.Clear();
+            lock (this.npcs)
+            {
+                this.npcs.Clear();
+            }
         }
 
         private Process currentFFXIVProcess;
@@ -136,7 +140,18 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public ConcurrentDictionary<uint, ActorItem> Actors { get; } = new ConcurrentDictionary<uint, ActorItem>();
+        private readonly Dictionary<uint, ActorItem> npcs = new Dictionary<uint, ActorItem>(512);
+
+        public IEnumerable<ActorItem> NPCs
+        {
+            get
+            {
+                lock (this.npcs)
+                {
+                    return this.npcs.Values.ToArray();
+                }
+            }
+        }
 
         private void ScanMemory()
         {
@@ -147,7 +162,10 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            this.GetActors();
+            lock (this.npcs)
+            {
+                this.GetActors();
+            }
         }
 
         private void GetActors()
@@ -155,38 +173,41 @@ namespace FFXIV.Framework.FFXIVHelper
             var result = Reader.GetActors();
             if (result == null)
             {
-                this.Actors.Clear();
+                this.npcs.Clear();
                 return;
             }
 
-            var news = result.NewMonsters
-                .Concat(result.NewNPCs)
-                .Concat(result.NewPCs);
-
+            var news = result.NewNPCs;
             foreach (var entry in news)
             {
-                this.Actors.TryAdd(entry.Key, entry.Value);
+                if (!this.npcs.ContainsKey(entry.Key))
+                {
+                    this.npcs.Add(entry.Key, entry.Value);
+                }
+
+                Thread.Yield();
             }
 
-            var removes = result.RemovedMonsters
-                .Concat(result.RemovedNPCs)
-                .Concat(result.RemovedPCs);
-
+            var removes = result.RemovedNPCs;
             foreach (var entry in removes)
             {
-                this.Actors.TryRemove(entry.Key, out ActorItem o);
+                if (this.npcs.ContainsKey(entry.Key))
+                {
+                    this.npcs.Remove(entry.Key);
+                }
+
+                Thread.Yield();
             }
 
-            var currents = result.CurrentMonsters
-                .Concat(result.CurrentNPCs)
-                .Concat(result.CurrentPCs);
-
+            var currents = result.CurrentNPCs;
             foreach (var entry in currents)
             {
-                if (this.Actors.ContainsKey(entry.Key))
+                if (this.npcs.ContainsKey(entry.Key))
                 {
-                    this.Actors[entry.Key] = entry.Value;
+                    this.npcs[entry.Key] = entry.Value;
                 }
+
+                Thread.Yield();
             }
         }
     }
@@ -233,7 +254,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
             c.Player = player;
 
+            /*
             FFXIVPlugin.Instance.SetSkillName(c);
+            */
             c.SetName(actor.Name);
 
             return c;

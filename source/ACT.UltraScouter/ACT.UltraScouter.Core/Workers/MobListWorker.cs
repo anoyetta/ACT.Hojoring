@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Config.UI.ViewModels;
@@ -259,7 +260,7 @@ namespace ACT.UltraScouter.Workers
                 }
 
                 // sharlayanからNPCを補完する
-                actors = SharlayanHelper.Instance.Actors.Values.Where(x =>
+                actors = SharlayanHelper.Instance.NPCs.Where(x =>
                     x.Type == Actor.Type.NPC ||
                     x.Type == Actor.Type.TreasureCoffer ||
                     x.Type == Actor.Type.EventObject);
@@ -427,6 +428,8 @@ namespace ACT.UltraScouter.Workers
 
                 foreach (var item in sorted)
                 {
+                    Thread.Yield();
+
                     item.MobInfo.Visible = item.Index <= Settings.Instance.MobList.DisplayCount;
                     item.MobInfo.Index = item.MobInfo.Visible ?
                         item.Index :
@@ -463,6 +466,8 @@ namespace ACT.UltraScouter.Workers
 
                     foreach (var mob in targets)
                     {
+                        Thread.Yield();
+
                         var item = model.MobList.FirstOrDefault(x =>
                             x.Combatant?.ID == mob.Combatant?.ID);
 
@@ -504,6 +509,8 @@ namespace ACT.UltraScouter.Workers
                     // 除去する
                     foreach (var item in itemsForRemove)
                     {
+                        Thread.Yield();
+
                         model.MobList.Remove(item);
                         isChanged = true;
                     }
