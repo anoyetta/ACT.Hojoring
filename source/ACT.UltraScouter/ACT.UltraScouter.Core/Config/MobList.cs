@@ -61,6 +61,7 @@ namespace ACT.UltraScouter.Config
         [XmlIgnore] private double nearDistance = 20;
         [XmlIgnore] private bool ttsEnabled = false;
         [XmlIgnore] private bool dumpCombatants = false;
+        [XmlIgnore] private bool isNotScanNPCinFullParty = true;
 
         /// <summary>
         /// 表示？
@@ -130,6 +131,16 @@ namespace ACT.UltraScouter.Config
         {
             get => this.ungroupSameNameMobs;
             set => this.SetProperty(ref this.ungroupSameNameMobs, value);
+        }
+
+        /// <summary>
+        /// フルパーティのときNPCをスキャンしない
+        /// </summary>
+        [DataMember]
+        public bool IsNotScanNPCinFullParty
+        {
+            get => this.isNotScanNPCinFullParty;
+            set => this.SetProperty(ref this.isNotScanNPCinFullParty, value);
         }
 
         /// <summary>

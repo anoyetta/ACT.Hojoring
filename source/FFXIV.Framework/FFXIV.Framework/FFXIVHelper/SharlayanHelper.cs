@@ -22,7 +22,7 @@ namespace FFXIV.Framework.FFXIVHelper
         private static readonly double ProcessSubscribeInterval = 5000;
 
         private ThreadWorker memorySubscriber;
-        private static readonly double MemorySubscribeInterval = 500;
+        private static readonly double MemorySubscribeInterval = 1000;
 
         public void Start()
         {
@@ -162,11 +162,26 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            lock (this.npcs)
+            if (this.IsSkipActor)
             {
-                this.GetActors();
+                if (this.npcs.Any())
+                {
+                    lock (this.npcs)
+                    {
+                        this.npcs.Clear();
+                    }
+                }
+            }
+            else
+            {
+                lock (this.npcs)
+                {
+                    this.GetActors();
+                }
             }
         }
+
+        public bool IsSkipActor { get; set; } = false;
 
         private void GetActors()
         {

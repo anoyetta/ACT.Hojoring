@@ -88,6 +88,7 @@
   <system:String x:Key="MobList_DirectionOrigin">方向显示</system:String>
   <system:String x:Key="MobList_DirectionAdjustmentAngle">箭头指向基准角度</system:String>
   <system:String x:Key="MobList_DirectionOriginDescription">要使用"角色"或"视角", FFXIV_MemoryReader需要保持启动.</system:String>
+  <system:String x:Key="MobList_NotScanNPCInFullParty">Not scan NPC in full party</system:String>
   <system:String x:Key="MobList_OpenTargetMobList">打开狩猎怪列表</system:String>
   <system:String x:Key="MobList_ReloadTargetMobList">重载狩猎怪列表</system:String>
   <system:String x:Key="MobList_CountOfDisplay">最大显示数量</system:String>
