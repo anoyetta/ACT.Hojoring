@@ -15,7 +15,7 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using Microsoft.VisualBasic.FileIO;
-using TamanegiMage.FFXIV_MemoryReader.Model;
+using Sharlayan.Core.Enums;
 
 namespace FFXIV.Framework.FFXIVHelper
 {
@@ -53,6 +53,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
         /// <summary>FFXIV_ACT_Plugin.Memory.ScanCombatants</summary>
         private dynamic pluginScancombat;
+
+        /// <summary>FFXIV_ACT_Plugin.Parse.LogParse</summary>
+        private dynamic pluginLogParse;
 
         /// <summary>FFXIV_ACT_Plugin.Overlays.Overlay</summary>
         private dynamic overlay;
@@ -100,6 +103,24 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public Process Process => (Process)this.pluginConfig?.Process;
 
+        public Locales LanguageID
+        {
+            get
+            {
+                switch (this.pluginLogParse?.Settings?.LanguageID)
+                {
+                    case 1: return Locales.EN;
+                    case 2: return Locales.FR;
+                    case 3: return Locales.DE;
+                    case 4: return Locales.JA;
+                    default:
+                        return Locales.EN;
+                }
+            }
+        }
+
+        public double MemorySubscriberInterval { get; private set; }
+
         #region Start/End
 
         private System.Timers.Timer attachFFXIVPluginWorker;
@@ -145,6 +166,7 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             this.FFXIVLocale = ffxivLocale;
+            this.MemorySubscriberInterval = pollingInteval;
 
             this.attachFFXIVPluginWorker = new System.Timers.Timer();
             this.attachFFXIVPluginWorker.AutoReset = true;
@@ -345,7 +367,7 @@ namespace FFXIV.Framework.FFXIVHelper
             MaxTP = 3000,
             CurrentTP = 3000,
             Job = (int)JobIDs.PLD,
-            type = ObjectType.PC,
+            ObjectType = Actor.Type.PC,
             Player = DummyPlayer,
         };
 
@@ -364,7 +386,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 MaxTP = 3000,
                 CurrentTP = 3000,
                 Job = (int)JobIDs.WAR,
-                type = ObjectType.PC,
+                ObjectType = Actor.Type.PC,
                 Player = DummyPlayer,
             },
 
@@ -379,7 +401,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 MaxTP = 3000,
                 CurrentTP = 3000,
                 Job = (int)JobIDs.WHM,
-                type = ObjectType.PC,
+                ObjectType = Actor.Type.PC,
                 Player = DummyPlayer,
             },
 
@@ -394,7 +416,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 MaxTP = 3000,
                 CurrentTP = 3000,
                 Job = (int)JobIDs.AST,
-                type = ObjectType.PC,
+                ObjectType = Actor.Type.PC,
                 Player = DummyPlayer,
             },
         };
@@ -508,7 +530,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.combatantDictionary = newDictionary;
                 this.combatantDictionaryFromFFXIVPlugin = newDictionary;
                 this.CombatantsCount = newList.Count;
-                this.CombatnatsPlayerCount = newList.Count(x => x.type == ObjectType.PC);
+                this.CombatnatsPlayerCount = newList.Count(x => x.ObjectType == Actor.Type.PC);
 
                 // TargetOfTargetを設定する
                 if (player != null &&
@@ -572,7 +594,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 combatant.ID = (uint)item.ID;
                 combatant.OwnerID = (uint)item.OwnerID;
                 combatant.Job = (byte)item.Job;
-                combatant.type = (ObjectType)((byte)item.type);
+                combatant.ObjectType = (Actor.Type)((byte)item.type);
                 combatant.Level = (byte)item.Level;
                 combatant.CurrentHP = (int)item.CurrentHP;
                 combatant.MaxHP = (int)item.MaxHP;
@@ -589,7 +611,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 combatant.WorldName = (string)item.WorldName;
 
                 // 扱うプレイヤー数の最大数を超えたらカットする
-                if (combatant.type == ObjectType.PC &&
+                if (combatant.ObjectType == Actor.Type.PC &&
                     targetID != 0 &&
                     combatant.ID != targetID)
                 {
@@ -640,7 +662,7 @@ namespace FFXIV.Framework.FFXIVHelper
             foreach (var combatant in query)
             {
                 // 扱うプレイヤー数の最大数を超えたらカットする
-                if (combatant.type == ObjectType.PC &&
+                if (combatant.ObjectType == Actor.Type.PC &&
                     targetID != 0 &&
                     combatant.ID != targetID)
                 {
@@ -685,7 +707,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.combatantList = list;
                 this.combatantDictionary = list.ToDictionary(x => x.ID);
                 this.CombatantsCount = list.Count;
-                this.CombatnatsPlayerCount = list.Count(x => x.type == ObjectType.PC);
+                this.CombatnatsPlayerCount = list.Count(x => x.ObjectType == Actor.Type.PC);
 
                 // TargetOfTargetを設定する
                 if (player != null &&
@@ -1046,7 +1068,7 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             // パーティのHP平均値を算出する
-            var players = party.Where(x => x.type == ObjectType.PC);
+            var players = party.Where(x => x.ObjectType == Actor.Type.PC);
             if (!players.Any())
             {
                 return null;
@@ -1059,7 +1081,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 from x in combatants
                 where
                 x.MaxHP >= (avg * bossHPThreshold) &&
-                x.type == ObjectType.Monster &&
+                x.ObjectType == Actor.Type.Monster &&
                 x.CurrentHP > 0
                 orderby
                 x.Level descending,
@@ -1286,6 +1308,19 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             if (this.pluginMemory == null)
+            {
+                return;
+            }
+
+            if (this.pluginLogParse == null)
+            {
+                fi = this.plugin?.GetType().GetField(
+                    "_LogParse",
+                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
+                this.pluginLogParse = fi?.GetValue(this.plugin);
+            }
+
+            if (this.pluginLogParse == null)
             {
                 return;
             }

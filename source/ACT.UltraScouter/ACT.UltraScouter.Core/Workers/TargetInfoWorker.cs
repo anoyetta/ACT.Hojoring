@@ -11,7 +11,7 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.WPF.Views;
 using NLog;
-using TamanegiMage.FFXIV_MemoryReader.Model;
+using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Workers
 {
@@ -38,6 +38,11 @@ namespace ACT.UltraScouter.Workers
         private Logger logger = AppLog.DefaultLogger;
 
         #endregion Logger
+
+        /// <summary>
+        /// ターゲット系のオーバーレイか？
+        /// </summary>
+        protected virtual bool IsTargetOverlay { get; } = true;
 
         /// <summary>
         /// Viewに接続されるデータモデル
@@ -202,7 +207,7 @@ namespace ACT.UltraScouter.Workers
 
             if (targetInfo != null &&
                 !Settings.Instance.Enmity.IsDesignMode &&
-                targetInfo.type == ObjectType.Monster)
+                targetInfo.ObjectType == Actor.Type.Monster)
             {
                 EnmityPlugin.Instance.Initialize();
 
@@ -360,24 +365,27 @@ namespace ACT.UltraScouter.Workers
             {
                 overlayVisible = true;
 
-                switch (targetInfo.type)
+                if (this.IsTargetOverlay)
                 {
-                    case ObjectType.PC:
-                    case ObjectType.Monster:
-                    case ObjectType.NPC:
-                        break;
+                    switch (targetInfo.ObjectType)
+                    {
+                        case Actor.Type.PC:
+                        case Actor.Type.Monster:
+                        case Actor.Type.NPC:
+                            break;
 
-                    case ObjectType.Aetheryte:
-                    case ObjectType.Gathering:
-                    case ObjectType.Minion:
-                    default:
+                        case Actor.Type.Aetheryte:
+                        case Actor.Type.Gathering:
+                        case Actor.Type.Minion:
+                        default:
+                            overlayVisible = false;
+                            break;
+                    }
+
+                    if (targetInfo.MaxHP <= 0)
+                    {
                         overlayVisible = false;
-                        break;
-                }
-
-                if (targetInfo.MaxHP <= 0)
-                {
-                    overlayVisible = false;
+                    }
                 }
 
                 if (overlayVisible)
@@ -552,7 +560,7 @@ namespace ACT.UltraScouter.Workers
             Combatant targetInfo)
         {
             this.Model.Name = targetInfo?.Name ?? string.Empty;
-            this.Model.ObjectType = targetInfo?.type ?? ObjectType.Unknown;
+            this.Model.ObjectType = targetInfo?.ObjectType ?? Actor.Type.Unknown;
 
             this.RefreshActionView(targetInfo);
             this.RefreshHPView(targetInfo);
@@ -636,8 +644,8 @@ namespace ACT.UltraScouter.Workers
             }
 
             this.Model.ObjectType = Settings.Instance.FFLogs.IsDesignMode || targetInfo == null ?
-                ObjectType.PC :
-                targetInfo.type;
+                Actor.Type.PC :
+                targetInfo.ObjectType;
 
             if (targetInfo != null)
             {

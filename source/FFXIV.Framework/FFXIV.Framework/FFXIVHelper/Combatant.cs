@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
+using Sharlayan.Core;
+using Sharlayan.Core.Enums;
 using TamanegiMage.FFXIV_MemoryReader.Model;
 
 namespace FFXIV.Framework.FFXIVHelper
@@ -16,8 +18,14 @@ namespace FFXIV.Framework.FFXIVHelper
     {
         private static long currentIndex = 0;
 
+        // ネーミングルール違反なため潰しておく
+        private new readonly object type = null;
+
         public Combatant()
         {
+            if (this.type != null)
+            {
+            }
         }
 
         public Combatant(
@@ -53,11 +61,13 @@ namespace FFXIV.Framework.FFXIVHelper
             this.CurrentTP = v1.CurrentTP;
             this.MaxTP = v1.MaxTP;
 
+            var typeValue = (byte)v1.type;
+            this.ObjectType = (Actor.Type)Enum.ToObject(typeof(Actor.Type), typeValue);
+
             this.Name = v1.Name;
             this.Level = v1.Level;
             this.Job = v1.Job;
             this.TargetID = v1.TargetID;
-            this.type = v1.type;
             this.Order = v1.Order;
             this.OwnerID = v1.OwnerID;
 
@@ -67,6 +77,10 @@ namespace FFXIV.Framework.FFXIVHelper
             this.CastDurationCurrent = this.Casting.Progress;
             this.CastDurationMax = this.Casting.Time;
         }
+
+        public Actor.Type ObjectType { get; set; }
+
+        public ActorItem ActorItem { get; internal set; }
 
         private long index = 0;
 
@@ -117,7 +131,7 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 var name = this.Name;
 
-                if (this.type == ObjectType.PC)
+                if (this.ObjectType == Actor.Type.PC)
                 {
                     switch (ConfigBridge.Instance.PCNameStyle)
                     {
@@ -260,7 +274,7 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             this.Name = fullName.Trim();
 
-            if (this.type != ObjectType.PC)
+            if (this.ObjectType != Actor.Type.PC)
             {
                 return;
             }
@@ -380,7 +394,7 @@ namespace FFXIV.Framework.FFXIVHelper
     {
         private static readonly Combatant combatant = new Combatant()
         {
-            type = ObjectType.PC
+            ObjectType = Actor.Type.PC
         };
 
         public static string[] GetNames(

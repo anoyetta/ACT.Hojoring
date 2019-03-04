@@ -15,7 +15,7 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
 using Prism.Mvvm;
-using TamanegiMage.FFXIV_MemoryReader.Model;
+using Sharlayan.Core.Enums;
 using static ACT.SpecialSpellTimer.Sound.TTSDictionary;
 
 namespace ACT.SpecialSpellTimer.Models
@@ -599,7 +599,7 @@ namespace ACT.SpecialSpellTimer.Models
             var r = false;
 
             var party = this.partyList
-                .Where(x => x.type == ObjectType.PC)
+                .Where(x => x.ObjectType == Actor.Type.PC)
                 .ToList();
 
             if (this.previousParty.Count !=

@@ -90,6 +90,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     $references = @(
         "x64",
         "x86",
+        "Sharlayan.dll",
         "System.*.dll",
         "Microsoft.*.dll",
         "Newtonsoft.Json.dll",
