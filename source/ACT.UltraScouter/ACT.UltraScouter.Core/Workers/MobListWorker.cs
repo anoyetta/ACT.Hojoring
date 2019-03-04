@@ -259,27 +259,40 @@ namespace ACT.UltraScouter.Workers
                     targetDelegates = targetDelegates.Concat(deadmen);
                 }
 
-                // sharlayanからNPCを補完する
-                actors = SharlayanHelper.Instance.NPCs.Where(x =>
-                    x.Type == Actor.Type.NPC ||
-                    x.Type == Actor.Type.TreasureCoffer ||
-                    x.Type == Actor.Type.EventObject);
+                if (Settings.Instance.MobList.IsNotScanNPCinFullParty)
+                {
+                    var partyCount = FFXIVPlugin.Instance.PartyMemberCount;
+                    SharlayanHelper.Instance.IsSkipActor = partyCount >= 8;
+                }
+                else
+                {
+                    SharlayanHelper.Instance.IsSkipActor = false;
+                }
 
-                var addActors =
-                    from x in actors
-                    where
-                    Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name) &&
-                    !combatants.Any(y => y.ID == x.ID)
-                    select new Func<MobInfo>(() => new MobInfo()
-                    {
-                        Name = x.Name,
-                        Combatant = x.ToCombatant(player),
-                        Rank = Settings.Instance.MobList.TargetMobList[x.Name].Rank,
-                        MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
-                        TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
-                    });
+                if (!SharlayanHelper.Instance.IsSkipActor)
+                {
+                    // sharlayanからNPCを補完する
+                    actors = SharlayanHelper.Instance.NPCs.Where(x =>
+                        x.Type == Actor.Type.NPC ||
+                        x.Type == Actor.Type.TreasureCoffer ||
+                        x.Type == Actor.Type.EventObject);
 
-                targetDelegates = targetDelegates.Concat(addActors);
+                    var addActors =
+                        from x in actors
+                        where
+                        Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name) &&
+                        !combatants.Any(y => y.ID == x.ID)
+                        select new Func<MobInfo>(() => new MobInfo()
+                        {
+                            Name = x.Name,
+                            Combatant = x.ToCombatant(player),
+                            Rank = Settings.Instance.MobList.TargetMobList[x.Name].Rank,
+                            MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
+                            TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
+                        });
+
+                    targetDelegates = targetDelegates.Concat(addActors);
+                }
 
                 // クエリを実行する
                 targetDelegates = targetDelegates.ToList();

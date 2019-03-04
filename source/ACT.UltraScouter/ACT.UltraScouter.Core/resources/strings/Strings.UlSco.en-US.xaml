@@ -88,6 +88,7 @@
   <system:String x:Key="MobList_DirectionOrigin">Origin of Direction</system:String>
   <system:String x:Key="MobList_DirectionAdjustmentAngle">Direction adjustment angle</system:String>
   <system:String x:Key="MobList_DirectionOriginDescription">To use "Me" or "Camera", FFXIV_MemoryReader is required.</system:String>
+  <system:String x:Key="MobList_NotScanNPCInFullParty">Not scan NPC in full party</system:String>
   <system:String x:Key="MobList_OpenTargetMobList">Open target mob list</system:String>
   <system:String x:Key="MobList_ReloadTargetMobList">Reload target mob list</system:String>
   <system:String x:Key="MobList_CountOfDisplay">Count of display</system:String>

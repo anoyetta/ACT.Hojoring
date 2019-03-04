@@ -63,6 +63,11 @@
 
       <CheckBox
         Margin="0 5 0 0"
+        Content="{DynamicResource MobList_NotScanNPCInFullParty}"
+        IsChecked="{Binding MobList.IsNotScanNPCinFullParty, Mode=TwoWay}" />
+
+      <CheckBox
+        Margin="0 5 0 0"
         Content="{DynamicResource MobList_VisibleZPosition}"
         Command="{Binding RefreshViewCommand}"
         IsChecked="{Binding MobList.VisibleZ, Mode=TwoWay}"
