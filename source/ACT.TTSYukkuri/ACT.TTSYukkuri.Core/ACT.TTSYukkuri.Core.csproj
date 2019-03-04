@@ -393,9 +393,6 @@
     <Folder Include="Config\Models\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Core">
-      <Version>3.3.31.3</Version>
-    </PackageReference>
     <PackageReference Include="AWSSDK.Polly">
       <Version>3.3.9.25</Version>
     </PackageReference>
