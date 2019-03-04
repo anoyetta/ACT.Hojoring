@@ -10,6 +10,7 @@ using ACT.UltraScouter.Views;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
+using Sharlayan.Core;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Workers
@@ -54,13 +55,16 @@ namespace ACT.UltraScouter.Workers
 
         protected override async void GetCombatant()
         {
-            if ((DateTime.Now - this.combatantsTimestamp).TotalMilliseconds
-                < Settings.Instance.MobList.RefreshRateMin)
+            lock (this.TargetInfoLock)
             {
-                return;
-            }
+                if ((DateTime.Now - this.combatantsTimestamp).TotalMilliseconds
+                    < Settings.Instance.MobList.RefreshRateMin)
+                {
+                    return;
+                }
 
-            this.combatantsTimestamp = DateTime.Now;
+                this.combatantsTimestamp = DateTime.Now;
+            }
 
             #region Test Mode
 
@@ -209,31 +213,28 @@ namespace ACT.UltraScouter.Workers
             #endregion Test Mode
 
             var player = FFXIVPlugin.Instance.GetPlayer();
-            var combatants = FFXIVPlugin.Instance.GetCombatantList();
 
-            // sharlayanからNPCを補完する
-            var actors = SharlayanHelper.Instance.Actors.Values.Where(x =>
-                x.Type == Actor.Type.NPC ||
-                x.Type == Actor.Type.TreasureCoffer ||
-                x.Type == Actor.Type.EventObject);
-
-            var targets = default(IEnumerable<MobInfo>);
+            var targetDelegates = default(IEnumerable<Func<MobInfo>>);
+            var combatants = default(IEnumerable<Combatant>);
+            var actors = default(IEnumerable<ActorItem>);
 
             await Task.Run(() =>
             {
-                targets =
+                combatants = FFXIVPlugin.Instance.GetCombatantList();
+
+                targetDelegates =
                     from x in combatants
                     where
                     ((x.MaxHP <= 0) || (x.MaxHP > 0 && x.CurrentHP > 0)) &&
                     Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name)
-                    select new MobInfo()
+                    select new Func<MobInfo>(() => new MobInfo()
                     {
                         Name = x.Name,
                         Combatant = x,
                         Rank = Settings.Instance.MobList.TargetMobList[x.Name].Rank,
                         MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
                         TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
-                    };
+                    });
 
                 // 戦闘不能者を検出する？
                 if (Settings.Instance.MobList.IsEnabledDetectDeadmen)
@@ -245,41 +246,51 @@ namespace ACT.UltraScouter.Workers
                         where
                         !x.IsPlayer &&
                         x.MaxHP > 0 && x.CurrentHP <= 0
-                        select new MobInfo()
+                        select new Func<MobInfo>(() => new MobInfo()
                         {
                             Name = x.NameForDisplay,
                             Combatant = x,
                             Rank = deadmenInfo.Rank,
                             MaxDistance = deadmenInfo.MaxDistance,
                             TTSEnabled = deadmenInfo.TTSEnabled,
-                        };
+                        });
 
-                    targets = targets.Concat(deadmen);
+                    targetDelegates = targetDelegates.Concat(deadmen);
                 }
+
+                // sharlayanからNPCを補完する
+                actors = SharlayanHelper.Instance.Actors.Values.Where(x =>
+                    x.Type == Actor.Type.NPC ||
+                    x.Type == Actor.Type.TreasureCoffer ||
+                    x.Type == Actor.Type.EventObject);
 
                 var addActors =
                     from x in actors
                     where
                     Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name) &&
                     !combatants.Any(y => y.ID == x.ID)
-                    select new MobInfo()
+                    select new Func<MobInfo>(() => new MobInfo()
                     {
                         Name = x.Name,
                         Combatant = x.ToCombatant(player),
                         Rank = Settings.Instance.MobList.TargetMobList[x.Name].Rank,
                         MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
                         TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
-                    };
+                    });
 
-                targets = targets.Concat(addActors);
+                targetDelegates = targetDelegates.Concat(addActors);
 
-                // 距離で絞り込む
-                targets = targets.Where(x => x.Distance <= x.MaxDistance);
+                // クエリを実行する
+                targetDelegates = targetDelegates.ToList();
             });
 
             lock (this.TargetInfoLock)
             {
-                this.targetMobList = targets.ToList();
+                this.targetMobList = targetDelegates
+                    .Select(x => x.Invoke())
+                    .Where(x => x.Distance <= x.MaxDistance)
+                    .ToList();
+
                 this.TargetInfo = this.targetMobList.FirstOrDefault()?.Combatant;
 
                 if (this.TargetInfo == null)
@@ -293,13 +304,16 @@ namespace ACT.UltraScouter.Workers
                 }
             }
 
-            // 画面ダンプ用のCombatantsを更新する
-            CombatantsViewModel.RefreshCombatants(combatants.Concat(
-                from x in actors
-                where
-                !combatants.Any(y => y.ID == x.ID)
-                select
-                x.ToCombatant(player)));
+            if (combatants != null)
+            {
+                // 画面ダンプ用のCombatantsを更新する
+                CombatantsViewModel.RefreshCombatants(combatants.Concat(
+                    from x in actors
+                    where
+                    !combatants.Any(y => y.ID == x.ID)
+                    select
+                    x.ToCombatant(player)));
+            }
         }
 
         protected override NameViewModel NameVM => null;
