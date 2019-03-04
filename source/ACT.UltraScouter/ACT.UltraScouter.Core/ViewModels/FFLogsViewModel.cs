@@ -2,7 +2,7 @@ using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
 using FFXIV.Framework.FFXIVHelper;
-using TamanegiMage.FFXIV_MemoryReader.Model;
+using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.ViewModels
 {
@@ -52,7 +52,7 @@ namespace ACT.UltraScouter.ViewModels
                 }
 
                 if (string.IsNullOrEmpty(this.Config.ApiKey) ||
-                    this.Model?.ObjectType != ObjectType.PC)
+                    this.Model?.ObjectType != Actor.Type.PC)
                 {
                     return false;
                 }

@@ -18,7 +18,7 @@ using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.Globalization;
 using Microsoft.VisualBasic.FileIO;
 using NPOI.SS.UserModel;
-using TamanegiMage.FFXIV_MemoryReader.Model;
+using Sharlayan.Core.Enums;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -299,7 +299,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var combs = this.GetCombatants();
 
             var com = combs.FirstOrDefault(x =>
-                x?.type == ObjectType.PC &&
+                x?.ObjectType == Actor.Type.PC &&
                 (
                     x?.Name == name ||
                     x?.NameFI == name ||

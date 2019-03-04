@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Config.UI.ViewModels;
@@ -10,7 +11,8 @@ using ACT.UltraScouter.Views;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
-using TamanegiMage.FFXIV_MemoryReader.Model;
+using Sharlayan.Core;
+using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Workers
 {
@@ -32,6 +34,11 @@ namespace ACT.UltraScouter.Workers
 
         #endregion Singleton
 
+        /// <summary>
+        /// 任意ターゲット系のオーバーレイではない
+        /// </summary>
+        protected override bool IsTargetOverlay => false;
+
         public override TargetInfoModel Model => MobListModel.Instance;
         private List<MobInfo> targetMobList;
 
@@ -49,13 +56,16 @@ namespace ACT.UltraScouter.Workers
 
         protected override async void GetCombatant()
         {
-            if ((DateTime.Now - this.combatantsTimestamp).TotalMilliseconds
-                < Settings.Instance.MobList.RefreshRateMin)
+            lock (this.TargetInfoLock)
             {
-                return;
-            }
+                if ((DateTime.Now - this.combatantsTimestamp).TotalMilliseconds
+                    < Settings.Instance.MobList.RefreshRateMin)
+                {
+                    return;
+                }
 
-            this.combatantsTimestamp = DateTime.Now;
+                this.combatantsTimestamp = DateTime.Now;
+            }
 
             #region Test Mode
 
@@ -80,7 +90,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 1,
                         Name = "TEST:シルバーの吉田直樹",
-                        type = ObjectType.Monster,
+                        ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
                         Player = dummyPlayer,
                         PosX = 0,
@@ -97,7 +107,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 2,
                         Name = "TEST:イクシオン",
-                        type = ObjectType.Monster,
+                        ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
                         Player = dummyPlayer,
                         PosX = 100,
@@ -114,7 +124,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 21,
                         Name = "TEST:イクシオン",
-                        type = ObjectType.Monster,
+                        ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
                         Player = dummyPlayer,
                         PosX = 100,
@@ -131,7 +141,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 3,
                         Name = "TEST:ソルト・アンド・ライト",
-                        type = ObjectType.Monster,
+                        ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
                         Player = dummyPlayer,
                         PosX = 10,
@@ -148,7 +158,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 4,
                         Name = "TEST:オルクス",
-                        type = ObjectType.Monster,
+                        ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
                         Player = dummyPlayer,
                         PosX = 100,
@@ -165,7 +175,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 5,
                         Name = "TEST:宵闇のヤミニ",
-                        type = ObjectType.Monster,
+                        ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
                         Player = dummyPlayer,
                         PosX = 0,
@@ -182,7 +192,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 7,
                         Name = Combatant.NameToInitial("Himeko Flower", ConfigBridge.Instance.PCNameStyle),
-                        type = ObjectType.PC,
+                        ObjectType = Actor.Type.PC,
                         Job = (byte)JobIDs.BLM,
                         MaxHP = 43462,
                         Player = dummyPlayer,
@@ -203,28 +213,29 @@ namespace ACT.UltraScouter.Workers
 
             #endregion Test Mode
 
-            var combatants = FFXIVPlugin.Instance.GetCombatantList();
+            var player = FFXIVPlugin.Instance.GetPlayer();
 
-            // 画面ダンプ用のCombatantsを更新する
-            CombatantsViewModel.RefreshCombatants(combatants);
-
-            var targets = default(IEnumerable<MobInfo>);
+            var targetDelegates = default(IEnumerable<Func<MobInfo>>);
+            var combatants = default(IEnumerable<Combatant>);
+            var actors = default(IEnumerable<ActorItem>);
 
             await Task.Run(() =>
             {
-                targets =
+                combatants = FFXIVPlugin.Instance.GetCombatantList();
+
+                targetDelegates =
                     from x in combatants
                     where
                     ((x.MaxHP <= 0) || (x.MaxHP > 0 && x.CurrentHP > 0)) &&
                     Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name)
-                    select new MobInfo()
+                    select new Func<MobInfo>(() => new MobInfo()
                     {
                         Name = x.Name,
                         Combatant = x,
                         Rank = Settings.Instance.MobList.TargetMobList[x.Name].Rank,
                         MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
                         TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
-                    };
+                    });
 
                 // 戦闘不能者を検出する？
                 if (Settings.Instance.MobList.IsEnabledDetectDeadmen)
@@ -236,25 +247,51 @@ namespace ACT.UltraScouter.Workers
                         where
                         !x.IsPlayer &&
                         x.MaxHP > 0 && x.CurrentHP <= 0
-                        select new MobInfo()
+                        select new Func<MobInfo>(() => new MobInfo()
                         {
                             Name = x.NameForDisplay,
                             Combatant = x,
                             Rank = deadmenInfo.Rank,
                             MaxDistance = deadmenInfo.MaxDistance,
                             TTSEnabled = deadmenInfo.TTSEnabled,
-                        };
+                        });
 
-                    targets = targets.Concat(deadmen);
+                    targetDelegates = targetDelegates.Concat(deadmen);
                 }
 
-                // 距離で絞り込む
-                targets = targets.Where(x => x.Distance <= x.MaxDistance);
+                // sharlayanからNPCを補完する
+                actors = SharlayanHelper.Instance.NPCs.Where(x =>
+                    x.Type == Actor.Type.NPC ||
+                    x.Type == Actor.Type.TreasureCoffer ||
+                    x.Type == Actor.Type.EventObject);
+
+                var addActors =
+                    from x in actors
+                    where
+                    Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name) &&
+                    !combatants.Any(y => y.ID == x.ID)
+                    select new Func<MobInfo>(() => new MobInfo()
+                    {
+                        Name = x.Name,
+                        Combatant = x.ToCombatant(player),
+                        Rank = Settings.Instance.MobList.TargetMobList[x.Name].Rank,
+                        MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
+                        TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
+                    });
+
+                targetDelegates = targetDelegates.Concat(addActors);
+
+                // クエリを実行する
+                targetDelegates = targetDelegates.ToList();
             });
 
             lock (this.TargetInfoLock)
             {
-                this.targetMobList = targets.ToList();
+                this.targetMobList = targetDelegates
+                    .Select(x => x.Invoke())
+                    .Where(x => x.Distance <= x.MaxDistance)
+                    .ToList();
+
                 this.TargetInfo = this.targetMobList.FirstOrDefault()?.Combatant;
 
                 if (this.TargetInfo == null)
@@ -266,6 +303,17 @@ namespace ACT.UltraScouter.Workers
                         WPFHelper.BeginInvoke(model.ClearMobList);
                     }
                 }
+            }
+
+            if (combatants != null)
+            {
+                // 画面ダンプ用のCombatantsを更新する
+                CombatantsViewModel.RefreshCombatants(combatants.Concat(
+                    from x in actors
+                    where
+                    !combatants.Any(y => y.ID == x.ID)
+                    select
+                    x.ToCombatant(player)));
             }
         }
 
@@ -380,6 +428,8 @@ namespace ACT.UltraScouter.Workers
 
                 foreach (var item in sorted)
                 {
+                    Thread.Yield();
+
                     item.MobInfo.Visible = item.Index <= Settings.Instance.MobList.DisplayCount;
                     item.MobInfo.Index = item.MobInfo.Visible ?
                         item.Index :
@@ -416,6 +466,8 @@ namespace ACT.UltraScouter.Workers
 
                     foreach (var mob in targets)
                     {
+                        Thread.Yield();
+
                         var item = model.MobList.FirstOrDefault(x =>
                             x.Combatant?.ID == mob.Combatant?.ID);
 
@@ -457,6 +509,8 @@ namespace ACT.UltraScouter.Workers
                     // 除去する
                     foreach (var item in itemsForRemove)
                     {
+                        Thread.Yield();
+
                         model.MobList.Remove(item);
                         isChanged = true;
                     }

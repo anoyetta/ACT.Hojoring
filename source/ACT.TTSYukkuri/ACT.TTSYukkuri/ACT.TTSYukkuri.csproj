@@ -85,6 +85,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AWSSDK.Polly">
+      <Version>3.3.9.25</Version>
+    </PackageReference>
     <PackageReference Include="FontAwesome.WPF">
       <Version>4.7.0.9</Version>
     </PackageReference>
@@ -99,6 +102,9 @@
     </PackageReference>
     <PackageReference Include="ReactiveProperty">
       <Version>5.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="Sharlayan">
+      <Version>5.0.4</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
