@@ -321,12 +321,19 @@ namespace ACT.UltraScouter.Workers
             if (combatants != null)
             {
                 // 画面ダンプ用のCombatantsを更新する
-                CombatantsViewModel.RefreshCombatants(combatants.Concat(
-                    from x in actors
-                    where
-                    !combatants.Any(y => y.ID == x.ID)
-                    select
-                    x.ToCombatant(player)));
+                if (actors == null)
+                {
+                    CombatantsViewModel.RefreshCombatants(combatants);
+                }
+                else
+                {
+                    CombatantsViewModel.RefreshCombatants(combatants.Concat(
+                        from x in actors
+                        where
+                        !combatants.Any(y => y.ID == x.ID)
+                        select
+                        x.ToCombatant(player)));
+                }
             }
         }
 
