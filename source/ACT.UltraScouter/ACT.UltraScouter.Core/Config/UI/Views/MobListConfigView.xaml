@@ -63,8 +63,14 @@
 
       <CheckBox
         Margin="0 5 0 0"
+        Content="{DynamicResource MobList_ScanNPC}"
+        IsChecked="{Binding MobList.IsScanNPC, Mode=TwoWay}" />
+
+      <CheckBox
+        Margin="0 5 0 0"
         Content="{DynamicResource MobList_NotScanNPCInFullParty}"
-        IsChecked="{Binding MobList.IsNotScanNPCinFullParty, Mode=TwoWay}" />
+        IsChecked="{Binding MobList.IsNotScanNPCinFullParty, Mode=TwoWay}"
+        Visibility="{Binding MobList.IsScanNPC, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
 
       <CheckBox
         Margin="0 5 0 0"
