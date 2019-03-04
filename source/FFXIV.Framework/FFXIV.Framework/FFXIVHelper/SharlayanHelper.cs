@@ -140,7 +140,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void ScanMemory()
         {
-            if (!MemoryHandler.Instance.IsAttached)
+            if (!MemoryHandler.Instance.IsAttached ||
+                FFXIVPlugin.Instance.Process == null)
             {
                 Thread.Sleep((int)ProcessSubscribeInterval);
                 return;
@@ -193,7 +194,8 @@ namespace FFXIV.Framework.FFXIVHelper
     public static class ActorItemExtensions
     {
         public static Combatant ToCombatant(
-            this ActorItem actor)
+            this ActorItem actor,
+            Combatant player = null)
         {
             var c = new Combatant()
             {
@@ -228,6 +230,11 @@ namespace FFXIV.Framework.FFXIVHelper
             c.CastBuffID = actor.CastingID;
             c.CastDurationCurrent = actor.CastingProgress;
             c.CastDurationMax = actor.CastingTime;
+
+            c.Player = player;
+
+            FFXIVPlugin.Instance.SetSkillName(c);
+            c.SetName(actor.Name);
 
             return c;
         }

@@ -40,6 +40,11 @@ namespace ACT.UltraScouter.Workers
         #endregion Logger
 
         /// <summary>
+        /// ターゲット系のオーバーレイか？
+        /// </summary>
+        protected virtual bool IsTargetOverlay { get; } = true;
+
+        /// <summary>
         /// Viewに接続されるデータモデル
         /// </summary>
         public virtual TargetInfoModel Model => TargetInfoModel.Instance;
@@ -360,24 +365,27 @@ namespace ACT.UltraScouter.Workers
             {
                 overlayVisible = true;
 
-                switch (targetInfo.ObjectType)
+                if (this.IsTargetOverlay)
                 {
-                    case Actor.Type.PC:
-                    case Actor.Type.Monster:
-                    case Actor.Type.NPC:
-                        break;
+                    switch (targetInfo.ObjectType)
+                    {
+                        case Actor.Type.PC:
+                        case Actor.Type.Monster:
+                        case Actor.Type.NPC:
+                            break;
 
-                    case Actor.Type.Aetheryte:
-                    case Actor.Type.Gathering:
-                    case Actor.Type.Minion:
-                    default:
+                        case Actor.Type.Aetheryte:
+                        case Actor.Type.Gathering:
+                        case Actor.Type.Minion:
+                        default:
+                            overlayVisible = false;
+                            break;
+                    }
+
+                    if (targetInfo.MaxHP <= 0)
+                    {
                         overlayVisible = false;
-                        break;
-                }
-
-                if (targetInfo.MaxHP <= 0)
-                {
-                    overlayVisible = false;
+                    }
                 }
 
                 if (overlayVisible)
