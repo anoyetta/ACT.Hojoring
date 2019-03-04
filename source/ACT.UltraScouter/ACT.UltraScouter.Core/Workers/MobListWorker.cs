@@ -10,7 +10,7 @@ using ACT.UltraScouter.Views;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
-using TamanegiMage.FFXIV_MemoryReader.Model;
+using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Workers
 {
@@ -80,7 +80,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 1,
                         Name = "TEST:シルバーの吉田直樹",
-                        type = ObjectType.Monster,
+                        ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
                         Player = dummyPlayer,
                         PosX = 0,
@@ -97,7 +97,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 2,
                         Name = "TEST:イクシオン",
-                        type = ObjectType.Monster,
+                        ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
                         Player = dummyPlayer,
                         PosX = 100,
@@ -114,7 +114,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 21,
                         Name = "TEST:イクシオン",
-                        type = ObjectType.Monster,
+                        ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
                         Player = dummyPlayer,
                         PosX = 100,
@@ -131,7 +131,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 3,
                         Name = "TEST:ソルト・アンド・ライト",
-                        type = ObjectType.Monster,
+                        ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
                         Player = dummyPlayer,
                         PosX = 10,
@@ -148,7 +148,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 4,
                         Name = "TEST:オルクス",
-                        type = ObjectType.Monster,
+                        ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
                         Player = dummyPlayer,
                         PosX = 100,
@@ -165,7 +165,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 5,
                         Name = "TEST:宵闇のヤミニ",
-                        type = ObjectType.Monster,
+                        ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
                         Player = dummyPlayer,
                         PosX = 0,
@@ -182,7 +182,7 @@ namespace ACT.UltraScouter.Workers
                     {
                         ID = 7,
                         Name = Combatant.NameToInitial("Himeko Flower", ConfigBridge.Instance.PCNameStyle),
-                        type = ObjectType.PC,
+                        ObjectType = Actor.Type.PC,
                         Job = (byte)JobIDs.BLM,
                         MaxHP = 43462,
                         Player = dummyPlayer,
@@ -247,6 +247,28 @@ namespace ACT.UltraScouter.Workers
 
                     targets = targets.Concat(deadmen);
                 }
+
+                // sharlayanからNPCを補完する
+                var actors = SharlayanHelper.Instance.Actors.Values.Where(x =>
+                    x.Type == Actor.Type.NPC ||
+                    x.Type == Actor.Type.TreasureCoffer ||
+                    x.Type == Actor.Type.EventObject);
+
+                var addActors =
+                    from x in actors
+                    where
+                    Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name) &&
+                    !combatants.Any(y => y.ID == x.ID)
+                    select new MobInfo()
+                    {
+                        Name = x.Name,
+                        Combatant = x.ToCombatant(),
+                        Rank = Settings.Instance.MobList.TargetMobList[x.Name].Rank,
+                        MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
+                        TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
+                    };
+
+                targets = targets.Concat(addActors);
 
                 // 距離で絞り込む
                 targets = targets.Where(x => x.Distance <= x.MaxDistance);

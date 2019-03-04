@@ -16,7 +16,7 @@ using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using NLog;
 using Prism.Mvvm;
-using TamanegiMage.FFXIV_MemoryReader.Model;
+using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Models
 {
@@ -174,9 +174,9 @@ namespace ACT.UltraScouter.Models
             }
         }
 
-        private ObjectType objectType = ObjectType.Unknown;
+        private Actor.Type objectType = Actor.Type.Unknown;
 
-        public ObjectType ObjectType
+        public Actor.Type ObjectType
         {
             get => this.objectType;
             set => this.SetProperty(ref this.objectType, value);
@@ -822,7 +822,7 @@ namespace ACT.UltraScouter.Models
                 }
 
                 if (!config.IsDesignMode &&
-                    this.ObjectType != ObjectType.Monster)
+                    this.ObjectType != Actor.Type.Monster)
                 {
                     this.enmityList.Clear();
                     this.IsExistsEnmityList = false;

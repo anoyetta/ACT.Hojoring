@@ -11,6 +11,7 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
 using Prism.Commands;
 using Prism.Mvvm;
+using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Models
 {
@@ -189,7 +190,7 @@ namespace ACT.UltraScouter.Models
             }
         }
 
-        public bool IsPC => this.combatant?.type == TamanegiMage.FFXIV_MemoryReader.Model.ObjectType.PC;
+        public bool IsPC => this.combatant?.ObjectType == Actor.Type.PC;
 
         public BitmapSource JobIcon => JobIconDictionary.Instance.GetIcon(this.combatant?.JobID ?? JobIDs.Unknown);
 

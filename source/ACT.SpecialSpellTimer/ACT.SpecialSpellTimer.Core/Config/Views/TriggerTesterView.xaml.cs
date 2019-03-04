@@ -20,7 +20,7 @@ using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.Globalization;
 using FFXIV.Framework.WPF.Views;
 using Prism.Mvvm;
-using TamanegiMage.FFXIV_MemoryReader.Model;
+using Sharlayan.Core.Enums;
 
 namespace ACT.SpecialSpellTimer.Config.Views
 {
@@ -602,7 +602,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     }
 
                     var combatant = new Combatant();
-                    combatant.type = ObjectType.PC;
+                    combatant.ObjectType = Actor.Type.PC;
                     combatant.SetName(dummy.Name);
                     combatant.Job = (byte)dummy.Job;
 
