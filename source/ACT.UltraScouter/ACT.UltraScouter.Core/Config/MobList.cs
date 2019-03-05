@@ -61,6 +61,7 @@ namespace ACT.UltraScouter.Config
         [XmlIgnore] private double nearDistance = 20;
         [XmlIgnore] private bool ttsEnabled = false;
         [XmlIgnore] private bool dumpCombatants = false;
+        [XmlIgnore] private bool isScanNPC = true;
         [XmlIgnore] private bool isNotScanNPCinFullParty = true;
 
         /// <summary>
@@ -131,6 +132,16 @@ namespace ACT.UltraScouter.Config
         {
             get => this.ungroupSameNameMobs;
             set => this.SetProperty(ref this.ungroupSameNameMobs, value);
+        }
+
+        /// <summary>
+        /// NPCをスキャンする
+        /// </summary>
+        [DataMember]
+        public bool IsScanNPC
+        {
+            get => this.isScanNPC;
+            set => this.SetProperty(ref this.isScanNPC, value);
         }
 
         /// <summary>

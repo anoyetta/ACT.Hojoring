@@ -259,20 +259,27 @@ namespace ACT.UltraScouter.Workers
                     targetDelegates = targetDelegates.Concat(deadmen);
                 }
 
-                if (Settings.Instance.MobList.IsNotScanNPCinFullParty)
+                if (Settings.Instance.MobList.IsScanNPC)
                 {
-                    var partyCount = FFXIVPlugin.Instance.PartyMemberCount;
-                    SharlayanHelper.Instance.IsSkipActor = partyCount >= 8;
+                    if (Settings.Instance.MobList.IsNotScanNPCinFullParty)
+                    {
+                        var partyCount = FFXIVPlugin.Instance.PartyMemberCount;
+                        SharlayanHelper.Instance.IsSkipActor = partyCount >= 8;
+                    }
+                    else
+                    {
+                        SharlayanHelper.Instance.IsSkipActor = false;
+                    }
                 }
                 else
                 {
-                    SharlayanHelper.Instance.IsSkipActor = false;
+                    SharlayanHelper.Instance.IsSkipActor = true;
                 }
 
                 if (!SharlayanHelper.Instance.IsSkipActor)
                 {
                     // sharlayanからNPCを補完する
-                    actors = SharlayanHelper.Instance.NPCs.Where(x =>
+                    actors = SharlayanHelper.Instance.Actors.Where(x =>
                         x.Type == Actor.Type.NPC ||
                         x.Type == Actor.Type.TreasureCoffer ||
                         x.Type == Actor.Type.EventObject);
