@@ -279,7 +279,7 @@ namespace ACT.UltraScouter.Workers
                 if (!SharlayanHelper.Instance.IsSkipActor)
                 {
                     // sharlayanからNPCを補完する
-                    actors = SharlayanHelper.Instance.NPCs.Where(x =>
+                    actors = SharlayanHelper.Instance.Actors.Where(x =>
                         x.Type == Actor.Type.NPC ||
                         x.Type == Actor.Type.TreasureCoffer ||
                         x.Type == Actor.Type.EventObject);
