@@ -79,9 +79,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void ClearData()
         {
-            lock (this.ActorDictionary)
+            lock (this.ActorList)
             {
-                this.ActorDictionary.Clear();
+                this.ActorList.Clear();
             }
         }
 
@@ -147,15 +147,15 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        private readonly Dictionary<uint, ActorItem> ActorDictionary = new Dictionary<uint, ActorItem>(512);
+        private readonly List<ActorItem> ActorList = new List<ActorItem>(512);
 
-        public IEnumerable<ActorItem> Actors
+        public List<ActorItem> Actors
         {
             get
             {
-                lock (this.ActorDictionary)
+                lock (this.ActorList)
                 {
-                    return this.ActorDictionary.Values.ToArray();
+                    return this.ActorList.ToList();
                 }
             }
         }
@@ -171,17 +171,17 @@ namespace FFXIV.Framework.FFXIVHelper
 
             if (this.IsSkipActor)
             {
-                if (this.ActorDictionary.Any())
+                if (this.ActorList.Any())
                 {
-                    lock (this.ActorDictionary)
+                    lock (this.ActorList)
                     {
-                        this.ActorDictionary.Clear();
+                        this.ActorList.Clear();
                     }
                 }
             }
             else
             {
-                lock (this.ActorDictionary)
+                lock (this.ActorList)
                 {
                     /*
                     this.GetActors();
@@ -206,32 +206,15 @@ namespace FFXIV.Framework.FFXIVHelper
 
             if (!actors.Any())
             {
-                this.ActorDictionary.Clear();
+                this.ActorList.Clear();
                 return;
             }
 
-            foreach (var entry in actors)
-            {
-                if (ActorDictionary.ContainsKey(entry.Key))
-                {
-                    ActorDictionary[entry.Key] = entry.Value;
-                }
-                else
-                {
-                    ActorDictionary.Add(entry.Key, entry.Value);
-                }
-
-                Thread.Yield();
-            }
-
-            var removes = ActorDictionary.Values.Where(x => !actors.ContainsKey(x.GetKey())).ToArray();
-            foreach (var entry in removes)
-            {
-                ActorDictionary.Remove(entry.GetKey());
-                Thread.Yield();
-            }
+            this.ActorList.Clear();
+            this.ActorList.AddRange(actors);
         }
 
+        /*
         private void GetActors()
         {
             var result = Reader.GetActors();
@@ -274,6 +257,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 Thread.Yield();
             }
         }
+        */
     }
 
     public static class ActorItemExtensions
@@ -367,9 +351,9 @@ namespace FFXIV.Framework.FFXIVHelper
                 isCurrentUser,
                 entry);
 
-        public static Dictionary<uint, ActorItem> GetActorSimple()
+        public static List<ActorItem> GetActorSimple()
         {
-            var result = new Dictionary<uint, ActorItem>(256);
+            var result = new List<ActorItem>(256);
 
             if (!Reader.CanGetActors() || !MemoryHandler.Instance.IsAttached)
             {
@@ -430,7 +414,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     }
                 }
 
-                result[entry.GetKey()] = entry;
+                result.Add(entry);
             }
 
             return result;
@@ -462,16 +446,20 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public static uint GetKey(
             this ActorItem actor)
+            => actor.IsNPC() ? actor.NPCID2 : actor.ID;
+
+        public static bool IsNPC(
+            this ActorItem actor)
         {
             switch (actor.Type)
             {
                 case Actor.Type.NPC:
                 case Actor.Type.Aetheryte:
                 case Actor.Type.EventObject:
-                    return actor.NPCID2;
+                    return true;
 
                 default:
-                    return actor.ID;
+                    return false;
             }
         }
     }
