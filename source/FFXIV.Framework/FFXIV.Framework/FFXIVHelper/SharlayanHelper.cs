@@ -2,13 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using Sharlayan;
-using Sharlayan.Core;
+using Sharlayan.Core.Enums;
 using Sharlayan.Models;
+using Sharlayan.Models.Structures;
+using ActorItem = Sharlayan.Core.ActorItem;
 
 namespace FFXIV.Framework.FFXIVHelper
 {
@@ -22,7 +25,7 @@ namespace FFXIV.Framework.FFXIVHelper
         private static readonly double ProcessSubscribeInterval = 5000;
 
         private ThreadWorker memorySubscriber;
-        private static readonly double MemorySubscribeInterval = 1000;
+        private static readonly double MemorySubscribeInterval = 500;
 
         public void Start()
         {
@@ -76,9 +79,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void ClearData()
         {
-            lock (this.npcs)
+            lock (this.ActorList)
             {
-                this.npcs.Clear();
+                this.ActorList.Clear();
             }
         }
 
@@ -127,28 +130,32 @@ namespace FFXIV.Framework.FFXIVHelper
                     this.currentFFXIVProcess = ffxiv;
                     this.currentFFXIVLanguage = ffxivLanguage;
 
+                    var model = new ProcessModel
+                    {
+                        Process = ffxiv,
+                        IsWin64 = true
+                    };
+
                     MemoryHandler.Instance.SetProcess(
-                        new ProcessModel
-                        {
-                            Process = ffxiv,
-                            IsWin64 = true
-                        },
+                        model,
                         ffxivLanguage);
+
+                    ReaderEx.ProcessModel = model;
 
                     this.ClearData();
                 }
             }
         }
 
-        private readonly Dictionary<uint, ActorItem> npcs = new Dictionary<uint, ActorItem>(512);
+        private readonly List<ActorItem> ActorList = new List<ActorItem>(512);
 
-        public IEnumerable<ActorItem> NPCs
+        public List<ActorItem> Actors
         {
             get
             {
-                lock (this.npcs)
+                lock (this.ActorList)
                 {
-                    return this.npcs.Values.ToArray();
+                    return this.ActorList.ToList();
                 }
             }
         }
@@ -164,40 +171,65 @@ namespace FFXIV.Framework.FFXIVHelper
 
             if (this.IsSkipActor)
             {
-                if (this.npcs.Any())
+                if (this.ActorList.Any())
                 {
-                    lock (this.npcs)
+                    lock (this.ActorList)
                     {
-                        this.npcs.Clear();
+                        this.ActorList.Clear();
                     }
                 }
             }
             else
             {
-                lock (this.npcs)
+                lock (this.ActorList)
                 {
+                    /*
                     this.GetActors();
+                    */
+                    this.GetActorsSimple();
                 }
+            }
+
+            if (this.IsSkips.All(x => x))
+            {
+                Thread.Sleep((int)ProcessSubscribeInterval);
             }
         }
 
         public bool IsSkipActor { get; set; } = false;
 
+        private bool[] IsSkips => new[] { this.IsSkipActor };
+
+        private void GetActorsSimple()
+        {
+            var actors = ReaderEx.GetActorSimple();
+
+            if (!actors.Any())
+            {
+                this.ActorList.Clear();
+                return;
+            }
+
+            this.ActorList.Clear();
+            this.ActorList.AddRange(actors);
+        }
+
+        /*
         private void GetActors()
         {
             var result = Reader.GetActors();
             if (result == null)
             {
-                this.npcs.Clear();
+                this.ActorDictionary.Clear();
                 return;
             }
 
             var news = result.NewNPCs;
             foreach (var entry in news)
             {
-                if (!this.npcs.ContainsKey(entry.Key))
+                if (!this.ActorDictionary.ContainsKey(entry.Key))
                 {
-                    this.npcs.Add(entry.Key, entry.Value);
+                    this.ActorDictionary.Add(entry.Key, entry.Value);
                 }
 
                 Thread.Yield();
@@ -206,9 +238,9 @@ namespace FFXIV.Framework.FFXIVHelper
             var removes = result.RemovedNPCs;
             foreach (var entry in removes)
             {
-                if (this.npcs.ContainsKey(entry.Key))
+                if (this.ActorDictionary.ContainsKey(entry.Key))
                 {
-                    this.npcs.Remove(entry.Key);
+                    this.ActorDictionary.Remove(entry.Key);
                 }
 
                 Thread.Yield();
@@ -217,14 +249,15 @@ namespace FFXIV.Framework.FFXIVHelper
             var currents = result.CurrentNPCs;
             foreach (var entry in currents)
             {
-                if (this.npcs.ContainsKey(entry.Key))
+                if (this.ActorDictionary.ContainsKey(entry.Key))
                 {
-                    this.npcs[entry.Key] = entry.Value;
+                    this.ActorDictionary[entry.Key] = entry.Value;
                 }
 
                 Thread.Yield();
             }
         }
+        */
     }
 
     public static class ActorItemExtensions
@@ -275,6 +308,159 @@ namespace FFXIV.Framework.FFXIVHelper
             c.SetName(actor.Name);
 
             return c;
+        }
+    }
+
+    public static class ReaderEx
+    {
+        public static ProcessModel ProcessModel { get; set; }
+
+        private static readonly Lazy<Func<StructuresContainer>> LazyGetStructuresDelegate = new Lazy<Func<StructuresContainer>>(() =>
+        {
+            var property = MemoryHandler.Instance.GetType().GetProperty(
+                "Structures",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+
+            return (Func<StructuresContainer>)Delegate.CreateDelegate(
+                typeof(Func<StructuresContainer>),
+                MemoryHandler.Instance,
+                property.GetMethod);
+        });
+
+        private static readonly Lazy<Func<byte[], bool, ActorItem, ActorItem>> LazyResolveActorFromBytesDelegate = new Lazy<Func<byte[], bool, ActorItem, ActorItem>>(() =>
+        {
+            var asm = MemoryHandler.Instance.GetType().Assembly;
+            var type = asm.GetType("Sharlayan.Utilities.ActorItemResolver");
+
+            var method = type.GetMethod(
+                "ResolveActorFromBytes",
+                BindingFlags.Static | BindingFlags.Public);
+
+            return (Func<byte[], bool, ActorItem, ActorItem>)Delegate.CreateDelegate(
+                typeof(Func<byte[], bool, ActorItem, ActorItem>),
+                null,
+                method);
+        });
+
+        private static ActorItem InvokeActorItemResolver(
+            byte[] source,
+            bool isCurrentUser = false,
+            ActorItem entry = null)
+            => LazyResolveActorFromBytesDelegate.Value.Invoke(
+                source,
+                isCurrentUser,
+                entry);
+
+        public static List<ActorItem> GetActorSimple()
+        {
+            var result = new List<ActorItem>(256);
+
+            if (!Reader.CanGetActors() || !MemoryHandler.Instance.IsAttached)
+            {
+                return result;
+            }
+
+            var isWin64 = ProcessModel?.IsWin64 ?? true;
+
+            var targetAddress = IntPtr.Zero;
+            var endianSize = isWin64 ? 8 : 4;
+
+            var structures = LazyGetStructuresDelegate.Value.Invoke();
+            var sourceSize = structures.ActorItem.SourceSize;
+            var limit = structures.ActorItem.EntityCount;
+            var characterAddressMap = MemoryHandler.Instance.GetByteArray(Scanner.Instance.Locations[Signatures.CharacterMapKey], endianSize * limit);
+            var uniqueAddresses = new Dictionary<IntPtr, IntPtr>();
+            var firstAddress = IntPtr.Zero;
+
+            var firstTime = true;
+            for (var i = 0; i < limit; i++)
+            {
+                Thread.Yield();
+
+                var characterAddress = isWin64 ?
+                    new IntPtr(TryToInt64(characterAddressMap, i * endianSize)) :
+                    new IntPtr(TryToInt32(characterAddressMap, i * endianSize));
+
+                if (characterAddress == IntPtr.Zero)
+                {
+                    continue;
+                }
+
+                if (firstTime)
+                {
+                    firstAddress = characterAddress;
+                    firstTime = false;
+                }
+
+                uniqueAddresses[characterAddress] = characterAddress;
+            }
+
+            foreach (var kvp in uniqueAddresses)
+            {
+                Thread.Yield();
+
+                var characterAddress = new IntPtr(kvp.Value.ToInt64());
+                var source = MemoryHandler.Instance.GetByteArray(characterAddress, sourceSize);
+                var isFirstEntry = kvp.Value.ToInt64() == firstAddress.ToInt64();
+
+                var entry = InvokeActorItemResolver(source, isFirstEntry);
+
+                if (isFirstEntry)
+                {
+                    if (targetAddress.ToInt64() > 0)
+                    {
+                        var targetInfoSource = MemoryHandler.Instance.GetByteArray(targetAddress, 128);
+                        entry.TargetID = (int)TryToInt32(targetInfoSource, structures.ActorItem.ID);
+                    }
+                }
+
+                result.Add(entry);
+            }
+
+            return result;
+        }
+
+        public static int TryToInt32(byte[] value, int index)
+        {
+            try
+            {
+                return BitConverter.ToInt32(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static long TryToInt64(byte[] value, int index)
+        {
+            try
+            {
+                return BitConverter.ToInt64(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static uint GetKey(
+            this ActorItem actor)
+            => actor.IsNPC() ? actor.NPCID2 : actor.ID;
+
+        public static bool IsNPC(
+            this ActorItem actor)
+        {
+            switch (actor.Type)
+            {
+                case Actor.Type.NPC:
+                case Actor.Type.Aetheryte:
+                case Actor.Type.EventObject:
+                    return true;
+
+                default:
+                    return false;
+            }
         }
     }
 }
