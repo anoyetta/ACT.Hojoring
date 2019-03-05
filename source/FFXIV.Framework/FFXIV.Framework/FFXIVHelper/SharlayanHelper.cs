@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using Sharlayan;
+using Sharlayan.Core.Enums;
 using Sharlayan.Models;
 using Sharlayan.Models.Structures;
 using ActorItem = Sharlayan.Core.ActorItem;
@@ -266,10 +267,10 @@ namespace FFXIV.Framework.FFXIVHelper
                 Thread.Yield();
             }
 
-            var removes = ActorDictionary.Values.Where(x => !actors.ContainsKey(x.ID)).ToArray();
+            var removes = ActorDictionary.Values.Where(x => !actors.ContainsKey(x.GetKey())).ToArray();
             foreach (var entry in removes)
             {
-                ActorDictionary.Remove(entry.ID);
+                ActorDictionary.Remove(entry.GetKey());
                 Thread.Yield();
             }
         }
@@ -429,7 +430,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     }
                 }
 
-                result.Add(entry.ID, entry);
+                result[entry.GetKey()] = entry;
             }
 
             return result;
@@ -456,6 +457,21 @@ namespace FFXIV.Framework.FFXIVHelper
             catch (Exception)
             {
                 return default;
+            }
+        }
+
+        public static uint GetKey(
+            this ActorItem actor)
+        {
+            switch (actor.Type)
+            {
+                case Actor.Type.NPC:
+                case Actor.Type.Aetheryte:
+                case Actor.Type.EventObject:
+                    return actor.NPCID2;
+
+                default:
+                    return actor.ID;
             }
         }
     }
