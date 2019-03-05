@@ -200,6 +200,38 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private bool[] IsSkips => new[] { this.IsSkipActor };
 
+        private void GetActorsSimple()
+        {
+            var actors = ReaderEx.GetActorSimple();
+
+            if (!actors.Any())
+            {
+                this.ActorDictionary.Clear();
+                return;
+            }
+
+            foreach (var entry in actors)
+            {
+                if (ActorDictionary.ContainsKey(entry.Key))
+                {
+                    ActorDictionary[entry.Key] = entry.Value;
+                }
+                else
+                {
+                    ActorDictionary.Add(entry.Key, entry.Value);
+                }
+
+                Thread.Yield();
+            }
+
+            var removes = ActorDictionary.Values.Where(x => !actors.ContainsKey(x.GetKey())).ToArray();
+            foreach (var entry in removes)
+            {
+                ActorDictionary.Remove(entry.GetKey());
+                Thread.Yield();
+            }
+        }
+
         private void GetActors()
         {
             var result = Reader.GetActors();
@@ -239,38 +271,6 @@ namespace FFXIV.Framework.FFXIVHelper
                     this.ActorDictionary[entry.Key] = entry.Value;
                 }
 
-                Thread.Yield();
-            }
-        }
-
-        private void GetActorsSimple()
-        {
-            var actors = ReaderEx.GetActorSimple();
-
-            if (!actors.Any())
-            {
-                this.ActorDictionary.Clear();
-                return;
-            }
-
-            foreach (var entry in actors)
-            {
-                if (ActorDictionary.ContainsKey(entry.Key))
-                {
-                    ActorDictionary[entry.Key] = entry.Value;
-                }
-                else
-                {
-                    ActorDictionary.Add(entry.Key, entry.Value);
-                }
-
-                Thread.Yield();
-            }
-
-            var removes = ActorDictionary.Values.Where(x => !actors.ContainsKey(x.GetKey())).ToArray();
-            foreach (var entry in removes)
-            {
-                ActorDictionary.Remove(entry.GetKey());
                 Thread.Yield();
             }
         }
