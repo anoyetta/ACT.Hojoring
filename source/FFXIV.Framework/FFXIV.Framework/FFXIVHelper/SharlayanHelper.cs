@@ -189,7 +189,6 @@ namespace FFXIV.Framework.FFXIVHelper
         private readonly Dictionary<uint, ActorItem> ActorDictionary = new Dictionary<uint, ActorItem>(512);
         private readonly Dictionary<uint, ActorItem> NPCActorDictionary = new Dictionary<uint, ActorItem>(512);
 
-        private static readonly object CombatantLock = new object();
         private readonly Dictionary<uint, Combatant> CombatantsDictionary = new Dictionary<uint, Combatant>(5120);
         private readonly Dictionary<uint, Combatant> NPCCombatantsDictionary = new Dictionary<uint, Combatant>(5120);
 
@@ -197,22 +196,13 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public ActorItem CurrentPlayer => ReaderEx.CurrentPlayer;
 
-        public List<ActorItem> Actors
-        {
-            get
-            {
-                return this.ActorList.ToList();
-            }
-        }
+        public List<ActorItem> Actors => this.ActorList.ToList();
 
         public ActorItem GetActor(uint id)
         {
-            lock (this.ActorList)
+            if (this.ActorDictionary.ContainsKey(id))
             {
-                if (this.ActorDictionary.ContainsKey(id))
-                {
-                    return this.ActorDictionary[id];
-                }
+                return this.ActorDictionary[id];
             }
 
             return null;
@@ -220,12 +210,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public ActorItem GetNPCActor(uint id)
         {
-            lock (this.ActorList)
+            if (this.NPCActorDictionary.ContainsKey(id))
             {
-                if (this.NPCActorDictionary.ContainsKey(id))
-                {
-                    return this.NPCActorDictionary[id];
-                }
+                return this.NPCActorDictionary[id];
             }
 
             return null;
@@ -235,29 +222,12 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private readonly Dictionary<uint, EnmityEntry> EnmityDictionary = new Dictionary<uint, EnmityEntry>(128);
 
-        public List<EnmityEntry> EnmityList
-        {
-            get
-            {
-                lock (this.EnmityDictionary)
-                {
-                    return this.EnmityDictionary.Values.OrderByDescending(x => x.Enmity).ToList();
-                }
-            }
-        }
+        public List<EnmityEntry> EnmityList =>
+            this.EnmityDictionary.Values.OrderByDescending(x => x.Enmity).ToList();
 
         private readonly List<ActorItem> PartyMemberList = new List<ActorItem>(8);
 
-        public List<ActorItem> PartyMembers
-        {
-            get
-            {
-                lock (this.PartyMemberList)
-                {
-                    return this.PartyMemberList.ToList();
-                }
-            }
-        }
+        public List<ActorItem> PartyMembers => this.PartyMemberList.ToList();
 
         public int PartyMemberCount { get; private set; }
 
@@ -276,20 +246,14 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 if (this.ActorList.Any())
                 {
-                    lock (this.ActorList)
-                    {
-                        this.ActorList.Clear();
-                        this.ActorDictionary.Clear();
-                        this.NPCActorDictionary.Clear();
-                    }
+                    this.ActorList.Clear();
+                    this.ActorDictionary.Clear();
+                    this.NPCActorDictionary.Clear();
                 }
             }
             else
             {
-                lock (this.ActorList)
-                {
-                    this.GetActorsSimple();
-                }
+                this.GetActorsSimple();
             }
 
             if (this.IsSkipTarget)
@@ -305,18 +269,12 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 if (this.PartyMemberList.Any())
                 {
-                    lock (this.PartyMemberList)
-                    {
-                        this.PartyMemberList.Clear();
-                    }
+                    this.PartyMemberList.Clear();
                 }
             }
             else
             {
-                lock (this.PartyMemberList)
-                {
-                    this.GetPartyInfo();
-                }
+                this.GetPartyInfo();
             }
 
             if (this.IsSkips.All(x => x))
@@ -324,6 +282,8 @@ namespace FFXIV.Framework.FFXIVHelper
                 Thread.Sleep((int)ProcessSubscribeInterval);
             }
         }
+
+        public bool IsScanNPC { get; set; } = false;
 
         public bool IsSkipActor { get; set; } = false;
 
@@ -340,7 +300,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void GetActorsSimple()
         {
-            var actors = ReaderEx.GetActorSimple();
+            var actors = ReaderEx.GetActorSimple(this.IsScanNPC);
 
             if (!actors.Any())
             {
@@ -501,14 +461,11 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             var combatantList = new List<Combatant>(actors.Count());
 
-            lock (CombatantLock)
+            foreach (var actor in actors)
             {
-                foreach (var actor in actors)
-                {
-                    var combatant = this.TryGetOrNewCombatant(actor);
-                    combatantList.Add(combatant);
-                    Thread.Yield();
-                }
+                var combatant = this.TryGetOrNewCombatant(actor);
+                combatantList.Add(combatant);
+                Thread.Yield();
             }
 
             return combatantList;
@@ -522,10 +479,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 return null;
             }
 
-            lock (CombatantLock)
-            {
-                return this.TryGetOrNewCombatant(actor);
-            }
+            return this.TryGetOrNewCombatant(actor);
         }
 
         private Combatant TryGetOrNewCombatant(
@@ -635,23 +589,22 @@ namespace FFXIV.Framework.FFXIVHelper
             var threshold = CommonHelper.Random.Next(10 * 60, 15 * 60);
             var now = DateTime.Now;
 
-            lock (CombatantLock)
+            var array = new[]
             {
-                foreach (var dictionary in new[]
-                {
-                    this.CombatantsDictionary,
-                    this.NPCCombatantsDictionary
-                })
-                {
-                    dictionary
-                        .Where(x => (now - x.Value.Timestamp).TotalSeconds > threshold)
-                        .ToArray()
-                        .Walk(x =>
-                        {
-                            this.CombatantsDictionary.Remove(x.Key);
-                            Thread.Yield();
-                        });
-                }
+                this.CombatantsDictionary,
+                this.NPCCombatantsDictionary
+            };
+
+            foreach (var dictionary in array)
+            {
+                dictionary
+                    .Where(x => (now - x.Value.Timestamp).TotalSeconds > threshold)
+                    .ToArray()
+                    .Walk(x =>
+                    {
+                        this.CombatantsDictionary.Remove(x.Key);
+                        Thread.Yield();
+                    });
             }
         }
     }
@@ -773,7 +726,8 @@ namespace FFXIV.Framework.FFXIVHelper
                 source,
                 entry);
 
-        public static List<ActorItem> GetActorSimple()
+        public static List<ActorItem> GetActorSimple(
+            bool isScanNPC = false)
         {
             var result = new List<ActorItem>(256);
 
@@ -834,6 +788,11 @@ namespace FFXIV.Framework.FFXIVHelper
                     case Actor.Type.Aetheryte:
                     case Actor.Type.EventObject:
                     case Actor.Type.NPC:
+                        if (!isScanNPC)
+                        {
+                            continue;
+                        }
+
                         existing = GetNPCActorCallback?.Invoke(NPCID2);
                         break;
 

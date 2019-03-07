@@ -230,10 +230,9 @@ namespace ACT.UltraScouter.Workers
                     }
                 }
 
-                combatants = (isScanNPC ?
-                    SharlayanHelper.Instance.Actors :
-                    SharlayanHelper.Instance.Actors.Where(x => !x.IsNPC()))
-                    .ToCombatantList();
+                SharlayanHelper.Instance.IsScanNPC = isScanNPC;
+
+                combatants = SharlayanHelper.Instance.Actors.ToCombatantList();
 
                 targetDelegates = combatants
                     .Where(x =>

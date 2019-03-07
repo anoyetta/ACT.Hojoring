@@ -345,11 +345,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private readonly IReadOnlyList<Combatant> EmptyCombatantList = new List<Combatant>();
 
-        private object combatantListLock = new object();
-        private volatile IReadOnlyDictionary<uint, Combatant> combatantDictionary;
-        private volatile IReadOnlyList<Combatant> combatantList;
-
-        private Combatant previousBoss = new Combatant();
+        private IReadOnlyDictionary<uint, Combatant> combatantDictionary;
+        private IReadOnlyList<Combatant> combatantList;
 
         public int CombatantPCCount { get; private set; }
 
@@ -461,27 +458,24 @@ namespace FFXIV.Framework.FFXIVHelper
             if (!this.IsAvailable)
             {
 #if DEBUG
-                lock (this.combatantListLock)
+                foreach (var entity in this.DummyCombatants)
                 {
-                    foreach (var entity in this.DummyCombatants)
-                    {
-                        entity.SetName(entity.Name);
-                    }
+                    entity.SetName(entity.Name);
+                }
 
-                    addedCombatants =
-                        this.combatantList == null ?
-                        this.DummyCombatants :
-                        this.DummyCombatants
-                            .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
-                            .ToArray();
+                addedCombatants =
+                    this.combatantList == null ?
+                    this.DummyCombatants :
+                    this.DummyCombatants
+                        .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
+                        .ToArray();
 
-                    this.combatantList = this.DummyCombatants;
-                    this.combatantDictionary = this.DummyCombatants.ToDictionary(x => x.ID);
+                this.combatantList = this.DummyCombatants;
+                this.combatantDictionary = this.DummyCombatants.ToDictionary(x => x.ID);
 
-                    if (addedCombatants.Any())
-                    {
-                        Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
-                    }
+                if (addedCombatants.Any())
+                {
+                    Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
                 }
 #endif
             }
@@ -493,24 +487,21 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.InCombat = this.RefreshInCombat();
             }
 
-            lock (this.combatantListLock)
-            {
-                var newCombatants = SharlayanHelper.Instance.Actors
-                    .Where(x => !x.IsNPC())
-                    .ToCombatantList();
+            var newCombatants = SharlayanHelper.Instance.Actors
+                .Where(x => !x.IsNPC())
+                .ToCombatantList();
 
-                addedCombatants =
-                    this.combatantList == null ?
-                    newCombatants :
-                    newCombatants
-                        .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
-                        .ToList();
+            addedCombatants =
+                this.combatantList == null ?
+                newCombatants :
+                newCombatants
+                    .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
+                    .ToList();
 
-                this.combatantList = newCombatants.ToList();
-                this.combatantDictionary = newCombatants.ToDictionary(x => x.ID);
+            this.combatantList = newCombatants.ToList();
+            this.combatantDictionary = newCombatants.ToDictionary(x => x.ID);
 
-                this.CombatantPCCount = this.combatantList.Count(x => x.ObjectType == Actor.Type.PC);
-            }
+            this.CombatantPCCount = this.combatantList.Count(x => x.ObjectType == Actor.Type.PC);
 
             if (addedCombatants != null &&
                 addedCombatants.Any())
@@ -630,19 +621,6 @@ namespace FFXIV.Framework.FFXIVHelper
         public Combatant GetPlayer() => IsDebug ?
             ReaderEx.CurrentPlayerCombatant ?? DummyPlayer :
             ReaderEx.CurrentPlayerCombatant;
-
-        public IReadOnlyDictionary<uint, Combatant> GetCombatantDictionaly()
-        {
-            if (this.combatantDictionary == null)
-            {
-                return null;
-            }
-
-            lock (this.combatantListLock)
-            {
-                return new Dictionary<uint, Combatant>((Dictionary<uint, Combatant>)this.combatantDictionary);
-            }
-        }
 
         public IReadOnlyList<Combatant> GetCombatantList()
         {
@@ -789,6 +767,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #region Get Targets
 
+        private DateTime currentBossTimestamp;
+        private Combatant currentBoss;
+
         public Combatant GetBossInfo(
             double bossHPThreshold)
         {
@@ -797,80 +778,88 @@ namespace FFXIV.Framework.FFXIVHelper
                 return null;
             }
 
-            var party = this.GetPartyList();
-            var combatants = this.GetCombatantList();
-
-            if (party == null ||
-                combatants == null ||
-                party.Count < 1 ||
-                combatants.Count < 1)
+            if ((DateTime.Now - this.currentBossTimestamp).TotalSeconds >= 1.0)
             {
-                return null;
-            }
+                this.currentBossTimestamp = DateTime.Now;
 
-            // パーティのHP平均値を算出する
-            var players = party.Where(x => x.ObjectType == Actor.Type.PC);
-            if (!players.Any())
-            {
-                return null;
-            }
+                var party = this.GetPartyList();
+                var combatants = this.GetCombatantList();
 
-            var avg = players.Average(x => x.MaxHP);
-
-            // BOSSを検出する
-            var boss = (
-                from x in combatants
-                where
-                x.MaxHP >= (avg * bossHPThreshold) &&
-                x.ObjectType == Actor.Type.Monster &&
-                x.CurrentHP > 0
-                orderby
-                x.Level descending,
-                (x.MaxHP != x.CurrentHP ? 0 : 1) ascending,
-                x.MaxHP descending,
-                x.ID descending
-                select
-                x).FirstOrDefault();
-
-            if (boss != null)
-            {
-                boss.Player = combatants.FirstOrDefault();
-            }
-
-            this.SetSkillName(boss);
-
-            #region Logger
-
-            if (boss != null)
-            {
-                if (this.previousBoss == null ||
-                    this.previousBoss.ID != boss.ID)
+                if (party == null ||
+                    combatants == null ||
+                    party.Count < 1 ||
+                    combatants.Count < 1)
                 {
-                    var ratio =
-                        avg != 0 ?
-                        boss.MaxHP / avg :
-                        boss.MaxHP;
-
-                    var player = combatants.FirstOrDefault();
-
-                    var message =
-                        $"BOSS " +
-                        $"name={boss.Name}, " +
-                        $"maxhp={boss.MaxHP}, " +
-                        $"ptavg={avg.ToString("F0")}, " +
-                        $"ratio={ratio.ToString("F1")}, " +
-                        $"BOSS_pos={boss.PosX},{boss.PosY},{boss.PosZ}, " +
-                        $"player_pos={player.PosX},{player.PosY},{player.PosZ}";
-
-                    AppLogger.Info(message);
+                    return null;
                 }
+
+                // パーティのHP平均値を算出する
+                var players = party.Where(x => x.ObjectType == Actor.Type.PC);
+                if (!players.Any())
+                {
+                    return null;
+                }
+
+                var avg = players.Average(x => x.MaxHP);
+
+                // BOSSを検出する
+                var boss = (
+                    from x in combatants
+                    where
+                    x.MaxHP >= (avg * bossHPThreshold) &&
+                    x.ObjectType == Actor.Type.Monster &&
+                    x.CurrentHP > 0
+                    orderby
+                    x.Level descending,
+                    (x.MaxHP != x.CurrentHP ? 0 : 1) ascending,
+                    x.MaxHP descending,
+                    x.ID descending
+                    select
+                    x).FirstOrDefault();
+
+                if (boss != null)
+                {
+                    boss.Player = this.GetPlayer();
+                }
+
+                #region Logger
+
+                if (boss != null)
+                {
+                    if (this.currentBoss == null ||
+                        this.currentBoss.ID != boss.ID)
+                    {
+                        var ratio =
+                            avg != 0 ?
+                            boss.MaxHP / avg :
+                            boss.MaxHP;
+
+                        var player = combatants.FirstOrDefault();
+
+                        var message =
+                            $"BOSS " +
+                            $"name={boss.Name}, " +
+                            $"maxhp={boss.MaxHP}, " +
+                            $"ptavg={avg.ToString("F0")}, " +
+                            $"ratio={ratio.ToString("F1")}, " +
+                            $"BOSS_pos={boss.PosX},{boss.PosY},{boss.PosZ}, " +
+                            $"player_pos={player.PosX},{player.PosY},{player.PosZ}";
+
+                        AppLogger.Info(message);
+                    }
+                }
+
+                #endregion Logger
+
+                this.currentBoss = boss;
             }
 
-            this.previousBoss = boss;
+            if (this.currentBoss != null)
+            {
+                this.SetSkillName(this.currentBoss);
+            }
 
-            #endregion Logger
-
-            return boss;
+            return this.currentBoss;
         }
 
         public uint GetTargetID(
