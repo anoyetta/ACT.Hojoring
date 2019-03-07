@@ -699,6 +699,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 method);
         });
 
+        [Obsolete]
         private static ActorItem InvokeActorItemResolver(
             byte[] source,
             bool isCurrentUser = false,
@@ -807,6 +808,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
                 var isFirstEntry = kvp.Value.ToInt64() == firstAddress.ToInt64();
                 var entry = ResolveActorFromBytes(structures, source, isFirstEntry, existing);
+                entry.Type = Type;
 
                 if (isFirstEntry)
                 {
@@ -859,6 +861,7 @@ namespace FFXIV.Framework.FFXIVHelper
             return result.ToArray();
         }
 
+        [Obsolete]
         public static List<PartyMember> GetPartyMemberSimple()
         {
             var result = new List<PartyMember>(8);
