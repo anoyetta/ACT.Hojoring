@@ -552,7 +552,7 @@ namespace FFXIV.Framework.FFXIVHelper
             }
             else
             {
-                combatant = this.ToCombatant(actor);
+                combatant = this.CreateCombatant(actor);
                 dictionary.Add(key, combatant);
             }
 
