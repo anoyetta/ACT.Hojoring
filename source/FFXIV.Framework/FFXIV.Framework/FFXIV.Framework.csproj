@@ -128,12 +128,14 @@
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\FontExtensions.cs" />
     <Compile Include="Extensions\NumericExtensions.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TimeSpanExtensions.cs" />
     <Compile Include="FFXIVHelper\Buff.cs" />
     <Compile Include="FFXIVHelper\CameraInfo.cs" />
     <Compile Include="FFXIVHelper\Combatant.cs" />
     <Compile Include="FFXIVHelper\Effect.cs" />
+    <Compile Include="FFXIVHelper\EnmityEntry.cs" />
     <Compile Include="FFXIVHelper\EnmityPlugin.cs" />
     <Compile Include="FFXIVHelper\EnmityPlugin.Implementation.cs" />
     <Compile Include="FFXIVHelper\FFXIVPlugin.cs" />

@@ -201,7 +201,6 @@ namespace ACT.UltraScouter.Workers
         {
             if (!Settings.Instance.Enmity.Visible)
             {
-                EnmityPlugin.Instance.Dispose();
                 return;
             }
 
@@ -209,9 +208,7 @@ namespace ACT.UltraScouter.Workers
                 !Settings.Instance.Enmity.IsDesignMode &&
                 targetInfo.ObjectType == Actor.Type.Monster)
             {
-                EnmityPlugin.Instance.Initialize();
-
-                var enmityList = EnmityPlugin.Instance.EnmityEntryList;
+                var enmityList = SharlayanHelper.Instance.EnmityList;
                 if (enmityList != null &&
                     enmityList.Count > 0)
                 {
