@@ -14,7 +14,6 @@ using Sharlayan.Models;
 using Sharlayan.Models.Structures;
 
 using ActorItem = Sharlayan.Core.ActorItem;
-using PartyMember = Sharlayan.Core.PartyMember;
 using TargetInfo = Sharlayan.Core.TargetInfo;
 
 namespace FFXIV.Framework.FFXIVHelper
@@ -684,6 +683,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 property.GetMethod);
         });
 
+#if false
         private static readonly Lazy<Func<byte[], bool, ActorItem, ActorItem>> LazyResolveActorFromBytesDelegate = new Lazy<Func<byte[], bool, ActorItem, ActorItem>>(() =>
         {
             var asm = MemoryHandler.Instance.GetType().Assembly;
@@ -699,7 +699,6 @@ namespace FFXIV.Framework.FFXIVHelper
                 method);
         });
 
-        [Obsolete]
         private static ActorItem InvokeActorItemResolver(
             byte[] source,
             bool isCurrentUser = false,
@@ -730,6 +729,7 @@ namespace FFXIV.Framework.FFXIVHelper
             => LazyResolvePartyMemberFromBytesDelegate.Value.Invoke(
                 source,
                 entry);
+#endif
 
         public static List<ActorItem> GetActorSimple(
             bool isScanNPC = false)
@@ -860,7 +860,7 @@ namespace FFXIV.Framework.FFXIVHelper
             return result.ToArray();
         }
 
-        [Obsolete]
+#if false
         public static List<PartyMember> GetPartyMemberSimple()
         {
             var result = new List<PartyMember>(8);
@@ -920,6 +920,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
             return result;
         }
+#endif
 
         public static ActorItem ResolveActorFromBytes(StructuresContainer structures, byte[] source, bool isCurrentUser = false, ActorItem entry = null)
         {
