@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using Sharlayan;
+using Sharlayan.Core;
 using Sharlayan.Core.Enums;
 using Sharlayan.Models;
 using Sharlayan.Models.Structures;
@@ -757,8 +758,8 @@ namespace FFXIV.Framework.FFXIVHelper
                 Thread.Yield();
 
                 var characterAddress = isWin64 ?
-                    new IntPtr(TryToInt64(characterAddressMap, i * endianSize)) :
-                    new IntPtr(TryToInt32(characterAddressMap, i * endianSize));
+                    new IntPtr(BitConverter.TryToInt64(characterAddressMap, i * endianSize)) :
+                    new IntPtr(BitConverter.TryToInt32(characterAddressMap, i * endianSize));
 
                 if (characterAddress == IntPtr.Zero)
                 {
@@ -781,8 +782,8 @@ namespace FFXIV.Framework.FFXIVHelper
                 var characterAddress = new IntPtr(kvp.Value.ToInt64());
                 var source = MemoryHandler.Instance.GetByteArray(characterAddress, sourceSize);
 
-                var ID = TryToUInt32(source, structures.ActorItem.ID);
-                var NPCID2 = TryToUInt32(source, structures.ActorItem.NPCID2);
+                var ID = BitConverter.TryToUInt32(source, structures.ActorItem.ID);
+                var NPCID2 = BitConverter.TryToUInt32(source, structures.ActorItem.NPCID2);
                 var Type = (Actor.Type)source[structures.ActorItem.Type];
 
                 var existing = default(ActorItem);
@@ -805,7 +806,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
 
                 var isFirstEntry = kvp.Value.ToInt64() == firstAddress.ToInt64();
-                var entry = InvokeActorItemResolver(source, isFirstEntry, existing);
+                var entry = ResolveActorFromBytes(structures, source, isFirstEntry, existing);
 
                 if (isFirstEntry)
                 {
@@ -815,7 +816,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     if (targetAddress.ToInt64() > 0)
                     {
                         var targetInfoSource = MemoryHandler.Instance.GetByteArray(targetAddress, 128);
-                        entry.TargetID = (int)TryToInt32(targetInfoSource, structures.ActorItem.ID);
+                        entry.TargetID = (int)BitConverter.TryToInt32(targetInfoSource, structures.ActorItem.ID);
                     }
                 }
 
@@ -848,7 +849,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 {
                     var address = PartyInfoMap.ToInt64() + i * (uint)sourceSize;
                     var source = MemoryHandler.Instance.GetByteArray(new IntPtr(address), sourceSize);
-                    var ID = TryToUInt32(source, structures.PartyMember.ID);
+                    var ID = BitConverter.TryToUInt32(source, structures.PartyMember.ID);
 
                     result.Add(ID);
                     Thread.Yield();
@@ -882,8 +883,8 @@ namespace FFXIV.Framework.FFXIVHelper
                     var address = PartyInfoMap.ToInt64() + i * (uint)sourceSize;
                     var source = MemoryHandler.Instance.GetByteArray(new IntPtr(address), sourceSize);
 
-                    var ID = TryToUInt32(source, structures.ActorItem.ID);
-                    var NPCID2 = TryToUInt32(source, structures.ActorItem.NPCID2);
+                    var ID = BitConverter.TryToUInt32(source, structures.ActorItem.ID);
+                    var NPCID2 = BitConverter.TryToUInt32(source, structures.ActorItem.NPCID2);
                     var Type = (Actor.Type)source[structures.ActorItem.Type];
 
                     var existing = default(ActorItem);
@@ -918,11 +919,211 @@ namespace FFXIV.Framework.FFXIVHelper
             return result;
         }
 
-        public static int TryToInt32(byte[] value, int index)
+        public static ActorItem ResolveActorFromBytes(StructuresContainer structures, byte[] source, bool isCurrentUser = false, ActorItem entry = null)
+        {
+            entry = entry ?? new ActorItem();
+
+            var defaultBaseOffset = structures.ActorItem.DefaultBaseOffset;
+            var defaultStatOffset = structures.ActorItem.DefaultStatOffset;
+            var defaultStatusEffectOffset = structures.ActorItem.DefaultStatusEffectOffset;
+
+            entry.MapTerritory = 0;
+            entry.MapIndex = 0;
+            entry.MapID = 0;
+            entry.TargetID = 0;
+            entry.Name = MemoryHandler.Instance.GetStringFromBytes(source, structures.ActorItem.Name);
+            entry.ID = BitConverter.TryToUInt32(source, structures.ActorItem.ID);
+            entry.UUID = string.IsNullOrEmpty(entry.UUID)
+                             ? Guid.NewGuid().ToString()
+                             : entry.UUID;
+            entry.NPCID1 = BitConverter.TryToUInt32(source, structures.ActorItem.NPCID1);
+            entry.NPCID2 = BitConverter.TryToUInt32(source, structures.ActorItem.NPCID2);
+            entry.OwnerID = BitConverter.TryToUInt32(source, structures.ActorItem.OwnerID);
+            entry.TypeID = source[structures.ActorItem.Type];
+            entry.Type = (Actor.Type)entry.TypeID;
+
+            entry.TargetTypeID = source[structures.ActorItem.TargetType];
+            entry.TargetType = (Actor.TargetType)entry.TargetTypeID;
+
+            entry.GatheringStatus = source[structures.ActorItem.GatheringStatus];
+            entry.Distance = source[structures.ActorItem.Distance];
+
+            entry.X = BitConverter.TryToSingle(source, structures.ActorItem.X + defaultBaseOffset);
+            entry.Z = BitConverter.TryToSingle(source, structures.ActorItem.Z + defaultBaseOffset);
+            entry.Y = BitConverter.TryToSingle(source, structures.ActorItem.Y + defaultBaseOffset);
+            entry.Heading = BitConverter.TryToSingle(source, structures.ActorItem.Heading + defaultBaseOffset);
+            entry.HitBoxRadius = BitConverter.TryToSingle(source, structures.ActorItem.HitBoxRadius + defaultBaseOffset);
+            entry.Fate = BitConverter.TryToUInt32(source, structures.ActorItem.Fate + defaultBaseOffset); // ??
+            entry.TargetFlags = source[structures.ActorItem.TargetFlags]; // ??
+            entry.GatheringInvisible = source[structures.ActorItem.GatheringInvisible]; // ??
+            entry.ModelID = BitConverter.TryToUInt32(source, structures.ActorItem.ModelID);
+            entry.ActionStatusID = source[structures.ActorItem.ActionStatus];
+            entry.ActionStatus = (Actor.ActionStatus)entry.ActionStatusID;
+
+            // 0x17D - 0 = Green name, 4 = non-agro (yellow name)
+            entry.IsGM = BitConverter.TryToBoolean(source, structures.ActorItem.IsGM); // ?
+            entry.IconID = source[structures.ActorItem.Icon];
+            entry.Icon = (Actor.Icon)entry.IconID;
+
+            entry.StatusID = source[structures.ActorItem.Status];
+            entry.Status = (Actor.Status)entry.StatusID;
+
+            entry.ClaimedByID = BitConverter.TryToUInt32(source, structures.ActorItem.ClaimedByID);
+            var targetID = BitConverter.TryToUInt32(source, structures.ActorItem.TargetID);
+            var pcTargetID = targetID;
+
+            entry.JobID = source[structures.ActorItem.Job + defaultStatOffset];
+            entry.Job = (Actor.Job)entry.JobID;
+
+            entry.Level = source[structures.ActorItem.Level + defaultStatOffset];
+            entry.GrandCompany = source[structures.ActorItem.GrandCompany + defaultStatOffset];
+            entry.GrandCompanyRank = source[structures.ActorItem.GrandCompanyRank + defaultStatOffset];
+            entry.Title = source[structures.ActorItem.Title + defaultStatOffset];
+            entry.HPCurrent = BitConverter.TryToInt32(source, structures.ActorItem.HPCurrent + defaultStatOffset);
+            entry.HPMax = BitConverter.TryToInt32(source, structures.ActorItem.HPMax + defaultStatOffset);
+            entry.MPCurrent = BitConverter.TryToInt32(source, structures.ActorItem.MPCurrent + defaultStatOffset);
+            entry.MPMax = BitConverter.TryToInt32(source, structures.ActorItem.MPMax + defaultStatOffset);
+            entry.TPCurrent = BitConverter.TryToInt16(source, structures.ActorItem.TPCurrent + defaultStatOffset);
+            entry.TPMax = 1000;
+            entry.GPCurrent = BitConverter.TryToInt16(source, structures.ActorItem.GPCurrent + defaultStatOffset);
+            entry.GPMax = BitConverter.TryToInt16(source, structures.ActorItem.GPMax + defaultStatOffset);
+            entry.CPCurrent = BitConverter.TryToInt16(source, structures.ActorItem.CPCurrent + defaultStatOffset);
+            entry.CPMax = BitConverter.TryToInt16(source, structures.ActorItem.CPMax + defaultStatOffset);
+
+            // entry.Race = source[0x2578]; // ??
+            // entry.Sex = (Actor.Sex) source[0x2579]; //?
+            entry.AgroFlags = source[structures.ActorItem.AgroFlags];
+            entry.CombatFlags = source[structures.ActorItem.CombatFlags];
+            entry.DifficultyRank = source[structures.ActorItem.DifficultyRank];
+            entry.CastingID = BitConverter.TryToInt16(source, structures.ActorItem.CastingID); // 0x2C94);
+            entry.CastingTargetID = BitConverter.TryToUInt32(source, structures.ActorItem.CastingTargetID); // 0x2CA0);
+            entry.CastingProgress = BitConverter.TryToSingle(source, structures.ActorItem.CastingProgress); // 0x2CC4);
+            entry.CastingTime = BitConverter.TryToSingle(source, structures.ActorItem.CastingTime); // 0x2DA8);
+            entry.Coordinate = new Coordinate(entry.X, entry.Z, entry.Y);
+            if (targetID > 0)
+            {
+                entry.TargetID = (int)targetID;
+            }
+            else
+            {
+                if (pcTargetID > 0)
+                {
+                    entry.TargetID = (int)pcTargetID;
+                }
+            }
+
+            if (entry.CastingTargetID == 3758096384)
+            {
+                entry.CastingTargetID = 0;
+            }
+
+            entry.MapIndex = 0;
+
+            // handle empty names
+            if (string.IsNullOrEmpty(entry.Name))
+            {
+                if (entry.Type == Actor.Type.EventObject)
+                {
+                    entry.Name = $"{nameof(entry.EventObjectTypeID)}: {entry.EventObjectTypeID}";
+                }
+                else
+                {
+                    entry.Name = $"{nameof(entry.TypeID)}: {entry.TypeID}";
+                }
+            }
+
+            CleanXPValue(ref entry);
+
+            return entry;
+        }
+
+        private static void CleanXPValue(ref ActorItem entity)
+        {
+            if (entity.HPCurrent < 0 || entity.HPMax < 0)
+            {
+                entity.HPCurrent = 1;
+                entity.HPMax = 1;
+            }
+
+            if (entity.HPCurrent > entity.HPMax)
+            {
+                if (entity.HPMax == 0)
+                {
+                    entity.HPCurrent = 1;
+                    entity.HPMax = 1;
+                }
+                else
+                {
+                    entity.HPCurrent = entity.HPMax;
+                }
+            }
+
+            if (entity.MPCurrent < 0 || entity.MPMax < 0)
+            {
+                entity.MPCurrent = 1;
+                entity.MPMax = 1;
+            }
+
+            if (entity.MPCurrent > entity.MPMax)
+            {
+                if (entity.MPMax == 0)
+                {
+                    entity.MPCurrent = 1;
+                    entity.MPMax = 1;
+                }
+                else
+                {
+                    entity.MPCurrent = entity.MPMax;
+                }
+            }
+
+            if (entity.GPCurrent < 0 || entity.GPMax < 0)
+            {
+                entity.GPCurrent = 1;
+                entity.GPMax = 1;
+            }
+
+            if (entity.GPCurrent > entity.GPMax)
+            {
+                if (entity.GPMax == 0)
+                {
+                    entity.GPCurrent = 1;
+                    entity.GPMax = 1;
+                }
+                else
+                {
+                    entity.GPCurrent = entity.GPMax;
+                }
+            }
+
+            if (entity.CPCurrent < 0 || entity.CPMax < 0)
+            {
+                entity.CPCurrent = 1;
+                entity.CPMax = 1;
+            }
+
+            if (entity.CPCurrent > entity.CPMax)
+            {
+                if (entity.CPMax == 0)
+                {
+                    entity.CPCurrent = 1;
+                    entity.CPMax = 1;
+                }
+                else
+                {
+                    entity.CPCurrent = entity.CPMax;
+                }
+            }
+        }
+    }
+
+    internal static class BitConverter
+    {
+        public static bool TryToBoolean(byte[] value, int index)
         {
             try
             {
-                return BitConverter.ToInt32(value, index);
+                return System.BitConverter.ToBoolean(value, index);
             }
             catch (Exception)
             {
@@ -930,11 +1131,59 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public static uint TryToUInt32(byte[] value, int index)
+        public static char TryToChar(byte[] value, int index)
         {
             try
             {
-                return BitConverter.ToUInt32(value, index);
+                return System.BitConverter.ToChar(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static double TryToDouble(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToDouble(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static long TryToDoubleToInt64Bits(double value)
+        {
+            try
+            {
+                return System.BitConverter.DoubleToInt64Bits(value);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static short TryToInt16(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToInt16(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static int TryToInt32(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToInt32(value, index);
             }
             catch (Exception)
             {
@@ -946,7 +1195,79 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             try
             {
-                return BitConverter.ToInt64(value, index);
+                return System.BitConverter.ToInt64(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static double TryToInt64BitsToDouble(long value)
+        {
+            try
+            {
+                return System.BitConverter.Int64BitsToDouble(value);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static float TryToSingle(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToSingle(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static string TryToString(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToString(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static ushort TryToUInt16(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToUInt16(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static uint TryToUInt32(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToUInt32(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static ulong TryToUInt64(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToUInt64(value, index);
             }
             catch (Exception)
             {
