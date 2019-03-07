@@ -27,6 +27,8 @@ namespace ACT.SpecialSpellTimer.Models
 
         string PartyJobFilter { get; set; }
 
+        string PartyCompositionFilter { get; set; }
+
         string ZoneFilter { get; set; }
     }
 
@@ -66,6 +68,7 @@ namespace ACT.SpecialSpellTimer.Models
             var enabledByJob = false;
             var enabledByPartyJob = false;
             var enabledByZone = false;
+            var enabledByPartyComposition = false;
 
             // ジョブフィルタをかける
             if (string.IsNullOrEmpty(trigger.JobFilter))
@@ -118,7 +121,22 @@ namespace ACT.SpecialSpellTimer.Models
                 }
             }
 
-            return enabledByJob && enabledByZone && enabledByPartyJob;
+            // パーティ構成によるフィルタをかける
+            if (string.IsNullOrEmpty(trigger.PartyCompositionFilter))
+            {
+                enabledByPartyComposition = true;
+            }
+            else
+            {
+                var currentPartyComposition = FFXIVPlugin.Instance.PartyComposition.ToString();
+                var filters = trigger.PartyCompositionFilter.Split(',');
+                if (filters.Any(x => x == currentPartyComposition))
+                {
+                    enabledByPartyComposition = true;
+                }
+            }
+
+            return enabledByJob && enabledByZone && enabledByPartyJob && enabledByPartyComposition;
         }
 
         /// <summary>
