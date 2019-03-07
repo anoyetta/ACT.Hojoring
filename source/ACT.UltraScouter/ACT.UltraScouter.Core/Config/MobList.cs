@@ -62,7 +62,6 @@ namespace ACT.UltraScouter.Config
         [XmlIgnore] private bool ttsEnabled = false;
         [XmlIgnore] private bool dumpCombatants = false;
         [XmlIgnore] private bool isScanNPC = true;
-        [XmlIgnore] private bool isNotScanNPCinFullParty = true;
 
         /// <summary>
         /// 表示？
@@ -142,16 +141,6 @@ namespace ACT.UltraScouter.Config
         {
             get => this.isScanNPC;
             set => this.SetProperty(ref this.isScanNPC, value);
-        }
-
-        /// <summary>
-        /// フルパーティのときNPCをスキャンしない
-        /// </summary>
-        [DataMember]
-        public bool IsNotScanNPCinFullParty
-        {
-            get => this.isNotScanNPCinFullParty;
-            set => this.SetProperty(ref this.isNotScanNPCinFullParty, value);
         }
 
         /// <summary>
