@@ -894,13 +894,13 @@ namespace ACT.UltraScouter.Models
                     {
                         Index = index++,
                         ID = x.ID,
-                        Name = config.IsSelfDisplayYou && x.isMe ?
+                        Name = config.IsSelfDisplayYou && x.IsMe ?
                             "YOU" :
                             Combatant.NameToInitial(x.Name, ConfigBridge.Instance.PCNameStyle),
                         JobID = (JobIDs)x.Job,
                         Enmity = (double)x.Enmity,
                         HateRate = x.HateRate / 100f,
-                        IsMe = x.isMe,
+                        IsMe = x.IsMe,
                         IsPet = x.IsPet,
                     }).ToArray();
 
