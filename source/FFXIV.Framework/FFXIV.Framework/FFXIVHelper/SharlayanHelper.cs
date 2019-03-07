@@ -201,10 +201,7 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             get
             {
-                lock (this.ActorList)
-                {
-                    return this.ActorList.ToList();
-                }
+                return this.ActorList.ToList();
             }
         }
 

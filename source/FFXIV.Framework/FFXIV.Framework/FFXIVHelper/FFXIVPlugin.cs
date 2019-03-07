@@ -651,10 +651,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 return this.EmptyCombatantList;
             }
 
-            lock (this.combatantListLock)
-            {
-                return new List<Combatant>(this.combatantList);
-            }
+            return new List<Combatant>(this.combatantList);
         }
 
         public int PartyMemberCount => SharlayanHelper.Instance.PartyMemberCount;
