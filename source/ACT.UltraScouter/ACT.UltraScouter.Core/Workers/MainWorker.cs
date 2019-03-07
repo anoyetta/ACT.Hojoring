@@ -144,16 +144,8 @@ namespace ACT.UltraScouter.Workers
                     this.scanMemoryWorker = null;
                 }
 
-                var isScaning = false;
                 this.scanMemoryWorker = new ThreadWorker(() =>
                 {
-                    if (isScaning)
-                    {
-                        return;
-                    }
-
-                    isScaning = true;
-
                     try
                     {
                         this.GetDataMethod?.Invoke();
@@ -165,10 +157,6 @@ namespace ACT.UltraScouter.Workers
                     catch (Exception ex)
                     {
                         this.logger.Fatal(ex, "GetOverlayData error.");
-                    }
-                    finally
-                    {
-                        isScaning = false;
                     }
                 },
                 Settings.Instance.PollingRate,
