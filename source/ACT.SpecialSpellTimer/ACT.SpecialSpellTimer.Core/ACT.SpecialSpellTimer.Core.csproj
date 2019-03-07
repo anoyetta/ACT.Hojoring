@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatLogWorker.cs" />
+    <Compile Include="Config\Models\PartyComposiotionSelector.cs" />
     <Compile Include="Config\Views\CalendarView.xaml.cs">
       <DependentUpon>CalendarView.xaml</DependentUpon>
     </Compile>
