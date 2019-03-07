@@ -560,8 +560,11 @@ namespace FFXIV.Framework.FFXIVHelper
             c.SetName(actor.Name);
 
             var worldInfo = GetWorldInfoCallback?.Invoke(c.ID);
-            c.WorldID = worldInfo?.WorldID ?? 0;
-            c.WorldName = worldInfo?.WorldName ?? string.Empty;
+            if (worldInfo.HasValue)
+            {
+                c.WorldID = worldInfo.Value.WorldID;
+                c.WorldName = worldInfo.Value.WorldName ?? string.Empty;
+            }
 
             c.Timestamp = DateTime.Now;
 
