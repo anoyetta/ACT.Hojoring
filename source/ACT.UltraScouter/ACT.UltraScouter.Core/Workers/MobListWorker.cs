@@ -219,19 +219,7 @@ namespace ACT.UltraScouter.Workers
             {
                 Thread.CurrentThread.Priority = ThreadPriority.Lowest;
 
-                var isScanNPC = false;
-                if (Settings.Instance.MobList.IsScanNPC)
-                {
-                    isScanNPC = true;
-                    if (Settings.Instance.MobList.IsNotScanNPCinFullParty)
-                    {
-                        var partyCount = FFXIVPlugin.Instance.PartyMemberCount;
-                        isScanNPC = partyCount < 8;
-                    }
-                }
-
-                SharlayanHelper.Instance.IsScanNPC = isScanNPC;
-
+                SharlayanHelper.Instance.IsScanNPC = Settings.Instance.MobList.IsScanNPC;
                 combatants = SharlayanHelper.Instance.Actors.ToCombatantList();
 
                 targetDelegates = combatants
