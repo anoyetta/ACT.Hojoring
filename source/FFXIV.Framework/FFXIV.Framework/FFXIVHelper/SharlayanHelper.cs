@@ -808,7 +808,6 @@ namespace FFXIV.Framework.FFXIVHelper
 
                 var isFirstEntry = kvp.Value.ToInt64() == firstAddress.ToInt64();
                 var entry = ResolveActorFromBytes(structures, source, isFirstEntry, existing);
-                entry.Type = Type;
 
                 if (isFirstEntry)
                 {
