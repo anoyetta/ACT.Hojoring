@@ -71,8 +71,6 @@ namespace ACT.UltraScouter
 
                 // FFXIVプラグインへのアクセスを終了する
                 FFXIVPlugin.Instance.End();
-                SharlayanHelper.Instance.End();
-                EnmityPlugin.Free();
                 FFXIVPlugin.Free();
                 FFXIVReader.Free();
 
@@ -152,8 +150,6 @@ namespace ACT.UltraScouter
                         FFXIVPlugin.Instance.Start(
                             Settings.Instance.PollingRate,
                             Settings.Instance.FFXIVLocale);
-
-                        SharlayanHelper.Instance.Start();
                     });
 
                     // ターゲット情報ワーカを開始する

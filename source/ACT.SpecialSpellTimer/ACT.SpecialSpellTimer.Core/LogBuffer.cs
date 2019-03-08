@@ -639,7 +639,7 @@ namespace ACT.SpecialSpellTimer
                 return false;
             }
 
-            if (FFXIVPlugin.Instance.CombatnatsPlayerCount <= 16)
+            if (FFXIVPlugin.Instance.CombatantPCCount <= 16)
             {
                 return false;
             }

@@ -616,7 +616,6 @@ namespace ACT.UltraScouter.Config
                 VisibleZ = true,
                 VisibleMe = true,
                 IsScanNPC = true,
-                IsNotScanNPCinFullParty = true,
                 DisplayCount = 10,
                 NearDistance = 20,
                 TTSEnabled = true,

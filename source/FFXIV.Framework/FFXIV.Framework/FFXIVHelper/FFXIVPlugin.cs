@@ -15,12 +15,19 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using Microsoft.VisualBasic.FileIO;
+using Sharlayan.Core;
 using Sharlayan.Core.Enums;
 
 namespace FFXIV.Framework.FFXIVHelper
 {
     public class FFXIVPlugin
     {
+#if !DEBUG
+        private static readonly bool IsDebug = false;
+#else
+        private static readonly bool IsDebug = true;
+#endif
+
         #region Singleton
 
         private static FFXIVPlugin instance;
@@ -57,17 +64,6 @@ namespace FFXIV.Framework.FFXIVHelper
         /// <summary>FFXIV_ACT_Plugin.Parse.LogParse</summary>
         private dynamic pluginLogParse;
 
-        /// <summary>FFXIV_ACT_Plugin.Overlays.Overlay</summary>
-        private dynamic overlay;
-
-        /// <summary>FFXIV_ACT_Plugin.OverlayConfig</summary>
-        private dynamic overlayConfig;
-
-        /// <summary>FFXIV_ACT_Plugin.Overlays.OverlayData</summary>
-        private dynamic overlayData;
-
-        private MethodInfo readCombatantMethodInfo;
-
         /// <summary>
         /// ACTプラグイン型のプラグインオブジェクトのインスタンス
         /// </summary>
@@ -89,9 +85,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     this.plugin == null ||
                     this.pluginConfig == null ||
                     this.pluginScancombat == null ||
-                    this.overlay == null ||
-                    this.overlayConfig == null ||
-                    this.overlayData == null ||
+                    this.pluginLogParse == null ||
                     this.Process == null)
                 {
                     return false;
@@ -138,6 +132,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
                 this.isStarted = false;
             }
+
+            // sharlayan を止める
+            SharlayanHelper.Instance.End();
 
             this.scanFFXIVWorker?.Abort();
 
@@ -205,11 +202,28 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
 
                 this.RefreshCombatantList();
-                this.RefreshCurrentPartyIDList();
             },
-            pollingInteval,
-            nameof(this.attachFFXIVPluginWorker));
+            pollingInteval * 1.1,
+            nameof(this.attachFFXIVPluginWorker),
+            ThreadPriority.Lowest);
 
+            // sharlayan にワールド情報補完用のデリゲートをセットする
+            SharlayanHelper.Instance.GetWorldInfoCallback = id =>
+            {
+                lock (this.WorldInfoDictionary)
+                {
+                    if (this.WorldInfoDictionary.ContainsKey(id))
+                    {
+                        return this.WorldInfoDictionary[id];
+                    }
+                    else
+                    {
+                        return (0, string.Empty);
+                    }
+                }
+            };
+
+            // その他リソース読み込みを開始する
             await Task.Run(() =>
             {
                 Thread.Sleep(CommonHelper.GetRandomTimeSpan());
@@ -217,6 +231,10 @@ namespace FFXIV.Framework.FFXIVHelper
 
                 Thread.Sleep(CommonHelper.GetRandomTimeSpan());
                 this.scanFFXIVWorker.Run();
+
+                // sharlayan を開始する
+                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
+                SharlayanHelper.Instance.Start(pollingInteval);
 
                 // XIVDBをロードする
                 Thread.Sleep(CommonHelper.GetRandomTimeSpan());
@@ -327,22 +345,12 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private readonly IReadOnlyList<Combatant> EmptyCombatantList = new List<Combatant>();
 
-        public int CombatantsCount { get; private set; } = 0;
+        private IReadOnlyDictionary<uint, Combatant> combatantDictionary;
+        private IReadOnlyList<Combatant> combatantList;
 
-        public int CombatnatsPlayerCount { get; private set; } = 0;
+        public int CombatantPCCount { get; private set; }
 
-        private object combatantListLock = new object();
-        private volatile IReadOnlyDictionary<uint, Combatant> combatantDictionary;
-        private volatile IReadOnlyDictionary<uint, Combatant> combatantDictionaryFromFFXIVPlugin;
-        private volatile IReadOnlyList<Combatant> combatantList;
-
-        private object currentPartyIDListLock = new object();
-        private volatile List<uint> currentPartyIDList = new List<uint>();
-
-        private Combatant previousBoss = new Combatant();
-
-        private readonly object playerLocker = new object();
-        private Combatant player;
+        private DateTime inCombatTimestamp = DateTime.MinValue;
 
         /// <summary>
         /// 戦闘中か？
@@ -351,8 +359,6 @@ namespace FFXIV.Framework.FFXIVHelper
         /// パーティメンバのHP, MP, TPのいずれかが最大値でないとき簡易的に戦闘中と判断する
         /// </remarks>
         public bool InCombat { get; private set; } = false;
-
-#if DEBUG
 
         #region Dummy Combatants
 
@@ -428,8 +434,6 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #endregion Dummy Combatants
 
-#endif
-
         public class AddedCombatantsEventArgs :
             EventArgs
         {
@@ -449,123 +453,74 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public void RefreshCombatantList()
         {
+            var addedCombatants = default(IEnumerable<Combatant>);
+
             if (!this.IsAvailable)
             {
 #if DEBUG
-                lock (this.combatantListLock)
+                foreach (var entity in this.DummyCombatants)
                 {
-                    foreach (var entity in this.DummyCombatants)
-                    {
-                        entity.SetName(entity.Name);
-                    }
-
-                    var addedCombatants =
-                        this.combatantList == null ?
-                        this.DummyCombatants :
-                        this.DummyCombatants
-                            .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
-                            .ToArray();
-
-                    this.player = DummyPlayer;
-                    this.combatantList = this.DummyCombatants;
-                    this.combatantDictionary = this.DummyCombatants.ToDictionary(x => x.ID);
-                    this.combatantDictionaryFromFFXIVPlugin = this.combatantDictionary;
-
-                    if (addedCombatants.Any())
-                    {
-                        Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
-                    }
-                }
-#endif
-
-                return;
-            }
-
-            if (!FFXIVReader.Instance.IsAvailable)
-            {
-                this.RefreshCombatantListFromFFXIVPlugin();
-            }
-            else
-            {
-                // 3秒ごとにFFXIV_ACT_PluginからもCombatantを取得しておく
-                if (DateTime.Now.Second % 3 <= 0)
-                {
-                    var c = this.GetCombatantListFromFFXIVPlugin();
-                    this.combatantDictionaryFromFFXIVPlugin = c.Dictionary;
+                    entity.SetName(entity.Name);
                 }
 
-                this.RefreshCombatantListFromFFXIVReader();
-            }
-        }
-
-        /// <summary>
-        /// 扱うプレイヤー情報の最大数
-        /// </summary>
-        private const int MaxPCCount = 32;
-
-        private void RefreshCombatantListFromFFXIVPlugin()
-        {
-            var combatants = this.GetCombatantListFromFFXIVPlugin();
-            var newList = combatants.List;
-            var newDictionary = combatants.Dictionary;
-            var player = combatants.Player;
-
-            if (newList == null ||
-                newDictionary == null)
-            {
-                newList = this.EmptyCombatantList.ToList();
-                newDictionary = newList.ToDictionary(x => x.ID);
-            }
-
-            lock (this.combatantListLock)
-            {
-                var addedCombatants =
+                addedCombatants =
                     this.combatantList == null ?
-                    newList.ToArray() :
-                    newList
+                    this.DummyCombatants :
+                    this.DummyCombatants
                         .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
                         .ToArray();
 
-                this.combatantList = newList;
-                this.combatantDictionary = newDictionary;
-                this.combatantDictionaryFromFFXIVPlugin = newDictionary;
-                this.CombatantsCount = newList.Count;
-                this.CombatnatsPlayerCount = newList.Count(x => x.ObjectType == Actor.Type.PC);
-
-                // TargetOfTargetを設定する
-                if (player != null &&
-                    player.TargetID != 0)
-                {
-                    if (this.combatantDictionary.ContainsKey(player.TargetID))
-                    {
-                        var target = this.combatantDictionary[player.TargetID];
-                        player.TargetOfTargetID = target.TargetID;
-                    }
-                }
+                this.combatantList = this.DummyCombatants;
+                this.combatantDictionary = this.DummyCombatants.ToDictionary(x => x.ID);
 
                 if (addedCombatants.Any())
                 {
                     Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
                 }
+#endif
             }
 
-            lock (this.playerLocker)
+            if ((DateTime.Now - this.inCombatTimestamp).TotalSeconds >= 1.0)
             {
-                this.player = player;
+                this.inCombatTimestamp = DateTime.Now;
+                this.RefreshCombatantWorldInfo();
+                this.InCombat = this.RefreshInCombat();
+            }
+
+            var newCombatants = SharlayanHelper.Instance.Actors
+                .Where(x => !x.IsNPC())
+                .ToCombatantList();
+
+            addedCombatants =
+                this.combatantList == null ?
+                newCombatants :
+                newCombatants
+                    .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
+                    .ToList();
+
+            this.combatantList = newCombatants.ToList();
+            this.combatantDictionary = newCombatants.ToDictionary(x => x.ID);
+
+            this.CombatantPCCount = this.combatantList.Count(x => x.ObjectType == Actor.Type.PC);
+
+            if (addedCombatants != null &&
+                addedCombatants.Any())
+            {
+                Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
             }
         }
 
-        private (List<Combatant> List, Dictionary<uint, Combatant> Dictionary, Combatant Player) GetCombatantListFromFFXIVPlugin()
-        {
-            var targetID = this.GetTargetID(OverlayType.Target);
+        private readonly Dictionary<uint, (int WorldID, string WorldName)> WorldInfoDictionary = new Dictionary<uint, (int WorldID, string WorldName)>(1024);
 
+        private void RefreshCombatantWorldInfo()
+        {
             dynamic sourceList;
 
             try
             {
                 if (this.exceptionCounter > ExceptionCountLimit)
                 {
-                    return (null, null, null);
+                    return;
                 }
 
                 sourceList = this.pluginScancombat.GetCombatantList();
@@ -576,227 +531,27 @@ namespace FFXIV.Framework.FFXIVHelper
                 throw;
             }
 
-            var count = (int)sourceList.Count;
-            var newList = new List<Combatant>(count);
-            var newDictionary = new Dictionary<uint, Combatant>(count);
-            var pcCount = 0;
-            var player = default(Combatant);
-
-            foreach (dynamic item in sourceList.ToArray())
+            lock (this.WorldInfoDictionary)
             {
-                if (item == null)
+                foreach (dynamic item in sourceList.ToArray())
                 {
-                    continue;
-                }
-
-                var combatant = new Combatant();
-
-                combatant.ID = (uint)item.ID;
-                combatant.OwnerID = (uint)item.OwnerID;
-                combatant.Job = (byte)item.Job;
-                combatant.ObjectType = (Actor.Type)((byte)item.type);
-                combatant.Level = (byte)item.Level;
-                combatant.CurrentHP = (int)item.CurrentHP;
-                combatant.MaxHP = (int)item.MaxHP;
-                combatant.CurrentMP = (int)item.CurrentMP;
-                combatant.MaxMP = (int)item.MaxMP;
-                combatant.CurrentTP = (short)item.CurrentTP;
-
-                combatant.IsCasting = (bool)item.IsCasting;
-                combatant.CastBuffID = (int)item.CastBuffID;
-                combatant.CastDurationCurrent = (float)item.CastDurationCurrent;
-                combatant.CastDurationMax = (float)item.CastDurationMax;
-
-                combatant.WorldID = (int)item.WorldID;
-                combatant.WorldName = (string)item.WorldName;
-
-                // 扱うプレイヤー数の最大数を超えたらカットする
-                if (combatant.ObjectType == Actor.Type.PC &&
-                    targetID != 0 &&
-                    combatant.ID != targetID)
-                {
-                    pcCount++;
-                    if (pcCount >= MaxPCCount)
+                    if (item == null)
                     {
                         continue;
                     }
-                }
 
-                this.SetSkillName(combatant);
+                    var id = (uint)item.ID;
+                    var worldID = (int)item.WorldID;
+                    var worldName = (string)item.WorldName;
 
-                combatant.PosX = (float)item.PosX;
-                combatant.PosY = (float)item.PosY;
-                combatant.PosZ = (float)item.PosZ;
-
-                var name = (string)item.Name;
-
-                // 名前を登録する
-                // TYPEによって分岐するため先にTYPEを設定しておくこと
-                combatant.SetName(name);
-
-                if (player == null)
-                {
-                    player = combatant;
-                }
-
-                combatant.Player = player;
-
-                newList.Add(combatant);
-                newDictionary.Add(combatant.ID, combatant);
-            }
-
-            return (newList, newDictionary, player);
-        }
-
-        private void RefreshCombatantListFromFFXIVReader()
-        {
-            var targetID = this.GetTargetID(OverlayType.Target);
-
-            var query = FFXIVReader.Instance.GetCombatantsV1()
-                .Select(x => new Combatant(x));
-            var player = default(Combatant);
-
-            var pcCount = 0;
-
-            var list = new List<Combatant>(query.Count());
-            foreach (var combatant in query)
-            {
-                // 扱うプレイヤー数の最大数を超えたらカットする
-                if (combatant.ObjectType == Actor.Type.PC &&
-                    targetID != 0 &&
-                    combatant.ID != targetID)
-                {
-                    pcCount++;
-                    if (pcCount >= MaxPCCount)
+                    if (id != 0 &&
+                        worldID != 0 &&
+                        !string.IsNullOrEmpty(worldName))
                     {
-                        continue;
+                        this.WorldInfoDictionary[id] = (worldID, worldName);
                     }
                 }
-
-                this.SetSkillName(combatant);
-                combatant.SetName(combatant.Name);
-
-                // World情報を補完する
-                if (this.combatantDictionaryFromFFXIVPlugin != null &&
-                    this.combatantDictionaryFromFFXIVPlugin.ContainsKey(combatant.ID))
-                {
-                    var c = this.combatantDictionaryFromFFXIVPlugin[combatant.ID];
-                    combatant.WorldID = c.WorldID;
-                    combatant.WorldName = c.WorldName;
-                }
-
-                if (player == null)
-                {
-                    player = combatant;
-                }
-
-                combatant.Player = player;
-
-                list.Add(combatant);
             }
-
-            lock (this.combatantListLock)
-            {
-                var addedCombatants =
-                    this.combatantList == null ?
-                    list.ToArray() :
-                    list
-                        .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
-                        .ToArray();
-
-                this.combatantList = list;
-                this.combatantDictionary = list.ToDictionary(x => x.ID);
-                this.CombatantsCount = list.Count;
-                this.CombatnatsPlayerCount = list.Count(x => x.ObjectType == Actor.Type.PC);
-
-                // TargetOfTargetを設定する
-                if (player != null &&
-                    player.TargetID != 0)
-                {
-                    if (this.combatantDictionary.ContainsKey(player.TargetID))
-                    {
-                        var target = this.combatantDictionary[player.TargetID];
-                        player.TargetOfTargetID = target.TargetID;
-                    }
-                }
-
-                if (addedCombatants.Any())
-                {
-                    Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
-                }
-            }
-
-            lock (this.playerLocker)
-            {
-                this.player = player;
-            }
-        }
-
-        private DateTime currentPartyIDListTimestamp = DateTime.MinValue;
-
-        public int PartyMemberCount { get; private set; }
-
-        public void RefreshCurrentPartyIDList()
-        {
-            if ((DateTime.Now - this.currentPartyIDListTimestamp).TotalSeconds <= 1.0)
-            {
-                return;
-            }
-
-            this.currentPartyIDListTimestamp = DateTime.Now;
-
-            if (!this.IsAvailable)
-            {
-                this.PartyMemberCount = 0;
-#if DEBUG
-                lock (this.currentPartyIDListLock)
-                {
-                    this.currentPartyIDList = new List<uint>(this.DummyPartyList);
-                    this.PartyMemberCount = this.currentPartyIDList.Count;
-                }
-#endif
-                return;
-            }
-
-            var partyList = default(List<uint>);
-
-            try
-            {
-                if (this.exceptionCounter > ExceptionCountLimit)
-                {
-                    this.PartyMemberCount = 0;
-                    this.currentPartyIDList = new List<uint>();
-                    this.InCombat = false;
-                    return;
-                }
-
-                var dummyBuffer = new byte[51200];
-                partyList = pluginScancombat?.GetCurrentPartyList(
-                    dummyBuffer,
-                    out int partyCount) as List<uint>;
-            }
-            catch (Exception)
-            {
-                this.currentPartyIDList = new List<uint>();
-                this.InCombat = false;
-                this.exceptionCounter++;
-                throw;
-            }
-
-            if (partyList == null)
-            {
-                this.PartyMemberCount = 0;
-                this.InCombat = this.RefreshInCombat();
-                return;
-            }
-
-            lock (this.currentPartyIDListLock)
-            {
-                this.PartyMemberCount = partyList.Count;
-                this.currentPartyIDList = partyList;
-            }
-
-            this.InCombat = this.RefreshInCombat();
         }
 
         public bool RefreshInCombat()
@@ -863,27 +618,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #region Get Combatants
 
-        public Combatant GetPlayer()
-        {
-            lock (this.playerLocker)
-            {
-                return this.player?.Clone();
-            }
-        }
-
-        public IReadOnlyDictionary<uint, Combatant> GetCombatantDictionaly()
-        {
-            if (this.combatantDictionary == null)
-            {
-                return null;
-            }
-
-            lock (this.combatantListLock)
-            {
-                return new Dictionary<uint, Combatant>(
-                    (Dictionary<uint, Combatant>)this.combatantDictionary);
-            }
-        }
+        public Combatant GetPlayer() => IsDebug ?
+            ReaderEx.CurrentPlayerCombatant ?? DummyPlayer :
+            ReaderEx.CurrentPlayerCombatant;
 
         public IReadOnlyList<Combatant> GetCombatantList()
         {
@@ -892,44 +629,26 @@ namespace FFXIV.Framework.FFXIVHelper
                 return this.EmptyCombatantList;
             }
 
-            lock (this.combatantListLock)
-            {
-                return new List<Combatant>(this.combatantList);
-            }
+            return new List<Combatant>(this.combatantList);
         }
+
+        public int PartyMemberCount => SharlayanHelper.Instance.PartyMemberCount;
+
+        public PartyCompositions PartyComposition => SharlayanHelper.Instance.PartyComposition;
 
         public IReadOnlyList<Combatant> GetPartyList()
         {
-            var combatants = this.GetCombatantDictionaly();
+            var combatants = SharlayanHelper.Instance.PartyMembers.ToCombatantList();
 
             if (combatants == null ||
-                combatants.Count < 1)
+                combatants.Count() < 1)
             {
                 return this.EmptyCombatantList;
             }
 
-            var partyIDs = default(List<uint>);
-
-            lock (this.currentPartyIDListLock)
-            {
-                if (this.currentPartyIDList == null ||
-                    this.currentPartyIDList.Count < 1)
-                {
-                    return this.EmptyCombatantList;
-                }
-
-                partyIDs = new List<uint>(this.currentPartyIDList);
-            }
-
-            // PartyIDリストで絞り込みつつソートをかける
+            // パーティリストをソートして返す
             var sortedPartyList = (
-                from x in (
-                    from id in partyIDs
-                    where
-                    combatants.ContainsKey(id)
-                    select
-                    combatants[id]
-                )
+                from x in combatants
                 orderby
                 x.IsPlayer ? 0 : 1,
                 x.DisplayOrder,
@@ -941,19 +660,6 @@ namespace FFXIV.Framework.FFXIVHelper
 
             return sortedPartyList;
         }
-
-        /// <summary>
-        /// 名前に該当するCombatantを返す
-        /// </summary>
-        /// <param name="name">名前</param>
-        /// <returns>Combatant</returns>
-        public Combatant GetCombatant(
-            string name)
-            => this.GetCombatantList().FirstOrDefault(x =>
-                string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(x.NameFI, name, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(x.NameIF, name, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(x.NameII, name, StringComparison.OrdinalIgnoreCase));
 
         /// <summary>
         /// パーティをロールで分類して取得する
@@ -1044,9 +750,25 @@ namespace FFXIV.Framework.FFXIVHelper
             return list;
         }
 
+        /// <summary>
+        /// 名前に該当するCombatantを返す
+        /// </summary>
+        /// <param name="name">名前</param>
+        /// <returns>Combatant</returns>
+        public Combatant GetCombatant(
+            string name)
+            => this.GetCombatantList().FirstOrDefault(x =>
+                string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(x.NameFI, name, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(x.NameIF, name, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(x.NameII, name, StringComparison.OrdinalIgnoreCase));
+
         #endregion Get Combatants
 
         #region Get Targets
+
+        private DateTime currentBossTimestamp;
+        private Combatant currentBoss;
 
         public Combatant GetBossInfo(
             double bossHPThreshold)
@@ -1056,141 +778,123 @@ namespace FFXIV.Framework.FFXIVHelper
                 return null;
             }
 
-            var party = this.GetPartyList();
-            var combatants = this.GetCombatantList();
-
-            if (party == null ||
-                combatants == null ||
-                party.Count < 1 ||
-                combatants.Count < 1)
+            if ((DateTime.Now - this.currentBossTimestamp).TotalSeconds >= 1.0)
             {
-                return null;
-            }
+                this.currentBossTimestamp = DateTime.Now;
 
-            // パーティのHP平均値を算出する
-            var players = party.Where(x => x.ObjectType == Actor.Type.PC);
-            if (!players.Any())
-            {
-                return null;
-            }
+                var party = this.GetPartyList();
+                var combatants = this.GetCombatantList();
 
-            var avg = players.Average(x => x.MaxHP);
-
-            // BOSSを検出する
-            var boss = (
-                from x in combatants
-                where
-                x.MaxHP >= (avg * bossHPThreshold) &&
-                x.ObjectType == Actor.Type.Monster &&
-                x.CurrentHP > 0
-                orderby
-                x.Level descending,
-                (x.MaxHP != x.CurrentHP ? 0 : 1) ascending,
-                x.MaxHP descending,
-                x.ID descending
-                select
-                x).FirstOrDefault();
-
-            if (boss != null)
-            {
-                boss.Player = combatants.FirstOrDefault();
-            }
-
-            this.SetSkillName(boss);
-
-            #region Logger
-
-            if (boss != null)
-            {
-                if (this.previousBoss == null ||
-                    this.previousBoss.ID != boss.ID)
+                if (party == null ||
+                    combatants == null ||
+                    party.Count < 1 ||
+                    combatants.Count < 1)
                 {
-                    var ratio =
-                        avg != 0 ?
-                        boss.MaxHP / avg :
-                        boss.MaxHP;
-
-                    var player = combatants.FirstOrDefault();
-
-                    var message =
-                        $"BOSS " +
-                        $"name={boss.Name}, " +
-                        $"maxhp={boss.MaxHP}, " +
-                        $"ptavg={avg.ToString("F0")}, " +
-                        $"ratio={ratio.ToString("F1")}, " +
-                        $"BOSS_pos={boss.PosX},{boss.PosY},{boss.PosZ}, " +
-                        $"player_pos={player.PosX},{player.PosY},{player.PosZ}";
-
-                    AppLogger.Info(message);
+                    return null;
                 }
+
+                // パーティのHP平均値を算出する
+                var players = party.Where(x => x.ObjectType == Actor.Type.PC);
+                if (!players.Any())
+                {
+                    return null;
+                }
+
+                var avg = players.Average(x => x.MaxHP);
+
+                // BOSSを検出する
+                var boss = (
+                    from x in combatants
+                    where
+                    x.MaxHP >= (avg * bossHPThreshold) &&
+                    x.ObjectType == Actor.Type.Monster &&
+                    x.CurrentHP > 0
+                    orderby
+                    x.Level descending,
+                    (x.MaxHP != x.CurrentHP ? 0 : 1) ascending,
+                    x.MaxHP descending,
+                    x.ID descending
+                    select
+                    x).FirstOrDefault();
+
+                if (boss != null)
+                {
+                    boss.Player = this.GetPlayer();
+                }
+
+                #region Logger
+
+                if (boss != null)
+                {
+                    if (this.currentBoss == null ||
+                        this.currentBoss.ID != boss.ID)
+                    {
+                        var ratio =
+                            avg != 0 ?
+                            boss.MaxHP / avg :
+                            boss.MaxHP;
+
+                        var player = combatants.FirstOrDefault();
+
+                        var message =
+                            $"BOSS " +
+                            $"name={boss.Name}, " +
+                            $"maxhp={boss.MaxHP}, " +
+                            $"ptavg={avg.ToString("F0")}, " +
+                            $"ratio={ratio.ToString("F1")}, " +
+                            $"BOSS_pos={boss.PosX},{boss.PosY},{boss.PosZ}, " +
+                            $"player_pos={player.PosX},{player.PosY},{player.PosZ}";
+
+                        AppLogger.Info(message);
+                    }
+                }
+
+                #endregion Logger
+
+                this.currentBoss = boss;
             }
 
-            this.previousBoss = boss;
+            if (this.currentBoss != null)
+            {
+                this.SetSkillName(this.currentBoss);
+            }
 
-            #endregion Logger
-
-            return boss;
+            return this.currentBoss;
         }
 
         public uint GetTargetID(
             OverlayType type)
-        {
-            if (!this.IsAvailable ||
-                this.readCombatantMethodInfo == null)
-            {
-                return 0;
-            }
-
-            dynamic data;
-
-            try
-            {
-                if (this.exceptionCounter > ExceptionCountLimit)
-                {
-                    return 0;
-                }
-
-                data = this.readCombatantMethodInfo?.Invoke(
-                    this.overlayData,
-                    new object[] { type });
-            }
-            catch (Exception)
-            {
-                this.exceptionCounter++;
-                throw;
-            }
-
-            if (data == null)
-            {
-                return 0;
-            }
-
-            return (uint)data.id;
-        }
+            => this.GetTargetInfo(type)?.ID ?? 0;
 
         public Combatant GetTargetInfo(
             OverlayType type)
         {
-            var id = this.GetTargetID(type);
-            if (id == 0)
+            var actor = default(ActorItem);
+
+            switch (type)
             {
-                return null;
+                case OverlayType.Target:
+                    actor = SharlayanHelper.Instance.TargetInfo?.CurrentTarget;
+                    break;
+
+                case OverlayType.FocusTarget:
+                    actor = SharlayanHelper.Instance.TargetInfo?.FocusTarget;
+                    break;
+
+                case OverlayType.HoverTarget:
+                    actor = SharlayanHelper.Instance.TargetInfo?.MouseOverTarget;
+                    break;
+
+                case OverlayType.TargetOfTarget:
+                    var id = (uint)(SharlayanHelper.Instance.TargetInfo?.CurrentTarget?.TargetID ?? 0);
+                    if (id != 0)
+                    {
+                        actor = SharlayanHelper.Instance.GetActor(id);
+                    }
+                    break;
             }
 
-            Combatant combatant = null;
-            lock (this.combatantListLock)
-            {
-                if (this.combatantDictionary != null &&
-                    this.combatantDictionary.ContainsKey(id))
-                {
-                    combatant = this.combatantDictionary[id];
-                    combatant.Player = this.combatantList.FirstOrDefault();
-                }
-            }
-
-            this.SetSkillName(combatant);
-
-            return combatant;
+            return SharlayanHelper.Instance.ToCombatant(actor);
         }
 
         #endregion Get Targets
@@ -1261,7 +965,6 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 this.AttachPlugin();
                 this.AttachScanMemory();
-                this.AttachOverlay();
 
                 this.LoadSkillList();
             }
@@ -1346,58 +1049,6 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.pluginScancombat = fi?.GetValue(this.pluginConfig);
 
                 AppLogger.Trace("attached ffxiv plugin ScanCombatants.");
-            }
-        }
-
-        private void AttachOverlay()
-        {
-            if (this.plugin == null)
-            {
-                return;
-            }
-
-            FieldInfo fi;
-
-            if (this.overlay == null)
-            {
-                fi = this.plugin?.GetType().GetField(
-                    "_Overlays",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                this.overlay = fi?.GetValue(this.plugin);
-            }
-
-            if (this.overlay == null)
-            {
-                return;
-            }
-
-            if (this.overlayConfig == null)
-            {
-                fi = this.overlay?.GetType().GetField(
-                    "_config",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                this.overlayConfig = fi?.GetValue(this.overlay);
-            }
-
-            if (this.overlayConfig == null)
-            {
-                return;
-            }
-
-            if (this.overlayData == null)
-            {
-                this.overlayData = this.overlayConfig?.OverlayData;
-            }
-
-            if (this.overlayData == null)
-            {
-                return;
-            }
-
-            if (this.readCombatantMethodInfo == null)
-            {
-                var t = (this.overlayData as object)?.GetType();
-                this.readCombatantMethodInfo = t?.GetMethod("ReadCombatant");
             }
         }
 

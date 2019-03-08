@@ -7,89 +7,56 @@ using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using Sharlayan.Core;
 using Sharlayan.Core.Enums;
-using TamanegiMage.FFXIV_MemoryReader.Model;
 
 namespace FFXIV.Framework.FFXIVHelper
 {
     public class Combatant :
-        CombatantV1,
         ICloneable,
         INotifyPropertyChanged
     {
         private static long currentIndex = 0;
 
-        // ネーミングルール違反なため潰しておく
-        private new readonly object type = null;
-
         public Combatant()
-        {
-            if (this.type != null)
-            {
-            }
-        }
-
-        public Combatant(
-            CombatantV1 v1)
         {
             // インデックスを採番する
             currentIndex++;
-            this.index = currentIndex;
+            this.Index = currentIndex;
             if (currentIndex >= long.MaxValue)
             {
                 currentIndex = 0;
             }
-
-            this.ID = v1.ID;
-
-            this.HorizontalDistance = v1.HorizontalDistance;
-            this.Distance = v1.Distance;
-            this.EffectiveDistance = v1.EffectiveDistance;
-            this.IsAvailableEffectiveDictance = true;
-
-            this.Heading = v1.Heading;
-            this.PosX = v1.PosX;
-            this.PosY = v1.PosY;
-            this.PosZ = v1.PosZ;
-
-            this.Casting = v1.Casting;
-            this.Statuses = v1.Statuses;
-
-            this.CurrentHP = v1.CurrentHP;
-            this.MaxHP = v1.MaxHP;
-            this.CurrentMP = v1.CurrentMP;
-            this.MaxMP = v1.MaxMP;
-            this.CurrentTP = v1.CurrentTP;
-            this.MaxTP = v1.MaxTP;
-
-            var typeValue = (byte)v1.type;
-            this.ObjectType = (Actor.Type)Enum.ToObject(typeof(Actor.Type), typeValue);
-
-            this.Name = v1.Name;
-            this.Level = v1.Level;
-            this.Job = v1.Job;
-            this.TargetID = v1.TargetID;
-            this.Order = v1.Order;
-            this.OwnerID = v1.OwnerID;
-
-            this.IsCasting = this.Casting.IsValid();
-            this.CastTargetID = this.Casting.TargetID;
-            this.CastBuffID = this.Casting.ID;
-            this.CastDurationCurrent = this.Casting.Progress;
-            this.CastDurationMax = this.Casting.Time;
         }
 
-        public Actor.Type ObjectType { get; set; }
+        public long Index { get; private set; }
 
-        public ActorItem ActorItem { get; internal set; }
+        public uint ID;
+        public uint OwnerID;
+        public int Order;
+        public uint TargetID;
 
-        private long index = 0;
+        public byte Job;
+        public byte Level;
+        public string Name;
 
-        public long Index => this.index;
+        public int CurrentHP;
+        public int MaxHP;
+        public int CurrentMP;
+        public int MaxMP;
+        public short CurrentTP;
+        public short MaxTP;
+        public int CurrentCP;
+        public int MaxCP;
+        public int CurrentGP;
+        public int MaxGP;
 
-        public uint TargetOfTargetID;
-
-        public bool IsTargetOfTargetMe =>
-            this.ID == this.TargetOfTargetID;
+        public Single PosX;
+        public Single PosY;
+        public Single PosZ;
+        public Single Heading;
+        public bool IsAvailableEffectiveDictance;
+        public byte EffectiveDistance;
+        public string Distance;
+        public string HorizontalDistance;
 
         public bool IsCasting;
         public uint CastTargetID;
@@ -97,6 +64,20 @@ namespace FFXIV.Framework.FFXIVHelper
         public float CastDurationCurrent;
         public float CastDurationMax;
         public string CastSkillName = string.Empty;
+
+        public DateTime Timestamp = DateTime.Now;
+
+        public uint TargetOfTargetID;
+
+        public Combatant Player;
+
+        public bool IsPlayer => this.ID == this.Player?.ID;
+
+        public Actor.Type ObjectType { get; set; }
+
+        public ActorItemBase ActorItem { get; internal set; }
+
+        public bool IsTargetOfTargetMe => this.ID == this.TargetOfTargetID;
 
         // FFXIV_ACT_Plugin v1.7.1.0
         private int worldID;
@@ -152,11 +133,6 @@ namespace FFXIV.Framework.FFXIVHelper
                 return name;
             }
         }
-
-        public bool IsAvailableEffectiveDictance;
-        public Combatant Player;
-
-        public bool IsPlayer => this.ID == this.Player?.ID;
 
         public int DisplayOrder =>
             PCOrder.Instance.PCOrders.Any(x => x.Job == this.JobID) ?

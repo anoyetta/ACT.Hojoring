@@ -1,29 +1,18 @@
+#if false
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using FFXIV.Framework.Common;
+using Sharlayan;
 
 namespace FFXIV.Framework.FFXIVHelper
 {
-    public class EnmityEntry
-    {
-        public uint ID;
-        public uint OwnerID;
-        public string Name;
-        public uint Enmity;
-        public bool isMe;
-        public int HateRate;
-        public byte Job;
-        public JobIDs JobID => (JobIDs)Enum.ToObject(typeof(JobIDs), this.Job);
-        public string JobName => this.JobID.ToString();
-        public string EnmityString => Enmity.ToString("##,#");
-        public bool IsPet => (OwnerID != 0);
-    }
-
     public partial class EnmityPlugin :
         IDisposable
     {
-        #region Singleton
+#region Singleton
 
         private static EnmityPlugin instance;
 
@@ -39,13 +28,13 @@ namespace FFXIV.Framework.FFXIVHelper
             instance = null;
         }
 
-        #endregion Singleton
+#endregion Singleton
 
-        #region Logger
+#region Logger
 
         private static NLog.Logger AppLogger => AppLog.DefaultLogger;
 
-        #endregion Logger
+#endregion Logger
 
         private volatile bool isInitialized = false;
         private ThreadWorker scanWorker;
@@ -80,62 +69,49 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        private void AttachProcess()
-        {
-            var process = FFXIVPlugin.Instance?.Process;
-
-            if (this._process == null ||
-                this._process.Id != process.Id)
-            {
-                this.enmityAddress = IntPtr.Zero;
-
-                if (process != null)
-                {
-                    if (process.ProcessName == "ffxiv")
-                    {
-                        this._mode = FFXIVClientMode.FFXIV_32;
-                        AppLogger.Error("[Enmity] DX9 is not supported.");
-                    }
-                    else if (process.ProcessName == "ffxiv_dx11")
-                    {
-                        this._mode = FFXIVClientMode.FFXIV_64;
-                    }
-                    else
-                    {
-                        this._mode = FFXIVClientMode.Unknown;
-                    }
-                }
-
-                this._process = process;
-            }
-
-            if (this._process != null &&
-                this.enmityAddress == IntPtr.Zero)
-            {
-                var result = this.GetPointerAddress();
-                if (result)
-                {
-                    AppLogger.Trace("[Enmity] Attached enmity pointer.");
-                }
-            }
-        }
-
         private List<EnmityEntry> enmityList;
 
         private void ScanEnmity()
         {
+            var actors = SharlayanHelper.Instance.Actors
+                .Where(x => !x.IsNPC())
+                .ToDictionary(x => x.ID);
+
+            var player = SharlayanHelper.Instance.CurrentPlayer;
+
             lock (this)
             {
-                this.AttachProcess();
-
-                if (this._process != null &&
-                    this.enmityAddress != IntPtr.Zero)
-                {
-                    this.enmityList = this.GetEnmityEntryList();
-                }
-                else
+                var result = Reader.GetTargetInfo();
+                if (!result.TargetsFound ||
+                    !result.TargetInfo.EnmityItems.Any())
                 {
                     this.enmityList = null;
+                    return;
+                }
+
+                var max = result.TargetInfo.EnmityItems.Max(x => x.Enmity);
+
+                this.enmityList.Clear();
+                foreach (var source in result.TargetInfo.EnmityItems)
+                {
+                    Thread.Yield();
+
+                    var enmity = new EnmityEntry();
+
+                    enmity.ID = source.ID;
+                    enmity.Name = source.Name;
+                    enmity.Enmity = source.Enmity;
+
+                    var actor = actors.ContainsKey(enmity.ID) ?
+                        actors[enmity.ID] :
+                        null;
+
+                    enmity.IsMe = enmity.ID == player?.ID;
+                    enmity.OwnerID = actor?.OwnerID ?? 0;
+                    enmity.Job = (byte)(actor?.Job ?? 0);
+                    enmity.HateRate = (int)(((double)enmity.Enmity / (double)max) * 100d);
+
+                    this.enmityList.Add(enmity);
                 }
             }
         }
@@ -152,3 +128,4 @@ namespace FFXIV.Framework.FFXIVHelper
         }
     }
 }
+#endif

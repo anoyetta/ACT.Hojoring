@@ -70,6 +70,7 @@
 
   <system:String x:Key="Trigger_JobFilter">직업 필터</system:String>
   <system:String x:Key="Trigger_PartyJobFilter">파티 직업 필터</system:String>
+  <system:String x:Key="Trigger_PartyCompositionFilter">Party Composition Filter</system:String>
   <system:String x:Key="Trigger_ZoneFilter">지역 필터</system:String>
   <system:String x:Key="Trigger_Preconditions">전제 조건</system:String>
   <system:String x:Key="Trigger_ClearFilter">필터 제거하기</system:String>

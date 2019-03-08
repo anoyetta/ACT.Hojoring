@@ -11,7 +11,6 @@ using ACT.UltraScouter.Views;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
-using Sharlayan.Core;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Workers
@@ -213,29 +212,28 @@ namespace ACT.UltraScouter.Workers
 
             #endregion Test Mode
 
-            var player = FFXIVPlugin.Instance.GetPlayer();
-
             var targetDelegates = default(IEnumerable<Func<MobInfo>>);
             var combatants = default(IEnumerable<Combatant>);
-            var actors = default(IEnumerable<ActorItem>);
 
             await Task.Run(() =>
             {
-                combatants = FFXIVPlugin.Instance.GetCombatantList();
+                Thread.CurrentThread.Priority = ThreadPriority.Lowest;
 
-                targetDelegates =
-                    from x in combatants
-                    where
-                    ((x.MaxHP <= 0) || (x.MaxHP > 0 && x.CurrentHP > 0)) &&
-                    Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name)
-                    select new Func<MobInfo>(() => new MobInfo()
+                SharlayanHelper.Instance.IsScanNPC = Settings.Instance.MobList.IsScanNPC;
+                combatants = SharlayanHelper.Instance.Actors.ToCombatantList();
+
+                targetDelegates = combatants
+                    .Where(x =>
+                        ((x.MaxHP <= 0) || (x.MaxHP > 0 && x.CurrentHP > 0)) &&
+                        Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name))
+                    .Select(x => new Func<MobInfo>(() => new MobInfo()
                     {
                         Name = x.Name,
                         Combatant = x,
                         Rank = Settings.Instance.MobList.TargetMobList[x.Name].Rank,
                         MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
                         TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
-                    });
+                    }));
 
                 // 戦闘不能者を検出する？
                 if (Settings.Instance.MobList.IsEnabledDetectDeadmen)
@@ -259,50 +257,8 @@ namespace ACT.UltraScouter.Workers
                     targetDelegates = targetDelegates.Concat(deadmen);
                 }
 
-                if (Settings.Instance.MobList.IsScanNPC)
-                {
-                    if (Settings.Instance.MobList.IsNotScanNPCinFullParty)
-                    {
-                        var partyCount = FFXIVPlugin.Instance.PartyMemberCount;
-                        SharlayanHelper.Instance.IsSkipActor = partyCount >= 8;
-                    }
-                    else
-                    {
-                        SharlayanHelper.Instance.IsSkipActor = false;
-                    }
-                }
-                else
-                {
-                    SharlayanHelper.Instance.IsSkipActor = true;
-                }
-
-                if (!SharlayanHelper.Instance.IsSkipActor)
-                {
-                    // sharlayanからNPCを補完する
-                    actors = SharlayanHelper.Instance.Actors.Where(x =>
-                        x.Type == Actor.Type.NPC ||
-                        x.Type == Actor.Type.TreasureCoffer ||
-                        x.Type == Actor.Type.EventObject);
-
-                    var addActors =
-                        from x in actors
-                        where
-                        Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name) &&
-                        !combatants.Any(y => y.ID == x.ID)
-                        select new Func<MobInfo>(() => new MobInfo()
-                        {
-                            Name = x.Name,
-                            Combatant = x.ToCombatant(player),
-                            Rank = Settings.Instance.MobList.TargetMobList[x.Name].Rank,
-                            MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
-                            TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
-                        });
-
-                    targetDelegates = targetDelegates.Concat(addActors);
-                }
-
                 // クエリを実行する
-                targetDelegates = targetDelegates.ToList();
+                targetDelegates = targetDelegates.ToArray();
             });
 
             lock (this.TargetInfoLock)
@@ -327,21 +283,7 @@ namespace ACT.UltraScouter.Workers
 
             if (combatants != null)
             {
-                // 画面ダンプ用のCombatantsを更新する
-                if (actors == null)
-                {
-                    CombatantsViewModel.RefreshCombatants(combatants);
-                }
-                else
-                {
-                    var actorsArray = actors.ToArray();
-                    CombatantsViewModel.RefreshCombatants(combatants.Concat(
-                        from x in actorsArray
-                        where
-                        !combatants.Any(y => y.ID == x.ID)
-                        select
-                        x.ToCombatant(player)));
-                }
+                CombatantsViewModel.RefreshCombatants(combatants.ToArray());
             }
         }
 

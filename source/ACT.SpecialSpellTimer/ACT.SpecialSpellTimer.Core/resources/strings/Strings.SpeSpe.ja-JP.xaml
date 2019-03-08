@@ -70,6 +70,7 @@
 
   <system:String x:Key="Trigger_JobFilter">自身のジョブによるフィルタ</system:String>
   <system:String x:Key="Trigger_PartyJobFilter">パーティメンバのジョブによるフィルタ</system:String>
+  <system:String x:Key="Trigger_PartyCompositionFilter">パーティ構成によるフィルタ</system:String>
   <system:String x:Key="Trigger_ZoneFilter">現在のゾーンによるフィルタ</system:String>
   <system:String x:Key="Trigger_Preconditions">前提条件</system:String>
   <system:String x:Key="Trigger_ClearFilter">フィルタを解除する</system:String>

@@ -10,6 +10,8 @@ namespace FFXIV.Framework.Common
 
         private static readonly Random random = new Random();
 
+        public static Random Random => random;
+
         public static TimeSpan GetRandomTimeSpan() =>
             GetRandomTimeSpan(DefaultMin, DefaultMax);
 
