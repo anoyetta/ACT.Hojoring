@@ -11,9 +11,11 @@ using Sharlayan;
 using Sharlayan.Core;
 using Sharlayan.Core.Enums;
 using Sharlayan.Models;
+using Sharlayan.Models.ReadResults;
 using Sharlayan.Models.Structures;
 
 using ActorItem = Sharlayan.Core.ActorItem;
+using EnmityItem = Sharlayan.Core.EnmityItem;
 using TargetInfo = Sharlayan.Core.TargetInfo;
 
 namespace FFXIV.Framework.FFXIVHelper
@@ -385,12 +387,11 @@ namespace FFXIV.Framework.FFXIVHelper
 
                 if (!existing)
                 {
-                    enmity.Name = source.Name;
-
                     var actor = this.ActorDictionary.ContainsKey(enmity.ID) ?
                         this.ActorDictionary[enmity.ID] :
                         null;
 
+                    enmity.Name = actor?.Name;
                     enmity.OwnerID = actor?.OwnerID ?? 0;
                     enmity.Job = (byte)(actor?.Job ?? 0);
 
@@ -1117,6 +1118,121 @@ namespace FFXIV.Framework.FFXIVHelper
                     entity.CPCurrent = entity.CPMax;
                 }
             }
+        }
+
+        public static TargetResult GetTargetInfo()
+        {
+            var result = new TargetResult();
+
+            if (!Reader.CanGetTargetInfo() || !MemoryHandler.Instance.IsAttached)
+            {
+                return result;
+            }
+
+            var structures = LazyGetStructuresDelegate.Value.Invoke();
+            var targetAddress = (IntPtr)Scanner.Instance.Locations[Signatures.TargetKey];
+
+            if (targetAddress.ToInt64() > 0)
+            {
+                byte[] targetInfoSource = MemoryHandler.Instance.GetByteArray(targetAddress, structures.TargetInfo.SourceSize);
+
+                var currentTarget = MemoryHandler.Instance.GetPlatformIntFromBytes(targetInfoSource, structures.TargetInfo.Current);
+                var mouseOverTarget = MemoryHandler.Instance.GetPlatformIntFromBytes(targetInfoSource, structures.TargetInfo.MouseOver);
+                var focusTarget = MemoryHandler.Instance.GetPlatformIntFromBytes(targetInfoSource, structures.TargetInfo.Focus);
+                var previousTarget = MemoryHandler.Instance.GetPlatformIntFromBytes(targetInfoSource, structures.TargetInfo.Previous);
+
+                var currentTargetID = BitConverter.TryToUInt32(targetInfoSource, structures.TargetInfo.CurrentID);
+
+                if (currentTarget > 0)
+                {
+                    ActorItem entry = GetTargetActorItemFromSource(structures, currentTarget);
+                    currentTargetID = entry.ID;
+                    if (entry.IsValid)
+                    {
+                        result.TargetsFound = true;
+                        result.TargetInfo.CurrentTarget = entry;
+                    }
+                }
+
+                if (mouseOverTarget > 0)
+                {
+                    ActorItem entry = GetTargetActorItemFromSource(structures, mouseOverTarget);
+                    if (entry.IsValid)
+                    {
+                        result.TargetsFound = true;
+                        result.TargetInfo.MouseOverTarget = entry;
+                    }
+                }
+
+                if (focusTarget > 0)
+                {
+                    ActorItem entry = GetTargetActorItemFromSource(structures, focusTarget);
+                    if (entry.IsValid)
+                    {
+                        result.TargetsFound = true;
+                        result.TargetInfo.FocusTarget = entry;
+                    }
+                }
+
+                if (previousTarget > 0)
+                {
+                    ActorItem entry = GetTargetActorItemFromSource(structures, previousTarget);
+                    if (entry.IsValid)
+                    {
+                        result.TargetsFound = true;
+                        result.TargetInfo.PreviousTarget = entry;
+                    }
+                }
+
+                if (currentTargetID > 0)
+                {
+                    result.TargetsFound = true;
+                    result.TargetInfo.CurrentTargetID = currentTargetID;
+                }
+            }
+
+            if (result.TargetInfo.CurrentTargetID > 0)
+            {
+                if (Reader.CanGetEnmityEntities())
+                {
+                    var enmityCount = MemoryHandler.Instance.GetInt16(Scanner.Instance.Locations[Signatures.EnmityCountKey]);
+                    var enmityStructure = (IntPtr)Scanner.Instance.Locations[Signatures.EnmityMapKey];
+
+                    if (enmityCount > 0 && enmityCount < 16 && enmityStructure.ToInt64() > 0)
+                    {
+                        var enmitySourceSize = structures.EnmityItem.SourceSize;
+                        for (uint i = 0; i < enmityCount; i++)
+                        {
+                            var address = new IntPtr(enmityStructure.ToInt64() + i * enmitySourceSize);
+                            var enmityEntry = new EnmityItem
+                            {
+                                ID = (uint)MemoryHandler.Instance.GetPlatformInt(address, structures.EnmityItem.ID),
+                                Name = MemoryHandler.Instance.GetString(address + structures.EnmityItem.Name),
+                                Enmity = MemoryHandler.Instance.GetUInt32(address + structures.EnmityItem.Enmity)
+                            };
+
+                            if (enmityEntry.ID <= 0)
+                            {
+                                continue;
+                            }
+
+                            result.TargetInfo.EnmityItems.Add(enmityEntry);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private static ActorItem GetTargetActorItemFromSource(StructuresContainer structures, long address)
+        {
+            var targetAddress = new IntPtr(address);
+
+            byte[] source = MemoryHandler.Instance.GetByteArray(targetAddress, structures.TargetInfo.Size);
+            ActorItem entry = ResolveActorFromBytes(structures, source);
+
+            return entry;
         }
     }
 
