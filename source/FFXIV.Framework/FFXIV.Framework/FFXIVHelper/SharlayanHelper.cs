@@ -8,26 +8,64 @@ using System.Threading.Tasks;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using Sharlayan;
+using Sharlayan.Core;
 using Sharlayan.Core.Enums;
 using Sharlayan.Models;
+using Sharlayan.Models.ReadResults;
 using Sharlayan.Models.Structures;
+
 using ActorItem = Sharlayan.Core.ActorItem;
+using EnmityItem = Sharlayan.Core.EnmityItem;
+using TargetInfo = Sharlayan.Core.TargetInfo;
 
 namespace FFXIV.Framework.FFXIVHelper
 {
+    [Flags]
+    public enum PartyCompositions
+    {
+        Unknown = 0,
+        LightParty,
+        FullPartyT1,
+        FullPartyT2
+    }
+
     public class SharlayanHelper
     {
         private static readonly Lazy<SharlayanHelper> LazyInstance = new Lazy<SharlayanHelper>();
 
         public static SharlayanHelper Instance => LazyInstance.Value;
 
+        public SharlayanHelper()
+        {
+            ReaderEx.GetActorCallback = id =>
+            {
+                if (this.ActorDictionary.ContainsKey(id))
+                {
+                    return this.ActorDictionary[id];
+                }
+
+                return null;
+            };
+
+            ReaderEx.GetNPCActorCallback = id =>
+            {
+                if (this.NPCActorDictionary.ContainsKey(id))
+                {
+                    return this.NPCActorDictionary[id];
+                }
+
+                return null;
+            };
+        }
+
         private ThreadWorker ffxivSubscriber;
         private static readonly double ProcessSubscribeInterval = 5000;
 
         private ThreadWorker memorySubscriber;
-        private static readonly double MemorySubscribeInterval = 500;
+        private static readonly double MemorySubscribeDefaultInterval = 500;
 
-        public void Start()
+        public void Start(
+            double? memoryScanInterval = null)
         {
             lock (this)
             {
@@ -50,7 +88,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 {
                     this.memorySubscriber = new ThreadWorker(
                         this.ScanMemory,
-                        MemorySubscribeInterval,
+                        memoryScanInterval ?? MemorySubscribeDefaultInterval,
                         "sharlayan Memory Subscriber",
                         ThreadPriority.Lowest);
 
@@ -145,20 +183,57 @@ namespace FFXIV.Framework.FFXIVHelper
                     this.ClearData();
                 }
             }
+
+            this.GarbageCombatantsDictionary();
         }
 
         private readonly List<ActorItem> ActorList = new List<ActorItem>(512);
+        private readonly Dictionary<uint, ActorItem> ActorDictionary = new Dictionary<uint, ActorItem>(512);
+        private readonly Dictionary<uint, ActorItem> NPCActorDictionary = new Dictionary<uint, ActorItem>(512);
 
-        public List<ActorItem> Actors
+        private readonly Dictionary<uint, Combatant> CombatantsDictionary = new Dictionary<uint, Combatant>(5120);
+        private readonly Dictionary<uint, Combatant> NPCCombatantsDictionary = new Dictionary<uint, Combatant>(5120);
+
+        public Func<uint, (int WorldID, string WorldName)> GetWorldInfoCallback { get; set; }
+
+        public ActorItem CurrentPlayer => ReaderEx.CurrentPlayer;
+
+        public List<ActorItem> Actors => this.ActorList.ToList();
+
+        public ActorItem GetActor(uint id)
         {
-            get
+            if (this.ActorDictionary.ContainsKey(id))
             {
-                lock (this.ActorList)
-                {
-                    return this.ActorList.ToList();
-                }
+                return this.ActorDictionary[id];
             }
+
+            return null;
         }
+
+        public ActorItem GetNPCActor(uint id)
+        {
+            if (this.NPCActorDictionary.ContainsKey(id))
+            {
+                return this.NPCActorDictionary[id];
+            }
+
+            return null;
+        }
+
+        public TargetInfo TargetInfo { get; private set; }
+
+        private readonly Dictionary<uint, EnmityEntry> EnmityDictionary = new Dictionary<uint, EnmityEntry>(128);
+
+        public List<EnmityEntry> EnmityList =>
+            this.EnmityDictionary.Values.OrderByDescending(x => x.Enmity).ToList();
+
+        private readonly List<ActorItem> PartyMemberList = new List<ActorItem>(8);
+
+        public List<ActorItem> PartyMembers => this.PartyMemberList.ToList();
+
+        public int PartyMemberCount { get; private set; }
+
+        public PartyCompositions PartyComposition { get; private set; } = PartyCompositions.Unknown;
 
         private void ScanMemory()
         {
@@ -173,21 +248,35 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 if (this.ActorList.Any())
                 {
-                    lock (this.ActorList)
-                    {
-                        this.ActorList.Clear();
-                    }
+                    this.ActorList.Clear();
+                    this.ActorDictionary.Clear();
+                    this.NPCActorDictionary.Clear();
                 }
             }
             else
             {
-                lock (this.ActorList)
+                this.GetActorsSimple();
+            }
+
+            if (this.IsSkipTarget)
+            {
+                this.TargetInfo = null;
+            }
+            else
+            {
+                this.GetTargetInfo();
+            }
+
+            if (this.IsSkipParty)
+            {
+                if (this.PartyMemberList.Any())
                 {
-                    /*
-                    this.GetActors();
-                    */
-                    this.GetActorsSimple();
+                    this.PartyMemberList.Clear();
                 }
+            }
+            else
+            {
+                this.GetPartyInfo();
             }
 
             if (this.IsSkips.All(x => x))
@@ -196,81 +285,241 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
+        public bool IsScanNPC { get; set; } = false;
+
         public bool IsSkipActor { get; set; } = false;
 
-        private bool[] IsSkips => new[] { this.IsSkipActor };
+        public bool IsSkipTarget { get; set; } = false;
+
+        public bool IsSkipParty { get; set; } = false;
+
+        private bool[] IsSkips => new[]
+        {
+            this.IsSkipActor,
+            this.IsSkipTarget,
+            this.IsSkipParty,
+        };
 
         private void GetActorsSimple()
         {
-            var actors = ReaderEx.GetActorSimple();
+            var actors = ReaderEx.GetActorSimple(this.IsScanNPC);
 
             if (!actors.Any())
             {
                 this.ActorList.Clear();
+                this.ActorDictionary.Clear();
+                this.NPCActorDictionary.Clear();
                 return;
             }
 
             this.ActorList.Clear();
             this.ActorList.AddRange(actors);
+
+            this.ActorDictionary.Clear();
+            this.NPCActorDictionary.Clear();
+
+            foreach (var actor in this.ActorList)
+            {
+                if (actor.IsNPC())
+                {
+                    this.NPCActorDictionary[actor.GetKey()] = actor;
+                }
+                else
+                {
+                    this.ActorDictionary[actor.GetKey()] = actor;
+                }
+            }
         }
 
-        /*
-        private void GetActors()
+        private void GetTargetInfo()
         {
-            var result = Reader.GetActors();
-            if (result == null)
+            var result = ReaderEx.GetTargetInfoSimple();
+
+            this.TargetInfo = result.TargetsFound ?
+                result.TargetInfo :
+                null;
+
+            this.GetEnmity();
+        }
+
+        private void GetEnmity()
+        {
+            if (this.TargetInfo == null ||
+                !this.TargetInfo.EnmityItems.Any())
             {
-                this.ActorDictionary.Clear();
+                this.EnmityDictionary.Clear();
                 return;
             }
 
-            var news = result.NewNPCs;
-            foreach (var entry in news)
+            var currents = this.EnmityDictionary.Values.ToArray();
+            foreach (var current in currents)
             {
-                if (!this.ActorDictionary.ContainsKey(entry.Key))
+                if (!this.TargetInfo.EnmityItems.Any(x => x.ID == current.ID))
                 {
-                    this.ActorDictionary.Add(entry.Key, entry.Value);
+                    this.EnmityDictionary.Remove(current.ID);
                 }
-
-                Thread.Yield();
             }
 
-            var removes = result.RemovedNPCs;
-            foreach (var entry in removes)
+            var max = this.TargetInfo.EnmityItems.Max(x => x.Enmity);
+            var player = this.CurrentPlayer;
+
+            foreach (var source in this.TargetInfo.EnmityItems)
             {
-                if (this.ActorDictionary.ContainsKey(entry.Key))
+                Thread.Yield();
+
+                var existing = false;
+                var enmity = default(EnmityEntry);
+
+                if (this.EnmityDictionary.ContainsKey(source.ID))
                 {
-                    this.ActorDictionary.Remove(entry.Key);
+                    existing = true;
+                    enmity = this.EnmityDictionary[source.ID];
+                }
+                else
+                {
+                    existing = false;
+                    enmity = new EnmityEntry() { ID = source.ID };
                 }
 
-                Thread.Yield();
-            }
+                enmity.Enmity = source.Enmity;
+                enmity.HateRate = (int)(((double)enmity.Enmity / (double)max) * 100d);
+                enmity.IsMe = enmity.ID == player?.ID;
 
-            var currents = result.CurrentNPCs;
-            foreach (var entry in currents)
-            {
-                if (this.ActorDictionary.ContainsKey(entry.Key))
+                if (!existing)
                 {
-                    this.ActorDictionary[entry.Key] = entry.Value;
-                }
+                    var actor = this.ActorDictionary.ContainsKey(enmity.ID) ?
+                        this.ActorDictionary[enmity.ID] :
+                        null;
 
-                Thread.Yield();
+                    enmity.Name = actor?.Name;
+                    enmity.OwnerID = actor?.OwnerID ?? 0;
+                    enmity.Job = (byte)(actor?.Job ?? 0);
+
+                    this.EnmityDictionary[enmity.ID] = enmity;
+                }
             }
         }
-        */
-    }
 
-    public static class ActorItemExtensions
-    {
-        public static Combatant ToCombatant(
-            this ActorItem actor,
-            Combatant player = null)
+        private uint[] previousPartyMemberIDs = new uint[0];
+
+        private void GetPartyInfo()
         {
-            var c = new Combatant()
-            {
-                ActorItem = actor
-            };
+            var result = ReaderEx.GetPartyMemberIDs();
 
+            if (!result.SequenceEqual(previousPartyMemberIDs))
+            {
+                this.PartyMemberList.Clear();
+
+                foreach (var id in result)
+                {
+                    var actor = this.GetActor(id);
+                    if (actor != null)
+                    {
+                        this.PartyMemberList.Add(actor);
+                    }
+                }
+
+                if (!this.PartyMemberList.Any() &&
+                    ReaderEx.CurrentPlayer != null)
+                {
+                    this.PartyMemberList.Add(ReaderEx.CurrentPlayer);
+                }
+
+                this.PartyMemberCount = this.PartyMemberList.Count();
+
+                var composition = PartyCompositions.Unknown;
+
+                if (this.PartyMemberCount == 4)
+                {
+                    this.PartyComposition = PartyCompositions.LightParty;
+                }
+                else
+                {
+                    if (this.PartyMemberCount == 8)
+                    {
+                        var tanks = this.PartyMemberList.Count(x => x.GetJobInfo().Role == Roles.Tank);
+                        switch (tanks)
+                        {
+                            case 1:
+                                this.PartyComposition = PartyCompositions.FullPartyT1;
+                                break;
+
+                            case 2:
+                                this.PartyComposition = PartyCompositions.FullPartyT2;
+                                break;
+                        }
+                    }
+                }
+
+                this.PartyComposition = composition;
+            }
+
+            this.previousPartyMemberIDs = result;
+        }
+
+        public List<Combatant> ToCombatantList(
+            IEnumerable<ActorItem> actors)
+        {
+            var combatantList = new List<Combatant>(actors.Count());
+
+            foreach (var actor in actors)
+            {
+                var combatant = this.TryGetOrNewCombatant(actor);
+                combatantList.Add(combatant);
+                Thread.Yield();
+            }
+
+            return combatantList;
+        }
+
+        public Combatant ToCombatant(
+            ActorItem actor)
+        {
+            if (actor == null)
+            {
+                return null;
+            }
+
+            return this.TryGetOrNewCombatant(actor);
+        }
+
+        private Combatant TryGetOrNewCombatant(
+            ActorItem actor)
+        {
+            if (actor == null)
+            {
+                return null;
+            }
+
+            var combatant = default(Combatant);
+            var dictionary = !actor.IsNPC() ?
+                this.CombatantsDictionary :
+                this.NPCCombatantsDictionary;
+            var key = actor.GetKey();
+
+            if (dictionary.ContainsKey(key))
+            {
+                combatant = dictionary[key];
+                this.CreateCombatant(actor, combatant);
+            }
+            else
+            {
+                combatant = this.CreateCombatant(actor);
+                dictionary.Add(key, combatant);
+            }
+
+            return combatant;
+        }
+
+        private Combatant CreateCombatant(
+            ActorItem actor,
+            Combatant current = null)
+        {
+            var player = ReaderEx.CurrentPlayerCombatant;
+
+            var c = current ?? new Combatant();
+
+            c.ActorItem = actor;
             c.ID = actor.ID;
             c.ObjectType = actor.Type;
             c.Name = actor.Name;
@@ -294,6 +543,11 @@ namespace FFXIV.Framework.FFXIVHelper
             c.CurrentTP = (short)actor.TPCurrent;
             c.MaxTP = (short)actor.TPMax;
 
+            c.CurrentCP = actor.CPCurrent;
+            c.MaxCP = actor.CPMax;
+            c.CurrentGP = actor.GPCurrent;
+            c.MaxGP = actor.GPMax;
+
             c.IsCasting = actor.IsCasting;
             c.CastTargetID = actor.CastingTargetID;
             c.CastBuffID = actor.CastingID;
@@ -301,19 +555,122 @@ namespace FFXIV.Framework.FFXIVHelper
             c.CastDurationMax = actor.CastingTime;
 
             c.Player = player;
+            this.SetTargetOfTarget(c);
 
-            /*
             FFXIVPlugin.Instance.SetSkillName(c);
-            */
             c.SetName(actor.Name);
 
+            var worldInfo = GetWorldInfoCallback?.Invoke(c.ID);
+            if (worldInfo.HasValue)
+            {
+                c.WorldID = worldInfo.Value.WorldID;
+                c.WorldName = worldInfo.Value.WorldName ?? string.Empty;
+            }
+
+            c.Timestamp = DateTime.Now;
+
             return c;
+        }
+
+        public void SetTargetOfTarget(
+            Combatant player)
+        {
+            if (!player.IsPlayer ||
+                player.TargetID == 0)
+            {
+                return;
+            }
+
+            if (this.CombatantsDictionary.ContainsKey(player.TargetID))
+            {
+                var target = this.CombatantsDictionary[player.TargetID];
+                player.TargetOfTargetID = target.TargetID;
+            }
+        }
+
+        private void GarbageCombatantsDictionary()
+        {
+            var threshold = CommonHelper.Random.Next(10 * 60, 15 * 60);
+            var now = DateTime.Now;
+
+            var array = new[]
+            {
+                this.CombatantsDictionary,
+                this.NPCCombatantsDictionary
+            };
+
+            foreach (var dictionary in array)
+            {
+                dictionary
+                    .Where(x => (now - x.Value.Timestamp).TotalSeconds > threshold)
+                    .ToArray()
+                    .Walk(x =>
+                    {
+                        this.CombatantsDictionary.Remove(x.Key);
+                        Thread.Yield();
+                    });
+            }
+        }
+    }
+
+    public static class ActorItemExtensions
+    {
+        public static List<Combatant> ToCombatantList(
+            this IEnumerable<ActorItem> actors)
+            => SharlayanHelper.Instance.ToCombatantList(actors);
+
+        public static uint GetKey(
+            this ActorItem actor)
+            => actor.IsNPC() ? actor.NPCID2 : actor.ID;
+
+        public static bool IsNPC(
+            this ActorItem actor)
+        {
+            switch (actor.Type)
+            {
+                case Actor.Type.NPC:
+                case Actor.Type.Aetheryte:
+                case Actor.Type.EventObject:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        public static JobIDs GetJobID(
+            this ActorItem actor)
+        {
+            var id = actor.JobID;
+            var jobEnum = JobIDs.Unknown;
+
+            if (Enum.IsDefined(typeof(JobIDs), id))
+            {
+                jobEnum = (JobIDs)Enum.ToObject(typeof(JobIDs), id);
+            }
+
+            return jobEnum;
+        }
+
+        public static Job GetJobInfo(
+            this ActorItem actor)
+        {
+            var jobEnum = actor.GetJobID();
+            return Jobs.Find(jobEnum);
         }
     }
 
     public static class ReaderEx
     {
+        public static ActorItem CurrentPlayer { get; private set; }
+
+        public static Combatant CurrentPlayerCombatant { get; private set; }
+
         public static ProcessModel ProcessModel { get; set; }
+
+        public static Func<uint, ActorItem> GetActorCallback { get; set; }
+
+        public static Func<uint, ActorItem> GetNPCActorCallback { get; set; }
 
         private static readonly Lazy<Func<StructuresContainer>> LazyGetStructuresDelegate = new Lazy<Func<StructuresContainer>>(() =>
         {
@@ -327,6 +684,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 property.GetMethod);
         });
 
+#if false
         private static readonly Lazy<Func<byte[], bool, ActorItem, ActorItem>> LazyResolveActorFromBytesDelegate = new Lazy<Func<byte[], bool, ActorItem, ActorItem>>(() =>
         {
             var asm = MemoryHandler.Instance.GetType().Assembly;
@@ -351,7 +709,31 @@ namespace FFXIV.Framework.FFXIVHelper
                 isCurrentUser,
                 entry);
 
-        public static List<ActorItem> GetActorSimple()
+        private static readonly Lazy<Func<byte[], ActorItem, PartyMember>> LazyResolvePartyMemberFromBytesDelegate = new Lazy<Func<byte[], ActorItem, PartyMember>>(() =>
+        {
+            var asm = MemoryHandler.Instance.GetType().Assembly;
+            var type = asm.GetType("Sharlayan.Utilities.PartyMemberResolver");
+
+            var method = type.GetMethod(
+                "ResolvePartyMemberFromBytes",
+                BindingFlags.Static | BindingFlags.Public);
+
+            return (Func<byte[], ActorItem, PartyMember>)Delegate.CreateDelegate(
+                typeof(Func<byte[], ActorItem, PartyMember>),
+                null,
+                method);
+        });
+
+        private static PartyMember InvokePartyMemberResolver(
+            byte[] source,
+            ActorItem entry = null)
+            => LazyResolvePartyMemberFromBytesDelegate.Value.Invoke(
+                source,
+                entry);
+#endif
+
+        public static List<ActorItem> GetActorSimple(
+            bool isScanNPC = false)
         {
             var result = new List<ActorItem>(256);
 
@@ -378,8 +760,8 @@ namespace FFXIV.Framework.FFXIVHelper
                 Thread.Yield();
 
                 var characterAddress = isWin64 ?
-                    new IntPtr(TryToInt64(characterAddressMap, i * endianSize)) :
-                    new IntPtr(TryToInt32(characterAddressMap, i * endianSize));
+                    new IntPtr(BitConverter.TryToInt64(characterAddressMap, i * endianSize)) :
+                    new IntPtr(BitConverter.TryToInt32(characterAddressMap, i * endianSize));
 
                 if (characterAddress == IntPtr.Zero)
                 {
@@ -401,16 +783,42 @@ namespace FFXIV.Framework.FFXIVHelper
 
                 var characterAddress = new IntPtr(kvp.Value.ToInt64());
                 var source = MemoryHandler.Instance.GetByteArray(characterAddress, sourceSize);
-                var isFirstEntry = kvp.Value.ToInt64() == firstAddress.ToInt64();
 
-                var entry = InvokeActorItemResolver(source, isFirstEntry);
+                var ID = BitConverter.TryToUInt32(source, structures.ActorItem.ID);
+                var NPCID2 = BitConverter.TryToUInt32(source, structures.ActorItem.NPCID2);
+                var Type = (Actor.Type)source[structures.ActorItem.Type];
+
+                var existing = default(ActorItem);
+                switch (Type)
+                {
+                    case Actor.Type.Aetheryte:
+                    case Actor.Type.EventObject:
+                    case Actor.Type.NPC:
+                        if (!isScanNPC)
+                        {
+                            continue;
+                        }
+
+                        existing = GetNPCActorCallback?.Invoke(NPCID2);
+                        break;
+
+                    default:
+                        existing = GetActorCallback?.Invoke(ID);
+                        break;
+                }
+
+                var isFirstEntry = kvp.Value.ToInt64() == firstAddress.ToInt64();
+                var entry = ResolveActorFromBytes(structures, source, isFirstEntry, existing);
 
                 if (isFirstEntry)
                 {
+                    CurrentPlayer = entry;
+                    CurrentPlayerCombatant = SharlayanHelper.Instance.ToCombatant(entry);
+
                     if (targetAddress.ToInt64() > 0)
                     {
                         var targetInfoSource = MemoryHandler.Instance.GetByteArray(targetAddress, 128);
-                        entry.TargetID = (int)TryToInt32(targetInfoSource, structures.ActorItem.ID);
+                        entry.TargetID = (int)BitConverter.TryToInt32(targetInfoSource, structures.ActorItem.ID);
                     }
                 }
 
@@ -420,11 +828,481 @@ namespace FFXIV.Framework.FFXIVHelper
             return result;
         }
 
+        public static uint[] GetPartyMemberIDs()
+        {
+            var result = new List<uint>(8);
+
+            if (!Reader.CanGetPartyMembers() || !MemoryHandler.Instance.IsAttached)
+            {
+                return result.ToArray();
+            }
+
+            var structures = LazyGetStructuresDelegate.Value.Invoke();
+
+            var PartyInfoMap = (IntPtr)Scanner.Instance.Locations[Signatures.PartyMapKey];
+            var PartyCountMap = Scanner.Instance.Locations[Signatures.PartyCountKey];
+
+            var partyCount = MemoryHandler.Instance.GetByte(PartyCountMap);
+            var sourceSize = structures.PartyMember.SourceSize;
+
+            if (partyCount > 1 && partyCount < 9)
+            {
+                for (uint i = 0; i < partyCount; i++)
+                {
+                    var address = PartyInfoMap.ToInt64() + i * (uint)sourceSize;
+                    var source = MemoryHandler.Instance.GetByteArray(new IntPtr(address), sourceSize);
+                    var ID = BitConverter.TryToUInt32(source, structures.PartyMember.ID);
+
+                    result.Add(ID);
+                    Thread.Yield();
+                }
+            }
+
+            return result.ToArray();
+        }
+
+#if false
+        public static List<PartyMember> GetPartyMemberSimple()
+        {
+            var result = new List<PartyMember>(8);
+
+            if (!Reader.CanGetPartyMembers() || !MemoryHandler.Instance.IsAttached)
+            {
+                return result;
+            }
+
+            var structures = LazyGetStructuresDelegate.Value.Invoke();
+
+            var PartyInfoMap = (IntPtr)Scanner.Instance.Locations[Signatures.PartyMapKey];
+            var PartyCountMap = Scanner.Instance.Locations[Signatures.PartyCountKey];
+
+            var partyCount = MemoryHandler.Instance.GetByte(PartyCountMap);
+            var sourceSize = structures.PartyMember.SourceSize;
+
+            if (partyCount > 1 && partyCount < 9)
+            {
+                for (uint i = 0; i < partyCount; i++)
+                {
+                    var address = PartyInfoMap.ToInt64() + i * (uint)sourceSize;
+                    var source = MemoryHandler.Instance.GetByteArray(new IntPtr(address), sourceSize);
+
+                    var ID = BitConverter.TryToUInt32(source, structures.ActorItem.ID);
+                    var NPCID2 = BitConverter.TryToUInt32(source, structures.ActorItem.NPCID2);
+                    var Type = (Actor.Type)source[structures.ActorItem.Type];
+
+                    var existing = default(ActorItem);
+                    switch (Type)
+                    {
+                        case Actor.Type.Aetheryte:
+                        case Actor.Type.EventObject:
+                        case Actor.Type.NPC:
+                            existing = GetNPCActorCallback?.Invoke(NPCID2);
+                            break;
+
+                        default:
+                            existing = GetActorCallback?.Invoke(ID);
+                            break;
+                    }
+
+                    var entry = InvokePartyMemberResolver(source, existing);
+
+                    result.Add(entry);
+                    Thread.Yield();
+                }
+            }
+
+            if (partyCount <= 1)
+            {
+                if (CurrentPlayer != null)
+                {
+                    result.Add(InvokePartyMemberResolver(Array.Empty<byte>(), CurrentPlayer));
+                }
+            }
+
+            return result;
+        }
+#endif
+
+        public static ActorItem ResolveActorFromBytes(StructuresContainer structures, byte[] source, bool isCurrentUser = false, ActorItem entry = null)
+        {
+            entry = entry ?? new ActorItem();
+
+            var defaultBaseOffset = structures.ActorItem.DefaultBaseOffset;
+            var defaultStatOffset = structures.ActorItem.DefaultStatOffset;
+            var defaultStatusEffectOffset = structures.ActorItem.DefaultStatusEffectOffset;
+
+            entry.MapTerritory = 0;
+            entry.MapIndex = 0;
+            entry.MapID = 0;
+            entry.TargetID = 0;
+            entry.Name = MemoryHandler.Instance.GetStringFromBytes(source, structures.ActorItem.Name);
+            entry.ID = BitConverter.TryToUInt32(source, structures.ActorItem.ID);
+            entry.UUID = string.IsNullOrEmpty(entry.UUID)
+                             ? Guid.NewGuid().ToString()
+                             : entry.UUID;
+            entry.NPCID1 = BitConverter.TryToUInt32(source, structures.ActorItem.NPCID1);
+            entry.NPCID2 = BitConverter.TryToUInt32(source, structures.ActorItem.NPCID2);
+            entry.OwnerID = BitConverter.TryToUInt32(source, structures.ActorItem.OwnerID);
+            entry.TypeID = source[structures.ActorItem.Type];
+            entry.Type = (Actor.Type)entry.TypeID;
+
+            entry.TargetTypeID = source[structures.ActorItem.TargetType];
+            entry.TargetType = (Actor.TargetType)entry.TargetTypeID;
+
+            entry.GatheringStatus = source[structures.ActorItem.GatheringStatus];
+            entry.Distance = source[structures.ActorItem.Distance];
+
+            entry.X = BitConverter.TryToSingle(source, structures.ActorItem.X + defaultBaseOffset);
+            entry.Z = BitConverter.TryToSingle(source, structures.ActorItem.Z + defaultBaseOffset);
+            entry.Y = BitConverter.TryToSingle(source, structures.ActorItem.Y + defaultBaseOffset);
+            entry.Heading = BitConverter.TryToSingle(source, structures.ActorItem.Heading + defaultBaseOffset);
+            entry.HitBoxRadius = BitConverter.TryToSingle(source, structures.ActorItem.HitBoxRadius + defaultBaseOffset);
+            entry.Fate = BitConverter.TryToUInt32(source, structures.ActorItem.Fate + defaultBaseOffset); // ??
+            entry.TargetFlags = source[structures.ActorItem.TargetFlags]; // ??
+            entry.GatheringInvisible = source[structures.ActorItem.GatheringInvisible]; // ??
+            entry.ModelID = BitConverter.TryToUInt32(source, structures.ActorItem.ModelID);
+            entry.ActionStatusID = source[structures.ActorItem.ActionStatus];
+            entry.ActionStatus = (Actor.ActionStatus)entry.ActionStatusID;
+
+            // 0x17D - 0 = Green name, 4 = non-agro (yellow name)
+            entry.IsGM = BitConverter.TryToBoolean(source, structures.ActorItem.IsGM); // ?
+            entry.IconID = source[structures.ActorItem.Icon];
+            entry.Icon = (Actor.Icon)entry.IconID;
+
+            entry.StatusID = source[structures.ActorItem.Status];
+            entry.Status = (Actor.Status)entry.StatusID;
+
+            entry.ClaimedByID = BitConverter.TryToUInt32(source, structures.ActorItem.ClaimedByID);
+            var targetID = BitConverter.TryToUInt32(source, structures.ActorItem.TargetID);
+            var pcTargetID = targetID;
+
+            entry.JobID = source[structures.ActorItem.Job + defaultStatOffset];
+            entry.Job = (Actor.Job)entry.JobID;
+
+            entry.Level = source[structures.ActorItem.Level + defaultStatOffset];
+            entry.GrandCompany = source[structures.ActorItem.GrandCompany + defaultStatOffset];
+            entry.GrandCompanyRank = source[structures.ActorItem.GrandCompanyRank + defaultStatOffset];
+            entry.Title = source[structures.ActorItem.Title + defaultStatOffset];
+            entry.HPCurrent = BitConverter.TryToInt32(source, structures.ActorItem.HPCurrent + defaultStatOffset);
+            entry.HPMax = BitConverter.TryToInt32(source, structures.ActorItem.HPMax + defaultStatOffset);
+            entry.MPCurrent = BitConverter.TryToInt32(source, structures.ActorItem.MPCurrent + defaultStatOffset);
+            entry.MPMax = BitConverter.TryToInt32(source, structures.ActorItem.MPMax + defaultStatOffset);
+            entry.TPCurrent = BitConverter.TryToInt16(source, structures.ActorItem.TPCurrent + defaultStatOffset);
+            entry.TPMax = 1000;
+            entry.GPCurrent = BitConverter.TryToInt16(source, structures.ActorItem.GPCurrent + defaultStatOffset);
+            entry.GPMax = BitConverter.TryToInt16(source, structures.ActorItem.GPMax + defaultStatOffset);
+            entry.CPCurrent = BitConverter.TryToInt16(source, structures.ActorItem.CPCurrent + defaultStatOffset);
+            entry.CPMax = BitConverter.TryToInt16(source, structures.ActorItem.CPMax + defaultStatOffset);
+
+            // entry.Race = source[0x2578]; // ??
+            // entry.Sex = (Actor.Sex) source[0x2579]; //?
+            entry.AgroFlags = source[structures.ActorItem.AgroFlags];
+            entry.CombatFlags = source[structures.ActorItem.CombatFlags];
+            entry.DifficultyRank = source[structures.ActorItem.DifficultyRank];
+            entry.CastingID = BitConverter.TryToInt16(source, structures.ActorItem.CastingID); // 0x2C94);
+            entry.CastingTargetID = BitConverter.TryToUInt32(source, structures.ActorItem.CastingTargetID); // 0x2CA0);
+            entry.CastingProgress = BitConverter.TryToSingle(source, structures.ActorItem.CastingProgress); // 0x2CC4);
+            entry.CastingTime = BitConverter.TryToSingle(source, structures.ActorItem.CastingTime); // 0x2DA8);
+            entry.Coordinate = new Coordinate(entry.X, entry.Z, entry.Y);
+            if (targetID > 0)
+            {
+                entry.TargetID = (int)targetID;
+            }
+            else
+            {
+                if (pcTargetID > 0)
+                {
+                    entry.TargetID = (int)pcTargetID;
+                }
+            }
+
+            if (entry.CastingTargetID == 3758096384)
+            {
+                entry.CastingTargetID = 0;
+            }
+
+            entry.MapIndex = 0;
+
+            // handle empty names
+            if (string.IsNullOrEmpty(entry.Name))
+            {
+                if (entry.Type == Actor.Type.EventObject)
+                {
+                    entry.Name = $"{nameof(entry.EventObjectTypeID)}: {entry.EventObjectTypeID}";
+                }
+                else
+                {
+                    entry.Name = $"{nameof(entry.TypeID)}: {entry.TypeID}";
+                }
+            }
+
+            CleanXPValue(ref entry);
+
+            return entry;
+        }
+
+        private static void CleanXPValue(ref ActorItem entity)
+        {
+            if (entity.HPCurrent < 0 || entity.HPMax < 0)
+            {
+                entity.HPCurrent = 1;
+                entity.HPMax = 1;
+            }
+
+            if (entity.HPCurrent > entity.HPMax)
+            {
+                if (entity.HPMax == 0)
+                {
+                    entity.HPCurrent = 1;
+                    entity.HPMax = 1;
+                }
+                else
+                {
+                    entity.HPCurrent = entity.HPMax;
+                }
+            }
+
+            if (entity.MPCurrent < 0 || entity.MPMax < 0)
+            {
+                entity.MPCurrent = 1;
+                entity.MPMax = 1;
+            }
+
+            if (entity.MPCurrent > entity.MPMax)
+            {
+                if (entity.MPMax == 0)
+                {
+                    entity.MPCurrent = 1;
+                    entity.MPMax = 1;
+                }
+                else
+                {
+                    entity.MPCurrent = entity.MPMax;
+                }
+            }
+
+            if (entity.GPCurrent < 0 || entity.GPMax < 0)
+            {
+                entity.GPCurrent = 1;
+                entity.GPMax = 1;
+            }
+
+            if (entity.GPCurrent > entity.GPMax)
+            {
+                if (entity.GPMax == 0)
+                {
+                    entity.GPCurrent = 1;
+                    entity.GPMax = 1;
+                }
+                else
+                {
+                    entity.GPCurrent = entity.GPMax;
+                }
+            }
+
+            if (entity.CPCurrent < 0 || entity.CPMax < 0)
+            {
+                entity.CPCurrent = 1;
+                entity.CPMax = 1;
+            }
+
+            if (entity.CPCurrent > entity.CPMax)
+            {
+                if (entity.CPMax == 0)
+                {
+                    entity.CPCurrent = 1;
+                    entity.CPMax = 1;
+                }
+                else
+                {
+                    entity.CPCurrent = entity.CPMax;
+                }
+            }
+        }
+
+        public static TargetResult GetTargetInfoSimple()
+        {
+            var result = new TargetResult();
+
+            if (!Reader.CanGetTargetInfo() || !MemoryHandler.Instance.IsAttached)
+            {
+                return result;
+            }
+
+            var structures = LazyGetStructuresDelegate.Value.Invoke();
+            var targetAddress = (IntPtr)Scanner.Instance.Locations[Signatures.TargetKey];
+
+            if (targetAddress.ToInt64() > 0)
+            {
+                byte[] targetInfoSource = MemoryHandler.Instance.GetByteArray(targetAddress, structures.TargetInfo.SourceSize);
+
+                var currentTarget = MemoryHandler.Instance.GetPlatformIntFromBytes(targetInfoSource, structures.TargetInfo.Current);
+                var mouseOverTarget = MemoryHandler.Instance.GetPlatformIntFromBytes(targetInfoSource, structures.TargetInfo.MouseOver);
+                var focusTarget = MemoryHandler.Instance.GetPlatformIntFromBytes(targetInfoSource, structures.TargetInfo.Focus);
+                var previousTarget = MemoryHandler.Instance.GetPlatformIntFromBytes(targetInfoSource, structures.TargetInfo.Previous);
+
+                var currentTargetID = BitConverter.TryToUInt32(targetInfoSource, structures.TargetInfo.CurrentID);
+
+                if (currentTarget > 0)
+                {
+                    ActorItem entry = GetTargetActorItemFromSource(structures, currentTarget);
+                    currentTargetID = entry.ID;
+                    if (entry.IsValid)
+                    {
+                        result.TargetsFound = true;
+                        result.TargetInfo.CurrentTarget = entry;
+                    }
+                }
+
+                if (mouseOverTarget > 0)
+                {
+                    ActorItem entry = GetTargetActorItemFromSource(structures, mouseOverTarget);
+                    if (entry.IsValid)
+                    {
+                        result.TargetsFound = true;
+                        result.TargetInfo.MouseOverTarget = entry;
+                    }
+                }
+
+                if (focusTarget > 0)
+                {
+                    ActorItem entry = GetTargetActorItemFromSource(structures, focusTarget);
+                    if (entry.IsValid)
+                    {
+                        result.TargetsFound = true;
+                        result.TargetInfo.FocusTarget = entry;
+                    }
+                }
+
+                if (previousTarget > 0)
+                {
+                    ActorItem entry = GetTargetActorItemFromSource(structures, previousTarget);
+                    if (entry.IsValid)
+                    {
+                        result.TargetsFound = true;
+                        result.TargetInfo.PreviousTarget = entry;
+                    }
+                }
+
+                if (currentTargetID > 0)
+                {
+                    result.TargetsFound = true;
+                    result.TargetInfo.CurrentTargetID = currentTargetID;
+                }
+            }
+
+            if (result.TargetInfo.CurrentTargetID > 0)
+            {
+                if (Reader.CanGetEnmityEntities())
+                {
+                    var enmityCount = MemoryHandler.Instance.GetInt16(Scanner.Instance.Locations[Signatures.EnmityCountKey]);
+                    var enmityStructure = (IntPtr)Scanner.Instance.Locations[Signatures.EnmityMapKey];
+
+                    if (enmityCount > 0 && enmityCount < 16 && enmityStructure.ToInt64() > 0)
+                    {
+                        var enmitySourceSize = structures.EnmityItem.SourceSize;
+                        for (uint i = 0; i < enmityCount; i++)
+                        {
+                            var address = new IntPtr(enmityStructure.ToInt64() + i * enmitySourceSize);
+                            var enmityEntry = new EnmityItem
+                            {
+                                ID = (uint)MemoryHandler.Instance.GetPlatformInt(address, structures.EnmityItem.ID),
+                                Name = MemoryHandler.Instance.GetString(address + structures.EnmityItem.Name),
+                                Enmity = MemoryHandler.Instance.GetUInt32(address + structures.EnmityItem.Enmity)
+                            };
+
+                            if (enmityEntry.ID <= 0)
+                            {
+                                continue;
+                            }
+
+                            result.TargetInfo.EnmityItems.Add(enmityEntry);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private static ActorItem GetTargetActorItemFromSource(StructuresContainer structures, long address)
+        {
+            var targetAddress = new IntPtr(address);
+
+            byte[] source = MemoryHandler.Instance.GetByteArray(targetAddress, structures.TargetInfo.Size);
+            ActorItem entry = ResolveActorFromBytes(structures, source);
+
+            return entry;
+        }
+    }
+
+    internal static class BitConverter
+    {
+        public static bool TryToBoolean(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToBoolean(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static char TryToChar(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToChar(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static double TryToDouble(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToDouble(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static long TryToDoubleToInt64Bits(double value)
+        {
+            try
+            {
+                return System.BitConverter.DoubleToInt64Bits(value);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static short TryToInt16(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToInt16(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
         public static int TryToInt32(byte[] value, int index)
         {
             try
             {
-                return BitConverter.ToInt32(value, index);
+                return System.BitConverter.ToInt32(value, index);
             }
             catch (Exception)
             {
@@ -436,7 +1314,7 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             try
             {
-                return BitConverter.ToInt64(value, index);
+                return System.BitConverter.ToInt64(value, index);
             }
             catch (Exception)
             {
@@ -444,22 +1322,75 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public static uint GetKey(
-            this ActorItem actor)
-            => actor.IsNPC() ? actor.NPCID2 : actor.ID;
-
-        public static bool IsNPC(
-            this ActorItem actor)
+        public static double TryToInt64BitsToDouble(long value)
         {
-            switch (actor.Type)
+            try
             {
-                case Actor.Type.NPC:
-                case Actor.Type.Aetheryte:
-                case Actor.Type.EventObject:
-                    return true;
+                return System.BitConverter.Int64BitsToDouble(value);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
 
-                default:
-                    return false;
+        public static float TryToSingle(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToSingle(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static string TryToString(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToString(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static ushort TryToUInt16(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToUInt16(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static uint TryToUInt32(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToUInt32(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+
+        public static ulong TryToUInt64(byte[] value, int index)
+        {
+            try
+            {
+                return System.BitConverter.ToUInt64(value, index);
+            }
+            catch (Exception)
+            {
+                return default;
             }
         }
     }

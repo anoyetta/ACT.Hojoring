@@ -398,6 +398,14 @@ namespace ACT.SpecialSpellTimer.Models
             set { }
         }
 
+        private string partyCompositionFilter = string.Empty;
+
+        public string PartyCompositionFilter
+        {
+            get => this.partyCompositionFilter;
+            set => this.SetProperty(ref this.partyCompositionFilter, value);
+        }
+
         private string zoneFilter = string.Empty;
 
         public string ZoneFilter

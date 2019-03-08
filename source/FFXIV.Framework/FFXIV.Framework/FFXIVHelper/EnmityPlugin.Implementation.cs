@@ -1,3 +1,4 @@
+#if false
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -62,7 +63,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 {
                     ID = _id,
                     Enmity = _enmity,
-                    isMe = false,
+                    IsMe = false,
                     Name = "Unknown",
                     Job = 0x00
                 };
@@ -77,7 +78,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     }
                     if (entry.ID == mychar.ID)
                     {
-                        entry.isMe = true;
+                        entry.IsMe = true;
                     }
                     if (topEnmity <= entry.Enmity)
                     {
@@ -283,3 +284,4 @@ namespace FFXIV.Framework.FFXIVHelper
         }
     }
 }
+#endif

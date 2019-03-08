@@ -45,6 +45,7 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
                         // ジョブ・ゾーン・前提条件のセレクタを初期化する
                         this.SetJobSelectors();
                         this.SetPartyJobSelectors();
+                        this.SetPartyCompositionSelectors();
                         this.SetZoneSelectors();
                         PreconditionSelectors.Instance.SetModel(this.model);
 
@@ -65,6 +66,7 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
 
                     this.RaisePropertyChanged(nameof(this.IsJobFiltered));
                     this.RaisePropertyChanged(nameof(this.IsPartyJobFiltered));
+                    this.RaisePropertyChanged(nameof(this.IsPartyCompositionFiltered));
                     this.RaisePropertyChanged(nameof(this.IsZoneFiltered));
                     this.RaisePropertyChanged(nameof(this.PreconditionSelectors));
                     this.RaisePropertyChanged(nameof(this.Model.MatchAdvancedConfig));
@@ -308,6 +310,73 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
             }));
 
         #endregion Party Job Filter
+
+        #region Party Composition Filter
+
+        public bool IsPartyCompositionFiltered => !string.IsNullOrEmpty(this.Model?.PartyCompositionFilter);
+
+        public PartyComposiotionSelector[] PartyCompositionSelectors { get; } = new[]
+        {
+            new PartyComposiotionSelector(PartyCompositions.LightParty, "Light Party"),
+            new PartyComposiotionSelector(PartyCompositions.FullPartyT1, "Full Party (T1)"),
+            new PartyComposiotionSelector(PartyCompositions.FullPartyT2, "Full Party (T2)"),
+        };
+
+        private void SetPartyCompositionSelectors()
+        {
+            var filters = this.Model.PartyCompositionFilter?.Split(',');
+            foreach (var selector in this.PartyCompositionSelectors)
+            {
+                if (filters != null)
+                {
+                    selector.IsSelected = filters.Contains(selector.Composition.ToString());
+                }
+
+                selector.SelectedChangedDelegate = this.PartyCompositionFilterChanged;
+            }
+
+            this.RaisePropertyChanged(nameof(this.PartyCompositionSelectors));
+        }
+
+        private void PartyCompositionFilterChanged()
+        {
+            if (!this.isInitialize)
+            {
+                this.Model.PartyCompositionFilter = string.Join(",",
+                    this.PartyCompositionSelectors
+                        .Where(x => x.IsSelected)
+                        .Select(x => x.Composition.ToString())
+                        .ToArray());
+
+                this.RaisePropertyChanged(nameof(this.IsPartyCompositionFiltered));
+                Task.Run(() => TableCompiler.Instance.CompileSpells());
+            }
+        }
+
+        private ICommand clearPartyCompositionFilterCommand;
+
+        public ICommand ClearPartyCompositionFilterCommand =>
+            this.clearPartyCompositionFilterCommand ?? (this.clearPartyCompositionFilterCommand = new DelegateCommand(() =>
+            {
+                try
+                {
+                    this.isInitialize = true;
+                    foreach (var selector in this.PartyCompositionSelectors)
+                    {
+                        selector.IsSelected = false;
+                    }
+
+                    this.Model.PartyCompositionFilter = string.Empty;
+                    this.RaisePropertyChanged(nameof(this.IsPartyCompositionFiltered));
+                    Task.Run(() => TableCompiler.Instance.CompileSpells());
+                }
+                finally
+                {
+                    this.isInitialize = false;
+                }
+            }));
+
+        #endregion Party Composition Filter
 
         #region Zone filter
 
