@@ -90,7 +90,7 @@ namespace FFXIV.Framework.FFXIVHelper
                         this.ScanMemory,
                         memoryScanInterval ?? MemorySubscribeDefaultInterval,
                         "sharlayan Memory Subscriber",
-                        ThreadPriority.Lowest);
+                        ThreadPriority.BelowNormal);
 
                     this.memorySubscriber.Run();
                 }
@@ -644,9 +644,9 @@ namespace FFXIV.Framework.FFXIVHelper
             var id = actor.JobID;
             var jobEnum = JobIDs.Unknown;
 
-            if (Enum.IsDefined(typeof(JobIDs), id))
+            if (Enum.IsDefined(typeof(JobIDs), (int)id))
             {
-                jobEnum = (JobIDs)Enum.ToObject(typeof(JobIDs), id);
+                jobEnum = (JobIDs)Enum.ToObject(typeof(JobIDs), (int)id);
             }
 
             return jobEnum;
