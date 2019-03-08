@@ -58,9 +58,7 @@ namespace ACT.UltraScouter.ViewModels
 
                 if (this.Config.HideInSolo)
                 {
-                    var party = FFXIVPlugin.Instance.GetPartyList();
-                    if (party == null ||
-                        party.Count <= 1)
+                    if (FFXIVPlugin.Instance.PartyMemberCount <= 1)
                     {
                         return false;
                     }
