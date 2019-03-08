@@ -333,7 +333,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void GetTargetInfo()
         {
-            var result = Reader.GetTargetInfo();
+            var result = ReaderEx.GetTargetInfoSimple();
 
             this.TargetInfo = result.TargetsFound ?
                 result.TargetInfo :
@@ -1120,7 +1120,7 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public static TargetResult GetTargetInfo()
+        public static TargetResult GetTargetInfoSimple()
         {
             var result = new TargetResult();
 
