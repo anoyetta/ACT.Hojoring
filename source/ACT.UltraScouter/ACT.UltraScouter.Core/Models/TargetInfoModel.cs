@@ -179,8 +179,18 @@ namespace ACT.UltraScouter.Models
         public Actor.Type ObjectType
         {
             get => this.objectType;
-            set => this.SetProperty(ref this.objectType, value);
+            set
+            {
+                if (this.SetProperty(ref this.objectType, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.AvailableHP));
+                }
+            }
         }
+
+        public bool AvailableHP =>
+            this.ObjectType == Actor.Type.PC ||
+            this.ObjectType == Actor.Type.Monster;
 
         private JobIDs job = JobIDs.Unknown;
 
