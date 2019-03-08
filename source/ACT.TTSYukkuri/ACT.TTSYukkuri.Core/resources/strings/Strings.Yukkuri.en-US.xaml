@@ -108,6 +108,8 @@ For use for commercial purposes, a license to use the library is required.</syst
 &lt;mpp&gt;     MP rate (%)
 &lt;tp&gt;      TP value
 &lt;tpp&gt;     TP rate (%)
+&lt;gp&gt;      GP value
+&lt;gpp&gt;     GP rate (%)
 
 * Example
 &lt;pcname&gt;,HP&lt;hpp&gt;.

@@ -236,6 +236,68 @@
       </Border>
       <!-- end TPグループ -->
 
+      <!-- GPグループ -->
+      <Border
+        Margin="5 0 0 0"
+        BorderThickness="2"
+        BorderBrush="Orange"
+        CornerRadius="2"
+        Padding="8">
+
+        <StackPanel Orientation="Vertical">
+          <Label Margin="0 0 0 20" Content="GP" FontWeight="Black" FontSize="20" />
+
+          <CheckBox
+            Content="{DynamicResource SA_Enabled}"
+            IsChecked="{Binding Config.EnabledGPAlert, Mode=TwoWay}" />
+
+          <Label
+            Margin="0 10 0 0"
+            Content="{DynamicResource SA_Threshold}" />
+          <StackPanel Orientation="Horizontal">
+            <TextBox
+              HorizontalAlignment="Left"
+              Width="60"
+              TextAlignment="Right"
+              Text="{Binding Config.GPThreshold, Mode=TwoWay}" />
+            <TextBlock VerticalAlignment="Center" Margin="10 0 0 0" Text="%" />
+          </StackPanel>
+
+          <Label
+            Margin="0 10 0 0"
+            Content="{DynamicResource SA_TTSFormat}" />
+          <TextBox
+            HorizontalAlignment="Left"
+            Width="300"
+            Text="{Binding Config.GPTextToSpeack, Mode=TwoWay}" />
+
+          <Label
+            Margin="0 10 0 0"
+            Content="{DynamicResource SA_Device}" />
+          <ComboBox
+            HorizontalAlignment="Left"
+            Width="80"
+            ItemsSource="{Binding Config.Devices, Mode=OneWay}"
+            SelectedItem="{Binding Config.NoticeDeviceForGP, Mode=TwoWay}" />
+
+          <Label
+            Margin="0 10 0 0"
+            Content="{DynamicResource SA_AlertTarget}" />
+          <ItemsControl
+              Margin="5 0 5 0"
+              ItemsSource="{Binding Config.AlertTargetsGP, Mode=OneWay}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <CheckBox
+                    Content="{Binding Text, Mode=OneWay}"
+                    IsChecked="{Binding Enabled, Mode=TwoWay}" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+      <!-- end GPグループ -->
+
       <TextBlock
         Margin="10 0 10 0"
         Text="{DynamicResource SA_Discription}" />
