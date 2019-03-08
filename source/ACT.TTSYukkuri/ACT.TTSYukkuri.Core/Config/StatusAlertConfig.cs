@@ -26,9 +26,14 @@ namespace ACT.TTSYukkuri.Config
         private int tpThreshold;
         private string tpTextToSpeack = "<pcname>,TP <tpp>%.";
 
+        private bool enabledGPAlert;
+        private int gpThreshold;
+        private string gpTextToSpeack = "<pcname>,GP <gpp>%.";
+
         private ObservableCollection<AlertTarget> alertTargetsHP = new ObservableCollection<AlertTarget>();
         private ObservableCollection<AlertTarget> alertTargetsMP = new ObservableCollection<AlertTarget>();
         private ObservableCollection<AlertTarget> alertTargetsTP = new ObservableCollection<AlertTarget>();
+        private ObservableCollection<AlertTarget> alertTargetsGP = new ObservableCollection<AlertTarget>();
 
         /// <summary>
         /// HPの監視を有効にする
@@ -151,6 +156,46 @@ namespace ACT.TTSYukkuri.Config
         }
 
         /// <summary>
+        /// GPの監視を有効にする
+        /// </summary>
+        public bool EnabledGPAlert
+        {
+            get => this.enabledGPAlert;
+            set
+            {
+                if (this.SetProperty(ref this.enabledGPAlert, value))
+                {
+                    if (value)
+                    {
+                        FFXIVWatcher.Default?.Start();
+                    }
+                    else
+                    {
+                        FFXIVWatcher.Default?.Stop();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// GP読上げのしきい値
+        /// </summary>
+        public int GPThreshold
+        {
+            get => this.gpThreshold;
+            set => this.SetProperty(ref this.gpThreshold, value);
+        }
+
+        /// <summary>
+        /// GP低下時の読上げテキスト
+        /// </summary>
+        public string GPTextToSpeack
+        {
+            get => this.gpTextToSpeack;
+            set => this.SetProperty(ref this.gpTextToSpeack, value);
+        }
+
+        /// <summary>
         /// HPの監視対象
         /// </summary>
         public ObservableCollection<AlertTarget> AlertTargetsHP
@@ -175,6 +220,15 @@ namespace ACT.TTSYukkuri.Config
         {
             get => this.alertTargetsTP;
             set => this.SetProperty(ref this.alertTargetsTP, value);
+        }
+
+        /// <summary>
+        /// GPの監視対象
+        /// </summary>
+        public ObservableCollection<AlertTarget> AlertTargetsGP
+        {
+            get => this.alertTargetsGP;
+            set => this.SetProperty(ref this.alertTargetsGP, value);
         }
 
         private PlayDevices noticeDeviceForHP = PlayDevices.Both;
@@ -210,6 +264,17 @@ namespace ACT.TTSYukkuri.Config
             set => this.SetProperty(ref this.noticeDeviceForTP, value);
         }
 
+        private PlayDevices noticeDeviceForGP = PlayDevices.Both;
+
+        /// <summary>
+        /// GPの通知先デバイス
+        /// </summary>
+        public PlayDevices NoticeDeviceForGP
+        {
+            get => this.noticeDeviceForGP;
+            set => this.SetProperty(ref this.noticeDeviceForGP, value);
+        }
+
         [XmlIgnore]
         public IEnumerable<PlayDevices> Devices => (IEnumerable<PlayDevices>)Enum.GetValues(typeof(PlayDevices));
 
@@ -231,6 +296,10 @@ namespace ACT.TTSYukkuri.Config
             var missingTargetsTP = defaultTargets.Where(x =>
                 !this.AlertTargetsTP.Any(y => y.Category == x.Category));
             this.AlertTargetsTP.AddRange(missingTargetsTP);
+
+            var missingTargetsGP = defaultTargets.Where(x =>
+                !this.AlertTargetsGP.Any(y => y.Category == x.Category));
+            this.AlertTargetsGP.AddRange(missingTargetsGP);
         }
     }
 }

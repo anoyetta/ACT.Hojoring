@@ -28,9 +28,14 @@ namespace ACT.TTSYukkuri
         private DateTime lastMPNotice = DateTime.MinValue;
 
         /// <summary>
-        /// 最後のMP通知日時
+        /// 最後のTP通知日時
         /// </summary>
         private DateTime lastTPNotice = DateTime.MinValue;
+
+        /// <summary>
+        /// 最後のGP通知日時
+        /// </summary>
+        private DateTime lastGPNotice = DateTime.MinValue;
 
         /// <summary>
         /// 直前のパーティメンバ情報
@@ -68,6 +73,12 @@ namespace ACT.TTSYukkuri
                 var tp = partyMember.CurrentTP;
                 var tpp = ((decimal)partyMember.CurrentTP / 1000m) * 100m;
 
+                var gp = partyMember.CurrentGP;
+                var gpp =
+                    partyMember.MaxGP != 0 ?
+                    ((decimal)partyMember.CurrentGP / (decimal)partyMember.MaxGP) * 100m :
+                    0m;
+
                 // このPTメンバの直前の情報を取得する
                 var previousePartyMember = (
                     from x in this.previouseParyMemberList
@@ -84,7 +95,8 @@ namespace ACT.TTSYukkuri
                         Name = partyMember.Name,
                         HPRate = hpp,
                         MPRate = mpp,
-                        TPRate = tpp
+                        TPRate = tpp,
+                        GPRate = gpp,
                     };
 
                     this.previouseParyMemberList.Add(previousePartyMember);
@@ -107,6 +119,10 @@ namespace ACT.TTSYukkuri
                         case Locales.CN:
                             pcname = "你";
                             break;
+
+                        default:
+                            pcname = "You";
+                            break;
                     }
                 }
                 else
@@ -119,30 +135,29 @@ namespace ACT.TTSYukkuri
                 var hpTextToSpeak = Settings.Default.StatusAlertSettings.HPTextToSpeack;
                 var mpTextToSpeak = Settings.Default.StatusAlertSettings.MPTextToSpeack;
                 var tpTextToSpeak = Settings.Default.StatusAlertSettings.TPTextToSpeack;
+                var gpTextToSpeak = Settings.Default.StatusAlertSettings.GPTextToSpeack;
 
-                hpTextToSpeak = hpTextToSpeak.Replace("<pcname>", pcname);
-                hpTextToSpeak = hpTextToSpeak.Replace("<hp>", hp.ToString());
-                hpTextToSpeak = hpTextToSpeak.Replace("<hpp>", decimal.ToInt32(hpp).ToString());
-                hpTextToSpeak = hpTextToSpeak.Replace("<mp>", mp.ToString());
-                hpTextToSpeak = hpTextToSpeak.Replace("<mpp>", decimal.ToInt32(mpp).ToString());
-                hpTextToSpeak = hpTextToSpeak.Replace("<tp>", tp.ToString());
-                hpTextToSpeak = hpTextToSpeak.Replace("<tpp>", decimal.ToInt32(tpp).ToString());
+                var ttss = new[]
+                {
+                    hpTextToSpeak,
+                    mpTextToSpeak,
+                    tpTextToSpeak,
+                    gpTextToSpeak,
+                };
 
-                mpTextToSpeak = mpTextToSpeak.Replace("<pcname>", pcname);
-                mpTextToSpeak = mpTextToSpeak.Replace("<hp>", hp.ToString());
-                mpTextToSpeak = mpTextToSpeak.Replace("<hpp>", decimal.ToInt32(hpp).ToString());
-                mpTextToSpeak = mpTextToSpeak.Replace("<mp>", mp.ToString());
-                mpTextToSpeak = mpTextToSpeak.Replace("<mpp>", decimal.ToInt32(mpp).ToString());
-                mpTextToSpeak = mpTextToSpeak.Replace("<tp>", tp.ToString());
-                mpTextToSpeak = mpTextToSpeak.Replace("<tpp>", decimal.ToInt32(tpp).ToString());
-
-                tpTextToSpeak = tpTextToSpeak.Replace("<pcname>", pcname);
-                tpTextToSpeak = tpTextToSpeak.Replace("<hp>", hp.ToString());
-                tpTextToSpeak = tpTextToSpeak.Replace("<hpp>", decimal.ToInt32(hpp).ToString());
-                tpTextToSpeak = tpTextToSpeak.Replace("<mp>", mp.ToString());
-                tpTextToSpeak = tpTextToSpeak.Replace("<mpp>", decimal.ToInt32(mpp).ToString());
-                tpTextToSpeak = tpTextToSpeak.Replace("<tp>", tp.ToString());
-                tpTextToSpeak = tpTextToSpeak.Replace("<tpp>", decimal.ToInt32(tpp).ToString());
+                for (int i = 0; i < ttss.Length; i++)
+                {
+                    var tts = ttss[i];
+                    tts = tts.Replace("<pcname>", pcname);
+                    tts = tts.Replace("<hp>", hp.ToString());
+                    tts = tts.Replace("<hpp>", decimal.ToInt32(hpp).ToString());
+                    tts = tts.Replace("<mp>", mp.ToString());
+                    tts = tts.Replace("<mpp>", decimal.ToInt32(mpp).ToString());
+                    tts = tts.Replace("<tp>", tp.ToString());
+                    tts = tts.Replace("<tpp>", decimal.ToInt32(tpp).ToString());
+                    tts = tts.Replace("<gp>", gp.ToString());
+                    tts = tts.Replace("<gpp>", decimal.ToInt32(gpp).ToString());
+                }
 
                 // 設定へのショートカット
                 var config = Settings.Default.StatusAlertSettings;
@@ -231,10 +246,40 @@ namespace ACT.TTSYukkuri
                     }
                 }
 
+                // GPをチェックして読上げる
+                if (hp > 0)
+                {
+                    if (config.EnabledGPAlert &&
+                        !string.IsNullOrWhiteSpace(gpTextToSpeak))
+                    {
+                        if (this.IsWatchTarget(partyMember, player, "GP"))
+                        {
+                            if (gpp <= (decimal)config.GPThreshold &&
+                                previousePartyMember.GPRate > (decimal)config.GPThreshold)
+                            {
+                                if ((DateTime.Now - this.lastGPNotice).TotalSeconds >= NoticeInterval)
+                                {
+                                    this.Speak(gpTextToSpeak, config.NoticeDeviceForGP);
+                                    this.lastGPNotice = DateTime.Now;
+                                }
+                            }
+                            else
+                            {
+                                if (gpp <= decimal.Zero && previousePartyMember.GPRate != decimal.Zero)
+                                {
+                                    this.SpeakEmpty("GP", pcname, config.NoticeDeviceForGP);
+                                    this.lastGPNotice = DateTime.Now;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // 今回の状態を保存する
                 previousePartyMember.HPRate = hpp;
                 previousePartyMember.MPRate = mpp;
                 previousePartyMember.TPRate = tpp;
+                previousePartyMember.GPRate = gpp;
             }
         }
 
@@ -303,15 +348,19 @@ namespace ACT.TTSYukkuri
             switch (targetParameter.ToUpper())
             {
                 case "HP":
-                    watchTarget = (IList<AlertTarget>)Settings.Default.StatusAlertSettings.AlertTargetsHP;
+                    watchTarget = Settings.Default.StatusAlertSettings.AlertTargetsHP;
                     break;
 
                 case "MP":
-                    watchTarget = (IList<AlertTarget>)Settings.Default.StatusAlertSettings.AlertTargetsMP;
+                    watchTarget = Settings.Default.StatusAlertSettings.AlertTargetsMP;
                     break;
 
                 case "TP":
-                    watchTarget = (IList<AlertTarget>)Settings.Default.StatusAlertSettings.AlertTargetsTP;
+                    watchTarget = Settings.Default.StatusAlertSettings.AlertTargetsTP;
+                    break;
+
+                case "GP":
+                    watchTarget = Settings.Default.StatusAlertSettings.AlertTargetsGP;
                     break;
 
                 default:
@@ -342,19 +391,9 @@ namespace ACT.TTSYukkuri
         private class PreviousPartyMemberStatus
         {
             /// <summary>
-            /// HP率
-            /// </summary>
-            public decimal HPRate { get; set; }
-
-            /// <summary>
             /// ID
             /// </summary>
             public uint ID { get; set; }
-
-            /// <summary>
-            /// MP率
-            /// </summary>
-            public decimal MPRate { get; set; }
 
             /// <summary>
             /// 名前
@@ -362,9 +401,24 @@ namespace ACT.TTSYukkuri
             public string Name { get; set; }
 
             /// <summary>
+            /// HP率
+            /// </summary>
+            public decimal HPRate { get; set; }
+
+            /// <summary>
+            /// MP率
+            /// </summary>
+            public decimal MPRate { get; set; }
+
+            /// <summary>
             /// TP率
             /// </summary>
             public decimal TPRate { get; set; }
+
+            /// <summary>
+            /// GP率
+            /// </summary>
+            public decimal GPRate { get; set; }
         }
     }
 }

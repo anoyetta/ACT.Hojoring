@@ -108,6 +108,8 @@
 &lt;mpp&gt;     MPの割合(%)
 &lt;tp&gt;      TPの値
 &lt;tpp&gt;     TPの割合(%)
+&lt;gp&gt;      GPの値
+&lt;gpp&gt;     GPの割合(%)
 
 ※例
 &lt;pcname&gt;,HP&lt;hpp&gt;.

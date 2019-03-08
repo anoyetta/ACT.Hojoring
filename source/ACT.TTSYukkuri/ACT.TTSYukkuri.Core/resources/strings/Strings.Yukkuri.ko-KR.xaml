@@ -108,6 +108,8 @@
 &lt;mpp&gt;     MP비율(%)
 &lt;tp&gt;      TP값
 &lt;tpp&gt;     TP비율(%)
+&lt;gp&gt;      GP값
+&lt;gpp&gt;     GP비율(%)
 
 ※예
 &lt;pcname&gt;,HP&lt;hpp&gt;.

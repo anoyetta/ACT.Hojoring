@@ -108,6 +108,8 @@ For use for commercial purposes, a license to use the library is required.</syst
 &lt;mpp&gt;     MP百分比(%)
 &lt;tp&gt;      TP值
 &lt;tpp&gt;     TP百分比(%)
+&lt;gp&gt;      GP值
+&lt;gpp&gt;     GP百分比(%)
 
 * Example
 &lt;pcname&gt;,HP&lt;hpp&gt;.
