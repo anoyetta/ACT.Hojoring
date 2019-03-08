@@ -53,7 +53,7 @@
     </Style>
   </Window.Resources>
 
-  <Grid Margin="15">
+  <Grid Margin="15" Visibility="{Binding Model.AvailableHP, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
     <Grid.RowDefinitions>
       <RowDefinition />
     </Grid.RowDefinitions>
