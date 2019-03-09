@@ -373,7 +373,7 @@ namespace ACT.UltraScouter.Workers
                     moblist = (
                         from x in this.targetMobList.OrderBy(y => y.Distance)
                         group x by x.Name into g
-                        select g.First().Clone((clone =>
+                        select g.OrderBy(x => x.Distance).First().Clone((clone =>
                         {
                             clone.DuplicateCount = g.Count();
                         }))).ToList();
@@ -439,7 +439,7 @@ namespace ACT.UltraScouter.Workers
                         Thread.Yield();
 
                         var item = model.MobList.FirstOrDefault(x =>
-                            x.Combatant?.ID == mob.Combatant?.ID);
+                            x.Combatant?.GUID == mob.Combatant?.GUID);
 
                         // 存在しないものは追加する
                         if (item == null)
@@ -473,7 +473,7 @@ namespace ACT.UltraScouter.Workers
                     var itemsForRemove = model.MobList
                         .Where(x =>
                             !targets.Any(y =>
-                                y.Combatant?.ID == x.Combatant?.ID))
+                                y.Combatant?.GUID == x.Combatant?.GUID))
                         .ToArray();
 
                     // 除去する

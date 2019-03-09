@@ -27,6 +27,8 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
+        public Guid GUID { get; } = Guid.NewGuid();
+
         public long Index { get; private set; }
 
         public uint ID;
