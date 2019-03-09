@@ -71,14 +71,6 @@ namespace ACT.UltraScouter.Workers
             // テストモード？
             if (Settings.Instance.MobList.TestMode)
             {
-                var dummyPlayer = new Combatant()
-                {
-                    ID = 1,
-                    PosX = 0,
-                    PosY = 0,
-                    PosZ = 0,
-                };
-
                 var dummyTargets = new List<MobInfo>();
 
                 dummyTargets.Add(new MobInfo()
@@ -91,7 +83,6 @@ namespace ACT.UltraScouter.Workers
                         Name = "TEST:シルバーの吉田直樹",
                         ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
-                        Player = dummyPlayer,
                         PosX = 0,
                         PosY = 10,
                         PosZ = 10,
@@ -108,7 +99,6 @@ namespace ACT.UltraScouter.Workers
                         Name = "TEST:イクシオン",
                         ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
-                        Player = dummyPlayer,
                         PosX = 100,
                         PosY = 100,
                         PosZ = -10,
@@ -125,7 +115,6 @@ namespace ACT.UltraScouter.Workers
                         Name = "TEST:イクシオン",
                         ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
-                        Player = dummyPlayer,
                         PosX = 100,
                         PosY = 100,
                         PosZ = -10,
@@ -142,7 +131,6 @@ namespace ACT.UltraScouter.Workers
                         Name = "TEST:ソルト・アンド・ライト",
                         ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
-                        Player = dummyPlayer,
                         PosX = 10,
                         PosY = 0,
                         PosZ = 0,
@@ -159,7 +147,6 @@ namespace ACT.UltraScouter.Workers
                         Name = "TEST:オルクス",
                         ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
-                        Player = dummyPlayer,
                         PosX = 100,
                         PosY = -100,
                         PosZ = 0,
@@ -176,7 +163,6 @@ namespace ACT.UltraScouter.Workers
                         Name = "TEST:宵闇のヤミニ",
                         ObjectType = Actor.Type.Monster,
                         MaxHP = 1,
-                        Player = dummyPlayer,
                         PosX = 0,
                         PosY = -100,
                         PosZ = 0,
@@ -194,7 +180,6 @@ namespace ACT.UltraScouter.Workers
                         ObjectType = Actor.Type.PC,
                         Job = (byte)JobIDs.BLM,
                         MaxHP = 43462,
-                        Player = dummyPlayer,
                         PosX = -100,
                         PosY = -100,
                         PosZ = 0,
@@ -461,6 +446,7 @@ namespace ACT.UltraScouter.Workers
                         item.Rank = mob.Rank;
                         item.Combatant = mob.Combatant;
                         item.DuplicateCount = mob.DuplicateCount;
+                        item.RefreshDistance();
 
                         if (distance != item.Distance ||
                             rankSortKey != item.RankSortKey)
