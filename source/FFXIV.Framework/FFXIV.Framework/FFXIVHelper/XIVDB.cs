@@ -58,13 +58,13 @@ namespace FFXIV.Framework.FFXIVHelper
         private readonly Dictionary<int, Area> areaENList = new Dictionary<int, Area>();
         private readonly List<Area> areaList = new List<Area>();
         private readonly List<Placename> placenameList = new List<Placename>();
-        private readonly Dictionary<int, XIVDBAction> actionList = new Dictionary<int, XIVDBAction>();
-        private readonly Dictionary<int, Buff> buffList = new Dictionary<int, Buff>();
+        private readonly Dictionary<uint, XIVDBAction> actionList = new Dictionary<uint, XIVDBAction>();
+        private readonly Dictionary<uint, Buff> buffList = new Dictionary<uint, Buff>();
 
         public IReadOnlyList<Area> AreaList => this.areaList;
         public IReadOnlyList<Placename> PlacenameList => this.placenameList;
-        public IReadOnlyDictionary<int, XIVDBAction> ActionList => this.actionList;
-        public IReadOnlyDictionary<int, Buff> BuffList => this.buffList;
+        public IReadOnlyDictionary<uint, XIVDBAction> ActionList => this.actionList;
+        public IReadOnlyDictionary<uint, Buff> BuffList => this.buffList;
 
         #endregion Resources Lists
 
@@ -80,7 +80,7 @@ namespace FFXIV.Framework.FFXIVHelper
             this.resourcesDirectory ?? (this.resourcesDirectory = DirectoryHelper.FindSubDirectory("resources"));
 
         public XIVDBAction FindAction(
-            int ID)
+            uint ID)
         {
             if (this.actionList.ContainsKey(ID))
             {
@@ -95,7 +95,7 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             try
             {
-                var IDAsInt = Convert.ToInt32(ID, 16);
+                var IDAsInt = Convert.ToUInt32(ID, 16);
                 return this.FindAction(IDAsInt);
             }
             catch (Exception)
@@ -294,8 +294,8 @@ namespace FFXIV.Framework.FFXIVHelper
                             continue;
                         }
 
-                        int id;
-                        if (!int.TryParse(fields[0], out id) ||
+                        uint id;
+                        if (!uint.TryParse(fields[0], out id) ||
                             string.IsNullOrEmpty(fields[1]))
                         {
                             continue;
@@ -347,8 +347,8 @@ namespace FFXIV.Framework.FFXIVHelper
                         continue;
                     }
 
-                    int id;
-                    if (!int.TryParse(fields[0], out id) ||
+                    uint id;
+                    if (!uint.TryParse(fields[0], out id) ||
                         string.IsNullOrEmpty(fields[1]))
                     {
                         continue;
@@ -403,8 +403,8 @@ namespace FFXIV.Framework.FFXIVHelper
                             continue;
                         }
 
-                        int id;
-                        if (!int.TryParse(fields[0], out id) ||
+                        uint id;
+                        if (!uint.TryParse(fields[0], out id) ||
                             string.IsNullOrEmpty(fields[1]))
                         {
                             continue;
@@ -448,7 +448,7 @@ namespace FFXIV.Framework.FFXIVHelper
         /// </summary>
         public class XIVDBAction
         {
-            public int ID { get; set; }
+            public uint ID { get; set; }
             public string Name { get; set; }
         }
 

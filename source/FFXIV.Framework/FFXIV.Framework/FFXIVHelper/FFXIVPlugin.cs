@@ -597,10 +597,10 @@ namespace FFXIV.Framework.FFXIVHelper
             if (combatant.IsCasting)
             {
                 if (this.skillList != null &&
-                    this.skillList.ContainsKey(combatant.CastBuffID))
+                    this.skillList.ContainsKey((uint)combatant.CastBuffID))
                 {
                     combatant.CastSkillName =
-                        this.skillList[combatant.CastBuffID].Name;
+                        this.skillList[(uint)combatant.CastBuffID].Name;
                 }
                 else
                 {
@@ -1060,7 +1060,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private Dictionary<uint, Buff> buffList = new Dictionary<uint, Buff>();
         private Dictionary<uint, Skill> skillList = new Dictionary<uint, Skill>();
-        private Dictionary<int, World> worldList = new Dictionary<int, World>();
+        private Dictionary<uint, World> worldList = new Dictionary<uint, World>();
         private List<Zone> zoneList = new List<Zone>();
 
         public IReadOnlyList<Zone> ZoneList => this.zoneList;
@@ -1087,7 +1087,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
             using (var st = asm.GetManifestResourceStream(resourcesName))
             {
-                var newList = new Dictionary<int, World>();
+                var newList = new Dictionary<uint, World>();
 
                 if (st != null)
                 {
@@ -1103,7 +1103,7 @@ namespace FFXIV.Framework.FFXIVHelper
                                 {
                                     var entry = new World()
                                     {
-                                        ID = int.Parse(values[0]),
+                                        ID = uint.Parse(values[0]),
                                         Name = values[1].Trim()
                                     };
 
@@ -1473,7 +1473,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 BindingFlags.NonPublic | BindingFlags.Instance)
                 .GetValue(obj);
 
-            var pluginSkillList = list as SortedDictionary<int, string>;
+            var pluginSkillList = list as SortedDictionary<uint, string>;
 
             foreach (var entry in XIVDB.Instance.ActionList)
             {
@@ -1521,7 +1521,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 BindingFlags.NonPublic | BindingFlags.Instance)
                 .GetValue(obj);
 
-            var pluginList = list as SortedDictionary<int, string>;
+            var pluginList = list as SortedDictionary<uint, string>;
 
             foreach (var entry in XIVDB.Instance.BuffList)
             {
