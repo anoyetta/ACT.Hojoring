@@ -450,67 +450,64 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public void RefreshCombatantList()
         {
-            lock (SharlayanHelper.ScanLock)
+            var addedCombatants = default(IEnumerable<Combatant>);
+
+            if (!this.IsAvailable)
             {
-                var addedCombatants = default(IEnumerable<Combatant>);
-
-                if (!this.IsAvailable)
-                {
 #if DEBUG
-                    foreach (var entity in this.DummyCombatants)
-                    {
-                        entity.SetName(entity.Name);
-                    }
-
-                    addedCombatants =
-                        this.combatantList == null ?
-                        this.DummyCombatants :
-                        this.DummyCombatants
-                            .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
-                            .ToArray();
-
-                    this.combatantList = this.DummyCombatants;
-                    this.combatantDictionary = this.DummyCombatants.ToDictionary(x => x.ID);
-
-                    if (addedCombatants.Any())
-                    {
-                        Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
-                    }
-#endif
-                }
-
-                if ((DateTime.Now - this.inCombatTimestamp).TotalSeconds >= 1.0)
+                foreach (var entity in this.DummyCombatants)
                 {
-                    this.inCombatTimestamp = DateTime.Now;
-                    this.RefreshCombatantWorldInfo();
-                    this.RefreshPartyList();
-                    this.InCombat = this.RefreshInCombat();
+                    entity.SetName(entity.Name);
                 }
-
-                var newCombatants = SharlayanHelper.Instance.Actors
-                    .Where(x => !x.IsNPC())
-                    .ToCombatantList();
 
                 addedCombatants =
                     this.combatantList == null ?
-                    newCombatants :
-                    newCombatants
+                    this.DummyCombatants :
+                    this.DummyCombatants
                         .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
-                        .ToList();
+                        .ToArray();
 
-                this.combatantList = newCombatants.ToList();
-                this.combatantDictionary = newCombatants
-                    .GroupBy(x => x.ID)
-                    .Select(x => x.First())
-                    .ToDictionary(x => x.ID);
+                this.combatantList = this.DummyCombatants;
+                this.combatantDictionary = this.DummyCombatants.ToDictionary(x => x.ID);
 
-                this.CombatantPCCount = this.combatantList.Count(x => x.ObjectType == Actor.Type.PC);
-
-                if (addedCombatants != null &&
-                    addedCombatants.Any())
+                if (addedCombatants.Any())
                 {
                     Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
                 }
+#endif
+            }
+
+            if ((DateTime.Now - this.inCombatTimestamp).TotalSeconds >= 1.0)
+            {
+                this.inCombatTimestamp = DateTime.Now;
+                this.RefreshCombatantWorldInfo();
+                this.RefreshPartyList();
+                this.InCombat = this.RefreshInCombat();
+            }
+
+            var newCombatants = SharlayanHelper.Instance.Actors
+                .Where(x => !x.IsNPC())
+                .ToCombatantList();
+
+            addedCombatants =
+                this.combatantList == null ?
+                newCombatants :
+                newCombatants
+                    .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
+                    .ToList();
+
+            this.combatantList = newCombatants;
+            this.combatantDictionary = newCombatants
+                .GroupBy(x => x.ID)
+                .Select(x => x.First())
+                .ToDictionary(x => x.ID);
+
+            this.CombatantPCCount = this.combatantList.Count(x => x.ObjectType == Actor.Type.PC);
+
+            if (addedCombatants != null &&
+                addedCombatants.Any())
+            {
+                Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
             }
         }
 
