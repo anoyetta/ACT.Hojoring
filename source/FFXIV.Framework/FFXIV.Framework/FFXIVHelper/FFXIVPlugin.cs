@@ -347,6 +347,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private IReadOnlyDictionary<uint, Combatant> combatantDictionary;
         private IReadOnlyList<Combatant> combatantList;
+        private IReadOnlyList<Combatant> partyList;
 
         public int CombatantPCCount { get; private set; }
 
@@ -449,63 +450,67 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public void RefreshCombatantList()
         {
-            var addedCombatants = default(IEnumerable<Combatant>);
-
-            if (!this.IsAvailable)
+            lock (SharlayanHelper.ScanLock)
             {
-#if DEBUG
-                foreach (var entity in this.DummyCombatants)
+                var addedCombatants = default(IEnumerable<Combatant>);
+
+                if (!this.IsAvailable)
                 {
-                    entity.SetName(entity.Name);
+#if DEBUG
+                    foreach (var entity in this.DummyCombatants)
+                    {
+                        entity.SetName(entity.Name);
+                    }
+
+                    addedCombatants =
+                        this.combatantList == null ?
+                        this.DummyCombatants :
+                        this.DummyCombatants
+                            .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
+                            .ToArray();
+
+                    this.combatantList = this.DummyCombatants;
+                    this.combatantDictionary = this.DummyCombatants.ToDictionary(x => x.ID);
+
+                    if (addedCombatants.Any())
+                    {
+                        Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
+                    }
+#endif
                 }
+
+                if ((DateTime.Now - this.inCombatTimestamp).TotalSeconds >= 1.0)
+                {
+                    this.inCombatTimestamp = DateTime.Now;
+                    this.RefreshCombatantWorldInfo();
+                    this.RefreshPartyList();
+                    this.InCombat = this.RefreshInCombat();
+                }
+
+                var newCombatants = SharlayanHelper.Instance.Actors
+                    .Where(x => !x.IsNPC())
+                    .ToCombatantList();
 
                 addedCombatants =
                     this.combatantList == null ?
-                    this.DummyCombatants :
-                    this.DummyCombatants
+                    newCombatants :
+                    newCombatants
                         .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
-                        .ToArray();
+                        .ToList();
 
-                this.combatantList = this.DummyCombatants;
-                this.combatantDictionary = this.DummyCombatants.ToDictionary(x => x.ID);
+                this.combatantList = newCombatants.ToList();
+                this.combatantDictionary = newCombatants
+                    .GroupBy(x => x.ID)
+                    .Select(x => x.First())
+                    .ToDictionary(x => x.ID);
 
-                if (addedCombatants.Any())
+                this.CombatantPCCount = this.combatantList.Count(x => x.ObjectType == Actor.Type.PC);
+
+                if (addedCombatants != null &&
+                    addedCombatants.Any())
                 {
                     Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
                 }
-#endif
-            }
-
-            if ((DateTime.Now - this.inCombatTimestamp).TotalSeconds >= 1.0)
-            {
-                this.inCombatTimestamp = DateTime.Now;
-                this.RefreshCombatantWorldInfo();
-                this.InCombat = this.RefreshInCombat();
-            }
-
-            var newCombatants = SharlayanHelper.Instance.Actors
-                .Where(x => !x.IsNPC())
-                .ToCombatantList();
-
-            addedCombatants =
-                this.combatantList == null ?
-                newCombatants :
-                newCombatants
-                    .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
-                    .ToList();
-
-            this.combatantList = newCombatants.ToList();
-            this.combatantDictionary = newCombatants
-                .GroupBy(x => x.ID)
-                .Select(x => x.First())
-                .ToDictionary(x => x.ID);
-
-            this.CombatantPCCount = this.combatantList.Count(x => x.ObjectType == Actor.Type.PC);
-
-            if (addedCombatants != null &&
-                addedCombatants.Any())
-            {
-                Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
             }
         }
 
@@ -551,6 +556,31 @@ namespace FFXIV.Framework.FFXIVHelper
                     }
                 }
             }
+        }
+
+        private void RefreshPartyList()
+        {
+            var combatants = SharlayanHelper.Instance.PartyMembers.ToCombatantList();
+
+            if (combatants == null ||
+                combatants.Count() < 1)
+            {
+                this.partyList = this.EmptyCombatantList;
+            }
+
+            // パーティリストをソートして返す
+            var sortedPartyList = (
+                from x in combatants
+                orderby
+                x.IsPlayer ? 0 : 1,
+                x.DisplayOrder,
+                x.Role.ToSortOrder(),
+                x.Job,
+                x.ID descending
+                select
+                x).ToList();
+
+            this.partyList = sortedPartyList;
         }
 
         public bool RefreshInCombat()
@@ -635,30 +665,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public PartyCompositions PartyComposition => SharlayanHelper.Instance.PartyComposition;
 
-        public IReadOnlyList<Combatant> GetPartyList()
-        {
-            var combatants = SharlayanHelper.Instance.PartyMembers.ToCombatantList();
-
-            if (combatants == null ||
-                combatants.Count() < 1)
-            {
-                return this.EmptyCombatantList;
-            }
-
-            // パーティリストをソートして返す
-            var sortedPartyList = (
-                from x in combatants
-                orderby
-                x.IsPlayer ? 0 : 1,
-                x.DisplayOrder,
-                x.Role.ToSortOrder(),
-                x.Job,
-                x.ID descending
-                select
-                x).ToList();
-
-            return sortedPartyList;
-        }
+        public IReadOnlyList<Combatant> GetPartyList() => this.partyList ?? this.EmptyCombatantList;
 
         /// <summary>
         /// パーティをロールで分類して取得する

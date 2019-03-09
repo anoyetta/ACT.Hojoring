@@ -237,6 +237,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private string currentZoneName = string.Empty;
 
+        public static readonly object ScanLock = new object();
+
         private void ScanMemory()
         {
             if (!MemoryHandler.Instance.IsAttached ||
@@ -246,51 +248,54 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            var currentZoneName = FFXIVPlugin.Instance.GetCurrentZoneName();
-            if (this.currentZoneName != currentZoneName)
+            lock (ScanLock)
             {
-                this.currentZoneName = currentZoneName;
-
-                this.ActorList.Clear();
-                this.ActorDictionary.Clear();
-                this.NPCActorDictionary.Clear();
-                this.CombatantsDictionary.Clear();
-                this.NPCCombatantsDictionary.Clear();
-            }
-
-            if (this.IsSkipActor)
-            {
-                if (this.ActorList.Any())
+                var currentZoneName = FFXIVPlugin.Instance.GetCurrentZoneName();
+                if (this.currentZoneName != currentZoneName)
                 {
+                    this.currentZoneName = currentZoneName;
+
                     this.ActorList.Clear();
                     this.ActorDictionary.Clear();
                     this.NPCActorDictionary.Clear();
+                    this.CombatantsDictionary.Clear();
+                    this.NPCCombatantsDictionary.Clear();
                 }
-            }
-            else
-            {
-                this.GetActorsSimple();
-            }
 
-            if (this.IsSkipTarget)
-            {
-                this.TargetInfo = null;
-            }
-            else
-            {
-                this.GetTargetInfo();
-            }
-
-            if (this.IsSkipParty)
-            {
-                if (this.PartyMemberList.Any())
+                if (this.IsSkipActor)
                 {
-                    this.PartyMemberList.Clear();
+                    if (this.ActorList.Any())
+                    {
+                        this.ActorList.Clear();
+                        this.ActorDictionary.Clear();
+                        this.NPCActorDictionary.Clear();
+                    }
                 }
-            }
-            else
-            {
-                this.GetPartyInfo();
+                else
+                {
+                    this.GetActorsSimple();
+                }
+
+                if (this.IsSkipTarget)
+                {
+                    this.TargetInfo = null;
+                }
+                else
+                {
+                    this.GetTargetInfo();
+                }
+
+                if (this.IsSkipParty)
+                {
+                    if (this.PartyMemberList.Any())
+                    {
+                        this.PartyMemberList.Clear();
+                    }
+                }
+                else
+                {
+                    this.GetPartyInfo();
+                }
             }
 
             if (this.IsSkips.All(x => x))
@@ -422,24 +427,26 @@ namespace FFXIV.Framework.FFXIVHelper
 
             if (!result.SequenceEqual(previousPartyMemberIDs))
             {
-                this.PartyMemberList.Clear();
+                var newPartyList = new List<ActorItem>(8);
 
                 foreach (var id in result)
                 {
                     var actor = this.GetActor(id);
                     if (actor != null)
                     {
-                        this.PartyMemberList.Add(actor);
+                        newPartyList.Add(actor);
                     }
                 }
 
-                if (!this.PartyMemberList.Any() &&
+                if (!newPartyList.Any() &&
                     ReaderEx.CurrentPlayer != null)
                 {
-                    this.PartyMemberList.Add(ReaderEx.CurrentPlayer);
+                    newPartyList.Add(ReaderEx.CurrentPlayer);
                 }
 
-                this.PartyMemberCount = this.PartyMemberList.Count();
+                this.PartyMemberList.Clear();
+                this.PartyMemberList.AddRange(newPartyList);
+                this.PartyMemberCount = newPartyList.Count();
 
                 var composition = PartyCompositions.Unknown;
 
@@ -476,11 +483,14 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             var combatantList = new List<Combatant>(actors.Count());
 
-            foreach (var actor in actors)
+            lock (ScanLock)
             {
-                var combatant = this.TryGetOrNewCombatant(actor);
-                combatantList.Add(combatant);
-                Thread.Yield();
+                foreach (var actor in actors)
+                {
+                    var combatant = this.TryGetOrNewCombatant(actor);
+                    combatantList.Add(combatant);
+                    Thread.Yield();
+                }
             }
 
             return combatantList;
