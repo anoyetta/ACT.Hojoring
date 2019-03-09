@@ -71,7 +71,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public uint TargetOfTargetID;
 
-        public Combatant Player;
+        public Combatant Player => FFXIVPlugin.Instance.GetPlayer();
 
         public bool IsPlayer => this.ID == this.Player?.ID;
 

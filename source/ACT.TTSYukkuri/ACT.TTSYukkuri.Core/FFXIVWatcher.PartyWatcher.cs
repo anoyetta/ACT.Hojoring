@@ -137,17 +137,13 @@ namespace ACT.TTSYukkuri
                 var tpTextToSpeak = Settings.Default.StatusAlertSettings.TPTextToSpeack;
                 var gpTextToSpeak = Settings.Default.StatusAlertSettings.GPTextToSpeack;
 
-                var ttss = new[]
-                {
-                    hpTextToSpeak,
-                    mpTextToSpeak,
-                    tpTextToSpeak,
-                    gpTextToSpeak,
-                };
+                hpTextToSpeak = replaceTTS(hpTextToSpeak);
+                mpTextToSpeak = replaceTTS(mpTextToSpeak);
+                tpTextToSpeak = replaceTTS(tpTextToSpeak);
+                gpTextToSpeak = replaceTTS(gpTextToSpeak);
 
-                for (int i = 0; i < ttss.Length; i++)
+                string replaceTTS(string tts)
                 {
-                    var tts = ttss[i];
                     tts = tts.Replace("<pcname>", pcname);
                     tts = tts.Replace("<hp>", hp.ToString());
                     tts = tts.Replace("<hpp>", decimal.ToInt32(hpp).ToString());
@@ -157,6 +153,7 @@ namespace ACT.TTSYukkuri
                     tts = tts.Replace("<tpp>", decimal.ToInt32(tpp).ToString());
                     tts = tts.Replace("<gp>", gp.ToString());
                     tts = tts.Replace("<gpp>", decimal.ToInt32(gpp).ToString());
+                    return tts;
                 }
 
                 // 設定へのショートカット
