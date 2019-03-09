@@ -1058,14 +1058,14 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private static readonly object ResourcesLock = new object();
 
-        private Dictionary<int, Buff> buffList = new Dictionary<int, Buff>();
-        private Dictionary<int, Skill> skillList = new Dictionary<int, Skill>();
+        private Dictionary<uint, Buff> buffList = new Dictionary<uint, Buff>();
+        private Dictionary<uint, Skill> skillList = new Dictionary<uint, Skill>();
         private Dictionary<int, World> worldList = new Dictionary<int, World>();
         private List<Zone> zoneList = new List<Zone>();
 
         public IReadOnlyList<Zone> ZoneList => this.zoneList;
-        public IReadOnlyDictionary<int, Skill> SkillList => this.skillList;
-        public IReadOnlyDictionary<int, World> WorldList => this.worldList;
+        public IReadOnlyDictionary<uint, Skill> SkillList => this.skillList;
+        public IReadOnlyDictionary<uint, World> WorldList => this.worldList;
 
         public Regex WorldNameRemoveRegex { get; private set; }
 
@@ -1177,7 +1177,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
             using (var st = asm.GetManifestResourceStream(resourcesName))
             {
-                var newList = new Dictionary<int, Buff>();
+                var newList = new Dictionary<uint, Buff>();
 
                 if (st != null)
                 {
@@ -1193,7 +1193,7 @@ namespace FFXIV.Framework.FFXIVHelper
                                 {
                                     var buff = new Buff()
                                     {
-                                        ID = int.Parse(values[0], NumberStyles.HexNumber),
+                                        ID = uint.Parse(values[0], NumberStyles.HexNumber),
                                         Name = values[1].Trim()
                                     };
 
@@ -1228,7 +1228,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
             using (var st = asm.GetManifestResourceStream(resourcesName))
             {
-                var newList = new Dictionary<int, Skill>();
+                var newList = new Dictionary<uint, Skill>();
 
                 if (st != null)
                 {
@@ -1244,7 +1244,7 @@ namespace FFXIV.Framework.FFXIVHelper
                                 {
                                     var skill = new Skill()
                                     {
-                                        ID = int.Parse(values[0], NumberStyles.HexNumber),
+                                        ID = uint.Parse(values[0], NumberStyles.HexNumber),
                                         Name = values[1].Trim()
                                     };
 
