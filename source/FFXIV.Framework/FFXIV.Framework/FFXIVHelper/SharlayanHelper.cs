@@ -237,8 +237,6 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private string currentZoneName = string.Empty;
 
-        public static readonly object ScanLock = new object();
-
         private void ScanMemory()
         {
             if (!MemoryHandler.Instance.IsAttached ||
@@ -248,54 +246,51 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            lock (ScanLock)
+            var currentZoneName = FFXIVPlugin.Instance.GetCurrentZoneName();
+            if (this.currentZoneName != currentZoneName)
             {
-                var currentZoneName = FFXIVPlugin.Instance.GetCurrentZoneName();
-                if (this.currentZoneName != currentZoneName)
-                {
-                    this.currentZoneName = currentZoneName;
+                this.currentZoneName = currentZoneName;
 
+                this.ActorList.Clear();
+                this.ActorDictionary.Clear();
+                this.NPCActorDictionary.Clear();
+                this.CombatantsDictionary.Clear();
+                this.NPCCombatantsDictionary.Clear();
+            }
+
+            if (this.IsSkipActor)
+            {
+                if (this.ActorList.Any())
+                {
                     this.ActorList.Clear();
                     this.ActorDictionary.Clear();
                     this.NPCActorDictionary.Clear();
-                    this.CombatantsDictionary.Clear();
-                    this.NPCCombatantsDictionary.Clear();
                 }
+            }
+            else
+            {
+                this.GetActorsSimple();
+            }
 
-                if (this.IsSkipActor)
-                {
-                    if (this.ActorList.Any())
-                    {
-                        this.ActorList.Clear();
-                        this.ActorDictionary.Clear();
-                        this.NPCActorDictionary.Clear();
-                    }
-                }
-                else
-                {
-                    this.GetActorsSimple();
-                }
+            if (this.IsSkipTarget)
+            {
+                this.TargetInfo = null;
+            }
+            else
+            {
+                this.GetTargetInfo();
+            }
 
-                if (this.IsSkipTarget)
+            if (this.IsSkipParty)
+            {
+                if (this.PartyMemberList.Any())
                 {
-                    this.TargetInfo = null;
+                    this.PartyMemberList.Clear();
                 }
-                else
-                {
-                    this.GetTargetInfo();
-                }
-
-                if (this.IsSkipParty)
-                {
-                    if (this.PartyMemberList.Any())
-                    {
-                        this.PartyMemberList.Clear();
-                    }
-                }
-                else
-                {
-                    this.GetPartyInfo();
-                }
+            }
+            else
+            {
+                this.GetPartyInfo();
             }
 
             if (this.IsSkips.All(x => x))
@@ -420,9 +415,18 @@ namespace FFXIV.Framework.FFXIVHelper
         }
 
         private uint[] previousPartyMemberIDs = new uint[0];
+        private DateTime partyListTimestamp = DateTime.MinValue;
 
         private void GetPartyInfo()
         {
+            var now = DateTime.Now;
+            if ((now - this.partyListTimestamp).TotalSeconds <= 0.5)
+            {
+                return;
+            }
+
+            this.partyListTimestamp = now;
+
             var result = ReaderEx.GetPartyMemberIDs();
 
             var newPartyList = new List<ActorItem>(8);
@@ -480,14 +484,11 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             var combatantList = new List<Combatant>(actors.Count());
 
-            lock (ScanLock)
+            foreach (var actor in actors)
             {
-                foreach (var actor in actors)
-                {
-                    var combatant = this.TryGetOrNewCombatant(actor);
-                    combatantList.Add(combatant);
-                    Thread.Yield();
-                }
+                var combatant = this.TryGetOrNewCombatant(actor);
+                combatantList.Add(combatant);
+                Thread.Yield();
             }
 
             return combatantList;
