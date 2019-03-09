@@ -499,7 +499,10 @@ namespace FFXIV.Framework.FFXIVHelper
                     .ToList();
 
             this.combatantList = newCombatants.ToList();
-            this.combatantDictionary = newCombatants.ToDictionary(x => x.ID);
+            this.combatantDictionary = newCombatants
+                .GroupBy(x => x.ID)
+                .Select(x => x.First())
+                .ToDictionary(x => x.ID);
 
             this.CombatantPCCount = this.combatantList.Count(x => x.ObjectType == Actor.Type.PC);
 
