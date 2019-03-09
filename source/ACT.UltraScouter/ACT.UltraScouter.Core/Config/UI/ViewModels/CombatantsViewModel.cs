@@ -83,10 +83,10 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                 return;
             }
 
-            var toAdds = source.Where(x => !combatants.Any(y => y.ID == x.ID));
+            var toAdds = source.Where(x => !combatants.Any(y => y.GUID == x.GUID));
             combatants.AddRange(toAdds);
 
-            var toRemoves = combatants.Where(x => !source.Any(y => y.ID == x.ID)).ToArray();
+            var toRemoves = combatants.Where(x => !source.Any(y => y.GUID == x.GUID)).ToArray();
             foreach (var item in toRemoves)
             {
                 combatants.Remove(item);
@@ -94,7 +94,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
             foreach (var combatant in combatants)
             {
-                var src = source.FirstOrDefault(x => x.ID == combatant.ID);
+                var src = source.FirstOrDefault(x => x.GUID == combatant.GUID);
                 if (src != null)
                 {
                     if (combatant.PosX != src.PosX ||
