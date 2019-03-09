@@ -415,58 +415,66 @@ namespace FFXIV.Framework.FFXIVHelper
         }
 
         private uint[] previousPartyMemberIDs = new uint[0];
+        private DateTime partyListTimestamp = DateTime.MinValue;
 
         private void GetPartyInfo()
         {
+            var now = DateTime.Now;
+            if ((now - this.partyListTimestamp).TotalSeconds <= 0.5)
+            {
+                return;
+            }
+
+            this.partyListTimestamp = now;
+
             var result = ReaderEx.GetPartyMemberIDs();
 
-            if (!result.SequenceEqual(previousPartyMemberIDs))
+            var newPartyList = new List<ActorItem>(8);
+
+            foreach (var id in result)
             {
-                this.PartyMemberList.Clear();
-
-                foreach (var id in result)
+                var actor = this.GetActor(id);
+                if (actor != null)
                 {
-                    var actor = this.GetActor(id);
-                    if (actor != null)
-                    {
-                        this.PartyMemberList.Add(actor);
-                    }
+                    newPartyList.Add(actor);
                 }
-
-                if (!this.PartyMemberList.Any() &&
-                    ReaderEx.CurrentPlayer != null)
-                {
-                    this.PartyMemberList.Add(ReaderEx.CurrentPlayer);
-                }
-
-                this.PartyMemberCount = this.PartyMemberList.Count();
-
-                var composition = PartyCompositions.Unknown;
-
-                if (this.PartyMemberCount == 4)
-                {
-                    this.PartyComposition = PartyCompositions.LightParty;
-                }
-                else
-                {
-                    if (this.PartyMemberCount == 8)
-                    {
-                        var tanks = this.PartyMemberList.Count(x => x.GetJobInfo().Role == Roles.Tank);
-                        switch (tanks)
-                        {
-                            case 1:
-                                this.PartyComposition = PartyCompositions.FullPartyT1;
-                                break;
-
-                            case 2:
-                                this.PartyComposition = PartyCompositions.FullPartyT2;
-                                break;
-                        }
-                    }
-                }
-
-                this.PartyComposition = composition;
             }
+
+            if (!newPartyList.Any() &&
+                ReaderEx.CurrentPlayer != null)
+            {
+                newPartyList.Add(ReaderEx.CurrentPlayer);
+            }
+
+            this.PartyMemberList.Clear();
+            this.PartyMemberList.AddRange(newPartyList);
+            this.PartyMemberCount = newPartyList.Count();
+
+            var composition = PartyCompositions.Unknown;
+
+            if (this.PartyMemberCount == 4)
+            {
+                this.PartyComposition = PartyCompositions.LightParty;
+            }
+            else
+            {
+                if (this.PartyMemberCount == 8)
+                {
+                    var tanks = this.PartyMemberList.Count(x => x.GetJobInfo().Role == Roles.Tank);
+                    switch (tanks)
+                    {
+                        case 1:
+                            this.PartyComposition = PartyCompositions.FullPartyT1;
+                            break;
+
+                        case 2:
+                            this.PartyComposition = PartyCompositions.FullPartyT2;
+                            break;
+                    }
+                }
+            }
+
+            this.PartyComposition = composition;
 
             this.previousPartyMemberIDs = result;
         }

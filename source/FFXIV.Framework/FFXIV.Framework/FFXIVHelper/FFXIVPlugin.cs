@@ -347,6 +347,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private IReadOnlyDictionary<uint, Combatant> combatantDictionary;
         private IReadOnlyList<Combatant> combatantList;
+        private IReadOnlyList<Combatant> partyList;
 
         public int CombatantPCCount { get; private set; }
 
@@ -480,6 +481,7 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 this.inCombatTimestamp = DateTime.Now;
                 this.RefreshCombatantWorldInfo();
+                this.RefreshPartyList();
                 this.InCombat = this.RefreshInCombat();
             }
 
@@ -494,7 +496,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
                     .ToList();
 
-            this.combatantList = newCombatants.ToList();
+            this.combatantList = newCombatants;
             this.combatantDictionary = newCombatants
                 .GroupBy(x => x.ID)
                 .Select(x => x.First())
@@ -551,6 +553,31 @@ namespace FFXIV.Framework.FFXIVHelper
                     }
                 }
             }
+        }
+
+        private void RefreshPartyList()
+        {
+            var combatants = SharlayanHelper.Instance.PartyMembers.ToCombatantList();
+
+            if (combatants == null ||
+                combatants.Count() < 1)
+            {
+                this.partyList = this.EmptyCombatantList;
+            }
+
+            // パーティリストをソートして返す
+            var sortedPartyList = (
+                from x in combatants
+                orderby
+                x.IsPlayer ? 0 : 1,
+                x.DisplayOrder,
+                x.Role.ToSortOrder(),
+                x.Job,
+                x.ID descending
+                select
+                x).ToList();
+
+            this.partyList = sortedPartyList;
         }
 
         public bool RefreshInCombat()
@@ -635,30 +662,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public PartyCompositions PartyComposition => SharlayanHelper.Instance.PartyComposition;
 
-        public IReadOnlyList<Combatant> GetPartyList()
-        {
-            var combatants = SharlayanHelper.Instance.PartyMembers.ToCombatantList();
-
-            if (combatants == null ||
-                combatants.Count() < 1)
-            {
-                return this.EmptyCombatantList;
-            }
-
-            // パーティリストをソートして返す
-            var sortedPartyList = (
-                from x in combatants
-                orderby
-                x.IsPlayer ? 0 : 1,
-                x.DisplayOrder,
-                x.Role.ToSortOrder(),
-                x.Job,
-                x.ID descending
-                select
-                x).ToList();
-
-            return sortedPartyList;
-        }
+        public IReadOnlyList<Combatant> GetPartyList() => this.partyList ?? this.EmptyCombatantList;
 
         /// <summary>
         /// パーティをロールで分類して取得する
