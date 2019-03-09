@@ -374,7 +374,6 @@ namespace FFXIV.Framework.FFXIVHelper
             CurrentTP = 3000,
             Job = (int)JobIDs.PLD,
             ObjectType = Actor.Type.PC,
-            Player = DummyPlayer,
         };
 
         private readonly IReadOnlyList<Combatant> DummyCombatants = new List<Combatant>()
@@ -393,7 +392,6 @@ namespace FFXIV.Framework.FFXIVHelper
                 CurrentTP = 3000,
                 Job = (int)JobIDs.WAR,
                 ObjectType = Actor.Type.PC,
-                Player = DummyPlayer,
             },
 
             new Combatant()
@@ -408,7 +406,6 @@ namespace FFXIV.Framework.FFXIVHelper
                 CurrentTP = 3000,
                 Job = (int)JobIDs.WHM,
                 ObjectType = Actor.Type.PC,
-                Player = DummyPlayer,
             },
 
             new Combatant()
@@ -423,7 +420,6 @@ namespace FFXIV.Framework.FFXIVHelper
                 CurrentTP = 3000,
                 Job = (int)JobIDs.AST,
                 ObjectType = Actor.Type.PC,
-                Player = DummyPlayer,
             },
         };
 
@@ -820,11 +816,6 @@ namespace FFXIV.Framework.FFXIVHelper
                     select
                     x).FirstOrDefault();
 
-                if (boss != null)
-                {
-                    boss.Player = this.GetPlayer();
-                }
-
                 #region Logger
 
                 if (boss != null)
@@ -908,6 +899,8 @@ namespace FFXIV.Framework.FFXIVHelper
             this.IsAvailable ?
             (this.pluginScancombat?.GetCurrentZoneId() ?? 0) :
             0;
+
+        public string GetCurrentZoneName() => ActGlobals.oFormActMain?.CurrentZone;
 
         /// <summary>
         /// 文中に含まれるパーティメンバの名前を設定した形式に置換する

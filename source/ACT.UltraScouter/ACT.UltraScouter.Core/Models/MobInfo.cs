@@ -148,46 +148,51 @@ namespace ACT.UltraScouter.Models
                     return;
                 }
 
-                this.Name = this.combatant.NameForDisplay;
-                this.X = this.combatant.PosX;
-                this.Y = this.combatant.PosY;
-                this.Z = this.combatant.PosZ;
-
-                var x1 = this.combatant.Player?.PosX ?? 0;
-                var y1 = this.combatant.Player?.PosY ?? 0;
-                var x2 = this.X;
-                var y2 = this.Y;
-
-                // プレイヤーとの角度を求める
-                var rad = Math.Atan2(
-                    y2 - y1,
-                    x2 - x1);
-
-                // 単純な計算角度を算出する
-                this.DirectionAngle = rad * 180.0 / Math.PI;
-
-                // 0 - 360 に補正する
-                var deg = this.DirectionAngle % 360.0;
-                if (deg < 0.0)
-                {
-                    deg = 360.0 + deg;
-                }
-
-                // 8方位に変換する
-                var dir = (int)((deg + 22.5) / 45.0);
-                dir %= 8;
-
-                if (Enum.IsDefined(typeof(Direction), dir))
-                {
-                    this.Direction = (Direction)dir;
-                }
-
-                // 距離は最後にセットする
-                this.Distance = Math.Round(this.combatant.DistanceByPlayer, 1);
-
-                this.RaisePropertyChanged(nameof(this.IsPC));
-                this.RaisePropertyChanged(nameof(this.JobIcon));
+                this.RefreshDistance();
             }
+        }
+
+        public void RefreshDistance()
+        {
+            this.Name = this.combatant.NameForDisplay;
+            this.X = this.combatant.PosX;
+            this.Y = this.combatant.PosY;
+            this.Z = this.combatant.PosZ;
+
+            var x1 = this.combatant.Player?.PosX ?? 0;
+            var y1 = this.combatant.Player?.PosY ?? 0;
+            var x2 = this.X;
+            var y2 = this.Y;
+
+            // プレイヤーとの角度を求める
+            var rad = Math.Atan2(
+                y2 - y1,
+                x2 - x1);
+
+            // 単純な計算角度を算出する
+            this.DirectionAngle = rad * 180.0 / Math.PI;
+
+            // 0 - 360 に補正する
+            var deg = this.DirectionAngle % 360.0;
+            if (deg < 0.0)
+            {
+                deg = 360.0 + deg;
+            }
+
+            // 8方位に変換する
+            var dir = (int)((deg + 22.5) / 45.0);
+            dir %= 8;
+
+            if (Enum.IsDefined(typeof(Direction), dir))
+            {
+                this.Direction = (Direction)dir;
+            }
+
+            // 距離は最後にセットする
+            this.Distance = Math.Round(this.combatant.DistanceByPlayer, 1);
+
+            this.RaisePropertyChanged(nameof(this.IsPC));
+            this.RaisePropertyChanged(nameof(this.JobIcon));
         }
 
         public bool IsPC => this.combatant?.ObjectType == Actor.Type.PC;

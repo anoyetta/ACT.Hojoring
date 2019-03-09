@@ -235,6 +235,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public PartyCompositions PartyComposition { get; private set; } = PartyCompositions.Unknown;
 
+        private string currentZoneName = string.Empty;
+
         private void ScanMemory()
         {
             if (!MemoryHandler.Instance.IsAttached ||
@@ -242,6 +244,18 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 Thread.Sleep((int)ProcessSubscribeInterval);
                 return;
+            }
+
+            var currentZoneName = FFXIVPlugin.Instance.GetCurrentZoneName();
+            if (this.currentZoneName != currentZoneName)
+            {
+                this.currentZoneName = currentZoneName;
+
+                this.ActorList.Clear();
+                this.ActorDictionary.Clear();
+                this.NPCActorDictionary.Clear();
+                this.CombatantsDictionary.Clear();
+                this.NPCCombatantsDictionary.Clear();
             }
 
             if (this.IsSkipActor)
@@ -515,8 +529,6 @@ namespace FFXIV.Framework.FFXIVHelper
             ActorItem actor,
             Combatant current = null)
         {
-            var player = ReaderEx.CurrentPlayerCombatant;
-
             var c = current ?? new Combatant();
 
             c.ActorItem = actor;
@@ -554,7 +566,6 @@ namespace FFXIV.Framework.FFXIVHelper
             c.CastDurationCurrent = actor.CastingProgress;
             c.CastDurationMax = actor.CastingTime;
 
-            c.Player = player;
             this.SetTargetOfTarget(c);
 
             FFXIVPlugin.Instance.SetSkillName(c);
