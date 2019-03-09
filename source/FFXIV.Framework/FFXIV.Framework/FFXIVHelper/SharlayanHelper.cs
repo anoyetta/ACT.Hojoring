@@ -505,7 +505,7 @@ namespace FFXIV.Framework.FFXIVHelper
             else
             {
                 combatant = this.CreateCombatant(actor);
-                dictionary.Add(key, combatant);
+                dictionary[key] = combatant;
             }
 
             return combatant;
