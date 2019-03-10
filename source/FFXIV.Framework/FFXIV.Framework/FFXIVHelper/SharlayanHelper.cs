@@ -200,6 +200,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public List<ActorItem> Actors => this.ActorList.ToList();
 
+        public bool IsExistsActors => this.ActorList.Any();
+
         public ActorItem GetActor(uint id)
         {
             if (this.ActorDictionary.ContainsKey(id))
@@ -235,7 +237,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public PartyCompositions PartyComposition { get; private set; } = PartyCompositions.Unknown;
 
-        private string currentZoneName = string.Empty;
+        public string CurrentZoneName { get; private set; } = string.Empty;
+
+        public DateTime ZoneChangedTimestamp { get; private set; } = DateTime.MinValue;
 
         private void ScanMemory()
         {
@@ -247,9 +251,10 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             var currentZoneName = FFXIVPlugin.Instance.GetCurrentZoneName();
-            if (this.currentZoneName != currentZoneName)
+            if (this.CurrentZoneName != currentZoneName)
             {
-                this.currentZoneName = currentZoneName;
+                this.CurrentZoneName = currentZoneName;
+                this.ZoneChangedTimestamp = DateTime.Now;
 
                 this.ActorList.Clear();
                 this.ActorDictionary.Clear();
@@ -414,11 +419,30 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        private uint[] previousPartyMemberIDs = new uint[0];
         private DateTime partyListTimestamp = DateTime.MinValue;
+
+        public DateTime PartyListChangedTimestamp { get; private set; } = DateTime.MinValue;
 
         private void GetPartyInfo()
         {
+            var newPartyList = new List<ActorItem>(8);
+
+            if (!this.IsExistsActors ||
+                string.IsNullOrEmpty(this.CurrentZoneName))
+            {
+                if (ReaderEx.CurrentPlayer != null)
+                {
+                    newPartyList.Add(ReaderEx.CurrentPlayer);
+                }
+
+                this.PartyMemberList.Clear();
+                this.PartyMemberList.AddRange(newPartyList);
+                this.PartyMemberCount = newPartyList.Count();
+                this.PartyComposition = PartyCompositions.Unknown;
+
+                return;
+            }
+
             var now = DateTime.Now;
             if ((now - this.partyListTimestamp).TotalSeconds <= 0.5)
             {
@@ -428,8 +452,6 @@ namespace FFXIV.Framework.FFXIVHelper
             this.partyListTimestamp = now;
 
             var result = ReaderEx.GetPartyMemberIDs();
-
-            var newPartyList = new List<ActorItem>(8);
 
             foreach (var id in result)
             {
@@ -444,6 +466,13 @@ namespace FFXIV.Framework.FFXIVHelper
                 ReaderEx.CurrentPlayer != null)
             {
                 newPartyList.Add(ReaderEx.CurrentPlayer);
+            }
+
+            if (this.PartyMemberList.Count != newPartyList.Count ||
+                newPartyList.Except(this.PartyMemberList).Any() ||
+                this.PartyMemberList.Except(newPartyList).Any())
+            {
+                this.PartyListChangedTimestamp = DateTime.Now;
             }
 
             this.PartyMemberList.Clear();
@@ -475,8 +504,6 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             this.PartyComposition = composition;
-
-            this.previousPartyMemberIDs = result;
         }
 
         public List<Combatant> ToCombatantList(
@@ -646,6 +673,21 @@ namespace FFXIV.Framework.FFXIVHelper
             this ActorItem actor)
         {
             switch (actor.Type)
+            {
+                case Actor.Type.NPC:
+                case Actor.Type.Aetheryte:
+                case Actor.Type.EventObject:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsNPC(
+            this Combatant actor)
+        {
+            switch (actor.ObjectType)
             {
                 case Actor.Type.NPC:
                 case Actor.Type.Aetheryte:
