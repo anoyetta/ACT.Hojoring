@@ -200,7 +200,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public List<ActorItem> Actors => this.ActorList.ToList();
 
-        public bool IsExistsActors => this.ActorList.Any();
+        public bool IsExistsActors { get; private set; } = false;
 
         public ActorItem GetActor(uint id)
         {
@@ -256,6 +256,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.CurrentZoneName = currentZoneName;
                 this.ZoneChangedTimestamp = DateTime.Now;
 
+                this.IsExistsActors = false;
                 this.ActorList.Clear();
                 this.ActorDictionary.Clear();
                 this.NPCActorDictionary.Clear();
@@ -267,9 +268,12 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 if (this.ActorList.Any())
                 {
+                    this.IsExistsActors = false;
                     this.ActorList.Clear();
                     this.ActorDictionary.Clear();
                     this.NPCActorDictionary.Clear();
+                    this.CombatantsDictionary.Clear();
+                    this.NPCCombatantsDictionary.Clear();
                 }
             }
             else
@@ -325,9 +329,12 @@ namespace FFXIV.Framework.FFXIVHelper
 
             if (!actors.Any())
             {
+                this.IsExistsActors = false;
                 this.ActorList.Clear();
                 this.ActorDictionary.Clear();
                 this.NPCActorDictionary.Clear();
+                this.CombatantsDictionary.Clear();
+                this.NPCCombatantsDictionary.Clear();
                 return;
             }
 
@@ -336,6 +343,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
             this.ActorDictionary.Clear();
             this.NPCActorDictionary.Clear();
+
+            this.IsExistsActors = this.ActorList.Count > 0;
 
             foreach (var actor in this.ActorList)
             {
