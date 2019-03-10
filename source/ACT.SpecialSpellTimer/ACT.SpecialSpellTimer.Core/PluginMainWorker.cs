@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -520,37 +521,56 @@ namespace ACT.SpecialSpellTimer
                 return;
             }
 
-            // 0.1秒毎に判定する
-            if ((DateTime.Now - this.lastWipeOutDetectDateTime).TotalSeconds <= 0.1)
+            var now = DateTime.Now;
+
+            // パーティの変更を検知してから時間が経過していない？
+            if ((now - SharlayanHelper.Instance.PartyListChangedTimestamp).TotalSeconds <= 20d)
             {
                 return;
             }
 
-            this.lastWipeOutDetectDateTime = DateTime.Now;
+            // 0.1秒毎に判定する
+            if ((now - this.lastWipeOutDetectDateTime).TotalSeconds <= 0.1)
+            {
+                return;
+            }
 
-            var combatants = FFXIVPlugin.Instance.GetPartyList();
+            this.lastWipeOutDetectDateTime = now;
+
+            var combatants = default(IEnumerable<Combatant>);
+            combatants = FFXIVPlugin.Instance.GetPartyList();
 
             if (combatants == null ||
-                combatants.Count < 1)
+                combatants.Count() < 1)
             {
                 return;
             }
 
             // 異常なデータ？
-            if (combatants.Count > 1)
+            if (combatants.Count() > 1)
             {
                 var first = combatants.First();
-                if (combatants.Count ==
+                if (combatants.Count() ==
                     combatants.Count(x =>
                         x.CurrentHP == first.CurrentHP &&
                         x.MaxHP == first.MaxHP))
                 {
                     return;
                 }
+
+                if (!combatants.Any(x => x.IsPlayer))
+                {
+                    return;
+                }
+
+                if (combatants.Any(x => x.IsNPC()))
+                {
+                    return;
+                }
             }
 
             // 関係者が全員死んでる？
-            if (combatants.Count ==
+            if (combatants.Count() ==
                 combatants.Count(x =>
                     x.CurrentHP <= 0 &&
                     x.MaxHP > 0))

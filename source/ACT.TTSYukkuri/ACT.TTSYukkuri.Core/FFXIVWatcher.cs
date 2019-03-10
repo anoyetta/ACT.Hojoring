@@ -136,7 +136,8 @@ namespace ACT.TTSYukkuri
 
                 if (Settings.Default.StatusAlertSettings.EnabledHPAlert ||
                     Settings.Default.StatusAlertSettings.EnabledMPAlert ||
-                    Settings.Default.StatusAlertSettings.EnabledTPAlert)
+                    Settings.Default.StatusAlertSettings.EnabledTPAlert ||
+                    Settings.Default.StatusAlertSettings.EnabledGPAlert)
                 {
                     if (!this.isRunning)
                     {
@@ -153,7 +154,8 @@ namespace ACT.TTSYukkuri
             {
                 if (!Settings.Default.StatusAlertSettings.EnabledHPAlert &&
                     !Settings.Default.StatusAlertSettings.EnabledMPAlert &&
-                    !Settings.Default.StatusAlertSettings.EnabledMPAlert)
+                    !Settings.Default.StatusAlertSettings.EnabledTPAlert &&
+                    !Settings.Default.StatusAlertSettings.EnabledGPAlert)
                 {
                     if (this.watchWorker != null)
                     {
@@ -180,7 +182,8 @@ namespace ACT.TTSYukkuri
             // オプションが全部OFFならば何もしない
             if (!Settings.Default.StatusAlertSettings.EnabledHPAlert &&
                 !Settings.Default.StatusAlertSettings.EnabledMPAlert &&
-                !Settings.Default.StatusAlertSettings.EnabledTPAlert)
+                !Settings.Default.StatusAlertSettings.EnabledTPAlert &&
+                !Settings.Default.StatusAlertSettings.EnabledGPAlert)
             {
                 Thread.Sleep(WatcherLongInterval);
                 return;
