@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Config.UI.ViewModels;
 using ACT.UltraScouter.Models;
@@ -53,17 +52,18 @@ namespace ACT.UltraScouter.Workers
 
         private DateTime combatantsTimestamp = DateTime.MinValue;
 
-        protected override async void GetCombatant()
+        protected override void GetCombatant()
         {
             lock (this.TargetInfoLock)
             {
-                if ((DateTime.Now - this.combatantsTimestamp).TotalMilliseconds
+                var now = DateTime.Now;
+                if ((now - this.combatantsTimestamp).TotalMilliseconds
                     < Settings.Instance.MobList.RefreshRateMin)
                 {
                     return;
                 }
 
-                this.combatantsTimestamp = DateTime.Now;
+                this.combatantsTimestamp = now;
             }
 
             #region Test Mode
@@ -202,60 +202,56 @@ namespace ACT.UltraScouter.Workers
                 return;
             }
 
-            var targetDelegates = default(IEnumerable<Func<MobInfo>>);
+            var targetDelegates = default(IEnumerable<MobInfo>);
             var combatants = default(IEnumerable<Combatant>);
 
-            await Task.Run(() =>
-            {
-                Thread.CurrentThread.Priority = ThreadPriority.Lowest;
+            SharlayanHelper.Instance.IsScanNPC = Settings.Instance.MobList.IsScanNPC;
+            combatants = SharlayanHelper.Instance.Actors.ToCombatantList();
 
-                SharlayanHelper.Instance.IsScanNPC = Settings.Instance.MobList.IsScanNPC;
-                combatants = SharlayanHelper.Instance.Actors.ToCombatantList();
-
-                targetDelegates = combatants
-                    .Where(x =>
-                        ((x.MaxHP <= 0) || (x.MaxHP > 0 && x.CurrentHP > 0)) &&
-                        Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name))
-                    .Select(x => new Func<MobInfo>(() => new MobInfo()
-                    {
-                        Name = x.Name,
-                        Combatant = x,
-                        Rank = Settings.Instance.MobList.TargetMobList[x.Name].Rank,
-                        MaxDistance = Settings.Instance.MobList.TargetMobList[x.Name].MaxDistance,
-                        TTSEnabled = Settings.Instance.MobList.TargetMobList[x.Name].TTSEnabled,
-                    }));
-
-                // 戦闘不能者を検出する？
-                if (Settings.Instance.MobList.IsEnabledDetectDeadmen)
+            targetDelegates = combatants
+                .Where(x =>
+                    x != null &&
+                    ((x.MaxHP <= 0) || (x.MaxHP > 0 && x.CurrentHP > 0)) &&
+                    Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name))
+                .Select(x => new MobInfo()
                 {
-                    var deadmenInfo = Settings.Instance.MobList.GetDetectDeadmenInfo;
-                    var party = FFXIVPlugin.Instance.GetPartyList();
-                    var deadmen =
-                        from x in party
-                        where
-                        !x.IsPlayer &&
-                        x.ObjectType == Actor.Type.PC &&
-                        x.MaxHP > 0 && x.CurrentHP <= 0
-                        select new Func<MobInfo>(() => new MobInfo()
-                        {
-                            Name = x.NameForDisplay,
-                            Combatant = x,
-                            Rank = deadmenInfo.Rank,
-                            MaxDistance = deadmenInfo.MaxDistance,
-                            TTSEnabled = deadmenInfo.TTSEnabled,
-                        });
+                    Name = x?.Name,
+                    Combatant = x,
+                    Rank = Settings.Instance.MobList.TargetMobList[x?.Name].Rank,
+                    MaxDistance = Settings.Instance.MobList.TargetMobList[x?.Name].MaxDistance,
+                    TTSEnabled = Settings.Instance.MobList.TargetMobList[x?.Name].TTSEnabled,
+                });
 
-                    targetDelegates = targetDelegates.Concat(deadmen);
-                }
+            // 戦闘不能者を検出する？
+            if (Settings.Instance.MobList.IsEnabledDetectDeadmen)
+            {
+                var deadmenInfo = Settings.Instance.MobList.GetDetectDeadmenInfo;
+                var party = FFXIVPlugin.Instance.GetPartyList();
+                var deadmen =
+                    from x in party
+                    where
+                    x != null &&
+                    !x.IsPlayer &&
+                    x.ObjectType == Actor.Type.PC &&
+                    x.MaxHP > 0 && x.CurrentHP <= 0
+                    select new MobInfo()
+                    {
+                        Name = x.NameForDisplay,
+                        Combatant = x,
+                        Rank = deadmenInfo.Rank,
+                        MaxDistance = deadmenInfo.MaxDistance,
+                        TTSEnabled = deadmenInfo.TTSEnabled,
+                    };
 
-                // クエリを実行する
-                targetDelegates = targetDelegates.ToArray();
-            });
+                targetDelegates = targetDelegates.Concat(deadmen);
+            }
+
+            // クエリを実行する
+            targetDelegates = targetDelegates.ToArray();
 
             lock (this.TargetInfoLock)
             {
                 this.targetMobList = targetDelegates
-                    .Select(x => x.Invoke())
                     .Where(x => x.Distance <= x.MaxDistance)
                     .ToList();
 
@@ -354,15 +350,16 @@ namespace ACT.UltraScouter.Workers
             var moblist = default(IReadOnlyList<MobInfo>);
             lock (this.TargetInfoLock)
             {
+                moblist = this.targetMobList;
+
                 if (Settings.Instance.MobList.UngroupSameNameMobs)
                 {
-                    moblist = (
-                        this.targetMobList.OrderBy(y => y.Distance)).ToList();
+                    moblist = moblist.OrderBy(y => y.Distance).ToList();
                 }
                 else
                 {
                     moblist = (
-                        from x in this.targetMobList.OrderBy(y => y.Distance)
+                        from x in moblist
                         group x by x.Name into g
                         select g.OrderBy(x => x.Distance).First().Clone((clone =>
                         {
