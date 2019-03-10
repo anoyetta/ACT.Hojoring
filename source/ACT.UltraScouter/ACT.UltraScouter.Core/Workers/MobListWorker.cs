@@ -197,6 +197,11 @@ namespace ACT.UltraScouter.Workers
 
             #endregion Test Mode
 
+            if (!SharlayanHelper.Instance.IsExistsActors)
+            {
+                return;
+            }
+
             var targetDelegates = default(IEnumerable<Func<MobInfo>>);
             var combatants = default(IEnumerable<Combatant>);
 
@@ -229,6 +234,7 @@ namespace ACT.UltraScouter.Workers
                         from x in party
                         where
                         !x.IsPlayer &&
+                        x.ObjectType == Actor.Type.PC &&
                         x.MaxHP > 0 && x.CurrentHP <= 0
                         select new Func<MobInfo>(() => new MobInfo()
                         {
