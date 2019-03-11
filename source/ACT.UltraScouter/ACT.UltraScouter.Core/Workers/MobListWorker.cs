@@ -206,7 +206,7 @@ namespace ACT.UltraScouter.Workers
             var combatants = default(IEnumerable<Combatant>);
 
             SharlayanHelper.Instance.IsScanNPC = Settings.Instance.MobList.IsScanNPC;
-            combatants = SharlayanHelper.Instance.Actors.ToCombatantList();
+            combatants = SharlayanHelper.Instance.Combatants;
 
             targetDelegates = combatants
                 .Where(x =>
