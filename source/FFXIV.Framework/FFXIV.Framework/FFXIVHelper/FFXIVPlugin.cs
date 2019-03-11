@@ -204,7 +204,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.RefreshCombatantList();
             },
             pollingInteval * 1.1,
-            nameof(this.attachFFXIVPluginWorker),
+            nameof(this.scanFFXIVWorker),
             ThreadPriority.Lowest);
 
             // sharlayan にワールド情報補完用のデリゲートをセットする
@@ -226,15 +226,15 @@ namespace FFXIV.Framework.FFXIVHelper
             // その他リソース読み込みを開始する
             await Task.Run(() =>
             {
+                // sharlayan を開始する
+                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
+                SharlayanHelper.Instance.Start(pollingInteval);
+
                 Thread.Sleep(CommonHelper.GetRandomTimeSpan());
                 this.attachFFXIVPluginWorker.Start();
 
                 Thread.Sleep(CommonHelper.GetRandomTimeSpan());
                 this.scanFFXIVWorker.Run();
-
-                // sharlayan を開始する
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                SharlayanHelper.Instance.Start(pollingInteval);
 
                 // XIVDBをロードする
                 Thread.Sleep(CommonHelper.GetRandomTimeSpan());
@@ -486,7 +486,9 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             var newCombatants = SharlayanHelper.Instance.Actors
-                .Where(x => !x.IsNPC())
+                .Where(x =>
+                    x != null &&
+                    !x.IsNPC())
                 .ToCombatantList();
 
             addedCombatants =
