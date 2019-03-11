@@ -188,6 +188,7 @@ namespace FFXIV.Framework.FFXIVHelper
         }
 
         private readonly List<ActorItem> ActorList = new List<ActorItem>(512);
+        private readonly List<Combatant> ActorCombatantList = new List<Combatant>(512);
         private readonly Dictionary<uint, ActorItem> ActorDictionary = new Dictionary<uint, ActorItem>(512);
         private readonly Dictionary<uint, ActorItem> NPCActorDictionary = new Dictionary<uint, ActorItem>(512);
 
@@ -199,6 +200,8 @@ namespace FFXIV.Framework.FFXIVHelper
         public ActorItem CurrentPlayer => ReaderEx.CurrentPlayer;
 
         public List<ActorItem> Actors => this.ActorList.ToList();
+
+        public List<Combatant> Combatants => this.ActorCombatantList.ToList();
 
         public bool IsExistsActors { get; private set; } = false;
 
@@ -241,6 +244,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public DateTime ZoneChangedTimestamp { get; private set; } = DateTime.MinValue;
 
+        public bool IsScanning { get; set; } = false;
+
         private void ScanMemory()
         {
             if (!MemoryHandler.Instance.IsAttached ||
@@ -250,24 +255,29 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            var currentZoneName = FFXIVPlugin.Instance.GetCurrentZoneName();
-            if (this.CurrentZoneName != currentZoneName)
+            try
             {
-                this.CurrentZoneName = currentZoneName;
-                this.ZoneChangedTimestamp = DateTime.Now;
+                if (this.IsScanning)
+                {
+                    return;
+                }
 
-                this.IsExistsActors = false;
-                this.ActorList.Clear();
-                this.ActorDictionary.Clear();
-                this.NPCActorDictionary.Clear();
-                this.CombatantsDictionary.Clear();
-                this.NPCCombatantsDictionary.Clear();
+                this.IsScanning = true;
+                doScan();
+            }
+            finally
+            {
+                this.IsScanning = false;
             }
 
-            if (this.IsSkipActor)
+            void doScan()
             {
-                if (this.ActorList.Any())
+                var currentZoneName = FFXIVPlugin.Instance.GetCurrentZoneName();
+                if (this.CurrentZoneName != currentZoneName)
                 {
+                    this.CurrentZoneName = currentZoneName;
+                    this.ZoneChangedTimestamp = DateTime.Now;
+
                     this.IsExistsActors = false;
                     this.ActorList.Clear();
                     this.ActorDictionary.Clear();
@@ -275,31 +285,44 @@ namespace FFXIV.Framework.FFXIVHelper
                     this.CombatantsDictionary.Clear();
                     this.NPCCombatantsDictionary.Clear();
                 }
-            }
-            else
-            {
-                this.GetActorsSimple();
-            }
 
-            if (this.IsSkipTarget)
-            {
-                this.TargetInfo = null;
-            }
-            else
-            {
-                this.GetTargetInfo();
-            }
-
-            if (this.IsSkipParty)
-            {
-                if (this.PartyMemberList.Any())
+                if (this.IsSkipActor)
                 {
-                    this.PartyMemberList.Clear();
+                    if (this.ActorList.Any())
+                    {
+                        this.IsExistsActors = false;
+                        this.ActorList.Clear();
+                        this.ActorDictionary.Clear();
+                        this.NPCActorDictionary.Clear();
+                        this.CombatantsDictionary.Clear();
+                        this.NPCCombatantsDictionary.Clear();
+                    }
                 }
-            }
-            else
-            {
-                this.GetPartyInfo();
+                else
+                {
+                    this.GetActorsSimple();
+                }
+
+                if (this.IsSkipTarget)
+                {
+                    this.TargetInfo = null;
+                }
+                else
+                {
+                    this.GetTargetInfo();
+                }
+
+                if (this.IsSkipParty)
+                {
+                    if (this.PartyMemberList.Any())
+                    {
+                        this.PartyMemberList.Clear();
+                    }
+                }
+                else
+                {
+                    this.GetPartyInfo();
+                }
             }
 
             if (this.IsSkips.All(x => x))
@@ -338,16 +361,19 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
+            this.IsExistsActors = false;
+
             this.ActorList.Clear();
             this.ActorList.AddRange(actors);
 
             this.ActorDictionary.Clear();
             this.NPCActorDictionary.Clear();
 
-            this.IsExistsActors = this.ActorList.Count > 0;
-
+            this.ActorCombatantList.Clear();
             foreach (var actor in this.ActorList)
             {
+                this.ActorCombatantList.Add(this.ToCombatant(actor));
+
                 if (actor.IsNPC())
                 {
                     this.NPCActorDictionary[actor.GetKey()] = actor;
@@ -357,6 +383,8 @@ namespace FFXIV.Framework.FFXIVHelper
                     this.ActorDictionary[actor.GetKey()] = actor;
                 }
             }
+
+            this.IsExistsActors = this.ActorList.Count > 0;
         }
 
         private void GetTargetInfo()
@@ -680,28 +708,21 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public static bool IsNPC(
             this ActorItem actor)
-        {
-            if (actor == null)
-            {
-                return false;
-            }
-
-            switch (actor.Type)
-            {
-                case Actor.Type.NPC:
-                case Actor.Type.Aetheryte:
-                case Actor.Type.EventObject:
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
+            => IsNPC(actor?.Type);
 
         public static bool IsNPC(
             this Combatant actor)
+            => IsNPC(actor?.ObjectType);
+
+        private static bool IsNPC(
+            Actor.Type? actorType)
         {
-            switch (actor.ObjectType)
+            if (!actorType.HasValue)
+            {
+                return true;
+            }
+
+            switch (actorType)
             {
                 case Actor.Type.NPC:
                 case Actor.Type.Aetheryte:
