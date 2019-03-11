@@ -312,31 +312,13 @@ namespace ACT.UltraScouter.Workers
             this.TryAddViewAndViewModel(this.MobListView, this.MobListView?.ViewModel);
         }
 
-        private volatile bool isRefreshing = false;
-
         protected override void RefreshModel(
             Combatant targetInfo)
         {
             base.RefreshModel(targetInfo);
 
             // MobListを更新する
-            WPFHelper.BeginInvoke(() =>
-            {
-                if (this.isRefreshing)
-                {
-                    return;
-                }
-
-                try
-                {
-                    this.isRefreshing = true;
-                    this.RefreshMobListView(targetInfo);
-                }
-                finally
-                {
-                    this.isRefreshing = false;
-                }
-            });
+            this.RefreshMobListView(targetInfo);
         }
 
         protected virtual void RefreshMobListView(
