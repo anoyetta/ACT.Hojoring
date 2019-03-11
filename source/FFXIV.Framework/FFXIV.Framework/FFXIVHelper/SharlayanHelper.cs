@@ -681,6 +681,11 @@ namespace FFXIV.Framework.FFXIVHelper
         public static bool IsNPC(
             this ActorItem actor)
         {
+            if (actor == null)
+            {
+                return false;
+            }
+
             switch (actor.Type)
             {
                 case Actor.Type.NPC:
