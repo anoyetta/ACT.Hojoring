@@ -491,9 +491,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.CombatantPCCount = this.combatantList.Count(x => x.ObjectType == Actor.Type.PC);
             }
 
-            setNewCombatants(SharlayanHelper.Instance.Combatants
-                .Where(x => !x.IsNPC())
-                .ToList());
+            setNewCombatants(SharlayanHelper.Instance.PCCombatants);
 
             void setNewCombatants(List<Combatant> newCombatants)
             {
@@ -1146,7 +1144,10 @@ namespace FFXIV.Framework.FFXIVHelper
                 if (world != null &&
                     world.Success)
                 {
-                    text = text.Remove(world.Index, world.Length);
+                    if (world.Index >= 0 && world.Length <= text.Length)
+                    {
+                        text = text.Remove(world.Index, world.Length);
+                    }
                 }
             }
 
