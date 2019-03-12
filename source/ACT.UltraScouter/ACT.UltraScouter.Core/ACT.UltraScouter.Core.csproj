@@ -189,6 +189,7 @@
     <Compile Include="Views\FFLogsView.xaml.cs">
       <DependentUpon>FFLogsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Workers\EnmityInfoWorker.cs" />
     <Compile Include="Workers\MainWorker.cs" />
     <Compile Include="Workers\MobListWorker.cs" />
     <Compile Include="Workers\MeInfoWorker.cs" />

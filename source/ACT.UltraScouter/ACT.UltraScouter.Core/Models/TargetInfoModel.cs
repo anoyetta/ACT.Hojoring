@@ -682,7 +682,6 @@ namespace ACT.UltraScouter.Models
         #region Enmity
 
         private volatile bool isEnmityDesignMode = false;
-        private volatile int previousMaxCountOfDisplay = 0;
 
         private static ObservableCollection<EnmityModel> designtimeEnmityList;
 
@@ -796,12 +795,6 @@ namespace ACT.UltraScouter.Models
                 nameof(EnmityModel.Index),
             });
 
-            source.Filter += (_, e) =>
-            {
-                var enmity = e.Item as EnmityModel;
-                e.Accepted = (enmity?.Index ?? int.MaxValue) <= Settings.Instance.Enmity.MaxCountOfDisplay;
-            };
-
             this.EnmityViewSource = source;
             this.EnmityView.Refresh();
             this.RaisePropertyChanged(nameof(this.EnmityView));
@@ -811,10 +804,9 @@ namespace ACT.UltraScouter.Models
         });
 
         private volatile bool isEnmityRefreshing = false;
-        private DateTime enmityTimestamp = DateTime.MinValue;
 
         public void RefreshEnmityList(
-            IEnumerable<EnmityEntry> enmityEntryList)
+            IEnumerable<EnmityModel> newEnmityList)
         {
             if (this.isEnmityRefreshing)
             {
@@ -824,14 +816,6 @@ namespace ACT.UltraScouter.Models
             try
             {
                 this.isEnmityRefreshing = true;
-
-                var now = DateTime.Now;
-                if ((now - this.enmityTimestamp).TotalMilliseconds <= 100d)
-                {
-                    return;
-                }
-
-                this.enmityTimestamp = now;
 
                 var config = Settings.Instance.Enmity;
                 if (!config.Visible)
@@ -851,11 +835,11 @@ namespace ACT.UltraScouter.Models
 
                 if (config.IsDesignMode)
                 {
-                    if (!this.isEnmityDesignMode)
+                    if (!this.isEnmityDesignMode ||
+                        this.enmityList.Count != config.MaxCountOfDisplay)
                     {
                         this.enmityList.Clear();
-                        this.enmityList.AddRange(DesigntimeEnmityList);
-                        this.EnmityView?.Refresh();
+                        this.enmityList.AddRange(DesigntimeEnmityList.Take(config.MaxCountOfDisplay));
                     }
 
                     this.isEnmityDesignMode = true;
@@ -865,14 +849,8 @@ namespace ACT.UltraScouter.Models
                         x.Name = Combatant.NameToInitial(x.Name, ConfigBridge.Instance.PCNameStyle);
                     }
 
-                    if (this.previousMaxCountOfDisplay != config.MaxCountOfDisplay)
-                    {
-                        this.EnmityView?.Refresh();
-                    }
-
                     this.IsExistsEnmityList = true;
                     this.RefreshEnmtiyHateRateBarWidth();
-                    this.previousMaxCountOfDisplay = config.MaxCountOfDisplay;
                     return;
                 }
 
@@ -897,32 +875,13 @@ namespace ACT.UltraScouter.Models
                     }
                 }
 
-                if (enmityEntryList == null ||
-                    enmityEntryList.Count() < 1)
+                if (newEnmityList == null ||
+                    newEnmityList.Count() < 1)
                 {
                     this.enmityList.Clear();
                     this.IsExistsEnmityList = false;
                     return;
                 }
-
-                var index = 1;
-                var newEnmityList = (
-                    from x in enmityEntryList
-                    orderby
-                    x.Enmity descending
-                    select new EnmityModel()
-                    {
-                        Index = index++,
-                        ID = x.ID,
-                        Name = config.IsSelfDisplayYou && x.IsMe ?
-                            "YOU" :
-                            Combatant.NameToInitial(x.Name, ConfigBridge.Instance.PCNameStyle),
-                        JobID = (JobIDs)x.Job,
-                        Enmity = (double)x.Enmity,
-                        HateRate = x.HateRate / 100f,
-                        IsMe = x.IsMe,
-                        IsPet = x.IsPet,
-                    }).ToArray();
 
                 var currentEnmityDictionary = this.enmityList.ToDictionary(x => x.ID);
                 var needsRefresh = false;
@@ -936,7 +895,6 @@ namespace ACT.UltraScouter.Models
                     if (dest == null)
                     {
                         this.enmityList.Add(src);
-                        needsRefresh = true;
                         continue;
                     }
 
@@ -954,22 +912,17 @@ namespace ACT.UltraScouter.Models
                     dest.IsPet = src.IsPet;
                 }
 
-                var toRemoves = this.enmityList.Where(x => !newEnmityList.Any(y => y.ID == x.ID)).ToArray();
-                foreach (var enmity in toRemoves)
-                {
-                    this.enmityList.Remove(enmity);
-                }
+                this.enmityList.Except(newEnmityList, EnmityModel.EnmityModelComparer)
+                    .ToArray()
+                    .Walk(x => this.enmityList.Remove(x));
 
-                if (this.previousMaxCountOfDisplay != config.MaxCountOfDisplay ||
-                    needsRefresh ||
-                    toRemoves.Any())
+                if (needsRefresh)
                 {
                     this.EnmityView?.Refresh();
                 }
 
                 this.IsExistsEnmityList = this.enmityList.Any();
                 this.RefreshEnmtiyHateRateBarWidth();
-                this.previousMaxCountOfDisplay = config.MaxCountOfDisplay;
             }
             finally
             {

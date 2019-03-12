@@ -769,10 +769,14 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public Func<double> GetBossHPThresholdCallback { get; set; }
 
+        public Func<bool> GetAvailableBossCallback { get; set; }
+
         private void RefreshBoss()
         {
             if (!this.IsAvailable ||
-                this.GetBossHPThresholdCallback == null)
+                this.GetBossHPThresholdCallback == null ||
+                this.GetAvailableBossCallback == null ||
+                !this.GetAvailableBossCallback.Invoke())
             {
                 return;
             }
