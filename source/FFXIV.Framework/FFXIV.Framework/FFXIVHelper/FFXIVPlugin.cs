@@ -1126,7 +1126,8 @@ namespace FFXIV.Framework.FFXIVHelper
         public string RemoveWorldName(
             string text)
         {
-            if (this.WorldNameRemoveRegex == null)
+            if (this.WorldNameRemoveRegex == null ||
+                string.IsNullOrEmpty(text))
             {
                 return text;
             }
