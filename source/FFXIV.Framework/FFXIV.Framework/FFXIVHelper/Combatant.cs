@@ -27,6 +27,10 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
+        public static readonly GenericEqualityComparer<Combatant> CombatantEqualityComparer = new GenericEqualityComparer<Combatant>(
+            (x, y) => x.GUID == y.GUID,
+            (obj) => obj.GetHashCode());
+
         public Guid GUID { get; } = Guid.NewGuid();
 
         public long Index { get; private set; }
