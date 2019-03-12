@@ -27,8 +27,13 @@ namespace ACT.UltraScouter.Workers
 
         protected override void GetCombatant()
         {
-            var ti = FFXIVPlugin.Instance?.GetBossInfo(
-                Settings.Instance.BossHPThreshold);
+            if (FFXIVPlugin.Instance != null &&
+                FFXIVPlugin.Instance.GetBossHPThresholdCallback == null)
+            {
+                FFXIVPlugin.Instance.GetBossHPThresholdCallback = () => Settings.Instance.BossHPThreshold;
+            }
+
+            var ti = FFXIVPlugin.Instance?.GetBossInfo();
 
             if (ti != null)
             {
