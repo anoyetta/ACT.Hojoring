@@ -113,14 +113,15 @@ namespace ACT.UltraScouter.Workers
                 this.hpBarVM = null;
                 this.actionVM = null;
                 this.distanceVM = null;
+                this.enmityVM = null;
             }
         }
 
         #region Data Controllers
 
-        public Combatant TargetInfo { get; protected set; }
+        public virtual Combatant TargetInfo { get; protected set; }
 
-        protected Combatant TargetInfoClone
+        public virtual Combatant TargetInfoClone
         {
             get
             {
@@ -156,8 +157,6 @@ namespace ACT.UltraScouter.Workers
             {
                 this.GetCombatantHoverOff(ref targetInfo);
             }
-
-            this.GetEnmityList(ref targetInfo);
 
             lock (this.TargetInfoLock)
             {
@@ -212,30 +211,6 @@ namespace ACT.UltraScouter.Workers
             targetInfo = info;
         }
 
-        private void GetEnmityList(ref Combatant targetInfo)
-        {
-            if (!Settings.Instance.Enmity.Visible)
-            {
-                return;
-            }
-
-            if (targetInfo != null &&
-                !Settings.Instance.Enmity.IsDesignMode &&
-                targetInfo.ObjectType == Actor.Type.Monster)
-            {
-                var enmityList = SharlayanHelper.Instance.EnmityList;
-                if (enmityList != null &&
-                    enmityList.Count > 0)
-                {
-                    lock (this.TargetInfoLock)
-                    {
-                        targetInfo.EnmityEntryList.Clear();
-                        targetInfo.EnmityEntryList.AddRange(enmityList);
-                    }
-                }
-            }
-        }
-
         #endregion Data Controllers
 
         #region View Controllers
@@ -261,8 +236,7 @@ namespace ACT.UltraScouter.Workers
                 !Settings.Instance.TargetAction.Visible &&
                 !Settings.Instance.TargetHP.Visible &&
                 !Settings.Instance.TargetDistance.Visible &&
-                !Settings.Instance.FFLogs.Visible &&
-                !Settings.Instance.Enmity.Visible
+                !Settings.Instance.FFLogs.Visible
             );
 
         public List<ViewAndViewModel> ViewList
@@ -313,8 +287,7 @@ namespace ACT.UltraScouter.Workers
         protected virtual FFLogsViewModel FFLogsVM =>
             this.ffLogsVM ?? (this.ffLogsVM = new FFLogsViewModel(Settings.Instance.FFLogs, this.Model));
 
-        protected virtual EnmityViewModel EnmityVM =>
-            this.enmityVM ?? (this.enmityVM = new EnmityViewModel(Settings.Instance.Enmity, this.Model));
+        protected virtual EnmityViewModel EnmityVM => null;
 
         /// <summary>
         /// Viewに接続されたデータモデルを更新する
@@ -674,20 +647,8 @@ namespace ACT.UltraScouter.Workers
             this.Model.RefreshFFLogsInfo();
         }
 
-        private void RefreshEnmityView(
-            Combatant targetInfo)
+        protected virtual void RefreshEnmityView(Combatant targetInfo)
         {
-            if (this.EnmityView == null)
-            {
-                return;
-            }
-
-            if (!this.EnmityView.ViewModel.OverlayVisible)
-            {
-                return;
-            }
-
-            this.Model.RefreshEnmityList(targetInfo?.EnmityEntryList);
         }
 
         #endregion View Controllers

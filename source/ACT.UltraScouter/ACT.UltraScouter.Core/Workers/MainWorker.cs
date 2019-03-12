@@ -18,7 +18,8 @@ namespace ACT.UltraScouter.Workers
         TargetOfTarget,
         Boss,
         Me,
-        MobList
+        MobList,
+        Enmity
     }
 
     public class MainWorker
@@ -88,6 +89,7 @@ namespace ACT.UltraScouter.Workers
             ToTInfoWorker.Initialize();
             BossInfoWorker.Initialize();
             MeInfoWorker.Initialize();
+            EnmityInfoWorker.Initialize();
             MobListWorker.Initialize();
 
             TargetInfoWorker.Instance.Start();
@@ -95,6 +97,7 @@ namespace ACT.UltraScouter.Workers
             ToTInfoWorker.Instance.Start();
             BossInfoWorker.Instance.Start();
             MeInfoWorker.Instance.Start();
+            EnmityInfoWorker.Instance.Start();
             MobListWorker.Instance.Start();
 
             // メモリスキャンタスクを開始する
@@ -120,6 +123,7 @@ namespace ACT.UltraScouter.Workers
             ToTInfoWorker.Instance?.End();
             BossInfoWorker.Instance?.End();
             MeInfoWorker.Instance?.End();
+            EnmityInfoWorker.Instance?.End();
             MobListWorker.Instance?.End();
 
             TargetInfoWorker.Free();
@@ -127,6 +131,7 @@ namespace ACT.UltraScouter.Workers
             ToTInfoWorker.Free();
             BossInfoWorker.Free();
             MeInfoWorker.Free();
+            EnmityInfoWorker.Free();
             MobListWorker.Free();
 
             // 参照を開放する
@@ -262,6 +267,7 @@ namespace ACT.UltraScouter.Workers
                 ToTInfoWorker.Instance.RefreshViewsQueue = true;
                 BossInfoWorker.Instance.RefreshViewsQueue = true;
                 MeInfoWorker.Instance.RefreshViewsQueue = true;
+                EnmityInfoWorker.Instance.RefreshViewsQueue = true;
                 MobListWorker.Instance.RefreshViewsQueue = true;
             }
         }
@@ -279,6 +285,7 @@ namespace ACT.UltraScouter.Workers
                 ToTInfoWorker.Instance == null ||
                 BossInfoWorker.Instance == null ||
                 MeInfoWorker.Instance == null ||
+                EnmityInfoWorker.Instance == null ||
                 MobListWorker.Instance == null)
             {
                 return list;
@@ -292,6 +299,7 @@ namespace ACT.UltraScouter.Workers
                     list.AddRange(ToTInfoWorker.Instance.ViewList.Select(x => x.ViewModel));
                     list.AddRange(BossInfoWorker.Instance.ViewList.Select(x => x.ViewModel));
                     list.AddRange(MeInfoWorker.Instance.ViewList.Select(x => x.ViewModel));
+                    list.AddRange(EnmityInfoWorker.Instance.ViewList.Select(x => x.ViewModel));
                     list.AddRange(MobListWorker.Instance.ViewList.Select(x => x.ViewModel));
                     break;
 
@@ -313,6 +321,10 @@ namespace ACT.UltraScouter.Workers
 
                 case ViewCategories.Me:
                     list.AddRange(MeInfoWorker.Instance.ViewList.Select(x => x.ViewModel));
+                    break;
+
+                case ViewCategories.Enmity:
+                    list.AddRange(EnmityInfoWorker.Instance.ViewList.Select(x => x.ViewModel));
                     break;
 
                 case ViewCategories.MobList:

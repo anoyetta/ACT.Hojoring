@@ -252,8 +252,16 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private readonly Dictionary<uint, EnmityEntry> EnmityDictionary = new Dictionary<uint, EnmityEntry>(128);
 
-        public List<EnmityEntry> EnmityList =>
-            this.EnmityDictionary.Values.OrderByDescending(x => x.Enmity).ToList();
+        public List<EnmityEntry> EnmityList
+        {
+            get
+            {
+                lock (this.EnmityDictionary)
+                {
+                    return this.EnmityDictionary.Values.OrderByDescending(x => x.Enmity).ToList();
+                }
+            }
+        }
 
         private readonly List<ActorItem> PartyMemberList = new List<ActorItem>(8);
 
@@ -436,63 +444,66 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void GetEnmity()
         {
-            if (this.TargetInfo == null ||
-                !this.TargetInfo.EnmityItems.Any())
+            lock (this.EnmityDictionary)
             {
-                this.EnmityDictionary.Clear();
-                return;
-            }
-
-            var currents = this.EnmityDictionary.Values.ToArray();
-            foreach (var current in currents)
-            {
-                if (!this.TargetInfo.EnmityItems.Any(x => x.ID == current.ID))
+                if (this.TargetInfo == null ||
+                    !this.TargetInfo.EnmityItems.Any())
                 {
-                    this.EnmityDictionary.Remove(current.ID);
-                }
-            }
-
-            var max = this.TargetInfo.EnmityItems.Max(x => x.Enmity);
-            var player = this.CurrentPlayer;
-
-            foreach (var source in this.TargetInfo.EnmityItems)
-            {
-                Thread.Yield();
-
-                var existing = false;
-                var enmity = default(EnmityEntry);
-
-                if (this.EnmityDictionary.ContainsKey(source.ID))
-                {
-                    existing = true;
-                    enmity = this.EnmityDictionary[source.ID];
-                }
-                else
-                {
-                    existing = false;
-                    enmity = new EnmityEntry() { ID = source.ID };
+                    this.EnmityDictionary.Clear();
+                    return;
                 }
 
-                enmity.Enmity = source.Enmity;
-                enmity.HateRate = (int)(((double)enmity.Enmity / (double)max) * 100d);
-                enmity.IsMe = enmity.ID == player?.ID;
-
-                if (!existing)
+                var currents = this.EnmityDictionary.Values.ToArray();
+                foreach (var current in currents)
                 {
-                    var actor = this.ActorDictionary.ContainsKey(enmity.ID) ?
-                        this.ActorDictionary[enmity.ID] :
-                        null;
-
-                    enmity.Name = actor?.Name;
-                    enmity.OwnerID = actor?.OwnerID ?? 0;
-                    enmity.Job = (byte)(actor?.Job ?? 0);
-
-                    if (string.IsNullOrEmpty(enmity.Name))
+                    if (!this.TargetInfo.EnmityItems.Any(x => x.ID == current.ID))
                     {
-                        enmity.Name = Combatant.UnknownName;
+                        this.EnmityDictionary.Remove(current.ID);
+                    }
+                }
+
+                var max = this.TargetInfo.EnmityItems.Max(x => x.Enmity);
+                var player = this.CurrentPlayer;
+
+                foreach (var source in this.TargetInfo.EnmityItems)
+                {
+                    Thread.Yield();
+
+                    var existing = false;
+                    var enmity = default(EnmityEntry);
+
+                    if (this.EnmityDictionary.ContainsKey(source.ID))
+                    {
+                        existing = true;
+                        enmity = this.EnmityDictionary[source.ID];
+                    }
+                    else
+                    {
+                        existing = false;
+                        enmity = new EnmityEntry() { ID = source.ID };
                     }
 
-                    this.EnmityDictionary[enmity.ID] = enmity;
+                    enmity.Enmity = source.Enmity;
+                    enmity.HateRate = (int)(((double)enmity.Enmity / (double)max) * 100d);
+                    enmity.IsMe = enmity.ID == player?.ID;
+
+                    if (!existing)
+                    {
+                        var actor = this.ActorDictionary.ContainsKey(enmity.ID) ?
+                            this.ActorDictionary[enmity.ID] :
+                            null;
+
+                        enmity.Name = actor?.Name;
+                        enmity.OwnerID = actor?.OwnerID ?? 0;
+                        enmity.Job = (byte)(actor?.Job ?? 0);
+
+                        if (string.IsNullOrEmpty(enmity.Name))
+                        {
+                            enmity.Name = Combatant.UnknownName;
+                        }
+
+                        this.EnmityDictionary[enmity.ID] = enmity;
+                    }
                 }
             }
         }
