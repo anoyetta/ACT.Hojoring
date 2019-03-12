@@ -266,10 +266,17 @@ namespace FFXIV.Framework.FFXIVHelper
             this.NameII = NameToInitial(this.Name, NameStyles.InitialInitial);
         }
 
+        public static readonly string UnknownName = "Unknown";
+
         public static string NameToInitial(
             string name,
             NameStyles style)
         {
+            if (string.IsNullOrEmpty(name) || name == UnknownName)
+            {
+                return UnknownName;
+            }
+
             var blocks = name.Split(' ');
             if (blocks.Length < 2)
             {
