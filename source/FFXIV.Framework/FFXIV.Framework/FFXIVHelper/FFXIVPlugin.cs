@@ -487,6 +487,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.inCombatTimestamp = DateTime.Now;
                 this.RefreshCombatantWorldInfo();
                 this.RefreshPartyList();
+                this.RefreshBoss();
                 this.InCombat = this.RefreshInCombat();
                 this.CombatantPCCount = this.combatantList.Count(x => x.ObjectType == Actor.Type.PC);
             }
@@ -763,21 +764,21 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #region Get Targets
 
-        private DateTime currentBossTimestamp;
+        private static readonly object BossLock = new object();
         private Combatant currentBoss;
 
-        public Combatant GetBossInfo(
-            double bossHPThreshold)
+        public Func<double> GetBossHPThresholdCallback { get; set; }
+
+        private void RefreshBoss()
         {
-            if (!this.IsAvailable)
+            if (!this.IsAvailable ||
+                this.GetBossHPThresholdCallback == null)
             {
-                return null;
+                return;
             }
 
-            if ((DateTime.Now - this.currentBossTimestamp).TotalSeconds >= 1.5)
+            lock (BossLock)
             {
-                this.currentBossTimestamp = DateTime.Now;
-
                 var party = this.GetPartyList();
                 var combatants = this.GetCombatantList();
 
@@ -786,14 +787,16 @@ namespace FFXIV.Framework.FFXIVHelper
                     party.Count < 1 ||
                     combatants.Count < 1)
                 {
-                    return null;
+                    this.currentBoss = null;
+                    return;
                 }
 
                 // パーティのHP平均値を算出する
                 var players = party.Where(x => x.ObjectType == Actor.Type.PC);
                 if (!players.Any())
                 {
-                    return null;
+                    this.currentBoss = null;
+                    return;
                 }
 
                 var avg = players.Average(x => x.MaxHP);
@@ -802,7 +805,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 var boss = (
                     from x in combatants
                     where
-                    x.MaxHP >= (avg * bossHPThreshold) &&
+                    x.MaxHP >= (avg * (this.GetBossHPThresholdCallback?.Invoke() ?? 100d)) &&
                     x.ObjectType == Actor.Type.Monster &&
                     x.CurrentHP > 0
                     orderby
@@ -812,8 +815,6 @@ namespace FFXIV.Framework.FFXIVHelper
                     x.ID descending
                     select
                     x).FirstOrDefault();
-
-                #region Logger
 
                 if (boss != null)
                 {
@@ -840,17 +841,26 @@ namespace FFXIV.Framework.FFXIVHelper
                     }
                 }
 
-                #endregion Logger
-
                 this.currentBoss = boss;
-            }
 
-            if (this.currentBoss != null)
+                if (this.currentBoss != null)
+                {
+                    this.SetSkillName(this.currentBoss);
+                }
+            }
+        }
+
+        public Combatant GetBossInfo()
+        {
+            if (!this.IsAvailable)
             {
-                this.SetSkillName(this.currentBoss);
+                return null;
             }
 
-            return this.currentBoss;
+            lock (BossLock)
+            {
+                return this.currentBoss?.Clone();
+            }
         }
 
         public uint GetTargetID(
