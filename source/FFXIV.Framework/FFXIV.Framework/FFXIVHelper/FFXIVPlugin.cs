@@ -297,6 +297,12 @@ namespace FFXIV.Framework.FFXIVHelper
                 int pid;
                 GetWindowThreadProcessId(hWnd, out pid);
 
+                if (pid == this.Process?.Id)
+                {
+                    this.IsFFXIVActive = true;
+                    return;
+                }
+
                 // メインモジュールのファイル名を取得する
                 var p = Process.GetProcessById(pid);
                 if (p != null)
