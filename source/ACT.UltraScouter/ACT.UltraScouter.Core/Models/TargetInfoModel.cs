@@ -915,12 +915,15 @@ namespace ACT.UltraScouter.Models
                         IsPet = x.IsPet,
                     }).ToArray();
 
+                var currentEnmityDictionary = this.enmityList.ToDictionary(x => x.ID);
                 var needsRefresh = false;
                 foreach (var src in newEnmityList)
                 {
                     Thread.Yield();
 
-                    var dest = this.enmityList.FirstOrDefault(x => x.ID == src.ID);
+                    var dest = currentEnmityDictionary.ContainsKey(src.ID) ?
+                        currentEnmityDictionary[src.ID] :
+                        null;
                     if (dest == null)
                     {
                         this.enmityList.Add(src);
