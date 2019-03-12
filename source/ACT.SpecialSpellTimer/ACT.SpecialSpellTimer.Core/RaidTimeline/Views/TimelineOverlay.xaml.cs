@@ -1,10 +1,10 @@
-using FFXIV.Framework.Common;
-using FFXIV.Framework.WPF.Views;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.WPF.Views;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline.Views
 {
@@ -152,13 +152,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
 
         public TimelineOverlay()
         {
+            LoadResourcesDictionary();
+
             if (WPFHelper.IsDesignMode)
             {
                 this.Model = TimelineModel.DummyTimeline;
             }
 
             this.InitializeComponent();
-            this.LoadResourcesDictionary();
 
             this.ToNonActive();
             this.Opacity = 0;
@@ -184,23 +185,45 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
 
         public TimelineSettings Config => TimelineSettings.Instance;
 
-        #region Resources Dictionary
+        #region External Resources Dictionary
 
-        private void LoadResourcesDictionary()
+        private static readonly string ExternalResourcesDirectory = @"Resources\Styles";
+
+        private static readonly string[] ExternalResources = new[]
         {
-            const string Direcotry = @"Resources\Styles";
-            const string Resources = @"TimelineOverlayResources.xaml";
-            var file = Path.Combine(DirectoryHelper.FindSubDirectory(Direcotry), Resources);
-            if (File.Exists(file))
+            @"TimelineOverlayResources.xaml",
+            @"TimelineActivityControlResources.xaml",
+            @"TimelineNoticeOverlayResources.xaml",
+        };
+
+        private static volatile bool isResourcesLoaded = false;
+
+        /// <summary>
+        /// タイムラインオーバーレイの外部ResourcesDictionaryをロードする
+        /// </summary>
+        public static void LoadResourcesDictionary()
+        {
+            if (isResourcesLoaded)
             {
-                this.Resources.MergedDictionaries.Add(new ResourceDictionary()
+                return;
+            }
+
+            isResourcesLoaded = true;
+
+            foreach (var resources in ExternalResources)
+            {
+                var file = Path.Combine(DirectoryHelper.FindSubDirectory(ExternalResourcesDirectory), resources);
+                if (File.Exists(file))
                 {
-                    Source = new Uri(file, UriKind.Absolute)
-                });
+                    Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary()
+                    {
+                        Source = new Uri(file, UriKind.Absolute)
+                    });
+                }
             }
         }
 
-        #endregion Resources Dictionary
+        #endregion External Resources Dictionary
 
         #region IOverlay
 
