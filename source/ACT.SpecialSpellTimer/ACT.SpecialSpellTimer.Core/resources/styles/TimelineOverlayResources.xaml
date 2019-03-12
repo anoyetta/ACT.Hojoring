@@ -8,7 +8,7 @@
   <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
 
   <!-- 最も外側のグリッド -->
-  <Style x:Key="BaseGrid" TargetType="Grid">
+  <Style x:Key="TimelineBaseGrid" TargetType="Grid">
     <Setter Property="Opacity" Value="{Binding Path=Config.OverlayOpacity, Mode=OneWay}" />
     <Setter Property="LayoutTransform">
       <Setter.Value>
@@ -20,7 +20,7 @@
   </Style>
 
   <!-- 背景用のボーダー -->
-  <Style x:Key="BaseBorder" TargetType="Border">
+  <Style x:Key="TimelineBaseBorder" TargetType="Border">
     <Setter Property="Panel.ZIndex" Value="-1" />
     <Setter Property="Margin" Value="8" />
     <Setter Property="BorderBrush" Value="Gainsboro" />
@@ -40,7 +40,7 @@
   </Style>
 
   <!-- ヘッダとコンテンツを分けるグリッド -->
-  <Style x:Key="ContentsGrid" TargetType="Grid">
+  <Style x:Key="TimelineContentsGrid" TargetType="Grid">
     <Setter Property="Margin" Value="16" />
   </Style>
 
@@ -165,6 +165,15 @@
 
   <!-- アクティビティItemsControl -->
   <Style x:Key="ActivitiesControl" TargetType="ItemsControl">
+    <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />
+    <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
+    <Setter Property="ItemsPanel">
+      <Setter.Value>
+        <ItemsPanelTemplate>
+          <VirtualizingStackPanel />
+        </ItemsPanelTemplate>
+      </Setter.Value>
+    </Setter>
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="Focusable" Value="False" />
