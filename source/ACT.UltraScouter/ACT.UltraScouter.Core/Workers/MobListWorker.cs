@@ -37,13 +37,16 @@ namespace ACT.UltraScouter.Workers
         /// </summary>
         protected override bool IsTargetOverlay => false;
 
+        /// <summary>
+        /// サブオーバーレイである
+        /// </summary>
+        protected override bool IsSubOverlay => true;
+
         public override TargetInfoModel Model => MobListModel.Instance;
         private List<MobInfo> targetMobList;
 
         public override void End()
         {
-            base.End();
-
             lock (MainWorker.Instance.ViewRefreshLocker)
             {
                 this.mobListVM = null;
@@ -171,12 +174,12 @@ namespace ACT.UltraScouter.Workers
 
                 dummyTargets.Add(new MobInfo()
                 {
-                    Name = Combatant.NameToInitial("Himeko Flower", ConfigBridge.Instance.PCNameStyle),
+                    Name = Combatant.NameToInitial("TEST:Hime Hana", ConfigBridge.Instance.PCNameStyle),
                     Rank = "DEAD",
                     Combatant = new Combatant()
                     {
                         ID = 7,
-                        Name = Combatant.NameToInitial("Himeko Flower", ConfigBridge.Instance.PCNameStyle),
+                        Name = Combatant.NameToInitial("TEST:Hime Hana", ConfigBridge.Instance.PCNameStyle),
                         ObjectType = Actor.Type.PC,
                         Job = (byte)JobIDs.BLM,
                         MaxHP = 43462,
