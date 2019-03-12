@@ -36,13 +36,13 @@
     </ResourceDictionary>
   </Window.Resources>
 
-  <Grid Style="{DynamicResource BaseGrid}">
+  <Grid Style="{DynamicResource NoticeBaseGrid}">
 
     <!-- 背景用ボーダー-->
-    <Border Style="{DynamicResource BaseBorder}" />
+    <Border Style="{DynamicResource NoticeBaseBorder}" />
 
     <!-- コンテンツ用グリッド -->
-    <Grid Style="{DynamicResource ContentsGrid}">
+    <Grid Style="{DynamicResource NoticeContentsGrid}">
       <ItemsControl
         Style="{DynamicResource NoticesControl}"
         ItemContainerStyle="{DynamicResource NoticeContainer}"
@@ -51,7 +51,7 @@
           <DataTemplate DataType="{x:Type tl:TimelineVisualNoticeModel}">
             <DockPanel>
               <!-- アイコン -->
-              <Image Style="{DynamicResource Icon}" />
+              <Image Style="{DynamicResource NoticeIcon}" />
 
               <!-- 通知のテキスト -->
               <controls:LightOutlineTextBlock Style="{DynamicResource NoticeText}" />

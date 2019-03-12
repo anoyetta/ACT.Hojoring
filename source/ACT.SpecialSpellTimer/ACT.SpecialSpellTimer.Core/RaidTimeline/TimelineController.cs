@@ -69,6 +69,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public static void Init()
         {
+            TimelineOverlay.LoadResourcesDictionary();
+
             ActGlobals.oFormActMain.OnLogLineRead -= OnLogLineRead;
             ActGlobals.oFormActMain.OnLogLineRead += OnLogLineRead;
 

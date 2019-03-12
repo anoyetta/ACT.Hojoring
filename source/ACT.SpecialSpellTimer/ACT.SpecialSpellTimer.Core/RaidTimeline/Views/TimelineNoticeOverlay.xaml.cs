@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -136,7 +135,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
         public TimelineNoticeOverlay()
         {
             this.InitializeComponent();
-            this.LoadResourcesDictionary();
 
             this.ToNonActive();
 
@@ -272,24 +270,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
                 DispatcherPriority.Background);
             }
         }
-
-        #region Resources Dictionary
-
-        private void LoadResourcesDictionary()
-        {
-            const string Direcotry = @"Resources\Styles";
-            const string Resources = @"TimelineNoticeOverlayResources.xaml";
-            var file = System.IO.Path.Combine(DirectoryHelper.FindSubDirectory(Direcotry), Resources);
-            if (File.Exists(file))
-            {
-                this.Resources.MergedDictionaries.Add(new ResourceDictionary()
-                {
-                    Source = new Uri(file, UriKind.Absolute)
-                });
-            }
-        }
-
-        #endregion Resources Dictionary
 
         #region IOverlay
 
