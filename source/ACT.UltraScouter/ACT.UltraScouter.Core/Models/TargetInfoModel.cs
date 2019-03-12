@@ -811,6 +811,7 @@ namespace ACT.UltraScouter.Models
         });
 
         private volatile bool isEnmityRefreshing = false;
+        private DateTime enmityTimestamp = DateTime.MinValue;
 
         public void RefreshEnmityList(
             IEnumerable<EnmityEntry> enmityEntryList)
@@ -823,6 +824,14 @@ namespace ACT.UltraScouter.Models
             try
             {
                 this.isEnmityRefreshing = true;
+
+                var now = DateTime.Now;
+                if ((now - this.enmityTimestamp).TotalMilliseconds <= 100d)
+                {
+                    return;
+                }
+
+                this.enmityTimestamp = now;
 
                 var config = Settings.Instance.Enmity;
                 if (!config.Visible)

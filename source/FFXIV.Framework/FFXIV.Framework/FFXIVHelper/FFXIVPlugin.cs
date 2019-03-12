@@ -1155,7 +1155,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 if (world != null &&
                     world.Success)
                 {
-                    if (world.Index >= 0 && world.Length <= text.Length)
+                    if (world.Index >= 0 && (world.Index + world.Length) <= text.Length)
                     {
                         text = text.Remove(world.Index, world.Length);
                     }
