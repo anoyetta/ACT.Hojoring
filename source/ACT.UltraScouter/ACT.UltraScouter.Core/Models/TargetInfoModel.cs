@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -914,10 +915,15 @@ namespace ACT.UltraScouter.Models
                         IsPet = x.IsPet,
                     }).ToArray();
 
+                var currentEnmityDictionary = this.enmityList.ToDictionary(x => x.ID);
                 var needsRefresh = false;
                 foreach (var src in newEnmityList)
                 {
-                    var dest = this.enmityList.FirstOrDefault(x => x.ID == src.ID);
+                    Thread.Yield();
+
+                    var dest = currentEnmityDictionary.ContainsKey(src.ID) ?
+                        currentEnmityDictionary[src.ID] :
+                        null;
                     if (dest == null)
                     {
                         this.enmityList.Add(src);

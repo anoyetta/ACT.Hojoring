@@ -201,10 +201,23 @@ namespace FFXIV.Framework.FFXIVHelper
 #endif
                 }
 
-                this.RefreshCombatantList();
+                try
+                {
+                    if (SharlayanHelper.Instance.IsScanning)
+                    {
+                        return;
+                    }
+
+                    SharlayanHelper.Instance.IsScanning = true;
+                    this.RefreshCombatantList();
+                }
+                finally
+                {
+                    SharlayanHelper.Instance.IsScanning = false;
+                }
             },
             pollingInteval * 1.1,
-            nameof(this.attachFFXIVPluginWorker),
+            nameof(this.scanFFXIVWorker),
             ThreadPriority.Lowest);
 
             // sharlayan にワールド情報補完用のデリゲートをセットする
@@ -226,15 +239,15 @@ namespace FFXIV.Framework.FFXIVHelper
             // その他リソース読み込みを開始する
             await Task.Run(() =>
             {
+                // sharlayan を開始する
+                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
+                SharlayanHelper.Instance.Start(pollingInteval);
+
                 Thread.Sleep(CommonHelper.GetRandomTimeSpan());
                 this.attachFFXIVPluginWorker.Start();
 
                 Thread.Sleep(CommonHelper.GetRandomTimeSpan());
                 this.scanFFXIVWorker.Run();
-
-                // sharlayan を開始する
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                SharlayanHelper.Instance.Start(pollingInteval);
 
                 // XIVDBをロードする
                 Thread.Sleep(CommonHelper.GetRandomTimeSpan());
@@ -283,6 +296,12 @@ namespace FFXIV.Framework.FFXIVHelper
                 // プロセスIDに変換する
                 int pid;
                 GetWindowThreadProcessId(hWnd, out pid);
+
+                if (pid == this.Process?.Id)
+                {
+                    this.IsFFXIVActive = true;
+                    return;
+                }
 
                 // メインモジュールのファイル名を取得する
                 var p = Process.GetProcessById(pid);
@@ -345,9 +364,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private readonly IReadOnlyList<Combatant> EmptyCombatantList = new List<Combatant>();
 
-        private IReadOnlyDictionary<uint, Combatant> combatantDictionary;
-        private IReadOnlyList<Combatant> combatantList;
-        private IReadOnlyList<Combatant> partyList;
+        private IReadOnlyDictionary<uint, Combatant> combatantDictionary = new Dictionary<uint, Combatant>();
+        private IReadOnlyList<Combatant> combatantList = new List<Combatant>();
+        private IReadOnlyList<Combatant> partyList = new List<Combatant>();
 
         public int CombatantPCCount { get; private set; }
 
@@ -377,7 +396,7 @@ namespace FFXIV.Framework.FFXIVHelper
             ObjectType = Actor.Type.PC,
         };
 
-        private readonly IReadOnlyList<Combatant> DummyCombatants = new List<Combatant>()
+        private readonly List<Combatant> DummyCombatants = new List<Combatant>()
         {
             DummyPlayer,
 
@@ -450,8 +469,6 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public void RefreshCombatantList()
         {
-            var addedCombatants = default(IEnumerable<Combatant>);
-
             if (!this.IsAvailable)
             {
 #if DEBUG
@@ -460,21 +477,9 @@ namespace FFXIV.Framework.FFXIVHelper
                     entity.SetName(entity.Name);
                 }
 
-                addedCombatants =
-                    this.combatantList == null ?
-                    this.DummyCombatants :
-                    this.DummyCombatants
-                        .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
-                        .ToArray();
-
-                this.combatantList = this.DummyCombatants;
-                this.combatantDictionary = this.DummyCombatants.ToDictionary(x => x.ID);
-
-                if (addedCombatants.Any())
-                {
-                    Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
-                }
+                setNewCombatants(this.DummyCombatants);
 #endif
+                return;
             }
 
             if ((DateTime.Now - this.inCombatTimestamp).TotalSeconds >= 1.0)
@@ -483,31 +488,29 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.RefreshCombatantWorldInfo();
                 this.RefreshPartyList();
                 this.InCombat = this.RefreshInCombat();
+                this.CombatantPCCount = this.combatantList.Count(x => x.ObjectType == Actor.Type.PC);
             }
 
-            var newCombatants = SharlayanHelper.Instance.Actors
+            setNewCombatants(SharlayanHelper.Instance.Combatants
                 .Where(x => !x.IsNPC())
-                .ToCombatantList();
+                .ToList());
 
-            addedCombatants =
-                this.combatantList == null ?
-                newCombatants :
-                newCombatants
-                    .Where(x => !this.combatantList.Any(y => y.ID == x.ID))
+            void setNewCombatants(List<Combatant> newCombatants)
+            {
+                var addedCombatants = newCombatants
+                    .Except(this.combatantList, Combatant.CombatantEqualityComparer)
                     .ToList();
 
-            this.combatantList = newCombatants;
-            this.combatantDictionary = newCombatants
-                .GroupBy(x => x.ID)
-                .Select(x => x.First())
-                .ToDictionary(x => x.ID);
+                if (addedCombatants.Any())
+                {
+                    Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
+                }
 
-            this.CombatantPCCount = this.combatantList.Count(x => x.ObjectType == Actor.Type.PC);
-
-            if (addedCombatants != null &&
-                addedCombatants.Any())
-            {
-                Task.Run(() => this.OnAddedCombatants(new AddedCombatantsEventArgs(addedCombatants)));
+                this.combatantList = newCombatants;
+                this.combatantDictionary = this.combatantList
+                    .GroupBy(x => x.ID)
+                    .Select(x => x.First())
+                    .ToDictionary(x => x.ID);
             }
         }
 
@@ -565,7 +568,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.partyList = this.EmptyCombatantList;
             }
 
-            // パーティリストをソートして返す
+            // パーティリストをソートする
             var sortedPartyList = (
                 from x in combatants
                 orderby
@@ -648,21 +651,13 @@ namespace FFXIV.Framework.FFXIVHelper
             ReaderEx.CurrentPlayerCombatant ?? DummyPlayer :
             ReaderEx.CurrentPlayerCombatant;
 
-        public IReadOnlyList<Combatant> GetCombatantList()
-        {
-            if (this.combatantList == null)
-            {
-                return this.EmptyCombatantList;
-            }
+        public IReadOnlyList<Combatant> GetCombatantList() => new List<Combatant>(this.combatantList);
 
-            return new List<Combatant>(this.combatantList);
-        }
+        public IReadOnlyList<Combatant> GetPartyList() => this.partyList ?? this.EmptyCombatantList;
 
         public int PartyMemberCount => SharlayanHelper.Instance.PartyMemberCount;
 
         public PartyCompositions PartyComposition => SharlayanHelper.Instance.PartyComposition;
-
-        public IReadOnlyList<Combatant> GetPartyList() => this.partyList ?? this.EmptyCombatantList;
 
         /// <summary>
         /// パーティをロールで分類して取得する
@@ -781,7 +776,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 return null;
             }
 
-            if ((DateTime.Now - this.currentBossTimestamp).TotalSeconds >= 1.0)
+            if ((DateTime.Now - this.currentBossTimestamp).TotalSeconds >= 1.5)
             {
                 this.currentBossTimestamp = DateTime.Now;
 

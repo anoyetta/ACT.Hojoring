@@ -69,6 +69,7 @@ namespace ACT.UltraScouter.Workers
         public object ViewRefreshLocker => viewRefreshLocker;
 
         private DispatcherTimer refreshViewWorker;
+        private DispatcherTimer refreshSubViewWorker;
         private ThreadWorker scanMemoryWorker;
 
         public delegate void GetDataDelegate();
@@ -77,6 +78,7 @@ namespace ACT.UltraScouter.Workers
 
         public GetDataDelegate GetDataMethod;
         public UpdateOverlayDataDelegate UpdateOverlayDataMethod;
+        public UpdateOverlayDataDelegate UpdateSubOverlayDataMethod;
 
         public void Start()
         {
@@ -110,6 +112,7 @@ namespace ACT.UltraScouter.Workers
             // ワーカを止める
             this.scanMemoryWorker?.Abort();
             this.refreshViewWorker?.Stop();
+            this.refreshSubViewWorker?.Stop();
 
             // 子ワーカを開放する
             TargetInfoWorker.Instance?.End();
@@ -129,6 +132,7 @@ namespace ACT.UltraScouter.Workers
             // 参照を開放する
             this.scanMemoryWorker = null;
             this.refreshViewWorker = null;
+            this.refreshSubViewWorker = null;
         }
 
         /// <summary>
@@ -169,6 +173,7 @@ namespace ACT.UltraScouter.Workers
         }
 
         private volatile bool isRefreshingViews = false;
+        private volatile bool isRefreshingSubViews = false;
 
         /// <summary>
         /// Viewの更新タイマをリスタートする
@@ -177,37 +182,71 @@ namespace ACT.UltraScouter.Workers
         {
             lock (this)
             {
-                if (this.refreshViewWorker != null)
+                restartDispatcher(
+                    ref this.refreshViewWorker,
+                    Settings.Instance.UIThreadPriority,
+                    TimeSpan.FromMilliseconds(Settings.Instance.OverlayRefreshRate),
+                    (x, y) =>
+                    {
+                        if (this.isRefreshingViews)
+                        {
+                            return;
+                        }
+
+                        try
+                        {
+                            this.isRefreshingViews = true;
+                            this.UpdateOverlayDataMethod?.Invoke();
+                        }
+                        finally
+                        {
+                            this.isRefreshingViews = false;
+                        }
+                    });
+
+                restartDispatcher(
+                    ref this.refreshSubViewWorker,
+                    DispatcherPriority.ContextIdle,
+                    TimeSpan.FromMilliseconds(Settings.Instance.OverlayRefreshRate * 1.2),
+                    (x, y) =>
+                    {
+                        if (this.isRefreshingSubViews)
+                        {
+                            return;
+                        }
+
+                        try
+                        {
+                            this.isRefreshingSubViews = true;
+                            this.UpdateSubOverlayDataMethod?.Invoke();
+                        }
+                        finally
+                        {
+                            this.isRefreshingSubViews = false;
+                        }
+                    });
+            }
+
+            void restartDispatcher(
+                ref DispatcherTimer timer,
+                DispatcherPriority priority,
+                TimeSpan interval,
+                EventHandler handler)
+            {
+                if (timer != null)
                 {
-                    this.refreshViewWorker.Stop();
-                    this.refreshViewWorker = null;
+                    timer.Stop();
+                    timer = null;
                 }
 
-                this.refreshViewWorker = new DispatcherTimer(Settings.Instance.UIThreadPriority)
+                timer = new DispatcherTimer(priority)
                 {
-                    Interval = TimeSpan.FromMilliseconds(Settings.Instance.OverlayRefreshRate)
+                    Interval = interval
                 };
 
-                this.refreshViewWorker.Tick += (x, y) =>
-                {
-                    if (this.isRefreshingViews)
-                    {
-                        return;
-                    }
+                timer.Tick += handler;
 
-                    try
-                    {
-                        this.isRefreshingViews = true;
-                        this.UpdateOverlayDataMethod?.Invoke();
-                    }
-                    finally
-                    {
-                        this.isRefreshingViews = false;
-                    }
-                };
-
-                // 開始する
-                this.refreshViewWorker.Start();
+                timer.Start();
             }
         }
 

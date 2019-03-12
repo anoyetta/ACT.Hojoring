@@ -45,6 +45,11 @@ namespace ACT.UltraScouter.Workers
         protected virtual bool IsTargetOverlay { get; } = true;
 
         /// <summary>
+        /// サブオーバーレイか？（バッググランドスレッドで更新する）
+        /// </summary>
+        protected virtual bool IsSubOverlay { get; } = false;
+
+        /// <summary>
         /// Viewに接続されるデータモデル
         /// </summary>
         public virtual TargetInfoModel Model => TargetInfoModel.Instance;
@@ -63,13 +68,22 @@ namespace ACT.UltraScouter.Workers
         /// <summary>
         /// 開始
         /// </summary>
-        public void Start()
+        public virtual void Start()
         {
             MainWorker.Instance.GetDataMethod -= this.GetDataDelegate;
             MainWorker.Instance.UpdateOverlayDataMethod -= this.UpdateOverlayDataDelegate;
+            MainWorker.Instance.UpdateSubOverlayDataMethod -= this.UpdateOverlayDataDelegate;
 
             MainWorker.Instance.GetDataMethod += this.GetDataDelegate;
-            MainWorker.Instance.UpdateOverlayDataMethod += this.UpdateOverlayDataDelegate;
+
+            if (!this.IsSubOverlay)
+            {
+                MainWorker.Instance.UpdateOverlayDataMethod += this.UpdateOverlayDataDelegate;
+            }
+            else
+            {
+                MainWorker.Instance.UpdateSubOverlayDataMethod += this.UpdateOverlayDataDelegate;
+            }
         }
 
         /// <summary>
@@ -79,6 +93,7 @@ namespace ACT.UltraScouter.Workers
         {
             MainWorker.Instance.GetDataMethod -= this.GetDataDelegate;
             MainWorker.Instance.UpdateOverlayDataMethod -= this.UpdateOverlayDataDelegate;
+            MainWorker.Instance.UpdateSubOverlayDataMethod -= this.UpdateOverlayDataDelegate;
 
             lock (MainWorker.Instance.ViewRefreshLocker)
             {
