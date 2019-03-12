@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -917,6 +918,8 @@ namespace ACT.UltraScouter.Models
                 var needsRefresh = false;
                 foreach (var src in newEnmityList)
                 {
+                    Thread.Yield();
+
                     var dest = this.enmityList.FirstOrDefault(x => x.ID == src.ID);
                     if (dest == null)
                     {
