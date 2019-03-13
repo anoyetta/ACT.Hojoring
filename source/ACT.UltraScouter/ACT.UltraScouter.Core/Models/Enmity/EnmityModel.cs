@@ -62,7 +62,7 @@ namespace ACT.UltraScouter.Models.Enmity
         private static SolidColorBrush HealerBrush;
         private static SolidColorBrush DPSBrush;
 
-        private static void CreateBrushes()
+        public static void CreateBrushes()
         {
             if (MeBrush != null)
             {
@@ -79,8 +79,6 @@ namespace ACT.UltraScouter.Models.Enmity
         {
             get
             {
-                CreateBrushes();
-
                 if (this.isMe)
                 {
                     return MeBrush;

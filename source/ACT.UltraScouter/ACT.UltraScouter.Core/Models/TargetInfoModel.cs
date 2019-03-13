@@ -783,6 +783,7 @@ namespace ACT.UltraScouter.Models
             var source = new CollectionViewSource()
             {
                 Source = this.enmityList,
+                IsLiveSortingRequested = true,
             };
 
             source.SortDescriptions.AddRange(new[]
@@ -838,8 +839,11 @@ namespace ACT.UltraScouter.Models
                     if (!this.isEnmityDesignMode ||
                         this.enmityList.Count != config.MaxCountOfDisplay)
                     {
-                        this.enmityList.Clear();
-                        this.enmityList.AddRange(DesigntimeEnmityList.Take(config.MaxCountOfDisplay));
+                        using (this.EnmityViewSource.DeferRefresh())
+                        {
+                            this.enmityList.Clear();
+                            this.enmityList.AddRange(DesigntimeEnmityList.Take(config.MaxCountOfDisplay));
+                        }
                     }
 
                     this.isEnmityDesignMode = true;
@@ -884,44 +888,38 @@ namespace ACT.UltraScouter.Models
                 }
 
                 var currentEnmityDictionary = this.enmityList.ToDictionary(x => x.ID);
-                var needsRefresh = false;
-                foreach (var src in newEnmityList)
+
+                using (this.EnmityViewSource.DeferRefresh())
                 {
-                    Thread.Yield();
-
-                    var dest = currentEnmityDictionary.ContainsKey(src.ID) ?
-                        currentEnmityDictionary[src.ID] :
-                        null;
-                    if (dest == null)
+                    foreach (var src in newEnmityList)
                     {
-                        this.enmityList.Add(src.Clone());
-                        continue;
-                    }
+                        Thread.Yield();
 
-                    if (dest.Index != src.Index)
-                    {
+                        var dest = currentEnmityDictionary.ContainsKey(src.ID) ?
+                            currentEnmityDictionary[src.ID] :
+                            null;
+                        if (dest == null)
+                        {
+                            this.enmityList.Add(src);
+                            continue;
+                        }
+
                         dest.Index = src.Index;
-                        needsRefresh = true;
+                        dest.Name = src.Name;
+                        dest.JobID = src.JobID;
+                        dest.Enmity = src.Enmity;
+                        dest.HateRate = src.HateRate;
+                        dest.IsMe = src.IsMe;
+                        dest.IsPet = src.IsPet;
                     }
 
-                    dest.Name = src.Name;
-                    dest.JobID = src.JobID;
-                    dest.Enmity = src.Enmity;
-                    dest.HateRate = src.HateRate;
-                    dest.IsMe = src.IsMe;
-                    dest.IsPet = src.IsPet;
+                    foreach (var item in this.enmityList.Except(newEnmityList, EnmityModel.EnmityModelComparer).ToArray())
+                    {
+                        this.enmityList.Remove(item);
+                    }
                 }
 
-                this.enmityList.Except(newEnmityList, EnmityModel.EnmityModelComparer)
-                    .ToArray()
-                    .Walk(x => this.enmityList.Remove(x));
-
-                if (needsRefresh)
-                {
-                    this.EnmityView?.Refresh();
-                }
-
-                this.IsExistsEnmityList = this.enmityList.Any();
+                this.IsExistsEnmityList = this.enmityList.Count > 0;
                 this.RefreshEnmtiyHateRateBarWidth();
             }
             finally
