@@ -102,6 +102,7 @@
   <system:String x:Key="SA_Discription" xml:space="preserve">
 ※通知するテキストの凡例
 &lt;pcname&gt;  ジョブ名＋キャラ名の1文字目
+&lt;job&gt;     ジョブ名
 &lt;hp&gt;      HPの値
 &lt;hpp&gt;     HPの割合(%)
 &lt;mp&gt;      MPの値
