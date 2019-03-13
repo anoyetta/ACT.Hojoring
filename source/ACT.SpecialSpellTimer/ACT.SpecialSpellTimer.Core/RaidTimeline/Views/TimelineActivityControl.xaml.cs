@@ -1,10 +1,7 @@
 using System;
 using System.ComponentModel;
-using System.IO;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Controls;
-using FFXIV.Framework.Common;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline.Views
 {
@@ -31,7 +28,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
         public TimelineActivityControl()
         {
             this.InitializeComponent();
-            this.LoadResourcesDictionary();
         }
 
         public TimelineActivityModel Activity
@@ -41,24 +37,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
         }
 
         public TimelineSettings Config => TimelineSettings.Instance;
-
-        #region Resources Dictionary
-
-        private void LoadResourcesDictionary()
-        {
-            const string Direcotry = @"Resources\Styles";
-            const string Resources = @"TimelineActivityControlResources.xaml";
-            var file = Path.Combine(DirectoryHelper.FindSubDirectory(Direcotry), Resources);
-            if (File.Exists(file))
-            {
-                this.Resources.MergedDictionaries.Add(new ResourceDictionary()
-                {
-                    Source = new Uri(file, UriKind.Absolute)
-                });
-            }
-        }
-
-        #endregion Resources Dictionary
 
         #region INotifyPropertyChanged
 

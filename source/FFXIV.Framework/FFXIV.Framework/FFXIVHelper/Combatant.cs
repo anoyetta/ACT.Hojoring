@@ -266,10 +266,17 @@ namespace FFXIV.Framework.FFXIVHelper
             this.NameII = NameToInitial(this.Name, NameStyles.InitialInitial);
         }
 
+        public static readonly string UnknownName = "Unknown";
+
         public static string NameToInitial(
             string name,
             NameStyles style)
         {
+            if (string.IsNullOrEmpty(name) || name == UnknownName)
+            {
+                return UnknownName;
+            }
+
             var blocks = name.Split(' ');
             if (blocks.Length < 2)
             {
@@ -294,22 +301,18 @@ namespace FFXIV.Framework.FFXIVHelper
             return name;
         }
 
-        public List<EnmityEntry> EnmityEntryList { get; set; } = new List<EnmityEntry>();
-
         public override string ToString() =>
             $"{this.Name}, {this.JobID}";
 
         public Combatant Clone()
         {
             var clone = (Combatant)this.MemberwiseClone();
-            clone.EnmityEntryList = new List<EnmityEntry>(this.EnmityEntryList);
             return clone;
         }
 
         object ICloneable.Clone()
         {
             var clone = this.MemberwiseClone() as Combatant;
-            clone.EnmityEntryList = new List<EnmityEntry>(this.EnmityEntryList);
             return clone;
         }
 

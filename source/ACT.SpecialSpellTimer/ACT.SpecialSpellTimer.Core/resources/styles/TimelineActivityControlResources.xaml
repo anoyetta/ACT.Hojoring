@@ -7,7 +7,7 @@
 
   <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
 
-  <Style x:Key="BasePanel" TargetType="StackPanel">
+  <Style x:Key="ActivityBasePanel" TargetType="StackPanel">
   </Style>
 
   <Style x:Key="BarStyleGrid" TargetType="Grid">
@@ -19,7 +19,7 @@
     <Setter Property="VerticalAlignment" Value="Center" />
   </Style>
 
-  <Style x:Key="Icon" TargetType="Image">
+  <Style x:Key="ActivityIcon" TargetType="Image">
     <Setter Property="Grid.Column" Value="0" />
     <Setter Property="Margin" Value="0 0 5 0" />
     <Setter Property="HorizontalAlignment" Value="Center" />

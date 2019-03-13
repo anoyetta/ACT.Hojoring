@@ -116,7 +116,7 @@ namespace ACT.TTSYukkuri.Config
         };
 
         public static string GetPhonetic(
-            this JobIDs id) =>
+            this JobIDs id) => id == JobIDs.Unknown ? string.Empty :
             JobPhonetics[
                 (int)id,
                 ((int)Settings.Default.UILocale) > 5 ? 5 : (int)Settings.Default.UILocale];

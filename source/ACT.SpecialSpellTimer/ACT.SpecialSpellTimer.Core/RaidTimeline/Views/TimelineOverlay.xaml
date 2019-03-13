@@ -36,13 +36,13 @@
     </ResourceDictionary>
   </Window.Resources>
 
-  <Grid Style="{DynamicResource BaseGrid}">
+  <Grid Style="{DynamicResource TimelineBaseGrid}">
 
     <!-- 背景用ボーダー-->
-    <Border Style="{DynamicResource BaseBorder}" />
+    <Border Style="{DynamicResource TimelineBaseBorder}" />
 
     <!-- コンテンツ用グリッド -->
-    <Grid Style="{DynamicResource ContentsGrid}">
+    <Grid Style="{DynamicResource TimelineContentsGrid}">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition />
