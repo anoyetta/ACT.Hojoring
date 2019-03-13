@@ -100,7 +100,9 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "CommonServiceLocator.dll",
         "ReactiveProperty*.dll",
         "SuperSocket.ClientEngine.dll",
-        "WebSocket4Net.dll"
+        "WebSocket4Net.dll",
+        "MahApps.Metro.IconPacks.dll",
+        "ControlzEx.dll"
     )
 
     New-Item -ItemType Directory "references" | Out-Null
