@@ -114,7 +114,7 @@
             <Grid Margin="0 0 0 3">
               <Grid>
                 <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
+                  <ColumnDefinition Width="Auto" />
                   <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
@@ -124,7 +124,8 @@
                   Margin="0 0 5 0"
                   Stretch="Uniform"
                   Visibility="{Binding Config.IsVisibleIcon, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
-                  Height="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.6}">
+                  Height="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.6}"
+                  Width="{Binding RelativeSource={RelativeSource Self}, Path=Height, Mode=OneWay}">
                   <Viewbox.LayoutTransform>
                     <ScaleTransform
                       ScaleX="{Binding Config.IconScale, Mode=OneWay}"

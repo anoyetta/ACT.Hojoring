@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Threading;
 using ACT.TTSYukkuri.Config;
 using FFXIV.Framework.Common;
@@ -39,7 +38,7 @@ namespace ACT.TTSYukkuri
         private static object lockObject = new object();
 
         private volatile bool isRunning = false;
-        private BackgroundWorker watchWorker;
+        private ThreadWorker watchWorker;
 
         /// <summary>
         /// シングルトンインスタンス
@@ -67,7 +66,7 @@ namespace ACT.TTSYukkuri
             {
                 if (instance != null)
                 {
-                    instance.watchWorker?.CancelAsync();
+                    instance.watchWorker?.Abort();
                     instance.isRunning = false;
                     instance = null;
                 }
@@ -107,31 +106,11 @@ namespace ACT.TTSYukkuri
             {
                 if (this.watchWorker == null)
                 {
-                    this.watchWorker = new BackgroundWorker();
-                    this.watchWorker.WorkerSupportsCancellation = true;
-                    this.watchWorker.DoWork += (s, e) =>
-                    {
-                        while (true)
-                        {
-                            try
-                            {
-                                if (this.watchWorker.CancellationPending)
-                                {
-                                    e.Cancel = true;
-                                    return;
-                                }
-
-                                this.WatchCore();
-                            }
-                            catch (Exception ex)
-                            {
-                                this.Logger.Error(ex, "An exception occurred in the monitoring FFXIV.");
-                                Thread.Sleep(WatcherLongInterval);
-                            }
-
-                            Thread.Sleep(WatcherInterval);
-                        }
-                    };
+                    this.watchWorker = new ThreadWorker(
+                        this.WatchCore,
+                        WatcherInterval,
+                        "TTSYukkuri Status Subscriber",
+                        ThreadPriority.Lowest);
                 }
 
                 if (Settings.Default.StatusAlertSettings.EnabledHPAlert ||
@@ -142,7 +121,7 @@ namespace ACT.TTSYukkuri
                     if (!this.isRunning)
                     {
                         this.isRunning = true;
-                        this.watchWorker.RunWorkerAsync();
+                        this.watchWorker.Run();
                     }
                 }
             }
@@ -160,7 +139,7 @@ namespace ACT.TTSYukkuri
                     if (this.watchWorker != null)
                     {
                         this.isRunning = false;
-                        this.watchWorker.CancelAsync();
+                        this.watchWorker.Abort();
                         this.watchWorker = null;
                     }
                 }
@@ -172,25 +151,33 @@ namespace ACT.TTSYukkuri
         /// </summary>
         private void WatchCore()
         {
-            // FF14Processがなければ何もしない
-            if (FFXIVPlugin.Instance.Process == null)
+            try
+            {
+                // FF14Processがなければ何もしない
+                if (FFXIVPlugin.Instance.Process == null)
+                {
+                    Thread.Sleep(WatcherLongInterval);
+                    return;
+                }
+
+                // オプションが全部OFFならば何もしない
+                if (!Settings.Default.StatusAlertSettings.EnabledHPAlert &&
+                    !Settings.Default.StatusAlertSettings.EnabledMPAlert &&
+                    !Settings.Default.StatusAlertSettings.EnabledTPAlert &&
+                    !Settings.Default.StatusAlertSettings.EnabledGPAlert)
+                {
+                    Thread.Sleep(WatcherLongInterval);
+                    return;
+                }
+
+                // パーティメンバの監視を行う
+                this.WatchParty();
+            }
+            catch (Exception)
             {
                 Thread.Sleep(WatcherLongInterval);
-                return;
+                throw;
             }
-
-            // オプションが全部OFFならば何もしない
-            if (!Settings.Default.StatusAlertSettings.EnabledHPAlert &&
-                !Settings.Default.StatusAlertSettings.EnabledMPAlert &&
-                !Settings.Default.StatusAlertSettings.EnabledTPAlert &&
-                !Settings.Default.StatusAlertSettings.EnabledGPAlert)
-            {
-                Thread.Sleep(WatcherLongInterval);
-                return;
-            }
-
-            // パーティメンバの監視を行う
-            this.WatchParty();
         }
     }
 }

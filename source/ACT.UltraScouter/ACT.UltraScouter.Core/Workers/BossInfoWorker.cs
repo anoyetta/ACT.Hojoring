@@ -19,6 +19,8 @@ namespace ACT.UltraScouter.Workers
 
         private BossInfoWorker()
         {
+            FFXIVPlugin.Instance.GetAvailableBossCallback = () => !this.IsAllViewOff;
+            FFXIVPlugin.Instance.GetBossHPThresholdCallback = () => Settings.Instance.BossHPThreshold;
         }
 
         #endregion Singleton
@@ -27,8 +29,7 @@ namespace ACT.UltraScouter.Workers
 
         protected override void GetCombatant()
         {
-            var ti = FFXIVPlugin.Instance?.GetBossInfo(
-                Settings.Instance.BossHPThreshold);
+            var ti = FFXIVPlugin.Instance?.GetBossInfo();
 
             if (ti != null)
             {

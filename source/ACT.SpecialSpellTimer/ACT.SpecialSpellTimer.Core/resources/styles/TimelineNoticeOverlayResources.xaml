@@ -8,7 +8,7 @@
   <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
 
   <!-- 最も外側のグリッド -->
-  <Style x:Key="BaseGrid" TargetType="Grid">
+  <Style x:Key="NoticeBaseGrid" TargetType="Grid">
     <Setter Property="Opacity" Value="{Binding Path=Config.OverlayOpacity, Mode=OneWay}" />
     <Setter Property="LayoutTransform">
       <Setter.Value>
@@ -20,7 +20,7 @@
   </Style>
 
   <!-- 背景用のボーダー -->
-  <Style x:Key="BaseBorder" TargetType="Border">
+  <Style x:Key="NoticeBaseBorder" TargetType="Border">
     <Setter Property="Panel.ZIndex" Value="-1" />
     <Setter Property="Margin" Value="8" />
     <Setter Property="BorderBrush" Value="Gainsboro" />
@@ -42,7 +42,7 @@
   </Style>
 
   <!-- コンテンツ用のグリッド -->
-  <Style x:Key="ContentsGrid" TargetType="Grid">
+  <Style x:Key="NoticeContentsGrid" TargetType="Grid">
     <Setter Property="Margin" Value="16" />
   </Style>
 
@@ -72,7 +72,7 @@
   </Style>
 
   <!-- アイコン -->
-  <Style x:Key="Icon" TargetType="Image">
+  <Style x:Key="NoticeIcon" TargetType="Image">
     <Setter Property="DockPanel.Dock" Value="Left" />
     <Setter Property="VerticalAlignment" Value="Center" />
     <Setter Property="Margin" Value="0 0 5 0" />

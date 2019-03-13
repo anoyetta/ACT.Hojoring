@@ -188,6 +188,7 @@ namespace FFXIV.Framework.FFXIVHelper
         }
 
         private readonly List<ActorItem> ActorList = new List<ActorItem>(512);
+        private readonly List<Combatant> ActorPCCombatantList = new List<Combatant>(512);
         private readonly List<Combatant> ActorCombatantList = new List<Combatant>(512);
         private readonly Dictionary<uint, ActorItem> ActorDictionary = new Dictionary<uint, ActorItem>(512);
         private readonly Dictionary<uint, ActorItem> NPCActorDictionary = new Dictionary<uint, ActorItem>(512);
@@ -201,7 +202,29 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public List<ActorItem> Actors => this.ActorList.ToList();
 
-        public List<Combatant> Combatants => this.ActorCombatantList.ToList();
+        private static readonly object CombatantsLock = new object();
+
+        public List<Combatant> PCCombatants
+        {
+            get
+            {
+                lock (CombatantsLock)
+                {
+                    return this.ActorPCCombatantList.ToList();
+                }
+            }
+        }
+
+        public List<Combatant> Combatants
+        {
+            get
+            {
+                lock (CombatantsLock)
+                {
+                    return this.ActorCombatantList.ToList();
+                }
+            }
+        }
 
         public bool IsExistsActors { get; private set; } = false;
 
@@ -229,8 +252,16 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private readonly Dictionary<uint, EnmityEntry> EnmityDictionary = new Dictionary<uint, EnmityEntry>(128);
 
-        public List<EnmityEntry> EnmityList =>
-            this.EnmityDictionary.Values.OrderByDescending(x => x.Enmity).ToList();
+        public List<EnmityEntry> EnmityList
+        {
+            get
+            {
+                lock (this.EnmityDictionary)
+                {
+                    return this.EnmityDictionary.Values.OrderByDescending(x => x.Enmity).ToList();
+                }
+            }
+        }
 
         private readonly List<ActorItem> PartyMemberList = new List<ActorItem>(8);
 
@@ -358,6 +389,13 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.NPCActorDictionary.Clear();
                 this.CombatantsDictionary.Clear();
                 this.NPCCombatantsDictionary.Clear();
+
+                lock (CombatantsLock)
+                {
+                    this.ActorCombatantList.Clear();
+                    this.ActorPCCombatantList.Clear();
+                }
+
                 return;
             }
 
@@ -366,21 +404,27 @@ namespace FFXIV.Framework.FFXIVHelper
             this.ActorList.Clear();
             this.ActorList.AddRange(actors);
 
-            this.ActorDictionary.Clear();
-            this.NPCActorDictionary.Clear();
-
-            this.ActorCombatantList.Clear();
-            foreach (var actor in this.ActorList)
+            lock (CombatantsLock)
             {
-                this.ActorCombatantList.Add(this.ToCombatant(actor));
+                this.ActorDictionary.Clear();
+                this.NPCActorDictionary.Clear();
 
-                if (actor.IsNPC())
+                this.ActorCombatantList.Clear();
+                this.ActorPCCombatantList.Clear();
+                foreach (var actor in this.ActorList)
                 {
-                    this.NPCActorDictionary[actor.GetKey()] = actor;
-                }
-                else
-                {
-                    this.ActorDictionary[actor.GetKey()] = actor;
+                    var combatatnt = this.ToCombatant(actor);
+                    this.ActorCombatantList.Add(combatatnt);
+
+                    if (actor.IsNPC())
+                    {
+                        this.NPCActorDictionary[actor.GetKey()] = actor;
+                    }
+                    else
+                    {
+                        this.ActorPCCombatantList.Add(combatatnt);
+                        this.ActorDictionary[actor.GetKey()] = actor;
+                    }
                 }
             }
 
@@ -400,58 +444,66 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void GetEnmity()
         {
-            if (this.TargetInfo == null ||
-                !this.TargetInfo.EnmityItems.Any())
+            lock (this.EnmityDictionary)
             {
-                this.EnmityDictionary.Clear();
-                return;
-            }
-
-            var currents = this.EnmityDictionary.Values.ToArray();
-            foreach (var current in currents)
-            {
-                if (!this.TargetInfo.EnmityItems.Any(x => x.ID == current.ID))
+                if (this.TargetInfo == null ||
+                    !this.TargetInfo.EnmityItems.Any())
                 {
-                    this.EnmityDictionary.Remove(current.ID);
-                }
-            }
-
-            var max = this.TargetInfo.EnmityItems.Max(x => x.Enmity);
-            var player = this.CurrentPlayer;
-
-            foreach (var source in this.TargetInfo.EnmityItems)
-            {
-                Thread.Yield();
-
-                var existing = false;
-                var enmity = default(EnmityEntry);
-
-                if (this.EnmityDictionary.ContainsKey(source.ID))
-                {
-                    existing = true;
-                    enmity = this.EnmityDictionary[source.ID];
-                }
-                else
-                {
-                    existing = false;
-                    enmity = new EnmityEntry() { ID = source.ID };
+                    this.EnmityDictionary.Clear();
+                    return;
                 }
 
-                enmity.Enmity = source.Enmity;
-                enmity.HateRate = (int)(((double)enmity.Enmity / (double)max) * 100d);
-                enmity.IsMe = enmity.ID == player?.ID;
-
-                if (!existing)
+                var currents = this.EnmityDictionary.Values.ToArray();
+                foreach (var current in currents)
                 {
-                    var actor = this.ActorDictionary.ContainsKey(enmity.ID) ?
-                        this.ActorDictionary[enmity.ID] :
-                        null;
+                    if (!this.TargetInfo.EnmityItems.Any(x => x.ID == current.ID))
+                    {
+                        this.EnmityDictionary.Remove(current.ID);
+                    }
+                }
 
-                    enmity.Name = actor?.Name;
-                    enmity.OwnerID = actor?.OwnerID ?? 0;
-                    enmity.Job = (byte)(actor?.Job ?? 0);
+                var max = this.TargetInfo.EnmityItems.Max(x => x.Enmity);
+                var player = this.CurrentPlayer;
 
-                    this.EnmityDictionary[enmity.ID] = enmity;
+                foreach (var source in this.TargetInfo.EnmityItems)
+                {
+                    Thread.Yield();
+
+                    var existing = false;
+                    var enmity = default(EnmityEntry);
+
+                    if (this.EnmityDictionary.ContainsKey(source.ID))
+                    {
+                        existing = true;
+                        enmity = this.EnmityDictionary[source.ID];
+                    }
+                    else
+                    {
+                        existing = false;
+                        enmity = new EnmityEntry() { ID = source.ID };
+                    }
+
+                    enmity.Enmity = source.Enmity;
+                    enmity.HateRate = (int)(((double)enmity.Enmity / (double)max) * 100d);
+                    enmity.IsMe = enmity.ID == player?.ID;
+
+                    if (!existing)
+                    {
+                        var actor = this.ActorDictionary.ContainsKey(enmity.ID) ?
+                            this.ActorDictionary[enmity.ID] :
+                            null;
+
+                        enmity.Name = actor?.Name;
+                        enmity.OwnerID = actor?.OwnerID ?? 0;
+                        enmity.Job = (byte)(actor?.Job ?? 0);
+
+                        if (string.IsNullOrEmpty(enmity.Name))
+                        {
+                            enmity.Name = Combatant.UnknownName;
+                        }
+
+                        this.EnmityDictionary[enmity.ID] = enmity;
+                    }
                 }
             }
         }

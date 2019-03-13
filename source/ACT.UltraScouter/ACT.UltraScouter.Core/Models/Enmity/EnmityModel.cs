@@ -10,6 +10,10 @@ namespace ACT.UltraScouter.Models.Enmity
     public class EnmityModel :
         BindableBase
     {
+        public static readonly GenericEqualityComparer<EnmityModel> EnmityModelComparer = new GenericEqualityComparer<EnmityModel>(
+            (x, y) => x.ID == y.ID,
+            (obj) => obj.ID.GetHashCode());
+
         public UltraScouter.Config.Enmity Config => Settings.Instance.Enmity;
 
         private int index;
@@ -58,7 +62,7 @@ namespace ACT.UltraScouter.Models.Enmity
         private static SolidColorBrush HealerBrush;
         private static SolidColorBrush DPSBrush;
 
-        private static void CreateBrushes()
+        public static void CreateBrushes()
         {
             if (MeBrush != null)
             {
@@ -75,8 +79,6 @@ namespace ACT.UltraScouter.Models.Enmity
         {
             get
             {
-                CreateBrushes();
-
                 if (this.isMe)
                 {
                     return MeBrush;

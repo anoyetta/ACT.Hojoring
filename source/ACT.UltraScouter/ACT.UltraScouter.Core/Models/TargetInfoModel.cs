@@ -681,9 +681,6 @@ namespace ACT.UltraScouter.Models
 
         #region Enmity
 
-        private volatile bool isEnmityDesignMode = false;
-        private volatile int previousMaxCountOfDisplay = 0;
-
         private static ObservableCollection<EnmityModel> designtimeEnmityList;
 
         private static ObservableCollection<EnmityModel> DesigntimeEnmityList => designtimeEnmityList ?? (designtimeEnmityList = new ObservableCollection<EnmityModel>()
@@ -763,6 +760,20 @@ namespace ACT.UltraScouter.Models
             },
         });
 
+        private static List<EnmityModel> CloneDesigntimeEnmityList()
+        {
+            var original = DesigntimeEnmityList;
+
+            var list = new List<EnmityModel>(original.Count);
+
+            foreach (var item in original)
+            {
+                list.Add(item.Clone());
+            }
+
+            return list;
+        }
+
         private bool isExistsEnmityList = false;
 
         public bool IsExistsEnmityList
@@ -784,6 +795,7 @@ namespace ACT.UltraScouter.Models
             var source = new CollectionViewSource()
             {
                 Source = this.enmityList,
+                IsLiveSortingRequested = true,
             };
 
             source.SortDescriptions.AddRange(new[]
@@ -796,12 +808,6 @@ namespace ACT.UltraScouter.Models
                 nameof(EnmityModel.Index),
             });
 
-            source.Filter += (_, e) =>
-            {
-                var enmity = e.Item as EnmityModel;
-                e.Accepted = (enmity?.Index ?? int.MaxValue) <= Settings.Instance.Enmity.MaxCountOfDisplay;
-            };
-
             this.EnmityViewSource = source;
             this.EnmityView.Refresh();
             this.RaisePropertyChanged(nameof(this.EnmityView));
@@ -813,7 +819,7 @@ namespace ACT.UltraScouter.Models
         private volatile bool isEnmityRefreshing = false;
 
         public void RefreshEnmityList(
-            IEnumerable<EnmityEntry> enmityEntryList)
+            IEnumerable<EnmityModel> newEnmityList)
         {
             if (this.isEnmityRefreshing)
             {
@@ -842,125 +848,78 @@ namespace ACT.UltraScouter.Models
 
                 if (config.IsDesignMode)
                 {
-                    if (!this.isEnmityDesignMode)
+                    newEnmityList = CloneDesigntimeEnmityList().Take(config.MaxCountOfDisplay);
+
+                    var pcNameStyle = ConfigBridge.Instance.PCNameStyle;
+                    foreach (var item in newEnmityList)
                     {
-                        this.enmityList.Clear();
-                        this.enmityList.AddRange(DesigntimeEnmityList);
-                        this.EnmityView?.Refresh();
+                        item.Name = Combatant.NameToInitial(item.Name, pcNameStyle);
                     }
-
-                    this.isEnmityDesignMode = true;
-
-                    foreach (var x in this.enmityList)
-                    {
-                        x.Name = Combatant.NameToInitial(x.Name, ConfigBridge.Instance.PCNameStyle);
-                    }
-
-                    if (this.previousMaxCountOfDisplay != config.MaxCountOfDisplay)
-                    {
-                        this.EnmityView?.Refresh();
-                    }
-
-                    this.IsExistsEnmityList = true;
-                    this.RefreshEnmtiyHateRateBarWidth();
-                    this.previousMaxCountOfDisplay = config.MaxCountOfDisplay;
-                    return;
                 }
-
-                this.isEnmityDesignMode = false;
-
-                if (config.HideInNotCombat &&
-                    !FFXIVPlugin.Instance.InCombat)
+                else
                 {
-                    this.enmityList.Clear();
-                    this.IsExistsEnmityList = false;
-                    return;
-                }
-
-                var partyCount = FFXIVPlugin.Instance.PartyMemberCount;
-                if (config.HideInSolo)
-                {
-                    if (partyCount <= 1)
+                    if (config.HideInNotCombat &&
+                        !FFXIVPlugin.Instance.InCombat)
                     {
                         this.enmityList.Clear();
                         this.IsExistsEnmityList = false;
                         return;
                     }
+
+                    var partyCount = FFXIVPlugin.Instance.PartyMemberCount;
+                    if (config.HideInSolo)
+                    {
+                        if (partyCount <= 1)
+                        {
+                            this.enmityList.Clear();
+                            this.IsExistsEnmityList = false;
+                            return;
+                        }
+                    }
                 }
 
-                if (enmityEntryList == null ||
-                    enmityEntryList.Count() < 1)
+                if (newEnmityList == null ||
+                    newEnmityList.Count() < 1)
                 {
                     this.enmityList.Clear();
                     this.IsExistsEnmityList = false;
                     return;
                 }
 
-                var index = 1;
-                var newEnmityList = (
-                    from x in enmityEntryList
-                    orderby
-                    x.Enmity descending
-                    select new EnmityModel()
-                    {
-                        Index = index++,
-                        ID = x.ID,
-                        Name = config.IsSelfDisplayYou && x.IsMe ?
-                            "YOU" :
-                            Combatant.NameToInitial(x.Name, ConfigBridge.Instance.PCNameStyle),
-                        JobID = (JobIDs)x.Job,
-                        Enmity = (double)x.Enmity,
-                        HateRate = x.HateRate / 100f,
-                        IsMe = x.IsMe,
-                        IsPet = x.IsPet,
-                    }).ToArray();
-
                 var currentEnmityDictionary = this.enmityList.ToDictionary(x => x.ID);
-                var needsRefresh = false;
-                foreach (var src in newEnmityList)
+
+                using (this.EnmityViewSource.DeferRefresh())
                 {
-                    Thread.Yield();
-
-                    var dest = currentEnmityDictionary.ContainsKey(src.ID) ?
-                        currentEnmityDictionary[src.ID] :
-                        null;
-                    if (dest == null)
+                    foreach (var src in newEnmityList)
                     {
-                        this.enmityList.Add(src);
-                        needsRefresh = true;
-                        continue;
-                    }
+                        Thread.Yield();
 
-                    if (dest.Index != src.Index)
-                    {
+                        var dest = currentEnmityDictionary.ContainsKey(src.ID) ?
+                            currentEnmityDictionary[src.ID] :
+                            null;
+                        if (dest == null)
+                        {
+                            this.enmityList.Add(src);
+                            continue;
+                        }
+
                         dest.Index = src.Index;
-                        needsRefresh = true;
+                        dest.Name = src.Name;
+                        dest.JobID = src.JobID;
+                        dest.Enmity = src.Enmity;
+                        dest.HateRate = src.HateRate;
+                        dest.IsMe = src.IsMe;
+                        dest.IsPet = src.IsPet;
                     }
 
-                    dest.Name = src.Name;
-                    dest.JobID = src.JobID;
-                    dest.Enmity = src.Enmity;
-                    dest.HateRate = src.HateRate;
-                    dest.IsMe = src.IsMe;
-                    dest.IsPet = src.IsPet;
+                    foreach (var item in this.enmityList.Except(newEnmityList, EnmityModel.EnmityModelComparer).ToArray())
+                    {
+                        this.enmityList.Remove(item);
+                    }
                 }
 
-                var toRemoves = this.enmityList.Where(x => !newEnmityList.Any(y => y.ID == x.ID)).ToArray();
-                foreach (var enmity in toRemoves)
-                {
-                    this.enmityList.Remove(enmity);
-                }
-
-                if (this.previousMaxCountOfDisplay != config.MaxCountOfDisplay ||
-                    needsRefresh ||
-                    toRemoves.Any())
-                {
-                    this.EnmityView?.Refresh();
-                }
-
-                this.IsExistsEnmityList = this.enmityList.Any();
+                this.IsExistsEnmityList = this.enmityList.Count > 0;
                 this.RefreshEnmtiyHateRateBarWidth();
-                this.previousMaxCountOfDisplay = config.MaxCountOfDisplay;
             }
             finally
             {
@@ -982,7 +941,11 @@ namespace ACT.UltraScouter.Models
             if (this.previousBarWidthMax != max)
             {
                 this.previousBarWidthMax = max;
-                this.enmityList.Walk(x => x.RefreshBarWidth());
+
+                foreach (var item in this.enmityList)
+                {
+                    item.RefreshBarWidth();
+                }
             }
         }
 
