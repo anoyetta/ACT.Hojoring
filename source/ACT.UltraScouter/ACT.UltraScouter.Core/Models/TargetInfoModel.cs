@@ -681,8 +681,6 @@ namespace ACT.UltraScouter.Models
 
         #region Enmity
 
-        private volatile bool isEnmityDesignMode = false;
-
         private static ObservableCollection<EnmityModel> designtimeEnmityList;
 
         private static ObservableCollection<EnmityModel> DesigntimeEnmityList => designtimeEnmityList ?? (designtimeEnmityList = new ObservableCollection<EnmityModel>()
@@ -762,6 +760,20 @@ namespace ACT.UltraScouter.Models
             },
         });
 
+        private static List<EnmityModel> CloneDesigntimeEnmityList()
+        {
+            var original = DesigntimeEnmityList;
+
+            var list = new List<EnmityModel>(original.Count);
+
+            foreach (var item in original)
+            {
+                list.Add(item.Clone());
+            }
+
+            return list;
+        }
+
         private bool isExistsEnmityList = false;
 
         public bool IsExistsEnmityList
@@ -836,46 +848,33 @@ namespace ACT.UltraScouter.Models
 
                 if (config.IsDesignMode)
                 {
-                    if (!this.isEnmityDesignMode ||
-                        this.enmityList.Count != config.MaxCountOfDisplay)
+                    newEnmityList = CloneDesigntimeEnmityList().Take(config.MaxCountOfDisplay);
+
+                    var pcNameStyle = ConfigBridge.Instance.PCNameStyle;
+                    foreach (var item in newEnmityList)
                     {
-                        using (this.EnmityViewSource.DeferRefresh())
-                        {
-                            this.enmityList.Clear();
-                            this.enmityList.AddRange(DesigntimeEnmityList.Take(config.MaxCountOfDisplay));
-                        }
+                        item.Name = Combatant.NameToInitial(item.Name, pcNameStyle);
                     }
-
-                    this.isEnmityDesignMode = true;
-
-                    foreach (var x in this.enmityList)
-                    {
-                        x.Name = Combatant.NameToInitial(x.Name, ConfigBridge.Instance.PCNameStyle);
-                    }
-
-                    this.IsExistsEnmityList = true;
-                    this.RefreshEnmtiyHateRateBarWidth();
-                    return;
                 }
-
-                this.isEnmityDesignMode = false;
-
-                if (config.HideInNotCombat &&
-                    !FFXIVPlugin.Instance.InCombat)
+                else
                 {
-                    this.enmityList.Clear();
-                    this.IsExistsEnmityList = false;
-                    return;
-                }
-
-                var partyCount = FFXIVPlugin.Instance.PartyMemberCount;
-                if (config.HideInSolo)
-                {
-                    if (partyCount <= 1)
+                    if (config.HideInNotCombat &&
+                        !FFXIVPlugin.Instance.InCombat)
                     {
                         this.enmityList.Clear();
                         this.IsExistsEnmityList = false;
                         return;
+                    }
+
+                    var partyCount = FFXIVPlugin.Instance.PartyMemberCount;
+                    if (config.HideInSolo)
+                    {
+                        if (partyCount <= 1)
+                        {
+                            this.enmityList.Clear();
+                            this.IsExistsEnmityList = false;
+                            return;
+                        }
                     }
                 }
 
@@ -942,7 +941,11 @@ namespace ACT.UltraScouter.Models
             if (this.previousBarWidthMax != max)
             {
                 this.previousBarWidthMax = max;
-                this.enmityList.Walk(x => x.RefreshBarWidth());
+
+                foreach (var item in this.enmityList)
+                {
+                    item.RefreshBarWidth();
+                }
             }
         }
 
