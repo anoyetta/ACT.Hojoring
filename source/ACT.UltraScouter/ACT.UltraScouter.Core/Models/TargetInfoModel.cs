@@ -894,7 +894,7 @@ namespace ACT.UltraScouter.Models
                         null;
                     if (dest == null)
                     {
-                        this.enmityList.Add(src);
+                        this.enmityList.Add(src.Clone());
                         continue;
                     }
 
