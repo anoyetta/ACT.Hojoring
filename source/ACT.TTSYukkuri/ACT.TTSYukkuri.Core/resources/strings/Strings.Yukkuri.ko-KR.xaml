@@ -102,6 +102,7 @@
   <system:String x:Key="SA_Discription" xml:space="preserve">
 ※경고 할 텍스트 참조
 &lt;pcname&gt;  직업명 ＋ 캐릭터명 첫글자
+&lt;job&gt;     직업명
 &lt;hp&gt;      HP값
 &lt;hpp&gt;     HP비율(%)
 &lt;mp&gt;      MP값
