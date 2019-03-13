@@ -159,19 +159,18 @@ namespace ACT.UltraScouter.Workers
 
             this.enmityTimestamp = now;
 
+            EnmityModel.CreateBrushes();
+
             if (targetInfo == null)
             {
                 this.Model.RefreshEnmityList(null);
                 return;
             }
 
-            var newEnmityList = default(IEnumerable<EnmityModel>);
             lock (this.CurrentEnmityModelList)
             {
-                newEnmityList = new List<EnmityModel>(this.CurrentEnmityModelList);
+                this.Model.RefreshEnmityList(this.CurrentEnmityModelList);
             }
-
-            this.Model.RefreshEnmityList(newEnmityList);
         }
     }
 }
