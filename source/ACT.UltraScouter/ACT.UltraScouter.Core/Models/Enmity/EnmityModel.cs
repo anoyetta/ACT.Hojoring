@@ -11,7 +11,7 @@ namespace ACT.UltraScouter.Models.Enmity
         BindableBase
     {
         public static readonly GenericEqualityComparer<EnmityModel> EnmityModelComparer = new GenericEqualityComparer<EnmityModel>(
-            (x, y) => x.ID == x.ID,
+            (x, y) => x.ID == y.ID,
             (obj) => obj.GetHashCode());
 
         public UltraScouter.Config.Enmity Config => Settings.Instance.Enmity;
