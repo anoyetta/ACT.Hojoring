@@ -104,6 +104,7 @@ namespace ACT.TTSYukkuri
 
                 // 読上げ用の名前「ジョブ名＋イニシャル」とする
                 var pcname = string.Empty;
+                var job = string.Empty;
                 if (partyMember.IsPlayer)
                 {
                     switch (Settings.Default.UILocale)
@@ -124,11 +125,21 @@ namespace ACT.TTSYukkuri
                             pcname = "You";
                             break;
                     }
+
+                    job = pcname;
                 }
                 else
                 {
-                    if (Settings.Default.UILocale == Locales.CN) pcname = $"{ partyMember.Name.Trim()}";
-                    else pcname = $"{partyMember.JobID.GetPhonetic()} { partyMember.Name.Trim().Substring(0, 1)}";
+                    if (Settings.Default.UILocale == Locales.CN)
+                    {
+                        pcname = $"{partyMember.Name.Trim()}";
+                    }
+                    else
+                    {
+                        pcname = $"{partyMember.JobID.GetPhonetic()} {partyMember.Name.Trim().Substring(0, 1)}";
+                    }
+
+                    job = partyMember.JobID.GetPhonetic();
                 }
 
                 // 読上げ用のテキストを編集する
@@ -145,6 +156,7 @@ namespace ACT.TTSYukkuri
                 string replaceTTS(string tts)
                 {
                     tts = tts.Replace("<pcname>", pcname);
+                    tts = tts.Replace("<job>", job);
                     tts = tts.Replace("<hp>", hp.ToString());
                     tts = tts.Replace("<hpp>", decimal.ToInt32(hpp).ToString());
                     tts = tts.Replace("<mp>", mp.ToString());

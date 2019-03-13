@@ -101,7 +101,8 @@ For use for commercial purposes, a license to use the library is required.</syst
 
   <system:String x:Key="SA_Discription" xml:space="preserve">
 * 警报内容样例
-&lt;pcname&gt;  职业+角色名
+&lt;pcname&gt;  角色名
+&lt;job&gt;     职业
 &lt;hp&gt;      HP值
 &lt;hpp&gt;     HP百分比(%)
 &lt;mp&gt;      MP值

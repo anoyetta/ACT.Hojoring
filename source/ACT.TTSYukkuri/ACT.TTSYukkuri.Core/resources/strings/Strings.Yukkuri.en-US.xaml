@@ -102,6 +102,7 @@ For use for commercial purposes, a license to use the library is required.</syst
   <system:String x:Key="SA_Discription" xml:space="preserve">
 * Reference for Text to Alert
 &lt;pcname&gt;  Job + PC's initial
+&lt;job&gt;     Job
 &lt;hp&gt;      HP value
 &lt;hpp&gt;     HP rate (%)
 &lt;mp&gt;      MP value
