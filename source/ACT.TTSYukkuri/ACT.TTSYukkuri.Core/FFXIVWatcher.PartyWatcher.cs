@@ -153,8 +153,15 @@ namespace ACT.TTSYukkuri
                 tpTextToSpeak = replaceTTS(tpTextToSpeak);
                 gpTextToSpeak = replaceTTS(gpTextToSpeak);
 
+                var isUsingJob = false;
+
                 string replaceTTS(string tts)
                 {
+                    if (tts.Contains("<job>"))
+                    {
+                        isUsingJob = true;
+                    }
+
                     tts = tts.Replace("<pcname>", pcname);
                     tts = tts.Replace("<job>", job);
                     tts = tts.Replace("<hp>", hp.ToString());
@@ -167,6 +174,8 @@ namespace ACT.TTSYukkuri
                     tts = tts.Replace("<gpp>", decimal.ToInt32(gpp).ToString());
                     return tts;
                 }
+
+                var deadman = isUsingJob ? job : pcname;
 
                 // 設定へのショートカット
                 var config = Settings.Default.StatusAlertSettings;
@@ -190,7 +199,7 @@ namespace ACT.TTSYukkuri
                         {
                             if (hpp <= decimal.Zero && previousePartyMember.HPRate != decimal.Zero)
                             {
-                                this.SpeakEmpty("HP", pcname, config.NoticeDeviceForHP);
+                                this.SpeakEmpty("HP", deadman, config.NoticeDeviceForHP);
                                 this.lastHPNotice = DateTime.Now;
                             }
                         }
@@ -218,7 +227,7 @@ namespace ACT.TTSYukkuri
                             {
                                 if (mpp <= decimal.Zero && previousePartyMember.MPRate != decimal.Zero)
                                 {
-                                    this.SpeakEmpty("MP", pcname, config.NoticeDeviceForMP);
+                                    this.SpeakEmpty("MP", deadman, config.NoticeDeviceForMP);
                                     this.lastMPNotice = DateTime.Now;
                                 }
                             }
@@ -247,7 +256,7 @@ namespace ACT.TTSYukkuri
                             {
                                 if (tpp <= decimal.Zero && previousePartyMember.TPRate != decimal.Zero)
                                 {
-                                    this.SpeakEmpty("TP", pcname, config.NoticeDeviceForTP);
+                                    this.SpeakEmpty("TP", deadman, config.NoticeDeviceForTP);
                                     this.lastTPNotice = DateTime.Now;
                                 }
                             }
@@ -276,7 +285,7 @@ namespace ACT.TTSYukkuri
                             {
                                 if (gpp <= decimal.Zero && previousePartyMember.GPRate != decimal.Zero)
                                 {
-                                    this.SpeakEmpty("GP", pcname, config.NoticeDeviceForGP);
+                                    this.SpeakEmpty("GP", deadman, config.NoticeDeviceForGP);
                                     this.lastGPNotice = DateTime.Now;
                                 }
                             }
