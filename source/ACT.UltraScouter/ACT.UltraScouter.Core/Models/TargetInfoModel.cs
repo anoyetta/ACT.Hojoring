@@ -949,6 +949,12 @@ namespace ACT.UltraScouter.Models
             }
         }
 
+        public void ClearEnmity()
+        {
+            this.enmityList.Clear();
+            this.IsExistsEnmityList = false;
+        }
+
         #endregion Enmity
     }
 }

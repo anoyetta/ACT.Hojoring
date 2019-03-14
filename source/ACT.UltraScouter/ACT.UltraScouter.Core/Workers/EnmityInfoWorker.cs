@@ -39,22 +39,32 @@ namespace ACT.UltraScouter.Workers
 
         protected override void GetCombatant()
         {
+            SharlayanHelper.Instance.IsSkipEnmity = !Settings.Instance.Enmity.Visible;
+
             if (!Settings.Instance.Enmity.Visible)
             {
+                this.ClearCurrentEnmity();
                 return;
             }
 
             var targetInfo = this.TargetInfo;
 
-            if (targetInfo != null &&
-                !Settings.Instance.Enmity.IsDesignMode &&
-                targetInfo.ObjectType == Actor.Type.Monster)
+            if (targetInfo == null)
             {
-                var enmityEntryList = SharlayanHelper.Instance.EnmityList;
-                if (enmityEntryList != null &&
-                    enmityEntryList.Count > 0)
+                this.ClearCurrentEnmity();
+                return;
+            }
+
+            if (!Settings.Instance.Enmity.IsDesignMode)
+            {
+                if (targetInfo.ObjectType == Actor.Type.Monster)
                 {
+                    var enmityEntryList = SharlayanHelper.Instance.EnmityList;
                     this.RefreshCurrentEnmityModelList(enmityEntryList);
+                }
+                else
+                {
+                    this.ClearCurrentEnmity();
                 }
             }
         }
@@ -65,6 +75,11 @@ namespace ACT.UltraScouter.Workers
             lock (this.CurrentEnmityModelList)
             {
                 this.CurrentEnmityModelList.Clear();
+
+                if (enmityEntryList == null)
+                {
+                    return;
+                }
 
                 var config = Settings.Instance.Enmity;
                 var pcNameStyle = ConfigBridge.Instance.PCNameStyle;
@@ -108,6 +123,17 @@ namespace ACT.UltraScouter.Workers
                     this.CurrentEnmityModelList.Add(model);
 
                     Thread.Yield();
+                }
+            }
+        }
+
+        private void ClearCurrentEnmity()
+        {
+            if (this.CurrentEnmityModelList.Count > 0)
+            {
+                lock (this.CurrentEnmityModelList)
+                {
+                    this.CurrentEnmityModelList.Clear();
                 }
             }
         }

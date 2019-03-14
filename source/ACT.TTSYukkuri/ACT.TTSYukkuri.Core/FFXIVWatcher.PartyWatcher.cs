@@ -272,8 +272,8 @@ namespace ACT.TTSYukkuri
                     {
                         if (this.IsWatchTarget(partyMember, player, "GP"))
                         {
-                            if (gpp <= (decimal)config.GPThreshold &&
-                                previousePartyMember.GPRate > (decimal)config.GPThreshold)
+                            if (gpp >= (decimal)config.GPThreshold &&
+                                previousePartyMember.GPRate < (decimal)config.GPThreshold)
                             {
                                 if ((DateTime.Now - this.lastGPNotice).TotalSeconds >= NoticeInterval)
                                 {
@@ -283,7 +283,7 @@ namespace ACT.TTSYukkuri
                             }
                             else
                             {
-                                if (gpp <= decimal.Zero && previousePartyMember.GPRate != decimal.Zero)
+                                if (gpp >= 100m && previousePartyMember.GPRate < 100m)
                                 {
                                     this.SpeakEmpty("GP", deadman, config.NoticeDeviceForGP);
                                     this.lastGPNotice = DateTime.Now;
@@ -317,19 +317,24 @@ namespace ACT.TTSYukkuri
             var emptyEn = $"{pcName}, {targetStatus} empty.";
             var diedJa = $"{pcName},戦闘不能。";
             var diedEn = $"{pcName}, dead.";
+            var fullJa = $"{pcName},{targetStatus}満タン。";
+            var fullEn = $"{pcName},{targetStatus} full.";
 
             var empty = string.Empty;
             var died = string.Empty;
+            var full = string.Empty;
             switch (Settings.Default.UILocale)
             {
                 case Locales.EN:
                     empty = emptyEn;
                     died = diedEn;
+                    full = fullJa;
                     break;
 
                 case Locales.JA:
                     empty = emptyJa;
                     died = diedJa;
+                    full = fullEn;
                     break;
             }
 
@@ -338,6 +343,10 @@ namespace ACT.TTSYukkuri
             {
                 case "HP":
                     tts = died;
+                    break;
+
+                case "GP":
+                    tts = full;
                     break;
 
                 default:
