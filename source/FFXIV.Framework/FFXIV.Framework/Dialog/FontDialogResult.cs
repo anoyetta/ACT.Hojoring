@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
@@ -27,7 +27,7 @@ namespace FFXIV.Framework.Dialog
 
             var serializer = new DataContractJsonSerializer(typeof(FontDialogResult));
             var data = Encoding.UTF8.GetBytes(json);
-            using (var ms = new MemoryStream(data))
+            using (var ms = new WrappingStream(new MemoryStream(data)))
             {
                 obj = (FontDialogResult)serializer.ReadObject(ms);
             }
@@ -40,7 +40,7 @@ namespace FFXIV.Framework.Dialog
             var json = string.Empty;
 
             var serializer = new DataContractJsonSerializer(typeof(FontDialogResult));
-            using (var ms = new MemoryStream())
+            using (var ms = new WrappingStream(new MemoryStream()))
             {
                 serializer.WriteObject(ms, this);
                 json = Encoding.UTF8.GetString(ms.ToArray());

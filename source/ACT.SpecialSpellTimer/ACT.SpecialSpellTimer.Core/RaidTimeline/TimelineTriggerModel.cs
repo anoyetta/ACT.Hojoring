@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
+using FFXIV.Framework.Common;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -416,7 +417,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 var b = new BinaryFormatter();
 
-                using (var ms = new MemoryStream())
+                using (var ms = new WrappingStream(new MemoryStream()))
                 {
                     b.Serialize(ms, this.SyncMatch);
                     ms.Position = 0;

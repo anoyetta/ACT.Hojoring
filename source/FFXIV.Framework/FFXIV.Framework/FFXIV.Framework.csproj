@@ -89,6 +89,7 @@
     <Compile Include="Common\EqualityComparer.cs" />
     <Compile Include="Common\JobIconDictionary.cs" />
     <Compile Include="Common\MasterFilePublisher.cs" />
+    <Compile Include="Common\WrappingStream.cs" />
     <Compile Include="Common\XAudioPlayer.cs" />
     <Compile Include="Common\DirectoryHelper.cs" />
     <Compile Include="Common\EnvironmentHelper.cs" />
