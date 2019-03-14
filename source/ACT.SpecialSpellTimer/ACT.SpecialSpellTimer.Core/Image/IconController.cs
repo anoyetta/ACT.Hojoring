@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using FFXIV.Framework.Common;
 using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.Image
@@ -280,10 +281,12 @@ namespace ACT.SpecialSpellTimer.Image
                     }
                     else
                     {
-                        using (var ms = new MemoryStream(File.ReadAllBytes(path)))
+                        using (var ms = new WrappingStream(new MemoryStream(File.ReadAllBytes(path))))
                         {
                             img = new WriteableBitmap(BitmapFrame.Create(ms));
                         }
+
+                        img.Freeze();
 
                         iconDictionary[path] = img;
                     }

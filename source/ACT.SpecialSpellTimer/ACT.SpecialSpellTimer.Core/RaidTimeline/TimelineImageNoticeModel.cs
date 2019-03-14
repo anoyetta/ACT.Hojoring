@@ -450,11 +450,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 var bitmap = default(WriteableBitmap);
-                using (var ms = new MemoryStream(File.ReadAllBytes(file)))
+                using (var ms = new WrappingStream(new MemoryStream(File.ReadAllBytes(file))))
                 {
                     bitmap = new WriteableBitmap(BitmapFrame.Create(ms));
                 }
 
+                bitmap.Freeze();
                 ImageDictionary[image] = bitmap;
 
                 return bitmap;
