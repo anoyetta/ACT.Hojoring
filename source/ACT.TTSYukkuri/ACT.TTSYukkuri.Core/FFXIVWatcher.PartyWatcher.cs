@@ -265,7 +265,9 @@ namespace ACT.TTSYukkuri
                 }
 
                 // GPをチェックして読上げる
-                if (hp > 0)
+                if (hp > 0 &&
+                    partyMember.MaxGP > 0 &&
+                    partyMember.JobID.GetInfo()?.Role == Roles.Gatherer)
                 {
                     if (config.EnabledGPAlert &&
                         !string.IsNullOrWhiteSpace(gpTextToSpeak))
