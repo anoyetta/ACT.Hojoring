@@ -826,7 +826,7 @@ namespace ACT.SpecialSpellTimer.Config
             { nameof(Settings.ReadyText), "Ready" },
             { nameof(Settings.OverText), "Over" },
             { nameof(Settings.TimeOfHideSpell), 1.0d },
-            { nameof(Settings.LogPollSleepInterval), 10 },
+            { nameof(Settings.LogPollSleepInterval), 30 },
             { nameof(Settings.RefreshInterval), 60 },
             { nameof(Settings.ReduceIconBrightness), 55 },
             { nameof(Settings.Opacity), 10 },
