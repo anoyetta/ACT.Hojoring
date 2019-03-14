@@ -253,4 +253,11 @@ namespace FFXIV.Framework.FFXIVHelper
             return idAsEnum;
         }
     }
+
+    public static class JobIDExtenstions
+    {
+        public static Job GetInfo(
+            this JobIDs id)
+            => Jobs.Find(id);
+    }
 }
