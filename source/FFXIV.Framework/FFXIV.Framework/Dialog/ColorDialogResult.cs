@@ -1,8 +1,9 @@
-﻿using System.IO;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Windows.Media;
+using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 
 namespace FFXIV.Framework.Dialog
@@ -33,7 +34,7 @@ namespace FFXIV.Framework.Dialog
 
             var serializer = new DataContractJsonSerializer(typeof(ColorDialogResult));
             var data = Encoding.UTF8.GetBytes(json);
-            using (var ms = new MemoryStream(data))
+            using (var ms = new WrappingStream(new MemoryStream(data)))
             {
                 obj = (ColorDialogResult)serializer.ReadObject(ms);
             }
@@ -46,7 +47,7 @@ namespace FFXIV.Framework.Dialog
             var json = string.Empty;
 
             var serializer = new DataContractJsonSerializer(typeof(ColorDialogResult));
-            using (var ms = new MemoryStream())
+            using (var ms = new WrappingStream(new MemoryStream()))
             {
                 serializer.WriteObject(ms, this);
                 json = Encoding.UTF8.GetString(ms.ToArray());

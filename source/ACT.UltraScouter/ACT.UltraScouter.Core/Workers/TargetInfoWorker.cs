@@ -236,7 +236,8 @@ namespace ACT.UltraScouter.Workers
                 !Settings.Instance.TargetAction.Visible &&
                 !Settings.Instance.TargetHP.Visible &&
                 !Settings.Instance.TargetDistance.Visible &&
-                !Settings.Instance.FFLogs.Visible
+                !Settings.Instance.FFLogs.Visible &&
+                !Settings.Instance.Enmity.Visible
             );
 
         public List<ViewAndViewModel> ViewList
@@ -430,6 +431,10 @@ namespace ACT.UltraScouter.Workers
                     }
 
                     overlayVisible = true;
+                }
+                else
+                {
+                    this.Model.ClearEnmity();
                 }
             }
 #if false

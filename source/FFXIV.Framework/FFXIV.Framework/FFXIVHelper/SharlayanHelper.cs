@@ -368,6 +368,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public bool IsSkipTarget { get; set; } = false;
 
+        public bool IsSkipEnmity { get; set; } = false;
+
         public bool IsSkipParty { get; set; } = false;
 
         private bool[] IsSkips => new[]
@@ -433,7 +435,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void GetTargetInfo()
         {
-            var result = ReaderEx.GetTargetInfoSimple();
+            var result = ReaderEx.GetTargetInfoSimple(this.IsSkipEnmity);
 
             this.TargetInfo = result.TargetsFound ?
                 result.TargetInfo :
@@ -444,6 +446,19 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void GetEnmity()
         {
+            if (this.IsSkipEnmity)
+            {
+                if (this.EnmityDictionary.Count > 0)
+                {
+                    lock (this.EnmityDictionary)
+                    {
+                        this.EnmityDictionary.Clear();
+                    }
+                }
+
+                return;
+            }
+
             lock (this.EnmityDictionary)
             {
                 if (this.TargetInfo == null ||
@@ -1268,7 +1283,8 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public static TargetResult GetTargetInfoSimple()
+        public static TargetResult GetTargetInfoSimple(
+            bool isSkipEnmity = false)
         {
             var result = new TargetResult();
 
@@ -1339,19 +1355,33 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
             }
 
+            if (isSkipEnmity)
+            {
+                return result;
+            }
+
             if (result.TargetInfo.CurrentTargetID > 0)
             {
                 if (Reader.CanGetEnmityEntities())
                 {
+                    const int EnmityLimit = 16;
+
                     var enmityCount = MemoryHandler.Instance.GetInt16(Scanner.Instance.Locations[Signatures.EnmityCountKey]);
                     var enmityStructure = (IntPtr)Scanner.Instance.Locations[Signatures.EnmityMapKey];
 
-                    if (enmityCount > 0 && enmityCount < 16 && enmityStructure.ToInt64() > 0)
+                    if (enmityCount > EnmityLimit)
+                    {
+                        enmityCount = EnmityLimit;
+                    }
+
+                    if (enmityCount > 0 && enmityStructure.ToInt64() > 0)
                     {
                         var enmitySourceSize = structures.EnmityItem.SourceSize;
                         for (uint i = 0; i < enmityCount; i++)
                         {
-                            var address = new IntPtr(enmityStructure.ToInt64() + i * enmitySourceSize);
+                            Thread.Yield();
+
+                            var address = new IntPtr(enmityStructure.ToInt64() + (i * enmitySourceSize));
                             var enmityEntry = new EnmityItem
                             {
                                 ID = (uint)MemoryHandler.Instance.GetPlatformInt(address, structures.EnmityItem.ID),

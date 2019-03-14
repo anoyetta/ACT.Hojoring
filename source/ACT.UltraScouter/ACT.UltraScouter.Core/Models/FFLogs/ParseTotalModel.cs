@@ -91,6 +91,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                 if (this.SetProperty(ref this.characterNameFull, value))
                 {
                     this.RefreshCharacterName();
+                    this.RaisePropertyChanged(nameof(this.IsSpecial));
                 }
             }
         }
@@ -99,6 +100,10 @@ namespace ACT.UltraScouter.Models.FFLogs
         {
             this.CharacterName = Combatant.NameToInitial(this.characterNameFull, ConfigBridge.Instance.PCNameStyle);
         }
+
+        private static readonly string SpecialNameHash = "55DEC1C85CCEE22E636C10D9B966F39C";
+
+        public bool IsSpecial => this.CharacterNameFull.GetMD5() == SpecialNameHash;
 
         public bool ExistsName => !string.IsNullOrEmpty(this.CharacterName);
 
@@ -145,11 +150,30 @@ namespace ACT.UltraScouter.Models.FFLogs
             }
         }
 
-        public string JobName =>
-            this.Job == null ? "All" :
-                this.Job.ID == JobIDs.Unknown ?
-                    string.Empty :
-                    this.Job.GetName(Settings.Instance.UILocale);
+        public string JobName => this.GetJobName();
+
+        private string GetJobName()
+        {
+            var text = string.Empty;
+
+            if (this.Job == null)
+            {
+                text = "All";
+            }
+            else
+            {
+                if (this.Job.ID == JobIDs.Unknown)
+                {
+                    text = string.Empty;
+                }
+                else
+                {
+                    text = this.Job.GetName(Settings.Instance.UILocale);
+                }
+            }
+
+            return text;
+        }
 
         public BitmapSource JobIcon => JobIconDictionary.Instance.GetIcon(this.job?.ID ?? JobIDs.Unknown);
 

@@ -13,6 +13,7 @@
   xmlns:ctrl="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
   xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
   xmlns:fa="http://schemas.fontawesome.io/icons/"
+  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
   xmlns:debug="debug-mode"
   mc:Ignorable="d"
   AllowsTransparency="True"
@@ -105,10 +106,48 @@
             Height="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay}">
             <Image Source="{Binding Model.ParseTotal.JobIcon, Mode=OneWay}" />
           </Viewbox>
+
           <ctrl:LightOutlineTextBlock
             x:Name="NameLabel"
             Style="{DynamicResource OutlineStyle}"
             Text="{Binding Model.ParseTotal.CharacterName, Mode=OneWay}" />
+
+          <StackPanel
+            Orientation="Horizontal"
+            Visibility="{Binding Model.ParseTotal.IsSpecial, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+            <ctrl:LightOutlineTextBlock
+              Style="{DynamicResource OutlineStyle}"
+              Text=" " />
+            <Viewbox
+              Stretch="Uniform"
+              Height="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.6}"
+              Width="{Binding RelativeSource={RelativeSource Self}, Path=Height, Mode=OneWay}">
+              <Grid>
+                <Grid.Resources>
+                  <Style TargetType="iconPacks:PackIconMaterial">
+                    <Setter Property="Kind" Value="Crown" />
+                    <Setter Property="Foreground" Value="#ffd900" />
+                    <Setter Property="Effect">
+                      <Setter.Value>
+                        <DropShadowEffect
+                          RenderingBias="Quality"
+                          Color="#f8b500"
+                          ShadowDepth="0"
+                          Direction="0"
+                          BlurRadius="1" />
+                      </Setter.Value>
+                    </Setter>
+                  </Style>
+                </Grid.Resources>
+
+                <iconPacks:PackIconMaterial />
+                <iconPacks:PackIconMaterial />
+                <iconPacks:PackIconMaterial />
+                <iconPacks:PackIconMaterial />
+                <iconPacks:PackIconMaterial />
+              </Grid>
+            </Viewbox>
+          </StackPanel>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Margin="0 2 0 0">

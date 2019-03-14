@@ -14,6 +14,7 @@ using ACT.UltraScouter.ViewModels.Bases;
 using ACT.UltraScouter.Workers;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Prism.Commands;
@@ -349,6 +350,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                     true);
 
                 this.FFLogsTestResult = string.Empty;
+                this.FFLogsTestResult += $"Character Name : {model.CharacterNameFull} ({model.CharacterNameFull.GetMD5()})\n";
                 this.FFLogsTestResult += $"Status Code : {model.HttpStatusCode} ({(int)model.HttpStatusCode})\n";
                 this.FFLogsTestResult += $"\n";
                 this.FFLogsTestResult +=

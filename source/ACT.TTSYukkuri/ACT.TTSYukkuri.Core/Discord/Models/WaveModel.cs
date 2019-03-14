@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using FFXIV.Framework.Common;
 using NAudio.Wave;
 
 namespace ACT.TTSYukkuri.Discord.Models
@@ -78,7 +79,7 @@ namespace ACT.TTSYukkuri.Discord.Models
             var bufferSize = 3840;
 
             // lets buffer ffmpeg output
-            using (var ms = new MemoryStream())
+            using (var ms = new WrappingStream(new MemoryStream()))
             {
                 await ffout.CopyToAsync(ms);
                 ms.Position = 0;
