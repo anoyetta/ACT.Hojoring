@@ -809,6 +809,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 var boss = (
                     from x in combatants
                     where
+                    !x.Name?.Contains("Typeid") ?? false &&
                     x.MaxHP >= (avg * (this.GetBossHPThresholdCallback?.Invoke() ?? 100d)) &&
                     x.ObjectType == Actor.Type.Monster &&
                     x.CurrentHP > 0
@@ -835,6 +836,7 @@ namespace FFXIV.Framework.FFXIVHelper
                         var message =
                             $"BOSS " +
                             $"name={boss.Name}, " +
+                            $"level={boss.Level}, " +
                             $"maxhp={boss.MaxHP}, " +
                             $"ptavg={avg.ToString("F0")}, " +
                             $"ratio={ratio.ToString("F1")}, " +
