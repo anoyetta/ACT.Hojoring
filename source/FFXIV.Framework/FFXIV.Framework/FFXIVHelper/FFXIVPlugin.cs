@@ -797,14 +797,22 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
 
                 var currentZoneName = this.GetCurrentZoneName();
-
-                if (this.currentBoss != null)
+                if (string.IsNullOrEmpty(currentZoneName))
                 {
-                    if (this.currentBoss.ObjectType != Actor.Type.Monster ||
-                        string.IsNullOrEmpty(currentZoneName) ||
-                        this.currentBossZoneName != currentZoneName)
+                    this.currentBoss = null;
+                    return;
+                }
+                else
+                {
+                    if (this.currentBoss != null)
                     {
-                        this.currentBoss = null;
+                        if (this.currentBoss.ObjectType != Actor.Type.Monster ||
+                            this.currentBossZoneName != currentZoneName)
+                        {
+                            this.currentBoss = null;
+                            this.currentBossZoneName = currentZoneName;
+                            return;
+                        }
                     }
                 }
 
@@ -817,13 +825,20 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
 
                 var avg = players.Average(x => x.MaxHP);
+                var thresholdRatio = this.GetBossHPThresholdCallback?.Invoke() ?? 140.0d;
+                var threshold = avg * thresholdRatio;
+                if (threshold <= 0d)
+                {
+                    this.currentBoss = null;
+                    return;
+                }
 
                 // BOSSを検出する
                 var boss = (
                     from x in combatants
                     where
-                    !x.Name?.Contains("Typeid") ?? false &&
-                    x.MaxHP >= (avg * (this.GetBossHPThresholdCallback?.Invoke() ?? 100d)) &&
+                    (!x.Name?.Contains("Typeid") ?? false) &&
+                    x.MaxHP >= threshold &&
                     x.ObjectType == Actor.Type.Monster &&
                     x.CurrentHP > 0
                     orderby
