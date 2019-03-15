@@ -141,8 +141,9 @@ $updateExclude = @(
 ### まったく分かっていない
 リモートでサポートすることも出来ます。  
 下記のいずれかのリモート機能を使用して [DISCORD](https://discord.gg/n6Mut3F) 経由でリモートサポートを依頼してください。  
-* [クイックアシスト機能](https://support.microsoft.com/ja-jp/help/27919/windows-10-get-help-with-pc-problems)
+* [TeamViewer](https://www.teamviewer.com/ja/)
 * [Google リモートデスクトップ](https://support.google.com/chrome/answer/1649523?co=GENIE.Platform%3DDesktop&hl=ja)  
+* [クイックアシスト機能](https://support.microsoft.com/ja-jp/help/27919/windows-10-get-help-with-pc-problems)
 
 また、リモートサポートの依頼ではなくても説明が困難な場合はリモートによる設定を案内する場合があります。その場合は案内に従ってください。
 
