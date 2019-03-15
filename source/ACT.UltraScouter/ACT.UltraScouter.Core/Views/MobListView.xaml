@@ -320,6 +320,7 @@
                   <ctrl:LightOutlineTextBlock
                     x:Name="NameTextBlock"
                     Margin="0 0 0 0"
+                    VerticalAlignment="Top"
                     Text="{Binding Name, Mode=OneWay}"
                     Fill="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
                     Stroke="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
