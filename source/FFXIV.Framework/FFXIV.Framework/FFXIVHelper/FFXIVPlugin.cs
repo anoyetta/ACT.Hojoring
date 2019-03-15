@@ -766,6 +766,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private static readonly object BossLock = new object();
         private Combatant currentBoss;
+        private string currentBossZoneName;
 
         public Func<double> GetBossHPThresholdCallback { get; set; }
 
@@ -793,6 +794,18 @@ namespace FFXIV.Framework.FFXIVHelper
                 {
                     this.currentBoss = null;
                     return;
+                }
+
+                var currentZoneName = this.GetCurrentZoneName();
+
+                if (this.currentBoss != null)
+                {
+                    if (this.currentBoss.ObjectType != Actor.Type.Monster ||
+                        string.IsNullOrEmpty(currentZoneName) ||
+                        this.currentBossZoneName != currentZoneName)
+                    {
+                        this.currentBoss = null;
+                    }
                 }
 
                 // パーティのHP平均値を算出する
@@ -848,6 +861,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
 
                 this.currentBoss = boss;
+                this.currentBossZoneName = currentZoneName;
 
                 if (this.currentBoss != null)
                 {
