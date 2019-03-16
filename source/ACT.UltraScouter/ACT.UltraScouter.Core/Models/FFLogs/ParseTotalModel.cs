@@ -101,9 +101,13 @@ namespace ACT.UltraScouter.Models.FFLogs
             this.CharacterName = Combatant.NameToInitial(this.characterNameFull, ConfigBridge.Instance.PCNameStyle);
         }
 
-        private static readonly string SpecialNameHash = "55DEC1C85CCEE22E636C10D9B966F39C";
+        private static readonly string[] SpecialNameHash = new[]
+        {
+            "55DEC1C85CCEE22E636C10D9B966F39C",
+            "B4222EFB5F74777300623471742B7C9C",
+        };
 
-        public bool IsSpecial => this.CharacterNameFull.GetMD5() == SpecialNameHash;
+        public bool IsSpecial => SpecialNameHash.Contains(this.CharacterNameFull.GetMD5());
 
         public bool ExistsName => !string.IsNullOrEmpty(this.CharacterName);
 
