@@ -68,7 +68,7 @@ Gandarewa                       S
 Senmurv                         S
 "The Pale Rider"                S
 Leucrotta                       S
-"Bird of Paradise"              S
+"Bird Of Paradise"              S
 "Kaiser Behemoth"               S
 
 ## Rank A
