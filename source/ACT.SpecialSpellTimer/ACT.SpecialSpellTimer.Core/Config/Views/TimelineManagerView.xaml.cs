@@ -93,6 +93,11 @@ namespace ACT.SpecialSpellTimer.Config.Views
             this.timer.Start();
 
             TimelineExpressionsModel.OnVariableChanged += _ => this.RefreshVariables();
+
+            this.Loaded += (_, __) =>
+            {
+                this.RefreshVariables();
+            };
         }
 
         private DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.ContextIdle)
