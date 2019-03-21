@@ -192,6 +192,7 @@
     <Compile Include="RaidTimeline\TimelineSettings.cs" />
     <Compile Include="RaidTimeline\TimelineStyle.cs" />
     <Compile Include="RaidTimeline\TimelineSubroutineModel.cs" />
+    <Compile Include="RaidTimeline\TimelineTextCommands.cs" />
     <Compile Include="RaidTimeline\TimelineTriggerModel.cs" />
     <Compile Include="RaidTimeline\TimelineImageNoticeModel.cs" />
     <Compile Include="RaidTimeline\TimelineExpressionsModel.cs" />

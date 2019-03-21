@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public EorzeaTime ET => this.LT.ToEorzeaTime();
 #endif
 
+        public TimelineRazorVariable Var { get; } = new TimelineRazorVariable();
+
         public bool SyncTTS { get; set; } = false;
 
         public string Zone { get; set; } = string.Empty;
@@ -37,6 +40,39 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         internal void UpdateCurrentTimelineFile(
             string currentTimelineFile)
             => this.TimelineFile = currentTimelineFile;
+
+        /// <summary>
+        /// 環境変数をセットする
+        /// </summary>
+        /// <remarks>
+        /// 環境変数をセットする。
+        /// 通常スコープの場合はゾーンチェンジに消去される。
+        /// グローバルスコープの場合はアプリケーションの実行中、常に保持される。</remarks>
+        /// <param name="name">変数名</param>
+        /// <param name="value">値</param>
+        /// <param name="global">グローバルスコープか？</param>
+        public void SetVar(
+            string name,
+            object value,
+            bool global = false) =>
+            TimelineExpressionsModel.SetVariable(
+                name,
+                value,
+                global ? TimelineModel.GlobalZone : this.Zone);
+
+        /// <summary>
+        /// 一時変数をセットする
+        /// </summary>
+        /// <remarks>
+        /// タイムラインのリセット時に消去される一時変数をセットする</remarks>
+        /// <param name="name">変数名</param>
+        /// <param name="value">値</param>
+        public void SetTemp(
+            string name,
+            object value) =>
+            TimelineExpressionsModel.SetVariable(
+                name,
+                value);
 
         public bool InZone(
             params string[] zones)
@@ -139,6 +175,30 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             return roles.Any(x => this.Role.ContainsIgnoreCase(x));
+        }
+    }
+
+    public class TimelineRazorVariable
+    {
+        public TimelineRazorVariable()
+        {
+            this.variables = TimelineExpressionsModel.GetVariables();
+        }
+
+        private IReadOnlyDictionary<string, TimelineExpressionsModel.Variable> variables;
+
+        public object this[string name]
+        {
+            get
+            {
+                if (this.variables == null ||
+                    !this.variables.ContainsKey(name))
+                {
+                    return false;
+                }
+
+                return this.variables[name].Value;
+            }
         }
     }
 }
