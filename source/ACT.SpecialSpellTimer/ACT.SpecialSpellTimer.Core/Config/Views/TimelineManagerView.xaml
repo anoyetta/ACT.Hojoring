@@ -542,6 +542,9 @@
             </ScrollViewer>
             <!-- 見た目の左側 end -->
           </TabItem>
+
+          <TabItem Header="Variables" Padding="20 2 20 2">
+          </TabItem>
         </TabControl>
       </Grid>
     </Border>

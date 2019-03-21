@@ -71,6 +71,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             TimelineOverlay.LoadResourcesDictionary();
 
+            // テキストコマンドを登録する
+            TimelineTextCommands.SetSubscribeTextCommands();
+
             ActGlobals.oFormActMain.OnLogLineRead -= OnLogLineRead;
             ActGlobals.oFormActMain.OnLogLineRead += OnLogLineRead;
 
@@ -182,6 +185,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
             }
         }
+
+        public string CurrentZoneName => ActGlobals.oFormActMain.CurrentZone.Trim();
 
         public bool IsAvailable
         {
@@ -367,7 +372,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             TimelineVisualNoticeModel.ClearToHideEntry();
 
             // タイムライン制御フラグを初期化する
-            TimelineExpressionsModel.Clear();
+            TimelineExpressionsModel.Clear(this.CurrentZoneName);
 
             // 表示設定を更新しておく
             this.RefreshActivityLineVisibility();
@@ -1587,7 +1592,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 // 変数をクリアする
-                TimelineExpressionsModel.Clear();
+                TimelineExpressionsModel.Clear(this.CurrentZoneName);
 
                 // 有効なActivityが存在しない？
                 if (!this.Model.ExistsActivities())
@@ -1623,7 +1628,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 TimelineTickCallback = null;
 
                 // リソースを開放する
-                TimelineExpressionsModel.Clear();
+                TimelineExpressionsModel.Clear(this.CurrentZoneName);
                 TimelineNoticeOverlay.NoticeView?.ClearNotice();
                 TimelineImageNoticeModel.Collect();
                 this.ClearNotifyQueue();

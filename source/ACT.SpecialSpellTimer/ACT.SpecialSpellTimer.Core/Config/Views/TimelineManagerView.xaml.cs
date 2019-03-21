@@ -1,11 +1,3 @@
-using ACT.SpecialSpellTimer.RaidTimeline;
-using ACT.SpecialSpellTimer.RaidTimeline.Views;
-using ACT.SpecialSpellTimer.resources;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Globalization;
-using FFXIV.Framework.WPF.Views;
-using Prism.Commands;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -18,6 +10,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using ACT.SpecialSpellTimer.RaidTimeline;
+using ACT.SpecialSpellTimer.RaidTimeline.Views;
+using ACT.SpecialSpellTimer.resources;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Globalization;
+using FFXIV.Framework.WPF.Views;
+using Prism.Commands;
 
 namespace ACT.SpecialSpellTimer.Config.Views
 {
@@ -91,6 +91,8 @@ namespace ACT.SpecialSpellTimer.Config.Views
             };
 
             this.timer.Start();
+
+            TimelineExpressionsModel.OnVariableChanged += _ => this.RefreshVariables();
         }
 
         private DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.ContextIdle)
@@ -409,6 +411,44 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     Process.Start(dir);
                 }
             }));
+
+        public ObservableCollection<TimelineExpressionsModel.Variable> Variables { get; } = new ObservableCollection<TimelineExpressionsModel.Variable>();
+
+        private void RefreshVariables()
+        {
+            int toOrder(string zone)
+            {
+                if (zone == TimelineModel.GlobalZone)
+                {
+                    return 0;
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(zone))
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return 2;
+                    }
+                }
+            }
+
+            var variables = (
+                from x in TimelineExpressionsModel.GetVariables()
+                orderby
+                toOrder(x.Value.Zone) ascending,
+                x.Value.Name
+                select
+                x.Value).ToArray();
+
+            WPFHelper.InvokeAsync(() =>
+            {
+                this.Variables.Clear();
+                this.Variables.AddRange(variables);
+            });
+        }
 
         #endregion Commands 右側ペイン
 
