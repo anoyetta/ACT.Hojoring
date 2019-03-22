@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using FFXIV.Framework.FFXIVHelper;
+using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -87,7 +88,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (player != null)
             {
                 var value = player.IsTargetOfTargetMe;
-                if (SetGlobal(IS_TOT_ME, value))
+                if (SetVariable(IS_TOT_ME, value))
                 {
                     TimelineController.RaiseLog(
                         $"{TimelineController.TLSymbol} set ENV[\"{IS_TOT_ME}\"] = {value}");
@@ -100,47 +101,66 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="name">グローバル変数名</param>
         /// <param name="value">値</param>
+        /// <param name="zone"ゾーン名</param>
         /// <returns>is changed</returns>
-        public static bool SetGlobal(
+        public static bool SetVariable(
             string name,
-            object value)
+            object value,
+            string zone = null)
         {
             var result = false;
 
             lock (ExpressionLocker)
             {
-                var flag = default(Flag);
-                if (Flags.ContainsKey(name))
+                var variable = default(Variable);
+                if (Variables.ContainsKey(name))
                 {
-                    flag = Flags[name];
+                    variable = Variables[name];
                 }
                 else
                 {
-                    flag = new Flag();
-                    Flags[name] = flag;
+                    variable = new Variable(name);
+                    Variables[name] = variable;
                     result = true;
                 }
 
                 switch (value)
                 {
                     case bool b:
-                        if (flag.Value != b)
+                        if (!(variable.Value is bool current) ||
+                            current != b)
                         {
-                            flag.Value = b;
-                            flag.Expiration = DateTime.MaxValue;
+                            variable.Value = b;
+                            variable.Expiration = DateTime.MaxValue;
                             result = true;
                         }
                         break;
 
                     case int i:
-                        if (flag.Counter != i)
+                        if (variable.Counter != i)
                         {
-                            flag.Counter = i;
-                            flag.Expiration = DateTime.MaxValue;
+                            variable.Counter = i;
+                            variable.Expiration = DateTime.MaxValue;
+                            result = true;
+                        }
+                        break;
+
+                    default:
+                        if (!object.Equals(variable.Value, value))
+                        {
+                            variable.Value = value;
+                            variable.Expiration = DateTime.MaxValue;
                             result = true;
                         }
                         break;
                 }
+
+                variable.Zone = zone ?? string.Empty;
+            }
+
+            if (result)
+            {
+                OnVariableChanged?.Invoke(new EventArgs());
             }
 
             return result;
@@ -150,26 +170,72 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public static readonly object ExpressionLocker = new object();
 
+        public delegate void VariableChangedHandler(EventArgs args);
+
+        public static event VariableChangedHandler OnVariableChanged;
+
         /// <summary>
         /// フラグ格納領域
         /// </summary>
-        private static readonly Dictionary<string, Flag> Flags = new Dictionary<string, Flag>(128);
+        private static readonly Dictionary<string, Variable> Variables = new Dictionary<string, Variable>(128);
+
+        /// <summary>
+        /// 変数領域のクローンを取得する
+        /// </summary>
+        /// <returns>
+        /// Variable Dictionary</returns>
+        public static IReadOnlyDictionary<string, Variable> GetVariables()
+        {
+            lock (ExpressionLocker)
+            {
+                return new Dictionary<string, Variable>(Variables);
+            }
+        }
+
+        /// <summary>
+        /// 一時変数とカレントゾーンと異なる変数をクリアする
+        /// </summary>
+        public static void Clear(
+            string currentZoneName)
+        {
+            lock (ExpressionLocker)
+            {
+                var targets = Variables.Where(x =>
+                    string.IsNullOrEmpty(x.Value.Zone) ||
+                    (x.Value.Zone != TimelineModel.GlobalZone && x.Value.Zone != currentZoneName))
+                    .ToArray();
+
+                foreach (var item in targets)
+                {
+                    Variables.Remove(item.Key);
+                    TimelineController.RaiseLog(
+                        $"{TimelineController.TLSymbol} clear VAR[\"{item.Key}\"]");
+                }
+
+                if (targets.Length > 0)
+                {
+                    OnVariableChanged?.Invoke(new EventArgs());
+                }
+            }
+        }
 
         /// <summary>
         /// すべてのフラグを消去する
         /// </summary>
-        public static void Clear()
+        public static void ClearAll()
         {
             lock (ExpressionLocker)
             {
-                var any = Flags.Any();
+                var any = Variables.Count > 0;
 
-                Flags.Clear();
+                Variables.Clear();
 
                 if (any)
                 {
                     TimelineController.RaiseLog(
-                        $"{TimelineController.TLSymbol} cleared all Flags.");
+                        $"{TimelineController.TLSymbol} clear all variables.");
+
+                    OnVariableChanged?.Invoke(new EventArgs());
                 }
             }
         }
@@ -197,42 +263,48 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     expretion = DateTime.Now.AddSeconds(set.TTL.GetValueOrDefault());
                 }
 
-                var flag = default(Flag);
-                if (Flags.ContainsKey(set.Name))
+                var variable = default(Variable);
+                if (Variables.ContainsKey(set.Name))
                 {
-                    flag = Flags[set.Name];
+                    variable = Variables[set.Name];
                 }
                 else
                 {
-                    flag = new Flag();
-                    Flags[set.Name] = flag;
+                    variable = new Variable(set.Name);
+                    Variables[set.Name] = variable;
                 }
 
                 // トグル？
                 if (set.IsToggle.GetValueOrDefault())
                 {
                     var current = false;
-                    if (DateTime.Now <= flag.Expiration)
+                    if (DateTime.Now <= variable.Expiration &&
+                        variable.Value is bool b)
                     {
-                        current = flag.Value;
+                        current = b;
                     }
 
-                    flag.Value = current ^ true;
+                    variable.Value = !current;
                 }
                 else
                 {
-                    flag.Value = set.Value.GetValueOrDefault();
+                    variable.Value = set.Value;
                 }
 
                 // カウンタを更新する
-                flag.Counter = set.ExecuteCount(flag.Counter);
+                variable.Counter = set.ExecuteCount(variable.Counter);
+
+                // 有効期限を設定する
+                variable.Expiration = expretion;
 
                 // フラグの状況を把握するためにログを出力する
                 TimelineController.RaiseLog(
                     string.IsNullOrEmpty(set.Count) ?
-                    $"{TimelineController.TLSymbol} set Flags[\"{set.Name}\"] = {flag.Value}" :
-                    $"{TimelineController.TLSymbol} set Flags[\"{set.Name}\"] = {flag.Counter}");
+                    $"{TimelineController.TLSymbol} set VAR[\"{set.Name}\"] = {variable.Value}" :
+                    $"{TimelineController.TLSymbol} set VAR[\"{set.Name}\"] = {variable.Counter}");
             }
+
+            OnVariableChanged?.Invoke(new EventArgs());
         }
 
         /// <summary>
@@ -254,64 +326,91 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var totalResult = true;
             foreach (var pre in states)
             {
-                var flag = Flags.ContainsKey(pre.Name) ?
-                    Flags[pre.Name] :
-                    Flag.EmptyFlag;
+                var variable = Variables.ContainsKey(pre.Name) ?
+                    Variables[pre.Name] :
+                    Variable.EmptyVariable;
 
                 if (!pre.Count.HasValue)
                 {
-                    var value = false;
-                    if (DateTime.Now <= flag.Expiration)
+                    object current = null;
+                    if (DateTime.Now <= variable.Expiration)
                     {
-                        value = flag.Value;
+                        current = variable.Value;
                     }
 
-                    totalResult &= (pre.Value.GetValueOrDefault() == value);
+                    if (pre.Value is bool &&
+                        current == null)
+                    {
+                        current = false;
+                    }
+
+                    totalResult &= pre.EqualsValue(current);
                 }
                 else
                 {
-                    totalResult &= (pre.Count.GetValueOrDefault() == flag.Counter);
+                    totalResult &= (pre.Count.GetValueOrDefault() == variable.Counter);
                 }
             }
 
             return totalResult;
         }
 
-        #region Inner class Flag
-
-        public class Flag
+        public class Variable : BindableBase
         {
             /// <summary>
             /// 空フラグ
             /// </summary>
-            public static readonly Flag EmptyFlag = new Flag();
+            public static readonly Variable EmptyVariable = new Variable("Empty");
 
-            public Flag()
+            public Variable(
+                string name)
             {
+                this.Name = name;
             }
 
-            public Flag(
-                int counter)
+            private string name = string.Empty;
+
+            public string Name
             {
-                this.Counter = counter;
+                get => this.name;
+                set => this.SetProperty(ref this.name, value);
             }
 
-            public Flag(
-                bool value,
-                DateTime expiration)
+            private object value = null;
+
+            public object Value
             {
-                this.Value = value;
-                this.Expiration = expiration;
+                get => this.value;
+                set => this.SetProperty(ref this.value, value);
             }
 
-            public bool Value { get; set; } = false;
+            private int counter = 0;
 
-            public int Counter { get; set; } = 0;
+            public int Counter
+            {
+                get => this.counter;
+                set => this.SetProperty(ref this.counter, value);
+            }
 
-            public DateTime Expiration { get; set; } = DateTime.MaxValue;
+            private DateTime expiration = DateTime.MaxValue;
+
+            public DateTime Expiration
+            {
+                get => this.expiration;
+                set => this.SetProperty(ref this.expiration, value);
+            }
+
+            private string zone = string.Empty;
+
+            public string Zone
+            {
+                get => this.zone;
+                set => this.SetProperty(ref this.zone, value);
+            }
+
+            public override string ToString() =>
+                $"{this.Name}={this.Value}, counter={this.Counter}";
         }
-
-        #endregion Inner class Flag
     }
 
     [XmlType(TypeName = "set")]
@@ -327,10 +426,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #endregion TimelineBase
 
-        private bool? value = null;
+        private object value = null;
 
         [XmlIgnore]
-        public bool? Value
+        public object Value
         {
             get => this.value;
             set => this.SetProperty(ref this.value, value);
@@ -340,7 +439,28 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public string ValueXML
         {
             get => this.Value?.ToString();
-            set => this.Value = bool.TryParse(value, out var v) ? v : (bool?)null;
+            set
+            {
+                if (bool.TryParse(value, out bool b))
+                {
+                    this.Value = b;
+                    return;
+                }
+
+                if (int.TryParse(value, out int i))
+                {
+                    this.Value = i;
+                    return;
+                }
+
+                if (double.TryParse(value, out double d))
+                {
+                    this.Value = d;
+                    return;
+                }
+
+                this.Value = value;
+            }
         }
 
         private bool? isToggle = null;
@@ -427,10 +547,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #endregion TimelineBase
 
-        private bool? value = null;
+        private object value = null;
 
         [XmlIgnore]
-        public bool? Value
+        public object Value
         {
             get => this.value;
             set => this.SetProperty(ref this.value, value);
@@ -440,7 +560,67 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public string ValueXML
         {
             get => this.Value?.ToString();
-            set => this.Value = bool.TryParse(value, out var v) ? v : (bool?)null;
+            set
+            {
+                if (bool.TryParse(value, out bool b))
+                {
+                    this.Value = b;
+                    return;
+                }
+
+                if (int.TryParse(value, out int i))
+                {
+                    this.Value = i;
+                    return;
+                }
+
+                if (double.TryParse(value, out double d))
+                {
+                    this.Value = d;
+                    return;
+                }
+
+                this.Value = value;
+            }
+        }
+
+        public bool EqualsValue(
+            object predicateValue)
+        {
+            var result = false;
+
+            switch (this.Value)
+            {
+                case bool b:
+                    if (predicateValue is bool b2)
+                    {
+                        result = b == b2;
+                    }
+                    break;
+
+                case int i:
+                    if (predicateValue is int i2)
+                    {
+                        result = i == i2;
+                    }
+                    break;
+
+                case double d:
+                    if (predicateValue is double d2)
+                    {
+                        result = d == d2;
+                    }
+                    break;
+
+                default:
+                    result = string.Equals(
+                        this.Value?.ToString() ?? string.Empty,
+                        predicateValue?.ToString() ?? string.Empty,
+                        StringComparison.OrdinalIgnoreCase);
+                    break;
+            }
+
+            return result;
         }
 
         private int? count = null;
