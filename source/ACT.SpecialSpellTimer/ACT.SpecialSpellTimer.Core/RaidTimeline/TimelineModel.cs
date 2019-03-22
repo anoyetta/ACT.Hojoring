@@ -859,13 +859,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 try
                 {
-                    await Task.Run(() => this.Reload());
-
-                    if (this.IsActive)
-                    {
-                        this.Controller.Unload();
-                        this.Controller.Load();
-                    }
+                    await this.ExecuteReloadCommandAsync();
 
                     ModernMessageBox.ShowDialog(
                         "Timeline reloaded.",
@@ -882,6 +876,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         ex);
                 }
             }));
+
+        public async Task ExecuteReloadCommandAsync()
+        {
+            await Task.Run(() => this.Reload());
+
+            if (this.IsActive)
+            {
+                this.Controller.Unload();
+                this.Controller.Load();
+            }
+        }
 
         public void Reload()
         {
