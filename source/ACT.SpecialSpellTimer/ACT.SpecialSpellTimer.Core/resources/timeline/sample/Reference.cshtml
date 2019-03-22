@@ -5,7 +5,7 @@
 
 変更履歴はファイル末尾に。
 -->
-@{ var rev = "rev25"; }
+@{ var rev = "rev26"; }
 
 <!-- ●●この辺は Razor構文（非常に高度な機能）の説明なので読み飛ばして良い●● ↓ここから -->
 @using ACT.SpecialSpellTimer.RaidTimeline
@@ -129,6 +129,39 @@
 
     指定したファイルを読み込みその内容を返す。
     パスは timeline フォルダからの相対パスまたは絶対パスで指定します。
+
+  * 環境変数の操作
+    1) 環境変数の参照
+       model.Var["変数名"]
+       で参照できます。
+
+       例)
+       if (modeel.Var["TANK_ROLE"] == "MT") 
+       {
+           // Do somthing...
+       }
+
+    2) 環境変数の編集
+       /// <summary>
+       /// 環境変数をセットする
+       /// </summary>
+       /// <remarks>
+       /// 環境変数をセットする。
+       /// 通常スコープの場合はゾーンチェンジに消去される。
+       /// グローバルスコープの場合はアプリケーションの実行中、常に保持される。</remarks>
+       /// <param name="name">変数名</param>
+       /// <param name="value">値</param>
+       /// <param name="global">グローバルスコープか？</param>
+       model.SetVar(string name, object value, bool global = false)
+
+       /// <summary>
+       /// 一時変数をセットする
+       /// </summary>
+       /// <remarks>
+       /// タイムラインのリセット時に消去される一時変数をセットする</remarks>
+       /// <param name="name">変数名</param>
+       /// <param name="value">値</param>
+       model.SetTemp(string name, object value)
 -->
 <!-- ●●この辺は Razor構文（非常に高度な機能）の説明なので読み飛ばして良い●● ↑ここまで -->
 
@@ -673,8 +706,8 @@
     変数名
 
   value :
-    bool, 任意項目, 既定値true
-    変数が true のとき真とするか、false のとき真とするか？
+    object, 任意項目, 既定値true
+    変数を判定する期待値。
 
     ex. <pre name="flag1" value="true"> の場合
     if (flag1 == true)
@@ -701,8 +734,8 @@
     変数名
 
   value :
-    bool, 任意項目, 既定値true
-    変数に格納する bool値
+    object, 任意項目, 既定値true
+    変数に格納する値。bool, int, double, string など任意の変数型を使用できる。
   
   toggle :
     bool, 任意項目, 既定値false
@@ -828,6 +861,10 @@
 
 <!--
 変更履歴
+
+2019-03-22 rev26
+  * 環境変数に関する Razor モデルメンバを追加した
+  * pre, set タグの value の型を object 型に変更した
 
 2018-10-24 rev25
   * import タグを追加した
