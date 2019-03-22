@@ -119,7 +119,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
                 else
                 {
-                    variable = new Variable(variable.Name);
+                    variable = new Variable(name);
                     Variables[name] = variable;
                     result = true;
                 }
@@ -284,7 +284,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         current = b;
                     }
 
-                    variable.Value = current ^ true;
+                    variable.Value = !current;
                 }
                 else
                 {
@@ -293,6 +293,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 // カウンタを更新する
                 variable.Counter = set.ExecuteCount(variable.Counter);
+
+                // 有効期限を設定する
+                variable.Expiration = expretion;
 
                 // フラグの状況を把握するためにログを出力する
                 TimelineController.RaiseLog(
@@ -329,19 +332,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (!pre.Count.HasValue)
                 {
-                    object value = null;
+                    object current = null;
                     if (DateTime.Now <= variable.Expiration)
                     {
-                        value = variable.Value;
+                        current = variable.Value;
                     }
 
                     if (pre.Value is bool &&
-                        value == null)
+                        current == null)
                     {
-                        value = false;
+                        current = false;
                     }
 
-                    totalResult &= (pre.Value == value);
+                    totalResult &= pre.EqualsValue(current);
                 }
                 else
                 {
@@ -363,36 +366,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 string name)
             {
                 this.Name = name;
-            }
-
-            public Variable(
-                string name,
-                int counter)
-            {
-                this.Name = name;
-                this.Counter = counter;
-                this.Zone = string.Empty;
-            }
-
-            public Variable(
-                string name,
-                object value,
-                DateTime expiration)
-            {
-                this.Name = name;
-                this.Value = value;
-                this.Expiration = expiration;
-                this.Zone = string.Empty;
-            }
-
-            public Variable(
-                string name,
-                object value,
-                string zone)
-            {
-                this.Name = name;
-                this.Value = value;
-                this.Zone = zone;
             }
 
             private string name = string.Empty;
@@ -419,7 +392,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 set => this.SetProperty(ref this.counter, value);
             }
 
-            private DateTime expiration = DateTime.MinValue;
+            private DateTime expiration = DateTime.MaxValue;
 
             public DateTime Expiration
             {
@@ -434,6 +407,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 get => this.zone;
                 set => this.SetProperty(ref this.zone, value);
             }
+
+            public override string ToString() =>
+                $"{this.Name}={this.Value}, counter={this.Counter}";
         }
     }
 
@@ -606,6 +582,45 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.Value = value;
             }
+        }
+
+        public bool EqualsValue(
+            object predicateValue)
+        {
+            var result = false;
+
+            switch (this.Value)
+            {
+                case bool b:
+                    if (predicateValue is bool b2)
+                    {
+                        result = b == b2;
+                    }
+                    break;
+
+                case int i:
+                    if (predicateValue is int i2)
+                    {
+                        result = i == i2;
+                    }
+                    break;
+
+                case double d:
+                    if (predicateValue is double d2)
+                    {
+                        result = d == d2;
+                    }
+                    break;
+
+                default:
+                    result = string.Equals(
+                        this.Value?.ToString() ?? string.Empty,
+                        predicateValue?.ToString() ?? string.Empty,
+                        StringComparison.OrdinalIgnoreCase);
+                    break;
+            }
+
+            return result;
         }
 
         private int? count = null;
