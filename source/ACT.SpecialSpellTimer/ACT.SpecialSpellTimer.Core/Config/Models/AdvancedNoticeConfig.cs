@@ -97,7 +97,9 @@ namespace ACT.SpecialSpellTimer.Config.Models
         private static DateTime SyncListTimestamp = DateTime.MaxValue;
 
         [XmlIgnore]
-        private static readonly double SyncTimerIdleInterval = 300d;
+        private static double SyncTimerIdleInterval => Settings.Default.WaitingTimeToSyncTTS < 100d ?
+            100d :
+            Settings.Default.WaitingTimeToSyncTTS;
 
         [XmlIgnore]
         private static readonly System.Timers.Timer SyncSpeakTimer = CreateSyncSpeakTimer();
@@ -275,7 +277,7 @@ namespace ACT.SpecialSpellTimer.Config.Models
             var syncs = default(IEnumerable<SyncTTS>);
             lock (SyncList)
             {
-                if ((DateTime.Now - SyncListTimestamp).TotalMilliseconds <= Settings.Default.WaitingTimeToSyncTTS)
+                if ((DateTime.Now - SyncListTimestamp).TotalMilliseconds < Settings.Default.WaitingTimeToSyncTTS)
                 {
                     return;
                 }
