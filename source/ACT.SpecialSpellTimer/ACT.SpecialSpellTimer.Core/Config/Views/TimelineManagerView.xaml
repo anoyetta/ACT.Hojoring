@@ -544,37 +544,24 @@
           </TabItem>
 
           <TabItem Header="Variables" Padding="20 2 20 2">
-            <DataGrid
+            <ListView
               Margin="0 5"
               BorderThickness="0"
-              AutoGenerateColumns="False"
-              IsReadOnly="True"
-              Background="Transparent"
-              HorizontalGridLinesBrush="Transparent"
-              VerticalGridLinesBrush="Transparent"
-              HorizontalAlignment="Stretch"
-              HeadersVisibility="Column"
-              VirtualizingPanel.IsVirtualizing="True"
-              VirtualizingPanel.VirtualizationMode="Recycling"
               ItemsSource="{Binding Variables, Mode=OneWay}">
-              <DataGrid.Columns>
-                <DataGridTextColumn
-                  IsReadOnly="True"
-                  Header="Name"
-                  Binding="{Binding Name}"
-                  Width="150" />
-                <DataGridTextColumn
-                  IsReadOnly="True"
-                  Header="Value"
-                  Binding="{Binding Value}"
-                  MinWidth="150" />
-                <DataGridTextColumn
-                  IsReadOnly="True"
-                  Header="Scope"
-                  Binding="{Binding Zone}"
-                  MinWidth="190" />
-              </DataGrid.Columns>
-            </DataGrid>
+              <ListView.View>
+                <GridView>
+                  <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Width="240">
+                    <GridViewColumnHeader Content="Variable" />
+                  </GridViewColumn>
+                  <GridViewColumn DisplayMemberBinding="{Binding Path=Value}" Width="150">
+                    <GridViewColumnHeader Content="Value" />
+                  </GridViewColumn>
+                  <GridViewColumn DisplayMemberBinding="{Binding Path=Zone}" Width="320">
+                    <GridViewColumnHeader Content="Scope" />
+                  </GridViewColumn>
+                </GridView>
+              </ListView.View>
+            </ListView>
           </TabItem>
         </TabControl>
       </Grid>

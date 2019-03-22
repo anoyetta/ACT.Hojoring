@@ -11,11 +11,18 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public static void SetSubscribeTextCommands()
         {
-            var commands = CreateExpressionsCommands();
-
-            foreach (var cmd in commands)
+            var commandGroups = new[]
             {
-                TextCommandBridge.Instance.Subscribe(cmd);
+                CreateReloadCommands(),
+                CreateExpressionsCommands(),
+            };
+
+            foreach (var group in commandGroups)
+            {
+                foreach (var cmd in group)
+                {
+                    TextCommandBridge.Instance.Subscribe(cmd);
+                }
             }
         }
 
@@ -69,6 +76,43 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             });
 
             return new[] { setCommand };
+        }
+
+        private static readonly Regex ReloadCommandRegex = new Regex(
+            $@"{TimelineCommand}\s+reload",
+            RegexOptions.Compiled |
+            RegexOptions.IgnoreCase);
+
+        private static IEnumerable<TextCommand> CreateReloadCommands()
+        {
+            var cmd = new TextCommand(
+            (string logLine, out Match match) =>
+            {
+                match = null;
+
+                if (!logLine.ContainsIgnoreCase(TimelineCommand))
+                {
+                    return false;
+                }
+
+                match = ReloadCommandRegex.Match(logLine);
+                return match.Success;
+            },
+            async (string logLine, Match match) =>
+            {
+                if (match == null ||
+                    !match.Success)
+                {
+                    return;
+                }
+
+                if (TimelineController.CurrentController != null)
+                {
+                    await TimelineController.CurrentController.Model.ExecuteReloadCommandAsync();
+                }
+            });
+
+            return new[] { cmd };
         }
     }
 }
