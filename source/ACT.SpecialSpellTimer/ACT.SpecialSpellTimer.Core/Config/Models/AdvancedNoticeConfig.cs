@@ -88,10 +88,31 @@ namespace ACT.SpecialSpellTimer.Config.Models
             RegexOptions.Multiline);
 
         [XmlIgnore]
-        private static readonly List<SyncTTS> SyncList = new List<SyncTTS>();
+        private static readonly List<SyncTTS> SyncList = new List<SyncTTS>(16);
 
         [XmlIgnore]
-        private static System.Timers.Timer syncSpeakTimer;
+        private static volatile int SyncListCount = 0;
+
+        [XmlIgnore]
+        private static DateTime SyncListTimestamp = DateTime.MaxValue;
+
+        [XmlIgnore]
+        private static readonly double SyncTimerIdleInterval = 300d;
+
+        [XmlIgnore]
+        private static readonly System.Timers.Timer SyncSpeakTimer = CreateSyncSpeakTimer();
+
+        private static System.Timers.Timer CreateSyncSpeakTimer()
+        {
+            var timer = new System.Timers.Timer(SyncTimerIdleInterval)
+            {
+                AutoReset = true
+            };
+
+            timer.Elapsed += SyncSpeakTimerOnElapsed;
+
+            return timer;
+        }
 
         private static void PlayWaveCore(
             string wave,
@@ -215,33 +236,29 @@ namespace ACT.SpecialSpellTimer.Config.Models
                 return;
             }
 
-            var period = Settings.Default.UILocale == Locales.JA ? "、" : ",";
-            if (speakText.EndsWith(period))
+            if (!PlayBridge.Instance.IsSyncAvailable)
             {
-                speakText += period;
+                var period = Settings.Default.UILocale == Locales.JA ? "、" : ",";
+                if (speakText.EndsWith(period))
+                {
+                    speakText += period;
+                }
             }
 
             lock (SyncList)
             {
-                var interval = Settings.Default.WaitingTimeToSyncTTS;
-
-                if (syncSpeakTimer == null)
-                {
-                    // シンクロTTSの受付タイマを生成する
-                    syncSpeakTimer = new System.Timers.Timer(interval)
-                    {
-                        AutoReset = false
-                    };
-
-                    syncSpeakTimer.Elapsed += SyncSpeakTimerOnElapsed;
-                }
-
-                syncSpeakTimer.Stop();
-                syncSpeakTimer.Interval = interval;
+                var interval = Settings.Default.WaitingTimeToSyncTTS / 4d;
 
                 SyncList.Add(new SyncTTS(SyncList.Count, priority, speakText, config));
+                SyncListTimestamp = DateTime.Now;
+                SyncListCount = SyncList.Count;
 
-                syncSpeakTimer.Start();
+                SyncSpeakTimer.Interval = interval;
+
+                if (!SyncSpeakTimer.Enabled)
+                {
+                    SyncSpeakTimer.Start();
+                }
             }
         }
 
@@ -249,44 +266,51 @@ namespace ACT.SpecialSpellTimer.Config.Models
             object sender,
             ElapsedEventArgs e)
         {
+            if (SyncListCount < 1)
+            {
+                SyncSpeakTimer.Interval = SyncTimerIdleInterval;
+                return;
+            }
+
+            var syncs = default(IEnumerable<SyncTTS>);
             lock (SyncList)
             {
-                try
+                if ((DateTime.Now - SyncListTimestamp).TotalMilliseconds <= Settings.Default.WaitingTimeToSyncTTS)
                 {
-                    var syncs =
-                        from x in SyncList
-                        where
-                        !string.IsNullOrEmpty(x.Text)
-                        orderby
-                        x.Priority,
-                        x.Seq
-                        select
-                        x;
-
-                    var config = syncs.FirstOrDefault()?.Config;
-                    if (config == null)
-                    {
-                        return;
-                    }
-
-                    if (!PlayBridge.Instance.IsSyncAvailable)
-                    {
-                        var text = string.Join(Environment.NewLine, syncs.Select(x => x.Text));
-                        SpeakCore(text, config);
-                    }
-                    else
-                    {
-                        foreach (var sync in syncs)
-                        {
-                            SpeakCore(sync.Text, config, true);
-                            Thread.Sleep(TimeSpan.FromMilliseconds(SyncTTSInterval));
-                        }
-                    }
+                    return;
                 }
-                finally
+
+                syncs = (
+                    from x in SyncList
+                    where
+                    !string.IsNullOrEmpty(x.Text)
+                    orderby
+                    x.Priority,
+                    x.Seq
+                    select
+                    x).ToArray();
+
+                SyncList.Clear();
+                SyncListCount = 0;
+            }
+
+            var config = syncs.FirstOrDefault()?.Config;
+            if (config == null)
+            {
+                return;
+            }
+
+            if (!PlayBridge.Instance.IsSyncAvailable)
+            {
+                var text = string.Join(Environment.NewLine, syncs.Select(x => x.Text));
+                SpeakCore(text, config);
+            }
+            else
+            {
+                foreach (var sync in syncs)
                 {
-                    SyncList.Clear();
-                    (sender as System.Timers.Timer)?.Stop();
+                    SpeakCore(sync.Text, config, true);
+                    Thread.Sleep(TimeSpan.FromMilliseconds(SyncTTSInterval));
                 }
             }
         }
