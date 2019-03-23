@@ -27,7 +27,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         private static readonly Regex SetVarCommandRegex = new Regex(
-            $@"{TimelineCommand}\s+set\s+(?<name>\w+)\s+(?<value>\w]+)\s*(?<option>global|temp)?",
+            $@"{TimelineCommand}\s+set\s+(?<name>\w+)\s+(?<value>\w+)\s*(?<option>global|temp)?",
             RegexOptions.Compiled |
             RegexOptions.IgnoreCase);
 
@@ -59,6 +59,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 var option = match.Groups["option"]?.ToString() ?? string.Empty;
                 var zone = TimelineController.CurrentController?.CurrentZoneName ?? string.Empty;
+
+                option = option.ToLower();
 
                 if (option.ContainsIgnoreCase("global"))
                 {
