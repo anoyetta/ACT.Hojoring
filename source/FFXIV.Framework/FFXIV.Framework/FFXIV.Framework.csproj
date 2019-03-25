@@ -138,8 +138,6 @@
     <Compile Include="FFXIVHelper\Combatant.cs" />
     <Compile Include="FFXIVHelper\Effect.cs" />
     <Compile Include="FFXIVHelper\EnmityEntry.cs" />
-    <Compile Include="FFXIVHelper\EnmityPlugin.cs" />
-    <Compile Include="FFXIVHelper\EnmityPlugin.Implementation.cs" />
     <Compile Include="FFXIVHelper\FFXIVPlugin.cs" />
     <Compile Include="FFXIVHelper\FFXIVReader.cs" />
     <Compile Include="FFXIVHelper\Jobs.cs" />
