@@ -26,9 +26,14 @@ namespace FFXIV.Framework.Bridge
         public bool TryExecute(
             string logLine)
         {
-            if (string.IsNullOrEmpty(logLine) ||
-                logLine.TrimStart().StartsWith("#") ||
-                logLine.TrimStart().StartsWith("//"))
+            if (string.IsNullOrEmpty(logLine))
+            {
+                return false;
+            }
+
+            var logLineWithoutCode = logLine.Substring(8);
+            if (logLineWithoutCode.TrimStart().StartsWith("#") ||
+                logLineWithoutCode.TrimStart().StartsWith("//"))
             {
                 return false;
             }
