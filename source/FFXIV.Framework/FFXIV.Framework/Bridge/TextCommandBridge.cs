@@ -26,6 +26,13 @@ namespace FFXIV.Framework.Bridge
         public bool TryExecute(
             string logLine)
         {
+            if (string.IsNullOrEmpty(logLine) ||
+                logLine.TrimStart().StartsWith("#") ||
+                logLine.TrimStart().StartsWith("//"))
+            {
+                return false;
+            }
+
             var executed = false;
 
             foreach (var command in this.TextCommands)
