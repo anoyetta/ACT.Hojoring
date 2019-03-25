@@ -31,11 +31,16 @@ namespace FFXIV.Framework.Bridge
                 return false;
             }
 
-            var logLineWithoutCode = logLine.Substring(8);
-            if (logLineWithoutCode.TrimStart().StartsWith("#") ||
-                logLineWithoutCode.TrimStart().StartsWith("//"))
+            // ログのタイムスタンプとコードを除去してコメント行を判定する
+            var log = logLine.Remove(0, 15);
+            if (log.Length > 8)
             {
-                return false;
+                log = log.Substring(8);
+                if (log.TrimStart().StartsWith("#") ||
+                    log.TrimStart().StartsWith("//"))
+                {
+                    return false;
+                }
             }
 
             var executed = false;
