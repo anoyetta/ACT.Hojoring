@@ -319,22 +319,23 @@ namespace ACT.UltraScouter.Config
         public const string DetectDeadmenKeyword = "[DEADMEN]";
 
         [XmlIgnore]
-        public (string Rank, double MaxDistance, bool TTSEnabled) GetDetectDeadmenInfo =>
-            this.targetMobList.ContainsKey(DetectDeadmenKeyword) ?
-            this.targetMobList[DetectDeadmenKeyword] :
-            (string.Empty, 0, false);
+        public TargetMobInfo GetDetectDeadmenInfo => this.GetTargetMobInfo(DetectDeadmenKeyword);
 
         [XmlIgnore]
-        public bool IsEnabledDetectDeadmen => this.targetMobList.ContainsKey(DetectDeadmenKeyword);
+        private readonly Dictionary<string, TargetMobInfo> targetMobList = new Dictionary<string, TargetMobInfo>();
 
-        [XmlIgnore]
-        private readonly Dictionary<string, (string Rank, double MaxDistance, bool TTSEnabled)> targetMobList = new Dictionary<string, (string Rank, double MaxDistance, bool TTSEnabled)>();
+        public TargetMobInfo GetTargetMobInfo(
+            string name)
+        {
+            var key = name.ToLower();
 
-        /// <summary>
-        /// 対象とするモブリスト
-        /// </summary>
-        [XmlIgnore]
-        public IReadOnlyDictionary<string, (string Rank, double MaxDistance, bool TTSEnabled)> TargetMobList => this.targetMobList;
+            if (!this.targetMobList.ContainsKey(key))
+            {
+                return TargetMobInfo.EmptyMobInfo;
+            }
+
+            return this.targetMobList[key];
+        }
 
         public void LoadTargetMobList()
         {
@@ -387,7 +388,15 @@ namespace ACT.UltraScouter.Config
 
                     if (!string.IsNullOrEmpty(name))
                     {
-                        this.targetMobList[name] = (rank, distance, tts);
+                        var entry = new TargetMobInfo()
+                        {
+                            Name = name,
+                            Rank = rank,
+                            MaxDistance = distance,
+                            TTSEnabled = tts,
+                        };
+
+                        this.targetMobList[entry.Key] = entry;
                     }
                 }
             }
@@ -396,5 +405,20 @@ namespace ACT.UltraScouter.Config
         }
 
         #endregion Target MobList
+    }
+
+    public class TargetMobInfo
+    {
+        public static readonly TargetMobInfo EmptyMobInfo = new TargetMobInfo();
+
+        public string Key => this.Name.ToLower();
+
+        public string Name { get; set; } = string.Empty;
+
+        public string Rank { get; set; } = string.Empty;
+
+        public double MaxDistance { get; set; } = 0;
+
+        public bool TTSEnabled { get; set; } = false;
     }
 }

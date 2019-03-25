@@ -205,30 +205,47 @@ namespace ACT.UltraScouter.Workers
                 return;
             }
 
-            var targetDelegates = default(IEnumerable<MobInfo>);
-            var combatants = default(IEnumerable<Combatant>);
+            var targets = default(IEnumerable<MobInfo>);
 
             SharlayanHelper.Instance.IsScanNPC = Settings.Instance.MobList.IsScanNPC;
-            combatants = SharlayanHelper.Instance.Combatants;
+            var combatants = SharlayanHelper.Instance.Combatants;
 
-            targetDelegates = combatants
-                .Where(x =>
-                    x != null &&
-                    ((x.MaxHP <= 0) || (x.MaxHP > 0 && x.CurrentHP > 0)) &&
-                    Settings.Instance.MobList.TargetMobList.ContainsKey(x.Name))
-                .Select(x => new MobInfo()
+            // モブを検出する
+            IEnumerable<MobInfo> GetTargetMobs()
+            {
+                foreach (var x in combatants)
                 {
-                    Name = x?.Name,
-                    Combatant = x,
-                    Rank = Settings.Instance.MobList.TargetMobList[x?.Name].Rank,
-                    MaxDistance = Settings.Instance.MobList.TargetMobList[x?.Name].MaxDistance,
-                    TTSEnabled = Settings.Instance.MobList.TargetMobList[x?.Name].TTSEnabled,
-                });
+                    if (x == null ||
+                        string.IsNullOrEmpty(x.Name) ||
+                        x.MaxHP <= 0 ||
+                        (x.MaxHP > 0 && x.CurrentHP <= 0))
+                    {
+                        continue;
+                    }
+
+                    var targetInfo = Settings.Instance.MobList.GetTargetMobInfo(x.Name);
+                    if (string.IsNullOrEmpty(targetInfo.Name))
+                    {
+                        continue;
+                    }
+
+                    yield return new MobInfo()
+                    {
+                        Name = x.Name,
+                        Combatant = x,
+                        Rank = targetInfo.Rank,
+                        MaxDistance = targetInfo.MaxDistance,
+                        TTSEnabled = targetInfo.TTSEnabled,
+                    };
+                }
+            }
+
+            targets = GetTargetMobs();
 
             // 戦闘不能者を検出する？
-            if (Settings.Instance.MobList.IsEnabledDetectDeadmen)
+            var deadmenInfo = Settings.Instance.MobList.GetDetectDeadmenInfo;
+            if (!string.IsNullOrEmpty(deadmenInfo.Name))
             {
-                var deadmenInfo = Settings.Instance.MobList.GetDetectDeadmenInfo;
                 var party = FFXIVPlugin.Instance.GetPartyList();
                 var deadmen =
                     from x in party
@@ -246,15 +263,15 @@ namespace ACT.UltraScouter.Workers
                         TTSEnabled = deadmenInfo.TTSEnabled,
                     };
 
-                targetDelegates = targetDelegates.Concat(deadmen);
+                targets = targets.Concat(deadmen);
             }
 
             // クエリを実行する
-            targetDelegates = targetDelegates.ToArray();
+            targets = targets.ToArray();
 
             lock (this.TargetInfoLock)
             {
-                this.targetMobList = targetDelegates
+                this.targetMobList = targets
                     .Where(x => x.Distance <= x.MaxDistance)
                     .ToList();
 
