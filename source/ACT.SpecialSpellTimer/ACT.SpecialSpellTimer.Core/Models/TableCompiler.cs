@@ -562,8 +562,8 @@ namespace ACT.SpecialSpellTimer.Models
 
         #region 条件の変更を判定するメソッド群
 
-        private volatile IReadOnlyList<Combatant> previousParty = new List<Combatant>();
-        private volatile Combatant previousPlayer = new Combatant();
+        private readonly List<CharacterCondition> previousPartyCondition = new List<CharacterCondition>(32);
+        private volatile CharacterCondition previousPlayerCondition = new CharacterCondition();
         private volatile int previousZoneID = 0;
         private volatile string previousZoneName = string.Empty;
         private volatile bool previousInSimulation = false;
@@ -602,7 +602,7 @@ namespace ACT.SpecialSpellTimer.Models
                 .Where(x => x.ObjectType == Actor.Type.PC)
                 .ToList();
 
-            if (this.previousParty.Count !=
+            if (this.previousPartyCondition.Count !=
                 party.Count)
             {
                 r = true;
@@ -612,7 +612,7 @@ namespace ACT.SpecialSpellTimer.Models
                 // 前のパーティと名前とジョブが一致するか検証する
                 var count = party
                     .Where(x =>
-                        this.previousParty.Any(y =>
+                        this.previousPartyCondition.Any(y =>
                             y.Name == x.Name &&
                             y.Job == x.Job))
                     .Count();
@@ -623,7 +623,12 @@ namespace ACT.SpecialSpellTimer.Models
                 }
             }
 
-            this.previousParty = party;
+            this.previousPartyCondition.Clear();
+            this.previousPartyCondition.AddRange(party.Select(x => new CharacterCondition()
+            {
+                Name = x.Name,
+                Job = x.Job,
+            }));
 
             return r;
         }
@@ -632,13 +637,14 @@ namespace ACT.SpecialSpellTimer.Models
         {
             var r = false;
 
-            if (this.previousPlayer.Name != this.player.Name ||
-                this.previousPlayer.Job != this.player.Job)
+            if (this.previousPlayerCondition.Name != this.player.Name ||
+                this.previousPlayerCondition.Job != this.player.Job)
             {
                 r = true;
             }
 
-            this.previousPlayer = this.player;
+            this.previousPlayerCondition.Name = this.player.Name;
+            this.previousPlayerCondition.Job = this.player.Job;
 
             return r;
         }
@@ -1199,6 +1205,12 @@ namespace ACT.SpecialSpellTimer.Models
         #endregion カスタムプレースホルダに関するメソッド群
 
         #region Sub classes
+
+        public class CharacterCondition
+        {
+            public string Name { get; set; }
+            public byte Job { get; set; }
+        }
 
         public class PlaceholderContainer
         {
