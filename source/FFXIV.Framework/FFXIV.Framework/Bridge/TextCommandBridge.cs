@@ -26,6 +26,23 @@ namespace FFXIV.Framework.Bridge
         public bool TryExecute(
             string logLine)
         {
+            if (string.IsNullOrEmpty(logLine))
+            {
+                return false;
+            }
+
+            // ログのタイムスタンプとコードを除去してコメント行を判定する
+            var log = logLine.Remove(0, 15);
+            if (log.Length > 8)
+            {
+                log = log.Substring(8);
+                if (log.TrimStart().StartsWith("#") ||
+                    log.TrimStart().StartsWith("//"))
+                {
+                    return false;
+                }
+            }
+
             var executed = false;
 
             foreach (var command in this.TextCommands)

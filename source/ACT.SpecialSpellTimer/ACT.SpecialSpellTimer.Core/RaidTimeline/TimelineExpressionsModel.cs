@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Threading;
 using System.Xml.Serialization;
+using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
 using Prism.Mvvm;
 
@@ -146,7 +148,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         break;
 
                     default:
-                        if (!object.Equals(variable.Value, value))
+                        if (!ObjectComparer.Equals(value, variable.Value))
                         {
                             variable.Value = value;
                             variable.Expiration = DateTime.MaxValue;
@@ -381,7 +383,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             public object Value
             {
                 get => this.value;
-                set => this.SetProperty(ref this.value, value);
+                set
+                {
+                    this.value = value;
+
+                    WPFHelper.BeginInvoke(
+                        () => this.RaisePropertyChanged(),
+                        DispatcherPriority.Background);
+                }
             }
 
             private int counter = 0;
@@ -586,42 +595,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public bool EqualsValue(
             object predicateValue)
-        {
-            var result = false;
-
-            switch (this.Value)
-            {
-                case bool b:
-                    if (predicateValue is bool b2)
-                    {
-                        result = b == b2;
-                    }
-                    break;
-
-                case int i:
-                    if (predicateValue is int i2)
-                    {
-                        result = i == i2;
-                    }
-                    break;
-
-                case double d:
-                    if (predicateValue is double d2)
-                    {
-                        result = d == d2;
-                    }
-                    break;
-
-                default:
-                    result = string.Equals(
-                        this.Value?.ToString() ?? string.Empty,
-                        predicateValue?.ToString() ?? string.Empty,
-                        StringComparison.OrdinalIgnoreCase);
-                    break;
-            }
-
-            return result;
-        }
+            => ObjectComparer.Equals(predicateValue, this.Value);
 
         private int? count = null;
 
@@ -637,6 +611,49 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             get => this.Count?.ToString();
             set => this.Count = int.TryParse(value, out var v) ? v : (int?)null;
+        }
+    }
+
+    public static class ObjectComparer
+    {
+        public new static bool Equals(
+            object x,
+            object y)
+        {
+            var result = false;
+
+            switch (y)
+            {
+                case bool b:
+                    if (x is bool b2)
+                    {
+                        result = b == b2;
+                    }
+                    break;
+
+                case int i:
+                    if (x is int i2)
+                    {
+                        result = i == i2;
+                    }
+                    break;
+
+                case double d:
+                    if (x is double d2)
+                    {
+                        result = d == d2;
+                    }
+                    break;
+
+                default:
+                    result = string.Equals(
+                        x?.ToString() ?? string.Empty,
+                        y?.ToString() ?? string.Empty,
+                        StringComparison.OrdinalIgnoreCase);
+                    break;
+            }
+
+            return result;
         }
     }
 }
