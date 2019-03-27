@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -99,9 +100,12 @@ namespace ACT.Hojoring.Updater
                 }
 
                 Directory.CreateDirectory(dest);
-                Thread.Sleep(200);
 
+                Thread.Sleep(200);
                 DownloadAssets(asset.BrowserDownloadUrl, file);
+
+                Thread.Sleep(1000);
+                Process.Start(lastest.HtmlUrl);
             }
             catch (Exception ex)
             {
@@ -121,6 +125,7 @@ namespace ACT.Hojoring.Updater
             {
                 try
                 {
+#if false
                     using (var web = new WebClient())
                     {
                         var preprogress = 0d;
@@ -150,11 +155,20 @@ namespace ACT.Hojoring.Updater
                         await web.DownloadFileTaskAsync(
                             new Uri(url),
                             file);
-
-                        Thread.Sleep(200);
-
-                        Console.WriteLine(" Done!");
                     }
+#else
+                    var pi = new ProcessStartInfo("powershell.exe");
+                    pi.Arguments = $@"Invoke-WebRequest -Uri ""{url}"" -OutFile ""{file}""";
+
+                    using (var p = Process.Start(pi))
+                    {
+                        await Task.Delay(200);
+                        p.WaitForExit();
+                    }
+#endif
+
+                    await Task.Delay(200);
+                    Console.WriteLine(" Done!");
                 }
                 catch (Exception ex)
                 {
