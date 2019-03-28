@@ -143,6 +143,17 @@
         SelectedItem="{Binding FFLogs.ServerRegion, Mode=TwoWay}" />
 
       <Label
+        Margin="0 10 0 0"
+        Content="FFLogs Partition" />
+      <ComboBox
+        HorizontalAlignment="Left"
+        Width="240"
+        ItemsSource="{Binding FFLogsPartitions, Mode=OneWay}"
+        SelectedValuePath="Value"
+        DisplayMemberPath="Display"
+        SelectedValue="{Binding FFLogs.Partition, Mode=TwoWay}" />
+
+      <Label
         Margin="0 25 0 0"
         Content="FFLogs API Tester" />
       <StackPanel Margin="8 0 0 0">
