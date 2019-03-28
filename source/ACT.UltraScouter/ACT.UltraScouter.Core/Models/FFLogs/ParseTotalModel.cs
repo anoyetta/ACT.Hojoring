@@ -405,6 +405,7 @@ namespace ACT.UltraScouter.Models.FFLogs
         private const int CheckLimit = 2500;
         private const int CheckInterval = 250;
         private static readonly Random Random = new Random(DateTime.Now.Second);
+        private FFLogsPartitions previousPartition = FFLogsPartitions.Current;
 
         public async Task GetParseAsync(
             string characterName,
@@ -462,12 +463,15 @@ namespace ACT.UltraScouter.Models.FFLogs
                     return;
                 }
 
+                var partition = Settings.Instance.FFLogs.Partition;
+
                 if (!isTest)
                 {
                     // 同じ条件でn分以内ならば再取得しない
                     if (characterName == this.CharacterNameFull &&
                         server == this.Server &&
-                        region == this.Region)
+                        region == this.Region &&
+                        partition == this.previousPartition)
                     {
                         var interval = Settings.Instance.FFLogs.RefreshInterval;
                         if (!this.ExistsParses)
@@ -499,7 +503,15 @@ namespace ACT.UltraScouter.Models.FFLogs
                 var query = HttpUtility.ParseQueryString(string.Empty);
                 query["timeframe"] = "historical";
                 query["api_key"] = Settings.Instance.FFLogs.ApiKey;
+
+                if (partition != FFLogsPartitions.Current)
+                {
+                    query["partition"] = ((int)partition).ToString();
+                }
+
                 uri += $"?{query.ToString()}";
+
+                this.previousPartition = partition;
 
                 var parses = default(ParseModel[]);
 

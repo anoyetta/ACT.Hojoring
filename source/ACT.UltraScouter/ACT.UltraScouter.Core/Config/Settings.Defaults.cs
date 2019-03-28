@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using ACT.UltraScouter.Common;
+using ACT.UltraScouter.Models.FFLogs;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.Globalization;
@@ -241,6 +242,7 @@ namespace ACT.UltraScouter.Config
                 RefreshInterval = 8.0d,
                 FromCommandTTL = 14.0d,
                 CategoryColors = FFLogs.DefaultCategoryColors,
+                Partition = FFLogsPartitions.Standard,
             }},
 
             #endregion Target
