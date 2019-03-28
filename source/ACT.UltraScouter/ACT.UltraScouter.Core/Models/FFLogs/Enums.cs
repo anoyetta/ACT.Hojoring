@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace ACT.UltraScouter.Models.FFLogs
 {
     public enum FFLogsRegions
@@ -7,5 +9,23 @@ namespace ACT.UltraScouter.Models.FFLogs
         EU,
         CN,
         KR
+    }
+
+    public enum FFLogsPartitions
+    {
+        [Display(Name = "Current")]
+        Current = 0,
+
+        [Display(Name = "Standard")]
+        Standard = 1,
+
+        [Display(Name = "Non-Standard")]
+        NonStandard = 2,
+
+        [Display(Name = "Standard (Echo)")]
+        StandardEcho = 7,
+
+        [Display(Name = "Non-Standard (Echo)")]
+        NonStandardEcho = 8,
     }
 }
