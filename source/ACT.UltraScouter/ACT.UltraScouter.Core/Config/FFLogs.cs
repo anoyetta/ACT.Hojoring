@@ -92,6 +92,15 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.serverRegion, value);
         }
 
+        private FFLogsPartitions partition = FFLogsPartitions.Current;
+
+        [DataMember]
+        public FFLogsPartitions Partition
+        {
+            get => this.partition;
+            set => this.SetProperty(ref this.partition, value);
+        }
+
         private double refreshInterval = 8.0d;
 
         [DataMember]

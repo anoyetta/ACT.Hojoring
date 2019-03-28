@@ -20,7 +20,7 @@
   ShowInTaskbar="False"
   SizeToContent="WidthAndHeight"
   TextOptions.TextFormattingMode="Display"
-  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextHintingMode="Auto"
   TextOptions.TextRenderingMode="ClearType"
   RenderOptions.ClearTypeHint="Enabled"
   RenderOptions.BitmapScalingMode="HighQuality"

@@ -271,6 +271,10 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
         public IEnumerable<FFLogsRegions> FFLogsRegions => Enum.GetValues(typeof(FFLogsRegions)).Cast<FFLogsRegions>();
 
+        public IEnumerable<EnumContainer<FFLogsPartitions>> FFLogsPartitions => Enum.GetValues(typeof(FFLogsPartitions))
+            .Cast<FFLogsPartitions>()
+            .Select(x => new EnumContainer<FFLogsPartitions>(x));
+
         private ICommand ffLogsDisplayTextFontCommand;
         private ICommand ffLogsDisplayTextColorCommand;
         private ICommand ffLogsDisplayTextOutlineColorCommand;
