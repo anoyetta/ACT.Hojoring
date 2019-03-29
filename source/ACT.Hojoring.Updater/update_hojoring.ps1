@@ -8,8 +8,8 @@ $isUsePreRelease = $FALSE
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev8'
-'* (c) anoyetta, 2018'
+'* rev9'
+'* (c) anoyetta, 2019'
 '***************************************************'
 '* Start Update Hojoring'
 
@@ -52,6 +52,22 @@ function Exit-Update (
     Read-Host "press any key to exit..."
 
     exit $exitCode
+}
+
+function Get-NewerVersion(
+    [bool] $usePreRelease) {
+
+    $cd = Convert-Path .
+    $dll = Join-Path $cd "ACT.Hojoring.Updater.dll"
+
+    $bytes = [System.IO.File]::ReadAllBytes($dll)
+    [System.Reflection.Assembly]::Load($bytes)
+
+    $checker = New-Object ACT.Hojoring.UpdateChecker
+    $checker.UsePreRelease = $usePreRelease
+    $info = $checker.GetNewerVersion()
+
+    return $info
 }
 ## functions <-
 
@@ -96,9 +112,9 @@ else {
     Write-Host ("-> Update Channel: Release")
 }
 
-$updater = Join-Path $cd ".\ACT.Hojoring.Updater.exe"
+$updater = Join-Path $cd ".\ACT.Hojoring.Updater.dll"
 if (!(Test-Path $updater)) {
-    Write-Error ("-> ERROR! ""ACT.Hojoring.Updater.exe"" not found!")
+    Write-Error ("-> ERROR! ""ACT.Hojoring.Updater.dll"" not found!")
     Exit-Update 1
 }
 
@@ -116,14 +132,28 @@ if (Test-Path $updateDir) {
 }
 
 ''
-'-> Download Lastest Version'
-& $updater $updateDir $isUsePreRelease
-'-> Downloaded!'
+'-> Check Lastest Release'
+$info = Get-NewerVersion($isUsePreRelease)
 
+if ([string]::IsNullOrEmpty($info.Version)) {
+    Write-Error ("-> Not found any releases.")
+    Exit-Update 0
+}
+
+# 新しいバージョンを表示する
 ''
-'-> Execute Update.'
+Write-Host ("Available Lastest Version")
+Write-Host ("version : " + $info.Version)
+Write-Host ("tag     : " + $info.Tag)
+Start-Sleep -Milliseconds 1000
+
+# Release Notesを開く
+Start-Process $info.ReleasePageUrl
+Start-Sleep -Milliseconds 1000
+
 do {
-    $in = Read-Host "Are you sure? [Y] or [n]"
+    ''
+    $in = Read-Host "Are you sure to update? [Y] or [n]"
     $in = $in.ToUpper()
 
     if ($in -eq "Y") {
@@ -135,6 +165,16 @@ do {
         Exit-Update 0
     }
 } while ($TRUE)
+
+''
+'-> Download Lastest Version'
+New-Item $updateDir -ItemType Directory
+Start-Sleep -Milliseconds 200
+Invoke-WebRequest -Uri $info.AssetUrl -OutFile (Join-Path $updateDir $info.AssetName)
+'-> Downloaded!'
+
+''
+'-> Execute Update.'
 
 Start-Sleep -Milliseconds 10
 
