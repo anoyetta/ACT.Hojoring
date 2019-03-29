@@ -175,7 +175,7 @@ Global
 		{CFC5E5E2-EFFE-4FC4-9EFD-79D15B1ABF45} = {F9A5BAFF-4C35-4F15-BDD6-81CB8EC6977D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {91001FDF-B748-4513-A399-35F7E9BD37F8}
 		        SolutionGuid = {2A11DDD1-7A46-4236-969A-3942CBE6A01A}
+		SolutionGuid = {91001FDF-B748-4513-A399-35F7E9BD37F8}
 	EndGlobalSection
 EndGlobal
