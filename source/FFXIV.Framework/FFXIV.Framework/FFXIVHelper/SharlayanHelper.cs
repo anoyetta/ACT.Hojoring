@@ -731,10 +731,14 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            if (this.CombatantsDictionary.ContainsKey(player.TargetID))
+            if (this.TargetInfo != null &&
+                this.TargetInfo.CurrentTarget != null)
             {
-                var target = this.CombatantsDictionary[player.TargetID];
-                player.TargetOfTargetID = target.TargetID;
+                player.TargetOfTargetID = (uint)this.TargetInfo.CurrentTarget?.TargetID;
+            }
+            else
+            {
+                player.TargetOfTargetID = 0;
             }
         }
 
