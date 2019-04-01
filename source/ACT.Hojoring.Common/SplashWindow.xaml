@@ -20,15 +20,56 @@
   ShowInTaskbar="False"
   Background="Transparent"
   WindowStartupLocation="CenterScreen"
+  Width="600"
+  Height="600"
   d:DataContext="{d:DesignInstance Type=local:SplashWindow, IsDesignTimeCreatable=True}"
   DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
   <Window.Resources>
-    <FontFamily x:Key="Font">Century Gothic</FontFamily>
+    <sys:Double x:Key="Scale">1.7</sys:Double>
 
-    <sys:Double x:Key="TitleSize">60</sys:Double>
-    <sys:Double x:Key="CopySize">15</sys:Double>
-    <sys:Double x:Key="VersionSize">30</sys:Double>
+    <FontFamily x:Key="Font">Century Gothic</FontFamily>
+    <FontFamily x:Key="SubFont">Century Gothic Italic</FontFamily>
+
+    <SolidColorBrush x:Key="MainForegroundBrush">#000b00</SolidColorBrush>
+
+    <sys:Double x:Key="TitleSize">50</sys:Double>
+    <sys:Double x:Key="CopySize">13</sys:Double>
+    <sys:Double x:Key="VersionSize">19</sys:Double>
+    <sys:Double x:Key="PatchSize">13</sys:Double>
+
+    <Style x:Key="TitleLabelStyle" TargetType="Label">
+      <Setter Property="HorizontalAlignment" Value="{Binding ElementName=TitleLabel, Path=HorizontalAlignment, Mode=OneWay}" />
+      <Setter Property="VerticalAlignment" Value="{Binding ElementName=TitleLabel, Path=VerticalAlignment, Mode=OneWay}" />
+      <Setter Property="Content" Value="{Binding ElementName=TitleLabel, Path=Content, Mode=OneWay}" />
+      <Setter Property="Foreground" Value="{Binding ElementName=TitleLabel, Path=Foreground, Mode=OneWay}" />
+      <Setter Property="FontFamily" Value="{Binding ElementName=TitleLabel, Path=FontFamily, Mode=OneWay}" />
+      <Setter Property="FontWeight" Value="{Binding ElementName=TitleLabel, Path=FontWeight, Mode=OneWay}" />
+      <Setter Property="FontSize" Value="{Binding ElementName=TitleLabel, Path=FontSize, Mode=OneWay}" />
+      <Setter Property="Effect" Value="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
+    </Style>
+
+    <Style x:Key="VersionLabelStyle" TargetType="Label">
+      <Setter Property="HorizontalAlignment" Value="{Binding ElementName=VersionLabel, Path=HorizontalAlignment, Mode=OneWay}" />
+      <Setter Property="VerticalAlignment" Value="{Binding ElementName=VersionLabel, Path=VerticalAlignment, Mode=OneWay}" />
+      <Setter Property="Content" Value="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}" />
+      <Setter Property="Foreground" Value="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}" />
+      <Setter Property="FontFamily" Value="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}" />
+      <Setter Property="FontWeight" Value="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}" />
+      <Setter Property="FontSize" Value="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}" />
+      <Setter Property="Effect" Value="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
+    </Style>
+
+    <Style x:Key="CopylightLabelStyle" TargetType="Label">
+      <Setter Property="HorizontalAlignment" Value="{Binding ElementName=CopyrightLabel, Path=HorizontalAlignment, Mode=OneWay}" />
+      <Setter Property="VerticalAlignment" Value="{Binding ElementName=CopyrightLabel, Path=VerticalAlignment, Mode=OneWay}" />
+      <Setter Property="Content" Value="{Binding ElementName=CopyrightLabel, Path=Content, Mode=OneWay}" />
+      <Setter Property="Foreground" Value="{Binding ElementName=CopyrightLabel, Path=Foreground, Mode=OneWay}" />
+      <Setter Property="FontFamily" Value="{Binding ElementName=CopyrightLabel, Path=FontFamily, Mode=OneWay}" />
+      <Setter Property="FontWeight" Value="{Binding ElementName=CopyrightLabel, Path=FontWeight, Mode=OneWay}" />
+      <Setter Property="FontSize" Value="{Binding ElementName=CopyrightLabel, Path=FontSize, Mode=OneWay}" />
+      <Setter Property="Effect" Value="{Binding ElementName=CopyrightLabel, Path=Effect, Mode=OneWay}" />
+    </Style>
 
     <Style x:Key="FFXIVLabelStyle" TargetType="Label">
       <Setter Property="HorizontalAlignment" Value="{Binding ElementName=FFXIVLabel, Path=HorizontalAlignment, Mode=OneWay}" />
@@ -40,215 +81,149 @@
       <Setter Property="FontSize" Value="{Binding ElementName=FFXIVLabel, Path=FontSize, Mode=OneWay}" />
       <Setter Property="Effect" Value="{Binding ElementName=FFXIVLabel, Path=Effect, Mode=OneWay}" />
     </Style>
+
+    <Style x:Key="ReiwaLabelStyle" TargetType="Label">
+      <Setter Property="HorizontalAlignment" Value="{Binding ElementName=ReiwaLabel, Path=HorizontalAlignment, Mode=OneWay}" />
+      <Setter Property="VerticalAlignment" Value="{Binding ElementName=ReiwaLabel, Path=VerticalAlignment, Mode=OneWay}" />
+      <Setter Property="Content" Value="{Binding ElementName=ReiwaLabel, Path=Content, Mode=OneWay}" />
+      <Setter Property="Foreground" Value="{Binding ElementName=ReiwaLabel, Path=Foreground, Mode=OneWay}" />
+      <Setter Property="FontFamily" Value="{Binding ElementName=ReiwaLabel, Path=FontFamily, Mode=OneWay}" />
+      <Setter Property="FontWeight" Value="{Binding ElementName=ReiwaLabel, Path=FontWeight, Mode=OneWay}" />
+      <Setter Property="FontSize" Value="{Binding ElementName=ReiwaLabel, Path=FontSize, Mode=OneWay}" />
+      <Setter Property="Effect" Value="{Binding ElementName=ReiwaLabel, Path=Effect, Mode=OneWay}" />
+    </Style>
   </Window.Resources>
 
-  <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5 0.5">
-    <StackPanel.RenderTransform>
-      <ScaleTransform
-        ScaleX="1.5"
-        ScaleY="1.5" />
-    </StackPanel.RenderTransform>
+  <Grid RenderTransformOrigin="0.5 0.5">
+    <Grid.RenderTransform>
+      <ScaleTransform ScaleX="{StaticResource Scale}" ScaleY="{StaticResource Scale}" />
+    </Grid.RenderTransform>
 
-    <Label x:Name="Dummy" Background="{Binding MainBrush, Mode=OneWay}" Visibility="Collapsed" />
-    <Grid>
-      <Label x:Name="TitleLabel" Content="Hojoring" Foreground="White" FontFamily="{StaticResource Font}" FontSize="{DynamicResource TitleSize}">
-        <Label.Effect>
-          <DropShadowEffect
-            Opacity="1"
-            Direction="0"
-            ShadowDepth="0"
-            Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
-            BlurRadius="6" />
-        </Label.Effect>
-      </Label>
-      <Label
-        Content="{Binding ElementName=TitleLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=TitleLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=TitleLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=TitleLabel, Path=FontWeight, Mode=OneWay}"
-        FontSize="{Binding ElementName=TitleLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
-      <Label
-        Content="{Binding ElementName=TitleLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=TitleLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=TitleLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=TitleLabel, Path=FontWeight, Mode=OneWay}"
-        FontSize="{Binding ElementName=TitleLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
-      <Label
-        Content="{Binding ElementName=TitleLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=TitleLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=TitleLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=TitleLabel, Path=FontWeight, Mode=OneWay}"
-        FontSize="{Binding ElementName=TitleLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
-      <Label
-        Content="{Binding ElementName=TitleLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=TitleLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=TitleLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=TitleLabel, Path=FontWeight, Mode=OneWay}"
-        FontSize="{Binding ElementName=TitleLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
-      <Label
-        Content="{Binding ElementName=TitleLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=TitleLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=TitleLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=TitleLabel, Path=FontWeight, Mode=OneWay}"
-        FontSize="{Binding ElementName=TitleLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=TitleLabel, Path=Effect, Mode=OneWay}" />
-    </Grid>
+    <StackPanel Panel.ZIndex="-1" VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.4">
+      <Grid Margin="0 0 0 0">
+        <Label x:Name="ReiwaLabel" Content="令" Foreground="#000b00" FontSize="60" FontFamily="{Binding ReiwaFont, Mode=OneWay}">
+          <Label.Effect>
+            <DropShadowEffect Opacity="0.3" Direction="0" ShadowDepth="0" Color="#e7e7eb" BlurRadius="6" />
+          </Label.Effect>
+        </Label>
 
-    <Grid>
-      <Label
-        HorizontalAlignment="Right"
-        x:Name="VersionLabel"
-        Content="v1.0.0"
-        Foreground="White"
-        FontFamily="Consolas"
-        FontSize="{DynamicResource VersionSize}">
-        <Label.Effect>
-          <DropShadowEffect
-            Opacity="1"
-            Direction="0"
-            ShadowDepth="0"
-            Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
-            BlurRadius="6" />
-        </Label.Effect>
-      </Label>
-      <Label
-        HorizontalAlignment="{Binding ElementName=VersionLabel, Path=HorizontalAlignment, Mode=OneWay}"
-        Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
-        FontStyle="{Binding ElementName=VersionLabel, Path=FontStyle, Mode=OneWay}"
-        FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
-      <Label
-        HorizontalAlignment="{Binding ElementName=VersionLabel, Path=HorizontalAlignment, Mode=OneWay}"
-        Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
-        FontStyle="{Binding ElementName=VersionLabel, Path=FontStyle, Mode=OneWay}"
-        FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
-      <Label
-        HorizontalAlignment="{Binding ElementName=VersionLabel, Path=HorizontalAlignment, Mode=OneWay}"
-        Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
-        FontStyle="{Binding ElementName=VersionLabel, Path=FontStyle, Mode=OneWay}"
-        FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
-      <Label
-        HorizontalAlignment="{Binding ElementName=VersionLabel, Path=HorizontalAlignment, Mode=OneWay}"
-        Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
-        FontStyle="{Binding ElementName=VersionLabel, Path=FontStyle, Mode=OneWay}"
-        FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
-      <Label
-        HorizontalAlignment="{Binding ElementName=VersionLabel, Path=HorizontalAlignment, Mode=OneWay}"
-        Content="{Binding ElementName=VersionLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=VersionLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=VersionLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=VersionLabel, Path=FontWeight, Mode=OneWay}"
-        FontStyle="{Binding ElementName=VersionLabel, Path=FontStyle, Mode=OneWay}"
-        FontSize="{Binding ElementName=VersionLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=VersionLabel, Path=Effect, Mode=OneWay}" />
+        <Label Style="{DynamicResource ReiwaLabelStyle}" />
+        <Label Style="{DynamicResource ReiwaLabelStyle}" />
+        <Label Style="{DynamicResource ReiwaLabelStyle}" />
+        <Label Style="{DynamicResource ReiwaLabelStyle}" />
+        <Label Style="{DynamicResource ReiwaLabelStyle}" />
+      </Grid>
 
-      <Label
-        HorizontalAlignment="Left"
-        VerticalAlignment="Center"
-        x:Name="CopyrightLabel"
-        Content="©anoyetta"
-        Foreground="White"
-        FontFamily="Consolas"
-        FontSize="{DynamicResource CopySize}">
-        <Label.Effect>
-          <DropShadowEffect
-            Opacity="1"
-            Direction="0"
-            ShadowDepth="0"
-            Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
-            BlurRadius="6" />
-        </Label.Effect>
-      </Label>
-      <Label
-        HorizontalAlignment="{Binding ElementName=CopyrightLabel, Path=HorizontalAlignment, Mode=OneWay}"
-        VerticalAlignment="{Binding ElementName=CopyrightLabel, Path=VerticalAlignment, Mode=OneWay}"
-        Content="{Binding ElementName=CopyrightLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=CopyrightLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=CopyrightLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=CopyrightLabel, Path=FontWeight, Mode=OneWay}"
-        FontSize="{Binding ElementName=CopyrightLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=CopyrightLabel, Path=Effect, Mode=OneWay}" />
-      <Label
-        HorizontalAlignment="{Binding ElementName=CopyrightLabel, Path=HorizontalAlignment, Mode=OneWay}"
-        VerticalAlignment="{Binding ElementName=CopyrightLabel, Path=VerticalAlignment, Mode=OneWay}"
-        Content="{Binding ElementName=CopyrightLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=CopyrightLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=CopyrightLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=CopyrightLabel, Path=FontWeight, Mode=OneWay}"
-        FontSize="{Binding ElementName=CopyrightLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=CopyrightLabel, Path=Effect, Mode=OneWay}" />
-      <Label
-        HorizontalAlignment="{Binding ElementName=CopyrightLabel, Path=HorizontalAlignment, Mode=OneWay}"
-        VerticalAlignment="{Binding ElementName=CopyrightLabel, Path=VerticalAlignment, Mode=OneWay}"
-        Content="{Binding ElementName=CopyrightLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=CopyrightLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=CopyrightLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=CopyrightLabel, Path=FontWeight, Mode=OneWay}"
-        FontSize="{Binding ElementName=CopyrightLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=CopyrightLabel, Path=Effect, Mode=OneWay}" />
-      <Label
-        HorizontalAlignment="{Binding ElementName=CopyrightLabel, Path=HorizontalAlignment, Mode=OneWay}"
-        VerticalAlignment="{Binding ElementName=CopyrightLabel, Path=VerticalAlignment, Mode=OneWay}"
-        Content="{Binding ElementName=CopyrightLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=CopyrightLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=CopyrightLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=CopyrightLabel, Path=FontWeight, Mode=OneWay}"
-        FontSize="{Binding ElementName=CopyrightLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=CopyrightLabel, Path=Effect, Mode=OneWay}" />
-      <Label
-        HorizontalAlignment="{Binding ElementName=CopyrightLabel, Path=HorizontalAlignment, Mode=OneWay}"
-        VerticalAlignment="{Binding ElementName=CopyrightLabel, Path=VerticalAlignment, Mode=OneWay}"
-        Content="{Binding ElementName=CopyrightLabel, Path=Content, Mode=OneWay}"
-        Foreground="{Binding ElementName=CopyrightLabel, Path=Foreground, Mode=OneWay}"
-        FontFamily="{Binding ElementName=CopyrightLabel, Path=FontFamily, Mode=OneWay}"
-        FontWeight="{Binding ElementName=CopyrightLabel, Path=FontWeight, Mode=OneWay}"
-        FontSize="{Binding ElementName=CopyrightLabel, Path=FontSize, Mode=OneWay}"
-        Effect="{Binding ElementName=CopyrightLabel, Path=Effect, Mode=OneWay}" />
-    </Grid>
+      <Label Height="98" />
 
-    <Grid Margin="0 -10 0 0">
-      <Label
-        x:Name="FFXIVLabel"
-        HorizontalAlignment="Right"
-        VerticalAlignment="Center"
-        Content="{Binding FFXIVVersion, Mode=OneWay}"
-        Foreground="White"
-        FontFamily="Consolas"
-        FontSize="18">
-        <Label.Effect>
-          <DropShadowEffect
-            Opacity="1"
-            Direction="0"
-            ShadowDepth="0"
-            Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
-            BlurRadius="6" />
-        </Label.Effect>
-      </Label>
-      <Label Style="{DynamicResource FFXIVLabelStyle}" />
-      <Label Style="{DynamicResource FFXIVLabelStyle}" />
-      <Label Style="{DynamicResource FFXIVLabelStyle}" />
-      <Label Style="{DynamicResource FFXIVLabelStyle}" />
-      <Label Style="{DynamicResource FFXIVLabelStyle}" />
-      <Label Style="{DynamicResource FFXIVLabelStyle}" />
-    </Grid>
-  </StackPanel>
+      <Grid>
+        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
+        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
+        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
+        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
+        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
+        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
+        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
+      </Grid>
+    </StackPanel>
+
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+      <!---
+      <Label x:Name="Dummy" Background="{Binding MainBrush, Mode=OneWay}" Visibility="Collapsed" />
+      -->
+      <Label x:Name="Dummy" Background="#e7e7eb" Visibility="Collapsed" />
+
+      <Grid>
+        <Label x:Name="TitleLabel" Content="Hojoring" Foreground="{DynamicResource MainForegroundBrush}" FontFamily="{StaticResource Font}" FontSize="{DynamicResource TitleSize}">
+          <Label.Effect>
+            <DropShadowEffect
+              Opacity="1"
+              Direction="0"
+              ShadowDepth="0"
+              Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
+              BlurRadius="3" />
+          </Label.Effect>
+        </Label>
+        <Label Style="{DynamicResource TitleLabelStyle}" />
+        <Label Style="{DynamicResource TitleLabelStyle}" />
+        <Label Style="{DynamicResource TitleLabelStyle}" />
+        <Label Style="{DynamicResource TitleLabelStyle}" />
+        <Label Style="{DynamicResource TitleLabelStyle}" />
+      </Grid>
+
+      <Grid Margin="0 -8 0 0">
+        <Label
+          HorizontalAlignment="Right"
+          x:Name="VersionLabel"
+          Content="v1.0.0"
+          Foreground="{DynamicResource MainForegroundBrush}"
+          FontFamily="{DynamicResource SubFont}"
+          FontSize="{DynamicResource VersionSize}">
+          <Label.Effect>
+            <DropShadowEffect
+              Opacity="1"
+              Direction="0"
+              ShadowDepth="0"
+              Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
+              BlurRadius="2" />
+          </Label.Effect>
+        </Label>
+        <Label Style="{DynamicResource VersionLabelStyle}" />
+        <Label Style="{DynamicResource VersionLabelStyle}" />
+        <Label Style="{DynamicResource VersionLabelStyle}" />
+        <Label Style="{DynamicResource VersionLabelStyle}" />
+        <Label Style="{DynamicResource VersionLabelStyle}" />
+
+        <Label
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          x:Name="CopyrightLabel"
+          Content="©anoyetta"
+          Foreground="{DynamicResource MainForegroundBrush}"
+          FontFamily="{DynamicResource SubFont}"
+          FontSize="{DynamicResource CopySize}">
+          <Label.Effect>
+            <DropShadowEffect
+              Opacity="1"
+              Direction="0"
+              ShadowDepth="0"
+              Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
+              BlurRadius="2" />
+          </Label.Effect>
+        </Label>
+        <Label Style="{DynamicResource CopylightLabelStyle}" />
+        <Label Style="{DynamicResource CopylightLabelStyle}" />
+        <Label Style="{DynamicResource CopylightLabelStyle}" />
+        <Label Style="{DynamicResource CopylightLabelStyle}" />
+        <Label Style="{DynamicResource CopylightLabelStyle}" />
+      </Grid>
+
+      <Grid Margin="0 -10 0 0">
+        <Label
+          x:Name="FFXIVLabel"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Center"
+          Content="{Binding FFXIVVersion, Mode=OneWay}"
+          Foreground="{DynamicResource MainForegroundBrush}"
+          FontFamily="{DynamicResource SubFont}"
+          FontSize="{DynamicResource PatchSize}">
+          <Label.Effect>
+            <DropShadowEffect
+              Opacity="1"
+              Direction="0"
+              ShadowDepth="0"
+              Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
+              BlurRadius="2" />
+          </Label.Effect>
+        </Label>
+        <Label Style="{DynamicResource FFXIVLabelStyle}" />
+        <Label Style="{DynamicResource FFXIVLabelStyle}" />
+        <Label Style="{DynamicResource FFXIVLabelStyle}" />
+        <Label Style="{DynamicResource FFXIVLabelStyle}" />
+        <Label Style="{DynamicResource FFXIVLabelStyle}" />
+        <Label Style="{DynamicResource FFXIVLabelStyle}" />
+      </Grid>
+    </StackPanel>
+  </Grid>
 </Window>
