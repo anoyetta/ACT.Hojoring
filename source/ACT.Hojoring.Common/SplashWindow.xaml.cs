@@ -37,7 +37,7 @@ namespace ACT.Hojoring.Common
 
             if (CultureInfo.CurrentUICulture.Name == "ja-JP")
             {
-                font = new FontFamily("HGSGyoshotai");
+                font = new FontFamily("HGSGyoshotai, Yu Mincho");
             }
             else
             {
