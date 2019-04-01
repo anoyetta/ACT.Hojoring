@@ -753,16 +753,30 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.NPCCombatantsDictionary
             };
 
-            foreach (var dictionary in array)
+            try
             {
-                dictionary
-                    .Where(x => (now - x.Value.Timestamp).TotalSeconds > threshold)
-                    .ToArray()
-                    .Walk(x =>
-                    {
-                        this.CombatantsDictionary.Remove(x.Key);
-                        Thread.Yield();
-                    });
+                if (this.IsScanning)
+                {
+                    return;
+                }
+
+                this.IsScanning = true;
+
+                foreach (var dictionary in array)
+                {
+                    dictionary
+                        .Where(x => (now - x.Value.Timestamp).TotalSeconds > threshold)
+                        .ToArray()
+                        .Walk(x =>
+                        {
+                            this.CombatantsDictionary.Remove(x.Key);
+                            Thread.Yield();
+                        });
+                }
+            }
+            finally
+            {
+                this.IsScanning = false;
             }
         }
     }

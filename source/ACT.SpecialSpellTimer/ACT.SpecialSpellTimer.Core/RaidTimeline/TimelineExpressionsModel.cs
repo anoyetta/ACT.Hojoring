@@ -89,6 +89,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var player = FFXIVPlugin.Instance.GetPlayer();
             if (player != null)
             {
+                if (player.TargetOfTargetID != 0)
+                {
+                    setValue();
+                }
+            }
+
+            void setValue()
+            {
                 var value = player.IsTargetOfTargetMe;
                 if (SetVariable(IS_TOT_ME, value))
                 {
