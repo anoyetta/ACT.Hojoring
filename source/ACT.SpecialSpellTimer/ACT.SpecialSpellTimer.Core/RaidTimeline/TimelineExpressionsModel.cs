@@ -86,23 +86,41 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         public static void RefreshIsToTMe()
         {
+            var name = IS_TOT_ME;
+
             var player = FFXIVPlugin.Instance.GetPlayer();
             if (player != null)
             {
                 if (player.TargetOfTargetID != 0)
                 {
-                    setValue();
+                    var value = player.IsTargetOfTargetMe;
+                    if (SetVariable(name, value))
+                    {
+                        TimelineController.RaiseLog(
+                            $"{TimelineController.TLSymbol} set ENV[\"{name}\"] = {value}");
+                    }
                 }
             }
+        }
 
-            void setValue()
+        /// <summary>
+        /// 第一敵視が自分か？
+        /// </summary>
+        public const string IS_FIRST_ENMITY_ME = "IS_FIRST_ENMITY_ME";
+
+        /// <summary>
+        /// IS_FIRST_ENMITY_ME を更新する
+        /// </summary>
+        public static void RefreshIsFirstEnmityMe()
+        {
+            var name = IS_FIRST_ENMITY_ME;
+
+            var value = SharlayanHelper.Instance.IsFirstEnmityMe;
+
+            if (SetVariable(name, value))
             {
-                var value = player.IsTargetOfTargetMe;
-                if (SetVariable(IS_TOT_ME, value))
-                {
-                    TimelineController.RaiseLog(
-                        $"{TimelineController.TLSymbol} set ENV[\"{IS_TOT_ME}\"] = {value}");
-                }
+                TimelineController.RaiseLog(
+                    $"{TimelineController.TLSymbol} set ENV[\"{name}\"] = {value}");
             }
         }
 
