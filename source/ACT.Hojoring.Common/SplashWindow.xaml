@@ -9,7 +9,7 @@
   mc:Ignorable="d"
   Title="ACT.Hojoring"
   TextOptions.TextFormattingMode="Ideal"
-  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextHintingMode="Auto"
   TextOptions.TextRenderingMode="ClearType"
   RenderOptions.ClearTypeHint="Enabled"
   RenderOptions.BitmapScalingMode="Fant"
@@ -26,17 +26,18 @@
   DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
   <Window.Resources>
-    <sys:Double x:Key="Scale">1.7</sys:Double>
+    <sys:Double x:Key="Scale">1.5</sys:Double>
 
     <FontFamily x:Key="Font">Century Gothic</FontFamily>
     <FontFamily x:Key="SubFont">Century Gothic Italic</FontFamily>
 
-    <SolidColorBrush x:Key="MainForegroundBrush">#000b00</SolidColorBrush>
+    <SolidColorBrush x:Key="BackgroudBrush" Color="#0d0015" />
+    <SolidColorBrush x:Key="MainForegroundBrush" Color="#eaf4fc" />
 
-    <sys:Double x:Key="TitleSize">50</sys:Double>
-    <sys:Double x:Key="CopySize">13</sys:Double>
-    <sys:Double x:Key="VersionSize">19</sys:Double>
-    <sys:Double x:Key="PatchSize">13</sys:Double>
+    <sys:Double x:Key="TitleSize">40</sys:Double>
+    <sys:Double x:Key="CopySize">9</sys:Double>
+    <sys:Double x:Key="VersionSize">16</sys:Double>
+    <sys:Double x:Key="PatchSize">11</sys:Double>
 
     <Style x:Key="TitleLabelStyle" TargetType="Label">
       <Setter Property="HorizontalAlignment" Value="{Binding ElementName=TitleLabel, Path=HorizontalAlignment, Mode=OneWay}" />
@@ -94,17 +95,32 @@
     </Style>
   </Window.Resources>
 
-  <Grid RenderTransformOrigin="0.5 0.5">
+  <Grid RenderTransformOrigin="0.5 0.5" Opacity="0.95">
     <Grid.RenderTransform>
       <ScaleTransform ScaleX="{StaticResource Scale}" ScaleY="{StaticResource Scale}" />
     </Grid.RenderTransform>
 
-    <StackPanel Panel.ZIndex="-1" VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.4">
+    <Rectangle Panel.ZIndex="-2" Width="260" Height="260" Fill="{StaticResource BackgroudBrush}" RadiusX="1" RadiusY="1" Opacity="0.8">
+      <Rectangle.Effect>
+        <DropShadowEffect
+          Color="#0d0015"
+          ShadowDepth="0"
+          Direction="0"
+          BlurRadius="6" />
+      </Rectangle.Effect>
+      <Rectangle.LayoutTransform>
+        <RotateTransform Angle="45" />
+      </Rectangle.LayoutTransform>
+    </Rectangle>
+
+    <StackPanel Panel.ZIndex="-1" VerticalAlignment="Center" HorizontalAlignment="Center">
       <Grid Margin="0 0 0 0">
-        <Label x:Name="ReiwaLabel" Content="令" Foreground="#000b00" FontSize="60" FontFamily="{Binding ReiwaFont, Mode=OneWay}">
+        <Label x:Name="ReiwaLabel" Content="令" Foreground="#adadad" FontSize="40" FontFamily="{Binding ReiwaFont, Mode=OneWay}">
+          <!--
           <Label.Effect>
             <DropShadowEffect Opacity="0.3" Direction="0" ShadowDepth="0" Color="#e7e7eb" BlurRadius="6" />
           </Label.Effect>
+          -->
         </Label>
 
         <Label Style="{DynamicResource ReiwaLabelStyle}" />
@@ -136,6 +152,7 @@
 
       <Grid>
         <Label x:Name="TitleLabel" Content="Hojoring" Foreground="{DynamicResource MainForegroundBrush}" FontFamily="{StaticResource Font}" FontSize="{DynamicResource TitleSize}">
+          <!--
           <Label.Effect>
             <DropShadowEffect
               Opacity="1"
@@ -144,6 +161,7 @@
               Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
               BlurRadius="3" />
           </Label.Effect>
+          -->
         </Label>
         <Label Style="{DynamicResource TitleLabelStyle}" />
         <Label Style="{DynamicResource TitleLabelStyle}" />
@@ -160,6 +178,7 @@
           Foreground="{DynamicResource MainForegroundBrush}"
           FontFamily="{DynamicResource SubFont}"
           FontSize="{DynamicResource VersionSize}">
+          <!--
           <Label.Effect>
             <DropShadowEffect
               Opacity="1"
@@ -168,6 +187,7 @@
               Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
               BlurRadius="2" />
           </Label.Effect>
+          -->
         </Label>
         <Label Style="{DynamicResource VersionLabelStyle}" />
         <Label Style="{DynamicResource VersionLabelStyle}" />
@@ -183,6 +203,7 @@
           Foreground="{DynamicResource MainForegroundBrush}"
           FontFamily="{DynamicResource SubFont}"
           FontSize="{DynamicResource CopySize}">
+          <!--
           <Label.Effect>
             <DropShadowEffect
               Opacity="1"
@@ -191,6 +212,7 @@
               Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
               BlurRadius="2" />
           </Label.Effect>
+          -->
         </Label>
         <Label Style="{DynamicResource CopylightLabelStyle}" />
         <Label Style="{DynamicResource CopylightLabelStyle}" />
@@ -208,6 +230,7 @@
           Foreground="{DynamicResource MainForegroundBrush}"
           FontFamily="{DynamicResource SubFont}"
           FontSize="{DynamicResource PatchSize}">
+          <!--
           <Label.Effect>
             <DropShadowEffect
               Opacity="1"
@@ -216,6 +239,7 @@
               Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
               BlurRadius="2" />
           </Label.Effect>
+          -->
         </Label>
         <Label Style="{DynamicResource FFXIVLabelStyle}" />
         <Label Style="{DynamicResource FFXIVLabelStyle}" />
