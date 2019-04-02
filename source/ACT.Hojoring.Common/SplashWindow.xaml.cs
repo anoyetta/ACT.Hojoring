@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -32,20 +31,9 @@ namespace ACT.Hojoring.Common
         public FontFamily ReiwaFont => this.reiwaFont ?? (this.reiwaFont = this.CreateReiwaFont());
 
         private FontFamily CreateReiwaFont()
-        {
-            var font = default(FontFamily);
-
-            if (CultureInfo.CurrentUICulture.Name == "ja-JP")
-            {
-                font = new FontFamily(new Uri("pack://application:,,,/ACT.Hojoring.Common;component/fonts"), "#HakusyuGyosyo_kk");
-            }
-            else
-            {
-                font = new FontFamily();
-            }
-
-            return font;
-        }
+            => new FontFamily(
+                new Uri("pack://application:,,,/ACT.Hojoring.Common;component/fonts/"),
+                "./#HakusyuGyosyo_kk");
 
         #region Colors
 
