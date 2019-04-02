@@ -263,6 +263,8 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
+        public bool IsFirstEnmityMe { get; private set; }
+
         private readonly List<ActorItem> PartyMemberList = new List<ActorItem>(8);
 
         public List<ActorItem> PartyMembers => this.PartyMemberList.ToList();
@@ -479,6 +481,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
                 var max = this.TargetInfo.EnmityItems.Max(x => x.Enmity);
                 var player = this.CurrentPlayer;
+                var first = default(EnmityEntry);
 
                 foreach (var source in this.TargetInfo.EnmityItems)
                 {
@@ -502,6 +505,11 @@ namespace FFXIV.Framework.FFXIVHelper
                     enmity.HateRate = (int)(((double)enmity.Enmity / (double)max) * 100d);
                     enmity.IsMe = enmity.ID == player?.ID;
 
+                    if (first == null)
+                    {
+                        first = enmity;
+                    }
+
                     if (!existing)
                     {
                         var actor = this.ActorDictionary.ContainsKey(enmity.ID) ?
@@ -519,6 +527,11 @@ namespace FFXIV.Framework.FFXIVHelper
 
                         this.EnmityDictionary[enmity.ID] = enmity;
                     }
+                }
+
+                if (first != null)
+                {
+                    this.IsFirstEnmityMe = first.IsMe;
                 }
             }
         }

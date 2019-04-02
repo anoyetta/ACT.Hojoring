@@ -840,6 +840,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             // グローバル変数を更新する
             TimelineExpressionsModel.RefreshIsToTMe();
+            TimelineExpressionsModel.RefreshIsFirstEnmityMe();
 
             // P-Syncを判定する
             var detectPSyncTask = default(Task);
