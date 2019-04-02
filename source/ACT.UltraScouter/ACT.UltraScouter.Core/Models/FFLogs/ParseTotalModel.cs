@@ -407,6 +407,8 @@ namespace ACT.UltraScouter.Models.FFLogs
         private static readonly Random Random = new Random(DateTime.Now.Second);
         private FFLogsPartitions previousPartition = FFLogsPartitions.Current;
 
+        private static readonly string ServerPrefixKR = "Kr";
+
         public async Task GetParseAsync(
             string characterName,
             string server,
@@ -442,6 +444,12 @@ namespace ACT.UltraScouter.Models.FFLogs
 
             try
             {
+                // サーバー名からKrプレフィックスを除去する
+                if (server.StartsWith(ServerPrefixKR))
+                {
+                    server = server.Replace(ServerPrefixKR, string.Empty);
+                }
+
                 if (string.IsNullOrEmpty(Settings.Instance.FFLogs.ApiKey))
                 {
                     this.SetMessage(NoAPIKeyMessage);
