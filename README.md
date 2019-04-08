@@ -24,8 +24,6 @@ ACT本体のTTS機能をゆっくり実況などで有名な AquesTalk&trade; �
 
 ## インストール
 ### マニュアルインストール
-自分でDLLを入手して手動で追加したい方はこちらの方法になります。
-
 1. 各種ランタイムをインストールする  
 **[Visual Studio 2017 用 Microsoft Visual C++ 再頒布可能パッケージ](https://go.microsoft.com/fwlink/?LinkId=746572)**  
 **[.NET Framework 4.7.2](https://www.microsoft.com/net/download/thank-you/net472)**  
