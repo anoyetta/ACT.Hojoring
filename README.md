@@ -23,12 +23,6 @@ ACT本体のTTS機能をゆっくり実況などで有名な AquesTalk&trade; �
 [pre-release](https://github.com/anoyetta/ACT.Hojoring/releases)
 
 ## インストール
-### ALL-IN-ONE インストール
-ALL-IN-ONEインストーラ「**[Actor](https://github.com/eai04191/Actor)**」を使用してACT本体ごと簡単に導入できます。設定も引き継がれますのでこの方法でのインストールをお勧めします。  
-1. 最新版の Actor を **[こちら](https://github.com/eai04191/Actor/releases)** からダウンロードする  
-2. Actor の **[README](https://github.com/eai04191/Actor)** を読む。
-3. **Actor.exe** を実行する
-
 ### マニュアルインストール
 自分でDLLを入手して手動で追加したい方はこちらの方法になります。
 
@@ -49,6 +43,8 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
     * ACT.SpecialSpellTimer.dll
     * ACT.UltraScouter.dll
     * ACT.TTSYukkuri.dll
+
+詳細な手順は **[anoyetta の開発記録 - ACTおよび補助輪のインストール手順（完全版）](https://anoyetta.hatenablog.com/entry/2019/04/08/132603)** を読んでください。
 
 ### FFXIV_MemoryReader
 補助輪はTamanegiMageさんが開発した [FFXIV_MemoryReader](https://github.com/TamanegiMage/FFXIV_MemoryReader) を利用しています。  
