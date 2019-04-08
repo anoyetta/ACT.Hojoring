@@ -162,7 +162,8 @@ namespace FFXIV.Framework.FFXIVHelper
             lock (this)
             {
                 if (!MemoryHandler.Instance.IsAttached ||
-                    this.currentFFXIVProcess != ffxiv ||
+                    this.currentFFXIVProcess == null ||
+                    this.currentFFXIVProcess?.Id != ffxiv?.Id ||
                     this.currentFFXIVLanguage != ffxivLanguage)
                 {
                     this.currentFFXIVProcess = ffxiv;
