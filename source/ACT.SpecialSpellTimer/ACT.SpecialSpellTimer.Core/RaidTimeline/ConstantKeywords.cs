@@ -238,6 +238,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "00:0139:戦闘開始まで", Category = KewordTypes.AnalyzeEnd },
             new AnalyzeKeyword() { Keyword = WipeoutLog, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutLogEcho, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = "レディチェックを開始しました。", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "「", Category = KewordTypes.Action },
             new AnalyzeKeyword() { Keyword = "」", Category = KewordTypes.Action },
         };
