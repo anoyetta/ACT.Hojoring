@@ -73,6 +73,7 @@
     <Content Include="resources\Actions.sample.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="resources\MobList.ko-KR.master.txt" />
     <Content Include="resources\xivdb\Action.zh-CN.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
