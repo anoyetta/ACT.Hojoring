@@ -25,6 +25,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <NoWarn>
     </NoWarn>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
