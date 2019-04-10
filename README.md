@@ -42,7 +42,7 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
     * ACT.UltraScouter.dll
     * ACT.TTSYukkuri.dll
 
-詳細な手順は **[anoyetta の開発記録 - ACTおよび補助輪のインストール手順（完全版）](https://anoyetta.hatenablog.com/entry/2019/04/08/132603)** を読んでください。
+詳細な手順は **[anoyetta の開発記録 - ACTおよび補助輪のインストール手順（完全版）](https://www.anoyetta.com/entry/2019/04/08/132603)** を読んでください。
 
 ### FFXIV_MemoryReader
 補助輪はTamanegiMageさんが開発した [FFXIV_MemoryReader](https://github.com/TamanegiMage/FFXIV_MemoryReader) を利用しています。  
