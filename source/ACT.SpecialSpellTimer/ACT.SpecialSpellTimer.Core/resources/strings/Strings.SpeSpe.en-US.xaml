@@ -25,7 +25,7 @@
   <system:String x:Key="Common_ManageTags">Manage tags</system:String>
 
   <system:String x:Key="Common_CreateNew">Create new</system:String>
-  <system:String x:Key="Common_CreateSimilarNew">Createe similer new</system:String>
+  <system:String x:Key="Common_CreateSimilarNew">Create similer new</system:String>
   <system:String x:Key="Common_CreateNewTag">Create new Tag</system:String>
   <system:String x:Key="Common_CreateNewSpellPanel">Create new Spell panel</system:String>
   <system:String x:Key="Common_CreateNewSpell">Create new Spell</system:String>
@@ -110,14 +110,14 @@
   <system:String x:Key="Spell_UseHotbrRecastTime">Use Hotbar Recast Time</system:String>
   <system:String x:Key="Spell_HotbarItemName">Name of Hotbar Item</system:String>
   <system:String x:Key="Spell_TextToExtend">Keyword to extend</system:String>
-  <system:String x:Key="Spell_Secounds">secounds</system:String>
-  <system:String x:Key="Spell_ExtendSecounds">secounds, extend.</system:String>
+  <system:String x:Key="Spell_Secounds">seconds</system:String>
+  <system:String x:Key="Spell_ExtendSecounds">seconds, extend.</system:String>
   <system:String x:Key="Spell_ExtendRecastTimeOverOrigal">Extend beyond the original recast time</system:String>
   <system:String x:Key="Spell_IsNotResetBarOnExtended">Don't reset bar on extended</system:String>
   <system:String x:Key="Spell_UpperLimitOfRecastTime">Upper limit of extend</system:String>
-  <system:String x:Key="Spell_WarningTime">secounds, change to warning color it is less than.</system:String>
+  <system:String x:Key="Spell_WarningTime">seconds, change to warning color it is less than.</system:String>
   <system:String x:Key="Spell_WarningTimeChangeFontColor">Change font to warning color</system:String>
-  <system:String x:Key="Spell_BlinkTime">secounds, start blink it is less than.</system:String>
+  <system:String x:Key="Spell_BlinkTime">seconds, start blink it is less than.</system:String>
   <system:String x:Key="Spell_BlinkIcon">Blink icon</system:String>
   <system:String x:Key="Spell_BlinkBar">Blink progress bar</system:String>
   <system:String x:Key="Spell_HideCounter">Hide recast time</system:String>
@@ -130,8 +130,8 @@
   <system:String x:Key="Spell_ToMainPlaybackDevice">Notify to main playback device</system:String>
   <system:String x:Key="Spell_ToSubPlaybackDevice">Notify to sub playback device</system:String>
   <system:String x:Key="Spell_ToDicordTextChannel">Notify TTS to DISCORD's text channel</system:String>
-  <system:String x:Key="Spell_NoticeOnOverThisScounds">secounds, Delay until notify</system:String>
-  <system:String x:Key="Spell_NoticeOnBeforeThisScounds">secounds, Before notify</system:String>
+  <system:String x:Key="Spell_NoticeOnOverThisScounds">seconds, Delay until notify</system:String>
+  <system:String x:Key="Spell_NoticeOnBeforeThisScounds">seconds, Before notify</system:String>
   <system:String x:Key="Spell_UseSequencialTTS">Speak TTS synchronously (Disable simultaneous speak)</system:String>
   <system:String x:Key="Spell_TestSequencialTTS">Test Sync. TTS</system:String>
 
@@ -181,7 +181,7 @@
   <system:String x:Key="Options_ProgressBarBackgroudBrightness">Progress bar background brightness</system:String>
   <system:String x:Key="Options_ProgressBarBackgroudColor">Progress bar background color</system:String>
 
-  <system:String x:Key="Options_TimeToHide">Hide spell timers after completion (secounds)   * Disabled when set to 0 (never hides)</system:String>
+  <system:String x:Key="Options_TimeToHide">Hide spell timers after completion (seconds)   * Disabled when set to 0 (never hides)</system:String>
   <system:String x:Key="Options_WaitingTimeToSyncTTS">Waiting time to Sync TTS (milli seconds)</system:String>
   <system:String x:Key="Options_EnabledPartyPlaceholder">Use party member names in matching.  *&lt;2&gt; - &lt;8&gt; can be used, however the order may be incorrect.</system:String>
   <system:String x:Key="Options_EnabledNotifyDefaultSpellTimer">Notify ACT's spell timer</system:String>
@@ -244,7 +244,7 @@
   <system:String x:Key="Timeline_SaveToSpreadsheet">Save to Spreadsheet</system:String>
   <system:String x:Key="Timeline_SaveToDraftTimeline">Save to draft Timeline</system:String>
   <system:String x:Key="Timeline_SaveToTestLog">Save to test</system:String>
-  <system:String x:Key="Timeline_TotalSecoundsFormat">Show total secounds</system:String>
+  <system:String x:Key="Timeline_TotalSecoundsFormat">Show total seconds</system:String>
   <system:String x:Key="Timeline_ThisIsOrigin">This record is Origin</system:String>
   <system:String x:Key="Timeline_ImportCombatLog">Import CombatLog</system:String>
 
