@@ -41,6 +41,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <NoWarn>
     </NoWarn>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Advanced Combat Tracker">
