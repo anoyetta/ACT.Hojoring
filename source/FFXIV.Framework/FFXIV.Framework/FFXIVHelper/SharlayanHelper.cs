@@ -129,30 +129,14 @@ namespace FFXIV.Framework.FFXIVHelper
         private void DetectFFXIVProcess()
         {
             var ffxiv = FFXIVPlugin.Instance.Process;
-            var ffxivLanguage = string.Empty;
-
-            switch (FFXIVPlugin.Instance.LanguageID)
+            var ffxivLanguage = FFXIVPlugin.Instance.LanguageID switch
             {
-                case Locales.EN:
-                    ffxivLanguage = "English";
-                    break;
-
-                case Locales.JA:
-                    ffxivLanguage = "Japanese";
-                    break;
-
-                case Locales.FR:
-                    ffxivLanguage = "French";
-                    break;
-
-                case Locales.DE:
-                    ffxivLanguage = "German";
-                    break;
-
-                default:
-                    ffxivLanguage = "English";
-                    break;
-            }
+                Locales.EN => "English",
+                Locales.JA => "Japanese",
+                Locales.FR => "French",
+                Locales.DE => "German",
+                _ => "English",
+            };
 
             if (ffxiv == null)
             {
@@ -169,6 +153,11 @@ namespace FFXIV.Framework.FFXIVHelper
                     this.currentFFXIVProcess = ffxiv;
                     this.currentFFXIVLanguage = ffxivLanguage;
 
+                    if (MemoryHandler.Instance.IsAttached)
+                    {
+                        MemoryHandler.Instance.UnsetProcess();
+                    }
+
                     var model = new ProcessModel
                     {
                         Process = ffxiv,
@@ -179,7 +168,7 @@ namespace FFXIV.Framework.FFXIVHelper
                         model,
                         ffxivLanguage);
 
-                    ReaderEx.ProcessModel = model;
+                    ReaderEx.SetProcessModel(model);
 
                     this.ClearData();
                 }
@@ -861,13 +850,17 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public static Combatant CurrentPlayerCombatant { get; private set; }
 
-        public static ProcessModel ProcessModel { get; set; }
+        public static ProcessModel ProcessModel { get; private set; }
 
         public static Func<uint, ActorItem> GetActorCallback { get; set; }
 
         public static Func<uint, ActorItem> GetNPCActorCallback { get; set; }
 
-        private static readonly Lazy<Func<StructuresContainer>> LazyGetStructuresDelegate = new Lazy<Func<StructuresContainer>>(() =>
+        private static Func<StructuresContainer> getStructuresDelegate;
+
+        private static Func<StructuresContainer> GetStructuresDelegate => getStructuresDelegate ??= CreateGetStructuresDelegate();
+
+        private static Func<StructuresContainer> CreateGetStructuresDelegate()
         {
             var property = MemoryHandler.Instance.GetType().GetProperty(
                 "Structures",
@@ -877,7 +870,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 typeof(Func<StructuresContainer>),
                 MemoryHandler.Instance,
                 property.GetMethod);
-        });
+        }
 
 #if false
         private static readonly Lazy<Func<byte[], bool, ActorItem, ActorItem>> LazyResolveActorFromBytesDelegate = new Lazy<Func<byte[], bool, ActorItem, ActorItem>>(() =>
@@ -927,6 +920,13 @@ namespace FFXIV.Framework.FFXIVHelper
                 entry);
 #endif
 
+        public static void SetProcessModel(
+            ProcessModel model)
+        {
+            ProcessModel = model;
+            getStructuresDelegate = null;
+        }
+
         public static List<ActorItem> GetActorSimple(
             bool isScanNPC = false)
         {
@@ -942,7 +942,7 @@ namespace FFXIV.Framework.FFXIVHelper
             var targetAddress = IntPtr.Zero;
             var endianSize = isWin64 ? 8 : 4;
 
-            var structures = LazyGetStructuresDelegate.Value.Invoke();
+            var structures = GetStructuresDelegate.Invoke();
             var sourceSize = structures.ActorItem.SourceSize;
             var limit = structures.ActorItem.EntityCount;
             var characterAddressMap = MemoryHandler.Instance.GetByteArray(Scanner.Instance.Locations[Signatures.CharacterMapKey], endianSize * limit);
@@ -1032,7 +1032,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 return result.ToArray();
             }
 
-            var structures = LazyGetStructuresDelegate.Value.Invoke();
+            var structures = GetStructuresDelegate.Invoke();
 
             var PartyInfoMap = (IntPtr)Scanner.Instance.Locations[Signatures.PartyMapKey];
             var PartyCountMap = Scanner.Instance.Locations[Signatures.PartyCountKey];
@@ -1325,7 +1325,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 return result;
             }
 
-            var structures = LazyGetStructuresDelegate.Value.Invoke();
+            var structures = GetStructuresDelegate.Invoke();
             var targetAddress = (IntPtr)Scanner.Instance.Locations[Signatures.TargetKey];
 
             if (targetAddress.ToInt64() > 0)
