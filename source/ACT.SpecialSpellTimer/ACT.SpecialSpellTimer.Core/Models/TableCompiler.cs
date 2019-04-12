@@ -343,8 +343,10 @@ namespace ACT.SpecialSpellTimer.Models
                 Thread.Yield();
                 var ex3 = spell.CompileRegexExtend2();
                 Thread.Yield();
+                var ex4 = spell.CompileRegexExtend3();
+                Thread.Yield();
 
-                var ex = ex1 ?? ex2 ?? ex3 ?? null;
+                var ex = ex1 ?? ex2 ?? ex3 ?? ex4 ?? null;
                 if (ex != null)
                 {
                     Logger.Write(
@@ -460,12 +462,15 @@ namespace ACT.SpecialSpellTimer.Models
                     spell.KeywordReplaced = string.Empty;
                     spell.KeywordForExtendReplaced1 = string.Empty;
                     spell.KeywordForExtendReplaced2 = string.Empty;
+                    spell.KeywordForExtendReplaced3 = string.Empty;
                     spell.Regex = null;
                     spell.RegexPattern = string.Empty;
                     spell.RegexForExtend1 = null;
                     spell.RegexForExtendPattern1 = string.Empty;
                     spell.RegexForExtend2 = null;
                     spell.RegexForExtendPattern2 = string.Empty;
+                    spell.RegexForExtend3 = null;
+                    spell.RegexForExtendPattern3 = string.Empty;
                 });
 
                 this.CompileSpells();

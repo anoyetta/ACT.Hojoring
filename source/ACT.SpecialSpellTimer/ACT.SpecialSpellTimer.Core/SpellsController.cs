@@ -267,11 +267,11 @@ namespace ACT.SpecialSpellTimer
             // 延長をマッチングする
             if (spell.MatchDateTime > DateTime.MinValue)
             {
-                var keywords = new string[] { spell.KeywordForExtendReplaced1, spell.KeywordForExtendReplaced2 };
-                var regexes = new Regex[] { spell.RegexForExtend1, spell.RegexForExtend2 };
-                var timeToExtends = new double[] { spell.RecastTimeExtending1, spell.RecastTimeExtending2 };
+                var keywords = new string[] { spell.KeywordForExtendReplaced1, spell.KeywordForExtendReplaced2, spell.KeywordForExtendReplaced3 };
+                var regexes = new Regex[] { spell.RegexForExtend1, spell.RegexForExtend2, spell.RegexForExtend3 };
+                var timeToExtends = new double[] { spell.RecastTimeExtending1, spell.RecastTimeExtending2, spell.RecastTimeExtending3 };
 
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < keywords.Length; i++)
                 {
                     var keywordToExtend = keywords[i];
                     var regexToExtend = regexes[i];
