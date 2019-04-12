@@ -1404,6 +1404,7 @@ namespace ACT.SpecialSpellTimer.Models
             n.TimeupHide = this.TimeupHide;
             n.IsReverse = this.IsReverse;
             n.Font = this.Font;
+            n.FontColor = this.FontColor;
             n.FontOutlineColor = this.FontOutlineColor;
             n.WarningFontColor = this.WarningFontColor;
             n.WarningFontOutlineColor = this.WarningFontOutlineColor;
