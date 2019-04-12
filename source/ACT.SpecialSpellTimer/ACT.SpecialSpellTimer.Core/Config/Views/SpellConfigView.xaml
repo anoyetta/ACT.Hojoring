@@ -206,6 +206,7 @@
               <xctk:DoubleUpDown Grid.Column="2" Value="{Binding Model.RecastTimeExtending1, Mode=TwoWay}" FormatString="F2" MinWidth="90" Increment="1" />
               <Label Grid.Column="3" Margin="5 0 0 0" Content="{DynamicResource Spell_ExtendSecounds}" VerticalAlignment="Center" />
             </Grid>
+
             <Grid Margin="0 5 0 0">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -216,6 +217,19 @@
               <Label Grid.Column="0" Margin="0 0 5 0" Content="2" VerticalAlignment="Center" />
               <TextBox Grid.Column="1" Margin="0 0 5 0" Text="{Binding Model.KeywordForExtend2, Mode=TwoWay}" />
               <xctk:DoubleUpDown Grid.Column="2" Value="{Binding Model.RecastTimeExtending2, Mode=TwoWay}" FormatString="F2" MinWidth="90" Increment="1" />
+              <Label Grid.Column="3" Margin="5 0 0 0" Content="{DynamicResource Spell_ExtendSecounds}" VerticalAlignment="Center" />
+            </Grid>
+
+            <Grid Margin="0 5 0 0">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <Label Grid.Column="0" Margin="0 0 5 0" Content="3" VerticalAlignment="Center" />
+              <TextBox Grid.Column="1" Margin="0 0 5 0" Text="{Binding Model.KeywordForExtend3, Mode=TwoWay}" />
+              <xctk:DoubleUpDown Grid.Column="2" Value="{Binding Model.RecastTimeExtending3, Mode=TwoWay}" FormatString="F2" MinWidth="90" Increment="1" />
               <Label Grid.Column="3" Margin="5 0 0 0" Content="{DynamicResource Spell_ExtendSecounds}" VerticalAlignment="Center" />
             </Grid>
 

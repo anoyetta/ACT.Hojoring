@@ -275,6 +275,9 @@ namespace ACT.SpecialSpellTimer.Models
                 row.RegexForExtend2 = null;
                 row.RegexForExtendPattern2 = string.Empty;
                 row.KeywordForExtendReplaced2 = string.Empty;
+                row.RegexForExtend3 = null;
+                row.RegexForExtendPattern3 = string.Empty;
+                row.KeywordForExtendReplaced3 = string.Empty;
 
                 if (string.IsNullOrWhiteSpace(row.BackgroundColor))
                 {
