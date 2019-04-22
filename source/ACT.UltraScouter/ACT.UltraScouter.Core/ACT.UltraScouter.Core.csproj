@@ -86,6 +86,7 @@
     <Compile Include="Config\Settings.Defaults.cs" />
     <Compile Include="Config\Settings.cs" />
     <Compile Include="Config\FFLogs.cs" />
+    <Compile Include="Config\TacticalRadar.cs" />
     <Compile Include="Config\TargetAction.cs" />
     <Compile Include="Config\TargetDistance.cs" />
     <Compile Include="Config\TargetHP.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Config\UI\ViewModels\ConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\BossConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\CombatantsViewModel.cs" />
+    <Compile Include="Config\UI\ViewModels\TacticalRadarConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MobListConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MPTickerConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MeConfigViewModel.cs" />
@@ -123,6 +125,9 @@
     </Compile>
     <Compile Include="Config\UI\Views\FFLogsConfigView.xaml.cs">
       <DependentUpon>FFLogsConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\UI\Views\TacticalRadarConfigView.xaml.cs">
+      <DependentUpon>TacticalRadarConfigView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Config\UI\Views\TargetDistanceConfigView.xaml.cs">
       <DependentUpon>TargetDistanceConfigView.xaml</DependentUpon>
@@ -163,6 +168,8 @@
     <Compile Include="Models\MeInfoModel.cs" />
     <Compile Include="Models\MobInfo.cs" />
     <Compile Include="Models\MobListModel.cs" />
+    <Compile Include="Models\TacticalRadarModel.cs" />
+    <Compile Include="Models\TacticalTarget.cs" />
     <Compile Include="Models\ToTInfoModel.cs" />
     <Compile Include="Models\TargetInfoModel.cs" />
     <Compile Include="Models\BossInfoModel.cs" />
@@ -172,6 +179,7 @@
     <Compile Include="resources\LocalizeExtensions.cs" />
     <Compile Include="ViewModels\EnmityViewModel.cs" />
     <Compile Include="ViewModels\HPBarViewModel.cs" />
+    <Compile Include="ViewModels\TacticalRadarViewModel.cs" />
     <Compile Include="ViewModels\MobListViewModel.cs" />
     <Compile Include="ViewModels\MPTickerViewModel.cs" />
     <Compile Include="ViewModels\FFLogsViewModel.cs" />
@@ -192,8 +200,12 @@
     <Compile Include="Views\FFLogsView.xaml.cs">
       <DependentUpon>FFLogsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TacticalRadarView.xaml.cs">
+      <DependentUpon>TacticalRadarView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Workers\EnmityInfoWorker.cs" />
     <Compile Include="Workers\MainWorker.cs" />
+    <Compile Include="Workers\TacticalRadarWorker.cs" />
     <Compile Include="Workers\MobListWorker.cs" />
     <Compile Include="Workers\MeInfoWorker.cs" />
     <Compile Include="Workers\ToTInfoWorker.cs" />
@@ -259,6 +271,10 @@
     <Page Include="Config\UI\Views\FFLogsConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Config\UI\Views\TacticalRadarConfigView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Config\UI\Views\TargetDistanceConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -341,6 +357,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\NameView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TacticalRadarView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
