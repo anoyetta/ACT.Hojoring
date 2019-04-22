@@ -118,6 +118,13 @@
 パーティメンバーのHP, TP, MPのいずれかが最大値でないとき戦闘中と判断します。
   </system:String>
 
+  <system:String x:Key="TacticalRadar_HorizontalLayout">水平レイアウト</system:String>
+  <system:String x:Key="TacticalRadar_Target">戦術ターゲット</system:String>
+  <system:String x:Key="TacticalRadar_TargetName">ターゲット名</system:String>
+  <system:String x:Key="TacticalRadar_DetectRange">感知距離</system:String>
+  <system:String x:Key="TacticalRadar_NoticeEnabled">通知する</system:String>
+  <system:String x:Key="TacticalRadar_Enabled">有効</system:String>
+
   <system:String x:Key="Help_GotoLastestRelease">GitHubの最終リリースを確認する</system:String>
   <system:String x:Key="Help_ContactToAnoyetta">Discordのフォーラムに参加する</system:String>
   <system:String x:Key="Help_OpenConfig">Configファイルを開く</system:String>
