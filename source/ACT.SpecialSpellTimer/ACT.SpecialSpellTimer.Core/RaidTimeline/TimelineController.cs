@@ -311,6 +311,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 TimelineOverlay.CloseTimeline();
                 TimelineNoticeOverlay.CloseNotice();
+                TimelineImageNoticeModel.Collect();
 
                 this.CurrentTime = TimeSpan.Zero;
                 this.ClearActivity();
