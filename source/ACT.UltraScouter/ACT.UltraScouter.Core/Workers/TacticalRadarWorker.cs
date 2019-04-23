@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
@@ -105,10 +106,11 @@ namespace ACT.UltraScouter.Workers
                 x.Distance2D >= x.Config.DetectRangeMinimum &&
                 x.Distance2D <= x.Config.DetectRangeMaximum &&
                 x.Actor.HPMax != 0 &&
-                x.Actor.HPCurrent < x.Actor.HPMax &&
+                x.Actor.HPMax != 1 &&
                 (
                     (
                         x.Actor.Type == Actor.Type.Monster &&
+                        x.Actor.HPCurrent < x.Actor.HPMax &&
                         x.Actor.HPCurrent > 0
                     )
                     ||
@@ -210,7 +212,15 @@ namespace ACT.UltraScouter.Workers
             }
 
             var model = this.Model as TacticalRadarModel;
-            this.TacticalRadarVM.UpdateTargets(model.TargetActors);
+
+            var actors = default(IEnumerable<ActorItem>);
+
+            lock (this.TargetInfoLock)
+            {
+                actors = model.TargetActors.ToArray();
+            }
+
+            this.TacticalRadarVM.UpdateTargets(actors);
         }
     }
 }
