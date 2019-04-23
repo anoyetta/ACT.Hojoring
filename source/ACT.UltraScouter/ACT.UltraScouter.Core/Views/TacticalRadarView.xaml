@@ -132,7 +132,7 @@
 
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <Grid Margin="0 0 10 7">
+            <Grid Margin="0 0 15 10">
               <StackPanel Orientation="Horizontal">
                 <!-- Heading start -->
                 <DockPanel
