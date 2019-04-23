@@ -143,43 +143,49 @@
 
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <StackPanel Margin="0 0 0 3" Orientation="Horizontal">
-              <Label Content="{DynamicResource TacticalRadar_TargetName}" />
-              <TextBox Margin="5 0 0 0" Text="{Binding TargetName, Mode=TwoWay}" Width="250" />
+            <StackPanel Margin="0 0 0 10">
+              <StackPanel Orientation="Horizontal">
+                <Label x:Name="TargetNameLabel" Content="{DynamicResource TacticalRadar_TargetName}" />
+                <TextBox Margin="5 0 0 0" Text="{Binding TargetName, Mode=TwoWay}" Width="250" />
 
-              <Label Margin="10 0 0 0" Content="{DynamicResource TacticalRadar_DetectRange}" />
-              <xctk:DoubleUpDown
-                Value="{Binding DetectRangeMinimum, Mode=TwoWay}"
-                FormatString="N1"
-                Increment="0.1"
-                Minimum="0"
-                Maximum="9999"
-                Width="95" />
-              <Label Content="～" />
-              <xctk:DoubleUpDown
-                Value="{Binding DetectRangeMaximum, Mode=TwoWay}"
-                FormatString="N1"
-                Increment="0.1"
-                Minimum="0"
-                Maximum="9999"
-                Width="95" />
+                <Label Margin="10 0 0 0" Content="{DynamicResource TacticalRadar_DetectRange}" />
+                <xctk:DoubleUpDown
+                  Value="{Binding DetectRangeMinimum, Mode=TwoWay}"
+                  FormatString="N1"
+                  Increment="0.1"
+                  Minimum="0"
+                  Maximum="999.9"
+                  Width="78" />
+                <Label Content="～" />
+                <xctk:DoubleUpDown
+                  Value="{Binding DetectRangeMaximum, Mode=TwoWay}"
+                  FormatString="N1"
+                  Increment="0.1"
+                  Minimum="0"
+                  Maximum="999.9"
+                  Width="78" />
 
-              <CheckBox
-                Margin="15 0 0 0"
-                Content="{DynamicResource TacticalRadar_NoticeEnabled}"
-                IsChecked="{Binding IsNoticeEnabled, Mode=TwoWay}" />
+                <CheckBox
+                  Margin="15 0 0 0"
+                  Content="{DynamicResource TacticalRadar_NoticeEnabled}"
+                  IsChecked="{Binding IsNoticeEnabled, Mode=TwoWay}" />
 
-              <CheckBox
-                Margin="15 0 0 0"
-                Content="{DynamicResource TacticalRadar_Enabled}"
-                IsChecked="{Binding IsEnabled, Mode=TwoWay}" />
+                <CheckBox
+                  Margin="15 0 0 0"
+                  Content="{DynamicResource TacticalRadar_Enabled}"
+                  IsChecked="{Binding IsEnabled, Mode=TwoWay}" />
 
-              <TextBlock Margin="20 0 0 0" VerticalAlignment="Center">
-                <Hyperlink
-                  Command="{Binding RemoveCommand, Mode=OneWay}">
-                  <TextBlock Text="✕" />
-                </Hyperlink>
-              </TextBlock>
+                <TextBlock Margin="20 0 0 0" VerticalAlignment="Center">
+                  <Hyperlink Command="{Binding RemoveCommand, Mode=OneWay}">
+                    <TextBlock Text="✕" />
+                  </Hyperlink>
+                </TextBlock>
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal" Margin="0 2 0 0">
+                <Label Content="TTS" Width="{Binding ElementName=TargetNameLabel, Path=ActualWidth, Mode=OneWay}" />
+                <TextBox Margin="5 0 0 0" Text="{Binding TTS, Mode=TwoWay}" Width="250" />
+              </StackPanel>
             </StackPanel>
           </DataTemplate>
         </ItemsControl.ItemTemplate>

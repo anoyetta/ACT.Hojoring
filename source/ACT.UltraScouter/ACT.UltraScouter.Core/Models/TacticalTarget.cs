@@ -60,7 +60,20 @@ namespace ACT.UltraScouter.Models
         public ActorItem TargetActor
         {
             get => this.targetActor;
-            set => this.SetProperty(ref this.targetActor, value);
+            set
+            {
+                if (this.targetActor == null ||
+                    value == null ||
+                    this.targetActor.UUID != value.UUID)
+                {
+                    this.targetActor = value;
+
+                    this.RaisePropertyChanged();
+                    this.RaisePropertyChanged(nameof(this.IsPC));
+                    this.RaisePropertyChanged(nameof(this.IsMonster));
+                    this.RaisePropertyChanged(nameof(this.JobIcon));
+                }
+            }
         }
 
         private TacticalItem targetConfig;

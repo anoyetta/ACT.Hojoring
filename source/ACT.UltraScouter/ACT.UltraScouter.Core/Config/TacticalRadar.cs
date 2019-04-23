@@ -146,7 +146,7 @@ namespace ACT.UltraScouter.Config
             set;
         }
 
-        private string targetName;
+        private string targetName = string.Empty;
 
         [XmlAttribute("target")]
         public string TargetName
@@ -164,7 +164,7 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.detectRangeMinimum, value);
         }
 
-        private double detectRangeMaximum = 1500;
+        private double detectRangeMaximum = 999.9;
 
         [XmlAttribute("detect-range-max")]
         public double DetectRangeMaximum
@@ -175,11 +175,20 @@ namespace ACT.UltraScouter.Config
 
         private bool isNoticeEnabled;
 
-        [XmlAttribute("notice")]
+        [XmlAttribute("notice-enabled")]
         public bool IsNoticeEnabled
         {
             get => this.isNoticeEnabled;
             set => this.SetProperty(ref this.isNoticeEnabled, value);
+        }
+
+        private string tts = string.Empty;
+
+        [XmlAttribute("tts")]
+        public string TTS
+        {
+            get => this.tts;
+            set => this.SetProperty(ref this.tts, value);
         }
 
         private bool isEnabled = true;

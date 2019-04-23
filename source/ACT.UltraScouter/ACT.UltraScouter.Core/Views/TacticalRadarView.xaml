@@ -27,7 +27,8 @@
   Background="#01000000"
   Left="{Binding Path=Config.Location.X, Mode=TwoWay}"
   Top="{Binding Path=Config.Location.Y, Mode=TwoWay}"
-  d:DataContext="{d:DesignInstance Type=vm:TacticalRadarViewModel, IsDesignTimeCreatable=True}">
+  d:DataContext="{d:DesignInstance Type=vm:TacticalRadarViewModel, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
@@ -74,8 +75,8 @@
             <Setter Property="FontStretch" Value="{Binding Config.DisplayText.Font.Stretch, Mode=OneWay}" />
             <Setter Property="FontWeight" Value="{Binding Config.DisplayText.Font.Weight, Mode=OneWay}" />
             <Setter Property="FontStyle" Value="{Binding Config.DisplayText.Font.Style, Mode=OneWay}" />
-            <Setter Property="BlurRadius" Value="{Binding Config.DisplayText.Font.BlurRadius, Mode=OneWay}" />
-            <Setter Property="BlurOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=2}" />
+            <Setter Property="BlurRadius" Value="{Binding Config.DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=2}" />
+            <Setter Property="BlurOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
             <Setter Property="StrokeOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
           </Style>
 
@@ -93,7 +94,7 @@
                 <DropShadowEffect
                   Direction="0"
                   ShadowDepth="0"
-                  BlurRadius="{Binding Config.DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.2}"
+                  BlurRadius="{Binding Config.DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.4}"
                   Color="{Binding Config.DisplayText.OutlineColor, Mode=OneWay}"
                   Opacity="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
               </Setter.Value>
@@ -111,7 +112,7 @@
             <Setter Property="FontStyle" Value="{Binding Config.DisplayText.Font.Style, Mode=OneWay}" />
             <Setter Property="BlurOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
             <Setter Property="StrokeOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
-            <Setter Property="FontSize" Value="{Binding Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" />
+            <Setter Property="FontSize" Value="{Binding Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.85}" />
             <Setter Property="StrokeThickness" Value="{Binding Config.DisplayText.Font.OutlineThickness, Mode=OneWay}" />
             <Setter Property="BlurRadius" Value="{Binding Config.DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=2}" />
           </Style>
@@ -131,21 +132,18 @@
 
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <Grid Margin="0 0 10 5">
+            <Grid Margin="0 0 10 7">
               <StackPanel Orientation="Horizontal">
                 <!-- Heading start -->
-                <Viewbox
-                  Visibility="{Binding IsMonster, Mode=OneWay, ConverterParameter={StaticResource VisibilityConverter}}"
+                <DockPanel
+                  Visibility="{Binding IsMonster, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
                   VerticalAlignment="Center"
                   Margin="0 0 6 0"
-                  Width="{Binding ElementName=DirectionGrid, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.73}"
-                  Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}"
-                  Stretch="UniformToFill"
                   RenderTransformOrigin="0.5 0.5">
-                  <Viewbox.RenderTransform>
+                  <DockPanel.RenderTransform>
                     <RotateTransform
                       Angle="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OriginAngle, Mode=OneWay}" />
-                  </Viewbox.RenderTransform>
+                  </DockPanel.RenderTransform>
 
                   <Grid
                     RenderTransformOrigin="0.5 0.5">
@@ -153,17 +151,18 @@
                       <RotateTransform Angle="{Binding Path=HeadAngle, Mode=OneWay}" />
                     </Grid.RenderTransform>
 
-                    <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowAltCircleUpRegular" />
-                    <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowAltCircleUpRegular" />
-                    <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowAltCircleUpRegular" />
-                    <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowAltCircleUpRegular" />
-                    <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowAltCircleUpRegular" />
-                    <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowAltCircleUpRegular" />
+                    <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowAltCircleUpRegular" Width="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.2}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" />
+                    <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowAltCircleUpRegular" Width="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.2}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" />
+                    <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowAltCircleUpRegular" Width="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.2}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" />
+                    <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowAltCircleUpRegular" Width="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.2}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" />
+                    <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowAltCircleUpRegular" Width="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.2}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" />
+                    <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowAltCircleUpRegular" Width="{Binding ElementName=NameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.2}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" />
                   </Grid>
-                </Viewbox>
+                </DockPanel>
                 <!-- Heading end -->
 
-                <Grid HorizontalAlignment="Center">
+                <Grid
+                  VerticalAlignment="Center">
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
@@ -195,22 +194,22 @@
                 <Grid
                   VerticalAlignment="Center"
                   x:Name="DirectionGrid"
-                  Margin="5 0 0 0"
+                  Margin="8 0 0 0"
                   MinWidth="{Binding ElementName=NameLabel, Path=ActualHeight, Converter={StaticResource MultipleConverter}, ConverterParameter=2.1}">
-                  <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                  </Grid.RowDefinitions>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
 
                   <!-- Direction Arrow -->
-                  <Viewbox
-                    Grid.Row="0"
-                    Height="{Binding ElementName=NameLabel, Path=ActualHeight, Converter={StaticResource MultipleConverter}, ConverterParameter=1.1}"
+                  <DockPanel
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
                     RenderTransformOrigin="0.5 0.5">
-                    <Viewbox.RenderTransform>
+                    <DockPanel.RenderTransform>
                       <RotateTransform
                         Angle="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OriginAngle, Mode=OneWay}" />
-                    </Viewbox.RenderTransform>
+                    </DockPanel.RenderTransform>
 
                     <Grid
                       RenderTransformOrigin="0.5 0.5">
@@ -218,19 +217,19 @@
                         <RotateTransform Angle="{Binding Path=DirectionAngle, Mode=OneWay}" />
                       </Grid.RenderTransform>
 
-                      <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowUpSolid" />
-                      <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowUpSolid" />
-                      <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowUpSolid" />
-                      <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowUpSolid" />
-                      <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowUpSolid" />
-                      <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowUpSolid" />
+                      <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowUpSolid" Width="{Binding ElementName=NameLabel, Path=ActualHeight, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" />
+                      <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowUpSolid" Width="{Binding ElementName=NameLabel, Path=ActualHeight, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" />
+                      <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowUpSolid" Width="{Binding ElementName=NameLabel, Path=ActualHeight, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" />
+                      <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowUpSolid" Width="{Binding ElementName=NameLabel, Path=ActualHeight, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" />
+                      <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowUpSolid" Width="{Binding ElementName=NameLabel, Path=ActualHeight, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" />
+                      <iconpack:PackIconFontAwesome Style="{DynamicResource OutlineIconStyle}" Kind="ArrowUpSolid" Width="{Binding ElementName=NameLabel, Path=ActualHeight, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" />
                     </Grid>
-                  </Viewbox>
+                  </DockPanel>
 
                   <ctrl:LightOutlineTextBlock
-                    Grid.Row="1"
-                    Margin="0 2 0 0"
-                    HorizontalAlignment="Center"
+                    Grid.Column="1"
+                    Margin="4 0 0 0"
+                    VerticalAlignment="Bottom"
                     Style="{DynamicResource DistanceStyle}"
                     Text="{Binding Distance, Mode=OneWay, StringFormat=N1}" />
                 </Grid>

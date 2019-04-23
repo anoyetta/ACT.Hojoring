@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Data;
 using System.Windows.Threading;
+using ACT.UltraScouter.Common;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
@@ -88,12 +89,23 @@ namespace ACT.UltraScouter.ViewModels
                     }
                     else
                     {
+                        var config = this.Config.TacticalItems.FirstOrDefault(x =>
+                            x.TargetName.ToLower() == clone.Name.ToLower());
+
                         exists = new TacticalTarget()
                         {
-                            TargetActor = clone
+                            TargetActor = clone,
+                            TargetConfig = config,
                         };
 
                         this.TacticalTargetList.Add(exists);
+
+                        if (exists.TargetConfig != null &&
+                            exists.TargetConfig.IsNoticeEnabled &&
+                            !string.IsNullOrEmpty(exists.TargetConfig.TTS))
+                        {
+                            TTSWrapper.Speak(exists.TargetConfig.TTS);
+                        }
                     }
 
                     exists.UpdateTargetInfo();
