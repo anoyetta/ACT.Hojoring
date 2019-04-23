@@ -51,7 +51,7 @@ namespace ACT.UltraScouter.Models
 
             this.Distance = this.TargetActor.Coordinate.Distance2D(player.Coordinate);
 
-            var rad = this.TargetActor.Coordinate.AngleTo(player.Coordinate);
+            var rad = player.Coordinate.AngleTo(this.TargetActor.Coordinate);
             this.DirectionAngle = rad * 180.0 / Math.PI;
         }
 

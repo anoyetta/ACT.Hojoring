@@ -43,7 +43,7 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public double HeadingDegree => this.heading / 6.0 * 360.0 * -1.0;
+        public double HeadingDegree => (this.heading / 6.0) * 360.0 * -1.0;
 
         public float Elevation
         {
