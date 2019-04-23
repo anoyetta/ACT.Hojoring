@@ -65,7 +65,7 @@ namespace ACT.UltraScouter.Workers
                 return;
             }
 
-            if (!this.TacticalRadarView.ViewModel.OverlayVisible ||
+            if (!config.Visible ||
                 !SharlayanHelper.Instance.IsExistsActors ||
                 !config.TacticalItems.Any(x => x.IsEnabled))
             {
@@ -90,8 +90,8 @@ namespace ACT.UltraScouter.Workers
                 select new
                 {
                     Actor = x,
-                    Distance2D = x.Coordinate.Distance2D(player.Coordinate),
                     Config = y,
+                    Distance2D = x.Coordinate.Distance2D(player.Coordinate),
                 };
 
             if (!query.Any())
