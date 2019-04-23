@@ -994,7 +994,7 @@ namespace ACT.SpecialSpellTimer.Models
 
                 // <JOB>形式を登録する ただし、この場合は正規表現のグループ形式とする
                 // また、グループ名にはジョブの略称を設定する
-                // ex. <PLD> → (?<PLDs>Taro Paladin|Jiro Paladin)
+                // ex. <PLD> → (?<_PLD>Taro Paladin|Jiro Paladin)
                 names = string.Join(
                     "|",
                     combatantsByJob.Select(x => x.NamesRegex).Concat(new[]
@@ -1012,12 +1012,12 @@ namespace ACT.SpecialSpellTimer.Models
             }
 
             // ロールによるプレースホルダを登録する
-            // ex. <TANK>   -> (?<TANKs>Taro Paladin|Jiro Paladin)
-            // ex. <HEALER> -> (?<HEALERs>Taro Paladin|Jiro Paladin)
-            // ex. <DPS>    -> (?<DPSs>Taro Paladin|Jiro Paladin)
-            // ex. <MELEE>  -> (?<MELEEs>Taro Paladin|Jiro Paladin)
-            // ex. <RANGE>  -> (?<RANGEs>Taro Paladin|Jiro Paladin)
-            // ex. <MAGIC>  -> (?<MAGICs>Taro Paladin|Jiro Paladin)
+            // ex. <TANK>   -> (?<_TANK>Taro Paladin|Jiro Paladin)
+            // ex. <HEALER> -> (?<_HEALER>Taro Paladin|Jiro Paladin)
+            // ex. <DPS>    -> (?<_DPS>Taro Paladin|Jiro Paladin)
+            // ex. <MELEE>  -> (?<_MELEE>Taro Paladin|Jiro Paladin)
+            // ex. <RANGE>  -> (?<_RANGE>Taro Paladin|Jiro Paladin)
+            // ex. <MAGIC>  -> (?<_MAGIC>Taro Paladin|Jiro Paladin)
             var partyListByRole = FFXIVPlugin.Instance.GetPatryListByRole();
             foreach (var role in partyListByRole)
             {
