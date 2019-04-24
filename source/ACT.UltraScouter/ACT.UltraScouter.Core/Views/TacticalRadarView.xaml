@@ -37,6 +37,22 @@
     <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />
     <cnv:StrokeThicknessToBlurRadiusConverter x:Key="StrokeThicknessToBlurRadiusConverter" />
     <fwcnv:MultipleConverter x:Key="MultipleConverter" />
+
+    <Style x:Key="CameraStyle" TargetType="{x:Type ctrl:LightOutlineTextBlock}">
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Fill" Value="{Binding Config.DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+      <Setter Property="Stroke" Value="{Binding Config.DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+      <Setter Property="FontFamily" Value="{Binding Config.DisplayText.Font.FontFamily, Mode=OneWay}" />
+      <Setter Property="FontStretch" Value="{Binding Config.DisplayText.Font.Stretch, Mode=OneWay}" />
+      <Setter Property="FontWeight" Value="{Binding Config.DisplayText.Font.Weight, Mode=OneWay}" />
+      <Setter Property="FontStyle" Value="{Binding Config.DisplayText.Font.Style, Mode=OneWay}" />
+      <Setter Property="BlurOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+      <Setter Property="StrokeOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+      <Setter Property="FontSize" Value="{Binding Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.80}" />
+      <Setter Property="StrokeThickness" Value="{Binding Config.DisplayText.Font.OutlineThickness, Mode=OneWay}" />
+      <Setter Property="BlurRadius" Value="{Binding Config.DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=2}" />
+    </Style>
   </Window.Resources>
 
   <Border
@@ -56,7 +72,13 @@
       </Style>
     </d:DesignerProperties.DesignStyle>
 
-    <Grid Margin="12 9 13 6">
+    <StackPanel Margin="12 9 13 6">
+      <ctrl:LightOutlineTextBlock
+        Visibility="{Binding Config.IsDebugMode, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
+        Margin="0 0 0 8"
+        Style="{DynamicResource CameraStyle}"
+        Text="{Binding CameraHeading, Mode=OneWay, StringFormat=Camera: {0:N2}}" />
+
       <ItemsControl
         Grid.IsSharedSizeScope="True"
         Focusable="False"
@@ -112,7 +134,7 @@
             <Setter Property="FontStyle" Value="{Binding Config.DisplayText.Font.Style, Mode=OneWay}" />
             <Setter Property="BlurOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
             <Setter Property="StrokeOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
-            <Setter Property="FontSize" Value="{Binding Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.85}" />
+            <Setter Property="FontSize" Value="{Binding Config.DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.80}" />
             <Setter Property="StrokeThickness" Value="{Binding Config.DisplayText.Font.OutlineThickness, Mode=OneWay}" />
             <Setter Property="BlurRadius" Value="{Binding Config.DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=2}" />
           </Style>
@@ -132,7 +154,10 @@
 
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <Grid Margin="0 0 15 10">
+            <Grid
+              Margin="0 0 15 10"
+              Visibility="{Binding IsExistsName, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+
               <StackPanel Orientation="Horizontal">
                 <!-- Heading start -->
                 <DockPanel
@@ -194,7 +219,7 @@
                 <Grid
                   VerticalAlignment="Center"
                   x:Name="DirectionGrid"
-                  Margin="8 0 0 0"
+                  Margin="15 0 0 0"
                   MinWidth="{Binding ElementName=NameLabel, Path=ActualHeight, Converter={StaticResource MultipleConverter}, ConverterParameter=2.1}">
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -228,17 +253,39 @@
 
                   <ctrl:LightOutlineTextBlock
                     Grid.Column="1"
-                    Margin="4 0 0 0"
-                    VerticalAlignment="Bottom"
+                    Margin="8 0 0 0"
+                    VerticalAlignment="Center"
                     Style="{DynamicResource DistanceStyle}"
                     Text="{Binding Distance, Mode=OneWay, StringFormat=N1}" />
                 </Grid>
                 <!-- Direction & Distance end -->
+
+                <!-- debug info start -->
+                <StackPanel
+                  Visibility="{Binding Config.IsDebugMode, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
+                  Margin="15 0 0 0"
+                  Orientation="Horizontal">
+                  <ctrl:LightOutlineTextBlock
+                    VerticalAlignment="Center"
+                    Style="{DynamicResource DistanceStyle}"
+                    Text="{Binding Heading, Mode=OneWay, StringFormat=Head: {0:N2}}" />
+                  <ctrl:LightOutlineTextBlock
+                    Margin="6 0 0 0"
+                    VerticalAlignment="Center"
+                    Style="{DynamicResource DistanceStyle}"
+                    Text="{Binding X, Mode=OneWay, StringFormat=X: {0:N2}}" />
+                  <ctrl:LightOutlineTextBlock
+                    Margin="6 0 0 0"
+                    VerticalAlignment="Center"
+                    Style="{DynamicResource DistanceStyle}"
+                    Text="{Binding Y, Mode=OneWay, StringFormat=Y: {0:N2}}" />
+                </StackPanel>
+                <!-- debug info end -->
               </StackPanel>
             </Grid>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>
-    </Grid>
+    </StackPanel>
   </Border>
 </Window>
