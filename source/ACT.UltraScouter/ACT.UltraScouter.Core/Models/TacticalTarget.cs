@@ -85,7 +85,6 @@ namespace ACT.UltraScouter.Models
                     this.targetActor.UUID != value.UUID)
                 {
                     this.targetActor = value;
-
                     this.RaisePropertyChanged();
                     this.RaiseUpdateInfo();
                 }
