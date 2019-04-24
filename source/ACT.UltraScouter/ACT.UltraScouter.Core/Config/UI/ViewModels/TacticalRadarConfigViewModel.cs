@@ -22,6 +22,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         private ICommand changeFontCommand;
         private ICommand changeTextColorCommand;
         private ICommand changeTextOutlineColorCommand;
+        private ICommand changeBackgroundColorCommand;
 
         public ICommand ChangeFontCommand =>
             this.changeFontCommand ??
@@ -40,5 +41,10 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
             (this.changeTextOutlineColorCommand =
             new ChangeColorCommand(
                 (color) => this.TacticalRadar.DisplayText.OutlineColor = color));
+
+        public ICommand ChangeBackgroundColorCommand =>
+            this.changeBackgroundColorCommand ??
+            (this.changeBackgroundColorCommand =
+            new ChangeColorCommand((color) => this.TacticalRadar.Background = color));
     }
 }

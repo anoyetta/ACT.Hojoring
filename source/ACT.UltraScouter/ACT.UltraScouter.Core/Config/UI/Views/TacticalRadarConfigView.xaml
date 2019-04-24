@@ -116,7 +116,7 @@
         Content="{DynamicResource Common_Background}" />
       <TextBlock Margin="7 0 0 0" FontWeight="Bold">
         <Hyperlink
-          Command="{Binding EnmityBackgroundColorCommand, Mode=OneWay}"
+          Command="{Binding ChangeBackgroundColorCommand, Mode=OneWay}"
           CommandParameter="{Binding TacticalRadar.Background}">
           <TextBlock Text="{DynamicResource Common_FillColor}" />
         </Hyperlink>
