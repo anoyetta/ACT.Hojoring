@@ -72,7 +72,7 @@
       </Style>
     </d:DesignerProperties.DesignStyle>
 
-    <StackPanel Margin="12 9 13 6">
+    <StackPanel Margin="10 10 0 0">
       <ctrl:LightOutlineTextBlock
         Visibility="{Binding Config.IsDebugMode, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
         Margin="0 0 0 8"
@@ -157,8 +157,14 @@
             <Grid
               Margin="0 0 15 10"
               Visibility="{Binding IsExistsName, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
 
-              <StackPanel Orientation="Horizontal">
+              <StackPanel
+                Grid.Row="0"
+                Orientation="Horizontal">
                 <!-- Heading start -->
                 <DockPanel
                   Visibility="{Binding IsMonster, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
@@ -259,29 +265,30 @@
                     Text="{Binding Distance, Mode=OneWay, StringFormat=N1}" />
                 </Grid>
                 <!-- Direction & Distance end -->
-
-                <!-- debug info start -->
-                <StackPanel
-                  Visibility="{Binding Config.IsDebugMode, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
-                  Margin="15 0 0 0"
-                  Orientation="Horizontal">
-                  <ctrl:LightOutlineTextBlock
-                    VerticalAlignment="Center"
-                    Style="{DynamicResource DistanceStyle}"
-                    Text="{Binding Heading, Mode=OneWay, StringFormat=Head: {0:N2}}" />
-                  <ctrl:LightOutlineTextBlock
-                    Margin="6 0 0 0"
-                    VerticalAlignment="Center"
-                    Style="{DynamicResource DistanceStyle}"
-                    Text="{Binding X, Mode=OneWay, StringFormat=X: {0:N2}}" />
-                  <ctrl:LightOutlineTextBlock
-                    Margin="6 0 0 0"
-                    VerticalAlignment="Center"
-                    Style="{DynamicResource DistanceStyle}"
-                    Text="{Binding Y, Mode=OneWay, StringFormat=Y: {0:N2}}" />
-                </StackPanel>
-                <!-- debug info end -->
               </StackPanel>
+
+              <!-- debug info start -->
+              <StackPanel
+                Grid.Row="1"
+                Visibility="{Binding Config.IsDebugMode, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
+                Margin="0 3 0 0"
+                Orientation="Horizontal">
+                <ctrl:LightOutlineTextBlock
+                  VerticalAlignment="Center"
+                  Style="{DynamicResource DistanceStyle}"
+                  Text="{Binding Heading, Mode=OneWay, StringFormat=Head: {0:N2}}" />
+                <ctrl:LightOutlineTextBlock
+                  Margin="6 0 0 0"
+                  VerticalAlignment="Center"
+                  Style="{DynamicResource DistanceStyle}"
+                  Text="{Binding X, Mode=OneWay, StringFormat=X: {0:N2}}" />
+                <ctrl:LightOutlineTextBlock
+                  Margin="6 0 0 0"
+                  VerticalAlignment="Center"
+                  Style="{DynamicResource DistanceStyle}"
+                  Text="{Binding Y, Mode=OneWay, StringFormat=Y: {0:N2}}" />
+              </StackPanel>
+              <!-- debug info end -->
             </Grid>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
