@@ -56,9 +56,20 @@ namespace ACT.UltraScouter.Models
                 return;
             }
 
-            this.Distance = this.TargetActor.Coordinate.Distance2D(player.Coordinate);
+            this.Distance = Math.Round(Math.Sqrt(
+                Math.Pow(this.X - player.X, 2) +
+                Math.Pow(this.Y - player.Y, 2)),
+                1, MidpointRounding.AwayFromZero);
 
-            var rad = player.Coordinate.AngleTo(this.TargetActor.Coordinate);
+            var x1 = player.X;
+            var y1 = player.Y;
+            var x2 = this.targetActor.X;
+            var y2 = this.targetActor.Y;
+
+            var rad = Math.Atan2(
+                y2 - y1,
+                x2 - x1);
+
             this.DirectionAngle = rad * 180.0 / Math.PI;
         }
 
@@ -148,8 +159,8 @@ namespace ACT.UltraScouter.Models
         }
 
         public double Heading => this.targetActor?.Heading ?? 0;
-        public double X => this.targetActor?.Coordinate.X ?? 0;
-        public double Y => this.targetActor?.Coordinate.Y ?? 0;
-        public double Z => this.targetActor?.Coordinate.Z ?? 0;
+        public double X => this.targetActor?.X ?? 0;
+        public double Y => this.targetActor?.Y ?? 0;
+        public double Z => this.targetActor?.Z ?? 0;
     }
 }
