@@ -211,6 +211,7 @@ namespace ACT.SpecialSpellTimer.Models
         private string keyword;
         private string keywordForExtend1;
         private string keywordForExtend2;
+        private string keywordForExtend3;
 
         public bool RegexEnabled
         {
@@ -222,6 +223,7 @@ namespace ACT.SpecialSpellTimer.Models
                     this.KeywordReplaced = string.Empty;
                     this.KeywordForExtendReplaced1 = string.Empty;
                     this.KeywordForExtendReplaced2 = string.Empty;
+                    this.KeywordForExtendReplaced3 = string.Empty;
 
                     if (this.IsRealtimeCompile)
                     {
@@ -246,6 +248,16 @@ namespace ACT.SpecialSpellTimer.Models
                         }
 
                         ex = this.CompileRegexExtend2();
+                        if (ex != null)
+                        {
+                            ModernMessageBox.ShowDialog(
+                                "Regex compile error ! This is invalid keyword.",
+                                "Regex compiler",
+                                MessageBoxButton.OK,
+                                ex);
+                        }
+
+                        ex = this.CompileRegexExtend3();
                         if (ex != null)
                         {
                             ModernMessageBox.ShowDialog(
@@ -331,6 +343,30 @@ namespace ACT.SpecialSpellTimer.Models
             }
         }
 
+        public string KeywordForExtend3
+        {
+            get => this.keywordForExtend3;
+            set
+            {
+                if (this.SetProperty(ref this.keywordForExtend3, value))
+                {
+                    this.KeywordForExtendReplaced3 = string.Empty;
+                    if (this.IsRealtimeCompile)
+                    {
+                        var ex = this.CompileRegexExtend3();
+                        if (ex != null)
+                        {
+                            ModernMessageBox.ShowDialog(
+                                "Regex compile error ! This is invalid keyword.",
+                                "Regex compiler",
+                                MessageBoxButton.OK,
+                                ex);
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// リキャスト時間
         /// </summary>
@@ -345,6 +381,11 @@ namespace ACT.SpecialSpellTimer.Models
         /// 延長する時間2
         /// </summary>
         public double RecastTimeExtending2 { get; set; } = 0;
+
+        /// <summary>
+        /// 延長する時間3
+        /// </summary>
+        public double RecastTimeExtending3 { get; set; } = 0;
 
         private bool overlapRecastTime;
 
@@ -378,6 +419,9 @@ namespace ACT.SpecialSpellTimer.Models
         public string KeywordForExtendReplaced2 { get; set; }
 
         [XmlIgnore]
+        public string KeywordForExtendReplaced3 { get; set; }
+
+        [XmlIgnore]
         public Regex Regex { get; set; }
 
         [XmlIgnore]
@@ -387,6 +431,9 @@ namespace ACT.SpecialSpellTimer.Models
         public Regex RegexForExtend2 { get; set; }
 
         [XmlIgnore]
+        public Regex RegexForExtend3 { get; set; }
+
+        [XmlIgnore]
         public string RegexPattern { get; set; }
 
         [XmlIgnore]
@@ -394,6 +441,9 @@ namespace ACT.SpecialSpellTimer.Models
 
         [XmlIgnore]
         public string RegexForExtendPattern2 { get; set; }
+
+        [XmlIgnore]
+        public string RegexForExtendPattern3 { get; set; }
 
         public Exception CompileRegex()
         {
@@ -490,6 +540,41 @@ namespace ACT.SpecialSpellTimer.Models
                 {
                     this.RegexForExtend2 = null;
                     this.RegexForExtendPattern2 = string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+
+            return null;
+        }
+
+        public Exception CompileRegexExtend3()
+        {
+            var pattern = string.Empty;
+
+            try
+            {
+                this.KeywordForExtendReplaced3 = TableCompiler.Instance.GetMatchingKeyword(
+                    this.KeywordForExtendReplaced3,
+                    this.KeywordForExtend3);
+
+                if (this.RegexEnabled)
+                {
+                    pattern = this.KeywordForExtendReplaced3.ToRegexPattern();
+
+                    if (this.RegexForExtend3 == null ||
+                        this.RegexForExtendPattern3 != pattern)
+                    {
+                        this.RegexForExtend3 = pattern.ToRegex();
+                        this.RegexForExtendPattern3 = pattern;
+                    }
+                }
+                else
+                {
+                    this.RegexForExtend3 = null;
+                    this.RegexForExtendPattern3 = string.Empty;
                 }
             }
             catch (Exception ex)
@@ -1319,10 +1404,14 @@ namespace ACT.SpecialSpellTimer.Models
             n.Keyword = this.Keyword;
             n.RegexEnabled = this.RegexEnabled;
             n.RecastTime = this.RecastTime;
+
             n.KeywordForExtend1 = this.KeywordForExtend1;
             n.RecastTimeExtending1 = this.RecastTimeExtending1;
             n.KeywordForExtend2 = this.KeywordForExtend2;
             n.RecastTimeExtending2 = this.RecastTimeExtending2;
+            n.KeywordForExtend3 = this.KeywordForExtend3;
+            n.RecastTimeExtending3 = this.RecastTimeExtending3;
+
             n.IsNotResetBarOnExtended = this.IsNotResetBarOnExtended;
             n.ExtendBeyondOriginalRecastTime = this.ExtendBeyondOriginalRecastTime;
             n.UpperLimitOfExtension = this.UpperLimitOfExtension;
@@ -1381,11 +1470,15 @@ namespace ACT.SpecialSpellTimer.Models
             n.SpellIcon = this.SpellIcon;
             n.SpellIconSize = this.SpellIconSize;
             n.Keyword = this.Keyword;
+
             n.KeywordForExtend1 = this.KeywordForExtend1;
             n.KeywordForExtend2 = this.KeywordForExtend2;
-            n.RecastTime = this.RecastTime;
+            n.KeywordForExtend3 = this.KeywordForExtend3;
             n.RecastTimeExtending1 = this.RecastTimeExtending1;
             n.RecastTimeExtending2 = this.RecastTimeExtending2;
+            n.RecastTimeExtending3 = this.RecastTimeExtending3;
+
+            n.RecastTime = this.RecastTime;
             n.IsNotResetBarOnExtended = this.IsNotResetBarOnExtended;
             n.ExtendBeyondOriginalRecastTime = this.ExtendBeyondOriginalRecastTime;
             n.UpperLimitOfExtension = this.UpperLimitOfExtension;
@@ -1404,6 +1497,7 @@ namespace ACT.SpecialSpellTimer.Models
             n.TimeupHide = this.TimeupHide;
             n.IsReverse = this.IsReverse;
             n.Font = this.Font;
+            n.FontColor = this.FontColor;
             n.FontOutlineColor = this.FontOutlineColor;
             n.WarningFontColor = this.WarningFontColor;
             n.WarningFontOutlineColor = this.WarningFontOutlineColor;
@@ -1437,12 +1531,16 @@ namespace ACT.SpecialSpellTimer.Models
             n.Regex = this.Regex;
             n.RegexPattern = this.RegexPattern;
             n.KeywordReplaced = this.KeywordReplaced;
+
             n.RegexForExtend1 = this.RegexForExtend1;
             n.RegexForExtendPattern1 = this.RegexForExtendPattern1;
             n.KeywordForExtendReplaced1 = this.KeywordForExtendReplaced1;
             n.RegexForExtend2 = this.RegexForExtend2;
             n.RegexForExtendPattern2 = this.RegexForExtendPattern2;
             n.KeywordForExtendReplaced2 = this.KeywordForExtendReplaced2;
+            n.RegexForExtend3 = this.RegexForExtend3;
+            n.RegexForExtendPattern3 = this.RegexForExtendPattern3;
+            n.KeywordForExtendReplaced3 = this.KeywordForExtendReplaced3;
 
             n.MatchAdvancedConfig = this.MatchAdvancedConfig;
             n.OverAdvancedConfig = this.OverAdvancedConfig;

@@ -664,6 +664,25 @@ namespace ACT.UltraScouter.Config
             } },
 
             #endregion MobList
+
+            #region TacticalRadar
+
+            { nameof(Settings.TacticalRadar), new TacticalRadar()
+            {
+                Visible = false,
+                Scale = 1.0d,
+                Location = new Location() { X = 100, Y = 200 },
+                DirectionOrigin = DirectionOrigin.Camera,
+
+                DisplayText = new DisplayText()
+                {
+                    Font = DefaultFont,
+                    Color = Colors.White,
+                    OutlineColor = Colors.Navy
+                },
+            } },
+
+            #endregion TacticalRadar
         };
 
         private static ObservableCollection<JobAvailablity> DefaultMPTickerTargetJobs

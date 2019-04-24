@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Media.Imaging;
 using FFXIV.Framework.FFXIVHelper;
+using Sharlayan.Core.Enums;
 
 namespace FFXIV.Framework.Common
 {
@@ -21,6 +22,20 @@ namespace FFXIV.Framework.Common
         #endregion Singleton
 
         public Dictionary<JobIDs, BitmapSource> Icons { get; } = new Dictionary<JobIDs, BitmapSource>();
+
+        public BitmapSource GetIcon(
+            Actor.Job job)
+        {
+            var jobValue = (int)job;
+
+            if (Enum.IsDefined(typeof(JobIDs), jobValue))
+            {
+                var jobID = (JobIDs)Enum.ToObject(typeof(JobIDs), jobValue);
+                return this.GetIcon(jobID);
+            }
+
+            return null;
+        }
 
         public BitmapSource GetIcon(
             JobIDs job)

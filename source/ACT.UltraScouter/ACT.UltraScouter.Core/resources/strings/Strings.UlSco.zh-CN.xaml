@@ -118,6 +118,13 @@
 判定为战斗中
   </system:String>
 
+  <system:String x:Key="TacticalRadar_HorizontalLayout">Horizontal layout</system:String>
+  <system:String x:Key="TacticalRadar_Target">Tactical targets</system:String>
+  <system:String x:Key="TacticalRadar_TargetName">Name</system:String>
+  <system:String x:Key="TacticalRadar_DetectRange">Range</system:String>
+  <system:String x:Key="TacticalRadar_NoticeEnabled">Notice</system:String>
+  <system:String x:Key="TacticalRadar_Enabled">Enabled</system:String>
+
   <system:String x:Key="Help_GotoLastestRelease">显示GitHub上最新版本</system:String>
   <system:String x:Key="Help_ContactToAnoyetta">在DISCORD(DNS污染中)联系作者</system:String>
   <system:String x:Key="Help_OpenConfig">打开配置</system:String>
