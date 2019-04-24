@@ -45,6 +45,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         public ICommand ChangeBackgroundColorCommand =>
             this.changeBackgroundColorCommand ??
             (this.changeBackgroundColorCommand =
-            new ChangeColorCommand((color) => this.TacticalRadar.Background = color));
+            new ChangeColorCommand(
+                (color) => this.TacticalRadar.Background = color));
     }
 }
