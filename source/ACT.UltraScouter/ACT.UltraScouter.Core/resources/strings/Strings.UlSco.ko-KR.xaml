@@ -3,125 +3,129 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-  <!--  Resources Strings in English  -->
+  <!--  Resources Strings in Korean  -->
   <system:String x:Key="UILanguage">UI 언어 (* 재시작 필요)</system:String>
   <system:String x:Key="FFXIVLanguage">FFXIV 언어 (* 재시작 필요)</system:String>
 
   <system:String x:Key="GeneralConfig_ClickThrough">클릭 무시</system:String>
   <system:String x:Key="GeneralConfig_Opacity">불투명도</system:String>
-  <system:String x:Key="GeneralConfig_LogPollingRate">로그 감시빈도 (msec)</system:String>
-  <system:String x:Key="GeneralConfig_OverlayRefreshRate">오버레이 재생빈도 (msec)</system:String>
-  <system:String x:Key="GeneralConfig_LogPollingPriority">메모리의 감시의 우선순위</system:String>
-  <system:String x:Key="GeneralConfig_OverlayRefreshPriority">오버레이 재생 우선순위</system:String>
-  <system:String x:Key="GeneralConfig_RestartThreads">스레드를 재시작 한다</system:String>
-  <system:String x:Key="GeneralConfig_AnimationMaxFPS">애니메이션 프레임 속도</system:String>
-  <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">글자 윤곽선 비율</system:String>
-  <system:String x:Key="GeneralConfig_TextBlurGain">글자 흐림 비율</system:String>
+  <system:String x:Key="GeneralConfig_LogPollingRate">메모리 스캔 간격 (msec)</system:String>
+  <system:String x:Key="GeneralConfig_OverlayRefreshRate">오버레이 새로고침 간격 (msec)</system:String>
+  <system:String x:Key="GeneralConfig_LogPollingPriority">메모리 스캔 우선순위</system:String>
+  <system:String x:Key="GeneralConfig_OverlayRefreshPriority">오버레이 새로고침 우선순위</system:String>
+  <system:String x:Key="GeneralConfig_RestartThreads">스레드 재시작</system:String>
+  <system:String x:Key="GeneralConfig_AnimationMaxFPS">애니메이션 최대 FPS</system:String>
+  <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">글자 윤곽선 두께 비율</system:String>
+  <system:String x:Key="GeneralConfig_TextBlurGain">글자 흐림 효과 비율</system:String>
   <system:String x:Key="GeneralConfig_Sound">사운드</system:String>
-  <system:String x:Key="GeneralConfig_UseNAudio">NAudio에서 WAVE사운드를 재생하는(권장)</system:String>
-  <system:String x:Key="GeneralConfig_WaveVolume">Wave볼륨</system:String>
-  <system:String x:Key="GeneralConfig_TTSDestination">TTS 재생장치</system:String>
+  <system:String x:Key="GeneralConfig_UseNAudio">NAudio에서 WAVE 사운드 재생 (권장)</system:String>
+  <system:String x:Key="GeneralConfig_WaveVolume">WAVE 볼륨</system:String>
+  <system:String x:Key="GeneralConfig_TTSDestination">TTS 재생 장치</system:String>
 
-  <system:String x:Key="Common_Visible">표시하는</system:String>
+  <system:String x:Key="Common_Visible">표시</system:String>
   <system:String x:Key="Common_Location">위치</system:String>
   <system:String x:Key="Common_BarWidth">바의 폭</system:String>
-  <system:String x:Key="Common_Scale">규모</system:String>
+  <system:String x:Key="Common_Scale">스케일</system:String>
   <system:String x:Key="Common_Background">배경</system:String>
   <system:String x:Key="Common_Font">폰트</system:String>
   <system:String x:Key="Common_FillColor">글자색</system:String>
-  <system:String x:Key="Common_StrokeColor">윤곽색</system:String>
+  <system:String x:Key="Common_StrokeColor">윤곽선색</system:String>
   <system:String x:Key="Common_Add">추가</system:String>
   <system:String x:Key="Common_Change">변경</system:String>
   <system:String x:Key="Common_Delete">삭제</system:String>
-  <system:String x:Key="Common_TTS">TTS를 사용하는</system:String>
-  <system:String x:Key="Common_TestMode">테스트 모드(항상 표시하는)</system:String>
+  <system:String x:Key="Common_TTS">TTS 사용</system:String>
+  <system:String x:Key="Common_TestMode">테스트 모드 (항상 표시)</system:String>
 
-  <system:String x:Key="Target_UserHoverTarget">호버 타겟을 사용</system:String>
+  <system:String x:Key="Target_UserHoverTarget">호버 타겟 사용</system:String>
 
   <system:String x:Key="HP_HPLocation">HP 위치</system:String>
   <system:String x:Key="HP_BarLocation">바 위치</system:String>
-  <system:String x:Key="HP_VisibleHPBar">HP 바 보이기</system:String>
-  <system:String x:Key="HP_HPValueOnHPBar">HP값을 HP바에 표시</system:String>
-  <system:String x:Key="HP_HPValueCompact">HP값을 콤팩트하게</system:String>
-  <system:String x:Key="HP_HPBarStrokeColor">HP바 윤곽색</system:String>
-  <system:String x:Key="HP_LinkBarStrokeColorToBarColor">바의 윤곽색을 바 색상에 동조시키다</system:String>
-  <system:String x:Key="HP_LinkTextFillColorToBarColor">글자색을 바 색상에 동조시키다</system:String>
-  <system:String x:Key="HP_LinkTextStrokeColorToBarColor">글자의 윤곽색을 바 색상에 동조시키다</system:String>
+  <system:String x:Key="HP_VisibleHPBar">HP 바 표시</system:String>
+  <system:String x:Key="HP_HPValueOnHPBar">HP 바에 HP값 표시</system:String>
+  <system:String x:Key="HP_HPValueCompact">HP값 간략하게 표시</system:String>
+  <system:String x:Key="HP_HPBarStrokeColor">HP 바 윤곽선색</system:String>
+  <system:String x:Key="HP_LinkBarStrokeColorToBarColor">바 윤곽선색을 바 색상과 같게</system:String>
+  <system:String x:Key="HP_LinkTextFillColorToBarColor">글자색을 바 색상과 같게</system:String>
+  <system:String x:Key="HP_LinkTextStrokeColorToBarColor">글자 윤곽선색을 바 색상과 같게</system:String>
   <system:String x:Key="HP_HPBarSize">HP 바 크기</system:String>
 
-  <system:String x:Key="Action_VisibleActionName">액션 이름 표시</system:String>
-  <system:String x:Key="Action_VisibleRemainOfCasting">캐스팅의 남은 시간표시</system:String>
-  <system:String x:Key="Action_VisibleRemainAsInteger">정수로</system:String>
+  <system:String x:Key="Action_VisibleActionName">기술 이름 표시</system:String>
+  <system:String x:Key="Action_VisibleRemainOfCasting">남은 캐스팅 시간 표시</system:String>
+  <system:String x:Key="Action_VisibleRemainAsInteger">정수로 표시</system:String>
   <system:String x:Key="Action_VisibleRateOfCasting">캐스팅 진행율 표시</system:String>
-  <system:String x:Key="Action_DummyActionName">더미 액션 이름</system:String>
+  <system:String x:Key="Action_DummyActionName">더미 기술 이름</system:String>
   <system:String x:Key="Action_CastingBar">캐스팅 바</system:String>
-  <system:String x:Key="Action_CastingBarStrokeColor">캐스팅바 윤곽색</system:String>
-  <system:String x:Key="Action_LinkBarStrokeColorToBarColor">바의 윤곽색을 바 색상에 동조시키다</system:String>
-  <system:String x:Key="Action_CastingBarSize">캐스팅바 크기</system:String>
+  <system:String x:Key="Action_CastingBarStrokeColor">캐스팅 바 윤곽선색</system:String>
+  <system:String x:Key="Action_LinkBarStrokeColorToBarColor">바의 윤곽선색을 바 색상과 같게</system:String>
+  <system:String x:Key="Action_CastingBarSize">캐스팅 바 크기</system:String>
   <system:String x:Key="Action_CircleStyle">원형 스타일</system:String>
   <system:String x:Key="Action_RotateCCW">회전을 반시계 방향으로</system:String>
-  <system:String x:Key="Action_CircleBlurRadius">원형 블러 변경</system:String>
+  <system:String x:Key="Action_CircleBlurRadius">원형 블러 반경</system:String>
   <system:String x:Key="Action_Sound">사운드</system:String>
-  <system:String x:Key="Action_WaveSound">Wave 사운드 파일</system:String>
+  <system:String x:Key="Action_WaveSound">WAVE 사운드 파일</system:String>
 
-  <system:String x:Key="BOSS_BossThreshold">파티의 최대 HP평균치에 대해서 보스로서 인식하는 단역의 최대 HP의 임계 값</system:String>
-  <system:String x:Key="BOSS_BossVSTargetHideBoss">검출한 BOSS와 Target이 같은 대상이라면 BOSS를 표시하지 않는</system:String>
-  <system:String x:Key="BOSS_BossVSFTHideBoss">검출한 BOSS와 Focus Target이 같은 대상이라면 BOSS를 표시하지 않는</system:String>
-  <system:String x:Key="BOSS_BossVSToTHideBoss">검출한 BOSS와 Target of Target이 같은 대상이라면 BOSS를 표시하지 않는</system:String>
+  <system:String x:Key="BOSS_BossThreshold">파티의 최대 HP 평균값에 대해 보스로 인식할 몹의 최대 HP 임계치 (%)</system:String>
+  <system:String x:Key="BOSS_BossVSTargetHideBoss">인식한 BOSS와 Target이 같은 대상이라면 BOSS 숨김</system:String>
+  <system:String x:Key="BOSS_BossVSFTHideBoss">인식한 BOSS와 Focus Target이 같은 대상이라면 BOSS 숨김</system:String>
+  <system:String x:Key="BOSS_BossVSToTHideBoss">인식한 BOSS와 Target of Target이 같은 대상이라면 BOSS 숨김</system:String>
 
-  <system:String x:Key="MPTicker_VisibleCounter">카운터 보기</system:String>
+  <system:String x:Key="MPTicker_VisibleCounter">카운터 표시</system:String>
   <system:String x:Key="MPTicker_Bar">바</system:String>
-  <system:String x:Key="MPTicker_BarStrokeColor">바 윤곽색</system:String>
-  <system:String x:Key="MPTicker_LinkBarStrokeColorToBarColor">바의 윤곽색을 바 색상에 동조시키다</system:String>
+  <system:String x:Key="MPTicker_BarStrokeColor">바 윤곽선색</system:String>
+  <system:String x:Key="MPTicker_LinkBarStrokeColorToBarColor">바의 윤곽선색을 바 색상과 같게</system:String>
   <system:String x:Key="MPTicker_BarSize">바 크기</system:String>
   <system:String x:Key="MPTicker_CircleStyle">원형 스타일</system:String>
   <system:String x:Key="MPTicker_RotateCCW">회전을 반시계 방향으로</system:String>
-  <system:String x:Key="MPTicker_SwapBarAndText">바와 텍스트 위치를 교체</system:String>
-  <system:String x:Key="MPTicker_ExplationTimeForDisplay1">MP의 변화가 없이 아래의 초수가 경과하면 숨깁니다 (sec)</system:String>
-  <system:String x:Key="MPTicker_ExplationTimeForDisplay2">※0이면 무한, 항상 표시합니다</system:String>
-  <system:String x:Key="MPTicker_TargetJobs">자신이 아래의 직업 때 표시하는</system:String>
+  <system:String x:Key="MPTicker_SwapBarAndText">바 위치와 텍스트 위치 바꾸기</system:String>
+  <system:String x:Key="MPTicker_ExplationTimeForDisplay1">MP 변화 없이 아래의 시간이 경과하면 숨깁니다 (초)</system:String>
+  <system:String x:Key="MPTicker_ExplationTimeForDisplay2">※0이면 무한. 항상 표시합니다</system:String>
+  <system:String x:Key="MPTicker_TargetJobs">자신이 아래의 직업 때 표시</system:String>
 
-  <system:String x:Key="MobList_VisibleMePosition">자신의 좌표 표시</system:String>
-  <system:String x:Key="MobList_SimpleView">간략 하게 표시</system:String>
-  <system:String x:Key="MobList_UngroupSameNameMobs">같은 이름의 몹의 그룹화 해제</system:String>
+  <system:String x:Key="MobList_VisibleMePosition">내 좌표 표시</system:String>
+  <system:String x:Key="MobList_SimpleView">간략하게 표시</system:String>
+  <system:String x:Key="MobList_UngroupSameNameMobs">같은 이름을 가진 몹에 대한 그룹화 해제</system:String>
   <system:String x:Key="MobList_VisibleZPosition">Z축 표시</system:String>
   <system:String x:Key="MobList_DirectionOrigin">방향 표시 기준</system:String>
   <system:String x:Key="MobList_DirectionAdjustmentAngle">방향 보정 각도</system:String>
-  <system:String x:Key="MobList_DirectionOriginDescription">Me, Camera를 사용하는 경우는 FFXIV_MemoryReader가 필요합니다.</system:String>
-  <system:String x:Key="MobList_ScanNPC">Scan NPC</system:String>
-  <system:String x:Key="MobList_NotScanNPCInFullParty">Not scan NPC in full party</system:String>
-  <system:String x:Key="MobList_OpenTargetMobList">대상 몹 리스트를 열기</system:String>
-  <system:String x:Key="MobList_ReloadTargetMobList">대상 몹 리스트를 다시 불러오기</system:String>
-  <system:String x:Key="MobList_CountOfDisplay">개요</system:String>
-  <system:String x:Key="MobList_NotifyByTTS">TTS로 알림</system:String>
-  <system:String x:Key="MobList_Me">자신의 폰트</system:String>
+  <system:String x:Key="MobList_DirectionOriginDescription">Me, Camera를 사용할 경우 FFXIV_MemoryReader가 필요합니다.</system:String>
+  <system:String x:Key="MobList_ScanNPC">NPC 스캔</system:String>
+  <system:String x:Key="MobList_NotScanNPCInFullParty">대규모 파티일 경우 NPC를 스캔하지 않음</system:String>
+  <system:String x:Key="MobList_OpenTargetMobList">대상 몹 목록 열기</system:String>
+  <system:String x:Key="MobList_ReloadTargetMobList">대상 몹 목록 다시 불러오기</system:String>
+  <system:String x:Key="MobList_CountOfDisplay">표시할 몹 수</system:String>
+  <system:String x:Key="MobList_NotifyByTTS">TTS 알림</system:String>
+  <system:String x:Key="MobList_Me">내 정보 폰트</system:String>
   <system:String x:Key="MobList_MobFont">몹 폰트</system:String>
-  <system:String x:Key="MobList_MobEXColor">몹 EX 색</system:String>
-  <system:String x:Key="MobList_MobSColor">몹 S 색</system:String>
-  <system:String x:Key="MobList_MobAColor">몹 A 색</system:String>
-  <system:String x:Key="MobList_MobBColor">몹 B 색</system:String>
-  <system:String x:Key="MobList_MobOtherColor">몹 Other 색</system:String>
+  <system:String x:Key="MobList_MobEXColor">EX몹 색</system:String>
+  <system:String x:Key="MobList_MobSColor">S몹 색</system:String>
+  <system:String x:Key="MobList_MobAColor">A몹 색</system:String>
+  <system:String x:Key="MobList_MobBColor">B몹 색</system:String>
+  <system:String x:Key="MobList_MobOtherColor">기타 몹 색</system:String>
 
-  <system:String x:Key="Enmity_HideInNotCombat">비전투시 표시하지 않는다</system:String>
-  <system:String x:Key="Enmity_HideInSolo">혼자 일때는 표시하지 않는다</system:String>
-  <system:String x:Key="Enmity_DisplayPCasYou">캐릭을 You로 표기한다</system:String>
-  <system:String x:Key="Enmity_IsDenomi">1,000 미만의 값을 잘라낸다</system:String>
-  <system:String x:Key="Enmity_IsVisibleJobIcon">잡 아이콘을 표시한다</system:String>
-  <system:String x:Key="Enmity_JobIconScale">잡 아이콘의 크기</system:String>
-  <system:String x:Key="Enmity_MaxCountOfDisplay">리스트 최대 표시수</system:String>
-  <system:String x:Key="Enmity_ScaningRate">Enmity 검색 시간 (msec)</system:String>
+  <system:String x:Key="Enmity_HideInNotCombat">비전투 시 자동 숨김</system:String>
+  <system:String x:Key="Enmity_HideInSolo">파티원이 없을 경우 숨김</system:String>
+  <system:String x:Key="Enmity_DisplayPCasYou">내 캐릭터를 YOU로 표기</system:String>
+  <system:String x:Key="Enmity_IsDenomi">1,000미만인 값 잘라내기</system:String>
+  <system:String x:Key="Enmity_IsVisibleJobIcon">잡 아이콘 표시</system:String>
+  <system:String x:Key="Enmity_JobIconScale">잡 아이콘 크기</system:String>
+  <system:String x:Key="Enmity_MaxCountOfDisplay">목록 최대 표시 수</system:String>
+  <system:String x:Key="Enmity_ScaningRate">적개심 스캔 간격 (msec)</system:String>
 
-  <system:String x:Key="FFLogs_VisibleHistogram">히스토그램을 표시</system:String>
-  <system:String x:Key="FFLogs_HideInCombat">전투 중에는 숨김</system:String>
-  <system:String x:Key="FFLogs_HideInCombatDescription" xml:space="preserve">
-전투중의 판정은 간단합니다.
-파티 멤버의 HP, TP, MP의 어느쪽이 최대치가 아닐 때 전투중이라고 판단합니다.
-  </system:String>
+  <system:String x:Key="FFLogs_VisibleHistogram">히스토그램 표시</system:String>
+  <system:String x:Key="FFLogs_HideInCombat">전투 중일 경우 자동 숨김</system:String>
+  <system:String x:Key="FFLogs_HideInCombatDescription" xml:space="preserve">파티원의 HP, TP, MP 중 하나라도 최대치가 아닐 경우 전투 중이라고 판단합니다.</system:String>
 
-  <system:String x:Key="Help_GotoLastestRelease">GitHub의 최종 릴리스를 확인 합니다</system:String>
-  <system:String x:Key="Help_ContactToAnoyetta">anoyetta의 Discord의 포럼 참여</system:String>
-  <system:String x:Key="Help_OpenConfig">구성 파일을 열기</system:String>
-  <system:String x:Key="Help_ReloadConfig">구성 파일을 다시불러오기</system:String>
-  <system:String x:Key="Help_ReloadViews">구성 파일을 보기</system:String>
+  <system:String x:Key="TacticalRadar_HorizontalLayout">Horizontal layout</system:String>
+  <system:String x:Key="TacticalRadar_Target">Tactical targets</system:String>
+  <system:String x:Key="TacticalRadar_TargetName">Name</system:String>
+  <system:String x:Key="TacticalRadar_DetectRange">Range</system:String>
+  <system:String x:Key="TacticalRadar_NoticeEnabled">Notice</system:String>
+  <system:String x:Key="TacticalRadar_Enabled">Enabled</system:String>
+
+  <system:String x:Key="Help_GotoLastestRelease">GitHub에서 최신 버전 확인하기</system:String>
+  <system:String x:Key="Help_ContactToAnoyetta">anoyetta의 Discord 포럼에 참여하기</system:String>
+  <system:String x:Key="Help_OpenConfig">설정 파일 열기</system:String>
+  <system:String x:Key="Help_ReloadConfig">설정 파일 다시 불러오기</system:String>
+  <system:String x:Key="Help_ReloadViews">설정 파일 보기</system:String>
   <system:String x:Key="Help_OpenLog">로그 열기</system:String>
 </ResourceDictionary>

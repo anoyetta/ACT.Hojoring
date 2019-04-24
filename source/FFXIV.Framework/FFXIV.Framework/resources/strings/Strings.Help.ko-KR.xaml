@@ -3,20 +3,20 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-  <!--  Resources Strings in English  -->
-  <system:String x:Key="Help_GotoWiki">Wiki를 본다</system:String>
-  <system:String x:Key="Help_GotoLastestRelease">최신 자료를 확인한다</system:String>
-  <system:String x:Key="Help_GotoIssues">과제 목록을 확인한다</system:String>
+  <!--  Resources Strings in Korean  -->
+  <system:String x:Key="Help_GotoWiki">위키 페이지로 이동</system:String>
+  <system:String x:Key="Help_GotoLastestRelease">릴리즈 페이지로 이동</system:String>
+  <system:String x:Key="Help_GotoIssues">이슈 페이지로 이동</system:String>
   <system:String x:Key="Help_Update">업데이트</system:String>
-  <system:String x:Key="Help_UsePreReleaase">선행 릴리즈를 사용한다</system:String>
+  <system:String x:Key="Help_UsePreReleaase">Pre-release 사용</system:String>
 
-  <system:String x:Key="Help_ContactToAnoyetta">DISCORD 포럼에 참석한다</system:String>
-  <system:String x:Key="Help_ContactToAnoyettaTwitter">Twitter 로 연락한다</system:String>
+  <system:String x:Key="Help_ContactToAnoyetta">제작자 DISCORD 포럼</system:String>
+  <system:String x:Key="Help_ContactToAnoyettaTwitter">제작자 Twitter</system:String>
 
-  <system:String x:Key="Help_OpenConfig">Config파일을 열기</system:String>
-  <system:String x:Key="Help_ReloadConfig">Config파일을 불러오기</system:String>
+  <system:String x:Key="Help_OpenConfig">설정 파일 열기</system:String>
+  <system:String x:Key="Help_ReloadConfig">설정 파일 다시 불러오기</system:String>
 
-  <system:String x:Key="Help_OpenPluginLog">플러그인의 로그를 열기</system:String>
-  <system:String x:Key="Help_OpenACTLog">ACT본체의 로그를 열기</system:String>
-  <system:String x:Key="Help_SaveSupportInfo">지원 정보를 저장한다</system:String>
+  <system:String x:Key="Help_OpenPluginLog">플러그인 로그 열기</system:String>
+  <system:String x:Key="Help_OpenACTLog">ACT 로그 열기</system:String>
+  <system:String x:Key="Help_SaveSupportInfo">지원 정보 저장</system:String>
 </ResourceDictionary>

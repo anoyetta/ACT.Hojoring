@@ -182,6 +182,14 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                             }
                         }
                     }
+                },
+
+                new TreeSource("Tactical Radar")
+                {
+                    Content = new TacticalRadarConfigView()
+                    {
+                        DataContext = new TacticalRadarConfigViewModel()
+                    },
                 }
             };
 

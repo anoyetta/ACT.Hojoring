@@ -634,6 +634,16 @@ namespace ACT.UltraScouter.Config
 
         #endregion MobList
 
+        #region MobList
+
+        /// <summary>
+        /// 戦術レーダー
+        /// </summary>
+        [DataMember(Order = 162)]
+        public TacticalRadar TacticalRadar { get; set; }
+
+        #endregion MobList
+
         #endregion Data - Overlays
 
         #region INotifyPropertyChanged

@@ -119,6 +119,13 @@ When one of the party members HP, MP, TP is not the maximum value,
 it is judged that it is in battle.
   </system:String>
 
+  <system:String x:Key="TacticalRadar_HorizontalLayout">Horizontal layout</system:String>
+  <system:String x:Key="TacticalRadar_Target">Tactical targets</system:String>
+  <system:String x:Key="TacticalRadar_TargetName">Name</system:String>
+  <system:String x:Key="TacticalRadar_DetectRange">Range</system:String>
+  <system:String x:Key="TacticalRadar_NoticeEnabled">Notice</system:String>
+  <system:String x:Key="TacticalRadar_Enabled">Enabled</system:String>
+
   <system:String x:Key="Help_GotoLastestRelease">Go to Lastest release on GitHub</system:String>
   <system:String x:Key="Help_ContactToAnoyetta">Contact to anoyetta on Discord</system:String>
   <system:String x:Key="Help_OpenConfig">Open Config</system:String>

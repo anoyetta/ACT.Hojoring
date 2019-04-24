@@ -20,6 +20,10 @@ namespace FFXIV.Framework.FFXIVHelper
         {
         }
 
+        public static readonly double HeadingRange = 6.3d;
+        public static readonly double HeadingMax = 3.15d;
+        public static readonly double HeadingMin = -3.15d;
+
         private byte mode;
         private float heading;
         private float elevation;
@@ -43,7 +47,7 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public double HeadingDegree => this.heading / 6.0 * 360.0 * -1.0;
+        public double HeadingDegree => (this.heading / HeadingRange) * 360.0 * -1.0;
 
         public float Elevation
         {
