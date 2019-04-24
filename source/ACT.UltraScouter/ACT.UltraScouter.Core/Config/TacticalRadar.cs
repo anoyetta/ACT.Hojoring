@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml.Serialization;
+using FFXIV.Framework.Common;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -28,6 +29,15 @@ namespace ACT.UltraScouter.Config
         {
             get => this.isDesignMode;
             set => this.SetProperty(ref this.isDesignMode, value);
+        }
+
+        private bool isDebugMode = WPFHelper.IsDesignMode;
+
+        [DataMember]
+        public bool IsDebugMode
+        {
+            get => this.isDebugMode;
+            set => this.SetProperty(ref this.isDebugMode, value);
         }
 
         private double scale = 1.0d;
@@ -111,11 +121,7 @@ namespace ACT.UltraScouter.Config
             set
             {
                 this.tacticalItems.Clear();
-                foreach (var item in value)
-                {
-                    item.Parent = this;
-                    this.tacticalItems.Add(item);
-                }
+                this.tacticalItems.AddRange(value);
             }
         }
 
@@ -126,26 +132,12 @@ namespace ACT.UltraScouter.Config
             this.addTargetCommand ?? (this.addTargetCommand = new DelegateCommand(this.ExecuteAddTargetCommand));
 
         private void ExecuteAddTargetCommand()
-        {
-            var target = new TacticalItem()
-            {
-                Parent = this
-            };
-
-            this.tacticalItems.Add(target);
-        }
+            => this.tacticalItems.Add(new TacticalItem());
     }
 
     [Serializable]
     public class TacticalItem : BindableBase
     {
-        [XmlIgnore]
-        public TacticalRadar Parent
-        {
-            get;
-            set;
-        }
-
         private string targetName = string.Empty;
 
         [XmlAttribute("target")]
@@ -207,11 +199,6 @@ namespace ACT.UltraScouter.Config
             this.removeCommand ?? (this.removeCommand = new DelegateCommand(this.ExecuteRemoveCommand));
 
         private void ExecuteRemoveCommand()
-        {
-            if (this.Parent != null)
-            {
-                this.Parent.TacticalItems.Remove(this);
-            }
-        }
+            => Settings.Instance.TacticalRadar.TacticalItems.Remove(this);
     }
 }

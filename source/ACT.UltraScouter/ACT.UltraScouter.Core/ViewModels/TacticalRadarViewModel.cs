@@ -11,6 +11,7 @@ using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using Sharlayan.Core;
 using Sharlayan.Core.Enums;
@@ -75,6 +76,11 @@ namespace ACT.UltraScouter.ViewModels
             {
                 actors = DesignTimeActorList;
             }
+
+            // ゴミを除去しておく
+            actors = actors.Where(x =>
+                !string.IsNullOrEmpty(x.Name) &&
+                !x.Name.ContainsIgnoreCase("typeid"));
 
             using (this.TacticalTargetListSource.DeferRefresh())
             {
@@ -153,9 +159,17 @@ namespace ACT.UltraScouter.ViewModels
             set => this.SetProperty(ref this.originAngle, value);
         }
 
+        private double cameraHeading = 0;
+
+        public double CameraHeading
+        {
+            get => this.cameraHeading;
+            set => this.SetProperty(ref this.cameraHeading, value);
+        }
+
         private DispatcherTimer refreshTimer = new DispatcherTimer(DispatcherPriority.Background)
         {
-            Interval = TimeSpan.FromSeconds(0.03),
+            Interval = TimeSpan.FromSeconds(0.02),
         };
 
         private void RefreshOriginAngle()
@@ -195,6 +209,7 @@ namespace ACT.UltraScouter.ViewModels
                     case DirectionOrigin.Camera:
                         CameraInfo.Instance.Refresh();
                         angle = CameraInfo.Instance.HeadingDegree * -1;
+                        this.CameraHeading = CameraInfo.Instance.Heading;
                         break;
                 }
             }

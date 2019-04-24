@@ -3,6 +3,7 @@ using System.Windows.Media.Imaging;
 using ACT.UltraScouter.Config;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using Prism.Mvvm;
 using Sharlayan.Core;
@@ -26,19 +27,24 @@ namespace ACT.UltraScouter.Models
 
         public void UpdateTargetInfo()
         {
-            this.RaisePropertyChanged(nameof(this.IsPC));
-            this.RaisePropertyChanged(nameof(this.IsMonster));
-            this.RaisePropertyChanged(nameof(this.JobIcon));
+            this.RaiseUpdateInfo();
 
-            if (this.TargetActor.Type == Actor.Type.PC)
+            if (this.TargetActor.Name.ContainsIgnoreCase("typeid"))
             {
-                this.Name = Combatant.NameToInitial(
-                    this.TargetActor.Name,
-                    ConfigBridge.Instance.PCNameStyle);
+                this.Name = string.Empty;
             }
             else
             {
-                this.Name = this.TargetActor.Name;
+                if (this.TargetActor.Type == Actor.Type.PC)
+                {
+                    this.Name = Combatant.NameToInitial(
+                        this.TargetActor.Name,
+                        ConfigBridge.Instance.PCNameStyle);
+                }
+                else
+                {
+                    this.Name = this.TargetActor.Name;
+                }
             }
 
             this.HeadingAngle = (this.TargetActor.Heading + 3.0) / 6.0 * 360.0 * -1.0;
@@ -69,11 +75,21 @@ namespace ACT.UltraScouter.Models
                     this.targetActor = value;
 
                     this.RaisePropertyChanged();
-                    this.RaisePropertyChanged(nameof(this.IsPC));
-                    this.RaisePropertyChanged(nameof(this.IsMonster));
-                    this.RaisePropertyChanged(nameof(this.JobIcon));
+                    this.RaiseUpdateInfo();
                 }
             }
+        }
+
+        private void RaiseUpdateInfo()
+        {
+            this.RaisePropertyChanged(nameof(this.IsPC));
+            this.RaisePropertyChanged(nameof(this.IsMonster));
+            this.RaisePropertyChanged(nameof(this.JobIcon));
+
+            this.RaisePropertyChanged(nameof(this.Heading));
+            this.RaisePropertyChanged(nameof(this.X));
+            this.RaisePropertyChanged(nameof(this.Y));
+            this.RaisePropertyChanged(nameof(this.Z));
         }
 
         private TacticalItem targetConfig;
@@ -90,12 +106,20 @@ namespace ACT.UltraScouter.Models
 
         public BitmapSource JobIcon => JobIconDictionary.Instance.GetIcon(this.TargetActor?.Job ?? Actor.Job.Unknown);
 
+        public bool IsExistsName => !string.IsNullOrEmpty(this.name);
+
         private string name;
 
         public string Name
         {
             get => this.name;
-            set => this.SetProperty(ref this.name, value);
+            set
+            {
+                if (this.SetProperty(ref this.name, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.IsExistsName));
+                }
+            }
         }
 
         private double distance;
@@ -121,5 +145,10 @@ namespace ACT.UltraScouter.Models
             get => this.headingAngle;
             set => this.SetProperty(ref this.headingAngle, value);
         }
+
+        public double Heading => this.targetActor?.Heading ?? 0;
+        public double X => this.targetActor?.Coordinate.X ?? 0;
+        public double Y => this.targetActor?.Coordinate.Y ?? 0;
+        public double Z => this.targetActor?.Coordinate.Z ?? 0;
     }
 }
