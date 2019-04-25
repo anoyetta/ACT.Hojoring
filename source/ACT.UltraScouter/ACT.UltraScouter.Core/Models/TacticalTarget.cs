@@ -80,15 +80,16 @@ namespace ACT.UltraScouter.Models
             get => this.targetActor;
             set
             {
+                this.targetActor = value;
+
                 if (this.targetActor == null ||
                     value == null ||
                     this.targetActor.UUID != value.UUID)
                 {
-                    this.targetActor = value;
-
                     this.RaisePropertyChanged();
-                    this.RaiseUpdateInfo();
                 }
+
+                this.RaiseUpdateInfo();
             }
         }
 
