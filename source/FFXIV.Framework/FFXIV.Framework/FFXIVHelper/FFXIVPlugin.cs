@@ -845,6 +845,8 @@ namespace FFXIV.Framework.FFXIVHelper
                     x.Level descending,
                     (x.MaxHP != x.CurrentHP ? 0 : 1) ascending,
                     x.MaxHP descending,
+                    x.Heading != 0 ? 0 : 1 ascending,
+                    (x.PosX + x.PosY + x.PosZ) != 0 ? 0 : 1 ascending,
                     x.ID descending
                     select
                     x).FirstOrDefault();
