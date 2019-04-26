@@ -58,7 +58,10 @@ namespace FFXIV.Framework.FFXIVHelper
         public Single PosX;
         public Single PosY;
         public Single PosZ;
-        public Single Heading;
+
+        private Single heading;
+        public float Heading { get => heading; set => heading = value; }
+
         public bool IsAvailableEffectiveDictance;
         public byte EffectiveDistance;
         public string Distance;
