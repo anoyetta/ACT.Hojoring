@@ -48,7 +48,7 @@ namespace ACT.UltraScouter.Models
             }
 
             this.HeadingAngle =
-                (this.TargetActor.Heading / CameraInfo.HeadingRange) * 360.0 * -1.0;
+                (this.Heading / CameraInfo.HeadingRange) * 360.0 * -1.0;
 
             var player = SharlayanHelper.Instance.CurrentPlayer;
             if (player == null)
