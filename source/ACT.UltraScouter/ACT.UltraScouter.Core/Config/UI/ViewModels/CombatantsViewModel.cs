@@ -100,12 +100,14 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                     if (combatant.PosX != src.PosX ||
                         combatant.PosY != src.PosY ||
                         combatant.PosZ != src.PosZ ||
+                        combatant.Heading != src.Heading ||
                         combatant.CurrentHP != src.CurrentHP ||
                         combatant.MaxHP != src.MaxHP)
                     {
                         combatant.PosX = src.PosX;
                         combatant.PosY = src.PosY;
                         combatant.PosZ = src.PosZ;
+                        combatant.Heading = src.Heading;
                         combatant.CurrentHP = src.CurrentHP;
                         combatant.MaxHP = src.MaxHP;
 
