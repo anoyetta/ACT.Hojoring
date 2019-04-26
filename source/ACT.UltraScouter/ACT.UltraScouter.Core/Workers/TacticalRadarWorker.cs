@@ -107,6 +107,7 @@ namespace ACT.UltraScouter.Workers
                 x.Distance2D <= x.Config.DetectRangeMaximum &&
                 x.Actor.HPMax != 0 &&
                 x.Actor.HPMax != 1 &&
+                (x.Actor.X + x.Actor.Y + x.Actor.Z) != 0 &&
                 (
                     (
                         x.Actor.Type == Actor.Type.Monster &&
