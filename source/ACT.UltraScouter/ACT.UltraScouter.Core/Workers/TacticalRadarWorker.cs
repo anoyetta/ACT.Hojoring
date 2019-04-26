@@ -107,6 +107,7 @@ namespace ACT.UltraScouter.Workers
                 x.Distance2D <= x.Config.DetectRangeMaximum &&
                 x.Actor.HPMax != 0 &&
                 x.Actor.HPMax != 1 &&
+                (x.Actor.X + x.Actor.Y + x.Actor.Z) != 0 &&
                 (
                     (
                         x.Actor.Type == Actor.Type.Monster &&
@@ -125,8 +126,13 @@ namespace ACT.UltraScouter.Workers
                     )
                 )
                 group x by x.Actor.Name into g
-                select
-                g.OrderBy(y => y.Distance2D).First().Actor;
+                select (
+                    from y in g
+                    orderby
+                    y.Distance2D,
+                    y.Actor.Heading != 0 ? 0 : 1
+                    select
+                    y).First().Actor;
 
             lock (this.TargetInfoLock)
             {
