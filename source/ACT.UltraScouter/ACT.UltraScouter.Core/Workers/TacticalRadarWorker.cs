@@ -125,8 +125,13 @@ namespace ACT.UltraScouter.Workers
                     )
                 )
                 group x by x.Actor.Name into g
-                select
-                g.OrderBy(y => y.Distance2D).First().Actor;
+                select (
+                    from y in g
+                    orderby
+                    y.Distance2D,
+                    y.Actor.Heading != 0 ? 0 : 1
+                    select
+                    y).First().Actor;
 
             lock (this.TargetInfoLock)
             {
