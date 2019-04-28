@@ -203,6 +203,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 if (string.Equals(
+                        FFXIVPlugin.Instance?.GetCurrentZoneID().ToString().Trim(),
+                        this.Model.Zone.Trim()))
+                {
+                    return true;
+                }
+
+                if (string.Equals(
                         ActGlobals.oFormActMain.CurrentZone.Trim(),
                         this.Model.Zone.Trim(),
                         StringComparison.OrdinalIgnoreCase))
@@ -218,7 +225,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     string.Equals(
                         ActGlobals.oFormActMain.CurrentZone.Trim(),
                         x.Trim(),
-                        StringComparison.OrdinalIgnoreCase));
+                        StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(
+                        FFXIVPlugin.Instance?.GetCurrentZoneID().ToString().Trim(),
+                        x.Trim()));
             }
         }
 
