@@ -130,7 +130,11 @@ namespace ACT.SpecialSpellTimer.Models
             {
                 var currentPartyComposition = FFXIVPlugin.Instance.PartyComposition.ToString();
                 var filters = trigger.PartyCompositionFilter.Split(',');
-                if (filters.Any(x => x == currentPartyComposition))
+                if (filters.Any(x =>
+                    string.Equals(
+                        x,
+                        currentPartyComposition,
+                        StringComparison.OrdinalIgnoreCase)))
                 {
                     enabledByPartyComposition = true;
                 }
