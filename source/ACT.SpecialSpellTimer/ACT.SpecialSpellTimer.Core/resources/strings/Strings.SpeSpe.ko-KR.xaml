@@ -53,7 +53,7 @@
   <system:String x:Key="Common_Size">크기</system:String>
   <system:String x:Key="Common_SelectIcon">아이콘 선택</system:String>
   <system:String x:Key="Common_GetIcon">아이콘 가져오기</system:String>
-  <system:String x:Key="Common_RecastTimeOverIcon">재사용 대기 시간을 아이콘안에 표시</system:String>
+  <system:String x:Key="Common_RecastTimeOverIcon">재사용 대기 시간을 아이콘 내부에 표시</system:String>
   <system:String x:Key="Common_ToDarkBetweenRecast">재사용 대기 중 아이콘을 어둡게</system:String>
   <system:String x:Key="Common_HideSpellName">스펠 이름 숨김</system:String>
   <system:String x:Key="Common_IsCounterToCenter">재사용 대기 시간을 중앙으로 배치하기</system:String>
