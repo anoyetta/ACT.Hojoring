@@ -4,121 +4,280 @@
   xmlns:system="clr-namespace:System;assembly=mscorlib">
 
   <!--  Resources Strings in Korean  -->
-  <system:String x:Key="UILanguage">UI 언어 (* 재시작 필요)</system:String>
-  <system:String x:Key="FFXIVLanguage">FFXIV 언어 (* 재시작 필요)</system:String>
+  <system:String x:Key="UILanguage">UI 언어 (*재시작 필요)</system:String>
+  <system:String x:Key="FFXIVLanguage">FFXIV 언어 (*재시작 필요)</system:String>
 
-  <system:String x:Key="GeneralConfig_ClickThrough">클릭 무시</system:String>
-  <system:String x:Key="GeneralConfig_Opacity">불투명도</system:String>
-  <system:String x:Key="GeneralConfig_LogPollingRate">메모리 스캔 간격 (msec)</system:String>
-  <system:String x:Key="GeneralConfig_OverlayRefreshRate">오버레이 새로고침 간격 (msec)</system:String>
-  <system:String x:Key="GeneralConfig_LogPollingPriority">메모리 스캔 우선순위</system:String>
-  <system:String x:Key="GeneralConfig_OverlayRefreshPriority">오버레이 새로고침 우선순위</system:String>
-  <system:String x:Key="GeneralConfig_RestartThreads">스레드 재시작</system:String>
-  <system:String x:Key="GeneralConfig_AnimationMaxFPS">애니메이션 최대 FPS</system:String>
-  <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">글자 윤곽선 두께 비율</system:String>
-  <system:String x:Key="GeneralConfig_TextBlurGain">글자 흐림 효과 비율</system:String>
-  <system:String x:Key="GeneralConfig_Sound">사운드</system:String>
-  <system:String x:Key="GeneralConfig_UseNAudio">NAudio에서 WAVE 사운드 재생 (권장)</system:String>
-  <system:String x:Key="GeneralConfig_WaveVolume">WAVE 볼륨</system:String>
-  <system:String x:Key="GeneralConfig_TTSDestination">TTS 재생 장치</system:String>
+  <system:String x:Key="Common_ManageOnTags">태그 관리 (추천)</system:String>
+  <system:String x:Key="Common_AllSpells">모든 스펠</system:String>
+  <system:String x:Key="Common_AllTickers">모든 티커</system:String>
+  <system:String x:Key="Common_SpellPanel">스펠 패널</system:String>
+  <system:String x:Key="Common_Spell">스펠</system:String>
+  <system:String x:Key="Common_Ticker">티커</system:String>
+  <system:String x:Key="Common_Tag">태그</system:String>
 
-  <system:String x:Key="Common_Visible">표시</system:String>
   <system:String x:Key="Common_Location">위치</system:String>
-  <system:String x:Key="Common_BarWidth">바의 폭</system:String>
-  <system:String x:Key="Common_Scale">스케일</system:String>
-  <system:String x:Key="Common_Background">배경</system:String>
-  <system:String x:Key="Common_Font">폰트</system:String>
+  <system:String x:Key="Common_AddTags">태그 추가</system:String>
+  <system:String x:Key="Common_OK">O K</system:String>
+  <system:String x:Key="Common_Apply">적용</system:String>
+  <system:String x:Key="Common_Cancel">취소</system:String>
+  <system:String x:Key="Common_Clear">클리어</system:String>
+  <system:String x:Key="Common_Details">자세한 정보</system:String>
+  <system:String x:Key="Common_ManageTags">태그 관리</system:String>
+
+  <system:String x:Key="Common_CreateNew">새로 만들기</system:String>
+  <system:String x:Key="Common_CreateSimilarNew">복사하고 새로 만들기</system:String>
+  <system:String x:Key="Common_CreateNewTag">새 태그</system:String>
+  <system:String x:Key="Common_CreateNewSpellPanel">새로운 스펠 패널</system:String>
+  <system:String x:Key="Common_CreateNewSpell">새로운 스펠</system:String>
+  <system:String x:Key="Common_CreateNewTicker">새로운 티커</system:String>
+  <system:String x:Key="Common_Rename">이름 변경</system:String>
+  <system:String x:Key="Common_Delete">삭제</system:String>
+  <system:String x:Key="Common_Import">가져오기</system:String>
+  <system:String x:Key="Common_Export">내보내기</system:String>
+  <system:String x:Key="Common_Copy">복사</system:String>
+  <system:String x:Key="Common_AdvancedSettings">고급 설정</system:String>
+
+  <system:String x:Key="Common_VisibleSpell">스펠 패널에 표시</system:String>
+  <system:String x:Key="Common_VisibleSpellDiscription">OFF일 경우 사운드 알림 전용으로 취급됩니다.</system:String>
+  <system:String x:Key="Common_General">일반</system:String>
+  <system:String x:Key="Common_Font">글꼴</system:String>
   <system:String x:Key="Common_FillColor">글자색</system:String>
   <system:String x:Key="Common_StrokeColor">윤곽선색</system:String>
-  <system:String x:Key="Common_Add">추가</system:String>
-  <system:String x:Key="Common_Change">변경</system:String>
-  <system:String x:Key="Common_Delete">삭제</system:String>
-  <system:String x:Key="Common_TTS">TTS 사용</system:String>
-  <system:String x:Key="Common_TestMode">테스트 모드 (항상 표시)</system:String>
+  <system:String x:Key="Common_BlurRadius">블러 반경</system:String>
+  <system:String x:Key="Common_WarningFillColor">경고 시 글자색</system:String>
+  <system:String x:Key="Common_WarningStrokeColor">경고 시 윤곽선색</system:String>
+  <system:String x:Key="Common_ProgressBar">진행 바</system:String>
+  <system:String x:Key="Common_IsReverseProgressBar">진행 방향을 반대로</system:String>
+  <system:String x:Key="Common_Background">배경</system:String>
+  <system:String x:Key="Common_Icon">아이콘</system:String>
+  <system:String x:Key="Common_Size">크기</system:String>
+  <system:String x:Key="Common_SelectIcon">아이콘 선택</system:String>
+  <system:String x:Key="Common_GetIcon">아이콘 가져오기</system:String>
+  <system:String x:Key="Common_RecastTimeOverIcon">재사용 대기 시간을 아이콘안에 표시</system:String>
+  <system:String x:Key="Common_ToDarkBetweenRecast">재사용 대기 중 아이콘을 어둡게</system:String>
+  <system:String x:Key="Common_HideSpellName">스펠 이름 숨김</system:String>
+  <system:String x:Key="Common_IsCounterToCenter">재사용 대기 시간을 중앙으로 배치하기</system:String>
+  <system:String x:Key="Common_Misc">기타</system:String>
+  <system:String x:Key="Common_DontHide">완료 후에도 항상 표시</system:String>
 
-  <system:String x:Key="Target_UserHoverTarget">호버 타겟 사용</system:String>
+  <system:String x:Key="Tree_EnabledDescription">트리거 활성화</system:String>
+  <system:String x:Key="Tree_DesignModeDescription">레이아웃, 외형 조정을 위해 강제로 오버레이를 표시합니다.</system:String>
+  <system:String x:Key="Tree_DesignGridDescription">레이아웃 조정을 위한 가이드 격자를 표시합니다.</system:String>
+  <system:String x:Key="Tree_LayoutGrid">가이드 격자</system:String>
+  <system:String x:Key="Tree_Clickthrough">클릭 무시</system:String>
 
-  <system:String x:Key="HP_HPLocation">HP 위치</system:String>
-  <system:String x:Key="HP_BarLocation">바 위치</system:String>
-  <system:String x:Key="HP_VisibleHPBar">HP 바 표시</system:String>
-  <system:String x:Key="HP_HPValueOnHPBar">HP 바에 HP값 표시</system:String>
-  <system:String x:Key="HP_HPValueCompact">HP값 간략하게 표시</system:String>
-  <system:String x:Key="HP_HPBarStrokeColor">HP 바 윤곽선색</system:String>
-  <system:String x:Key="HP_LinkBarStrokeColorToBarColor">바 윤곽선색을 바 색상과 같게</system:String>
-  <system:String x:Key="HP_LinkTextFillColorToBarColor">글자색을 바 색상과 같게</system:String>
-  <system:String x:Key="HP_LinkTextStrokeColorToBarColor">글자 윤곽선색을 바 색상과 같게</system:String>
-  <system:String x:Key="HP_HPBarSize">HP 바 크기</system:String>
+  <system:String x:Key="Tag_Title">태그 추가</system:String>
 
-  <system:String x:Key="Action_VisibleActionName">기술 이름 표시</system:String>
-  <system:String x:Key="Action_VisibleRemainOfCasting">남은 캐스팅 시간 표시</system:String>
-  <system:String x:Key="Action_VisibleRemainAsInteger">정수로 표시</system:String>
-  <system:String x:Key="Action_VisibleRateOfCasting">캐스팅 진행율 표시</system:String>
-  <system:String x:Key="Action_DummyActionName">더미 기술 이름</system:String>
-  <system:String x:Key="Action_CastingBar">캐스팅 바</system:String>
-  <system:String x:Key="Action_CastingBarStrokeColor">캐스팅 바 윤곽선색</system:String>
-  <system:String x:Key="Action_LinkBarStrokeColorToBarColor">바의 윤곽선색을 바 색상과 같게</system:String>
-  <system:String x:Key="Action_CastingBarSize">캐스팅 바 크기</system:String>
-  <system:String x:Key="Action_CircleStyle">원형 스타일</system:String>
-  <system:String x:Key="Action_RotateCCW">회전을 반시계 방향으로</system:String>
-  <system:String x:Key="Action_CircleBlurRadius">원형 블러 반경</system:String>
-  <system:String x:Key="Action_Sound">사운드</system:String>
-  <system:String x:Key="Action_WaveSound">WAVE 사운드 파일</system:String>
+  <system:String x:Key="Trigger_JobFilter">직업 필터</system:String>
+  <system:String x:Key="Trigger_PartyJobFilter">파티 직업 필터</system:String>
+  <system:String x:Key="Trigger_PartyCompositionFilter">파티 규모 필터</system:String>
+  <system:String x:Key="Trigger_ZoneFilter">지역 필터</system:String>
+  <system:String x:Key="Trigger_Preconditions">전제 조건</system:String>
+  <system:String x:Key="Trigger_ClearFilter">필터 재설정</system:String>
+  <system:String x:Key="Trigger_ForMustStartRunningSpell">⚪ 스펠이 실행 중일 때</system:String>
+  <system:String x:Key="Trigger_ForMustStartStoppingSpell">✖ 스펠이 정지 중일 때</system:String>
+  <system:String x:Key="Trigger_ForMustStartRunningTicker">⚪ 티커가 실행 중일 때</system:String>
+  <system:String x:Key="Trigger_ForMustStartStoppingTicker">✖ 티커가 정지 중일 때</system:String>
+  <system:String x:Key="Trigger_SimulateMatch">매칭 테스트</system:String>
 
-  <system:String x:Key="BOSS_BossThreshold">파티의 최대 HP 평균값에 대해 보스로 인식할 몹의 최대 HP 임계치 (%)</system:String>
-  <system:String x:Key="BOSS_BossVSTargetHideBoss">인식한 BOSS와 Target이 같은 대상이라면 BOSS 숨김</system:String>
-  <system:String x:Key="BOSS_BossVSFTHideBoss">인식한 BOSS와 Focus Target이 같은 대상이라면 BOSS 숨김</system:String>
-  <system:String x:Key="BOSS_BossVSToTHideBoss">인식한 BOSS와 Target of Target이 같은 대상이라면 BOSS 숨김</system:String>
+  <system:String x:Key="SpellPanel_Name">스펠 패널 이름</system:String>
+  <system:String x:Key="SpellPanel_Margin">스펠 간 간격</system:String>
+  <system:String x:Key="SpellPanel_HorizontalLayout">가로 레이아웃</system:String>
+  <system:String x:Key="SpellPanel_SortOrder">정렬 순서</system:String>
 
-  <system:String x:Key="MPTicker_VisibleCounter">카운터 표시</system:String>
-  <system:String x:Key="MPTicker_Bar">바</system:String>
-  <system:String x:Key="MPTicker_BarStrokeColor">바 윤곽선색</system:String>
-  <system:String x:Key="MPTicker_LinkBarStrokeColorToBarColor">바의 윤곽선색을 바 색상과 같게</system:String>
-  <system:String x:Key="MPTicker_BarSize">바 크기</system:String>
-  <system:String x:Key="MPTicker_CircleStyle">원형 스타일</system:String>
-  <system:String x:Key="MPTicker_RotateCCW">회전을 반시계 방향으로</system:String>
-  <system:String x:Key="MPTicker_SwapBarAndText">바 위치와 텍스트 위치 바꾸기</system:String>
-  <system:String x:Key="MPTicker_ExplationTimeForDisplay1">MP 변화 없이 아래의 시간이 경과하면 숨깁니다 (초)</system:String>
-  <system:String x:Key="MPTicker_ExplationTimeForDisplay2">※0이면 무한. 항상 표시합니다</system:String>
-  <system:String x:Key="MPTicker_TargetJobs">자신이 아래의 직업 때 표시</system:String>
+  <system:String x:Key="SpellPanel_SortOrdersSortRecastTimeASC">남은 시간 순으로 정렬 (오름차순)</system:String>
+  <system:String x:Key="SpellPanel_SortOrdersSortRecastTimeDESC">남은 시간 순으로 정렬 (내림차순)</system:String>
+  <system:String x:Key="SpellPanel_SortOrdersSortPriority">우선순위 순으로 정렬</system:String>
+  <system:String x:Key="SpellPanel_SortOrdersSortMatchTime">매칭된 시간 순으로 정렬</system:String>
+  <system:String x:Key="SpellPanel_SortOrdersFixed">고정 배치</system:String>
 
-  <system:String x:Key="MobList_VisibleMePosition">내 좌표 표시</system:String>
-  <system:String x:Key="MobList_SimpleView">간략하게 표시</system:String>
-  <system:String x:Key="MobList_UngroupSameNameMobs">같은 이름을 가진 몹에 대한 그룹화 해제</system:String>
-  <system:String x:Key="MobList_VisibleZPosition">Z축 표시</system:String>
-  <system:String x:Key="MobList_DirectionOrigin">방향 표시 기준</system:String>
-  <system:String x:Key="MobList_DirectionAdjustmentAngle">방향 보정 각도</system:String>
-  <system:String x:Key="MobList_DirectionOriginDescription">Me, Camera를 사용할 경우 FFXIV_MemoryReader가 필요합니다.</system:String>
-  <system:String x:Key="MobList_ScanNPC">NPC 스캔</system:String>
-  <system:String x:Key="MobList_NotScanNPCInFullParty">대규모 파티일 경우 NPC를 스캔하지 않음</system:String>
-  <system:String x:Key="MobList_OpenTargetMobList">대상 몹 목록 열기</system:String>
-  <system:String x:Key="MobList_ReloadTargetMobList">대상 몹 목록 다시 불러오기</system:String>
-  <system:String x:Key="MobList_CountOfDisplay">표시할 몹 수</system:String>
-  <system:String x:Key="MobList_NotifyByTTS">TTS 알림</system:String>
-  <system:String x:Key="MobList_Me">내 정보 폰트</system:String>
-  <system:String x:Key="MobList_MobFont">몹 폰트</system:String>
-  <system:String x:Key="MobList_MobEXColor">EX몹 색</system:String>
-  <system:String x:Key="MobList_MobSColor">S몹 색</system:String>
-  <system:String x:Key="MobList_MobAColor">A몹 색</system:String>
-  <system:String x:Key="MobList_MobBColor">B몹 색</system:String>
-  <system:String x:Key="MobList_MobOtherColor">기타 몹 색</system:String>
+  <system:String x:Key="SpellPanel_VisualWarning1">* 주의 *</system:String>
+  <system:String x:Key="SpellPanel_VisualWarning2">스펠 패널 하위의 모든 스펠 외형을 동시에 설정하는 기능입니다.</system:String>
+  <system:String x:Key="SpellPanel_VisualWarning3">변경될 하위 스펠들이 맞는지 확인한 후 사용해주세요.</system:String>
 
-  <system:String x:Key="Enmity_HideInNotCombat">비전투 시 자동 숨김</system:String>
-  <system:String x:Key="Enmity_HideInSolo">파티원이 없을 경우 숨김</system:String>
-  <system:String x:Key="Enmity_DisplayPCasYou">내 캐릭터를 YOU로 표기</system:String>
-  <system:String x:Key="Enmity_IsDenomi">1,000미만인 값 잘라내기</system:String>
-  <system:String x:Key="Enmity_IsVisibleJobIcon">잡 아이콘 표시</system:String>
-  <system:String x:Key="Enmity_JobIconScale">잡 아이콘 크기</system:String>
-  <system:String x:Key="Enmity_MaxCountOfDisplay">목록 최대 표시 수</system:String>
-  <system:String x:Key="Enmity_ScaningRate">적개심 스캔 간격 (msec)</system:String>
+  <system:String x:Key="SpellPanel_EnabledAdvancedLayouyt">고급 레이아웃 설정 사용</system:String>
+  <system:String x:Key="SpellPanel_AdvancedDesignMode">패널 내부 격자보기</system:String>
+  <system:String x:Key="SpellPanel_PanelLauout">패널 레이아웃</system:String>
+  <system:String x:Key="SpellPanel_BackgroundColor">배경색</system:String>
+  <system:String x:Key="SpellPanel_SpellsLayout">스펠 레이아웃</system:String>
 
-  <system:String x:Key="FFLogs_VisibleHistogram">히스토그램 표시</system:String>
-  <system:String x:Key="FFLogs_HideInCombat">전투 중일 경우 자동 숨김</system:String>
-  <system:String x:Key="FFLogs_HideInCombatDescription" xml:space="preserve">파티원의 HP, TP, MP 중 하나라도 최대치가 아닐 경우 전투 중이라고 판단합니다.</system:String>
+  <system:String x:Key="Spell_Name">스펠 이름</system:String>
+  <system:String x:Key="Spell_ToInstance">동적으로 설정된 스펠 이름이 다를 경우 인스턴스화</system:String>
+  <system:String x:Key="Spell_SortPriority">표시 우선순위</system:String>
+  <system:String x:Key="Spell_TextToMatch">매칭 키워드</system:String>
+  <system:String x:Key="Spell_UserRegex">정규식 사용</system:String>
+  <system:String x:Key="Spell_RecastTime">재사용 대기 시간</system:String>
+  <system:String x:Key="Spell_UseHotbrRecastTime">단축바에서 재사용 대기 시간 가져오기</system:String>
+  <system:String x:Key="Spell_HotbarItemName">단축바에 등록된 기술명</system:String>
+  <system:String x:Key="Spell_TextToExtend">연장 매칭 키워드</system:String>
+  <system:String x:Key="Spell_Secounds">초</system:String>
+  <system:String x:Key="Spell_ExtendSecounds">초 연장</system:String>
+  <system:String x:Key="Spell_ExtendRecastTimeOverOrigal">기존 재사용 대기 시간을 초과하여 연장</system:String>
+  <system:String x:Key="Spell_IsNotResetBarOnExtended">연장 시 진행 바를 초기화하지 않음</system:String>
+  <system:String x:Key="Spell_UpperLimitOfRecastTime">재사용 대기 시간 최댓값</system:String>
+  <system:String x:Key="Spell_WarningTime">초 미만일 경우 경고색으로 변경</system:String>
+  <system:String x:Key="Spell_WarningTimeChangeFontColor">글자를 경고색으로 변경</system:String>
+  <system:String x:Key="Spell_BlinkTime">초 미만일 때 깜박이기</system:String>
+  <system:String x:Key="Spell_BlinkIcon">아이콘 깜박이기</system:String>
+  <system:String x:Key="Spell_BlinkBar">진행 바 깜박이기</system:String>
+  <system:String x:Key="Spell_HideCounter">재사용 대기 시간 숨김</system:String>
+  <system:String x:Key="Spell_NotResetAtWipeout">전멸 시 초기화하지 않음</system:String>
+  <system:String x:Key="Spell_NoticeOnMatch">시작 시 알림</system:String>
+  <system:String x:Key="Spell_NoticeOnOver">시작 시 n초 후 알림</system:String>
+  <system:String x:Key="Spell_NoticeOnBefore">완료 n초 전 알림</system:String>
+  <system:String x:Key="Spell_NoticeOnTimeup">완료되면 알림</system:String>
+  <system:String x:Key="Spell_UseAdvancedNotice">고급 알림 설정</system:String>
+  <system:String x:Key="Spell_ToMainPlaybackDevice">메인 재생 장치에 알림</system:String>
+  <system:String x:Key="Spell_ToSubPlaybackDevice">보조 재생 장치에 알림</system:String>
+  <system:String x:Key="Spell_ToDicordTextChannel">TTS를 디스코드 텍스트 채널에 알림</system:String>
+  <system:String x:Key="Spell_NoticeOnOverThisScounds">초 후에 알림</system:String>
+  <system:String x:Key="Spell_NoticeOnBeforeThisScounds">초 전에 알림</system:String>
+  <system:String x:Key="Spell_UseSequencialTTS">TTS 싱크로 재생 (동시에 재생되지 않음)</system:String>
+  <system:String x:Key="Spell_TestSequencialTTS">싱크로 TTS 테스트</system:String>
 
-  <system:String x:Key="Help_GotoLastestRelease">GitHub에서 최신 버전 확인하기</system:String>
-  <system:String x:Key="Help_ContactToAnoyetta">anoyetta의 Discord 포럼에 참여하기</system:String>
-  <system:String x:Key="Help_OpenConfig">설정 파일 열기</system:String>
-  <system:String x:Key="Help_ReloadConfig">설정 파일 다시 불러오기</system:String>
-  <system:String x:Key="Help_ReloadViews">설정 파일 보기</system:String>
-  <system:String x:Key="Help_OpenLog">로그 열기</system:String>
+  <system:String x:Key="Ticker_Name">티커 이름</system:String>
+  <system:String x:Key="Ticker_Message">티커에 표시되는 문자</system:String>
+  <system:String x:Key="Ticker_MessageDiscription1">","(쉼표)를 입력하면 줄 바꿈됩니다.</system:String>
+  <system:String x:Key="Ticker_MessageDiscription2">{COUNT}를 입력하면 남은 표시 시간으로 치환됩니다.</system:String>
+  <system:String x:Key="Ticker_MessageDiscription3">{COUNT} : 소수 형식 ex. 2.1</system:String>
+  <system:String x:Key="Ticker_MessageDiscription4">{COUNT0} : 정수 형식 ex. 2</system:String>
+  <system:String x:Key="Ticker_TextToMatch">매칭 키워드</system:String>
+  <system:String x:Key="Ticker_TextToMatchToHide">숨김 매칭 키워드</system:String>
+  <system:String x:Key="Ticker_UserRegex">정규식 사용</system:String>
+  <system:String x:Key="Ticker_DisplayTime1">매치 이후로 부터</system:String>
+  <system:String x:Key="Ticker_DisplayTime2">초 후에</system:String>
+  <system:String x:Key="Ticker_DisplayTime3">초 표시</system:String>
+  <system:String x:Key="Ticker_AddMessages">중복해서 매치될 때 메시지 추가 표시</system:String>
+  <system:String x:Key="Ticker_VisibleProgressBar">진행 바 표시</system:String>
+  <system:String x:Key="Ticker_NoticeOnMatch">매치될 때 알림</system:String>
+  <system:String x:Key="Ticker_NoticeOnDelay">표시될 때 알림 (딜레이 후 알림)</system:String>
+
+  <system:String x:Key="Options_Visual">외형</system:String>
+  <system:String x:Key="Options_Trigger">트리거</system:String>
+  <system:String x:Key="Options_Log">로그</system:String>
+  <system:String x:Key="Options_TTSDictionary">TTS사전</system:String>
+
+  <system:String x:Key="Options_OverlayEnabled">오버레이 사용</system:String>
+  <system:String x:Key="Options_HideOverlayOnNonActive">오버레이 자동 숨김</system:String>
+  <system:String x:Key="Options_VisibleOverlayWithoutFFXIV">FFXIV 프로세스가 실행 중이 아니어도 오버레이 표시 (테스트용)</system:String>
+  <system:String x:Key="Options_Transparency">투명도 (※ 100에 가까울수록 투명)</system:String>
+  <system:String x:Key="Options_LogPollingRate">메모리 스캔 간격 (msec)</system:String>
+  <system:String x:Key="Options_OverlayRefreshRate">오버레이 새로고침 간격 (msec)</system:String>
+  <system:String x:Key="Options_AnimationMaxFPS">애니메이션 최대 FPS</system:String>
+  <system:String x:Key="Options_RenderOnlyCPU">렌더링을 CPU로 제한</system:String>
+
+  <system:String x:Key="Options_POSOverlay">POS 오버레이</system:String>
+  <system:String x:Key="Options_VisiblePOS">POS 오버레이 표시</system:String>
+  <system:String x:Key="Options_POSOverlayScale">POS 오버레이 스케일</system:String>
+  <system:String x:Key="Options_POSOverlayLocation">POS 오버레이 위치</system:String>
+  <system:String x:Key="Options_VisiblePOSDebugInfo">디버깅 정보 표시</system:String>
+
+  <system:String x:Key="Options_PCNameDisplayStyle">플레이어 캐릭터 이름 표시 스타일</system:String>
+  <system:String x:Key="Options_TextStrokeThickenessGain">글자 윤곽선 두깨 비율</system:String>
+  <system:String x:Key="Options_TextBlurGain">글자 흐림 효과 비율</system:String>
+  <system:String x:Key="Options_IconBrightnessInRecasting">재사용 대기 중인 아이콘 밝기 (%)</system:String>
+  <system:String x:Key="Options_RecastTimeInInteger">스펠 재사용 대기 시간을 정수로 표시</system:String>
+  <system:String x:Key="Options_FixProgressBarBackground">진행 바 배경색 고정</system:String>
+  <system:String x:Key="Options_ProgressBarBackgroudBrightness">진행 바 배경 밝기</system:String>
+  <system:String x:Key="Options_ProgressBarBackgroudColor">진행 바 배경색</system:String>
+
+  <system:String x:Key="Options_TimeToHide">재사용 대기 완료 후 사라 질 때까지의 시간 (초) ※ 0초일 경우 사라지지 않음</system:String>
+  <system:String x:Key="Options_WaitingTimeToSyncTTS">싱크로 TTS 대기 시간 (msec)</system:String>
+  <system:String x:Key="Options_EnabledPartyPlaceholder">파티원 대체식 사용 ※ &lt;2&gt;~&lt;8&gt;등을 사용 할 수 있습니다. 단, 순서는 실제 파티 목록과 다를 수 있습니다.</system:String>
+  <system:String x:Key="Options_EnabledNotifyDefaultSpellTimer">ACT 자체 스펠 타이머에 알림 (시험적 기능)</system:String>
+  <system:String x:Key="Options_EnabledSimplyRegex">정규 표현식을 단순하게</system:String>
+  <system:String x:Key="Options_EnabledRemoveTooltipSymbol">툴팁 기호 제거</system:String>
+  <system:String x:Key="Options_EnabledRemoveWorldName">캐릭터 이름에서 월드 이름 제거</system:String>
+  <system:String x:Key="Options_EnabledCompleteUnknownSkill">UNKNOWN 기술 보완</system:String>
+  <system:String x:Key="Options_EnabledIgnoreDamageLogs">타격/회복에 관한 로그 무시</system:String>
+  <system:String x:Key="Options_EnabledIgnoreDetailLogs">"15:", "16:"으로 시작하는 세부 로그 무시</system:String>
+  <system:String x:Key="Options_EnabledAutoIgnore">주위에 플레이어 캐릭터가 많을 경우 자동으로 "15:", "16:"으로 시작하는 로그 무시</system:String>
+  <system:String x:Key="Options_EnabledDetectPacketDump">"FC:"로 시작하는 패킷 덤프도 분석 대상으로 설정 (비추천)</system:String>
+  <system:String x:Key="Options_ReadyText">정방향 스펠 타이머 완료 시 텍스트 (기본값: Ready)</system:String>
+  <system:String x:Key="Options_OverText">역방향 스펠 타이머 완료 시 텍스트 (기본값: Over)</system:String>
+
+  <system:String x:Key="Options_VisibleLPS">로그 밀도(LPS) 표시</system:String>
+  <system:String x:Key="Options_LPSOverlayScale">LPS 오버레이 스케일</system:String>
+  <system:String x:Key="Options_LPSOverlayLocation">LPS 오버레이 위치</system:String>
+  <system:String x:Key="Options_EnabledLog">로그 저장</system:String>
+  <system:String x:Key="Options_LogDirectory">로그 저장 폴더</system:String>
+  <system:String x:Key="Options_Browse">찾아보기</system:String>
+
+  <system:String x:Key="Options_ResetOnWipeout">전멸 시 카운터 재설정</system:String>
+  <system:String x:Key="Options_ResetNotifyToACT">리셋 시 ACT 본체에 "end" 전송</system:String>
+
+  <system:String x:Key="Options_Phonetics">파티원 호칭</system:String>
+  <system:String x:Key="Options_TestPhonetics">호칭 테스트</system:String>
+  <system:String x:Key="Options_OpenTTSDictionary">외부 TTS 사전 열기</system:String>
+  <system:String x:Key="Options_ReloadTTSDictionary">외부 TTS 사전 파일 다시 불러오기</system:String>
+
+  <system:String x:Key="Options_MinimizeOnStart">ACT 시작 시 최소화</system:String>
+  <system:String x:Key="Options_Polon">15초마다 "포롱♪" 알림음 재생</system:String>
+
+  <system:String x:Key="Info_Placeholders">대체식</system:String>
+  <system:String x:Key="Info_Triggers">활성화된 트리거</system:String>
+  <system:String x:Key="Info_Hotbar">단축바 정보</system:String>
+  <system:String x:Key="Info_TriggerCount">활성화된 트리거 수 (인스턴스 포함)</system:String>
+
+  <system:String x:Key="Icon_BrowseIcon">아이콘 선택</system:String>
+
+  <system:String x:Key="Data_Import">가져오기</system:String>
+  <system:String x:Key="Data_ImportSpellsToSpellPanel">이 스펠 패널에 스펠을 불러옵니다.</system:String>
+  <system:String x:Key="Data_ImportToTag">이 태그에 스펠/티커를 불러옵니다.</system:String>
+  <system:String x:Key="Data_Export">내보내기</system:String>
+  <system:String x:Key="Data_ExportSpellsFromPanel">이 스펠 패널에 포함된 스펠을 내보냅니다.</system:String>
+  <system:String x:Key="Data_ExportFromTag">이 태그에 속하는 스펠/티커를 내보냅니다.</system:String>
+
+  <system:String x:Key="Copy_Copy">설정 복사</system:String>
+  <system:String x:Key="Copy_Title">설정 복사</system:String>
+  <system:String x:Key="Copy_Source">원본</system:String>
+  <system:String x:Key="Copy_Destination">대상</system:String>
+
+  <system:String x:Key="AddToTag_AddToTag">태그 추가</system:String>
+
+  <system:String x:Key="Timeline_Analyzer">스페스페 타임™ 분석</system:String>
+  <system:String x:Key="Timeline_Manager">스페스페 타임™</system:String>
+
+  <system:String x:Key="Timeline_AutoCombatAnalyze">자동 타임라인 분석</system:String>
+  <system:String x:Key="Timeline_AutoCombatSave">분석 결과 자동 저장</system:String>
+  <system:String x:Key="Timeline_AutoCombatSaveDirectory">분석 결과 자동 저장 위치</system:String>
+  <system:String x:Key="Timeline_SaveToSpreadsheet">스프레드시트로 저장</system:String>
+  <system:String x:Key="Timeline_SaveToDraftTimeline">타임라인 초안으로 저장</system:String>
+  <system:String x:Key="Timeline_SaveToTestLog">테스트용 로그 저장</system:String>
+  <system:String x:Key="Timeline_TotalSecoundsFormat">총 시간 표시 (초)</system:String>
+  <system:String x:Key="Timeline_ThisIsOrigin">이 기록을 기점으로 설정</system:String>
+  <system:String x:Key="Timeline_ImportCombatLog">과거 전투 로그 불러오기</system:String>
+
+  <system:String x:Key="Timeline_Location">위치 (타임라인)</system:String>
+  <system:String x:Key="Timeline_LocationNotice">위치 (알림)</system:String>
+  <system:String x:Key="Timeline_ShowDummyTimeline">디자인 더미 표시</system:String>
+  <system:String x:Key="Timeline_HideINoticeDummy">i-notice 더미 숨김</system:String>
+  <system:String x:Key="Timeline_Enable">스페스페 타임™ 사용</system:String>
+  <system:String x:Key="Timeline_Folder">타임라인 폴더</system:String>
+  <system:String x:Key="Timeline_Visual">스페스페 타임™ 설정</system:String>
+  <system:String x:Key="Timeline_NotifyInterval">알림 스레드 간격 (ms)</system:String>
+  <system:String x:Key="Timeline_OverlayVisible">오버레이 표시</system:String>
+  <system:String x:Key="Timeline_Opacity">불투명도</system:String>
+  <system:String x:Key="Timeline_OverlayScale">오버레이 스케일</system:String>
+  <system:String x:Key="Timeline_NearestActivityScale">최상위 액티비티 확대율</system:String>
+  <system:String x:Key="Timeline_NextActivityBrightness">하위 액티비티 밝기</system:String>
+  <system:String x:Key="Timeline_ActivityMargin">액티비티 간 여백</system:String>
+  <system:String x:Key="Timeline_OverlayBackground">타임라인 배경색</system:String>
+  <system:String x:Key="Timeline_Styles">액티비티 스타일</system:String>
+  <system:String x:Key="Timeline_StyleName">스타일 이름</system:String>
+  <system:String x:Key="Timeline_CircleStyle">원형 스타일</system:String>
+  <system:String x:Key="Timeline_TestTimeline">타임라인 테스트</system:String>
+  <system:String x:Key="Timeline_TimelineTester">타임라인 테스터</system:String>
+  <system:String x:Key="Timeline_ShowActivitiesCount">표시할 액티비티 수</system:String>
+  <system:String x:Key="Timeline_Header">헤더</system:String>
+  <system:String x:Key="Timeline_ShowHeader">헤더 표시</system:String>
+  <system:String x:Key="Timeline_HeaderStyle">헤더 스타일</system:String>
+  <system:String x:Key="Timeline_OpenResourcesDictionary">ResourcesDictionary.xaml 위치 열기</system:String>
+  <system:String x:Key="Timeline_ShowCompiledText">RazorEngine으로 컴파일 된 내용 표시</system:String>
+
+  <system:String x:Key="Timeline_IgnoreLogs">판정 대상에서 제외할 로그 유형</system:String>
+
+  <system:String x:Key="TriggerTester_OpenSimulator">시뮬레이터</system:String>
+  <system:String x:Key="TriggerTester_Title">트리거 시뮬레이터</system:String>
+  <system:String x:Key="TriggerTester_Condition">조건</system:String>
 </ResourceDictionary>
