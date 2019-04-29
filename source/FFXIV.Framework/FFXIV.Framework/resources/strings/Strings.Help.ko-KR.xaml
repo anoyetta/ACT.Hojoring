@@ -4,13 +4,13 @@
   xmlns:system="clr-namespace:System;assembly=mscorlib">
 
   <!--  Resources Strings in Korean  -->
-  <system:String x:Key="Help_GotoWiki">위키 페이지로 이동</system:String>
-  <system:String x:Key="Help_GotoLastestRelease">릴리즈 페이지로 이동</system:String>
-  <system:String x:Key="Help_GotoIssues">이슈 페이지로 이동</system:String>
+  <system:String x:Key="Help_GotoWiki">위키 페이지</system:String>
+  <system:String x:Key="Help_GotoLastestRelease">릴리즈 페이지</system:String>
+  <system:String x:Key="Help_GotoIssues">이슈 페이지</system:String>
   <system:String x:Key="Help_Update">업데이트</system:String>
   <system:String x:Key="Help_UsePreReleaase">Pre-release 사용</system:String>
 
-  <system:String x:Key="Help_ContactToAnoyetta">제작자 DISCORD 포럼</system:String>
+  <system:String x:Key="Help_ContactToAnoyetta">호조링 DISCORD 포럼</system:String>
   <system:String x:Key="Help_ContactToAnoyettaTwitter">제작자 Twitter</system:String>
 
   <system:String x:Key="Help_OpenConfig">설정 파일 열기</system:String>
