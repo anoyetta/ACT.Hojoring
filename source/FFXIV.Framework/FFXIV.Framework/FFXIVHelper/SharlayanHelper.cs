@@ -31,6 +31,12 @@ namespace FFXIV.Framework.FFXIVHelper
 
     public class SharlayanHelper
     {
+        #region Logger
+
+        private static NLog.Logger AppLogger => AppLog.DefaultLogger;
+
+        #endregion Logger
+
         private static readonly Lazy<SharlayanHelper> LazyInstance = new Lazy<SharlayanHelper>();
 
         public static SharlayanHelper Instance => LazyInstance.Value;
@@ -588,29 +594,36 @@ namespace FFXIV.Framework.FFXIVHelper
 
             var composition = PartyCompositions.Unknown;
 
-            if (this.PartyMemberCount == 4)
+            var partyPCCount = newPartyList.Count(x => x.Type == Actor.Type.PC);
+            if (partyPCCount == 4)
             {
                 this.PartyComposition = PartyCompositions.LightParty;
             }
             else
             {
-                if (this.PartyMemberCount == 8)
+                if (partyPCCount >= 8)
                 {
                     var tanks = this.PartyMemberList.Count(x => x.GetJobInfo().Role == Roles.Tank);
                     switch (tanks)
                     {
                         case 1:
+                        case 3:
                             this.PartyComposition = PartyCompositions.FullPartyT1;
                             break;
 
                         case 2:
+                        case 6:
                             this.PartyComposition = PartyCompositions.FullPartyT2;
                             break;
                     }
                 }
             }
 
-            this.PartyComposition = composition;
+            if (this.PartyComposition != composition)
+            {
+                this.PartyComposition = composition;
+                AppLogger.Info($"party composition changed. current={composition} party_count={partyPCCount}");
+            }
         }
 
         public List<Combatant> ToCombatantList(
