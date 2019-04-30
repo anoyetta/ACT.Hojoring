@@ -27,9 +27,9 @@
   <system:String x:Key="Common_CreateNew">새로 만들기</system:String>
   <system:String x:Key="Common_CreateSimilarNew">복제</system:String>
   <system:String x:Key="Common_CreateNewTag">새 태그</system:String>
-  <system:String x:Key="Common_CreateNewSpellPanel">새로운 스펠 패널</system:String>
-  <system:String x:Key="Common_CreateNewSpell">새로운 스펠</system:String>
-  <system:String x:Key="Common_CreateNewTicker">새로운 티커</system:String>
+  <system:String x:Key="Common_CreateNewSpellPanel">새 스펠 패널</system:String>
+  <system:String x:Key="Common_CreateNewSpell">새 스펠</system:String>
+  <system:String x:Key="Common_CreateNewTicker">새 티커</system:String>
   <system:String x:Key="Common_Rename">이름 변경</system:String>
   <system:String x:Key="Common_Delete">삭제</system:String>
   <system:String x:Key="Common_Import">가져오기</system:String>
