@@ -25,7 +25,7 @@
   <system:String x:Key="Common_ManageTags">태그 관리</system:String>
 
   <system:String x:Key="Common_CreateNew">새로 만들기</system:String>
-  <system:String x:Key="Common_CreateSimilarNew">복사하고 새로 만들기</system:String>
+  <system:String x:Key="Common_CreateSimilarNew">복제</system:String>
   <system:String x:Key="Common_CreateNewTag">새 태그</system:String>
   <system:String x:Key="Common_CreateNewSpellPanel">새로운 스펠 패널</system:String>
   <system:String x:Key="Common_CreateNewSpell">새로운 스펠</system:String>
