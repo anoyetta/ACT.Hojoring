@@ -15,7 +15,7 @@
   <system:String x:Key="General_ClearCacheNow">캐시 삭제</system:String>
   <system:String x:Key="General_WaveVolume">마스터 볼륨</system:String>
   <system:String x:Key="General_Test">테스트</system:String>
-  <system:String x:Key="General_TestTTS">本日は晴天なり。오늘은 날씨가 맑네요. It's fine today.</system:String>
+  <system:String x:Key="General_TestTTS">오늘은 날씨가 맑네요.</system:String>
   <system:String x:Key="General_PlayMethod">재생 방식</system:String>
   <system:String x:Key="General_MainPlayDevice">주 재생 장치</system:String>
   <system:String x:Key="General_SubPlayDevice">보조 재생 장치</system:String>
