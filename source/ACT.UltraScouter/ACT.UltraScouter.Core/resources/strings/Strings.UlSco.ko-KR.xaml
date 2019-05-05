@@ -112,15 +112,15 @@
   <system:String x:Key="Enmity_ScaningRate">적개심 스캔 간격 (msec)</system:String>
 
   <system:String x:Key="FFLogs_VisibleHistogram">히스토그램 표시</system:String>
-  <system:String x:Key="FFLogs_HideInCombat">전투 중일 경우 자동 숨김</system:String>
+  <system:String x:Key="FFLogs_HideInCombat">전투 시 자동 숨김</system:String>
   <system:String x:Key="FFLogs_HideInCombatDescription" xml:space="preserve">파티원의 HP, TP, MP 중 하나라도 최대치가 아닐 경우 전투 중이라고 판단합니다.</system:String>
 
-  <system:String x:Key="TacticalRadar_HorizontalLayout">Horizontal layout</system:String>
-  <system:String x:Key="TacticalRadar_Target">Tactical targets</system:String>
-  <system:String x:Key="TacticalRadar_TargetName">Name</system:String>
-  <system:String x:Key="TacticalRadar_DetectRange">Range</system:String>
-  <system:String x:Key="TacticalRadar_NoticeEnabled">Notice</system:String>
-  <system:String x:Key="TacticalRadar_Enabled">Enabled</system:String>
+  <system:String x:Key="TacticalRadar_HorizontalLayout">수평 레이아웃</system:String>
+  <system:String x:Key="TacticalRadar_Target">전술 타겟</system:String>
+  <system:String x:Key="TacticalRadar_TargetName">타겟 이름</system:String>
+  <system:String x:Key="TacticalRadar_DetectRange">감지 거리</system:String>
+  <system:String x:Key="TacticalRadar_NoticeEnabled">알림</system:String>
+  <system:String x:Key="TacticalRadar_Enabled">사용</system:String>
 
   <system:String x:Key="Help_GotoLastestRelease">GitHub에서 최신 버전 확인하기</system:String>
   <system:String x:Key="Help_ContactToAnoyetta">anoyetta의 Discord 포럼에 참여하기</system:String>
