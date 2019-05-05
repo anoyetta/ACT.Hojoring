@@ -1347,6 +1347,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         private void DetectPSyncTriggers()
         {
+            // starts using 時のポジションをダンプする
+            this.DumpStartsUsingPosition();
+
             var localDetectTime = DateTime.Now;
             var psyncs = default(TimelineTriggerModel[]);
 
@@ -1388,9 +1391,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             void detectPSync(
                 TimelineTriggerModel tri)
             {
-                // starts using 時のポジションをダンプする
-                this.DumpStartsUsingPosition();
-
                 var psync = tri.PositionSyncStatements
                     .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
                 if (psync == null)
