@@ -17,6 +17,7 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using Prism.Mvvm;
+using Sharlayan.Core.Enums;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -1387,6 +1388,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             void detectPSync(
                 TimelineTriggerModel tri)
             {
+                // starts using 時のポジションをダンプする
+                this.DumpStartsUsingPosition();
+
                 var psync = tri.PositionSyncStatements
                     .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
                 if (psync == null)
@@ -1536,6 +1540,33 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
+        private static readonly object DumpStartsUsingLock = new object();
+        private IEnumerable<uint> previouseCastingCombatantIDs;
+
+        private void DumpStartsUsingPosition()
+        {
+            lock (DumpStartsUsingLock)
+            {
+                var castingCombatants = FFXIVPlugin.Instance.GetCombatantList()
+                    .Where(x =>
+                        x.ObjectType == Actor.Type.Monster &&
+                        x.IsCasting)
+                    .ToArray();
+
+                foreach (var combatant in castingCombatants)
+                {
+                    if (this.previouseCastingCombatantIDs == null ||
+                        !this.previouseCastingCombatantIDs.Contains(combatant.ID))
+                    {
+                        TimelineController.RaiseLog(
+                            $"{TLSymbol} {combatant.Name} starts using {combatant.CastSkillName}. X={combatant.PosXMap:N2} Y={combatant.PosYMap:N2} Z={combatant.PosZMap:N2}");
+                    }
+                }
+
+                this.previouseCastingCombatantIDs = castingCombatants.Select(x => x.ID).ToArray();
+            }
+        }
+
         /// <summary>
         /// ログを発生させる
         /// </summary>
@@ -1656,7 +1687,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         private static volatile bool isTimelineTicking = false;
-        private static volatile Action TimelineTickCallback;
+        private static volatile System.Action TimelineTickCallback;
         private static TimeSpan TimelineDefaultInterval => TimeSpan.FromMilliseconds(TimelineSettings.Instance.ProgressBarRefreshInterval);
         private static readonly TimeSpan TimelineIdleInterval = TimeSpan.FromSeconds(5);
 
