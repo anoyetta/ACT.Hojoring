@@ -107,6 +107,7 @@
   <system:String x:Key="Enmity_DisplayPCasYou">내 캐릭터를 YOU로 표기</system:String>
   <system:String x:Key="Enmity_IsDenomi">1,000미만인 값 잘라내기</system:String>
   <system:String x:Key="Enmity_IsVisibleJobIcon">잡 아이콘 표시</system:String>
+  <system:String x:Key="Enmity_IsVisibleName">Visible character name</system:String>
   <system:String x:Key="Enmity_JobIconScale">잡 아이콘 크기</system:String>
   <system:String x:Key="Enmity_MaxCountOfDisplay">목록 최대 표시 수</system:String>
   <system:String x:Key="Enmity_ScaningRate">적개심 스캔 간격 (msec)</system:String>

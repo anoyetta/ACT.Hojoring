@@ -118,6 +118,10 @@
         Margin="0 5 0 0"
         Content="{DynamicResource Enmity_IsVisibleJobIcon}"
         IsChecked="{Binding Enmity.IsVisibleIcon, Mode=TwoWay}" />
+      <CheckBox
+        Margin="0 5 0 0"
+        Content="{DynamicResource Enmity_IsVisibleName}"
+        IsChecked="{Binding Enmity.IsVisibleName, Mode=TwoWay}" />
       <Label
         Margin="0 5 0 0"
         Content="{DynamicResource Enmity_JobIconScale}" />

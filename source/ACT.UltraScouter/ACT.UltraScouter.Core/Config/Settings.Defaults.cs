@@ -210,6 +210,7 @@ namespace ACT.UltraScouter.Config
                 IsSelfDisplayYou = true,
                 IsDenomi = false,
                 IsVisibleIcon = true,
+                IsVisibleName = true,
                 IconScale = 1.0d,
                 ScaningRate = 250d,
                 MaxCountOfDisplay = 8,
