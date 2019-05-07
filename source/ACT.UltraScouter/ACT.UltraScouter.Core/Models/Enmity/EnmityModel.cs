@@ -37,7 +37,15 @@ namespace ACT.UltraScouter.Models.Enmity
         public string Name
         {
             get => this.name;
-            set => this.SetProperty(ref this.name, value);
+            set
+            {
+                if (!this.Config.IsVisibleName)
+                {
+                    value = " ";
+                }
+
+                this.SetProperty(ref this.name, value);
+            }
         }
 
         private JobIDs jobID = JobIDs.Unknown;
@@ -69,10 +77,17 @@ namespace ACT.UltraScouter.Models.Enmity
                 return;
             }
 
+            /*
             MeBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e6b422"));
             TankBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00a1e9"));
             HealerBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#82ae46"));
             DPSBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e60033"));
+            */
+
+            MeBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e6b422"));
+            TankBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3849A1"));
+            HealerBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#467737"));
+            DPSBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AF3748"));
         }
 
         public SolidColorBrush BarColorBrush

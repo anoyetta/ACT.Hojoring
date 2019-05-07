@@ -150,6 +150,7 @@
                       DockPanel.Dock="Left"
                       HorizontalAlignment="Left"
                       x:Name="NameLabel"
+                      Visibility="{Binding Config.IsVisibleName, Mode=OneWay, Converter={StaticResource HiddenConverter}}"
                       Style="{DynamicResource OutlineStyle}"
                       Text="{Binding Name, Mode=OneWay}"
                       TextTrimming="CharacterEllipsis" />
