@@ -71,6 +71,15 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.isVisibleIcon, value);
         }
 
+        private bool isVisibleName = true;
+
+        [DataMember]
+        public bool IsVisibleName
+        {
+            get => this.isVisibleName;
+            set => this.SetProperty(ref this.isVisibleName, value);
+        }
+
         private double iconScale = 1.0d;
 
         [DataMember]
