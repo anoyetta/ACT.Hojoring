@@ -683,6 +683,8 @@ namespace ACT.UltraScouter.Models
 
         private static ObservableCollection<EnmityModel> designtimeEnmityList;
 
+        private static readonly double DesignTopEnmity = 3214405;
+
         private static ObservableCollection<EnmityModel> DesigntimeEnmityList => designtimeEnmityList ?? (designtimeEnmityList = new ObservableCollection<EnmityModel>()
         {
             new EnmityModel()
@@ -692,7 +694,8 @@ namespace ACT.UltraScouter.Models
                 Name = "Taro Yamada",
                 JobID = JobIDs.WAR,
                 HateRate = 1.0f,
-                Enmity = 3214405,
+                Enmity = DesignTopEnmity,
+                IsTop = true,
             },
             new EnmityModel()
             {
@@ -701,7 +704,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Jiro Suzuki",
                 JobID = JobIDs.PLD,
                 HateRate = 0.85f,
-                Enmity = 3214405 * 0.85f,
+                Enmity = DesignTopEnmity * 0.85f,
             },
             new EnmityModel()
             {
@@ -710,7 +713,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Hanako Hime",
                 JobID = JobIDs.WHM,
                 HateRate = 0.52f,
-                Enmity = 3214405 * 0.52f,
+                Enmity = DesignTopEnmity * 0.52f,
             },
             new EnmityModel()
             {
@@ -719,7 +722,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Cookie Cream",
                 JobID = JobIDs.SCH,
                 HateRate = 0.48f,
-                Enmity = 3214405 * 0.48f,
+                Enmity = DesignTopEnmity * 0.48f,
                 IsMe = true,
             },
             new EnmityModel()
@@ -729,7 +732,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Ryusan Sky",
                 JobID = JobIDs.DRG,
                 HateRate = 0.32f,
-                Enmity = 3214405 * 0.32f,
+                Enmity = DesignTopEnmity * 0.32f,
             },
             new EnmityModel()
             {
@@ -738,7 +741,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Utako Song",
                 JobID = JobIDs.BRD,
                 HateRate = 0.31f,
-                Enmity = 3214405 * 0.31f,
+                Enmity = DesignTopEnmity * 0.31f,
             },
             new EnmityModel()
             {
@@ -747,7 +750,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Red Yoshida",
                 JobID = JobIDs.RDM,
                 HateRate = 0.29f,
-                Enmity = 3214405 * 0.29f,
+                Enmity = DesignTopEnmity * 0.29f,
             },
             new EnmityModel()
             {
@@ -756,7 +759,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Ridea Numako",
                 JobID = JobIDs.SMN,
                 HateRate = 0.10f,
-                Enmity = 3214405 * 0.10f,
+                Enmity = DesignTopEnmity * 0.10f,
             },
         });
 
@@ -766,9 +769,16 @@ namespace ACT.UltraScouter.Models
 
             var list = new List<EnmityModel>(original.Count);
 
+            var pre = default(EnmityModel);
             foreach (var item in original)
             {
+                if (pre != null)
+                {
+                    item.EnmityDifference = pre.Enmity - item.Enmity;
+                }
+
                 list.Add(item.Clone());
+                pre = item;
             }
 
             return list;
@@ -890,6 +900,7 @@ namespace ACT.UltraScouter.Models
 
                 using (this.EnmityViewSource.DeferRefresh())
                 {
+                    var pre = default(EnmityModel);
                     foreach (var src in newEnmityList)
                     {
                         Thread.Yield();
@@ -907,9 +918,13 @@ namespace ACT.UltraScouter.Models
                         dest.Name = src.Name;
                         dest.JobID = src.JobID;
                         dest.Enmity = src.Enmity;
+                        dest.EnmityDifference = pre != null ? pre.Enmity - dest.Enmity : 0;
                         dest.HateRate = src.HateRate;
                         dest.IsMe = src.IsMe;
                         dest.IsPet = src.IsPet;
+                        dest.IsTop = src.IsTop;
+
+                        pre = dest;
                     }
 
                     foreach (var item in this.enmityList.Except(newEnmityList, EnmityModel.EnmityModelComparer).ToArray())

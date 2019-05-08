@@ -25,6 +25,7 @@
   <system:String x:Key="Common_Visible">显示</system:String>
   <system:String x:Key="Common_Location">位置</system:String>
   <system:String x:Key="Common_BarWidth">Bar width</system:String>
+  <system:String x:Key="Common_BarSize">Bar size</system:String>
   <system:String x:Key="Common_Scale">尺度</system:String>
   <system:String x:Key="Common_Background">背景色</system:String>
   <system:String x:Key="Common_Font">字体</system:String>
@@ -108,6 +109,7 @@
   <system:String x:Key="Enmity_IsDenomi">Cut the value less than 1,000</system:String>
   <system:String x:Key="Enmity_IsVisibleJobIcon">Visible job icon</system:String>
   <system:String x:Key="Enmity_IsVisibleName">Visible character name</system:String>
+  <system:String x:Key="Enmity_IsDifferenceMode">Difference mode</system:String>
   <system:String x:Key="Enmity_JobIconScale">Job icon scale</system:String>
   <system:String x:Key="Enmity_MaxCountOfDisplay">Max count of display</system:String>
   <system:String x:Key="Enmity_ScaningRate">Enmity scaning rate (msec)</system:String>
