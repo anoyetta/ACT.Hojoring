@@ -120,6 +120,7 @@ namespace ACT.UltraScouter.Workers
                     model.HateRate = entry.HateRate / 100f;
                     model.IsMe = entry.IsMe;
                     model.IsPet = entry.IsPet;
+                    model.IsTop = count <= 1;
                     this.CurrentEnmityModelList.Add(model);
 
                     Thread.Yield();

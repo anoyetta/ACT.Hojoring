@@ -80,6 +80,24 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.isVisibleName, value);
         }
 
+        private bool isDisplayDifference;
+
+        [DataMember]
+        public bool IsDisplayDifference
+        {
+            get => this.isDisplayDifference;
+            set
+            {
+                if (this.SetProperty(ref this.isDisplayDifference, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.IsNotDisplayDifference));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public bool IsNotDisplayDifference => !this.IsDisplayDifference;
+
         private double iconScale = 1.0d;
 
         [DataMember]
@@ -105,6 +123,15 @@ namespace ACT.UltraScouter.Config
         {
             get => this.barWidth;
             set => this.SetProperty(ref this.barWidth, value);
+        }
+
+        private double barHeight = 6d;
+
+        [DataMember]
+        public double BarHeight
+        {
+            get => this.barHeight;
+            set => this.SetProperty(ref this.barHeight, value);
         }
 
         private double scaningRate = 250;
