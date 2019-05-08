@@ -25,6 +25,7 @@
   <system:String x:Key="Common_Visible">표시</system:String>
   <system:String x:Key="Common_Location">위치</system:String>
   <system:String x:Key="Common_BarWidth">바의 폭</system:String>
+  <system:String x:Key="Common_BarSize">Bar size</system:String>
   <system:String x:Key="Common_Scale">스케일</system:String>
   <system:String x:Key="Common_Background">배경</system:String>
   <system:String x:Key="Common_Font">폰트</system:String>
@@ -108,6 +109,7 @@
   <system:String x:Key="Enmity_IsDenomi">1,000미만인 값 잘라내기</system:String>
   <system:String x:Key="Enmity_IsVisibleJobIcon">잡 아이콘 표시</system:String>
   <system:String x:Key="Enmity_IsVisibleName">Visible character name</system:String>
+  <system:String x:Key="Enmity_IsDifferenceMode">Difference mode</system:String>
   <system:String x:Key="Enmity_JobIconScale">잡 아이콘 크기</system:String>
   <system:String x:Key="Enmity_MaxCountOfDisplay">목록 최대 표시 수</system:String>
   <system:String x:Key="Enmity_ScaningRate">적개심 스캔 간격 (msec)</system:String>
