@@ -37,15 +37,7 @@ namespace ACT.UltraScouter.Models.Enmity
         public string Name
         {
             get => this.name;
-            set
-            {
-                if (!this.Config.IsVisibleName)
-                {
-                    value = " ";
-                }
-
-                this.SetProperty(ref this.name, value);
-            }
+            set => this.SetProperty(ref this.name, value);
         }
 
         private JobIDs jobID = JobIDs.Unknown;
@@ -78,12 +70,14 @@ namespace ACT.UltraScouter.Models.Enmity
             }
 
             /*
+            彩度調整版
             MeBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e6b422"));
             TankBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00a1e9"));
             HealerBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#82ae46"));
             DPSBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e60033"));
             */
 
+            // デフォルトカラー
             MeBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e6b422"));
             TankBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3849A1"));
             HealerBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#467737"));
@@ -121,6 +115,14 @@ namespace ACT.UltraScouter.Models.Enmity
             }
         }
 
+        private bool isTop;
+
+        public bool IsTop
+        {
+            get => this.isTop;
+            set => this.SetProperty(ref this.isTop, value);
+        }
+
         private bool isMe;
 
         public bool IsMe
@@ -149,6 +151,14 @@ namespace ACT.UltraScouter.Models.Enmity
         {
             get => this.enmity;
             set => this.SetProperty(ref this.enmity, value);
+        }
+
+        private double enmityDifference;
+
+        public double EnmityDifference
+        {
+            get => this.enmityDifference;
+            set => this.SetProperty(ref this.enmityDifference, value);
         }
 
         private float hateRate;
