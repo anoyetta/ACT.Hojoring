@@ -248,7 +248,7 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.nearColor, value);
         }
 
-        private double nearThresholdRate = 3.0;
+        private double nearThresholdRate = 5.0;
 
         [DataMember]
         public double NearThresholdRate
