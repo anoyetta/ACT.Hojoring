@@ -147,6 +147,7 @@
                   Grid.Column="0"
                   Margin="0 0 5 0"
                   Stretch="Uniform"
+                  VerticalAlignment="{Binding Config.BarVerticalAlignment, Mode=OneWay}"
                   Visibility="{Binding Config.IsVisibleIconLeft, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
                   Height="{Binding ElementName=DummyNameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.6}"
                   Width="{Binding RelativeSource={RelativeSource Self}, Path=Height, Mode=OneWay}">
@@ -163,6 +164,7 @@
                   Grid.Column="2"
                   Margin="5 0 0 0"
                   Stretch="Uniform"
+                  VerticalAlignment="{Binding Config.BarVerticalAlignment, Mode=OneWay}"
                   Visibility="{Binding Config.IsVisibleIconRight, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
                   Height="{Binding ElementName=DummyNameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.6}"
                   Width="{Binding RelativeSource={RelativeSource Self}, Path=Height, Mode=OneWay}">
@@ -180,10 +182,15 @@
                   MaxWidth="{Binding BarWidthMax, Mode=OneWay}">
                   <DockPanel Margin="5 0">
                     <!-- Enmity Value -->
-                    <Grid Margin="10 0 0 0" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                    <Grid
+                      x:Name="EnmityGrid"
+                      Margin="10 0 0 0"
+                      DockPanel.Dock="Right"
+                      HorizontalAlignment="Right">
                       <!-- Absolute Value -->
                       <ctrl:DenomiNumericTextBlock
                         IsDenomi="{Binding Config.IsDenomi, Mode=OneWay}"
+                        IsDisableBottom="True"
                         Style="{DynamicResource DenomiNumericStyle}"
                         Value="{Binding Enmity, Mode=OneWay}"
                         Visibility="{Binding Config.IsNotDisplayDifference, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
@@ -195,6 +202,7 @@
                         <ctrl:DenomiNumericTextBlock
                           Visibility="{Binding IsMe, Mode=OneWay, Converter={StaticResource NotVisibilityConverter}}"
                           IsDenomi="{Binding Config.IsDenomi, Mode=OneWay}"
+                          IsDisableBottom="True"
                           IsSign="True"
                           Style="{DynamicResource DenomiNumericStyle}"
                           Value="{Binding EnmityDifference, Mode=OneWay}" />

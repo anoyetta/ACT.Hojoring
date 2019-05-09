@@ -73,6 +73,31 @@ namespace FFXIV.Framework.WPF.Controls
 
         #endregion IsDenomi 依存関係プロパティ
 
+        #region IsDisableBottom 依存関係プロパティ
+
+        /// <summary>
+        /// IsDisableBottom 依存関係プロパティ
+        /// </summary>
+        public static readonly DependencyProperty IsDisableBottomProperty
+            = DependencyProperty.Register(
+            nameof(IsDisableBottom),
+            typeof(bool),
+            typeof(DenomiNumericTextBlock),
+            new FrameworkPropertyMetadata(
+                false,
+                (s, e) => (s as DenomiNumericTextBlock).Render()));
+
+        /// <summary>
+        /// IsDisableBottom
+        /// </summary>
+        public bool IsDisableBottom
+        {
+            get => (bool)this.GetValue(IsDisableBottomProperty);
+            set => this.SetValue(IsDisableBottomProperty, value);
+        }
+
+        #endregion IsDisableBottom 依存関係プロパティ
+
         #region Value 依存関係プロパティ
 
         /// <summary>
@@ -265,7 +290,7 @@ namespace FFXIV.Framework.WPF.Controls
             label.BlurOpacity = this.BlurOpacity;
             label.TextDecorations = this.TextDecorations;
 
-            var text = DivideValueText(this.Value);
+            var text = DivideValueText(this.Value, this.IsDisableBottom);
 
             this.UpperPartLabel.Text = !this.IsSign ?
                 text.UpperPart :
@@ -282,17 +307,25 @@ namespace FFXIV.Framework.WPF.Controls
         }
 
         public static (string UpperPart, string BottomPart) DivideValueText(
-            double value)
+            double value,
+            bool isDisableBottom = false)
         {
             var result = default((string UpperPart, string BottomPart));
 
             var hp = (long)value;
             var hpAbsolute = (long)Math.Abs(hp);
 
-            if (hpAbsolute < 10000)
+            if (hpAbsolute < 1000)
             {
-                result.UpperPart = hp.ToString("N0");
-                result.BottomPart = string.Empty;
+                if (!isDisableBottom)
+                {
+                    result.UpperPart = hp.ToString("N0");
+                    result.BottomPart = string.Empty;
+                }
+                else
+                {
+                    result.UpperPart = "0";
+                }
             }
             else
             {
