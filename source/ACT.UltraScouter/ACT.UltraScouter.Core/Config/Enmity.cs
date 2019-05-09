@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
 using Prism.Mvvm;
@@ -11,6 +12,15 @@ namespace ACT.UltraScouter.Config
     public class Enmity :
         BindableBase
     {
+        private bool isDesignMode;
+
+        [XmlIgnore]
+        public bool IsDesignMode
+        {
+            get => this.isDesignMode;
+            set => this.SetProperty(ref this.isDesignMode, value);
+        }
+
         [DataMember]
         public DisplayText DisplayText { get; set; } = new DisplayText();
 
@@ -68,8 +78,37 @@ namespace ACT.UltraScouter.Config
         public bool IsVisibleIcon
         {
             get => this.isVisibleIcon;
-            set => this.SetProperty(ref this.isVisibleIcon, value);
+            set
+            {
+                if (this.SetProperty(ref this.isVisibleIcon, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.IsVisibleIconLeft));
+                    this.RaisePropertyChanged(nameof(this.IsVisibleIconRight));
+                }
+            }
         }
+
+        private bool isIconRight;
+
+        [DataMember]
+        public bool IsIconRight
+        {
+            get => this.isIconRight;
+            set
+            {
+                if (this.SetProperty(ref this.isIconRight, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.IsVisibleIconLeft));
+                    this.RaisePropertyChanged(nameof(this.IsVisibleIconRight));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public bool IsVisibleIconLeft => this.isVisibleIcon && !this.isIconRight;
+
+        [XmlIgnore]
+        public bool IsVisibleIconRight => this.isVisibleIcon && this.IsIconRight;
 
         private bool isVisibleName = true;
 
@@ -79,24 +118,6 @@ namespace ACT.UltraScouter.Config
             get => this.isVisibleName;
             set => this.SetProperty(ref this.isVisibleName, value);
         }
-
-        private bool isDisplayDifference;
-
-        [DataMember]
-        public bool IsDisplayDifference
-        {
-            get => this.isDisplayDifference;
-            set
-            {
-                if (this.SetProperty(ref this.isDisplayDifference, value))
-                {
-                    this.RaisePropertyChanged(nameof(this.IsNotDisplayDifference));
-                }
-            }
-        }
-
-        [XmlIgnore]
-        public bool IsNotDisplayDifference => !this.IsDisplayDifference;
 
         private double iconScale = 1.0d;
 
@@ -134,6 +155,24 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.barHeight, value);
         }
 
+        private VerticalAlignment barVerticalAlignment = VerticalAlignment.Center;
+
+        [DataMember]
+        public VerticalAlignment BarVerticalAlignment
+        {
+            get => this.barVerticalAlignment;
+            set => this.SetProperty(ref this.barVerticalAlignment, value);
+        }
+
+        [DataMember]
+        private HorizontalAlignment barHorizontalAlignment = HorizontalAlignment.Left;
+
+        public HorizontalAlignment BarHorizontalAlignment
+        {
+            get => this.barHorizontalAlignment;
+            set => this.SetProperty(ref this.barHorizontalAlignment, value);
+        }
+
         private double scaningRate = 250;
 
         [DataMember]
@@ -161,13 +200,70 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.background, value);
         }
 
-        private bool isDesignMode;
+        private bool isDisplayDifference;
+
+        [DataMember]
+        public bool IsDisplayDifference
+        {
+            get => this.isDisplayDifference;
+            set
+            {
+                if (this.SetProperty(ref this.isDisplayDifference, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.IsNotDisplayDifference));
+                }
+            }
+        }
 
         [XmlIgnore]
-        public bool IsDesignMode
+        public bool IsNotDisplayDifference => !this.IsDisplayDifference;
+
+        private string alterTextMeValue = "YOU";
+
+        [DataMember]
+        public string AlterTextMeValue
         {
-            get => this.isDesignMode;
-            set => this.SetProperty(ref this.isDesignMode, value);
+            get => this.alterTextMeValue;
+            set => this.SetProperty(ref this.alterTextMeValue, value);
+        }
+
+        private bool isNearIndicator;
+
+        [DataMember]
+        public bool IsNearIndicator
+        {
+            get => this.isNearIndicator;
+            set => this.SetProperty(ref this.isNearIndicator, value);
+        }
+
+        [XmlIgnore]
+        public static readonly Color DefaultNearColor = (Color)ColorConverter.ConvertFromString("#e60033");
+
+        private Color nearColor = DefaultNearColor;
+
+        [DataMember]
+        public Color NearColor
+        {
+            get => this.nearColor;
+            set => this.SetProperty(ref this.nearColor, value);
+        }
+
+        private double nearThresholdRate = 3.0;
+
+        [DataMember]
+        public double NearThresholdRate
+        {
+            get => this.nearThresholdRate;
+            set => this.SetProperty(ref this.nearThresholdRate, value);
+        }
+
+        private bool isVisibleNearThreshold;
+
+        [DataMember]
+        public bool IsVisibleNearThreshold
+        {
+            get => this.isVisibleNearThreshold;
+            set => this.SetProperty(ref this.isVisibleNearThreshold, value);
         }
     }
 }

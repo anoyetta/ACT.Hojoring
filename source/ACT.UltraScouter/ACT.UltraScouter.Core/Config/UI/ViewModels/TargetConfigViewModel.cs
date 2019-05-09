@@ -22,7 +22,7 @@ using Prism.Mvvm;
 
 namespace ACT.UltraScouter.Config.UI.ViewModels
 {
-    public class TargetConfigViewModel :
+    public partial class TargetConfigViewModel :
         BindableBase
     {
         /// <summary>
@@ -371,34 +371,5 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         }
 
         #endregion FFLogs
-
-        #region Enmity
-
-        private ICommand enmityDisplayTextFontCommand;
-        private ICommand enmityDisplayTextColorCommand;
-        private ICommand enmityDisplayTextOutlineColorCommand;
-        private ICommand enmityBackgroundColorCommand;
-
-        public ICommand EnmityDisplayTextFontCommand =>
-            this.enmityDisplayTextFontCommand ??
-            (this.enmityDisplayTextFontCommand =
-            new ChangeFontCommand((font) => this.Enmity.DisplayText.Font = font));
-
-        public ICommand EnmityDisplayTextColorCommand =>
-            this.enmityDisplayTextColorCommand ??
-            (this.enmityDisplayTextColorCommand =
-            new ChangeColorCommand((color) => this.Enmity.DisplayText.Color = color));
-
-        public ICommand EnmityDisplayTextOutlineColorCommand =>
-            this.enmityDisplayTextOutlineColorCommand ??
-            (this.enmityDisplayTextOutlineColorCommand =
-            new ChangeColorCommand((color) => this.Enmity.DisplayText.OutlineColor = color));
-
-        public ICommand EnmityBackgroundColorCommand =>
-            this.enmityBackgroundColorCommand ??
-            (this.enmityBackgroundColorCommand =
-            new ChangeColorCommand((color) => this.Enmity.Background = color));
-
-        #endregion Enmity
     }
 }

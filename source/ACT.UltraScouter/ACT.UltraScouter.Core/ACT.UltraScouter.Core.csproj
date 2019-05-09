@@ -102,6 +102,7 @@
     <Compile Include="Config\UI\ViewModels\MobListConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MPTickerConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MeConfigViewModel.cs" />
+    <Compile Include="Config\UI\ViewModels\TargetConfigViewModel.Enmity.cs" />
     <Compile Include="Config\UI\ViewModels\ToTConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\FTConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\TargetConfigViewModel.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="Models\MobListModel.cs" />
     <Compile Include="Models\TacticalRadarModel.cs" />
     <Compile Include="Models\TacticalTarget.cs" />
+    <Compile Include="Models\TargetInfoModel.Enmity.cs" />
     <Compile Include="Models\ToTInfoModel.cs" />
     <Compile Include="Models\TargetInfoModel.cs" />
     <Compile Include="Models\BossInfoModel.cs" />

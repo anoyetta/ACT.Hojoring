@@ -24,6 +24,7 @@
 
   <system:String x:Key="Common_Visible">显示</system:String>
   <system:String x:Key="Common_Location">位置</system:String>
+  <system:String x:Key="Common_Alignment">Alignment</system:String>
   <system:String x:Key="Common_BarWidth">Bar width</system:String>
   <system:String x:Key="Common_BarSize">Bar size</system:String>
   <system:String x:Key="Common_Scale">尺度</system:String>
@@ -108,11 +109,17 @@
   <system:String x:Key="Enmity_DisplayPCasYou">Display PC as "You"</system:String>
   <system:String x:Key="Enmity_IsDenomi">Cut the value less than 1,000</system:String>
   <system:String x:Key="Enmity_IsVisibleJobIcon">Visible job icon</system:String>
+  <system:String x:Key="Enmity_IsIconRight">Alignment job icon right</system:String>
   <system:String x:Key="Enmity_IsVisibleName">Visible character name</system:String>
-  <system:String x:Key="Enmity_IsDifferenceMode">Difference mode</system:String>
+  <system:String x:Key="Enmity_IsDifferenceMode">GUILTEX Style (Relative value mode)</system:String>
   <system:String x:Key="Enmity_JobIconScale">Job icon scale</system:String>
   <system:String x:Key="Enmity_MaxCountOfDisplay">Max count of display</system:String>
   <system:String x:Key="Enmity_ScaningRate">Enmity scaning rate (msec)</system:String>
+  <system:String x:Key="Enmity_AlterTextMeValue">Alternative text for Your enmity</system:String>
+  <system:String x:Key="Enmity_IsNearIndicator">Use bar to near enmity alert</system:String>
+  <system:String x:Key="Enmity_NearIndicatorColor">Near Enmity Color</system:String>
+  <system:String x:Key="Enmity_NearThresholdRate">Near enmity threshold rate</system:String>
+  <system:String x:Key="Enmity_IsVisibleNearThreshold">Visible near enmity threshold</system:String>
 
   <system:String x:Key="FFLogs_VisibleHistogram">显示直方图</system:String>
   <system:String x:Key="FFLogs_HideInCombat">战斗中隐藏</system:String>
