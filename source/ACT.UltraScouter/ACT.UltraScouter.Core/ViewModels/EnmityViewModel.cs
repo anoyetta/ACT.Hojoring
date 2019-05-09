@@ -34,7 +34,10 @@ namespace ACT.UltraScouter.ViewModels
         private TargetInfoModel model;
 
         public virtual Enmity Config => this.config;
+
         public virtual TargetInfoModel Model => this.model;
+
+        public DisplayText DisplayText => this.Config.DisplayText;
 
         public bool OverlayVisible
         {
