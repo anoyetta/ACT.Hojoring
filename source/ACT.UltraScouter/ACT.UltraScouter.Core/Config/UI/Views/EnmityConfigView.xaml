@@ -20,11 +20,13 @@
   Background="White"
   FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
   FontSize="17"
-  d:DesignWidth="600"
+  d:DesignWidth="1000"
   d:DataContext="{d:DesignInstance Type=vm:TargetConfigViewModel}">
 
   <Page.Resources>
     <ResourceDictionary>
+      <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+
       <Style TargetType="CheckBox">
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -43,119 +45,106 @@
   </Page.Resources>
 
   <ScrollViewer>
-    <StackPanel Margin="20">
-      <CheckBox
-        Margin="0 0 0 0"
-        Content="{DynamicResource Common_Visible}"
-        IsChecked="{Binding Enmity.Visible, Mode=TwoWay}" />
-      <CheckBox
-        Margin="0 5 0 0"
-        Content="{DynamicResource Enmity_HideInNotCombat}"
-        IsChecked="{Binding Enmity.HideInNotCombat, Mode=TwoWay}" />
-      <CheckBox
-        Margin="0 5 0 0"
-        Content="{DynamicResource Enmity_HideInSolo}"
-        IsChecked="{Binding Enmity.HideInSolo, Mode=TwoWay}" />
-      <CheckBox
-        Margin="0 5 0 0"
-        Content="{DynamicResource Common_TestMode}"
-        IsChecked="{Binding Enmity.IsDesignMode, Mode=TwoWay}" />
+    <DockPanel>
+      <StackPanel DockPanel.Dock="Left" Margin="20">
+        <CheckBox
+          Margin="0 0 0 0"
+          Content="{DynamicResource Common_Visible}"
+          IsChecked="{Binding Enmity.Visible, Mode=TwoWay}" />
+        <CheckBox
+          Margin="0 5 0 0"
+          Content="{DynamicResource Enmity_HideInNotCombat}"
+          IsChecked="{Binding Enmity.HideInNotCombat, Mode=TwoWay}" />
+        <CheckBox
+          Margin="0 5 0 0"
+          Content="{DynamicResource Enmity_HideInSolo}"
+          IsChecked="{Binding Enmity.HideInSolo, Mode=TwoWay}" />
+        <CheckBox
+          Margin="0 5 0 0"
+          Content="{DynamicResource Common_TestMode}"
+          IsChecked="{Binding Enmity.IsDesignMode, Mode=TwoWay}" />
 
-      <Label
-        Margin="0 20 0 0"
-        Content="{DynamicResource Common_Location}" />
-      <StackPanel Orientation="Horizontal">
-        <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
-        <xctk:DoubleUpDown Value="{Binding Enmity.Location.X, Mode=TwoWay}" Width="75" Increment="1" />
-        <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
-        <xctk:DoubleUpDown Value="{Binding Enmity.Location.Y, Mode=TwoWay}" Width="75" Increment="1" />
-      </StackPanel>
+        <Label
+          Margin="0 20 0 0"
+          Content="{DynamicResource Common_Location}" />
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
+          <xctk:DoubleUpDown Value="{Binding Enmity.Location.X, Mode=TwoWay}" Width="75" Increment="1" />
+          <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
+          <xctk:DoubleUpDown Value="{Binding Enmity.Location.Y, Mode=TwoWay}" Width="75" Increment="1" />
+        </StackPanel>
 
-      <Label
-        Margin="0 5 0 0"
-        Content="{DynamicResource Common_Scale}" />
-      <xctk:DoubleUpDown
-        HorizontalAlignment="Left"
-        Value="{Binding Enmity.Scale, Mode=TwoWay}"
-        Width="80"
-        Minimum="0.01"
-        Maximum="4.00"
-        Increment="0.01"
-        FormatString="N2" />
-
-      <Label
-        Margin="0 5 0 0"
-        Content="{DynamicResource Common_BarSize}" />
-      <StackPanel Orientation="Horizontal">
-        <TextBlock Text="W" VerticalAlignment="Center" Margin="6 0 5 0" />
+        <Label
+          Margin="0 5 0 0"
+          Content="{DynamicResource Common_Scale}" />
         <xctk:DoubleUpDown
           HorizontalAlignment="Left"
-          Value="{Binding Enmity.BarWidth, Mode=TwoWay}"
-          Width="75"
-          Minimum="0"
-          Maximum="3000"
-          Increment="1"
-          FormatString="N0" />
+          Value="{Binding Enmity.Scale, Mode=TwoWay}"
+          Width="80"
+          Minimum="0.01"
+          Maximum="4.00"
+          Increment="0.01"
+          FormatString="N2" />
 
-        <TextBlock Text="H" VerticalAlignment="Center" Margin="10 0 5 0" />
+        <Label
+          Margin="0 5 0 0"
+          Content="{DynamicResource Common_BarSize}" />
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Text="W" VerticalAlignment="Center" Margin="6 0 5 0" />
+          <xctk:DoubleUpDown
+            HorizontalAlignment="Left"
+            Value="{Binding Enmity.BarWidth, Mode=TwoWay}"
+            Width="75"
+            Minimum="0"
+            Maximum="3000"
+            Increment="1"
+            FormatString="N0" />
+
+          <TextBlock Text="H" VerticalAlignment="Center" Margin="10 0 5 0" />
+          <xctk:DoubleUpDown
+            HorizontalAlignment="Left"
+            Value="{Binding Enmity.BarHeight, Mode=TwoWay}"
+            Width="75"
+            Minimum="0"
+            Maximum="50"
+            Increment="1"
+            FormatString="N0" />
+        </StackPanel>
+
+        <Label
+          Margin="0 5 0 0"
+          Content="{DynamicResource Common_Alignment}" />
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Text="H" VerticalAlignment="Center" Margin="6 0 5 0" />
+          <ComboBox
+            Width="120"
+            ItemsSource="{Binding HorizontalAlignments, Mode=OneWay}"
+            SelectedItem="{Binding Enmity.BarHorizontalAlignment, Mode=TwoWay}" />
+
+          <TextBlock Text="V" VerticalAlignment="Center" Margin="10 0 5 0" />
+          <ComboBox
+            Width="120"
+            ItemsSource="{Binding VerticalAlignments, Mode=OneWay}"
+            SelectedItem="{Binding Enmity.BarVerticalAlignment, Mode=TwoWay}" />
+        </StackPanel>
+
+        <Label
+          Margin="0 5 0 0"
+          Content="{DynamicResource Enmity_JobIconScale}" />
         <xctk:DoubleUpDown
           HorizontalAlignment="Left"
-          Value="{Binding Enmity.BarHeight, Mode=TwoWay}"
-          Width="75"
-          Minimum="0"
-          Maximum="50"
-          Increment="1"
-          FormatString="N0" />
-      </StackPanel>
+          Value="{Binding Enmity.IconScale, Mode=TwoWay}"
+          Width="80"
+          Minimum="0.01"
+          Maximum="4.00"
+          Increment="0.01"
+          FormatString="N2" />
 
-      <Label
-        Margin="0 5 0 0"
-        Content="{DynamicResource Enmity_MaxCountOfDisplay}" />
-      <xctk:IntegerUpDown
-        Value="{Binding Enmity.MaxCountOfDisplay, Mode=TwoWay}"
-        HorizontalAlignment="Left"
-        Increment="1"
-        Minimum="1"
-        Maximum="32"
-        Width="70" />
+        <Label
+          Margin="0 5 0 0"
+          Content="{DynamicResource Common_Font}" />
 
-      <CheckBox
-        Margin="0 15 0 0"
-        Content="{DynamicResource Enmity_DisplayPCasYou}"
-        IsChecked="{Binding Enmity.IsSelfDisplayYou, Mode=TwoWay}" />
-      <CheckBox
-        Margin="0 5 0 0"
-        Content="{DynamicResource Enmity_IsDenomi}"
-        IsChecked="{Binding Enmity.IsDenomi, Mode=TwoWay}" />
-      <CheckBox
-        Margin="0 5 0 0"
-        Content="{DynamicResource Enmity_IsVisibleJobIcon}"
-        IsChecked="{Binding Enmity.IsVisibleIcon, Mode=TwoWay}" />
-      <CheckBox
-        Margin="0 5 0 0"
-        Content="{DynamicResource Enmity_IsVisibleName}"
-        IsChecked="{Binding Enmity.IsVisibleName, Mode=TwoWay}" />
-      <CheckBox
-        Margin="0 5 0 0"
-        Content="{DynamicResource Enmity_IsDifferenceMode}"
-        IsChecked="{Binding Enmity.IsDisplayDifference, Mode=TwoWay}" />
-      <Label
-        Margin="0 5 0 0"
-        Content="{DynamicResource Enmity_JobIconScale}" />
-      <xctk:DoubleUpDown
-        HorizontalAlignment="Left"
-        Value="{Binding Enmity.IconScale, Mode=TwoWay}"
-        Width="80"
-        Minimum="0.01"
-        Maximum="4.00"
-        Increment="0.01"
-        FormatString="N2" />
-
-      <Label
-        Margin="0 20 0 0"
-        Content="{DynamicResource Common_Font}" />
-
-      <TextBlock Margin="7,0,0,0" FontWeight="Bold">
+        <TextBlock Margin="7,0,0,0" FontWeight="Bold">
         <Hyperlink
           Command="{Binding EnmityDisplayTextFontCommand}"
           CommandParameter="{Binding Enmity.DisplayText.Font}">
@@ -163,7 +152,7 @@
         </Hyperlink>
       </TextBlock>
 
-      <TextBlock Margin="7,8,0,0" FontWeight="Bold">
+        <TextBlock Margin="7,5,0,0" FontWeight="Bold">
         <Hyperlink
           Command="{Binding EnmityDisplayTextColorCommand}"
           CommandParameter="{Binding Enmity.DisplayText.Color}">
@@ -171,7 +160,7 @@
         </Hyperlink>
       </TextBlock>
 
-      <TextBlock Margin="7,0,0,0" FontWeight="Bold">
+        <TextBlock Margin="7,0,0,0" FontWeight="Bold">
         <Hyperlink
           Command="{Binding EnmityDisplayTextOutlineColorCommand}"
           CommandParameter="{Binding Enmity.DisplayText.OutlineColor}">
@@ -179,29 +168,111 @@
         </Hyperlink>
       </TextBlock>
 
-      <Label
-        Margin="0 20 0 0"
-        Content="{DynamicResource Common_Background}" />
-      <TextBlock Margin="7 0 0 0" FontWeight="Bold">
-        <Hyperlink
-          Command="{Binding EnmityBackgroundColorCommand, Mode=OneWay}"
-          CommandParameter="{Binding Enmity.Background}">
-          <TextBlock Text="{DynamicResource Common_FillColor}" />
-        </Hyperlink>
-      </TextBlock>
+        <Label
+          Margin="0 5 0 0"
+          Content="{DynamicResource Common_Background}" />
+        <TextBlock Margin="7 0 0 0" FontWeight="Bold">
+          <Hyperlink
+            Command="{Binding EnmityBackgroundColorCommand, Mode=OneWay}"
+            CommandParameter="{Binding Enmity.Background}">
+            <TextBlock Text="{DynamicResource Common_FillColor}" />
+          </Hyperlink>
+        </TextBlock>
 
-      <!--
-      <Label
-        Margin="0 20 0 0"
-        Content="{DynamicResource Enmity_ScaningRate}" />
-      <xctk:IntegerUpDown
-        Value="{Binding Enmity.ScaningRate, Mode=TwoWay}"
-        HorizontalAlignment="Left"
-        Increment="1"
-        Minimum="100"
-        Maximum="3000"
-        Width="85" />
-      -->
-    </StackPanel>
+        <Label
+          Margin="0 5 0 0"
+          Content="{DynamicResource Enmity_MaxCountOfDisplay}" />
+        <xctk:IntegerUpDown
+          Value="{Binding Enmity.MaxCountOfDisplay, Mode=TwoWay}"
+          HorizontalAlignment="Left"
+          Increment="1"
+          Minimum="1"
+          Maximum="32"
+          Width="70" />
+
+        <CheckBox
+          Margin="0 15 0 0"
+          Content="{DynamicResource Enmity_DisplayPCasYou}"
+          IsChecked="{Binding Enmity.IsSelfDisplayYou, Mode=TwoWay}" />
+        <CheckBox
+          Margin="0 5 0 0"
+          Content="{DynamicResource Enmity_IsDenomi}"
+          IsChecked="{Binding Enmity.IsDenomi, Mode=TwoWay}" />
+        <CheckBox
+          Margin="0 5 0 0"
+          Content="{DynamicResource Enmity_IsVisibleJobIcon}"
+          IsChecked="{Binding Enmity.IsVisibleIcon, Mode=TwoWay}" />
+        <CheckBox
+          Margin="0 5 0 0"
+          Content="{DynamicResource Enmity_IsIconRight}"
+          IsChecked="{Binding Enmity.IsIconRight, Mode=TwoWay}" />
+        <CheckBox
+          Margin="0 5 0 0"
+          Content="{DynamicResource Enmity_IsVisibleName}"
+          IsChecked="{Binding Enmity.IsVisibleName, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!-- GUILTEX Style start -->
+      <StackPanel DockPanel.Dock="Left" Margin="20">
+        <CheckBox
+          FontWeight="Bold"
+          Content="{DynamicResource Enmity_IsDifferenceMode}"
+          IsChecked="{Binding Enmity.IsDisplayDifference, Mode=TwoWay}" />
+        <StackPanel
+          Margin="15 10 0 0"
+          Visibility="{Binding Enmity.IsDisplayDifference, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+          <Label
+            Margin="0 0 0 0"
+            Content="{DynamicResource Enmity_AlterTextMeValue}" />
+          <TextBox
+            Width="100"
+            Text="{Binding Enmity.AlterTextMeValue, Mode=TwoWay}" />
+
+          <CheckBox
+            Margin="0 8 0 0"
+            Content="{DynamicResource Enmity_IsNearIndicator}"
+            IsChecked="{Binding Enmity.IsNearIndicator, Mode=TwoWay}" />
+
+          <TextBlock Margin="0 5 0 0" FontWeight="Bold">
+            <Hyperlink
+              Command="{Binding EnmityNearColorCommand, Mode=OneWay}"
+              CommandParameter="{Binding Enmity.NearColor}">
+              <TextBlock Text="{DynamicResource Enmity_NearIndicatorColor}" />
+            </Hyperlink>
+          </TextBlock>
+
+          <Label
+            Margin="0 5 0 0"
+            Content="{DynamicResource Enmity_NearThresholdRate}" />
+          <xctk:DoubleUpDown
+            Value="{Binding Enmity.NearThresholdRate, Mode=TwoWay}"
+            HorizontalAlignment="Left"
+            Increment="0.01"
+            Minimum="0.01"
+            Maximum="10"
+            Width="80"
+            FormatString="N2" />
+
+          <CheckBox
+            Margin="0 8 0 0"
+            Content="{DynamicResource Enmity_IsVisibleNearThreshold}"
+            IsChecked="{Binding Enmity.IsVisibleNearThreshold, Mode=TwoWay}" />
+        </StackPanel>
+      </StackPanel>
+      <!-- GUILTEX Style end -->
+    </DockPanel>
   </ScrollViewer>
 </Page>
+
+<!--
+  <Label
+    Margin="0 20 0 0"
+    Content="{DynamicResource Enmity_ScaningRate}" />
+  <xctk:IntegerUpDown
+    Value="{Binding Enmity.ScaningRate, Mode=TwoWay}"
+    HorizontalAlignment="Left"
+    Increment="1"
+    Minimum="100"
+    Maximum="3000"
+    Width="85" />
+-->

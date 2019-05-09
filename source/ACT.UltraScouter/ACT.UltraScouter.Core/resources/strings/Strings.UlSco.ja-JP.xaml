@@ -24,6 +24,7 @@
 
   <system:String x:Key="Common_Visible">表示する</system:String>
   <system:String x:Key="Common_Location">ロケーション</system:String>
+  <system:String x:Key="Common_Alignment">アライメント</system:String>
   <system:String x:Key="Common_BarWidth">バーの幅</system:String>
   <system:String x:Key="Common_BarSize">バーのサイズ</system:String>
   <system:String x:Key="Common_Scale">スケール</system:String>
@@ -108,11 +109,17 @@
   <system:String x:Key="Enmity_DisplayPCasYou">自キャラを"You"と表記する</system:String>
   <system:String x:Key="Enmity_IsDenomi">1,000未満の値をカットする</system:String>
   <system:String x:Key="Enmity_IsVisibleJobIcon">ジョブアイコンを表示する</system:String>
+  <system:String x:Key="Enmity_IsIconRight">アイコンを右に表示する</system:String>
   <system:String x:Key="Enmity_IsVisibleName">キャラ名を表示する</system:String>
-  <system:String x:Key="Enmity_IsDifferenceMode">値を差分表示にする</system:String>
+  <system:String x:Key="Enmity_IsDifferenceMode">GUILTEX Style (相対値表示にする)</system:String>
   <system:String x:Key="Enmity_JobIconScale">ジョブアイコンのスケール</system:String>
   <system:String x:Key="Enmity_MaxCountOfDisplay">リストの最大表示数</system:String>
   <system:String x:Key="Enmity_ScaningRate">敵視情報のスキャンレート (msec)</system:String>
+  <system:String x:Key="Enmity_AlterTextMeValue">自分の値の代替テキスト</system:String>
+  <system:String x:Key="Enmity_IsNearIndicator">バーを敵視接近のインジケータとする</system:String>
+  <system:String x:Key="Enmity_NearIndicatorColor">敵視接近の警告色</system:String>
+  <system:String x:Key="Enmity_NearThresholdRate">敵視接近の閾値倍率</system:String>
+  <system:String x:Key="Enmity_IsVisibleNearThreshold">敵視接近の閾値を表示する</system:String>
 
   <system:String x:Key="FFLogs_VisibleHistogram">ヒストグラムを表示する</system:String>
   <system:String x:Key="FFLogs_HideInCombat">戦闘中は表示しない</system:String>

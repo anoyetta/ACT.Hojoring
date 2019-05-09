@@ -23,6 +23,31 @@ namespace FFXIV.Framework.WPF.Controls
             this.Render();
         }
 
+        #region IsSign 依存関係プロパティ
+
+        /// <summary>
+        /// IsSign 依存関係プロパティ
+        /// </summary>
+        public static readonly DependencyProperty IsSignProperty
+            = DependencyProperty.Register(
+            nameof(IsSign),
+            typeof(bool),
+            typeof(DenomiNumericTextBlock),
+            new FrameworkPropertyMetadata(
+                false,
+                (s, e) => (s as DenomiNumericTextBlock).Render()));
+
+        /// <summary>
+        /// IsSign
+        /// </summary>
+        public bool IsSign
+        {
+            get => (bool)this.GetValue(IsSignProperty);
+            set => this.SetValue(IsSignProperty, value);
+        }
+
+        #endregion IsSign 依存関係プロパティ
+
         #region IsDenomi 依存関係プロパティ
 
         /// <summary>
@@ -242,7 +267,9 @@ namespace FFXIV.Framework.WPF.Controls
 
             var text = DivideValueText(this.Value);
 
-            this.UpperPartLabel.Text = text.UpperPart;
+            this.UpperPartLabel.Text = !this.IsSign ?
+                text.UpperPart :
+                this.Value > 0 ? "+" + text.UpperPart : text.UpperPart;
             this.BottomPartLabel.Text = text.BottomPart;
 
             this.UpperPartLabel.Visibility = string.IsNullOrEmpty(this.UpperPartLabel.Text) ?
@@ -260,7 +287,9 @@ namespace FFXIV.Framework.WPF.Controls
             var result = default((string UpperPart, string BottomPart));
 
             var hp = (long)value;
-            if (hp < 10000)
+            var hpAbsolute = (long)Math.Abs(hp);
+
+            if (hpAbsolute < 10000)
             {
                 result.UpperPart = hp.ToString("N0");
                 result.BottomPart = string.Empty;
@@ -268,7 +297,7 @@ namespace FFXIV.Framework.WPF.Controls
             else
             {
                 result.UpperPart = (hp / 1000).ToString("N0");
-                result.BottomPart = " ," + (hp % 1000).ToString("000");
+                result.BottomPart = " ," + (hpAbsolute % 1000).ToString("000");
             }
 
             return result;

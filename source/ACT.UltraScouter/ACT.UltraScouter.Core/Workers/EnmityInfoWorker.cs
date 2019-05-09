@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
@@ -44,6 +46,7 @@ namespace ACT.UltraScouter.Workers
             if (!Settings.Instance.Enmity.Visible)
             {
                 this.ClearCurrentEnmity();
+                this.DiffSampleTimer.Stop();
                 return;
             }
 
@@ -52,7 +55,13 @@ namespace ACT.UltraScouter.Workers
             if (targetInfo == null)
             {
                 this.ClearCurrentEnmity();
+                this.DiffSampleTimer.Stop();
                 return;
+            }
+
+            if (!this.DiffSampleTimer.IsRunning)
+            {
+                this.DiffSampleTimer.Start();
             }
 
             if (!Settings.Instance.Enmity.IsDesignMode)
@@ -125,7 +134,70 @@ namespace ACT.UltraScouter.Workers
 
                     Thread.Yield();
                 }
+
+                this.RefreshEPS();
             }
+        }
+
+        private void RefreshEPS()
+        {
+            if (this.DiffSampleTimer.Elapsed.TotalSeconds < 3.0)
+            {
+                return;
+            }
+
+            this.DiffSampleTimer.Restart();
+
+            var me = this.CurrentEnmityModelList.FirstOrDefault(x => x.IsMe);
+            var sample = (
+                from x in this.CurrentEnmityModelList
+                where
+                x.JobID == JobIDs.PLD ||
+                x.JobID == JobIDs.WAR ||
+                x.JobID == JobIDs.DRK
+                orderby
+                Math.Abs(x.Enmity - (me?.Enmity ?? 0)) ascending
+                select
+                x).FirstOrDefault();
+
+            if (sample == null)
+            {
+                this.currentTankEPS = 0;
+                this.currentNearThreshold = 0;
+                return;
+            }
+
+            var last = this.DiffEnmityList.LastOrDefault();
+
+            var diff = Math.Abs(sample.Enmity - (last?.Value ?? 0));
+
+            var now = DateTime.Now;
+
+            this.DiffEnmityList.Add(new DiffEnmity()
+            {
+                Timestamp = now,
+                SampleName = sample.Name,
+                Value = sample.Enmity,
+                Diff = diff,
+            });
+
+            var olds = this.DiffEnmityList
+                .Where(x => x.Timestamp < now.AddSeconds(-30))
+                .ToArray();
+
+            foreach (var item in olds)
+            {
+                this.DiffEnmityList.Remove(item);
+            }
+
+            var parameters = this.DiffEnmityList
+                .Where(x =>
+                    this.currentTankEPS <= 0 ||
+                    x.Diff <= (this.currentTankEPS * 10.0));
+
+            // EPSと危険域閾値を算出する
+            this.currentTankEPS = parameters.Average(x => x.Diff);
+            this.currentNearThreshold = this.currentTankEPS * Settings.Instance.Enmity.NearThresholdRate;
         }
 
         private void ClearCurrentEnmity()
@@ -140,6 +212,10 @@ namespace ACT.UltraScouter.Workers
         }
 
         private readonly List<EnmityModel> CurrentEnmityModelList = new List<EnmityModel>(32);
+        private readonly List<DiffEnmity> DiffEnmityList = new List<DiffEnmity>(64);
+        private readonly Stopwatch DiffSampleTimer = new Stopwatch();
+        private double currentTankEPS = 0;
+        private double currentNearThreshold = 0;
 
         protected override NameViewModel NameVM => null;
 
@@ -196,8 +272,22 @@ namespace ACT.UltraScouter.Workers
 
             lock (this.CurrentEnmityModelList)
             {
-                this.Model.RefreshEnmityList(this.CurrentEnmityModelList);
+                this.Model.RefreshEnmityList(
+                    this.CurrentEnmityModelList,
+                    this.currentTankEPS,
+                    this.currentNearThreshold);
             }
         }
+    }
+
+    public class DiffEnmity
+    {
+        public DateTime Timestamp { get; set; }
+
+        public string SampleName { get; set; }
+
+        public double Value { get; set; }
+
+        public double Diff { get; set; }
     }
 }

@@ -24,6 +24,7 @@
 
   <system:String x:Key="Common_Visible">표시</system:String>
   <system:String x:Key="Common_Location">위치</system:String>
+  <system:String x:Key="Common_Alignment">Alignment</system:String>
   <system:String x:Key="Common_BarWidth">바의 폭</system:String>
   <system:String x:Key="Common_BarSize">Bar size</system:String>
   <system:String x:Key="Common_Scale">스케일</system:String>
@@ -108,11 +109,17 @@
   <system:String x:Key="Enmity_DisplayPCasYou">내 캐릭터를 YOU로 표기</system:String>
   <system:String x:Key="Enmity_IsDenomi">1,000미만인 값 잘라내기</system:String>
   <system:String x:Key="Enmity_IsVisibleJobIcon">잡 아이콘 표시</system:String>
+  <system:String x:Key="Enmity_IsIconRight">Alignment job icon right</system:String>
   <system:String x:Key="Enmity_IsVisibleName">Visible character name</system:String>
-  <system:String x:Key="Enmity_IsDifferenceMode">Difference mode</system:String>
+  <system:String x:Key="Enmity_IsDifferenceMode">GUILTEX Style (Relative value mode)</system:String>
   <system:String x:Key="Enmity_JobIconScale">잡 아이콘 크기</system:String>
   <system:String x:Key="Enmity_MaxCountOfDisplay">목록 최대 표시 수</system:String>
   <system:String x:Key="Enmity_ScaningRate">적개심 스캔 간격 (msec)</system:String>
+  <system:String x:Key="Enmity_AlterTextMeValue">Alternative text for Your enmity</system:String>
+  <system:String x:Key="Enmity_IsNearIndicator">Use bar to near enmity alert</system:String>
+  <system:String x:Key="Enmity_NearIndicatorColor">Near Enmity Color</system:String>
+  <system:String x:Key="Enmity_NearThresholdRate">Near enmity threshold rate</system:String>
+  <system:String x:Key="Enmity_IsVisibleNearThreshold">Visible near enmity threshold</system:String>
 
   <system:String x:Key="FFLogs_VisibleHistogram">히스토그램 표시</system:String>
   <system:String x:Key="FFLogs_HideInCombat">전투 시 자동 숨김</system:String>
