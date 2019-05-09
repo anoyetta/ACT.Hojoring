@@ -597,7 +597,7 @@ namespace FFXIV.Framework.FFXIVHelper
             var partyPCCount = newPartyList.Count(x => x.Type == Actor.Type.PC);
             if (partyPCCount == 4)
             {
-                this.PartyComposition = PartyCompositions.LightParty;
+                composition = PartyCompositions.LightParty;
             }
             else
             {
@@ -608,12 +608,12 @@ namespace FFXIV.Framework.FFXIVHelper
                     {
                         case 1:
                         case 3:
-                            this.PartyComposition = PartyCompositions.FullPartyT1;
+                            composition = PartyCompositions.FullPartyT1;
                             break;
 
                         case 2:
                         case 6:
-                            this.PartyComposition = PartyCompositions.FullPartyT2;
+                            composition = PartyCompositions.FullPartyT2;
                             break;
                     }
                 }
