@@ -61,6 +61,7 @@ namespace ACT.UltraScouter.Models.Enmity
         private static SolidColorBrush TankBrush;
         private static SolidColorBrush HealerBrush;
         private static SolidColorBrush DPSBrush;
+        private SolidColorBrush NearBrush;
 
         public static void CreateBrushes()
         {
@@ -91,6 +92,22 @@ namespace ACT.UltraScouter.Models.Enmity
                 if (this.isMe)
                 {
                     return MeBrush;
+                }
+
+                if (this.Config.IsNearIndicator)
+                {
+                    if (!this.IsNear)
+                    {
+                        return Brushes.Transparent;
+                    }
+
+                    if (this.NearBrush == null ||
+                        this.NearBrush.Color != this.Config.NearColor)
+                    {
+                        this.NearBrush = new SolidColorBrush(this.Config.NearColor);
+                    }
+
+                    return this.NearBrush;
                 }
 
                 var role = Jobs.Find(this.jobID)?.Role ?? Roles.Unknown;
@@ -161,6 +178,20 @@ namespace ACT.UltraScouter.Models.Enmity
             set => this.SetProperty(ref this.enmityDifference, value);
         }
 
+        private bool isNear;
+
+        public bool IsNear
+        {
+            get => this.isNear;
+            set
+            {
+                if (this.SetProperty(ref this.isNear, value))
+                {
+                    this.RefreshBarColor();
+                }
+            }
+        }
+
         private float hateRate;
 
         public float HateRate
@@ -177,7 +208,9 @@ namespace ACT.UltraScouter.Models.Enmity
 
         public DisplayText DisplayText => Settings.Instance.Enmity.DisplayText;
 
-        public double BarWidth => Settings.Instance.Enmity.BarWidth * this.HateRate;
+        public double BarWidth => !this.Config.IsNearIndicator ?
+            Settings.Instance.Enmity.BarWidth * this.HateRate :
+            Settings.Instance.Enmity.BarWidth;
 
         public double BarWidthMax => Settings.Instance.Enmity.BarWidth;
 
@@ -185,6 +218,11 @@ namespace ACT.UltraScouter.Models.Enmity
         {
             this.RaisePropertyChanged(nameof(this.BarWidthMax));
             this.RaisePropertyChanged(nameof(this.BarWidth));
+        }
+
+        public void RefreshBarColor()
+        {
+            this.RaisePropertyChanged(nameof(this.BarColorBrush));
         }
 
         /// <summary>

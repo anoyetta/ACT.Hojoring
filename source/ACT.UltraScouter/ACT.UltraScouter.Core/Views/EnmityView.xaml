@@ -57,7 +57,13 @@
     </d:DesignerProperties.DesignStyle>
 
     <Grid Margin="12 9 13 6">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
       <ItemsControl
+        Grid.Row="0"
         Grid.IsSharedSizeScope="True"
         Focusable="False"
         IsTabStop="False"
@@ -132,14 +138,16 @@
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="Auto" />
                   <ColumnDefinition />
+                  <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <!-- JobIcon -->
+                <!-- Left Icon -->
                 <Viewbox
                   Grid.Column="0"
                   Margin="0 0 5 0"
                   Stretch="Uniform"
-                  Visibility="{Binding Config.IsVisibleIcon, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
+                  Visibility="{Binding Config.IsVisibleIconLeft, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
                   Height="{Binding ElementName=DummyNameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.6}"
                   Width="{Binding RelativeSource={RelativeSource Self}, Path=Height, Mode=OneWay}">
                   <Viewbox.LayoutTransform>
@@ -150,8 +158,27 @@
                   <Image Source="{Binding JobIcon, Mode=OneWay}" />
                 </Viewbox>
 
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" MaxWidth="{Binding BarWidthMax, Mode=OneWay}">
-                  <DockPanel>
+                <!-- Right Icon -->
+                <Viewbox
+                  Grid.Column="2"
+                  Margin="5 0 0 0"
+                  Stretch="Uniform"
+                  Visibility="{Binding Config.IsVisibleIconRight, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
+                  Height="{Binding ElementName=DummyNameLabel, Path=ActualHeight, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1.6}"
+                  Width="{Binding RelativeSource={RelativeSource Self}, Path=Height, Mode=OneWay}">
+                  <Viewbox.LayoutTransform>
+                    <ScaleTransform
+                      ScaleX="{Binding Config.IconScale, Mode=OneWay}"
+                      ScaleY="{Binding Config.IconScale, Mode=OneWay}" />
+                  </Viewbox.LayoutTransform>
+                  <Image Source="{Binding JobIcon, Mode=OneWay}" />
+                </Viewbox>
+
+                <StackPanel
+                  Grid.Column="1"
+                  VerticalAlignment="Center"
+                  MaxWidth="{Binding BarWidthMax, Mode=OneWay}">
+                  <DockPanel Margin="5 0">
                     <!-- Enmity Value -->
                     <Grid Margin="10 0 0 0" DockPanel.Dock="Right" HorizontalAlignment="Right">
                       <!-- Absolute Value -->
@@ -165,22 +192,17 @@
                       <StackPanel
                         Orientation="Horizontal"
                         Visibility="{Binding Config.IsDisplayDifference, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
-                        <!-- Top -->
-                        <ctrl:LightOutlineTextBlock
-                          Visibility="{Binding IsTop, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
-                          Style="{DynamicResource DeltaSymbolStyle}"
-                          Text="&#x2605;" />
-
-                        <!-- Delta & Value -->
-                        <ctrl:LightOutlineTextBlock
-                          Visibility="{Binding IsTop, Mode=OneWay, Converter={StaticResource NotVisibilityConverter}}"
-                          Style="{DynamicResource DeltaSymbolStyle}"
-                          Text="&#x0394; " />
                         <ctrl:DenomiNumericTextBlock
-                          Visibility="{Binding IsTop, Mode=OneWay, Converter={StaticResource NotVisibilityConverter}}"
+                          Visibility="{Binding IsMe, Mode=OneWay, Converter={StaticResource NotVisibilityConverter}}"
                           IsDenomi="{Binding Config.IsDenomi, Mode=OneWay}"
+                          IsSign="True"
                           Style="{DynamicResource DenomiNumericStyle}"
                           Value="{Binding EnmityDifference, Mode=OneWay}" />
+
+                        <ctrl:LightOutlineTextBlock
+                          Visibility="{Binding IsMe, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
+                          Style="{DynamicResource OutlineStyle}"
+                          Text="{Binding Config.AlterTextMeValue, Mode=OneWay}" />
                       </StackPanel>
                     </Grid>
 
@@ -200,51 +222,120 @@
                         Text="" />
                     </Grid>
                   </DockPanel>
-
-                  <!-- Hate Rate Bar -->
-                  <Grid
-                    Margin="0 0 0 0">
-                    <Rectangle
-                      HorizontalAlignment="Left"
-                      Width="{Binding BarWidthMax, Mode=OneWay}"
-                      Height="{Binding Config.BarHeight, Mode=OneWay}"
-                      Fill="Black"
-                      RadiusX="3"
-                      RadiusY="3"
-                      Opacity="0.9">
-                      <Rectangle.Effect>
-                        <DropShadowEffect
-                          RenderingBias="Performance"
-                          BlurRadius="5"
-                          Direction="0"
-                          ShadowDepth="0"
-                          Color="White"
-                          Opacity="0.9" />
-                      </Rectangle.Effect>
-                    </Rectangle>
-                    <Rectangle
-                      HorizontalAlignment="Left"
-                      Width="{Binding BarWidth, Mode=OneWay}"
-                      Height="{Binding Config.BarHeight, Mode=OneWay}"
-                      Fill="{Binding BarColorBrush, Mode=OneWay}"
-                      RadiusX="3"
-                      RadiusY="3">
-                      <Rectangle.Effect>
-                        <DropShadowEffect
-                          RenderingBias="Performance"
-                          BlurRadius="4"
-                          Direction="0"
-                          ShadowDepth="0"
-                          Color="{Binding BarColorBrush.Color, Mode=OneWay}" />
-                      </Rectangle.Effect>
-                    </Rectangle>
-                  </Grid>
                 </StackPanel>
+
+                <!-- Hate Rate Bar -->
+                <Grid
+                  Grid.Column="1"
+                  Panel.ZIndex="-2"
+                  HorizontalAlignment="{Binding Config.BarHorizontalAlignment, Mode=OneWay}"
+                  VerticalAlignment="{Binding Config.BarVerticalAlignment, Mode=OneWay}"
+                  Margin="0 0 0 0">
+                  <Rectangle
+                    Visibility="{Binding Config.IsNearIndicator, Mode=OneWay, Converter={StaticResource NotVisibilityConverter}}"
+                    HorizontalAlignment="{Binding Config.BarHorizontalAlignment, Mode=OneWay}"
+                    Width="{Binding BarWidthMax, Mode=OneWay}"
+                    Height="{Binding Config.BarHeight, Mode=OneWay}"
+                    Fill="Black"
+                    RadiusX="3"
+                    RadiusY="3"
+                    Opacity="0.4">
+                    <Rectangle.Effect>
+                      <DropShadowEffect
+                        RenderingBias="Performance"
+                        BlurRadius="5"
+                        Direction="0"
+                        ShadowDepth="0"
+                        Color="Black"
+                        Opacity="0.4" />
+                    </Rectangle.Effect>
+                  </Rectangle>
+                  <Rectangle
+                    HorizontalAlignment="{Binding Config.BarHorizontalAlignment, Mode=OneWay}"
+                    Width="{Binding BarWidth, Mode=OneWay}"
+                    Height="{Binding Config.BarHeight, Mode=OneWay}"
+                    Fill="{Binding BarColorBrush, Mode=OneWay}"
+                    RadiusX="3"
+                    RadiusY="3">
+                    <Rectangle.Effect>
+                      <DropShadowEffect
+                        RenderingBias="Performance"
+                        BlurRadius="4"
+                        Direction="0"
+                        ShadowDepth="0"
+                        Color="{Binding BarColorBrush.Color, Mode=OneWay}" />
+                    </Rectangle.Effect>
+                  </Rectangle>
+                </Grid>
               </Grid>
             </Grid>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>
+
+      <!-- EPS start -->
+      <StackPanel
+        Grid.Row="1"
+        HorizontalAlignment="Right"
+        Visibility="{Binding Config.IsVisibleNearThreshold, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+
+        <StackPanel.Resources>
+          <Style x:Key="ThresholdLabelStyle" TargetType="{x:Type ctrl:LightOutlineTextBlock}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Fill" Value="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+            <Setter Property="Stroke" Value="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+            <Setter Property="StrokeThickness" Value="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay}" />
+            <Setter Property="FontFamily" Value="{Binding DisplayText.Font.FontFamily, Mode=OneWay}" />
+            <Setter Property="FontSize" Value="{Binding DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}" />
+            <Setter Property="FontStretch" Value="{Binding DisplayText.Font.Stretch, Mode=OneWay}" />
+            <Setter Property="FontWeight" Value="{Binding DisplayText.Font.Weight, Mode=OneWay}" />
+            <Setter Property="FontStyle" Value="{Binding DisplayText.Font.Style, Mode=OneWay}" />
+            <Setter Property="BlurRadius" Value="{Binding DisplayText.Font.BlurRadius, Mode=OneWay}" />
+            <Setter Property="BlurOpacity" Value="{Binding DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+            <Setter Property="StrokeOpacity" Value="{Binding DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+          </Style>
+
+          <Style x:Key="ThresholdNumericStyle" TargetType="{x:Type ctrl:DenomiNumericTextBlock}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Fill" Value="{Binding DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+            <Setter Property="Stroke" Value="{Binding DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+            <Setter Property="FontFamily" Value="{Binding DisplayText.Font.FontFamily, Mode=OneWay}" />
+            <Setter Property="FontStretch" Value="{Binding DisplayText.Font.Stretch, Mode=OneWay}" />
+            <Setter Property="FontWeight" Value="{Binding DisplayText.Font.Weight, Mode=OneWay}" />
+            <Setter Property="FontStyle" Value="{Binding DisplayText.Font.Style, Mode=OneWay}" />
+            <Setter Property="BlurOpacity" Value="{Binding DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+            <Setter Property="StrokeOpacity" Value="{Binding DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+            <Setter Property="FontSize" Value="{Binding DisplayText.Font.Size, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.9}" />
+            <Setter Property="StrokeThickness" Value="{Binding DisplayText.Font.OutlineThickness, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1}" />
+            <Setter Property="BlurRadius" Value="{Binding DisplayText.Font.BlurRadius, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1}" />
+          </Style>
+        </StackPanel.Resources>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+          <ctrl:LightOutlineTextBlock
+            Style="{DynamicResource ThresholdLabelStyle}"
+            Text="EPS : " />
+          <ctrl:DenomiNumericTextBlock
+            IsDenomi="{Binding Config.IsDenomi, Mode=OneWay}"
+            Style="{DynamicResource ThresholdNumericStyle}"
+            Value="{Binding Model.TankEPS, Mode=OneWay}"
+            ContentStringFormat="N0" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+          <ctrl:LightOutlineTextBlock
+            Style="{DynamicResource ThresholdLabelStyle}"
+            Text="TH : " />
+          <ctrl:DenomiNumericTextBlock
+            IsDenomi="{Binding Config.IsDenomi, Mode=OneWay}"
+            Style="{DynamicResource ThresholdNumericStyle}"
+            Value="{Binding Model.NearThreshold, Mode=OneWay}"
+            ContentStringFormat="N0" />
+        </StackPanel>
+      </StackPanel>
+      <!-- EPS end -->
     </Grid>
   </Border>
 </Window>
