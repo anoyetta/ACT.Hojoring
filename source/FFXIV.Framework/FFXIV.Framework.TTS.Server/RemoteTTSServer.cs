@@ -1,6 +1,6 @@
+using System;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.TTS.Common;
-using FFXIV.Framework.TTS.Common.Models;
 using FFXIV.Framework.TTS.Server.Models;
 using FFXIV.Framework.TTS.Server.Views;
 using NLog;
@@ -12,8 +12,13 @@ namespace FFXIV.Framework.TTS.Server
     {
         #region Singleton
 
-        private static RemoteTTSServer instance = new RemoteTTSServer();
-        public static RemoteTTSServer Instance => instance;
+        private static readonly Lazy<RemoteTTSServer> LazyInstance = new Lazy<RemoteTTSServer>(() => new RemoteTTSServer());
+
+        public static RemoteTTSServer Instance => LazyInstance.Value;
+
+        public RemoteTTSServer()
+        {
+        }
 
         #endregion Singleton
 
@@ -23,8 +28,7 @@ namespace FFXIV.Framework.TTS.Server
 
         #endregion Logger
 
-        private TTSModel ttsModel = new TTSModel();
-        public TTSModel TTSModel => this.ttsModel;
+        public TTSModel TTSModel { get; private set; } = new TTSModel();
 
         public void Close()
         {
@@ -35,11 +39,7 @@ namespace FFXIV.Framework.TTS.Server
 
         public void Open()
         {
-            var chan = this.RegisterRemoteObject(
-                Constants.TTSServerChannelName,
-                this.ttsModel,
-                Constants.RemoteTTSObjectName,
-                typeof(ITTSModel));
+            var chan = this.RegisterRemoteObject(this.TTSModel);
 
             var uri = $"{chan.GetChannelUri()}/{Constants.RemoteTTSObjectName}";
             MainView.Instance.ViewModel.IPCChannelUri = uri;
