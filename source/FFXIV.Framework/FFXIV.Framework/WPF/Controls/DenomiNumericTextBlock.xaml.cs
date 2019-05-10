@@ -324,7 +324,7 @@ namespace FFXIV.Framework.WPF.Controls
                 }
                 else
                 {
-                    result.UpperPart = "0";
+                    result.UpperPart = hp == 0 ? "0" : (hp > 0 ? "<1" : "-<1");
                 }
             }
             else
