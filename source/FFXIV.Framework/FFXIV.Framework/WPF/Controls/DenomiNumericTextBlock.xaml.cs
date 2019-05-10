@@ -324,7 +324,7 @@ namespace FFXIV.Framework.WPF.Controls
                 }
                 else
                 {
-                    result.UpperPart = hp.ToString("<1;-<1:0");
+                    result.UpperPart = hp.ToString("<1;-<1;0");
                     result.BottomPart = string.Empty;
                 }
             }
