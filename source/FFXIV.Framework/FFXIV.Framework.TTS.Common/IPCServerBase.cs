@@ -23,17 +23,16 @@ namespace FFXIV.Framework.TTS.Common
             return chan;
         }
 
-        protected IpcServerChannel RegisterRemoteObject(
-            string channelName,
-            MarshalByRefObject remoteObject,
-            string remoteObjectName,
-            Type remoteObjectType)
+        protected IpcServerChannel RegisterRemoteObject<T>(
+            T remoteObject,
+            string channelName = Constants.TTSServerChannelName,
+            string remoteObjectName = Constants.RemoteTTSObjectName) where T : MarshalByRefObject
         {
             this.serverChannel = this.GetChannel(channelName);
 
             if (remoteObject != null)
             {
-                RemotingServices.Marshal(remoteObject, remoteObjectName, remoteObjectType);
+                RemotingServices.Marshal(remoteObject, remoteObjectName, typeof(T));
             }
 
             return this.serverChannel;

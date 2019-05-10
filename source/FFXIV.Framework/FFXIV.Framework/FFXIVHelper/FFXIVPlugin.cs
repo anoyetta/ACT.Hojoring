@@ -375,9 +375,6 @@ namespace FFXIV.Framework.FFXIVHelper
         /// <summary>
         /// 戦闘中か？
         /// </summary>
-        /// <remarks>
-        /// パーティメンバのHP, MP, TPのいずれかが最大値でないとき簡易的に戦闘中と判断する
-        /// </remarks>
         public bool InCombat { get; private set; } = false;
 
         #region Dummy Combatants
@@ -584,6 +581,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public bool RefreshInCombat()
         {
+#if false
             var result = false;
 
             var combatants = this.GetPartyList();
@@ -612,6 +610,9 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             return result;
+#else
+            return SharlayanHelper.Instance.CurrentPlayer?.InCombat ?? false;
+#endif
         }
 
         public void SetSkillName(
