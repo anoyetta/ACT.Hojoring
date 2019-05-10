@@ -108,7 +108,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Move-Item -Path $references -Destination "references" | Out-Null
 
     '●TTSServer にCeVIOをマージする'
-    (& $libz inject-dll -a "FFXIV.Framework.TTS.Server.exe" -i $cevioLib) | Select-String "Injecting"
+    (& $libz inject-dll -a "FFXIV.Framework.TTS.Common.dll" -i $cevioLib) | Select-String "Injecting"
 
     '●ACT.Hojoring.Updater をマージする'
     (& $libz inject-dll -a "ACT.Hojoring.Updater.exe" -i "Octokit.dll") | Select-String "Injecting"
