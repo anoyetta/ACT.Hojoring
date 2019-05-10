@@ -223,7 +223,7 @@ namespace ACT.UltraScouter.Models
                 else
                 {
                     if (config.HideInNotCombat &&
-                        !FFXIVPlugin.Instance.InCombat)
+                        !SharlayanHelper.Instance.CurrentPlayer.InCombat)
                     {
                         this.enmityList.Clear();
                         this.IsExistsEnmityList = false;

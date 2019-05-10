@@ -58,7 +58,7 @@ namespace ACT.UltraScouter.ViewModels
                 }
 
                 if (this.Config.HideInCombat &&
-                    FFXIVPlugin.Instance.InCombat)
+                    SharlayanHelper.Instance.CurrentPlayer.InCombat)
                 {
                     return false;
                 }
