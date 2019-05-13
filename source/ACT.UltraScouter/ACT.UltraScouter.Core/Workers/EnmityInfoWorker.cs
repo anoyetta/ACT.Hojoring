@@ -295,7 +295,8 @@ namespace ACT.UltraScouter.Workers
 
                     fileName = string.Concat(fileName.Where(c => Path.GetInvalidFileNameChars().Contains(c)));
 
-                    if (this.currentLogFile != fileName)
+                    if (string.IsNullOrEmpty(this.currentLogFile) ||
+                        this.currentLogFile != fileName)
                     {
                         this.currentLogFile = fileName;
 
@@ -312,28 +313,31 @@ namespace ACT.UltraScouter.Workers
                             new UTF8Encoding(false));
                     }
 
-                    var fields = new List<string>();
-
-                    fields.Add(now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                    fields.Add("\"" + this.TargetInfo.Name + "\"");
-
-                    var enmityList = this.CurrentEnmityModelList.ToArray();
-                    var party = FFXIVPlugin.Instance.GetPartyList();
-                    foreach (var member in party)
+                    if (this.logStream != null)
                     {
-                        Thread.Yield();
+                        var fields = new List<string>();
 
-                        var enmityData = enmityList.FirstOrDefault(x => x.Name == member.Name);
-                        if (enmityData == null)
+                        fields.Add(now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                        fields.Add("\"" + this.TargetInfo.Name + "\"");
+
+                        var enmityList = this.CurrentEnmityModelList.ToArray();
+                        var party = FFXIVPlugin.Instance.GetPartyList();
+                        foreach (var member in party)
                         {
-                            continue;
+                            Thread.Yield();
+
+                            var enmityData = enmityList.FirstOrDefault(x => x.Name == member.Name);
+                            if (enmityData == null)
+                            {
+                                continue;
+                            }
+
+                            fields.Add("\"" + enmityData.Name + "\"");
+                            fields.Add(enmityData.Enmity.ToString("#"));
                         }
 
-                        fields.Add("\"" + enmityData.Name + "\"");
-                        fields.Add(enmityData.Enmity.ToString("#"));
+                        this.logStream.WriteLine(string.Join(",", fields));
                     }
-
-                    this.logStream.WriteLine(string.Join(",", fields));
                 }
             });
         }
