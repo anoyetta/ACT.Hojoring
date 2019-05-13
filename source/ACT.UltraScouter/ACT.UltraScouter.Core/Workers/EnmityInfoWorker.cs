@@ -289,11 +289,12 @@ namespace ACT.UltraScouter.Workers
 
                     var zone = ActGlobals.oFormActMain.CurrentZone;
 
+                    var f = $"{now:yyyy-MM-dd}.Enmity.{zone}.take{this.currentTake}.csv";
+                    f = string.Concat(f.Where(c => Path.GetInvalidFileNameChars().Contains(c)));
+
                     var fileName = Path.Combine(
                         config.LogDirectory,
-                        $"{now:yyyy-MM-dd}.Enmity.{zone}.take{this.currentTake}.csv");
-
-                    fileName = string.Concat(fileName.Where(c => Path.GetInvalidFileNameChars().Contains(c)));
+                        f);
 
                     if (string.IsNullOrEmpty(this.currentLogFile) ||
                         this.currentLogFile != fileName)
