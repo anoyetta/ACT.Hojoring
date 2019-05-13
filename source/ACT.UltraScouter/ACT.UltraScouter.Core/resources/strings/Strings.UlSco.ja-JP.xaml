@@ -120,6 +120,7 @@
   <system:String x:Key="Enmity_NearIndicatorColor">敵視接近の警告色</system:String>
   <system:String x:Key="Enmity_NearThresholdRate">敵視接近の閾値倍率</system:String>
   <system:String x:Key="Enmity_IsVisibleNearThreshold">敵視接近の閾値を表示する</system:String>
+  <system:String x:Key="Enmity_LogDirectory">ログフォルダ</system:String>
 
   <system:String x:Key="FFLogs_VisibleHistogram">ヒストグラムを表示する</system:String>
   <system:String x:Key="FFLogs_HideInCombat">戦闘中は表示しない</system:String>

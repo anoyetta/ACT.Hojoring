@@ -265,5 +265,14 @@ namespace ACT.UltraScouter.Config
             get => this.isVisibleNearThreshold;
             set => this.SetProperty(ref this.isVisibleNearThreshold, value);
         }
+
+        private string logDirectory = string.Empty;
+
+        [DataMember]
+        public string LogDirectory
+        {
+            get => this.logDirectory;
+            set => this.SetProperty(ref this.logDirectory, value);
+        }
     }
 }
