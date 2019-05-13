@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Advanced_Combat_Tracker;
+using Prism.Commands;
 
 namespace ACT.UltraScouter.Config.UI.ViewModels
 {
@@ -42,5 +46,39 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         public IEnumerable<VerticalAlignment> VerticalAlignments => Enum.GetValues(typeof(VerticalAlignment)).Cast<VerticalAlignment>();
 
         public IEnumerable<HorizontalAlignment> HorizontalAlignments => Enum.GetValues(typeof(HorizontalAlignment)).Cast<HorizontalAlignment>();
+
+        private static readonly System.Windows.Forms.FolderBrowserDialog FolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+
+        private DelegateCommand browseEnmityLogFolderCommand;
+
+        public DelegateCommand BrowseEnmityLogFolderCommand =>
+            this.browseEnmityLogFolderCommand ?? (this.browseEnmityLogFolderCommand = new DelegateCommand(this.ExecuteBrowseEnmityLogFolderCommand));
+
+        private void ExecuteBrowseEnmityLogFolderCommand()
+        {
+            if (!string.IsNullOrEmpty(this.Enmity.LogDirectory))
+            {
+                FolderBrowserDialog.SelectedPath = this.Enmity.LogDirectory;
+            }
+
+            var result = FolderBrowserDialog.ShowDialog(ActGlobals.oFormActMain);
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                this.Enmity.LogDirectory = FolderBrowserDialog.SelectedPath;
+            }
+        }
+
+        private DelegateCommand openEnmityLogFolderCommand;
+
+        public DelegateCommand OpenEnmityLogFolderCommand =>
+            this.openEnmityLogFolderCommand ?? (this.openEnmityLogFolderCommand = new DelegateCommand(this.ExecuteOpenEnmityLogFolderCommand));
+
+        private void ExecuteOpenEnmityLogFolderCommand()
+        {
+            if (Directory.Exists(this.Enmity.LogDirectory))
+            {
+                Process.Start(this.Enmity.LogDirectory);
+            }
+        }
     }
 }

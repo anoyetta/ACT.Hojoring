@@ -120,6 +120,7 @@
   <system:String x:Key="Enmity_NearIndicatorColor">Near Enmity Color</system:String>
   <system:String x:Key="Enmity_NearThresholdRate">Near enmity threshold rate</system:String>
   <system:String x:Key="Enmity_IsVisibleNearThreshold">Visible near enmity threshold</system:String>
+  <system:String x:Key="Enmity_LogDirectory">Log folder</system:String>
 
   <system:String x:Key="FFLogs_VisibleHistogram">Visible histogram</system:String>
   <system:String x:Key="FFLogs_HideInCombat">Hide in combat</system:String>
