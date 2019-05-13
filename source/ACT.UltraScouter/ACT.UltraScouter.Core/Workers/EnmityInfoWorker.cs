@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.Models.Enmity;
 using ACT.UltraScouter.ViewModels;
+using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.FFXIVHelper;
 using Sharlayan.Core.Enums;
@@ -24,7 +28,20 @@ namespace ACT.UltraScouter.Workers
 
         public static new void Initialize() => instance = new EnmityInfoWorker();
 
-        public static new void Free() => instance = null;
+        public static new void Free()
+        {
+            lock (LogLocker)
+            {
+                if (instance.logStream != null)
+                {
+                    instance.logStream.Flush();
+                    instance.logStream.Close();
+                    instance.logStream = null;
+                }
+            }
+
+            instance = null;
+        }
 
         private EnmityInfoWorker()
         {
@@ -198,6 +215,9 @@ namespace ACT.UltraScouter.Workers
             // EPSと危険域閾値を算出する
             this.currentTankEPS = parameters.Average(x => x.Diff);
             this.currentNearThreshold = this.currentTankEPS * Settings.Instance.Enmity.NearThresholdRate;
+
+            // ログを出力する
+            this.WriteEnmityLog();
         }
 
         private void ClearCurrentEnmity()
@@ -209,6 +229,113 @@ namespace ACT.UltraScouter.Workers
                     this.CurrentEnmityModelList.Clear();
                 }
             }
+        }
+
+        private volatile bool currentInCombat = false;
+        private volatile int currentTake = 0;
+        private volatile string currentLogFile = string.Empty;
+        private static readonly object LogLocker = new object();
+        private StreamWriter logStream;
+
+        private async void WriteEnmityLog()
+        {
+            var config = Settings.Instance.Enmity;
+
+            if (string.IsNullOrEmpty(config.LogDirectory))
+            {
+                return;
+            }
+
+            var player = SharlayanHelper.Instance.CurrentPlayer;
+            if (player == null)
+            {
+                return;
+            }
+
+            if (SharlayanHelper.Instance.PartyMemberCount < 4)
+            {
+                return;
+            }
+
+            if (this.CurrentEnmityModelList.Count < 1)
+            {
+                return;
+            }
+
+            await Task.Run(() =>
+            {
+                if (!Directory.Exists(config.LogDirectory))
+                {
+                    Directory.CreateDirectory(config.LogDirectory);
+                }
+
+                var now = DateTime.Now;
+
+                lock (LogLocker)
+                {
+                    if (this.currentInCombat != player.InCombat)
+                    {
+                        this.currentInCombat = player.InCombat;
+
+                        if (this.currentInCombat)
+                        {
+                            this.currentTake++;
+                        }
+                        else
+                        {
+                            this.logStream?.Flush();
+                        }
+                    }
+
+                    var zone = ActGlobals.oFormActMain.CurrentZone;
+
+                    var fileName = Path.Combine(
+                        config.LogDirectory,
+                        $"{now:yyyy-MM-dd}.Enmity.{zone}.take{this.currentTake}.csv");
+
+                    fileName = string.Concat(fileName.Where(c => Path.GetInvalidFileNameChars().Contains(c)));
+
+                    if (this.currentLogFile != fileName)
+                    {
+                        this.currentLogFile = fileName;
+
+                        if (this.logStream != null)
+                        {
+                            this.logStream.Flush();
+                            this.logStream.Close();
+                            this.logStream = null;
+                        }
+
+                        this.logStream = new StreamWriter(
+                            this.currentLogFile,
+                            false,
+                            new UTF8Encoding(false));
+                    }
+
+                    var fields = new List<string>();
+
+                    fields.Add(now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                    fields.Add("\"" + this.TargetInfo.Name + "\"");
+
+                    var enmityList = this.CurrentEnmityModelList.ToArray();
+                    var party = FFXIVPlugin.Instance.GetPartyList();
+                    foreach (var member in party)
+                    {
+                        Thread.Yield();
+
+                        var enmityData = enmityList.FirstOrDefault(x => x.Name == member.Name);
+                        if (enmityData == null)
+                        {
+                            continue;
+                        }
+
+                        fields.Add("\"" + enmityData.Name + "\"");
+                        fields.Add(enmityData.Enmity.ToString("#"));
+                    }
+
+                    this.logStream.WriteLine(string.Join(",", fields));
+                }
+            });
         }
 
         private readonly List<EnmityModel> CurrentEnmityModelList = new List<EnmityModel>(32);

@@ -120,6 +120,7 @@
   <system:String x:Key="Enmity_NearIndicatorColor">적개심 근접 경고색</system:String>
   <system:String x:Key="Enmity_NearThresholdRate">적개심 근접 임계치 배율</system:String>
   <system:String x:Key="Enmity_IsVisibleNearThreshold">적개심 근접 임계치 표시</system:String>
+  <system:String x:Key="Enmity_LogDirectory">Log folder</system:String>
 
   <system:String x:Key="FFLogs_VisibleHistogram">히스토그램 표시</system:String>
   <system:String x:Key="FFLogs_HideInCombat">전투 시 자동 숨김</system:String>
