@@ -181,6 +181,10 @@ namespace ACT.UltraScouter.Workers
             {
                 this.currentTankEPS = 0;
                 this.currentNearThreshold = 0;
+#if DEBUG
+                // ログを出力する
+                this.WriteEnmityLog();
+#endif
                 return;
             }
 
@@ -252,25 +256,27 @@ namespace ACT.UltraScouter.Workers
                 return;
             }
 
+#if !DEBUG
             if (SharlayanHelper.Instance.PartyMemberCount < 4)
             {
                 return;
             }
+#endif
 
             if (this.CurrentEnmityModelList.Count < 1)
             {
                 return;
             }
 
+            if (!Directory.Exists(config.LogDirectory))
+            {
+                Directory.CreateDirectory(config.LogDirectory);
+            }
+
+            var now = DateTime.Now;
+
             await Task.Run(() =>
             {
-                if (!Directory.Exists(config.LogDirectory))
-                {
-                    Directory.CreateDirectory(config.LogDirectory);
-                }
-
-                var now = DateTime.Now;
-
                 lock (LogLocker)
                 {
                     if (this.currentInCombat != player.InCombat)
@@ -290,7 +296,7 @@ namespace ACT.UltraScouter.Workers
                     var zone = ActGlobals.oFormActMain.CurrentZone;
 
                     var f = $"{now:yyyy-MM-dd}.Enmity.{zone}.take{this.currentTake}.csv";
-                    f = string.Concat(f.Where(c => Path.GetInvalidFileNameChars().Contains(c)));
+                    f = string.Concat(f.Where(c => !Path.GetInvalidFileNameChars().Contains(c)));
 
                     var fileName = Path.Combine(
                         config.LogDirectory,
