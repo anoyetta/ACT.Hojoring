@@ -236,6 +236,7 @@ namespace ACT.UltraScouter.Workers
         }
 
         private volatile bool currentInCombat = false;
+        private volatile string currentZone = string.Empty;
         private volatile int currentTake = 0;
         private volatile string currentLogFile = string.Empty;
         private static readonly object LogLocker = new object();
@@ -294,6 +295,11 @@ namespace ACT.UltraScouter.Workers
                     }
 
                     var zone = ActGlobals.oFormActMain.CurrentZone;
+                    if (this.currentZone != zone)
+                    {
+                        this.currentZone = zone;
+                        this.logStream?.Flush();
+                    }
 
                     var f = $"{now:yyyy-MM-dd}.Enmity.{zone}.take{this.currentTake}.csv";
                     f = string.Concat(f.Where(c => !Path.GetInvalidFileNameChars().Contains(c)));
@@ -329,11 +335,12 @@ namespace ACT.UltraScouter.Workers
 
                         var enmityList = this.CurrentEnmityModelList.ToArray();
                         var party = FFXIVPlugin.Instance.GetPartyList();
+
                         foreach (var member in party)
                         {
                             Thread.Yield();
 
-                            var enmityData = enmityList.FirstOrDefault(x => x.Name == member.Name);
+                            var enmityData = enmityList.FirstOrDefault(x => x.ID == member.ID);
                             if (enmityData == null)
                             {
                                 continue;
