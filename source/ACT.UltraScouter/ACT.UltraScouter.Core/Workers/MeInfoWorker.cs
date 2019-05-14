@@ -79,19 +79,36 @@ namespace ACT.UltraScouter.Workers
 
         #endregion MPTicker
 
+        #region MyMarker
+
+        protected MyMarkerView myMarkerView;
+
+        public MyMarkerView MyMarkerView => this.myMarkerView;
+
+        protected MyMarkerViewModel myMarkerVM;
+
+        protected MyMarkerViewModel MyMarkerVM =>
+            this.myMarkerVM ?? (this.myMarkerVM = new MyMarkerViewModel());
+
+        #endregion MyMarker
+
         protected override bool IsAllViewOff =>
             !FFXIVPlugin.Instance.IsFFXIVActive ||
             (
                 !(Settings.Instance?.MeAction?.Visible ?? false) &&
-                !(Settings.Instance?.MPTicker?.Visible ?? false)
+                !(Settings.Instance?.MPTicker?.Visible ?? false) &&
+                !(Settings.Instance?.MyMarker?.Visible ?? false)
             );
 
         protected override void CreateViews()
         {
             base.CreateViews();
 
-            this.CreateView<MPTickerView>(ref this.mpTickerView, this.MPTickerVM);
+            this.CreateView(ref this.mpTickerView, this.MPTickerVM);
             this.TryAddViewAndViewModel(this.MPTickerView, this.MPTickerView?.ViewModel);
+
+            this.CreateView(ref this.myMarkerView, this.MyMarkerVM);
+            this.TryAddViewAndViewModel(this.MyMarkerView, this.MyMarkerView?.ViewModel);
         }
 
         protected override void RefreshModel(
