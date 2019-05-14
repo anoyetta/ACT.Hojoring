@@ -81,7 +81,7 @@
         Content="Type" />
       <ComboBox
         HorizontalAlignment="Left"
-        Width="100"
+        Width="140"
         ItemsSource="{Binding MarkerTypes, Mode=OneWay}"
         SelectedItem="{Binding MyMarker.MarkerType, Mode=TwoWay}" />
 
