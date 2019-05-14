@@ -152,15 +152,22 @@ namespace ACT.UltraScouter.Workers
                     Thread.Yield();
                 }
 
-                this.RefreshEPS();
+                // EPSを更新する
+                var isRefreshed = this.RefreshEPS();
+
+                // ログを出力する
+                if (isRefreshed)
+                {
+                    this.WriteEnmityLog(enmityEntryList);
+                }
             }
         }
 
-        private void RefreshEPS()
+        private bool RefreshEPS()
         {
             if (this.DiffSampleTimer.Elapsed.TotalSeconds < 3.0)
             {
-                return;
+                return false;
             }
 
             this.DiffSampleTimer.Restart();
@@ -181,11 +188,8 @@ namespace ACT.UltraScouter.Workers
             {
                 this.currentTankEPS = 0;
                 this.currentNearThreshold = 0;
-#if DEBUG
-                // ログを出力する
-                this.WriteEnmityLog();
-#endif
-                return;
+
+                return true;
             }
 
             var last = this.DiffEnmityList.LastOrDefault();
@@ -220,8 +224,7 @@ namespace ACT.UltraScouter.Workers
             this.currentTankEPS = parameters.Average(x => x.Diff);
             this.currentNearThreshold = this.currentTankEPS * Settings.Instance.Enmity.NearThresholdRate;
 
-            // ログを出力する
-            this.WriteEnmityLog();
+            return true;
         }
 
         private void ClearCurrentEnmity()
@@ -236,12 +239,14 @@ namespace ACT.UltraScouter.Workers
         }
 
         private volatile bool currentInCombat = false;
+        private volatile string currentZone = string.Empty;
         private volatile int currentTake = 0;
         private volatile string currentLogFile = string.Empty;
         private static readonly object LogLocker = new object();
         private StreamWriter logStream;
 
-        private async void WriteEnmityLog()
+        private async void WriteEnmityLog(
+            IEnumerable<EnmityEntry> enmityEntryList)
         {
             var config = Settings.Instance.Enmity;
 
@@ -263,7 +268,7 @@ namespace ACT.UltraScouter.Workers
             }
 #endif
 
-            if (this.CurrentEnmityModelList.Count < 1)
+            if (enmityEntryList.Count() < 1)
             {
                 return;
             }
@@ -294,6 +299,11 @@ namespace ACT.UltraScouter.Workers
                     }
 
                     var zone = ActGlobals.oFormActMain.CurrentZone;
+                    if (this.currentZone != zone)
+                    {
+                        this.currentZone = zone;
+                        this.logStream?.Flush();
+                    }
 
                     var f = $"{now:yyyy-MM-dd}.Enmity.{zone}.take{this.currentTake}.csv";
                     f = string.Concat(f.Where(c => !Path.GetInvalidFileNameChars().Contains(c)));
@@ -322,25 +332,23 @@ namespace ACT.UltraScouter.Workers
 
                     if (this.logStream != null)
                     {
-                        var fields = new List<string>();
+                        var fields = new List<string>(24);
 
                         fields.Add(now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
                         fields.Add("\"" + this.TargetInfo.Name + "\"");
 
-                        var enmityList = this.CurrentEnmityModelList.ToArray();
                         var party = FFXIVPlugin.Instance.GetPartyList();
+
                         foreach (var member in party)
                         {
                             Thread.Yield();
 
-                            var enmityData = enmityList.FirstOrDefault(x => x.Name == member.Name);
-                            if (enmityData == null)
-                            {
-                                continue;
-                            }
+                            var enmityData = enmityEntryList.FirstOrDefault(x =>
+                                x.ID == member.ID);
 
-                            fields.Add("\"" + enmityData.Name + "\"");
-                            fields.Add(enmityData.Enmity.ToString("#"));
+                            fields.Add("\"" + member.Name + "\"");
+                            fields.Add("\"" + member.JobID.ToString() + "\"");
+                            fields.Add((enmityData?.Enmity ?? 0).ToString("#"));
                         }
 
                         this.logStream.WriteLine(string.Join(",", fields));

@@ -1,0 +1,139 @@
+﻿<Window
+  x:Class="ACT.UltraScouter.Views.MyMarkerView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="clr-namespace:ACT.UltraScouter.Views"
+  xmlns:cnv="clr-namespace:ACT.UltraScouter.Views.Converters"
+  xmlns:vm="clr-namespace:ACT.UltraScouter.ViewModels"
+  xmlns:vmcnv="clr-namespace:ACT.UltraScouter.ViewModels.MPTickerConverters"
+  xmlns:ctrl="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+  mc:Ignorable="d"
+  Title="MyMarkerView"
+  AllowsTransparency="True"
+  ShowInTaskbar="False"
+  SizeToContent="WidthAndHeight"
+  TextOptions.TextFormattingMode="Ideal"
+  TextOptions.TextHintingMode="Fixed"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  WindowStyle="None"
+  Background="#01000000"
+  Left="{Binding Path=Config.Location.X, Mode=TwoWay}"
+  Top="{Binding Path=Config.Location.Y, Mode=TwoWay}"
+  d:DataContext="{d:DesignInstance Type=vm:MyMarkerViewModel, IsDesignTimeCreatable=True}">
+
+  <Window.Resources>
+    <fwcnv:ColorToSolidColorBrushConverter x:Key="BrushConverter" />
+
+    <system:Double x:Key="Size">40</system:Double>
+    <DropShadowEffect
+      x:Key="OutlineEffect"
+      Color="{Binding Config.DisplayText.OutlineColor, Mode=OneWay}"
+      Direction="0"
+      ShadowDepth="0"
+      BlurRadius="4" />
+  </Window.Resources>
+
+  <Border>
+    <d:DesignerProperties.DesignStyle>
+      <Style TargetType="Border">
+        <Setter Property="Background" Value="Transparent" />
+      </Style>
+    </d:DesignerProperties.DesignStyle>
+
+    <Border.LayoutTransform>
+      <ScaleTransform
+        ScaleX="{Binding Config.Scale, Mode=OneWay}"
+        ScaleY="{Binding Config.Scale, Mode=OneWay}" />
+    </Border.LayoutTransform>
+
+    <Grid Margin="20">
+      <!-- Arrow start -->
+      <Grid x:Name="ArrowGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Visible">
+        <Grid.Resources>
+          <Style TargetType="iconPacks:PackIconMaterial">
+            <Setter Property="Kind" Value="ArrowUp" />
+            <Setter Property="Width" Value="{DynamicResource Size}" />
+            <Setter Property="Height" Value="{DynamicResource Size}" />
+            <Setter Property="Foreground" Value="{Binding Config.DisplayText.Color, Mode=OneWay, Converter={StaticResource BrushConverter}}" />
+            <Setter Property="Effect" Value="{DynamicResource OutlineEffect}" />
+          </Style>
+        </Grid.Resources>
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+      </Grid>
+      <!-- Arrow end -->
+
+      <!-- Cross start -->
+      <Grid x:Name="CrossGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+        <Grid.Resources>
+          <Style TargetType="iconPacks:PackIconMaterial">
+            <Setter Property="Kind" Value="Close" />
+            <Setter Property="Width" Value="{DynamicResource Size}" />
+            <Setter Property="Height" Value="{DynamicResource Size}" />
+            <Setter Property="Foreground" Value="{Binding Config.DisplayText.Color, Mode=OneWay, Converter={StaticResource BrushConverter}}" />
+            <Setter Property="Effect" Value="{DynamicResource OutlineEffect}" />
+          </Style>
+        </Grid.Resources>
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+      </Grid>
+      <!-- Cross end -->
+
+      <!-- Line start -->
+      <Grid x:Name="LineGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+        <Grid.Resources>
+          <Style TargetType="iconPacks:PackIconMaterial">
+            <Setter Property="Kind" Value="PowerOn" />
+            <Setter Property="Width" Value="{DynamicResource Size}" />
+            <Setter Property="Height" Value="{DynamicResource Size}" />
+            <Setter Property="Foreground" Value="{Binding Config.DisplayText.Color, Mode=OneWay, Converter={StaticResource BrushConverter}}" />
+            <Setter Property="Effect" Value="{DynamicResource OutlineEffect}" />
+          </Style>
+        </Grid.Resources>
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+      </Grid>
+      <!-- Line end -->
+
+      <!-- Dot start -->
+      <Grid x:Name="DotGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+        <Grid.Resources>
+          <Style TargetType="iconPacks:PackIconMaterial">
+            <Setter Property="Kind" Value="Circle" />
+            <Setter Property="Width" Value="{DynamicResource Size}" />
+            <Setter Property="Height" Value="{DynamicResource Size}" />
+            <Setter Property="Foreground" Value="{Binding Config.DisplayText.Color, Mode=OneWay, Converter={StaticResource BrushConverter}}" />
+            <Setter Property="Effect" Value="{DynamicResource OutlineEffect}" />
+          </Style>
+        </Grid.Resources>
+        <iconPacks:PackIconMaterial Padding="15" />
+        <iconPacks:PackIconMaterial Padding="15" />
+        <iconPacks:PackIconMaterial Padding="15" />
+        <iconPacks:PackIconMaterial Padding="15" />
+        <iconPacks:PackIconMaterial Padding="15" />
+        <iconPacks:PackIconMaterial Padding="15" />
+      </Grid>
+      <!-- Dot end -->
+    </Grid>
+  </Border>
+</Window>
