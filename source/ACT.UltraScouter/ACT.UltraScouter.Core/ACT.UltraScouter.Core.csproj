@@ -80,6 +80,7 @@
     <Compile Include="Config\JobAvailablity.cs" />
     <Compile Include="Config\Location.cs" />
     <Compile Include="Config\MobList.cs" />
+    <Compile Include="Config\MyMarker.cs" />
     <Compile Include="Config\MPTicker.cs" />
     <Compile Include="Config\ProgressBarColorRange.cs" />
     <Compile Include="Config\ProgressBar.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="Config\UI\ViewModels\ConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\BossConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\CombatantsViewModel.cs" />
+    <Compile Include="Config\UI\ViewModels\MyMarkerConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\TacticalRadarConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MobListConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MPTickerConfigViewModel.cs" />
@@ -120,6 +122,9 @@
     </Compile>
     <Compile Include="Config\UI\Views\EnmityConfigView.xaml.cs">
       <DependentUpon>EnmityConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\UI\Views\MyMarkerConfigView.xaml.cs">
+      <DependentUpon>MyMarkerConfigView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Config\UI\Views\MPTickerConfigView.xaml.cs">
       <DependentUpon>MPTickerConfigView.xaml</DependentUpon>
@@ -181,6 +186,7 @@
     <Compile Include="resources\LocalizeExtensions.cs" />
     <Compile Include="ViewModels\EnmityViewModel.cs" />
     <Compile Include="ViewModels\HPBarViewModel.cs" />
+    <Compile Include="ViewModels\MyMarkerViewModel.cs" />
     <Compile Include="ViewModels\TacticalRadarViewModel.cs" />
     <Compile Include="ViewModels\MobListViewModel.cs" />
     <Compile Include="ViewModels\MPTickerViewModel.cs" />
@@ -201,6 +207,9 @@
     </Compile>
     <Compile Include="Views\FFLogsView.xaml.cs">
       <DependentUpon>FFLogsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MyMarkerView.xaml.cs">
+      <DependentUpon>MyMarkerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TacticalRadarView.xaml.cs">
       <DependentUpon>TacticalRadarView.xaml</DependentUpon>
@@ -263,6 +272,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Config\UI\Views\EnmityConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Config\UI\Views\MyMarkerConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -357,6 +370,10 @@
     <Page Include="Views\FFLogsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MyMarkerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\NameView.xaml">
       <SubType>Designer</SubType>

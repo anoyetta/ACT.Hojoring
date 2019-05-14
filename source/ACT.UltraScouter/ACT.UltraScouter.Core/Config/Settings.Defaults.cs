@@ -607,6 +607,20 @@ namespace ACT.UltraScouter.Config
                 }
             }},
 
+            { nameof(Settings.MyMarker), new MyMarker()
+            {
+                Visible = false,
+                Location = new Location() { X = 0, Y = 0 },
+                Scale = 1.0d,
+                DisplayText = new DisplayText()
+                {
+                    Font = DefaultFont,
+                    Color = Colors.White,
+                    OutlineColor = Colors.Gold
+                },
+                MarkerType = MyMarkerTypes.Arrow,
+            }},
+
             #endregion Me
 
             #region MobList
