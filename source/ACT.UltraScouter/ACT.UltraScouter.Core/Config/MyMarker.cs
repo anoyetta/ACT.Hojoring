@@ -35,13 +35,21 @@ namespace ACT.UltraScouter.Config
         [DataMember]
         public DisplayText DisplayText { get; set; } = new DisplayText();
 
-        private MyMarkerTypes markerType = MyMarkerTypes.Arrow;
+        private MyMarkerTypes markerType = MyMarkerTypes.ArrowUp;
 
         [DataMember]
         public MyMarkerTypes MarkerType
         {
             get => this.markerType;
-            set => this.SetProperty(ref this.markerType, value);
+            set
+            {
+                if (value == MyMarkerTypes.Arrow)
+                {
+                    value = MyMarkerTypes.ArrowUp;
+                }
+
+                this.SetProperty(ref this.markerType, value);
+            }
         }
 
         [XmlIgnore]
@@ -51,6 +59,9 @@ namespace ACT.UltraScouter.Config
     public enum MyMarkerTypes
     {
         Arrow,
+        ArrowUp,
+        ArrowDown,
+        Plus,
         Cross,
         Line,
         Dot,
