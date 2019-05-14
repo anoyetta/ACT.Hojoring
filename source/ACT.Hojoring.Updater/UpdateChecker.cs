@@ -46,6 +46,7 @@ namespace ACT.Hojoring
                 Version = lastest.Name,
                 Tag = lastest.TagName,
                 ReleasePageUrl = lastest.HtmlUrl,
+                Note = lastest.Body,
                 AssetName = asset.Name,
                 AssetUrl = asset.BrowserDownloadUrl
             };
@@ -59,6 +60,8 @@ namespace ACT.Hojoring
         public string Tag { get; set; }
 
         public string ReleasePageUrl { get; set; }
+
+        public string Note { get; set; }
 
         public string AssetName { get; set; }
 
