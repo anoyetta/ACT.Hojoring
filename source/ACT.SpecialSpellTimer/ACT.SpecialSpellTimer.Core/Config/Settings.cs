@@ -161,6 +161,7 @@ namespace ACT.SpecialSpellTimer.Config
                                         Top = screen.Bounds.Y,
                                         Width = screen.Bounds.Width,
                                         Height = screen.Bounds.Height,
+                                        Topmost = true,
                                     };
 
                                     view.ToTransparent();
