@@ -50,8 +50,8 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                 return;
             }
 
-            this.MyMarker.Location.X = SystemParameters.PrimaryScreenWidth / 2 - overlaySize.Value.Width;
-            this.MyMarker.Location.Y = SystemParameters.PrimaryScreenHeight / 2 - overlaySize.Value.Height;
+            this.MyMarker.Location.X = (SystemParameters.PrimaryScreenWidth / 2) - (overlaySize.Value.Width / 2);
+            this.MyMarker.Location.Y = (SystemParameters.PrimaryScreenHeight / 2) - (overlaySize.Value.Height / 2);
         }
 
         public IEnumerable<MyMarkerTypes> MarkerTypes => Enum.GetValues(typeof(MyMarkerTypes)).Cast<MyMarkerTypes>();
