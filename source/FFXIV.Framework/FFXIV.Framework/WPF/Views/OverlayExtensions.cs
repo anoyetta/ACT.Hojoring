@@ -281,7 +281,7 @@ namespace FFXIV.Framework.WPF.Views
         /// </summary>
         /// <param name="overlay"></param>
         /// <returns></returns>
-        private static bool IsOverlaysGameWindow(
+        public static bool IsOverlaysGameWindow(
             this IOverlay overlay)
         {
             var xivHandle = GetGameWindowHandle();
