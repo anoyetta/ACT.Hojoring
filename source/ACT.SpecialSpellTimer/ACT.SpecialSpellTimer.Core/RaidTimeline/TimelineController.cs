@@ -1783,11 +1783,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             this.lastTimelineRefreshTimestamp = DateTime.Now;
 
+            var currentActivityLine = this.ActivityLine.ToArray();
+
             // 通知を判定する
             await Task.Run(() =>
             {
                 var toNotify =
-                from x in this.ActivityLine
+                from x in currentActivityLine
                 where
                 !x.IsNotified &&
                 x.Time + TimeSpan.FromSeconds(x.NoticeOffset.Value) <= this.CurrentTime
@@ -1827,7 +1829,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             // 表示を終了させる
             var toDoneTop = await Task.Run(() => (
-                from x in this.ActivityLine
+                from x in currentActivityLine
                 where
                 !x.IsDone &&
                 x.Time <= this.CurrentTime - timeToHide
@@ -1850,7 +1852,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             // Activeなアクティビティを決める
             var active = await Task.Run(() => (
-                from x in this.ActivityLine
+                from x in currentActivityLine
                 where
                 !x.IsActive &&
                 !x.IsDone &&
@@ -1913,7 +1915,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var maxTime = this.CurrentTime.Add(TimeSpan.FromSeconds(
                 TimelineSettings.Instance.ShowActivitiesTime));
 
-            var toShow = Task.Run(() => (
+            var toShow = (
                 from x in this.ActivityLine
                 where
                 x.Enabled.GetValueOrDefault() &&
@@ -1921,7 +1923,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 orderby
                 x.Seq ascending
                 select
-                x).ToArray()).Result;
+                x).ToArray();
 
             var count = 0;
             foreach (var x in toShow)

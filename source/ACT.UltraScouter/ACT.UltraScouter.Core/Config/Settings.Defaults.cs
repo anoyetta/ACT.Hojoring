@@ -618,7 +618,7 @@ namespace ACT.UltraScouter.Config
                     Color = Colors.White,
                     OutlineColor = Colors.Gold
                 },
-                MarkerType = MyMarkerTypes.Arrow,
+                MarkerType = MyMarkerTypes.ArrowUp,
             }},
 
             #endregion Me
