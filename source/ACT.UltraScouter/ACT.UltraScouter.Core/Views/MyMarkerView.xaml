@@ -55,8 +55,8 @@
     </Border.LayoutTransform>
 
     <Grid Margin="20">
-      <!-- Arrow start -->
-      <Grid x:Name="ArrowGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Visible">
+      <!-- ArrowUp start -->
+      <Grid x:Name="ArrowUpGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Visible">
         <Grid.Resources>
           <Style TargetType="iconPacks:PackIconMaterial">
             <Setter Property="Kind" Value="ArrowUp" />
@@ -73,10 +73,50 @@
         <iconPacks:PackIconMaterial />
         <iconPacks:PackIconMaterial />
       </Grid>
-      <!-- Arrow end -->
+      <!-- ArrowUp end -->
+
+      <!-- ArrowDown start -->
+      <Grid x:Name="ArrowDownGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Hidden">
+        <Grid.Resources>
+          <Style TargetType="iconPacks:PackIconMaterial">
+            <Setter Property="Kind" Value="ArrowDown" />
+            <Setter Property="Width" Value="{DynamicResource Size}" />
+            <Setter Property="Height" Value="{DynamicResource Size}" />
+            <Setter Property="Foreground" Value="{Binding Config.DisplayText.Color, Mode=OneWay, Converter={StaticResource BrushConverter}}" />
+            <Setter Property="Effect" Value="{DynamicResource OutlineEffect}" />
+          </Style>
+        </Grid.Resources>
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+        <iconPacks:PackIconMaterial />
+      </Grid>
+      <!-- ArrowDown end -->
+
+      <!-- Plus start -->
+      <Grid x:Name="PlusGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Hidden">
+        <Grid.Resources>
+          <Style TargetType="iconPacks:PackIconMaterialLight">
+            <Setter Property="Kind" Value="Plus" />
+            <Setter Property="Width" Value="{DynamicResource Size}" />
+            <Setter Property="Height" Value="{DynamicResource Size}" />
+            <Setter Property="Foreground" Value="{Binding Config.DisplayText.Color, Mode=OneWay, Converter={StaticResource BrushConverter}}" />
+            <Setter Property="Effect" Value="{DynamicResource OutlineEffect}" />
+          </Style>
+        </Grid.Resources>
+        <iconPacks:PackIconMaterialLight />
+        <iconPacks:PackIconMaterialLight />
+        <iconPacks:PackIconMaterialLight />
+        <iconPacks:PackIconMaterialLight />
+        <iconPacks:PackIconMaterialLight />
+        <iconPacks:PackIconMaterialLight />
+      </Grid>
+      <!-- Plus end -->
 
       <!-- Cross start -->
-      <Grid x:Name="CrossGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+      <Grid x:Name="CrossGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Hidden">
         <Grid.Resources>
           <Style TargetType="iconPacks:PackIconMaterial">
             <Setter Property="Kind" Value="Close" />
@@ -96,7 +136,7 @@
       <!-- Cross end -->
 
       <!-- Line start -->
-      <Grid x:Name="LineGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+      <Grid x:Name="LineGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Hidden">
         <Grid.Resources>
           <Style TargetType="iconPacks:PackIconMaterial">
             <Setter Property="Kind" Value="PowerOn" />
@@ -116,7 +156,7 @@
       <!-- Line end -->
 
       <!-- Dot start -->
-      <Grid x:Name="DotGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+      <Grid x:Name="DotGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Hidden">
         <Grid.Resources>
           <Style TargetType="iconPacks:PackIconMaterial">
             <Setter Property="Kind" Value="Circle" />

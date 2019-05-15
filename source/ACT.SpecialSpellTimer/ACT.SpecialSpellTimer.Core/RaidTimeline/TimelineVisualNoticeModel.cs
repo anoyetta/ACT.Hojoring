@@ -349,10 +349,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         if (!sender.IsDummyMode)
                         {
+                            if (notice.IsVisible)
+                            {
+                                notice.RemoveSyncToHide();
+                                DequeueToHide(sender);
+                            }
+
                             notice.toHide = false;
                             notice.IsVisible = false;
                             removeCallback?.Invoke(notice);
-                            notice.RemoveSyncToHide();
                         }
 
                         result = true;
@@ -414,6 +419,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (!ToHideTimer.IsEnabled)
             {
                 ToHideTimer.Start();
+            }
+        }
+
+        public static void DequeueToHide(TimelineVisualNoticeToHideEntry entry)
+        {
+            lock (ToHideEntryList)
+            {
+                ToHideEntryList.Remove(entry);
             }
         }
 

@@ -363,11 +363,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         {
                             if (notice.overlay != null)
                             {
+                                if (notice.overlay.OverlayVisible)
+                                {
+                                    notice.RemoveSyncToHide();
+                                    TimelineVisualNoticeModel.DequeueToHide(sender);
+                                }
+
                                 notice.overlay.OverlayVisible = false;
                             }
 
                             notice.toHide = false;
-                            notice.RemoveSyncToHide();
                         }
                     }
 

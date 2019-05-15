@@ -321,7 +321,11 @@ namespace ACT.SpecialSpellTimer.Views
 
             if (this.activeSpells.Any())
             {
-                this.ShowOverlay();
+                if (this.ShowOverlay())
+                {
+                    this.SubscribeZOrderCorrector();
+                    this.EnsureTopMost();
+                }
             }
         }
 
