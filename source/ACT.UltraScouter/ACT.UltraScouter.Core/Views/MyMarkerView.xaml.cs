@@ -47,7 +47,9 @@ namespace ACT.UltraScouter.Views
         private void ApplyMarkerType(
             MyMarkerTypes markerType)
         {
-            this.ArrowGrid.Visibility = Visibility.Hidden;
+            this.ArrowUpGrid.Visibility = Visibility.Hidden;
+            this.ArrowDownGrid.Visibility = Visibility.Hidden;
+            this.PlusGrid.Visibility = Visibility.Hidden;
             this.CrossGrid.Visibility = Visibility.Hidden;
             this.LineGrid.Visibility = Visibility.Hidden;
             this.DotGrid.Visibility = Visibility.Hidden;
@@ -55,7 +57,16 @@ namespace ACT.UltraScouter.Views
             switch (markerType)
             {
                 case MyMarkerTypes.Arrow:
-                    this.ArrowGrid.Visibility = Visibility.Visible;
+                case MyMarkerTypes.ArrowUp:
+                    this.ArrowUpGrid.Visibility = Visibility.Visible;
+                    break;
+
+                case MyMarkerTypes.ArrowDown:
+                    this.ArrowDownGrid.Visibility = Visibility.Visible;
+                    break;
+
+                case MyMarkerTypes.Plus:
+                    this.PlusGrid.Visibility = Visibility.Visible;
                     break;
 
                 case MyMarkerTypes.Cross:
