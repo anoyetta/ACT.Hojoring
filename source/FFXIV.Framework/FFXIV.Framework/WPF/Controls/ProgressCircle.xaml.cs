@@ -435,7 +435,7 @@ namespace FFXIV.Framework.WPF.Controls
                 (360.1 * progress) - 90 :
                 (360.1 - (360.1 * progress)) - 90;
 
-            angle = Math.Round(angle, 1);
+            angle = Math.Round(angle, 2);
 
             // ForeCircleを描画する
             this.ForeCircle.StartAngle = -90;

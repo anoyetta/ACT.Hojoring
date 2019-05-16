@@ -388,29 +388,33 @@ namespace ACT.UltraScouter.Workers
                 this.Model.Distance = 0;
 
                 // ダミーアクションの処理
-                if (string.IsNullOrEmpty(this.DummyAction))
+                if (!(this is TacticalRadarWorker) &&
+                    !(this is EnmityInfoWorker))
                 {
-                    this.Model.CastSkillName = string.Empty;
-                    this.Model.CastDurationCurrent = 0;
-                    this.Model.CastDurationMax = 0;
-                    this.Model.IsCasting = false;
-                }
-                else
-                {
-                    lock (this.Model)
+                    if (string.IsNullOrEmpty(this.DummyAction))
                     {
-                        if (!this.Model.IsCasting)
-                        {
-                            this.Model.CastSkillName = this.DummyAction;
-                            this.Model.CastDurationMax = 5.5f;
-                            this.Model.CastDurationCurrent = 0;
-
-                            // イベントが発生するので最後にセットする
-                            this.Model.IsCasting = true;
-                        }
+                        this.Model.CastSkillName = string.Empty;
+                        this.Model.CastDurationCurrent = 0;
+                        this.Model.CastDurationMax = 0;
+                        this.Model.IsCasting = false;
                     }
+                    else
+                    {
+                        lock (this.Model)
+                        {
+                            if (!this.Model.IsCasting)
+                            {
+                                this.Model.CastSkillName = this.DummyAction;
+                                this.Model.CastDurationMax = 5.5f;
+                                this.Model.CastDurationCurrent = 0;
 
-                    overlayVisible = true;
+                                // イベントが発生するので最後にセットする
+                                this.Model.IsCasting = true;
+                            }
+                        }
+
+                        overlayVisible = true;
+                    }
                 }
 
                 // デザインモード？
