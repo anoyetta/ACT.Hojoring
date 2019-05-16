@@ -154,12 +154,12 @@ namespace ACT.SpecialSpellTimer.Views
             set => this.SetProperty(ref this.spells, value);
         }
 
-        private ObservableCollection<Spell> activeSpells = new ObservableCollection<Spell>();
+        private readonly ObservableCollection<Spell> activeSpells = new ObservableCollection<Spell>();
 
         public CollectionViewSource ActiveSpellViewSource;
         public ICollectionView ActiveSpellView => this.ActiveSpellViewSource?.View;
 
-        private List<SpellControl> spellControls = new List<SpellControl>();
+        private readonly List<SpellControl> spellControls = new List<SpellControl>();
 
         public void Refresh()
         {
