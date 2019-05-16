@@ -1,12 +1,12 @@
+using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels;
 using FFXIV.Framework.WPF.Controls;
 using FFXIV.Framework.WPF.Views;
-using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Animation;
 
 namespace ACT.UltraScouter.Views
 {
@@ -32,8 +32,11 @@ namespace ACT.UltraScouter.Views
             this.Opacity = 0;
 
             // FPSを制限する
-            Timeline.SetDesiredFrameRate(this.countdownAnimation, Settings.Instance.AnimationMaxFPS);
-            Timeline.SetDesiredFrameRate(this.barAnimation, Settings.Instance.AnimationMaxFPS);
+            var fps = Settings.Instance.AnimationMaxFPS > 0 ?
+                (int?)Settings.Instance.AnimationMaxFPS :
+                null;
+            Timeline.SetDesiredFrameRate(this.CountdownAnimation, fps);
+            Timeline.SetDesiredFrameRate(this.BarAnimation, fps);
         }
 
         /// <summary>オーバーレイとして表示状態</summary>
@@ -71,7 +74,7 @@ namespace ACT.UltraScouter.Views
 
         #region Countdown Animation
 
-        private DoubleAnimation countdownAnimation = new DoubleAnimation()
+        private readonly DoubleAnimation CountdownAnimation = new DoubleAnimation()
         {
             From = 3,
             To = 0,
@@ -84,7 +87,7 @@ namespace ACT.UltraScouter.Views
         {
             this.CounterLabel.BeginAnimation(
                 Label.WidthProperty,
-                this.countdownAnimation,
+                this.CountdownAnimation,
                 HandoffBehavior.SnapshotAndReplace);
         }
 
@@ -92,7 +95,7 @@ namespace ACT.UltraScouter.Views
 
         #region Bar Animation
 
-        private DoubleAnimation barAnimation = new DoubleAnimation()
+        private readonly DoubleAnimation BarAnimation = new DoubleAnimation()
         {
             From = 0,
             To = 1,
@@ -105,7 +108,7 @@ namespace ACT.UltraScouter.Views
         {
             this.Bar.BeginAnimation(
                 RichProgressBar.ProgressProperty,
-                this.barAnimation,
+                this.BarAnimation,
                 HandoffBehavior.SnapshotAndReplace);
         }
 

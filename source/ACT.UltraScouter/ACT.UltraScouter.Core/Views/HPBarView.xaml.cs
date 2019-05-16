@@ -1,10 +1,10 @@
+using System;
+using System.Windows;
+using System.Windows.Media.Animation;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.ViewModels;
 using FFXIV.Framework.WPF.Controls;
 using FFXIV.Framework.WPF.Views;
-using System;
-using System.Windows;
-using System.Windows.Media.Animation;
 
 namespace ACT.UltraScouter.Views
 {
@@ -33,7 +33,11 @@ namespace ACT.UltraScouter.Views
             this.Opacity = 0;
 
             // アニメーションのFPSを制限する
-            Timeline.SetDesiredFrameRate(this.animation, Settings.Instance.AnimationMaxFPS);
+            Storyboard.SetDesiredFrameRate(
+                this.Animation,
+                Settings.Instance.AnimationMaxFPS > 0 ?
+                (int?)Settings.Instance.AnimationMaxFPS :
+                null);
         }
 
         /// <summary>オーバーレイとして表示状態</summary>
@@ -51,18 +55,18 @@ namespace ACT.UltraScouter.Views
         /// <summary>ViewModel</summary>
         public HPBarViewModel ViewModel => (HPBarViewModel)this.DataContext;
 
-        private DoubleAnimation animation = new DoubleAnimation();
+        private readonly DoubleAnimation Animation = new DoubleAnimation();
 
         public void UpdateHPBar(
             double hpRate)
         {
-            this.animation.From = this.Bar.Progress;
-            this.animation.To = hpRate;
-            this.animation.Duration = TimeSpan.FromSeconds(0.08);
+            this.Animation.From = this.Bar.Progress;
+            this.Animation.To = hpRate;
+            this.Animation.Duration = TimeSpan.FromSeconds(0.08);
 
             this.Bar.BeginAnimation(
                 RichProgressBar.ProgressProperty,
-                this.animation,
+                this.Animation,
                 HandoffBehavior.SnapshotAndReplace);
         }
     }

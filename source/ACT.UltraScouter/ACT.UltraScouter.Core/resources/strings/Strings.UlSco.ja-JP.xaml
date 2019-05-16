@@ -14,7 +14,7 @@
   <system:String x:Key="GeneralConfig_LogPollingPriority">メモリの監視の優先度</system:String>
   <system:String x:Key="GeneralConfig_OverlayRefreshPriority">オーバーレイの描画の優先度</system:String>
   <system:String x:Key="GeneralConfig_RestartThreads">スレッドを再起動する</system:String>
-  <system:String x:Key="GeneralConfig_AnimationMaxFPS">アニメーションの最大FPS</system:String>
+  <system:String x:Key="GeneralConfig_AnimationMaxFPS">アニメーションの最大FPS (0にすると自動調整)</system:String>
   <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">テキストのアウトライン増幅率</system:String>
   <system:String x:Key="GeneralConfig_TextBlurGain">テキストのブラー増幅率</system:String>
   <system:String x:Key="GeneralConfig_Sound">サウンド</system:String>
