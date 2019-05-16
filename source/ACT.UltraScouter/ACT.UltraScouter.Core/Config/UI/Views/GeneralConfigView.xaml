@@ -145,7 +145,7 @@
         Content="{DynamicResource GeneralConfig_AnimationMaxFPS}" />
       <Slider
         Name="AnimationFPSSlider"
-        Minimum="5" Maximum="60"
+        Minimum="0" Maximum="144"
         LargeChange="1"
         SmallChange="1"
         Value="{Binding Config.AnimationMaxFPS, Mode=TwoWay}" />
