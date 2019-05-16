@@ -1559,7 +1559,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         !this.previouseCastingCombatantIDs.Contains(combatant.ID))
                     {
                         TimelineController.RaiseLog(
-                            $"{TLSymbol} {combatant.Name} starts using {combatant.CastSkillName}. X={combatant.PosXMap:N2} Y={combatant.PosYMap:N2} Z={combatant.PosZMap:N2}");
+                            $"{TLSymbol} {combatant.Name} starts using {combatant.CastSkillName}. X={combatant.PosXMap:N2} Y={combatant.PosYMap:N2} Z={combatant.PosZMap:N2}. ID={combatant.CastBuffID:X4} duration={combatant.CastDurationMax:N1}");
                     }
                 }
 
