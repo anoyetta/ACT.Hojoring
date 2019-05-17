@@ -334,7 +334,7 @@ namespace FFXIV.Framework.WPF.Views
                     }
 
                     // プロセス情報がなく、tryIntervalよりも時間が経っているときは新たに取得を試みる
-                    if (xivProc == null && DateTime.Now - lastTry > tryInterval)
+                    if (xivProc == null && (DateTime.Now - lastTry) > tryInterval)
                     {
                         xivProc = Process.GetProcessesByName("ffxiv").FirstOrDefault();
                         if (xivProc == null)
