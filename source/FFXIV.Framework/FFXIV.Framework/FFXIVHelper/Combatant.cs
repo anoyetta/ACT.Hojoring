@@ -248,7 +248,9 @@ namespace FFXIV.Framework.FFXIVHelper
         }
 
         public string NamesRegex =>
-            this.Names.Replace(@".", @"\.");
+            this.Names
+                .Replace(@".", @"\.")
+                .Replace(@"-", @"\-");
 
         public Job AsJob() => Jobs.Find(this.Job);
 
