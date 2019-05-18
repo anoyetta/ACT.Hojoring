@@ -169,10 +169,19 @@ namespace FFXIV.Framework.WPF.Views
 
         #region ZOrder Corrector
 
-        private static readonly DispatcherTimer ZOrderCorrector = new DispatcherTimer(DispatcherPriority.ContextIdle)
+        private static readonly object ZOrderLocker = new object();
+
+        private static readonly Lazy<DispatcherTimer> LazyZOrderCorrector = new Lazy<DispatcherTimer>(() =>
         {
-            Interval = TimeSpan.FromSeconds(1.5)
-        };
+            var timer = new DispatcherTimer(DispatcherPriority.ContextIdle)
+            {
+                Interval = TimeSpan.FromSeconds(1.5),
+            };
+
+            timer.Tick += ZOrderCorrectorOnTick;
+
+            return timer;
+        });
 
         private static readonly List<IOverlay> ToCorrectOverlays = new List<IOverlay>(64);
 
@@ -183,14 +192,8 @@ namespace FFXIV.Framework.WPF.Views
         public static void SubscribeZOrderCorrector(
             this IOverlay overlay)
         {
-            lock (ZOrderCorrector)
+            lock (ZOrderLocker)
             {
-                if (!ZOrderCorrector.IsEnabled)
-                {
-                    ZOrderCorrector.Tick -= ZOrderCorrectorOnTick;
-                    ZOrderCorrector.Tick += ZOrderCorrectorOnTick;
-                }
-
                 if (overlay is Window window)
                 {
                     window.Closing += (x, y) =>
@@ -207,11 +210,7 @@ namespace FFXIV.Framework.WPF.Views
                     ToCorrectOverlays.Add(overlay);
                 }
 
-                if (ToCorrectOverlays.Any() &&
-                    !ZOrderCorrector.IsEnabled)
-                {
-                    ZOrderCorrector.Start();
-                }
+                LazyZOrderCorrector.Value.Start();
             }
         }
 
@@ -222,13 +221,13 @@ namespace FFXIV.Framework.WPF.Views
         public static void UnsubscribeZOrderCorrector(
             this IOverlay overlay)
         {
-            lock (ZOrderCorrector)
+            lock (ZOrderLocker)
             {
                 ToCorrectOverlays.Remove(overlay);
 
                 if (!ToCorrectOverlays.Any())
                 {
-                    ZOrderCorrector.Stop();
+                    LazyZOrderCorrector.Value.Stop();
                 }
             }
         }
@@ -237,14 +236,8 @@ namespace FFXIV.Framework.WPF.Views
             object sender,
             EventArgs e)
         {
-            lock (ZOrderCorrector)
+            lock (ZOrderLocker)
             {
-                if (!ToCorrectOverlays.Any())
-                {
-                    ZOrderCorrector.Stop();
-                    return;
-                }
-
                 foreach (var overlay in ToCorrectOverlays)
                 {
                     Thread.Yield();
@@ -334,7 +327,7 @@ namespace FFXIV.Framework.WPF.Views
                     }
 
                     // プロセス情報がなく、tryIntervalよりも時間が経っているときは新たに取得を試みる
-                    if (xivProc == null && DateTime.Now - lastTry > tryInterval)
+                    if (xivProc == null && (DateTime.Now - lastTry) > tryInterval)
                     {
                         xivProc = Process.GetProcessesByName("ffxiv").FirstOrDefault();
                         if (xivProc == null)
