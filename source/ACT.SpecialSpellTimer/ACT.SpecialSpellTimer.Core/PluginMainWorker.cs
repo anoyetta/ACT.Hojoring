@@ -56,29 +56,10 @@ namespace ACT.SpecialSpellTimer
 
         public bool IsFFXIVActive => FFXIVPlugin.Instance.IsFFXIVActive;
 
-        /// <summary>
-        /// 最後にテロップテーブルを保存した日時
-        /// </summary>
         private DateTime lastSaveTickerTableDateTime = DateTime.Now;
 
-        /// <summary>
-        /// 最後に全滅した日時
-        /// </summary>
-        private DateTime lastWipeOutDateTime = DateTime.MinValue;
-
-        /// <summary>
-        /// 最後に全滅を判定した日時
-        /// </summary>
-        private DateTime lastWipeOutDetectDateTime = DateTime.MinValue;
-
-        /// <summary>
-        /// ログバッファ
-        /// </summary>
         public LogBuffer LogBuffer { get; private set; }
 
-        /// <summary>
-        /// Simulation中か？
-        /// </summary>
         public bool InSimulation { get; set; }
 
         #region Begin / End
@@ -510,9 +491,14 @@ namespace ACT.SpecialSpellTimer
 
         #region Misc
 
-        /// <summary>
-        /// リスタートのときスペルのカウントをリセットする
-        /// </summary>
+        private DateTime lastWipeOutDateTime = DateTime.MinValue;
+        private DateTime lastWipeOutDetectDateTime = DateTime.MinValue;
+        private static readonly object WipeoutLocker = new object();
+        private static readonly double WipeoutDetectSleep = 1.5;
+        private static readonly double WipeoutDetectLongSleep = 3;
+        private static readonly double WipeoutNoticeInterval = 15;
+        private static readonly double WipeoutNoticeDelay = 6;
+
         private void ResetCountAtRestart()
         {
             // 無効？
@@ -523,19 +509,31 @@ namespace ACT.SpecialSpellTimer
 
             var now = DateTime.Now;
 
-            // パーティの変更を検知してから時間が経過していない？
-            if ((now - SharlayanHelper.Instance.PartyListChangedTimestamp).TotalSeconds <= 20d)
+            lock (WipeoutLocker)
             {
+                if ((now - this.lastWipeOutDetectDateTime).TotalSeconds <= WipeoutDetectSleep)
+                {
+                    return;
+                }
+
+                this.lastWipeOutDetectDateTime = now;
+            }
+
+            var zone = FFXIVPlugin.Instance.GetCurrentZoneName();
+            if (string.IsNullOrEmpty(zone) ||
+                string.Equals(zone, "Unknown Zone", StringComparison.OrdinalIgnoreCase))
+            {
+                setLongSleep();
                 return;
             }
 
-            // 0.1秒毎に判定する
-            if ((now - this.lastWipeOutDetectDateTime).TotalSeconds <= 0.1)
+            var player = FFXIVPlugin.Instance.GetPlayer();
+            if (player == null ||
+                player.MaxHP <= 0)
             {
+                setLongSleep();
                 return;
             }
-
-            this.lastWipeOutDetectDateTime = now;
 
             var combatants = default(IEnumerable<Combatant>);
             combatants = FFXIVPlugin.Instance.GetPartyList();
@@ -543,6 +541,7 @@ namespace ACT.SpecialSpellTimer
             if (combatants == null ||
                 combatants.Count() < 1)
             {
+                setLongSleep();
                 return;
             }
 
@@ -555,16 +554,19 @@ namespace ACT.SpecialSpellTimer
                         x.CurrentHP == first.CurrentHP &&
                         x.MaxHP == first.MaxHP))
                 {
+                    setLongSleep();
                     return;
                 }
 
                 if (!combatants.Any(x => x.IsPlayer))
                 {
+                    setLongSleep();
                     return;
                 }
 
                 if (combatants.Any(x => x.IsNPC()))
                 {
+                    setLongSleep();
                     return;
                 }
             }
@@ -575,27 +577,41 @@ namespace ACT.SpecialSpellTimer
                     x.CurrentHP <= 0 &&
                     x.MaxHP > 0))
             {
-                // リセットするのは15秒に1回にする
-                // 暗転中もずっとリセットし続けてしまうので
-                if ((DateTime.Now - this.lastWipeOutDateTime).TotalSeconds >= 15.0)
+                lock (WipeoutLocker)
                 {
-                    // インスタンススペルを消去する
-                    SpellTable.ResetCount();
-                    TickerTable.Instance.ResetCount();
-
-                    this.lastWipeOutDateTime = DateTime.Now;
-
-                    // wipeoutログを発生させる
-                    LogParser.RaiseLog(DateTime.Now, ConstantKeywords.Wipeout);
-
-                    ActInvoker.Invoke(() =>
+                    if ((DateTime.Now - this.lastWipeOutDateTime).TotalSeconds > WipeoutNoticeInterval)
                     {
-                        // ACT本体に戦闘終了を通知する
-                        if (Settings.Default.WipeoutNotifyToACT)
+                        this.lastWipeOutDateTime = DateTime.Now;
+
+                        Task.Run(() =>
                         {
-                            ActGlobals.oFormActMain.ActCommands("end");
-                        }
-                    });
+                            Thread.Sleep(TimeSpan.FromSeconds(WipeoutNoticeDelay));
+
+                            // インスタンススペルを消去する
+                            SpellTable.ResetCount();
+                            TickerTable.Instance.ResetCount();
+
+                            // wipeoutログを発生させる
+                            LogParser.RaiseLog(DateTime.Now, ConstantKeywords.Wipeout);
+
+                            ActInvoker.Invoke(() =>
+                            {
+                                // ACT本体に戦闘終了を通知する
+                                if (Settings.Default.WipeoutNotifyToACT)
+                                {
+                                    ActGlobals.oFormActMain.ActCommands("end");
+                                }
+                            });
+                        });
+                    }
+                }
+            }
+
+            void setLongSleep()
+            {
+                lock (WipeoutLocker)
+                {
+                    this.lastWipeOutDetectDateTime = now.AddSeconds(WipeoutDetectLongSleep);
                 }
             }
         }
