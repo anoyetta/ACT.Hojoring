@@ -173,6 +173,7 @@ namespace ACT.SpecialSpellTimer.Views
             if (this.Spells == null ||
                 this.Panel == null)
             {
+                this.Topmost = false;
                 this.HideOverlay();
                 this.activeSpells.Clear();
                 this.ClearSpellControls();
@@ -323,6 +324,7 @@ namespace ACT.SpecialSpellTimer.Views
             {
                 if (this.ShowOverlay())
                 {
+                    this.Topmost = true;
                     this.SubscribeZOrderCorrector();
                     this.EnsureTopMost();
                 }

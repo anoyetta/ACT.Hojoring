@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.Utility;
@@ -628,6 +629,12 @@ namespace ACT.SpecialSpellTimer
             {
                 foreach (var panel in SpellPanelTable.Instance.Table)
                 {
+                    if (panel.PanelWindow != null &&
+                        panel.PanelWindow is Window window)
+                    {
+                        window.Topmost = false;
+                    }
+
                     panel.PanelWindow?.HideOverlay();
                 }
             }
