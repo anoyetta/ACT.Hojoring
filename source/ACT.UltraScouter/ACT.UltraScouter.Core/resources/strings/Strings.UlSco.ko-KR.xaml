@@ -14,7 +14,7 @@
   <system:String x:Key="GeneralConfig_LogPollingPriority">메모리 스캔 우선순위</system:String>
   <system:String x:Key="GeneralConfig_OverlayRefreshPriority">오버레이 새로고침 우선순위</system:String>
   <system:String x:Key="GeneralConfig_RestartThreads">스레드 재시작</system:String>
-  <system:String x:Key="GeneralConfig_AnimationMaxFPS">애니메이션 최대 FPS</system:String>
+  <system:String x:Key="GeneralConfig_AnimationMaxFPS">애니메이션 최대 FPS (0일 경우 자동 조정)</system:String>
   <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">글자 윤곽선 두께 비율</system:String>
   <system:String x:Key="GeneralConfig_TextBlurGain">글자 흐림 효과 비율</system:String>
   <system:String x:Key="GeneralConfig_Sound">사운드</system:String>
@@ -24,7 +24,7 @@
 
   <system:String x:Key="Common_Visible">표시</system:String>
   <system:String x:Key="Common_Location">위치</system:String>
-  <system:String x:Key="Common_Alignment">Alignment</system:String>
+  <system:String x:Key="Common_Alignment">정렬</system:String>
   <system:String x:Key="Common_BarWidth">바의 폭</system:String>
   <system:String x:Key="Common_BarSize">바 크기</system:String>
   <system:String x:Key="Common_Scale">스케일</system:String>
@@ -120,7 +120,7 @@
   <system:String x:Key="Enmity_NearIndicatorColor">적개심 근접 경고색</system:String>
   <system:String x:Key="Enmity_NearThresholdRate">적개심 근접 임계치 배율</system:String>
   <system:String x:Key="Enmity_IsVisibleNearThreshold">적개심 근접 임계치 표시</system:String>
-  <system:String x:Key="Enmity_LogDirectory">Log folder</system:String>
+  <system:String x:Key="Enmity_LogDirectory">로그 폴더</system:String>
 
   <system:String x:Key="FFLogs_VisibleHistogram">히스토그램 표시</system:String>
   <system:String x:Key="FFLogs_HideInCombat">전투 시 자동 숨김</system:String>
