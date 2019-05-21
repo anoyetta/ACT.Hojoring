@@ -494,10 +494,10 @@ namespace ACT.SpecialSpellTimer
         private DateTime lastWipeOutDateTime = DateTime.MinValue;
         private DateTime lastWipeOutDetectDateTime = DateTime.MinValue;
         private static readonly object WipeoutLocker = new object();
-        private static readonly double WipeoutDetectSleep = 1.5;
+        private static readonly double WipeoutDetectSleep = 0.1;
         private static readonly double WipeoutDetectLongSleep = 3;
         private static readonly double WipeoutNoticeInterval = 15;
-        private static readonly double WipeoutNoticeDelay = 6;
+        private static readonly double WipeoutNoticeDelay = 3;
 
         private void ResetCountAtRestart()
         {
