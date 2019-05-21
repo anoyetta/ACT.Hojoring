@@ -20,6 +20,15 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.visible, value);
         }
 
+        private bool hideInNotCombat = true;
+
+        [DataMember]
+        public bool HideInNotCombat
+        {
+            get => this.hideInNotCombat;
+            set => this.SetProperty(ref this.hideInNotCombat, value);
+        }
+
         [DataMember]
         public Location Location { get; set; } = new Location();
 
