@@ -97,6 +97,17 @@ namespace FFXIV.Framework.Common
             }
         }
 
+        public void ClearBuffers()
+        {
+            lock (this.players)
+            {
+                foreach (var player in this.players)
+                {
+                    player.Value.ClearBuffers();
+                }
+            }
+        }
+
         private PlayerSet GetPlayerSet(
             string deviceID)
         {
@@ -192,6 +203,17 @@ namespace FFXIV.Framework.Common
                 this.Player.Init(mixer);
                 this.Player.Play();
                 this.Player.SetBackground();
+            }
+
+            public void ClearBuffers()
+            {
+                lock (this)
+                {
+                    foreach (var buffer in this.Buffers)
+                    {
+                        buffer.ClearBuffer();
+                    }
+                }
             }
 
             public void Play(

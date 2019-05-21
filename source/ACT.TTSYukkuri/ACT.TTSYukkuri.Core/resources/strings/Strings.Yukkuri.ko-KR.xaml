@@ -10,6 +10,8 @@
   <system:String x:Key="General_TTSType">TTS 종류</system:String>
   <system:String x:Key="General_SyncPlayback">강제 동기화 재생</system:String>
   <system:String x:Key="General_SyncPlaybackDesc">SPESPE 등 다른 플러그인의 설정에 관계 없이 모든 사운드가 동기적으로 재생됩니다.</system:String>
+  <system:String x:Key="General_ClearBufferWithWipeout">Clear playback buffer when wipeout</system:String>
+  <system:String x:Key="General_ClearBuffer">Clear playback buffer</system:String>
   <system:String x:Key="General_ClearCache">종료 시 캐시 삭제</system:String>
   <system:String x:Key="General_OpenCacheDirectory">캐시 폴더 열기</system:String>
   <system:String x:Key="General_ClearCacheNow">캐시 삭제</system:String>
