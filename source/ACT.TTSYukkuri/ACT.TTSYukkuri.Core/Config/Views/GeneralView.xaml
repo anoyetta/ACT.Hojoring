@@ -25,7 +25,7 @@
   FontSize="17"
   Margin="0"
   Focusable="False"
-  d:DesignHeight="600" d:DesignWidth="1024"
+  d:DesignHeight="720" d:DesignWidth="1024"
   d:DataContext="{d:DesignInstance Type=vm:GeneralViewModel, IsDesignTimeCreatable=True}"
   DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
@@ -209,14 +209,29 @@
                 Text="* 16bit - 44.1kHz" FontSize="15"
                 Visibility="Collapsed" />
 
-              <CheckBox
+              <StackPanel
                 Margin="0 10 0 0"
-                HorizontalAlignment="Left"
-                VerticalContentAlignment="Center"
-                Visibility="{Binding Config.SyncPlaybackVisibility, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
-                IsChecked="{Binding Config.IsSyncPlayback, Mode=TwoWay}"
-                Content="{DynamicResource General_SyncPlayback}"
-                ToolTip="{DynamicResource General_SyncPlaybackDesc}" />
+                Visibility="{Binding Config.SyncPlaybackVisibility, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+                <CheckBox
+                  HorizontalAlignment="Left"
+                  VerticalContentAlignment="Center"
+                  IsChecked="{Binding Config.IsSyncPlayback, Mode=TwoWay}"
+                  Content="{DynamicResource General_SyncPlayback}"
+                  ToolTip="{DynamicResource General_SyncPlaybackDesc}" />
+
+                <CheckBox
+                  Margin="0 5 0 0"
+                  HorizontalAlignment="Left"
+                  VerticalContentAlignment="Center"
+                  IsChecked="{Binding Config.IsClearBufferAtWipeout, Mode=TwoWay}"
+                  Content="{DynamicResource General_ClearBufferWithWipeout}" />
+
+                <TextBlock Margin="0 5 0 0">
+                  <Hyperlink Command="{Binding ClearBufferCommand, Mode=OneWay}">
+                    <TextBlock Text="{DynamicResource General_ClearBuffer}" />
+                  </Hyperlink>
+                </TextBlock>
+              </StackPanel>
 
               <Label
                 Margin="0 10 0 0"

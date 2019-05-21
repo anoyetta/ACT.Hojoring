@@ -10,6 +10,8 @@
   <system:String x:Key="General_TTSType">TTSの種類</system:String>
   <system:String x:Key="General_SyncPlayback">強制的に同期再生する</system:String>
   <system:String x:Key="General_SyncPlaybackDesc">スペスペ等の設定に関係なくすべてのサウンドを同期再生します。</system:String>
+  <system:String x:Key="General_ClearBufferWithWipeout">ワイプアウトしたときに再生バッファをクリアする</system:String>
+  <system:String x:Key="General_ClearBuffer">再生バッファをクリアする</system:String>
   <system:String x:Key="General_ClearCache">終了時にキャッシュをクリアする</system:String>
   <system:String x:Key="General_OpenCacheDirectory">キャッシュディレクトリを開く</system:String>
   <system:String x:Key="General_ClearCacheNow">キャッシュをクリアする</system:String>
