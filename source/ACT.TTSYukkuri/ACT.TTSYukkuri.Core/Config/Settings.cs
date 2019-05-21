@@ -237,6 +237,17 @@ namespace ACT.TTSYukkuri.Config
             set => this.SetProperty(ref this.isSyncPlayback, value);
         }
 
+        private bool isClearBufferAtWipeout = true;
+
+        /// <summary>
+        /// Wipeout時にバッファをクリアする
+        /// </summary>
+        public bool IsClearBufferAtWipeout
+        {
+            get => this.isClearBufferAtWipeout;
+            set => this.SetProperty(ref this.isClearBufferAtWipeout, value);
+        }
+
         /// <summary>
         /// メイン再生デバイスID
         /// </summary>

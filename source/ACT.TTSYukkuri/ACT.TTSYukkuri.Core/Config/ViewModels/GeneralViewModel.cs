@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
+using NLog;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -13,6 +14,12 @@ namespace ACT.TTSYukkuri.Config.ViewModels
 {
     public class GeneralViewModel : BindableBase
     {
+        #region Logger
+
+        private Logger Logger => AppLog.DefaultLogger;
+
+        #endregion Logger
+
         public Settings Config => Settings.Default;
 
         public ComboBoxItem[] TTSTypes => TTSType.ToComboBox;
@@ -102,5 +109,16 @@ namespace ACT.TTSYukkuri.Config.ViewModels
                     this.Config.SubDeviceID = devices.FirstOrDefault()?.ID;
                 }
             }));
+
+        private DelegateCommand clearBufferCommand;
+
+        public DelegateCommand ClearBufferCommand =>
+            this.clearBufferCommand ?? (this.clearBufferCommand = new DelegateCommand(this.ExecuteClearBufferCommand));
+
+        private void ExecuteClearBufferCommand()
+        {
+            BufferedWavePlayer.Instance?.ClearBuffers();
+            this.Logger.Info("Playback buffers cleared.");
+        }
     }
 }

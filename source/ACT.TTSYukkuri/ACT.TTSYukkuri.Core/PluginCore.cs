@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
@@ -390,6 +391,9 @@ namespace ACT.TTSYukkuri
                     PlayBridge.Instance.SetSubDeviceDelegate((message, isSync, volume) => this.Speak(message, PlayDevices.Sub, isSync, volume));
                     PlayBridge.Instance.SetSyncStatusDelegate(() => Settings.Default.Player == WavePlayerTypes.WASAPIBuffered);
 
+                    // テキストコマンドの購読を登録する
+                    this.SubscribeTextCommands();
+
                     // サウンドデバイスを初期化する
                     SoundPlayerWrapper.Init();
 
@@ -479,6 +483,33 @@ namespace ACT.TTSYukkuri
             {
                 this.Logger.Error(ex, "DeInitPlugin error.");
             }
+        }
+
+        private void SubscribeTextCommands()
+        {
+            // wipeout に対するコマンドを登録する
+            TextCommandBridge.Instance.Subscribe(new TextCommand(
+            (string logLine, out Match match) =>
+            {
+                var result = false;
+                match = null;
+
+                if (!string.IsNullOrEmpty(logLine))
+                {
+                    if (logLine.Contains("00:0000:wipeout") ||
+                        logLine.Contains("00:0038:wipeout"))
+                    {
+                        result = true;
+                    }
+                }
+
+                return result;
+            },
+            (string logLine, Match match) =>
+            {
+                BufferedWavePlayer.Instance?.ClearBuffers();
+                this.Logger.Info("Playback buffers cleared.");
+            }));
         }
 
         /// <summary>

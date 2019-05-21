@@ -10,6 +10,8 @@
   <system:String x:Key="General_TTSType">TTS Type</system:String>
   <system:String x:Key="General_SyncPlayback">Force Sync Playback</system:String>
   <system:String x:Key="General_SyncPlaybackDesc">All sounds are played back synchronously. Override SPESPE etc settings.</system:String>
+  <system:String x:Key="General_ClearBufferWithWipeout">Clear playback buffer when wipeout</system:String>
+  <system:String x:Key="General_ClearBuffer">Clear playback buffer</system:String>
   <system:String x:Key="General_ClearCache">Clear tts cache on exit.</system:String>
   <system:String x:Key="General_OpenCacheDirectory">Open cache directory</system:String>
   <system:String x:Key="General_ClearCacheNow">Clear tts cache right now</system:String>
