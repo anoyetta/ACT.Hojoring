@@ -1,5 +1,6 @@
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.ViewModels.Bases;
+using FFXIV.Framework.FFXIVHelper;
 
 namespace ACT.UltraScouter.ViewModels
 {
@@ -25,6 +26,23 @@ namespace ACT.UltraScouter.ViewModels
 
         public virtual MyMarker Config => Settings.Instance.MyMarker;
 
-        public bool OverlayVisible => this.Config.Visible;
+        public bool OverlayVisible
+        {
+            get
+            {
+                if (!this.Config.Visible)
+                {
+                    return false;
+                }
+
+                if (this.Config.HideInNotCombat &&
+                    !FFXIVPlugin.Instance.InCombat)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        }
     }
 }
