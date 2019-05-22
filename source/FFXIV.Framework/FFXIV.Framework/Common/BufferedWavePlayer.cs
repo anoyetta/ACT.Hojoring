@@ -101,9 +101,10 @@ namespace FFXIV.Framework.Common
         {
             lock (this.players)
             {
-                foreach (var player in this.players)
+                if (this.players.Count > 0)
                 {
-                    player.Value.ClearBuffers();
+                    var player = this.players.FirstOrDefault().Value;
+                    player.ClearBuffers();
                 }
             }
         }
@@ -114,9 +115,10 @@ namespace FFXIV.Framework.Common
         {
             lock (this.players)
             {
-                foreach (var player in this.players)
+                if (this.players.Count > 0)
                 {
-                    player.Value.BufferWaves(files, volume);
+                    var player = this.players.FirstOrDefault().Value;
+                    player.BufferWaves(files, volume);
                 }
             }
         }
@@ -330,15 +332,16 @@ namespace FFXIV.Framework.Common
                 using (var audio = new AudioFileReader(file) { Volume = vol })
                 using (var resampler = new MediaFoundationResampler(audio, this.OutputFormat))
                 using (var output = new MemoryStream(51200))
+                using (var wrap = new WrappingStream(output))
                 {
-                    WaveFileWriter.WriteWavFileToStream(output, resampler);
-                    output.Flush();
-                    output.Position = 0;
+                    WaveFileWriter.WriteWavFileToStream(wrap, resampler);
+                    wrap.Flush();
+                    wrap.Position = 0;
 
                     // ヘッダをカットする
-                    var raw = output.ToArray();
+                    var raw = wrap.ToArray();
                     var headerLength = 0;
-                    using (var wave = new WaveFileReader(output))
+                    using (var wave = new WaveFileReader(wrap))
                     {
                         headerLength = (int)(raw.Length - wave.Length);
                     }
