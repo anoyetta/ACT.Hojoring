@@ -171,7 +171,7 @@ namespace FFXIV.Framework.Common
 
             public int CurrentPlayerIndex { get; private set; } = 0;
 
-            public WaveFormat OutputFormat { get; private set; } = DefaultOutputFormat;
+            public WaveFormat OutputFormat => DefaultOutputFormat;
 
             public void Dispose()
             {
@@ -269,7 +269,7 @@ namespace FFXIV.Framework.Common
                 }
 
                 var samples = default(byte[]);
-                var key = this.GetBufferKey(file, volume);
+                var key = GetBufferKey(file, volume);
 
                 lock (WaveBuffer)
                 {
@@ -279,7 +279,7 @@ namespace FFXIV.Framework.Common
                     }
                     else
                     {
-                        samples = this.ReadWaveSamples(file, volume);
+                        samples = ReadWaveSamples(file, volume);
                         WaveBuffer[key] = samples;
                     }
                 }
@@ -300,8 +300,8 @@ namespace FFXIV.Framework.Common
             {
                 lock (WaveBuffer)
                 {
-                    var key = this.GetBufferKey(file, volume);
-                    WaveBuffer[key] = this.ReadWaveSamples(file, volume);
+                    var key = GetBufferKey(file, volume);
+                    WaveBuffer[key] = ReadWaveSamples(file, volume);
                 }
             }
 
@@ -313,16 +313,16 @@ namespace FFXIV.Framework.Common
                 {
                     foreach (var file in files)
                     {
-                        var key = this.GetBufferKey(file, volume);
-                        WaveBuffer[key] = this.ReadWaveSamples(file, volume);
+                        var key = GetBufferKey(file, volume);
+                        WaveBuffer[key] = ReadWaveSamples(file, volume);
                         Thread.Sleep(10);
                     }
                 }
             }
 
-            private string GetBufferKey(string file, float volume) => $"{file}-{volume.ToString("N2")}".ToUpper();
+            private static string GetBufferKey(string file, float volume) => $"{file}-{volume.ToString("N2")}".ToUpper();
 
-            private byte[] ReadWaveSamples(
+            private static byte[] ReadWaveSamples(
                 string file,
                 float volume)
             {
@@ -330,7 +330,7 @@ namespace FFXIV.Framework.Common
                 var vol = volume > 1.0f ? 1.0f : volume;
 
                 using (var audio = new AudioFileReader(file) { Volume = vol })
-                using (var resampler = new MediaFoundationResampler(audio, this.OutputFormat))
+                using (var resampler = new MediaFoundationResampler(audio, DefaultOutputFormat))
                 using (var output = new MemoryStream(51200))
                 using (var wrap = new WrappingStream(output))
                 {
