@@ -76,6 +76,7 @@ namespace ACT.UltraScouter
 
                 // 設定ファイルを保存する
                 Settings.Instance.Save();
+                FFXIV.Framework.Config.Save();
 
                 // 参照を開放する
                 WavePlayer.Free();

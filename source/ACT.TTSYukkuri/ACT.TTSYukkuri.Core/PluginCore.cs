@@ -476,6 +476,7 @@ namespace ACT.TTSYukkuri
 
                 // 設定を保存する
                 Settings.Default.Save();
+                FFXIV.Framework.Config.Save();
 
                 this.PluginStatusLabel.Text = "Plugin Exited";
             }
@@ -497,7 +498,8 @@ namespace ACT.TTSYukkuri
                 if (!string.IsNullOrEmpty(logLine))
                 {
                     if (logLine.Contains("00:0000:wipeout") ||
-                        logLine.Contains("00:0038:wipeout"))
+                        logLine.Contains("00:0038:wipeout") ||
+                        logLine.Contains("01:Changed Zone to"))
                     {
                         result = true;
                     }

@@ -13,6 +13,9 @@
   <system:String x:Key="General_ClearBufferWithWipeout">Clear playback buffer when wipeout</system:String>
   <system:String x:Key="General_ClearBuffer">Clear playback buffer</system:String>
   <system:String x:Key="General_ClearCache">Clear tts cache on exit.</system:String>
+  <system:String x:Key="General_PlaybackBufferCount">Playback buffer count</system:String>
+  <system:String x:Key="General_PlaybackBufferSize">Playback buffer size (second)</system:String>
+  <system:String x:Key="General_RequiresRestart">* requires restart</system:String>
   <system:String x:Key="General_OpenCacheDirectory">Open cache directory</system:String>
   <system:String x:Key="General_ClearCacheNow">Clear tts cache right now</system:String>
   <system:String x:Key="General_WaveVolume">Master Vol.</system:String>
