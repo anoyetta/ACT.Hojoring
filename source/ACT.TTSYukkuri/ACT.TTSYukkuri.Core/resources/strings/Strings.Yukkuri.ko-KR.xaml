@@ -4,20 +4,20 @@
   xmlns:system="clr-namespace:System;assembly=mscorlib">
 
   <!--  Resources Strings in Korean  -->
-  <system:String x:Key="UILanguage">UI 언어 (*재시작 필요)</system:String>
-  <system:String x:Key="FFXIVLanguage">FFXIV 언어 (*재시작 필요)</system:String>
+  <system:String x:Key="UILanguage">UI 언어 (* 재시작 필요)</system:String>
+  <system:String x:Key="FFXIVLanguage">FFXIV 언어 (* 재시작 필요)</system:String>
 
   <system:String x:Key="General_TTSType">TTS 종류</system:String>
   <system:String x:Key="General_SyncPlayback">강제 동기화 재생</system:String>
   <system:String x:Key="General_SyncPlaybackDesc">SPESPE 등 다른 플러그인의 설정에 관계 없이 모든 사운드가 동기적으로 재생됩니다.</system:String>
-  <system:String x:Key="General_ClearBufferWithWipeout">Clear playback buffer when wipeout</system:String>
-  <system:String x:Key="General_ClearBuffer">Clear playback buffer</system:String>
+  <system:String x:Key="General_ClearBufferWithWipeout">전멸 시 재생 버퍼 비우기</system:String>
+  <system:String x:Key="General_ClearBuffer">재생 버퍼 비우기</system:String>
   <system:String x:Key="General_ClearCache">종료 시 캐시 삭제</system:String>
-  <system:String x:Key="General_Latency">Latency</system:String>
-  <system:String x:Key="General_PlaybackBufferCount">Playback buffer count</system:String>
-  <system:String x:Key="General_PlaybackBufferSize">Playback buffer size (second)</system:String>
-  <system:String x:Key="General_RequiresRestart">* requires reset</system:String>
-  <system:String x:Key="General_Reset">Reset</system:String>
+  <system:String x:Key="General_Latency">지연 시간</system:String>
+  <system:String x:Key="General_PlaybackBufferCount">재생 버퍼 수</system:String>
+  <system:String x:Key="General_PlaybackBufferSize">재생 버퍼 크기 (초)</system:String>
+  <system:String x:Key="General_RequiresRestart">* 재시작 필요</system:String>
+  <system:String x:Key="General_Reset">리셋</system:String>
   <system:String x:Key="General_OpenCacheDirectory">캐시 폴더 열기</system:String>
   <system:String x:Key="General_ClearCacheNow">캐시 삭제</system:String>
   <system:String x:Key="General_WaveVolume">마스터 볼륨</system:String>
@@ -108,7 +108,7 @@
 
   <system:String x:Key="SA_Discription" xml:space="preserve">
 ※경고 텍스트 참조
-&lt;pcname&gt;  직업명 ＋ 캐릭터명 첫글자
+&lt;pcname&gt;  직업명 ＋ 캐릭터 이름 첫글자
 &lt;job&gt;     직업명
 &lt;hp&gt;      HP값
 &lt;hpp&gt;     HP비율(%)
