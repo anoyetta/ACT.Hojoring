@@ -99,6 +99,7 @@ namespace FFXIV.Framework
         #region Default Values
 
         private const bool SupportWin7Default = false;
+        private const int WasapiLatencyDefault = 200;
         private const int WasapiMultiplePlaybackCountDefault = 4;
         private const double WasapiLoopBufferDurationDefault = 20;
 
@@ -106,6 +107,15 @@ namespace FFXIV.Framework
 
         [XmlIgnore]
         public bool SupportWin7 => SupportWin7Default;
+
+        private int wasapiLatency = WasapiLatencyDefault;
+
+        [DefaultValue(WasapiMultiplePlaybackCountDefault)]
+        public int WasapiLatency
+        {
+            get => this.wasapiLatency;
+            set => this.SetProperty(ref this.wasapiLatency, value);
+        }
 
         private int wasapiMultiplePlaybackCount = WasapiMultiplePlaybackCountDefault;
 

@@ -396,6 +396,7 @@ namespace ACT.TTSYukkuri
 
                     // サウンドデバイスを初期化する
                     SoundPlayerWrapper.Init();
+                    SoundPlayerWrapper.LoadTTSCache();
 
                     PluginStatusLabel.Text = "Plugin Started";
 
