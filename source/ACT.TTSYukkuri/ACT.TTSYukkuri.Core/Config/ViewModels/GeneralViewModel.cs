@@ -22,6 +22,8 @@ namespace ACT.TTSYukkuri.Config.ViewModels
 
         public Settings Config => Settings.Default;
 
+        public FFXIV.Framework.Config FrameworkConfig => FFXIV.Framework.Config.Instance;
+
         public ComboBoxItem[] TTSTypes => TTSType.ToComboBox;
 
         public dynamic[] Players =>

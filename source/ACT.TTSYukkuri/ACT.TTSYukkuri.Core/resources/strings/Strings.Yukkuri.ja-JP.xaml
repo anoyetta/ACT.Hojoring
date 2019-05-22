@@ -13,6 +13,9 @@
   <system:String x:Key="General_ClearBufferWithWipeout">ワイプアウトしたときに再生バッファをクリアする</system:String>
   <system:String x:Key="General_ClearBuffer">再生バッファをクリアする</system:String>
   <system:String x:Key="General_ClearCache">終了時にキャッシュをクリアする</system:String>
+  <system:String x:Key="General_PlaybackBufferCount">再生バッファ数</system:String>
+  <system:String x:Key="General_PlaybackBufferSize">再生バッファサイズ(秒)</system:String>
+  <system:String x:Key="General_RequiresRestart">※要再起動</system:String>
   <system:String x:Key="General_OpenCacheDirectory">キャッシュディレクトリを開く</system:String>
   <system:String x:Key="General_ClearCacheNow">キャッシュをクリアする</system:String>
   <system:String x:Key="General_WaveVolume">マスタボリューム</system:String>

@@ -109,6 +109,7 @@ namespace ACT.SpecialSpellTimer
                 TimelineSettings.Save();
                 Settings.Default.Save();
                 Settings.Default.DeInit();
+                FFXIV.Framework.Config.Save();
 
                 Logger.Write("Plugin Exited.");
             }
