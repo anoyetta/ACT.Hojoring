@@ -108,6 +108,19 @@ namespace FFXIV.Framework.Common
             }
         }
 
+        public void BufferWaves(
+            IEnumerable<string> files,
+            float volume)
+        {
+            lock (this.players)
+            {
+                foreach (var player in this.players)
+                {
+                    player.Value.BufferWaves(files, volume);
+                }
+            }
+        }
+
         private PlayerSet GetPlayerSet(
             string deviceID)
         {
@@ -142,13 +155,11 @@ namespace FFXIV.Framework.Common
         public class PlayerSet :
             IDisposable
         {
-            private const int Latency = 200;
-
             private static int MultiplePlaybackCount => Config.Instance.WasapiMultiplePlaybackCount;
 
             private static TimeSpan BufferDurations => Config.Instance.WasapiLoopBufferDuration;
 
-            private static readonly Dictionary<string, byte[]> WaveBuffer = new Dictionary<string, byte[]>(128);
+            private static readonly Dictionary<string, byte[]> WaveBuffer = new Dictionary<string, byte[]>(512);
 
             public string DeviceID { get; set; }
 
@@ -173,7 +184,11 @@ namespace FFXIV.Framework.Common
                     return;
                 }
 
-                this.Player = new WasapiOut(device, AudioClientShareMode.Shared, false, Latency);
+                this.Player = new WasapiOut(
+                    device,
+                    AudioClientShareMode.Shared,
+                    false,
+                    Config.Instance.WasapiLatency);
 
                 var list = new List<BufferedWaveProvider>();
                 for (int i = 0; i < MultiplePlaybackCount; i++)
@@ -252,7 +267,7 @@ namespace FFXIV.Framework.Common
                 }
 
                 var samples = default(byte[]);
-                var key = $"{file}-{volume}";
+                var key = this.GetBufferKey(file, volume);
 
                 lock (WaveBuffer)
                 {
@@ -262,28 +277,7 @@ namespace FFXIV.Framework.Common
                     }
                     else
                     {
-                        var vol = volume > 1.0f ? 1.0f : volume;
-
-                        using (var audio = new AudioFileReader(file) { Volume = vol })
-                        using (var resampler = new MediaFoundationResampler(audio, this.OutputFormat))
-                        using (var output = new MemoryStream(51200))
-                        {
-                            WaveFileWriter.WriteWavFileToStream(output, resampler);
-                            output.Flush();
-                            output.Position = 0;
-
-                            // ヘッダをカットする
-                            var raw = output.ToArray();
-                            var headerLength = 0;
-                            using (var wave = new WaveFileReader(output))
-                            {
-                                headerLength = (int)(raw.Length - wave.Length);
-                            }
-
-                            // ヘッダをスキップした波形データを取得する
-                            samples = raw.Skip(headerLength).ToArray();
-                        }
-
+                        samples = this.ReadWaveSamples(file, volume);
                         WaveBuffer[key] = samples;
                     }
                 }
@@ -296,6 +290,64 @@ namespace FFXIV.Framework.Common
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine($"WASAPI(Buffered) Play: {file}");
 #endif
+            }
+
+            public void BufferWave(
+                string file,
+                float volume)
+            {
+                lock (WaveBuffer)
+                {
+                    var key = this.GetBufferKey(file, volume);
+                    WaveBuffer[key] = this.ReadWaveSamples(file, volume);
+                }
+            }
+
+            public void BufferWaves(
+                IEnumerable<string> files,
+                float volume)
+            {
+                lock (WaveBuffer)
+                {
+                    foreach (var file in files)
+                    {
+                        var key = this.GetBufferKey(file, volume);
+                        WaveBuffer[key] = this.ReadWaveSamples(file, volume);
+                        Thread.Sleep(10);
+                    }
+                }
+            }
+
+            private string GetBufferKey(string file, float volume) => $"{file}-{volume.ToString("N2")}".ToUpper();
+
+            private byte[] ReadWaveSamples(
+                string file,
+                float volume)
+            {
+                var samples = default(byte[]);
+                var vol = volume > 1.0f ? 1.0f : volume;
+
+                using (var audio = new AudioFileReader(file) { Volume = vol })
+                using (var resampler = new MediaFoundationResampler(audio, this.OutputFormat))
+                using (var output = new MemoryStream(51200))
+                {
+                    WaveFileWriter.WriteWavFileToStream(output, resampler);
+                    output.Flush();
+                    output.Position = 0;
+
+                    // ヘッダをカットする
+                    var raw = output.ToArray();
+                    var headerLength = 0;
+                    using (var wave = new WaveFileReader(output))
+                    {
+                        headerLength = (int)(raw.Length - wave.Length);
+                    }
+
+                    // ヘッダをスキップした波形データを取得する
+                    samples = raw.Skip(headerLength).ToArray();
+                }
+
+                return samples;
             }
         }
     }

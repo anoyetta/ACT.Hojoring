@@ -13,9 +13,11 @@
   <system:String x:Key="General_ClearBufferWithWipeout">Clear playback buffer when wipeout</system:String>
   <system:String x:Key="General_ClearBuffer">Clear playback buffer</system:String>
   <system:String x:Key="General_ClearCache">退出时清空TTS缓存.</system:String>
+  <system:String x:Key="General_Latency">Latency</system:String>
   <system:String x:Key="General_PlaybackBufferCount">Playback buffer count</system:String>
   <system:String x:Key="General_PlaybackBufferSize">Playback buffer size (second)</system:String>
-  <system:String x:Key="General_RequiresRestart">* requires restart</system:String>
+  <system:String x:Key="General_RequiresRestart">* requires reset</system:String>
+  <system:String x:Key="General_Reset">Reset</system:String>
   <system:String x:Key="General_OpenCacheDirectory">打开缓存文件夹</system:String>
   <system:String x:Key="General_ClearCacheNow">立即清空TTS缓存</system:String>
   <system:String x:Key="General_WaveVolume">主音量.</system:String>

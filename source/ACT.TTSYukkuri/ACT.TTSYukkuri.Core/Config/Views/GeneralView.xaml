@@ -56,7 +56,7 @@
     HorizontalScrollBarVisibility="Disabled">
 
     <DockPanel Margin="3">
-      <DockPanel DockPanel.Dock="Left" MinWidth="500">
+      <DockPanel DockPanel.Dock="Left" MinWidth="600">
         <Border
           DockPanel.Dock="Top"
           BorderThickness="2"
@@ -160,7 +160,7 @@
             <StackPanel Orientation="Horizontal">
               <TextBox
                 x:Name="TestTextBox"
-                Width="450"
+                Width="540"
                 VerticalContentAlignment="Center"
                 Text="{DynamicResource General_TestTTS}" />
               <Border
@@ -222,7 +222,19 @@
                   ToolTip="{DynamicResource General_SyncPlaybackDesc}" />
 
                 <StackPanel Margin="0 8 0 0" Orientation="Horizontal">
-                  <StackPanel>
+                  <StackPanel Margin="0 0 0 0">
+                    <TextBlock Text="{DynamicResource General_Latency}" />
+                    <xctk:IntegerUpDown
+                      HorizontalAlignment="Left"
+                      Minimum="3"
+                      Maximum="500"
+                      FormatString="N0"
+                      Increment="1"
+                      Value="{Binding FrameworkConfig.WasapiLatency, Mode=TwoWay}"
+                      Width="70" />
+                  </StackPanel>
+
+                  <StackPanel Margin="15 0 0 0">
                     <TextBlock Text="{DynamicResource General_PlaybackBufferCount}" />
                     <xctk:IntegerUpDown
                       HorizontalAlignment="Left"
@@ -244,10 +256,20 @@
                       Width="60" />
                   </StackPanel>
 
-                  <TextBlock
-                    Margin="15 0 0 0"
-                    Text="{DynamicResource General_RequiresRestart}"
-                    VerticalAlignment="Top" />
+                  <DockPanel Margin="15 0 0 0">
+                    <TextBlock
+                      DockPanel.Dock="Top"
+                      Text="{DynamicResource General_RequiresRestart}"
+                      VerticalAlignment="Top" />
+
+                    <TextBlock
+                      DockPanel.Dock="Bottom"
+                      VerticalAlignment="Bottom">
+                      <Hyperlink Command="{Binding ResetWasapiDeviceCommand, Mode=OneWay}">
+                        <TextBlock Text="{DynamicResource General_Reset}" />
+                      </Hyperlink>
+                    </TextBlock>
+                  </DockPanel>
                 </StackPanel>
 
                 <CheckBox

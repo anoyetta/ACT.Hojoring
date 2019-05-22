@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using ACT.TTSYukkuri.Config;
 using ACT.TTSYukkuri.Discord.Models;
 using FFXIV.Framework.Common;
@@ -181,6 +183,51 @@ namespace ACT.TTSYukkuri
                 Settings.Default.Player,
                 deviceID,
                 isSync);
+        }
+
+        public static void LoadTTSCache(
+            bool isNow = false)
+        {
+            if (Settings.Default.Player != WavePlayerTypes.WASAPIBuffered)
+            {
+                return;
+            }
+
+            var volume = Settings.Default.WaveVolume / 100f;
+
+            WPFHelper.BeginInvoke(() =>
+            { },
+            DispatcherPriority.ContextIdle).Task.ContinueWith((_) =>
+            {
+                if (!isNow)
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(60));
+                }
+                else
+                {
+                    Thread.Sleep(TimeSpan.FromMilliseconds(100));
+                }
+
+                var appdir = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    @"anoyetta\ACT\tts cache");
+
+                if (Directory.Exists(appdir))
+                {
+                    var files = new List<string>();
+                    files.AddRange(Directory.GetFiles(appdir, "*.wav"));
+                    files.AddRange(Directory.GetFiles(appdir, "*.mp3"));
+
+                    if (files.Count > 0)
+                    {
+                        BufferedWavePlayer.Instance.BufferWaves(
+                            files,
+                            volume);
+
+                        Logger.Info("TTS Cache loaded.");
+                    }
+                }
+            });
         }
     }
 }

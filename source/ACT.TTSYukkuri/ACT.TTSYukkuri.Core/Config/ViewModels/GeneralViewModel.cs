@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -121,6 +122,20 @@ namespace ACT.TTSYukkuri.Config.ViewModels
         {
             BufferedWavePlayer.Instance?.ClearBuffers();
             this.Logger.Info("Playback buffers cleared.");
+        }
+
+        private DelegateCommand resetWasapiDeviceCommand;
+
+        public DelegateCommand ResetWasapiDeviceCommand =>
+            this.resetWasapiDeviceCommand ?? (this.resetWasapiDeviceCommand = new DelegateCommand(this.ExecuteResetWasapiDeviceCommand));
+
+        private void ExecuteResetWasapiDeviceCommand()
+        {
+            SoundPlayerWrapper.Init();
+            Thread.Sleep(10);
+            SoundPlayerWrapper.LoadTTSCache();
+
+            this.Logger.Info("Reset WASAPI Player, and Reload TTS chache.");
         }
     }
 }
