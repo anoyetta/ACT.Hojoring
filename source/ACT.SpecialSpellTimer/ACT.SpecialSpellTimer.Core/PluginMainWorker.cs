@@ -498,6 +498,8 @@ namespace ACT.SpecialSpellTimer
         private static readonly double WipeoutDetectLongSleep = 3;
         private static readonly double WipeoutNoticeInterval = 15;
         private static readonly double WipeoutNoticeDelay = 3;
+        private volatile string previousZone;
+        private DateTime lastZoneChangeTimestamp = DateTime.MinValue;
 
         private void ResetCountAtRestart()
         {
@@ -522,6 +524,18 @@ namespace ACT.SpecialSpellTimer
             var zone = FFXIVPlugin.Instance.GetCurrentZoneName();
             if (string.IsNullOrEmpty(zone) ||
                 string.Equals(zone, "Unknown Zone", StringComparison.OrdinalIgnoreCase))
+            {
+                setLongSleep();
+                return;
+            }
+
+            if (this.previousZone != zone)
+            {
+                this.previousZone = zone;
+                this.lastZoneChangeTimestamp = now;
+            }
+
+            if ((now - this.lastZoneChangeTimestamp).TotalSeconds <= 60)
             {
                 setLongSleep();
                 return;
