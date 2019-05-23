@@ -535,15 +535,15 @@ namespace ACT.SpecialSpellTimer
                 this.lastZoneChangeTimestamp = now;
             }
 
-            if ((now - this.lastZoneChangeTimestamp).TotalSeconds <= 60)
+            if ((now - this.lastZoneChangeTimestamp).TotalSeconds <= 30)
             {
                 setLongSleep();
                 return;
             }
 
-            var player = FFXIVPlugin.Instance.GetPlayer();
+            var player = SharlayanHelper.Instance.CurrentPlayer;
             if (player == null ||
-                player.MaxHP <= 0)
+                !player.InCombat)
             {
                 setLongSleep();
                 return;
@@ -593,32 +593,35 @@ namespace ACT.SpecialSpellTimer
             {
                 lock (WipeoutLocker)
                 {
-                    if ((DateTime.Now - this.lastWipeOutDateTime).TotalSeconds > WipeoutNoticeInterval)
+                    if ((now - this.lastWipeOutDateTime).TotalSeconds <= WipeoutNoticeInterval)
                     {
-                        this.lastWipeOutDateTime = DateTime.Now;
-
-                        Task.Run(() =>
-                        {
-                            Thread.Sleep(TimeSpan.FromSeconds(WipeoutNoticeDelay));
-
-                            // インスタンススペルを消去する
-                            SpellTable.ResetCount();
-                            TickerTable.Instance.ResetCount();
-
-                            // wipeoutログを発生させる
-                            LogParser.RaiseLog(DateTime.Now, ConstantKeywords.Wipeout);
-
-                            ActInvoker.Invoke(() =>
-                            {
-                                // ACT本体に戦闘終了を通知する
-                                if (Settings.Default.WipeoutNotifyToACT)
-                                {
-                                    ActGlobals.oFormActMain.ActCommands("end");
-                                }
-                            });
-                        });
+                        setLongSleep();
+                        return;
                     }
+
+                    this.lastWipeOutDateTime = now;
                 }
+
+                Task.Run(() =>
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(WipeoutNoticeDelay));
+
+                    // インスタンススペルを消去する
+                    SpellTable.ResetCount();
+                    TickerTable.Instance.ResetCount();
+
+                    // wipeoutログを発生させる
+                    LogParser.RaiseLog(DateTime.Now, ConstantKeywords.Wipeout);
+
+                    ActInvoker.Invoke(() =>
+                    {
+                        // ACT本体に戦闘終了を通知する
+                        if (Settings.Default.WipeoutNotifyToACT)
+                        {
+                            ActGlobals.oFormActMain.ActCommands("end");
+                        }
+                    });
+                });
             }
 
             void setLongSleep()
