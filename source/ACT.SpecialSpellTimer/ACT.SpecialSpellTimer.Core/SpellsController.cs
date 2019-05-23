@@ -478,6 +478,7 @@ namespace ACT.SpecialSpellTimer
                     }
 
                     panelWindow.ToWindow().Show();
+                    panelWindow.ToWindow().Topmost = false;
                 }
 
                 // クリックスルーを反映する
