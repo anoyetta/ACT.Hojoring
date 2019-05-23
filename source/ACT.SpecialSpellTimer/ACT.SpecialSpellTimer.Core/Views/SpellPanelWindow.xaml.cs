@@ -173,8 +173,8 @@ namespace ACT.SpecialSpellTimer.Views
             if (this.Spells == null ||
                 this.Panel == null)
             {
-                this.Topmost = false;
                 this.HideOverlay();
+                this.Topmost = false;
                 this.activeSpells.Clear();
                 this.ClearSpellControls();
                 return;

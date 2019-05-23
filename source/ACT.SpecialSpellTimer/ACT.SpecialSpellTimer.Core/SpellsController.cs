@@ -478,6 +478,7 @@ namespace ACT.SpecialSpellTimer
                     }
 
                     panelWindow.ToWindow().Show();
+                    panelWindow.ToWindow().Topmost = false;
                 }
 
                 // クリックスルーを反映する
@@ -508,6 +509,7 @@ namespace ACT.SpecialSpellTimer
                 foreach (var window in toHide)
                 {
                     window.HideOverlay();
+                    (window as Window).Topmost = false;
                 }
             }
 
@@ -635,7 +637,11 @@ namespace ACT.SpecialSpellTimer
                         window.Topmost = false;
                     }
 
-                    panel.PanelWindow?.HideOverlay();
+                    if (panel.PanelWindow != null)
+                    {
+                        panel.PanelWindow.HideOverlay();
+                        (panel.PanelWindow as Window).Topmost = false;
+                    }
                 }
             }
         }
