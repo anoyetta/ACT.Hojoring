@@ -208,23 +208,40 @@ namespace ACT.TTSYukkuri
                     Thread.Sleep(TimeSpan.FromMilliseconds(100));
                 }
 
-                var appdir = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    @"anoyetta\ACT\tts cache");
-
-                if (Directory.Exists(appdir))
+                var dirs = new[]
                 {
-                    var files = new List<string>();
-                    files.AddRange(Directory.GetFiles(appdir, "*.wav"));
-                    files.AddRange(Directory.GetFiles(appdir, "*.mp3"));
+                    Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        @"anoyetta\ACT\tts cache"),
+                    DirectoryHelper.FindSubDirectory(@"resources\wav"),
+                };
 
-                    if (files.Count > 0)
+                var files = new List<string>();
+
+                foreach (var dir in dirs)
+                {
+                    if (!Directory.Exists(dir))
                     {
+                        continue;
+                    }
+
+                    files.AddRange(Directory.GetFiles(dir, "*.wav"));
+                    files.AddRange(Directory.GetFiles(dir, "*.mp3"));
+                }
+
+                if (files.Count > 0)
+                {
+                    try
+                    {
+                        Logger.Info("Load TTS caches.");
+
                         BufferedWavePlayer.Instance.BufferWaves(
                             files,
                             volume);
-
-                        Logger.Info("TTS Cache loaded.");
+                    }
+                    finally
+                    {
+                        Logger.Info("Load TTS caches, done.");
                     }
                 }
             });
