@@ -57,7 +57,7 @@ namespace FFXIV.Framework.Dialog.Views
 
                 var t = (s as TextBox).Text;
 
-                var ci = CultureInfo.InstalledUICulture;
+                var ci = CultureInfo.InvariantCulture;
                 if (double.TryParse(t, NumberStyles.Any, ci.NumberFormat, out double d))
                 {
                     if (d < MinSize)
@@ -65,11 +65,11 @@ namespace FFXIV.Framework.Dialog.Views
                         d = MinSize;
                     }
 
-                    (s as TextBox).Text = d.ToString("N1");
+                    (s as TextBox).Text = d.ToString("N1", ci);
                 }
                 else
                 {
-                    (s as TextBox).Text = MinSize.ToString("N0");
+                    (s as TextBox).Text = MinSize.ToString("N0", ci);
                 }
             };
 
@@ -109,13 +109,13 @@ namespace FFXIV.Framework.Dialog.Views
             var t = sender as TextBox;
 
             double d;
-            var ci = CultureInfo.InstalledUICulture;
+            var ci = CultureInfo.InvariantCulture;
 
             if (e.Key == Key.Up)
             {
                 if (double.TryParse(t.Text, NumberStyles.Any, ci.NumberFormat, out d))
                 {
-                    t.Text = (d + 0.1d).ToString("N1");
+                    t.Text = (d + 0.1d).ToString("N1", ci);
                 }
             }
 
@@ -125,7 +125,7 @@ namespace FFXIV.Framework.Dialog.Views
                 {
                     if ((d - 0.1d) >= 1.0d)
                     {
-                        t.Text = (d - 0.1d).ToString("N1");
+                        t.Text = (d - 0.1d).ToString("N1", ci);
                     }
                 }
             }
@@ -133,7 +133,7 @@ namespace FFXIV.Framework.Dialog.Views
 
         private void ShowFontInfo()
         {
-            this.FontSizeTextBox.Text = this.fontInfo.Size.ToString("N1");
+            this.FontSizeTextBox.Text = this.fontInfo.Size.ToString("N1", CultureInfo.InvariantCulture);
 
             int i = 0;
             foreach (FontFamily item in this.FontFamilyListBox.Items)
