@@ -83,7 +83,7 @@ namespace ACT.UltraScouter.Workers
             var actors = SharlayanHelper.Instance.Actors;
 
             var query =
-                from x in actors
+                from x in actors.Where(x => !string.IsNullOrEmpty(x?.Name))
                 join y in config.TacticalItems
                 on x.Name.ToLower() equals y.TargetName.ToLower()
                 where
