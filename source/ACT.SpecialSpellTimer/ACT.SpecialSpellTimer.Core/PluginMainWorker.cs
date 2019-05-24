@@ -579,11 +579,11 @@ namespace ACT.SpecialSpellTimer
                 // 暗転中もずっとリセットし続けてしまうので
                 if ((DateTime.Now - this.lastWipeOutDateTime).TotalSeconds >= 15.0)
                 {
+                    this.lastWipeOutDateTime = DateTime.Now;
+
                     // インスタンススペルを消去する
                     SpellTable.ResetCount();
                     TickerTable.Instance.ResetCount();
-
-                    this.lastWipeOutDateTime = DateTime.Now;
 
                     // wipeoutログを発生させる
                     LogParser.RaiseLog(DateTime.Now, ConstantKeywords.Wipeout);
