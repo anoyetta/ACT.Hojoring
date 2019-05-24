@@ -300,17 +300,9 @@ namespace ACT.SpecialSpellTimer
                 }
             }
 
-            // 全滅によるリセットを判定する
-            var resetTask = default(Task);
-            if (this.existFFXIVProcess)
-            {
-                resetTask = Task.Run(() => this.ResetCountAtRestart());
-            }
-
             // ログがないなら抜ける
             if (this.LogBuffer.IsEmpty)
             {
-                resetTask?.Wait();
                 Thread.Sleep(TimeSpan.FromMilliseconds(Settings.Default.LogPollSleepInterval));
                 return;
             }
@@ -352,8 +344,6 @@ namespace ACT.SpecialSpellTimer
                     $"●DetectLogs\t{time:N1} ms\t{count:N0} lines\tavg {time / count:N2}");
             }
 #endif
-
-            resetTask?.Wait();
 
             if (existsLog)
             {
@@ -491,13 +481,13 @@ namespace ACT.SpecialSpellTimer
 
         #region Misc
 
-        private DateTime lastWipeOutDateTime = DateTime.MinValue;
-        private DateTime lastWipeOutDetectDateTime = DateTime.MinValue;
+        private DateTime lastWipeOutDetectDateTime = DateTime.Now;
+        private DateTime lastWipeOutDateTime = DateTime.Now;
 
         /// <summary>
         /// リスタートのときスペルのカウントをリセットする
         /// </summary>
-        private void ResetCountAtRestart()
+        public void ResetCountAtRestart()
         {
             // 無効？
             if (!Settings.Default.ResetOnWipeOut)
@@ -505,54 +495,41 @@ namespace ACT.SpecialSpellTimer
                 return;
             }
 
-            var now = DateTime.Now;
-
-            // パーティの変更を検知してから時間が経過していない？
-            if ((now - SharlayanHelper.Instance.PartyListChangedTimestamp).TotalSeconds <= 20d)
+            if ((DateTime.Now - this.lastWipeOutDetectDateTime).TotalSeconds <= 0.1)
             {
                 return;
             }
 
-            // 0.1秒毎に判定する
-            if ((now - this.lastWipeOutDetectDateTime).TotalSeconds <= 0.1)
+            this.lastWipeOutDetectDateTime = DateTime.Now;
+
+            var party = default(IEnumerable<Combatant>);
+            party = FFXIVPlugin.Instance.GetPartyList();
+
+            if (party == null ||
+                party.Count() < 1)
             {
-                return;
-            }
-
-            this.lastWipeOutDetectDateTime = now;
-
-            var combatants = default(IEnumerable<Combatant>);
-            combatants = FFXIVPlugin.Instance.GetPartyList();
-
-            if (combatants == null ||
-                combatants.Count() < 1)
-            {
-                this.lastWipeOutDetectDateTime = now.AddSeconds(3);
                 return;
             }
 
             // 異常なデータ？
-            if (combatants.Count() > 1)
+            if (party.Count() > 1)
             {
-                var first = combatants.First();
-                if (combatants.Count() ==
-                    combatants.Count(x =>
+                var first = party.First();
+                if (party.Count() ==
+                    party.Count(x =>
                         x.CurrentHP == first.CurrentHP &&
                         x.MaxHP == first.MaxHP))
                 {
-                    this.lastWipeOutDetectDateTime = now.AddSeconds(3);
                     return;
                 }
 
-                if (!combatants.Any(x => x.IsPlayer))
+                if (!party.Any(x => x.IsPlayer))
                 {
-                    this.lastWipeOutDetectDateTime = now.AddSeconds(3);
                     return;
                 }
 
-                if (combatants.Any(x => x.IsNPC()))
+                if (party.Any(x => x.IsNPC()))
                 {
-                    this.lastWipeOutDetectDateTime = now.AddSeconds(3);
                     return;
                 }
             }
@@ -564,14 +541,13 @@ namespace ACT.SpecialSpellTimer
                 {
                     case Roles.Crafter:
                     case Roles.Gatherer:
-                        this.lastWipeOutDetectDateTime = now.AddSeconds(3);
                         return;
                 }
             }
 
             // 関係者が全員死んでる？
-            if (combatants.Count() ==
-                combatants.Count(x =>
+            if (party.Count() ==
+                party.Count(x =>
                     x.CurrentHP <= 0 &&
                     x.MaxHP > 0))
             {
