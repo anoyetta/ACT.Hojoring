@@ -500,6 +500,7 @@ namespace ACT.SpecialSpellTimer
 
             var summoned = false;
             var doneCommand = false;
+            var isDefeated = false;
 
             var preLog = new string[3];
             var preLogIndex = 0;
@@ -560,6 +561,12 @@ namespace ACT.SpecialSpellTimer
                     summoned = isSummoned(logLine);
                 }
 
+                // 誰かが倒された？
+                if (!isDefeated)
+                {
+                    isDefeated = this.IsDefeated(logLine);
+                }
+
                 // コマンドとマッチングする
                 doneCommand |= TextCommandController.MatchCommandCore(logLine);
                 doneCommand |= TextCommandBridge.Instance.TryExecute(logLine);
@@ -570,6 +577,11 @@ namespace ACT.SpecialSpellTimer
             if (summoned)
             {
                 TableCompiler.Instance.RefreshPetPlaceholder();
+            }
+
+            if (isDefeated)
+            {
+                PluginMainWorker.Instance.ResetCountAtRestart();
             }
 
             if (doneCommand)
@@ -624,6 +636,30 @@ namespace ACT.SpecialSpellTimer
 
                 return r;
             }
+        }
+
+        private bool IsDefeated(string logLine)
+        {
+            var result = false;
+
+            var party = FFXIVPlugin.Instance.GetPartyList();
+            if (party == null ||
+                party.Count < 1)
+            {
+                return result;
+            }
+
+            foreach (var combatant in party)
+            {
+                result = logLine.Contains($"19:{combatant.Name} was defeated by");
+
+                if (result)
+                {
+                    break;
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
