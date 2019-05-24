@@ -47,20 +47,11 @@ namespace FFXIV.Framework.Bridge
 
             foreach (var command in this.TextCommands)
             {
-                executed |= command.TryExecute(logLine);
-            }
-
-            return executed;
-        }
-
-        public bool TryExecute(
-            IEnumerable<string> logLines)
-        {
-            var executed = false;
-
-            foreach (var logLine in logLines)
-            {
-                executed |= this.TryExecute(logLine);
+                var done = command.TryExecute(logLine);
+                if (!command.IsSilent)
+                {
+                    executed |= done;
+                }
             }
 
             return executed;
@@ -84,6 +75,8 @@ namespace FFXIV.Framework.Bridge
         public CanExecuteCallback CanExecute { get; private set; }
 
         public ExecuteCallback Execute { get; private set; }
+
+        public bool IsSilent { get; set; }
 
         public bool TryExecute(
             string logLine)

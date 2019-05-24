@@ -512,7 +512,10 @@ namespace ACT.TTSYukkuri
             {
                 BufferedWavePlayer.Instance?.ClearBuffers();
                 this.Logger.Info("Playback buffers cleared.");
-            }));
+            })
+            {
+                IsSilent = true,
+            });
         }
 
         /// <summary>
