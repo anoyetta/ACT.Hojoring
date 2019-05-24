@@ -557,6 +557,18 @@ namespace ACT.SpecialSpellTimer
                 }
             }
 
+            var player = FFXIVPlugin.Instance.GetPlayer();
+            if (player != null)
+            {
+                switch (player.AsJob().Role)
+                {
+                    case Roles.Crafter:
+                    case Roles.Gatherer:
+                        this.lastWipeOutDetectDateTime = now.AddSeconds(3);
+                        return;
+                }
+            }
+
             // 関係者が全員死んでる？
             if (combatants.Count() ==
                 combatants.Count(x =>
