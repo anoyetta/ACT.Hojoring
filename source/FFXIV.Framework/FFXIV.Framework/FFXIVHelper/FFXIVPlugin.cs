@@ -49,24 +49,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #endregion Logger
 
-        /// <summary>FFXIV_ACT_Plugin</summary>
         private dynamic plugin;
+        private dynamic pluginDataRepository;
 
-        /// <summary>FFXIV_ACT_Plugin.MemoryScanSettings</summary>
-        private dynamic pluginConfig;
-
-        /// <summary>FFXIV_ACT_Plugin.Memory.Memory</summary>
-        private dynamic pluginMemory;
-
-        /// <summary>FFXIV_ACT_Plugin.Memory.ScanCombatants</summary>
-        private dynamic pluginScancombat;
-
-        /// <summary>FFXIV_ACT_Plugin.Parse.LogParse</summary>
-        private dynamic pluginLogParse;
-
-        /// <summary>
-        /// ACTプラグイン型のプラグインオブジェクトのインスタンス
-        /// </summary>
         private IActPluginV1 ActPlugin => (IActPluginV1)this.plugin;
 
         public Locales FFXIVLocale
@@ -83,9 +68,7 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 if (ActGlobals.oFormActMain == null ||
                     this.plugin == null ||
-                    this.pluginConfig == null ||
-                    this.pluginScancombat == null ||
-                    this.pluginLogParse == null ||
+                    this.pluginDataRepository == null ||
                     this.Process == null)
                 {
                     return false;
@@ -95,13 +78,13 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public Process Process => (Process)this.pluginConfig?.Process;
+        public Process Process => (Process)this.pluginDataRepository?.GetCurrentFFXIVProcess();
 
         public Locales LanguageID
         {
             get
             {
-                switch (this.pluginLogParse?.Settings?.LanguageID)
+                switch ((int)this.pluginDataRepository?.GetSelectedLanguageID())
                 {
                     case 1: return Locales.EN;
                     case 2: return Locales.FR;
@@ -523,7 +506,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     return;
                 }
 
-                sourceList = this.pluginScancombat.GetCombatantList();
+                sourceList = this.pluginDataRepository?.GetCombatantList();
             }
             catch (Exception)
             {
@@ -940,10 +923,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #region Get Misc
 
-        public int GetCurrentZoneID() =>
-            this.IsAvailable ?
-            (this.pluginScancombat?.GetCurrentZoneId() ?? 0) :
-            0;
+        public uint GetCurrentZoneID() => (this.pluginDataRepository?.GetCurrentTerritoryID()) ?? (uint)0;
 
         public string GetCurrentZoneName() => ActGlobals.oFormActMain?.CurrentZone;
 
@@ -1004,98 +984,54 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             lock (this)
             {
-                this.AttachPlugin();
-                this.AttachScanMemory();
+                if (this.plugin != null ||
+                    ActGlobals.oFormActMain == null)
+                {
+                    return;
+                }
 
-                this.LoadSkillList();
-            }
-        }
+                var ffxivPlugin = (
+                    from x in ActGlobals.oFormActMain.ActPlugins
+                    where
+                    x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper()) &&
+                    x.lblPluginStatus.Text.ToUpper().Contains("FFXIV Plugin Started.".ToUpper())
+                    select
+                    x.pluginObj).FirstOrDefault();
 
-        private void AttachPlugin()
-        {
-            if (this.plugin != null ||
-                ActGlobals.oFormActMain == null)
-            {
-                return;
-            }
+                if (ffxivPlugin != null)
+                {
+                    this.plugin = ffxivPlugin;
+                    this.pluginDataRepository = this.plugin.DataRepository;
 
-            var ffxivPlugin = (
-                from x in ActGlobals.oFormActMain.ActPlugins
-                where
-                x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper()) &&
-                x.lblPluginStatus.Text.ToUpper().Contains("FFXIV Plugin Started.".ToUpper())
-                select
-                x.pluginObj).FirstOrDefault();
-
-            if (ffxivPlugin != null)
-            {
-                this.plugin = ffxivPlugin;
-                AppLogger.Trace("attached ffxiv plugin.");
-            }
-        }
-
-        private void AttachScanMemory()
-        {
-            if (this.plugin == null)
-            {
-                return;
-            }
-
-            FieldInfo fi;
-
-            if (this.pluginMemory == null)
-            {
-                fi = this.plugin?.GetType().GetField(
-                    "_Memory",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                this.pluginMemory = fi?.GetValue(this.plugin);
-            }
-
-            if (this.pluginMemory == null)
-            {
-                return;
-            }
-
-            if (this.pluginLogParse == null)
-            {
-                fi = this.plugin?.GetType().GetField(
-                    "_LogParse",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                this.pluginLogParse = fi?.GetValue(this.plugin);
-            }
-
-            if (this.pluginLogParse == null)
-            {
-                return;
-            }
-
-            if (this.pluginConfig == null)
-            {
-                fi = this?.pluginMemory?.GetType().GetField(
-                    "_config",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                this.pluginConfig = fi?.GetValue(this.pluginMemory);
-            }
-
-            if (this.pluginConfig == null)
-            {
-                return;
-            }
-
-            if (this.pluginScancombat == null)
-            {
-                fi = this.pluginConfig?.GetType().GetField(
-                    "ScanCombatants",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                this.pluginScancombat = fi?.GetValue(this.pluginConfig);
-
-                AppLogger.Trace("attached ffxiv plugin ScanCombatants.");
+                    AppLogger.Trace("attached ffxiv plugin.");
+                }
             }
         }
 
         #endregion Attach FFXIV Plugin
 
         #region Resources
+
+        private Enum ResourcesTypeToFFXIVPlugin(
+            ResourceType value,
+            out Type parameterType)
+        {
+            parameterType = null;
+            var type = ((object)this.pluginDataRepository).GetType();
+
+            var mi = type.GetMethod("GetResourceDictionary");
+            if (mi != null)
+            {
+                var param = mi.GetParameters()[0];
+
+                parameterType = param.ParameterType;
+                var values = parameterType.GetEnumValues().Cast<Enum>();
+
+                return values.FirstOrDefault(x => x.ToString() == value.ToString());
+            }
+
+            return default;
+        }
 
         private static readonly object ResourcesLock = new object();
 
@@ -1112,16 +1048,6 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void LoadWorldList()
         {
-            if (this.worldList.Any())
-            {
-                return;
-            }
-
-            if (this.plugin == null)
-            {
-                return;
-            }
-
             var asm = this.plugin.GetType().Assembly;
 
             var resourcesName = $"FFXIV_ACT_Plugin.Resources.WorldList.txt";

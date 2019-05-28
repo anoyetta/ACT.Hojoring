@@ -150,6 +150,7 @@
     <Compile Include="FFXIVHelper\OverlayType.cs" />
     <Compile Include="FFXIVHelper\PCNameDictionary.cs" />
     <Compile Include="FFXIVHelper\PCOrder.cs" />
+    <Compile Include="FFXIVHelper\ResourcesType.cs" />
     <Compile Include="FFXIVHelper\SharlayanHelper.cs" />
     <Compile Include="FFXIVHelper\Skill.cs" />
     <Compile Include="FFXIVHelper\World.cs" />
