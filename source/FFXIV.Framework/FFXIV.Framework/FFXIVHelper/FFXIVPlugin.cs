@@ -67,7 +67,9 @@ namespace FFXIV.Framework.FFXIVHelper
         /// <summary>
         /// ACTプラグイン型のプラグインオブジェクトのインスタンス
         /// </summary>
-        private IActPluginV1 ActPlugin => (IActPluginV1)this.plugin;
+        public IActPluginV1 ActPlugin => (IActPluginV1)this.plugin;
+
+        public System.Action ActPluginAttachedCallback { get; set; }
 
         public Locales FFXIVLocale
         {
@@ -1031,6 +1033,8 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 this.plugin = ffxivPlugin;
                 AppLogger.Trace("attached ffxiv plugin.");
+
+                this.ActPluginAttachedCallback?.Invoke();
             }
         }
 
