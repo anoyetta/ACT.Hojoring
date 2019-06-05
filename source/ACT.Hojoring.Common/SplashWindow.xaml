@@ -14,6 +14,7 @@
   RenderOptions.ClearTypeHint="Enabled"
   RenderOptions.BitmapScalingMode="Fant"
   RenderOptions.EdgeMode="Unspecified"
+  Topmost="True"
   AllowsTransparency="True"
   WindowStyle="None"
   ShowInTaskbar="False"
@@ -25,7 +26,7 @@
   DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
   <Window.Resources>
-    <sys:Double x:Key="Scale">1.2</sys:Double>
+    <sys:Double x:Key="Scale">1.5</sys:Double>
 
     <FontFamily x:Key="Font">Century Gothic</FontFamily>
     <FontFamily x:Key="SubFont">Century Gothic Italic</FontFamily>
@@ -99,7 +100,7 @@
       <ScaleTransform ScaleX="{StaticResource Scale}" ScaleY="{StaticResource Scale}" />
     </Grid.RenderTransform>
 
-    <Rectangle Panel.ZIndex="-2" Width="260" Height="260" Fill="{StaticResource BackgroudBrush}" RadiusX="1" RadiusY="1" Opacity="0.6">
+    <Rectangle Panel.ZIndex="-2" Width="260" Height="260" Fill="{StaticResource BackgroudBrush}" RadiusX="1" RadiusY="1" Opacity="0.8">
       <Rectangle.Effect>
         <DropShadowEffect
           Color="#0d0015"
@@ -129,7 +130,7 @@
         <Label Style="{DynamicResource ReiwaLabelStyle}" />
       </Grid>
 
-      <Label Height="130" />
+      <Label Height="98" />
 
       <Grid>
         <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
