@@ -60,7 +60,7 @@ namespace ACT.SpecialSpellTimer.Models
             this IFilterizableTrigger trigger,
             Combatant player,
             IEnumerable<Combatant> partyList,
-            int? currentZoneID)
+            uint? currentZoneID)
         {
             // パーティリストからプレイヤーを除外する
             var combatants = partyList?.Where(x => x.ID != (player?.ID ?? 0));
