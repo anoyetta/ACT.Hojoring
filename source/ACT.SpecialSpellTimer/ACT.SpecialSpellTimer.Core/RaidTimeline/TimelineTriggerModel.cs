@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
 
@@ -351,6 +353,40 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.style, value);
         }
 
+        private string executeFileName = null;
+
+        [XmlAttribute(AttributeName = "exec")]
+        public string ExecuteFileName
+        {
+            get => this.executeFileName;
+            set => this.SetProperty(ref this.executeFileName, value);
+        }
+
+        private string arguments = null;
+
+        [XmlAttribute(AttributeName = "args")]
+        public string Arguments
+        {
+            get => this.arguments;
+            set => this.SetProperty(ref this.arguments, value);
+        }
+
+        private bool? isExecuteHidden = null;
+
+        [XmlIgnore]
+        public bool? IsExecuteHidden
+        {
+            get => this.isExecuteHidden;
+            set => this.SetProperty(ref this.isExecuteHidden, value);
+        }
+
+        [XmlAttribute(AttributeName = "exec-hidden")]
+        public string IsExecuteHiddenXML
+        {
+            get => this.isExecuteHidden?.ToString();
+            set => this.isExecuteHidden = bool.TryParse(value, out var v) ? v : (bool?)null;
+        }
+
         private int matchedCounter = 0;
 
         [XmlIgnore]
@@ -407,6 +443,76 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
                 }
             }
+        }
+
+        public void Execute()
+        {
+            if (string.IsNullOrEmpty(this.ExecuteFileName))
+            {
+                return;
+            }
+
+            var path = this.ExecuteFileName;
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    var ps = new ProcessStartInfo()
+                    {
+                        WorkingDirectory = TimelineManager.Instance.TimelineDirectory,
+                    };
+
+                    var isHidden = this.IsExecuteHidden ?? false;
+                    var ext = Path.GetExtension(path).ToLower();
+
+                    switch (ext)
+                    {
+                        case ".ps1":
+                            ps.FileName = EnvironmentHelper.Pwsh;
+                            ps.Arguments = $@"-File ""{path}"" {this.Arguments}";
+                            ps.UseShellExecute = false;
+
+                            if (isHidden)
+                            {
+                                ps.WindowStyle = ProcessWindowStyle.Hidden;
+                                ps.CreateNoWindow = true;
+                            }
+                            break;
+
+                        case ".bat":
+                            ps.FileName = Environment.GetEnvironmentVariable("ComSpec");
+                            ps.Arguments = $@"/C ""{path}"" {this.Arguments}";
+                            ps.UseShellExecute = false;
+
+                            if (isHidden)
+                            {
+                                ps.WindowStyle = ProcessWindowStyle.Hidden;
+                                ps.CreateNoWindow = true;
+                            }
+                            break;
+
+                        default:
+                            ps.FileName = path;
+                            ps.Arguments = this.Arguments;
+                            ps.UseShellExecute = true;
+
+                            if (isHidden)
+                            {
+                                ps.WindowStyle = ProcessWindowStyle.Hidden;
+                            }
+                            break;
+                    }
+
+                    Process.Start(ps);
+                }
+                catch (Exception ex)
+                {
+                    AppLog.DefaultLogger.Error(
+                        ex,
+                        $"[TL] Error at execute external tool. exec={this.ExecuteFileName}, args={this.Arguments}");
+                }
+            });
         }
 
         public TimelineTriggerModel Clone()

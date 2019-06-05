@@ -1308,6 +1308,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 NotifyQueue.Enqueue(toNotice);
+                tri.Execute();
             }
 
             WPFHelper.BeginInvoke(() =>
@@ -1508,6 +1509,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 NotifyQueue.Enqueue(toNotice);
+                tri.Execute();
 
                 WPFHelper.BeginInvoke(() =>
                 {
