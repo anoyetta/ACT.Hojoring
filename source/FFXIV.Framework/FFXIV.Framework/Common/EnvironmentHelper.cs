@@ -8,6 +8,30 @@ namespace FFXIV.Framework.Common
 {
     public static class EnvironmentHelper
     {
+        public static string Pwsh => LazyPwsh.Value;
+
+        private static readonly Lazy<string> LazyPwsh = new Lazy<string>(() => GetPwsh());
+
+        private static string GetPwsh()
+        {
+            var result = "powershell.exe";
+
+            var path = Environment.GetEnvironmentVariable("Path");
+            var values = path.Split(';');
+
+            foreach (var dir in values)
+            {
+                var pwsh = Path.Combine(dir, "pwsh.exe");
+                if (File.Exists(pwsh))
+                {
+                    result = pwsh;
+                    break;
+                }
+            }
+
+            return result;
+        }
+
         private static volatile bool isGarbaged = false;
 
         public static void SetTLSProtocol()

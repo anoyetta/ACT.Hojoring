@@ -267,7 +267,7 @@ namespace ACT.SpecialSpellTimer.Models
         /// </summary>
         /// <returns>
         /// プレイヤー, パーティリスト, ゾーンID</returns>
-        private (Combatant Player, IEnumerable<Combatant> PartyList, int? ZoneID) GetCurrentFilterCondition()
+        private (Combatant Player, IEnumerable<Combatant> PartyList, uint? ZoneID) GetCurrentFilterCondition()
         {
             var currentPlayer = this.player ?? new Combatant()
             {
@@ -278,7 +278,7 @@ namespace ACT.SpecialSpellTimer.Models
 
             var currentPartyList = this.partyList;
 
-            var currentZoneID = default(int?);
+            var currentZoneID = default(uint?);
             lock (this.SimulationLocker)
             {
                 if (this.InSimulation &&
@@ -569,7 +569,7 @@ namespace ACT.SpecialSpellTimer.Models
 
         private readonly List<CharacterCondition> previousPartyCondition = new List<CharacterCondition>(32);
         private volatile CharacterCondition previousPlayerCondition = new CharacterCondition();
-        private volatile int previousZoneID = 0;
+        private volatile uint previousZoneID = 0;
         private volatile string previousZoneName = string.Empty;
         private volatile bool previousInSimulation = false;
 
@@ -593,7 +593,7 @@ namespace ACT.SpecialSpellTimer.Models
             private set;
         } = new List<Combatant>();
 
-        public int SimulationZoneID
+        public uint SimulationZoneID
         {
             get;
             set;
@@ -658,7 +658,7 @@ namespace ACT.SpecialSpellTimer.Models
         {
             var r = false;
 
-            var zoneID = default(int?);
+            var zoneID = default(uint?);
             var zoneName = string.Empty;
 
             lock (this.SimulationLocker)

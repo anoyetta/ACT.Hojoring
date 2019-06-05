@@ -472,9 +472,9 @@ namespace ACT.SpecialSpellTimer.Config.Views
         private string party8Name = "Black Yoshida";
         private JobIDs party8Job = JobIDs.BLM;
 
-        private int zoneID;
+        private uint zoneID;
 
-        public int ZoneID
+        public uint ZoneID
         {
             get => this.zoneID;
             set => this.SetProperty(ref this.zoneID, value);
