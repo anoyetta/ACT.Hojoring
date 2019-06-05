@@ -519,7 +519,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
             lock (this.WorldInfoDictionary)
             {
-                foreach (dynamic item in sourceList.ToArray())
+                foreach (dynamic item in sourceList)
                 {
                     if (item == null)
                     {
