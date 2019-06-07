@@ -221,7 +221,9 @@ namespace ACT.UltraScouter.Workers
                     x.Diff <= (this.currentTankEPS * 10.0));
 
             // EPSと危険域閾値を算出する
-            this.currentTankEPS = parameters.Average(x => x.Diff);
+            this.currentTankEPS = parameters.Any() ?
+                parameters.Average(x => x.Diff) :
+                0;
             this.currentNearThreshold = this.currentTankEPS * Settings.Instance.Enmity.NearThresholdRate;
 
             return true;
