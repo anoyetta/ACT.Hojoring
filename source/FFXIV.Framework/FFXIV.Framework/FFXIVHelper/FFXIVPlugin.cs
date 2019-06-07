@@ -1008,8 +1008,6 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 this.AttachPlugin();
                 this.AttachScanMemory();
-
-                this.LoadSkillList();
             }
         }
 
