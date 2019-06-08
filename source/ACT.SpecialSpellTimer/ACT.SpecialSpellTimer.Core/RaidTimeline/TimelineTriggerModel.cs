@@ -505,6 +505,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
 
                     Process.Start(ps);
+
+                    TimelineController.RaiseLog(
+                        $"[TL] trigger executed. exec={this.ExecuteFileName}, args={this.Arguments}");
                 }
                 catch (Exception ex)
                 {
