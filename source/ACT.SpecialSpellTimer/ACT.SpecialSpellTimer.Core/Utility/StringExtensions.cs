@@ -14,7 +14,7 @@ namespace ACT.SpecialSpellTimer.Utility
 
             try
             {
-                var op = RegexOptions.Compiled | RegexOptions.IgnoreCase;
+                var op = RegexOptions.Compiled;
 
                 if (Settings.Default.EnableMultiLineMaching)
                 {
