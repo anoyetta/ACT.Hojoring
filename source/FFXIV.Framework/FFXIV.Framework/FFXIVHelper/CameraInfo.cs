@@ -20,12 +20,12 @@ namespace FFXIV.Framework.FFXIVHelper
         {
         }
 
-        public static readonly double HeadingRange = 6.3d;
-        public static readonly double HeadingMax = 3.15d;
-        public static readonly double HeadingMin = -3.15d;
+        public static readonly float HeadingRange = 6.3f;
+        public static readonly float HeadingMax = 3.15f;
+        public static readonly float HeadingMin = -3.15f;
 
         private byte mode;
-        private float heading;
+        private float heading = HeadingMax;
         private float elevation;
         private bool isAvailable = false;
 
@@ -63,18 +63,6 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public void Refresh()
         {
-            this.IsAvailable = FFXIVReader.Instance.IsAvailable;
-
-            if (this.IsAvailable)
-            {
-                var info = FFXIVReader.Instance.GetCameraInfoV1();
-                if (info != null)
-                {
-                    this.Mode = info.Mode;
-                    this.Heading = info.Heading;
-                    this.Elevation = info.Elevation;
-                }
-            }
         }
 
         #region ICloneable

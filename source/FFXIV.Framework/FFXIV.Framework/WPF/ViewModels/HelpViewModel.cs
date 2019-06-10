@@ -91,12 +91,6 @@ namespace FFXIV.Framework.WPF.ViewModels
                     }
                 }
 
-                var xivReaderVersion = FFXIVReader.Instance.Version;
-                if (xivReaderVersion != null)
-                {
-                    text.AppendLine($"FFXIV_MemoryReader v{xivReaderVersion}");
-                }
-
                 var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 var hojorin = Path.Combine(location, "ACT.Hojoring.Common.dll");
                 var spespe = Path.Combine(location, "ACT.SpecialSpellTimer.dll");

@@ -40,11 +40,7 @@
   <PropertyGroup />
   <ItemGroup>
     <Reference Include="Advanced Combat Tracker">
-      <HintPath>..\..\ACTv3\Advanced Combat Tracker.exe</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="FFXIV_MemoryReader.Model">
-      <HintPath>..\..\FFXIV.Framework\Thirdparty\FFXIV_MemoryReader.Model.dll</HintPath>
+      <HintPath>..\..\ThirdParty\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />

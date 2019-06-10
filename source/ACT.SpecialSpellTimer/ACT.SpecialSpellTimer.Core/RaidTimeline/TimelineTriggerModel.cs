@@ -215,8 +215,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         this.SyncRegex = new Regex(
                             this.syncKeywordReplaced,
-                            RegexOptions.Compiled |
-                            RegexOptions.IgnoreCase);
+                            RegexOptions.Compiled);
                     }
                 }
             }

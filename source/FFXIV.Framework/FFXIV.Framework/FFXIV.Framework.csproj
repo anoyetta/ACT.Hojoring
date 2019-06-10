@@ -38,18 +38,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Advanced Combat Tracker">
-      <HintPath>..\..\ACTv3\Advanced Combat Tracker.exe</HintPath>
+      <HintPath>..\..\ThirdParty\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="FFXIV_MemoryReader.Base">
-      <HintPath>..\Thirdparty\FFXIV_MemoryReader.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="FFXIV_MemoryReader.Core">
-      <HintPath>..\Thirdparty\FFXIV_MemoryReader.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FFXIV_MemoryReader.Model, Version=1.4.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Thirdparty\FFXIV_MemoryReader.Model.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
@@ -143,7 +133,6 @@
     <Compile Include="FFXIVHelper\Effect.cs" />
     <Compile Include="FFXIVHelper\EnmityEntry.cs" />
     <Compile Include="FFXIVHelper\FFXIVPlugin.cs" />
-    <Compile Include="FFXIVHelper\FFXIVReader.cs" />
     <Compile Include="FFXIVHelper\Jobs.cs" />
     <Compile Include="FFXIVHelper\MessageType.cs" />
     <Compile Include="FFXIVHelper\NameStyles.cs" />

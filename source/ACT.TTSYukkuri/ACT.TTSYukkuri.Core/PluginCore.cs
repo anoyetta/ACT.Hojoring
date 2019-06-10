@@ -15,7 +15,6 @@ using ACT.TTSYukkuri.Voiceroid;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.WPF.Views;
 using NLog;
 
@@ -297,12 +296,8 @@ namespace ACT.TTSYukkuri
             WPFHelper.Start();
             WPFHelper.BeginInvoke(async () =>
             {
-                // FFXIV_MemoryReaderを先にロードさせる
-                var result = await FFXIVReader.Instance.WaitForReaderToStartedAsync(pluginScreenSpace);
-
                 AppLog.LoadConfiguration(AppLog.HojoringConfig);
                 this.Logger.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
-                result.WriteLog(this.Logger);
 
                 try
                 {

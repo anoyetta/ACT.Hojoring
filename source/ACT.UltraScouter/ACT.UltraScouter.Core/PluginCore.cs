@@ -72,7 +72,6 @@ namespace ACT.UltraScouter
                 // FFXIVプラグインへのアクセスを終了する
                 FFXIVPlugin.Instance.End();
                 FFXIVPlugin.Free();
-                FFXIVReader.Free();
 
                 // 設定ファイルを保存する
                 Settings.Instance.Save();
@@ -109,12 +108,8 @@ namespace ACT.UltraScouter
             WPFHelper.Start();
             WPFHelper.BeginInvoke(async () =>
             {
-                // FFXIV_MemoryReaderを先にロードさせる
-                var result = await FFXIVReader.Instance.WaitForReaderToStartedAsync(pluginScreenSpace);
-
                 AppLog.LoadConfiguration(AppLog.HojoringConfig);
                 this.Logger.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
-                result.WriteLog(this.Logger);
 
                 try
                 {

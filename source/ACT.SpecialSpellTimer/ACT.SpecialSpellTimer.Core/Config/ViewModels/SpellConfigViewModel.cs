@@ -138,11 +138,6 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
             Settings.Default.VisibleDesignGrid = showGrid;
         }
 
-        /// <summary>
-        /// FFXIVメモリリーダへの参照
-        /// </summary>
-        public FFXIVReader FFXIVReader => FFXIVReader.Instance;
-
         #region Job filter
 
         public bool IsJobFiltered => !string.IsNullOrEmpty(this.Model?.JobFilter);
