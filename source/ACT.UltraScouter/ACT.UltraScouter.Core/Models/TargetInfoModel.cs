@@ -51,12 +51,11 @@ namespace ACT.UltraScouter.Models
         protected float castDurationCurrent;
         protected float castDurationMax;
         protected string castSkillName;
-        protected int castSkillID;
+        protected uint castSkillID;
 
         protected double currentHP;
         protected double currentHPRate;
         protected double distance;
-        protected bool isEffectiveDistance;
         protected double maxHP;
         protected string name;
 
@@ -121,7 +120,7 @@ namespace ACT.UltraScouter.Models
             set => this.SetProperty(ref this.castSkillName, value);
         }
 
-        public int CastSkillID
+        public uint CastSkillID
         {
             get => this.castSkillID;
             set => this.SetProperty(ref this.castSkillID, value);
@@ -256,18 +255,7 @@ namespace ACT.UltraScouter.Models
             }
         }
 
-        public bool IsEffectiveDistance
-        {
-            get => this.isEffectiveDistance;
-            set
-            {
-                if (this.SetProperty(ref this.isEffectiveDistance, value))
-                {
-                    this.RaisePropertyChanged(nameof(this.DistanceText));
-                    this.UpdateDictanceIndicator();
-                }
-            }
-        }
+        public bool IsEffectiveDistance => true;
 
         public string DistanceText
         {

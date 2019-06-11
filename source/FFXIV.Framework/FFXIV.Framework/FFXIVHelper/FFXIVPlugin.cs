@@ -14,6 +14,7 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using FFXIV_ACT_Plugin.Common;
+using FFXIV_ACT_Plugin.Common.Models;
 using Microsoft.VisualBasic.FileIO;
 using Sharlayan.Core;
 using Sharlayan.Core.Enums;
@@ -377,7 +378,7 @@ namespace FFXIV.Framework.FFXIVHelper
             MaxTP = 3000,
             CurrentTP = 3000,
             Job = (int)JobIDs.PLD,
-            ObjectType = Actor.Type.PC,
+            type = (byte)Actor.Type.PC,
         };
 
         private readonly List<Combatant> DummyCombatants = new List<Combatant>()
@@ -395,7 +396,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 MaxTP = 3000,
                 CurrentTP = 3000,
                 Job = (int)JobIDs.WAR,
-                ObjectType = Actor.Type.PC,
+                type = (byte)Actor.Type.PC,
             },
 
             new Combatant()
@@ -409,7 +410,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 MaxTP = 3000,
                 CurrentTP = 3000,
                 Job = (int)JobIDs.WHM,
-                ObjectType = Actor.Type.PC,
+                type = (byte)Actor.Type.PC,
             },
 
             new Combatant()
@@ -423,7 +424,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 MaxTP = 3000,
                 CurrentTP = 3000,
                 Job = (int)JobIDs.AST,
-                ObjectType = Actor.Type.PC,
+                type = (byte)Actor.Type.PC,
             },
         };
 
@@ -473,7 +474,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.RefreshPartyList();
                 this.RefreshBoss();
                 this.InCombat = this.RefreshInCombat();
-                this.CombatantPCCount = this.combatantList.Count(x => x.ObjectType == Actor.Type.PC);
+                this.CombatantPCCount = this.combatantList.Count(x => x.GetActorType() == Actor.Type.PC);
             }
 
             setNewCombatants(SharlayanHelper.Instance.PCCombatants);
@@ -481,7 +482,7 @@ namespace FFXIV.Framework.FFXIVHelper
             void setNewCombatants(List<Combatant> newCombatants)
             {
                 var addedCombatants = newCombatants
-                    .Except(this.combatantList, Combatant.CombatantEqualityComparer)
+                    .Except(this.combatantList, Combatanttensions.CombatantEqualityComparer)
                     .ToList();
 
                 if (addedCombatants.Any())

@@ -10,6 +10,7 @@ using ACT.UltraScouter.Views;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.WPF.Views;
+using FFXIV_ACT_Plugin.Common.Models;
 using NLog;
 using Sharlayan.Core.Enums;
 
@@ -554,7 +555,7 @@ namespace ACT.UltraScouter.Workers
             Combatant targetInfo)
         {
             this.Model.Name = targetInfo?.Name ?? string.Empty;
-            this.Model.ObjectType = targetInfo?.ObjectType ?? Actor.Type.Unknown;
+            this.Model.ObjectType = targetInfo?.GetActorType() ?? Actor.Type.Unknown;
 
             this.RefreshActionView(targetInfo);
             this.RefreshHPView(targetInfo);
@@ -578,7 +579,7 @@ namespace ACT.UltraScouter.Workers
             {
                 this.Model.MaxHP = targetInfo.MaxHP;
                 this.Model.CurrentHP = targetInfo.CurrentHP;
-                this.Model.CurrentHPRate = targetInfo.CurrentHPRate;
+                this.Model.CurrentHPRate = targetInfo.GetCurrentHPRate();
             }
         }
 
@@ -599,7 +600,7 @@ namespace ACT.UltraScouter.Workers
             if (string.IsNullOrEmpty(this.DummyAction))
             {
                 this.Model.CastSkillID = targetInfo.CastBuffID;
-                this.Model.CastSkillName = targetInfo.CastSkillName;
+                this.Model.CastSkillName = targetInfo.GetCastSkillName();
                 this.Model.CastDurationMax = targetInfo.CastDurationMax;
                 this.Model.CastDurationCurrent = targetInfo.CastDurationCurrent;
 
@@ -621,12 +622,7 @@ namespace ACT.UltraScouter.Workers
                 return;
             }
 
-            this.Model.IsEffectiveDistance = targetInfo.IsAvailableEffectiveDictance;
-
-            this.Model.Distance =
-                targetInfo.IsAvailableEffectiveDictance ?
-                (double)targetInfo.EffectiveDistance :
-                targetInfo.HorizontalDistanceByPlayer;
+            this.Model.Distance = (double)targetInfo.EffectiveDistance;
         }
 
         private void RefreshFFLogsView(
@@ -644,7 +640,7 @@ namespace ACT.UltraScouter.Workers
             if (targetInfo != null)
             {
                 this.Model.Job = targetInfo.JobID;
-                this.Model.WorldID = targetInfo.WorldID;
+                this.Model.WorldID = (int)targetInfo.WorldID;
                 this.Model.WorldName = targetInfo.WorldName;
             }
 

@@ -132,8 +132,7 @@
     <Compile Include="Extensions\TimeSpanExtensions.cs" />
     <Compile Include="FFXIVHelper\Buff.cs" />
     <Compile Include="FFXIVHelper\CameraInfo.cs" />
-    <Compile Include="FFXIVHelper\Combatant.cs" />
-    <Compile Include="FFXIVHelper\Effect.cs" />
+    <Compile Include="FFXIVHelper\CombatantEx.cs" />
     <Compile Include="FFXIVHelper\EnmityEntry.cs" />
     <Compile Include="FFXIVHelper\FFXIVPlugin.cs" />
     <Compile Include="FFXIVHelper\Jobs.cs" />
@@ -310,6 +309,11 @@
     <PackageReference Include="CommonServiceLocator">
       <Version>2.0.4</Version>
     </PackageReference>
+    <PackageReference Include="Fody">
+      <Version>5.0.6</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="FontAwesome.WPF">
       <Version>4.7.0.9</Version>
     </PackageReference>
@@ -348,6 +352,9 @@
     </PackageReference>
     <PackageReference Include="Prism.Wpf">
       <Version>7.1.0.431</Version>
+    </PackageReference>
+    <PackageReference Include="PropertyChanged.Fody">
+      <Version>3.0.1</Version>
     </PackageReference>
     <PackageReference Include="Sharlayan">
       <Version>5.0.4</Version>

@@ -10,6 +10,6 @@ namespace ACT.UltraScouter.Models
         public float CastDurationCurrent { get; set; }
         public float CastDurationMax { get; set; }
         public string CastSkillName { get; set; }
-        public int CastSkillID { get; set; }
+        public uint CastSkillID { get; set; }
     }
 }

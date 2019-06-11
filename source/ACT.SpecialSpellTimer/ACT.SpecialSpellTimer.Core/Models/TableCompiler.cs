@@ -632,7 +632,7 @@ namespace ACT.SpecialSpellTimer.Models
             this.previousPartyCondition.AddRange(party.Select(x => new CharacterCondition()
             {
                 Name = x.Name,
-                Job = x.Job,
+                Job = (byte)x.Job,
             }));
 
             return r;
@@ -649,7 +649,7 @@ namespace ACT.SpecialSpellTimer.Models
             }
 
             this.previousPlayerCondition.Name = this.player.Name;
-            this.previousPlayerCondition.Job = this.player.Job;
+            this.previousPlayerCondition.Job = (byte)this.player.Job;
 
             return r;
         }

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
+using FFXIV_ACT_Plugin.Common.Models;
 using Sharlayan;
 using Sharlayan.Core;
 using Sharlayan.Core.Enums;
@@ -696,28 +697,27 @@ namespace FFXIV.Framework.FFXIVHelper
             c.OwnerID = actor.OwnerID;
 
             c.EffectiveDistance = actor.Distance;
-            c.IsAvailableEffectiveDictance = true;
 
             c.Heading = actor.Heading;
             c.PosX = (float)actor.X;
             c.PosY = (float)actor.Y;
             c.PosZ = (float)actor.Z;
 
-            c.CurrentHP = actor.HPCurrent;
-            c.MaxHP = actor.HPMax;
-            c.CurrentMP = actor.MPCurrent;
-            c.MaxMP = actor.MPMax;
-            c.CurrentTP = (short)actor.TPCurrent;
-            c.MaxTP = (short)actor.TPMax;
+            c.CurrentHP = (uint)actor.HPCurrent;
+            c.MaxHP = (uint)actor.HPMax;
+            c.CurrentMP = (uint)actor.MPCurrent;
+            c.MaxMP = (uint)actor.MPMax;
+            c.CurrentTP = (uint)actor.TPCurrent;
+            c.MaxTP = (uint)actor.TPMax;
 
-            c.CurrentCP = actor.CPCurrent;
-            c.MaxCP = actor.CPMax;
-            c.CurrentGP = actor.GPCurrent;
-            c.MaxGP = actor.GPMax;
+            c.CurrentCP = (uint)actor.CPCurrent;
+            c.MaxCP = (uint)actor.CPMax;
+            c.CurrentGP = (uint)actor.GPCurrent;
+            c.MaxGP = (uint)actor.GPMax;
 
             c.IsCasting = actor.IsCasting;
             c.CastTargetID = actor.CastingTargetID;
-            c.CastBuffID = actor.CastingID;
+            c.CastBuffID = (uint)actor.CastingID;
             c.CastDurationCurrent = actor.CastingProgress;
             c.CastDurationMax = actor.CastingTime;
 
@@ -729,11 +729,9 @@ namespace FFXIV.Framework.FFXIVHelper
             var worldInfo = GetWorldInfoCallback?.Invoke(c.ID);
             if (worldInfo.HasValue)
             {
-                c.WorldID = worldInfo.Value.WorldID;
+                c.WorldID = (uint)worldInfo.Value.WorldID;
                 c.WorldName = worldInfo.Value.WorldName ?? string.Empty;
             }
-
-            c.Timestamp = DateTime.Now;
 
             return c;
         }
@@ -781,7 +779,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 foreach (var dictionary in array)
                 {
                     dictionary
-                        .Where(x => (now - x.Value.Timestamp).TotalSeconds > threshold)
+                        .Where(x => (now - x.Value.GetTimestamp()).TotalSeconds > threshold)
                         .ToArray()
                         .Walk(x =>
                         {
@@ -813,7 +811,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public static bool IsNPC(
             this Combatant actor)
-            => IsNPC(actor?.ObjectType);
+            => IsNPC(actor?.GetActorType());
 
         private static bool IsNPC(
             Actor.Type? actorType)

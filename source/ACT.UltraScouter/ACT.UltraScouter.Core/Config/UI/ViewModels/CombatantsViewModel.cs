@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV_ACT_Plugin.Common.Models;
 using NLog;
 using Prism.Mvvm;
 
@@ -33,8 +33,8 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
             this.combatantsSource.SortDescriptions.AddRange(new[]
             {
-                new SortDescription(nameof(Combatant.Index), ListSortDirection.Ascending),
-                new SortDescription(nameof(Combatant.GetID), ListSortDirection.Ascending),
+                new SortDescription(nameof(Combatant.Order), ListSortDirection.Ascending),
+                new SortDescription(nameof(Combatant.ID), ListSortDirection.Ascending),
             });
         }
 

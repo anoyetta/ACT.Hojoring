@@ -10,6 +10,7 @@ using ACT.UltraScouter.Views;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
+using FFXIV_ACT_Plugin.Common.Models;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Workers
