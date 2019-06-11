@@ -143,23 +143,6 @@ namespace ACT.UltraScouter
                     // FFXIVプラグインへのアクセスを開始する
                     await Task.Run(() =>
                     {
-                        // FFXIVプラグインのバージョンをチェックする
-                        FFXIVPlugin.Instance.ActPluginAttachedCallback = () =>
-                        {
-                            var ver = FFXIVPlugin.Instance.ActPlugin.GetType().Assembly.GetName().Version;
-                            if (ver.Major >= 2)
-                            {
-                                WPFHelper.InvokeAsync(() =>
-                                {
-                                    ModernMessageBox.ShowDialog(
-                                        "This Hojoring not supported FFXIV_ACT_Plugin v2 or later." + Environment.NewLine +
-                                        "You should update to Hojoring v7 or later.",
-                                        "Attention",
-                                        System.Windows.MessageBoxButton.OK);
-                                });
-                            }
-                        };
-
                         FFXIVPlugin.Instance.Start(
                             Settings.Instance.PollingRate,
                             Settings.Instance.FFXIVLocale);

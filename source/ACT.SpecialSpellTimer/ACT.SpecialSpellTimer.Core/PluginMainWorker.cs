@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Config.Models;
@@ -14,7 +13,6 @@ using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
-using FFXIV.Framework.WPF.Views;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -72,23 +70,6 @@ namespace ACT.SpecialSpellTimer
         public async void Begin()
         {
             this.isOver = false;
-
-            // FFXIVプラグインのバージョンをチェックする
-            FFXIVPlugin.Instance.ActPluginAttachedCallback = () =>
-            {
-                var ver = FFXIVPlugin.Instance.ActPlugin.GetType().Assembly.GetName().Version;
-                if (ver.Major >= 2)
-                {
-                    WPFHelper.InvokeAsync(() =>
-                    {
-                        ModernMessageBox.ShowDialog(
-                            "This Hojoring not supported FFXIV_ACT_Plugin v2 or later." + Environment.NewLine +
-                            "You should update to Hojoring v7 or later.",
-                            "Attention",
-                            MessageBoxButton.OK);
-                    });
-                }
-            };
 
             // FFXIVのスキャンを開始する
             // FFXIVプラグインへのアクセスを開始する

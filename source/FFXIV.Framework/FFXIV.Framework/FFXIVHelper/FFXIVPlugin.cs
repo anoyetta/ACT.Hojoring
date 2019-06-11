@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,6 +13,7 @@ using System.Threading.Tasks;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
+using FFXIV_ACT_Plugin.Common;
 using Microsoft.VisualBasic.FileIO;
 using Sharlayan.Core;
 using Sharlayan.Core.Enums;
@@ -49,25 +49,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #endregion Logger
 
-        /// <summary>FFXIV_ACT_Plugin</summary>
         private dynamic plugin;
-
-        /// <summary>FFXIV_ACT_Plugin.MemoryScanSettings</summary>
-        private dynamic pluginConfig;
-
-        /// <summary>FFXIV_ACT_Plugin.Memory.Memory</summary>
-        private dynamic pluginMemory;
-
-        /// <summary>FFXIV_ACT_Plugin.Memory.ScanCombatants</summary>
-        private dynamic pluginScancombat;
-
-        /// <summary>FFXIV_ACT_Plugin.Parse.LogParse</summary>
-        private dynamic pluginLogParse;
-
-        /// <summary>
-        /// ACTプラグイン型のプラグインオブジェクトのインスタンス
-        /// </summary>
-        public IActPluginV1 ActPlugin => (IActPluginV1)this.plugin;
+        private IDataRepository dataRepository;
+        private IDataSubscription dataSubscription;
 
         public System.Action ActPluginAttachedCallback { get; set; }
 
@@ -77,7 +61,7 @@ namespace FFXIV.Framework.FFXIVHelper
             set;
         } = Locales.JA;
 
-        internal bool IsAvilableFFXIVPlugin => this.plugin != null;
+        public Process Process => this.dataRepository?.GetCurrentFFXIVProcess();
 
         public bool IsAvailable
         {
@@ -85,9 +69,8 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 if (ActGlobals.oFormActMain == null ||
                     this.plugin == null ||
-                    this.pluginConfig == null ||
-                    this.pluginScancombat == null ||
-                    this.pluginLogParse == null ||
+                    this.dataRepository == null ||
+                    this.dataSubscription == null ||
                     this.Process == null)
                 {
                     return false;
@@ -97,23 +80,25 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public Process Process => (Process)this.pluginConfig?.Process;
-
-        public Locales LanguageID
+        public Locales LanguageID => (int)this.dataRepository.GetSelectedLanguageID() switch
         {
-            get
-            {
-                switch (this.pluginLogParse?.Settings?.LanguageID)
-                {
-                    case 1: return Locales.EN;
-                    case 2: return Locales.FR;
-                    case 3: return Locales.DE;
-                    case 4: return Locales.JA;
-                    default:
-                        return Locales.EN;
-                }
-            }
-        }
+            1 => Locales.EN,
+            2 => Locales.FR,
+            3 => Locales.DE,
+            4 => Locales.JA,
+            _ => Locales.EN,
+        };
+
+        private static readonly Dictionary<Locales, (ResourceType Buff, ResourceType Skill)> ResourcesTypeDictionary = new Dictionary<Locales, (ResourceType Buff, ResourceType Skill)>()
+        {
+            {  Locales.EN, (ResourceType.BuffList_EN, ResourceType.SkillList_EN) },
+            {  Locales.FR, (ResourceType.BuffList_FR, ResourceType.SkillList_FR) },
+            {  Locales.DE, (ResourceType.BuffList_DE, ResourceType.SkillList_DE) },
+            {  Locales.JA, (ResourceType.BuffList_JP, ResourceType.SkillList_JP) },
+            {  Locales.KO, (ResourceType.BuffList_EN, ResourceType.SkillList_EN) },
+            {  Locales.CN, (ResourceType.BuffList_EN, ResourceType.SkillList_EN) },
+            {  Locales.TW, (ResourceType.BuffList_EN, ResourceType.SkillList_EN) },
+        };
 
         public double MemorySubscriberInterval { get; private set; }
 
@@ -525,7 +510,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     return;
                 }
 
-                sourceList = this.pluginScancombat.GetCombatantList();
+                sourceList = this.dataRepository.GetCombatantList();
             }
             catch (Exception)
             {
@@ -944,7 +929,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public int GetCurrentZoneID() =>
             this.IsAvailable ?
-            (this.pluginScancombat?.GetCurrentZoneId() ?? 0) :
+            ((int)this.dataRepository?.GetCurrentTerritoryID()) :
             0;
 
         public string GetCurrentZoneName() => ActGlobals.oFormActMain?.CurrentZone;
@@ -1006,92 +991,30 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             lock (this)
             {
-                this.AttachPlugin();
-                this.AttachScanMemory();
-            }
-        }
+                if (this.plugin != null ||
+                    ActGlobals.oFormActMain == null)
+                {
+                    return;
+                }
 
-        private void AttachPlugin()
-        {
-            if (this.plugin != null ||
-                ActGlobals.oFormActMain == null)
-            {
-                return;
-            }
+                var ffxivPlugin = (
+                    from x in ActGlobals.oFormActMain.ActPlugins
+                    where
+                    x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper()) &&
+                    x.lblPluginStatus.Text.ToUpper().Contains("FFXIV Plugin Started.".ToUpper())
+                    select
+                    x.pluginObj).FirstOrDefault();
 
-            var ffxivPlugin = (
-                from x in ActGlobals.oFormActMain.ActPlugins
-                where
-                x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper()) &&
-                x.lblPluginStatus.Text.ToUpper().Contains("FFXIV Plugin Started.".ToUpper())
-                select
-                x.pluginObj).FirstOrDefault();
+                if (ffxivPlugin != null)
+                {
+                    this.plugin = ffxivPlugin;
+                    this.dataRepository = this.plugin.DataRepository;
+                    this.dataSubscription = this.plugin.DataSubscription;
 
-            if (ffxivPlugin != null)
-            {
-                this.plugin = ffxivPlugin;
-                AppLogger.Trace("attached ffxiv plugin.");
+                    AppLogger.Trace("attached ffxiv plugin.");
 
-                this.ActPluginAttachedCallback?.Invoke();
-            }
-        }
-
-        private void AttachScanMemory()
-        {
-            if (this.plugin == null)
-            {
-                return;
-            }
-
-            FieldInfo fi;
-
-            if (this.pluginMemory == null)
-            {
-                fi = this.plugin?.GetType().GetField(
-                    "_Memory",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                this.pluginMemory = fi?.GetValue(this.plugin);
-            }
-
-            if (this.pluginMemory == null)
-            {
-                return;
-            }
-
-            if (this.pluginLogParse == null)
-            {
-                fi = this.plugin?.GetType().GetField(
-                    "_LogParse",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                this.pluginLogParse = fi?.GetValue(this.plugin);
-            }
-
-            if (this.pluginLogParse == null)
-            {
-                return;
-            }
-
-            if (this.pluginConfig == null)
-            {
-                fi = this?.pluginMemory?.GetType().GetField(
-                    "_config",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                this.pluginConfig = fi?.GetValue(this.pluginMemory);
-            }
-
-            if (this.pluginConfig == null)
-            {
-                return;
-            }
-
-            if (this.pluginScancombat == null)
-            {
-                fi = this.pluginConfig?.GetType().GetField(
-                    "ScanCombatants",
-                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
-                this.pluginScancombat = fi?.GetValue(this.pluginConfig);
-
-                AppLogger.Trace("attached ffxiv plugin ScanCombatants.");
+                    this.ActPluginAttachedCallback?.Invoke();
+                }
             }
         }
 
@@ -1124,53 +1047,33 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            var asm = this.plugin.GetType().Assembly;
+            var dictionary = this.dataRepository.GetResourceDictionary(ResourceType.WorldList_EN);
+            var newList = new Dictionary<uint, World>();
 
-            var resourcesName = $"FFXIV_ACT_Plugin.Resources.WorldList.txt";
-
-            using (var st = asm.GetManifestResourceStream(resourcesName))
+            foreach (var source in dictionary)
             {
-                var newList = new Dictionary<uint, World>();
-
-                if (st != null)
+                var entry = new World()
                 {
-                    using (var sr = new StreamReader(st))
-                    {
-                        while (!sr.EndOfStream)
-                        {
-                            var line = sr.ReadLine();
-                            if (!string.IsNullOrWhiteSpace(line))
-                            {
-                                var values = line.Split('|');
-                                if (values.Length >= 2)
-                                {
-                                    var entry = new World()
-                                    {
-                                        ID = uint.Parse(values[0]),
-                                        Name = values[1].Trim()
-                                    };
+                    ID = source.Key,
+                    Name = source.Value,
+                };
 
-                                    newList.Add(entry.ID, entry);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // ワールド名置換用正規表現を生成する
-                var names = newList.Values
-                    .Where(x =>
-                        (x.ID >= 23 && x.ID <= 99) ||
-                        (x.ID >= 1040 && x.ID <= 1172) ||
-                        (x.ID >= 2048 && x.ID <= 2079))
-                    .Select(x => x.Name);
-                this.WorldNameRemoveRegex = new Regex(
-                    $@"(?<name>[A-Za-z'\-\.]+ [A-Za-z'\-\.]+)(?<world>{string.Join("|", names)})",
-                    RegexOptions.Compiled);
-
-                this.worldList = newList;
-                AppLogger.Trace("world list loaded.");
+                newList.Add(entry.ID, entry);
             }
+
+            // ワールド名置換用正規表現を生成する
+            var names = newList.Values
+                .Where(x =>
+                    (x.ID >= 23 && x.ID <= 99) ||
+                    (x.ID >= 1040 && x.ID <= 1172) ||
+                    (x.ID >= 2048 && x.ID <= 2079))
+                .Select(x => x.Name);
+            this.WorldNameRemoveRegex = new Regex(
+                $@"(?<name>[A-Za-z'\-\.]+ [A-Za-z'\-\.]+)(?<world>{string.Join("|", names)})",
+                RegexOptions.Compiled);
+
+            this.worldList = newList;
+            AppLogger.Trace("world list loaded.");
         }
 
         public string RemoveWorldName(
@@ -1217,43 +1120,22 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            var asm = this.plugin.GetType().Assembly;
+            var dictionary = this.dataRepository.GetResourceDictionary(ResourcesTypeDictionary[this.FFXIVLocale].Buff);
+            var newList = new Dictionary<uint, Buff>();
 
-            var language = this.FFXIVLocale.ToString().Replace("JA", "JP");
-            var resourcesName = $"FFXIV_ACT_Plugin.Resources.BuffList_{language.ToUpper()}.txt";
-
-            using (var st = asm.GetManifestResourceStream(resourcesName))
+            foreach (var source in dictionary)
             {
-                var newList = new Dictionary<uint, Buff>();
-
-                if (st != null)
+                var entry = new Buff()
                 {
-                    using (var sr = new StreamReader(st))
-                    {
-                        while (!sr.EndOfStream)
-                        {
-                            var line = sr.ReadLine();
-                            if (!string.IsNullOrWhiteSpace(line))
-                            {
-                                var values = line.Split('|');
-                                if (values.Length >= 2)
-                                {
-                                    var buff = new Buff()
-                                    {
-                                        ID = uint.Parse(values[0], NumberStyles.HexNumber),
-                                        Name = values[1].Trim()
-                                    };
+                    ID = source.Key,
+                    Name = source.Value,
+                };
 
-                                    newList.Add(buff.ID, buff);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                this.buffList = newList;
-                AppLogger.Trace("buff list loaded.");
+                newList.Add(entry.ID, entry);
             }
+
+            this.buffList = newList;
+            AppLogger.Trace("buff list loaded.");
         }
 
         private void LoadSkillList()
@@ -1268,43 +1150,22 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            var asm = this.plugin.GetType().Assembly;
+            var dictionary = this.dataRepository.GetResourceDictionary(ResourcesTypeDictionary[this.FFXIVLocale].Skill);
+            var newList = new Dictionary<uint, Skill>();
 
-            var language = this.FFXIVLocale.ToString().Replace("JA", "JP");
-            var resourcesName = $"FFXIV_ACT_Plugin.Resources.SkillList_{language.ToUpper()}.txt";
-
-            using (var st = asm.GetManifestResourceStream(resourcesName))
+            foreach (var source in dictionary)
             {
-                var newList = new Dictionary<uint, Skill>();
-
-                if (st != null)
+                var entry = new Skill()
                 {
-                    using (var sr = new StreamReader(st))
-                    {
-                        while (!sr.EndOfStream)
-                        {
-                            var line = sr.ReadLine();
-                            if (!string.IsNullOrWhiteSpace(line))
-                            {
-                                var values = line.Split('|');
-                                if (values.Length >= 2)
-                                {
-                                    var skill = new Skill()
-                                    {
-                                        ID = uint.Parse(values[0], NumberStyles.HexNumber),
-                                        Name = values[1].Trim()
-                                    };
+                    ID = source.Key,
+                    Name = source.Value,
+                };
 
-                                    newList.Add(skill.ID, skill);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                this.skillList = newList;
-                AppLogger.Trace("skill list loaded.");
+                newList.Add(entry.ID, entry);
             }
+
+            this.skillList = newList;
+            AppLogger.Trace("skill list loaded.");
         }
 
         private void LoadZoneList()
@@ -1319,51 +1180,25 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
+            var dictionary = this.dataRepository.GetResourceDictionary(ResourceType.ZoneList_EN);
             var newList = new List<Zone>();
 
-            var asm = this.plugin.GetType().Assembly;
-
-            var language = "EN";
-            var resourcesName = $"FFXIV_ACT_Plugin.Resources.ZoneList_{language.ToUpper()}.txt";
-
-            using (var st = asm.GetManifestResourceStream(resourcesName))
+            foreach (var source in dictionary)
             {
-                if (st != null)
+                var entry = new Zone()
                 {
-                    using (var sr = new StreamReader(st))
-                    {
-                        while (!sr.EndOfStream)
-                        {
-                            var line = sr.ReadLine();
-                            if (!string.IsNullOrWhiteSpace(line))
-                            {
-                                var values = line.Split('|');
-                                if (values.Length >= 2)
-                                {
-                                    var zone = new Zone()
-                                    {
-                                        ID = int.Parse(values[0]),
-                                        Name = values[1].Trim()
-                                    };
+                    ID = (int)source.Key,
+                    Name = source.Value,
+                };
 
-                                    newList.Add(zone);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                AppLogger.Trace("zone list loaded.");
-
-                // ユーザで任意に追加したゾーンを読み込む
-                this.LoadZoneListAdded(newList);
-
-                // 新しいゾーンリストをセットする
-                this.zoneList = newList;
-
-                // ゾーンリストを翻訳する
-                this.TranslateZoneList();
+                newList.Add(entry);
             }
+
+            AppLogger.Trace("zone list loaded.");
+
+            this.LoadZoneListAdded(newList);
+            this.zoneList = newList;
+            this.TranslateZoneList();
         }
 
         private void LoadZoneListAdded(
