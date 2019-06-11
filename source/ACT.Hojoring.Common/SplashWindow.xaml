@@ -9,9 +9,9 @@
   mc:Ignorable="d"
   Title="ACT.Hojoring"
   TextOptions.TextFormattingMode="Ideal"
-  TextOptions.TextHintingMode="Auto"
+  TextOptions.TextHintingMode="Fixed"
   TextOptions.TextRenderingMode="ClearType"
-  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.ClearTypeHint="Auto"
   RenderOptions.BitmapScalingMode="Fant"
   RenderOptions.EdgeMode="Unspecified"
   AllowsTransparency="True"
@@ -30,8 +30,9 @@
     <FontFamily x:Key="Font">Century Gothic</FontFamily>
     <FontFamily x:Key="SubFont">Century Gothic Italic</FontFamily>
 
-    <SolidColorBrush x:Key="BackgroudBrush" Color="#0d0015" />
-    <SolidColorBrush x:Key="MainForegroundBrush" Color="#eaf4fc" />
+    <SolidColorBrush x:Key="BackgroudBrush" Color="#f8f4e6" />
+    <SolidColorBrush x:Key="MainForegroundBrush" Color="#0d0015" />
+    <SolidColorBrush x:Key="ReiwaForegroundBrush" Color="#383c3c" />
 
     <sys:Double x:Key="TitleSize">40</sys:Double>
     <sys:Double x:Key="CopySize">9</sys:Double>
@@ -86,7 +87,7 @@
       <Setter Property="HorizontalAlignment" Value="{Binding ElementName=ReiwaLabel, Path=HorizontalAlignment, Mode=OneWay}" />
       <Setter Property="VerticalAlignment" Value="{Binding ElementName=ReiwaLabel, Path=VerticalAlignment, Mode=OneWay}" />
       <Setter Property="Content" Value="{Binding ElementName=ReiwaLabel, Path=Content, Mode=OneWay}" />
-      <Setter Property="Foreground" Value="{Binding ElementName=ReiwaLabel, Path=Foreground, Mode=OneWay}" />
+      <Setter Property="Foreground" Value="{DynamicResource ReiwaForegroundBrush}" />
       <Setter Property="FontFamily" Value="{Binding ElementName=ReiwaLabel, Path=FontFamily, Mode=OneWay}" />
       <Setter Property="FontWeight" Value="{Binding ElementName=ReiwaLabel, Path=FontWeight, Mode=OneWay}" />
       <Setter Property="FontSize" Value="{Binding ElementName=ReiwaLabel, Path=FontSize, Mode=OneWay}" />
@@ -99,10 +100,10 @@
       <ScaleTransform ScaleX="{StaticResource Scale}" ScaleY="{StaticResource Scale}" />
     </Grid.RenderTransform>
 
-    <Rectangle Panel.ZIndex="-2" Width="260" Height="260" Fill="{StaticResource BackgroudBrush}" RadiusX="1" RadiusY="1" Opacity="0.6">
+    <Rectangle x:Name="BackgroundRect" Panel.ZIndex="-2" Width="260" Height="260" Fill="{StaticResource BackgroudBrush}" RadiusX="1" RadiusY="1" Opacity="0.6">
       <Rectangle.Effect>
         <DropShadowEffect
-          Color="#0d0015"
+          Color="{Binding ElementName=BackgroundRect, Mode=OneWay, Path=Fill.Color}"
           ShadowDepth="0"
           Direction="0"
           BlurRadius="6" />
