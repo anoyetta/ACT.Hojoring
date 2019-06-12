@@ -58,8 +58,8 @@ namespace ACT.SpecialSpellTimer.Models
 
         public static bool PredicateFilters(
             this IFilterizableTrigger trigger,
-            Combatant player,
-            IEnumerable<Combatant> partyList,
+            CombatantEx player,
+            IEnumerable<CombatantEx> partyList,
             int? currentZoneID)
         {
             // パーティリストからプレイヤーを除外する

@@ -98,7 +98,7 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         public void RefreshCharacterName()
         {
-            this.CharacterName = Combatant.NameToInitial(this.characterNameFull, ConfigBridge.Instance.PCNameStyle);
+            this.CharacterName = CombatantEx.NameToInitial(this.characterNameFull, ConfigBridge.Instance.PCNameStyle);
         }
 
         private static readonly string[] SpecialNameHash = new[]

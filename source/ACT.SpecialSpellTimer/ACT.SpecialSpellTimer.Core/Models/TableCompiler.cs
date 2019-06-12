@@ -153,13 +153,13 @@ namespace ACT.SpecialSpellTimer.Models
 
         #region Compilers
 
-        public Combatant Player => this.player;
+        public CombatantEx Player => this.player;
 
-        public IList<Combatant> SortedPartyList => this.partyList;
+        public IList<CombatantEx> SortedPartyList => this.partyList;
 
-        private List<Combatant> partyList = new List<Combatant>();
+        private List<CombatantEx> partyList = new List<CombatantEx>();
 
-        private Combatant player = new Combatant();
+        private CombatantEx player = new CombatantEx();
 
         private List<Spell> spellList = new List<Spell>();
 
@@ -267,9 +267,9 @@ namespace ACT.SpecialSpellTimer.Models
         /// </summary>
         /// <returns>
         /// プレイヤー, パーティリスト, ゾーンID</returns>
-        private (Combatant Player, IEnumerable<Combatant> PartyList, int? ZoneID) GetCurrentFilterCondition()
+        private (CombatantEx Player, IEnumerable<CombatantEx> PartyList, int? ZoneID) GetCurrentFilterCondition()
         {
-            var currentPlayer = this.player ?? new Combatant()
+            var currentPlayer = this.player ?? new CombatantEx()
             {
                 ID = 0,
                 Name = "Dummy Player",
@@ -581,17 +581,17 @@ namespace ACT.SpecialSpellTimer.Models
             set;
         } = false;
 
-        public Combatant SimulationPlayer
+        public CombatantEx SimulationPlayer
         {
             get;
             set;
         }
 
-        public List<Combatant> SimulationParty
+        public List<CombatantEx> SimulationParty
         {
             get;
             private set;
-        } = new List<Combatant>();
+        } = new List<CombatantEx>();
 
         public int SimulationZoneID
         {
@@ -604,7 +604,7 @@ namespace ACT.SpecialSpellTimer.Models
             var r = false;
 
             var party = this.partyList
-                .Where(x => x.ObjectType == Actor.Type.PC)
+                .Where(x => x.ActorType == Actor.Type.PC)
                 .ToList();
 
             if (this.previousPartyCondition.Count !=
@@ -691,8 +691,8 @@ namespace ACT.SpecialSpellTimer.Models
 
         private void RefreshCombatants()
         {
-            var player = default(Combatant);
-            var party = default(IReadOnlyList<Combatant>);
+            var player = default(CombatantEx);
+            var party = default(IReadOnlyList<CombatantEx>);
 
             lock (SimulationLocker)
             {
@@ -717,7 +717,7 @@ namespace ACT.SpecialSpellTimer.Models
 
             if (party != null)
             {
-                var newList = new List<Combatant>(party);
+                var newList = new List<CombatantEx>(party);
 
                 if (newList.Count < 1 &&
                     !string.IsNullOrEmpty(this.player?.Name))
@@ -1066,7 +1066,7 @@ namespace ACT.SpecialSpellTimer.Models
                 return;
             }
 
-            var playerJob = this.player.AsJob();
+            var playerJob = this.player.JobInfo;
             if (playerJob != null &&
                 !playerJob.IsSummoner())
             {

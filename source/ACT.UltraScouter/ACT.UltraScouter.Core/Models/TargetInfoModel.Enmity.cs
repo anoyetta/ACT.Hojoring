@@ -217,7 +217,7 @@ namespace ACT.UltraScouter.Models
                     var pcNameStyle = ConfigBridge.Instance.PCNameStyle;
                     foreach (var item in newEnmityList)
                     {
-                        item.Name = Combatant.NameToInitial(item.Name, pcNameStyle);
+                        item.Name = CombatantEx.NameToInitial(item.Name, pcNameStyle);
                     }
                 }
                 else

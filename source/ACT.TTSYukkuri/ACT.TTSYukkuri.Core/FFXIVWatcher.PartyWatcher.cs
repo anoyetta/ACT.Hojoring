@@ -367,8 +367,8 @@ namespace ACT.TTSYukkuri
         /// <param name="targetParameter">対象とするParameter</param>
         /// <returns>監視対象か？</returns>
         private bool IsWatchTarget(
-            Combatant targetInfo,
-            Combatant playerInfo,
+            CombatantEx targetInfo,
+            CombatantEx playerInfo,
             string targetParameter)
         {
             var r = false;

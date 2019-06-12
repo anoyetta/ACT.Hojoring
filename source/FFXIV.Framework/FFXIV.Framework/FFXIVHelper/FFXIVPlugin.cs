@@ -476,7 +476,28 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.CombatantPCCount = this.combatantList.Count(x => x.ActorType == Actor.Type.PC);
             }
 
-            setNewCombatants(SharlayanHelper.Instance.PCCombatants);
+            var combatants = this.dataRepository.GetCombatantList();
+
+            var pcs = new List<CombatantEx>(combatants.Count);
+            var npcs = new List<CombatantEx>(combatants.Count);
+
+            foreach (var c in combatants)
+            {
+                var ex = new CombatantEx();
+                CombatantEx.CopyToEx(c, ex);
+
+                switch (c.GetActorType())
+                {
+                    case Actor.Type.PC:
+                    case Actor.Type.Monster:
+                        pcs.Add(ex);
+                        break;
+
+                    default:
+                        npcs.Add(ex);
+                        break;
+                }
+            }
 
             void setNewCombatants(List<CombatantEx> newCombatants)
             {

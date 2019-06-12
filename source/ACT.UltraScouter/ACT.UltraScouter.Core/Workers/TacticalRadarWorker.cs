@@ -48,10 +48,10 @@ namespace ACT.UltraScouter.Workers
             }
         }
 
-        private static readonly Combatant DummyCombatant = new Combatant()
+        private static readonly CombatantEx DummyCombatant = new CombatantEx()
         {
             Name = "DUMMY",
-            ObjectType = Actor.Type.Monster,
+            Type = (byte)Actor.Type.Monster,
         };
 
         protected override void GetCombatant()
@@ -198,14 +198,14 @@ namespace ACT.UltraScouter.Workers
         }
 
         protected override void RefreshModel(
-            Combatant targetInfo)
+            CombatantEx targetInfo)
         {
             base.RefreshModel(targetInfo);
             this.RefreshTacticalRadarView(targetInfo);
         }
 
         protected virtual void RefreshTacticalRadarView(
-            Combatant targetInfo)
+            CombatantEx targetInfo)
         {
             if (this.TacticalRadarView == null)
             {

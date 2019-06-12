@@ -201,7 +201,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         #region PC Name
 
         private IList<string> partyNames = null;
-        private IList<Combatant> combatants = null;
+        private IList<CombatantEx> combatants = null;
 
         private static readonly Regex PCNameRegex = new Regex(
             @"[a-zA-Z'\.]+ [a-zA-Z'\.]+",
@@ -211,7 +211,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// Combatantsを取得する
         /// </summary>
         /// <returns>Combatants</returns>
-        private IList<Combatant> GetCombatants()
+        private IList<CombatantEx> GetCombatants()
         {
             lock (this)
             {
@@ -299,7 +299,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var combs = this.GetCombatants();
 
             var com = combs.FirstOrDefault(x =>
-                x?.ObjectType == Actor.Type.PC &&
+                x?.ActorType == Actor.Type.PC &&
                 (
                     x?.Name == name ||
                     x?.NameFI == name ||

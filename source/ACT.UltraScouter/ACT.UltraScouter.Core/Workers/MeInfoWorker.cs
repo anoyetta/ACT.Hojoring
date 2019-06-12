@@ -112,7 +112,7 @@ namespace ACT.UltraScouter.Workers
         }
 
         protected override void RefreshModel(
-            Combatant targetInfo)
+            CombatantEx targetInfo)
         {
             base.RefreshModel(targetInfo);
 
@@ -121,7 +121,7 @@ namespace ACT.UltraScouter.Workers
         }
 
         protected virtual void RefreshMPTickerView(
-            Combatant targetInfo)
+            CombatantEx targetInfo)
         {
             if (this.MPTickerView == null)
             {

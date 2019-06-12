@@ -37,7 +37,7 @@ namespace ACT.UltraScouter.Models
             {
                 if (this.TargetActor.Type == Actor.Type.PC)
                 {
-                    this.Name = Combatant.NameToInitial(
+                    this.Name = CombatantEx.NameToInitial(
                         this.TargetActor.Name,
                         ConfigBridge.Instance.PCNameStyle);
                 }

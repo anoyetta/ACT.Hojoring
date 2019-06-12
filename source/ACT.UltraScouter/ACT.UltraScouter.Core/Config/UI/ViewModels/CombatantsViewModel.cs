@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using FFXIV.Framework.Common;
-using FFXIV_ACT_Plugin.Common.Models;
+using FFXIV.Framework.FFXIVHelper;
 using NLog;
 using Prism.Mvvm;
 
@@ -33,23 +33,23 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
             this.combatantsSource.SortDescriptions.AddRange(new[]
             {
-                new SortDescription(nameof(Combatant.Order), ListSortDirection.Ascending),
-                new SortDescription(nameof(Combatant.ID), ListSortDirection.Ascending),
+                new SortDescription(nameof(CombatantEx.Order), ListSortDirection.Ascending),
+                new SortDescription(nameof(CombatantEx.ID), ListSortDirection.Ascending),
             });
         }
 
         public MobList Config => Settings.Instance.MobList;
 
         private static readonly object Locker = new object();
-        private static ObservableCollection<Combatant> combatants;
+        private static ObservableCollection<CombatantEx> combatants;
 
-        private static ObservableCollection<Combatant> Combatants
+        private static ObservableCollection<CombatantEx> Combatants
         {
             get
             {
                 if (combatants == null)
                 {
-                    combatants = new ObservableCollection<Combatant>();
+                    combatants = new ObservableCollection<CombatantEx>();
                     BindingOperations.EnableCollectionSynchronization(combatants, Locker);
                 }
 
@@ -60,7 +60,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         private static DateTime lastUpdateDatetime = DateTime.MinValue;
 
         public static void RefreshCombatants(
-            IEnumerable<Combatant> source)
+            IEnumerable<CombatantEx> source)
         {
             if (!Settings.Instance.MobList.DumpCombatants)
             {
@@ -83,10 +83,10 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                 return;
             }
 
-            var toAdds = source.Where(x => !combatants.Any(y => y.GUID == x.GUID));
+            var toAdds = source.Where(x => !combatants.Any(y => y.UUID == x.UUID));
             combatants.AddRange(toAdds);
 
-            var toRemoves = combatants.Where(x => !source.Any(y => y.GUID == x.GUID)).ToArray();
+            var toRemoves = combatants.Where(x => !source.Any(y => y.UUID == x.UUID)).ToArray();
             foreach (var item in toRemoves)
             {
                 combatants.Remove(item);
@@ -94,7 +94,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
             foreach (var combatant in combatants)
             {
-                var src = source.FirstOrDefault(x => x.GUID == combatant.GUID);
+                var src = source.FirstOrDefault(x => x.UUID == combatant.UUID);
                 if (src != null)
                 {
                     if (combatant.PosX != src.PosX ||
@@ -120,5 +120,10 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         private CollectionViewSource combatantsSource;
 
         public ICollectionView CombatantsView => this.combatantsSource?.View;
+
+        internal static void RefreshCombatants(CombatantEx[] combatantEx)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

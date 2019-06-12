@@ -399,7 +399,7 @@ namespace ACT.XIVLog
             }
 
             var combatants = FFXIVPlugin.Instance?.GetCombatantList()?
-                .Where(x => x.ObjectType == Actor.Type.PC);
+                .Where(x => x.ActorType == Actor.Type.PC);
 
             if (combatants == null)
             {
@@ -419,7 +419,7 @@ namespace ACT.XIVLog
             foreach (var com in combatants)
             {
                 var alias = new Alias(
-                    $"{com.AsJob()?.NameEN.Replace(" ", string.Empty) ?? "Unknown"} {JobAliases[com.Job % 10]}",
+                    $"{com.JobInfo?.NameEN.Replace(" ", string.Empty) ?? "Unknown"} {JobAliases[com.Job % 10]}",
                     DateTime.Now);
                 PCNameDictionary[com.Name] = alias;
                 PCNameDictionary[com.NameFI] = alias;

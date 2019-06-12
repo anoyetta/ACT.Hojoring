@@ -1551,7 +1551,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 var castingCombatants = FFXIVPlugin.Instance.GetCombatantList()
                     .Where(x =>
-                        x.ObjectType == Actor.Type.Monster &&
+                        x.ActorType == Actor.Type.Monster &&
                         x.IsCasting)
                     .ToArray();
 

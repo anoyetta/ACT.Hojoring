@@ -488,7 +488,7 @@ namespace ACT.SpecialSpellTimer
             var palyerIsSummoner = false;
             if (player != null)
             {
-                var job = player.AsJob();
+                var job = player.JobInfo;
                 if (job != null)
                 {
                     palyerIsSummoner = job.IsSummoner();

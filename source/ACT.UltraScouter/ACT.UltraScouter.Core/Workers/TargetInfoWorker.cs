@@ -10,7 +10,6 @@ using ACT.UltraScouter.Views;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.WPF.Views;
-using FFXIV_ACT_Plugin.Common.Models;
 using NLog;
 using Sharlayan.Core.Enums;
 
@@ -120,9 +119,9 @@ namespace ACT.UltraScouter.Workers
 
         #region Data Controllers
 
-        public virtual Combatant TargetInfo { get; protected set; }
+        public virtual CombatantEx TargetInfo { get; protected set; }
 
-        public virtual Combatant TargetInfoClone
+        public virtual CombatantEx TargetInfoClone
         {
             get
             {
@@ -148,7 +147,7 @@ namespace ACT.UltraScouter.Workers
 
         protected virtual void GetCombatant()
         {
-            var targetInfo = default(Combatant);
+            var targetInfo = default(CombatantEx);
 
             if (Settings.Instance.UseHoverTarget)
             {
@@ -165,12 +164,12 @@ namespace ACT.UltraScouter.Workers
             }
         }
 
-        protected virtual void GetCombatantHoverOff(ref Combatant targetInfo)
+        protected virtual void GetCombatantHoverOff(ref CombatantEx targetInfo)
             => targetInfo = FFXIVPlugin.Instance.GetTargetInfo(OverlayType.Target);
 
-        protected virtual void GetCombatantHoverOn(ref Combatant targetInfo)
+        protected virtual void GetCombatantHoverOn(ref CombatantEx targetInfo)
         {
-            var info = default(Combatant);
+            var info = default(CombatantEx);
 
             var ti = FFXIVPlugin.Instance.GetTargetInfo(OverlayType.Target);
             var hi = FFXIVPlugin.Instance.GetTargetInfo(OverlayType.HoverTarget);
@@ -354,7 +353,7 @@ namespace ACT.UltraScouter.Workers
 
                 if (this.IsTargetOverlay)
                 {
-                    switch (targetInfo.ObjectType)
+                    switch (targetInfo.ActorType)
                     {
                         case Actor.Type.PC:
                         case Actor.Type.Monster:
@@ -552,10 +551,10 @@ namespace ACT.UltraScouter.Workers
         }
 
         protected virtual void RefreshModel(
-            Combatant targetInfo)
+            CombatantEx targetInfo)
         {
             this.Model.Name = targetInfo?.Name ?? string.Empty;
-            this.Model.ObjectType = targetInfo?.GetActorType() ?? Actor.Type.Unknown;
+            this.Model.ObjectType = targetInfo?.ActorType ?? Actor.Type.Unknown;
 
             this.RefreshActionView(targetInfo);
             this.RefreshHPView(targetInfo);
@@ -567,7 +566,7 @@ namespace ACT.UltraScouter.Workers
         }
 
         protected virtual void RefreshHPView(
-            Combatant targetInfo)
+            CombatantEx targetInfo)
         {
             if (this.HPView == null)
             {
@@ -579,12 +578,12 @@ namespace ACT.UltraScouter.Workers
             {
                 this.Model.MaxHP = targetInfo.MaxHP;
                 this.Model.CurrentHP = targetInfo.CurrentHP;
-                this.Model.CurrentHPRate = targetInfo.GetCurrentHPRate();
+                this.Model.CurrentHPRate = targetInfo.CurrentHPRate;
             }
         }
 
         protected virtual void RefreshActionView(
-            Combatant targetInfo)
+            CombatantEx targetInfo)
         {
             if (this.ActionView == null)
             {
@@ -600,7 +599,7 @@ namespace ACT.UltraScouter.Workers
             if (string.IsNullOrEmpty(this.DummyAction))
             {
                 this.Model.CastSkillID = targetInfo.CastBuffID;
-                this.Model.CastSkillName = targetInfo.GetCastSkillName();
+                this.Model.CastSkillName = targetInfo.CastSkillName;
                 this.Model.CastDurationMax = targetInfo.CastDurationMax;
                 this.Model.CastDurationCurrent = targetInfo.CastDurationCurrent;
 
@@ -610,7 +609,7 @@ namespace ACT.UltraScouter.Workers
         }
 
         protected virtual void RefreshDistanceView(
-            Combatant targetInfo)
+            CombatantEx targetInfo)
         {
             if (this.DistanceView == null)
             {
@@ -626,7 +625,7 @@ namespace ACT.UltraScouter.Workers
         }
 
         private void RefreshFFLogsView(
-            Combatant targetInfo)
+            CombatantEx targetInfo)
         {
             if (this.FFLogsView == null)
             {
@@ -635,7 +634,7 @@ namespace ACT.UltraScouter.Workers
 
             this.Model.ObjectType = Settings.Instance.FFLogs.IsDesignMode || targetInfo == null ?
                 Actor.Type.PC :
-                targetInfo.ObjectType;
+                targetInfo.ActorType;
 
             if (targetInfo != null)
             {
@@ -652,7 +651,7 @@ namespace ACT.UltraScouter.Workers
             this.Model.RefreshFFLogsInfo();
         }
 
-        protected virtual void RefreshEnmityView(Combatant targetInfo)
+        protected virtual void RefreshEnmityView(CombatantEx targetInfo)
         {
         }
 

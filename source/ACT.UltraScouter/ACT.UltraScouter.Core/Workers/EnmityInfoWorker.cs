@@ -83,7 +83,7 @@ namespace ACT.UltraScouter.Workers
 
             if (!Settings.Instance.Enmity.IsDesignMode)
             {
-                if (targetInfo.ObjectType == Actor.Type.Monster)
+                if (targetInfo.ActorType == Actor.Type.Monster)
                 {
                     var enmityEntryList = SharlayanHelper.Instance.EnmityList;
                     this.RefreshCurrentEnmityModelList(enmityEntryList);
@@ -128,13 +128,13 @@ namespace ACT.UltraScouter.Workers
                     var name = entry.Name;
                     if (string.IsNullOrEmpty(name))
                     {
-                        name = Combatant.UnknownName;
+                        name = CombatantEx.UnknownName;
                     }
                     else
                     {
                         name = config.IsSelfDisplayYou && entry.IsMe ?
                             "YOU" :
-                            Combatant.NameToInitial(entry.Name, pcNameStyle);
+                            CombatantEx.NameToInitial(entry.Name, pcNameStyle);
                     }
 
                     var model = new EnmityModel();
@@ -384,13 +384,13 @@ namespace ACT.UltraScouter.Workers
             !FFXIVPlugin.Instance.IsFFXIVActive ||
             !Settings.Instance.Enmity.Visible;
 
-        public override Combatant TargetInfo => TargetInfoWorker.Instance.TargetInfo;
+        public override CombatantEx TargetInfo => TargetInfoWorker.Instance.TargetInfo;
 
-        public override Combatant TargetInfoClone => TargetInfoWorker.Instance.TargetInfoClone;
+        public override CombatantEx TargetInfoClone => TargetInfoWorker.Instance.TargetInfoClone;
 
         private DateTime enmityTimestamp = DateTime.MinValue;
 
-        protected override void RefreshEnmityView(Combatant targetInfo)
+        protected override void RefreshEnmityView(CombatantEx targetInfo)
         {
             if (this.EnmityView == null)
             {

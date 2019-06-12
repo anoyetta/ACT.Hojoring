@@ -20,6 +20,116 @@ namespace FFXIV.Framework.FFXIVHelper
             (x, y) => x.UUID == y.UUID,
             (obj) => obj.GetHashCode());
 
+        public static void CopyToEx(
+            Combatant source,
+            CombatantEx destination)
+        {
+            var src = source;
+            var dst = destination;
+
+            dst.ID = src.ID;
+            dst.OwnerID = src.OwnerID;
+            dst.Type = src.type;
+            dst.Job = src.Job;
+            dst.Level = src.Level;
+            dst.Name = src.Name;
+            dst.CurrentHP = src.CurrentHP;
+            dst.MaxHP = src.MaxHP;
+            dst.CurrentMP = src.CurrentMP;
+            dst.MaxMP = src.MaxMP;
+            dst.CurrentTP = src.CurrentTP;
+            dst.MaxTP = src.MaxTP;
+            dst.CurrentCP = src.CurrentCP;
+            dst.MaxCP = src.MaxCP;
+            dst.CurrentGP = src.CurrentGP;
+            dst.MaxGP = src.MaxGP;
+            dst.IsCasting = src.IsCasting;
+            dst.CastBuffID = src.CastBuffID;
+            dst.CastTargetID = src.CastTargetID;
+            dst.CastDurationCurrent = src.CastDurationCurrent;
+            dst.CastDurationMax = src.CastDurationMax;
+            dst.PosX = src.PosX;
+            dst.PosY = src.PosY;
+            dst.PosZ = src.PosZ;
+            dst.Heading = src.Heading;
+            dst.CurrentWorldID = src.CurrentWorldID;
+            dst.WorldID = src.WorldID;
+            dst.WorldName = src.WorldName;
+            dst.BNpcNameID = src.BNpcNameID;
+            dst.BNpcID = src.BNpcID;
+            dst.TargetID = src.TargetID;
+            dst.EffectiveDistance = src.EffectiveDistance;
+            dst.PartyType = src.PartyType;
+            dst.Pointer = src.Pointer;
+            dst.Order = src.Order;
+
+            dst.IncomingAbilities = src.IncomingAbilities;
+            dst.OutgoingAbility = src.OutgoingAbility;
+            dst.Effects = src.Effects;
+            dst.FlyingText = src.FlyingText;
+
+            dst.NetworkBuffs.Clear();
+            dst.NetworkBuffs.AddRange(src.NetworkBuffs);
+
+            dst.UnknownNetworkBuffs.Clear();
+            dst.UnknownNetworkBuffs.AddRange(src.UnknownNetworkBuffs);
+        }
+
+        public static void CopyToEx(
+            CombatantEx source,
+            CombatantEx destination)
+        {
+            var src = source;
+            var dst = destination;
+
+            dst.ID = src.ID;
+            dst.OwnerID = src.OwnerID;
+            dst.Type = src.Type;
+            dst.Job = src.Job;
+            dst.Level = src.Level;
+            dst.Name = src.Name;
+            dst.CurrentHP = src.CurrentHP;
+            dst.MaxHP = src.MaxHP;
+            dst.CurrentMP = src.CurrentMP;
+            dst.MaxMP = src.MaxMP;
+            dst.CurrentTP = src.CurrentTP;
+            dst.MaxTP = src.MaxTP;
+            dst.CurrentCP = src.CurrentCP;
+            dst.MaxCP = src.MaxCP;
+            dst.CurrentGP = src.CurrentGP;
+            dst.MaxGP = src.MaxGP;
+            dst.IsCasting = src.IsCasting;
+            dst.CastBuffID = src.CastBuffID;
+            dst.CastTargetID = src.CastTargetID;
+            dst.CastDurationCurrent = src.CastDurationCurrent;
+            dst.CastDurationMax = src.CastDurationMax;
+            dst.PosX = src.PosX;
+            dst.PosY = src.PosY;
+            dst.PosZ = src.PosZ;
+            dst.Heading = src.Heading;
+            dst.CurrentWorldID = src.CurrentWorldID;
+            dst.WorldID = src.WorldID;
+            dst.WorldName = src.WorldName;
+            dst.BNpcNameID = src.BNpcNameID;
+            dst.BNpcID = src.BNpcID;
+            dst.TargetID = src.TargetID;
+            dst.EffectiveDistance = src.EffectiveDistance;
+            dst.PartyType = src.PartyType;
+            dst.Pointer = src.Pointer;
+            dst.Order = src.Order;
+
+            dst.IncomingAbilities = src.IncomingAbilities;
+            dst.OutgoingAbility = src.OutgoingAbility;
+            dst.Effects = src.Effects;
+            dst.FlyingText = src.FlyingText;
+
+            dst.NetworkBuffs.Clear();
+            dst.NetworkBuffs.AddRange(src.NetworkBuffs);
+
+            dst.UnknownNetworkBuffs.Clear();
+            dst.UnknownNetworkBuffs.AddRange(src.UnknownNetworkBuffs);
+        }
+
         #region Additional Properties
 
         public Guid UUID { get; } = Guid.NewGuid();
@@ -98,7 +208,7 @@ namespace FFXIV.Framework.FFXIVHelper
         /// </summary>
         /// <param name="rawHorizontalPosition"></param>
         /// <returns></returns>
-        private static double ToHorizontalMapPosition(
+        public static double ToHorizontalMapPosition(
             double rawHorizontalPosition)
         {
             const double Offset = 21.5;
@@ -111,7 +221,7 @@ namespace FFXIV.Framework.FFXIVHelper
         /// </summary>
         /// <param name="rawVerticalPosition"></param>
         /// <returns></returns>
-        private static double ToVerticalMapPosition(
+        public static double ToVerticalMapPosition(
             double rawVerticalPosition)
         {
             const double Offset = 1.0;
@@ -183,7 +293,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public static readonly string UnknownName = "Unknown";
 
-        private static string NameToInitial(
+        public static string NameToInitial(
             string name,
             NameStyles style)
         {
@@ -508,5 +618,25 @@ namespace FFXIV.Framework.FFXIVHelper
         #endregion ICloneable
 
         public override string ToString() => $"{this.Name} {this.JobID}";
+
+        public void NotifyProperties()
+        {
+            var pis = this.GetType().GetProperties();
+
+            WPFHelper.BeginInvoke(() =>
+            {
+                foreach (var pi in pis)
+                {
+                    this.RaisePropertyChanged(pi.Name);
+                }
+            });
+        }
+    }
+
+    public static class CombatantExtensions
+    {
+        public static Actor.Type GetActorType(
+            this Combatant c)
+            => (Actor.Type)Enum.ToObject(typeof(Actor.Type), c.type);
     }
 }

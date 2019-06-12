@@ -526,7 +526,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            var combatant = default(Combatant);
+            var combatant = default(CombatantEx);
             foreach (Group g in tri.SyncMatch.Groups)
             {
                 foreach (Capture cap in g.Captures)

@@ -220,10 +220,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.Tolerance = float.TryParse(value, out var v) ? v : (float?)null;
         }
 
-        private Combatant actualCombatant;
+        private CombatantEx actualCombatant;
 
         [XmlIgnore]
-        public Combatant ActualCombatant
+        public CombatantEx ActualCombatant
         {
             get => this.actualCombatant;
             set => this.SetProperty(ref this.actualCombatant, value);

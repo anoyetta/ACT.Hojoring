@@ -601,8 +601,8 @@ namespace ACT.SpecialSpellTimer.Config.Views
                         continue;
                     }
 
-                    var combatant = new Combatant();
-                    combatant.ObjectType = Actor.Type.PC;
+                    var combatant = new CombatantEx();
+                    combatant.Type = (byte)Actor.Type.PC;
                     combatant.SetName(dummy.Name);
                     combatant.Job = (byte)dummy.Job;
 
