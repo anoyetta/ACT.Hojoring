@@ -44,7 +44,7 @@ namespace FFXIV.Framework.FFXIVHelper
             var list = new List<string>();
             foreach (var entry in this.pcNameList)
             {
-                list.AddRange(entry.Name.GetNames());
+                list.AddRange(CombatantEx.GetNames(entry.Name));
             }
 
             return list.ToArray();

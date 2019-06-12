@@ -14,7 +14,6 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using FFXIV_ACT_Plugin.Common;
-using FFXIV_ACT_Plugin.Common.Models;
 using Microsoft.VisualBasic.FileIO;
 using Sharlayan.Core;
 using Sharlayan.Core.Enums;
@@ -350,11 +349,11 @@ namespace FFXIV.Framework.FFXIVHelper
         private volatile int exceptionCounter = 0;
         private const int ExceptionCountLimit = 10;
 
-        private readonly IReadOnlyList<Combatant> EmptyCombatantList = new List<Combatant>();
+        private readonly IReadOnlyList<CombatantEx> EmptyCombatantList = new List<CombatantEx>();
 
-        private IReadOnlyDictionary<uint, Combatant> combatantDictionary = new Dictionary<uint, Combatant>();
-        private IReadOnlyList<Combatant> combatantList = new List<Combatant>();
-        private IReadOnlyList<Combatant> partyList = new List<Combatant>();
+        private IReadOnlyDictionary<uint, CombatantEx> combatantDictionary = new Dictionary<uint, CombatantEx>();
+        private IReadOnlyList<CombatantEx> combatantList = new List<CombatantEx>();
+        private IReadOnlyList<CombatantEx> partyList = new List<CombatantEx>();
 
         public int CombatantPCCount { get; private set; }
 
@@ -367,7 +366,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #region Dummy Combatants
 
-        private static readonly Combatant DummyPlayer = new Combatant()
+        private static readonly CombatantEx DummyPlayer = new CombatantEx()
         {
             ID = 1,
             Name = "Me Taro",
@@ -378,14 +377,14 @@ namespace FFXIV.Framework.FFXIVHelper
             MaxTP = 3000,
             CurrentTP = 3000,
             Job = (int)JobIDs.PLD,
-            type = (byte)Actor.Type.PC,
+            Type = (byte)Actor.Type.PC,
         };
 
-        private readonly List<Combatant> DummyCombatants = new List<Combatant>()
+        private readonly List<CombatantEx> DummyCombatants = new List<CombatantEx>()
         {
             DummyPlayer,
 
-            new Combatant()
+            new CombatantEx()
             {
                 ID = 2,
                 Name = "Warrior Jiro",
@@ -396,10 +395,10 @@ namespace FFXIV.Framework.FFXIVHelper
                 MaxTP = 3000,
                 CurrentTP = 3000,
                 Job = (int)JobIDs.WAR,
-                type = (byte)Actor.Type.PC,
+                Type = (byte)Actor.Type.PC,
             },
 
-            new Combatant()
+            new CombatantEx()
             {
                 ID = 3,
                 Name = "White Hanako",
@@ -410,10 +409,10 @@ namespace FFXIV.Framework.FFXIVHelper
                 MaxTP = 3000,
                 CurrentTP = 3000,
                 Job = (int)JobIDs.WHM,
-                type = (byte)Actor.Type.PC,
+                Type = (byte)Actor.Type.PC,
             },
 
-            new Combatant()
+            new CombatantEx()
             {
                 ID = 4,
                 Name = "Astro Himeko",
@@ -424,7 +423,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 MaxTP = 3000,
                 CurrentTP = 3000,
                 Job = (int)JobIDs.AST,
-                type = (byte)Actor.Type.PC,
+                Type = (byte)Actor.Type.PC,
             },
         };
 
@@ -439,12 +438,12 @@ namespace FFXIV.Framework.FFXIVHelper
             EventArgs
         {
             public AddedCombatantsEventArgs(
-                IEnumerable<Combatant> newCombatants)
+                IEnumerable<CombatantEx> newCombatants)
             {
                 this.NewCombatants = newCombatants.ToList();
             }
 
-            public IReadOnlyList<Combatant> NewCombatants { get; private set; }
+            public IReadOnlyList<CombatantEx> NewCombatants { get; private set; }
         }
 
         public event EventHandler<AddedCombatantsEventArgs> AddedCombatants;
@@ -474,15 +473,15 @@ namespace FFXIV.Framework.FFXIVHelper
                 this.RefreshPartyList();
                 this.RefreshBoss();
                 this.InCombat = this.RefreshInCombat();
-                this.CombatantPCCount = this.combatantList.Count(x => x.GetActorType() == Actor.Type.PC);
+                this.CombatantPCCount = this.combatantList.Count(x => x.ActorType == Actor.Type.PC);
             }
 
             setNewCombatants(SharlayanHelper.Instance.PCCombatants);
 
-            void setNewCombatants(List<Combatant> newCombatants)
+            void setNewCombatants(List<CombatantEx> newCombatants)
             {
                 var addedCombatants = newCombatants
-                    .Except(this.combatantList, Combatanttensions.CombatantEqualityComparer)
+                    .Except(this.combatantList, CombatantEx.CombatantExEqualityComparer)
                     .ToList();
 
                 if (addedCombatants.Any())
@@ -604,7 +603,7 @@ namespace FFXIV.Framework.FFXIVHelper
         }
 
         public void SetSkillName(
-            Combatant combatant)
+            CombatantEx combatant)
         {
             if (combatant == null)
             {
@@ -635,13 +634,13 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #region Get Combatants
 
-        public Combatant GetPlayer() => IsDebug ?
+        public CombatantEx GetPlayer() => IsDebug ?
             ReaderEx.CurrentPlayerCombatant ?? DummyPlayer :
             ReaderEx.CurrentPlayerCombatant;
 
-        public IReadOnlyList<Combatant> GetCombatantList() => new List<Combatant>(this.combatantList);
+        public IReadOnlyList<CombatantEx> GetCombatantList() => new List<CombatantEx>(this.combatantList);
 
-        public IReadOnlyList<Combatant> GetPartyList() => this.partyList ?? this.EmptyCombatantList;
+        public IReadOnlyList<CombatantEx> GetPartyList() => this.partyList ?? this.EmptyCombatantList;
 
         public int PartyMemberCount => SharlayanHelper.Instance.PartyMemberCount;
 
@@ -659,30 +658,30 @@ namespace FFXIV.Framework.FFXIVHelper
             var partyList = this.GetPartyList();
 
             var tanks = partyList
-                .Where(x => x.AsJob().Role == Roles.Tank)
+                .Where(x => x.Role == Roles.Tank)
                 .ToList();
 
             var dpses = partyList
                 .Where(x =>
-                    x.AsJob().Role == Roles.MeleeDPS ||
-                    x.AsJob().Role == Roles.RangeDPS ||
-                    x.AsJob().Role == Roles.MagicDPS)
+                    x.Role == Roles.MeleeDPS ||
+                    x.Role == Roles.RangeDPS ||
+                    x.Role == Roles.MagicDPS)
                 .ToList();
 
             var melees = partyList
-                .Where(x => x.AsJob().Role == Roles.MeleeDPS)
+                .Where(x => x.Role == Roles.MeleeDPS)
                 .ToList();
 
             var ranges = partyList
-                .Where(x => x.AsJob().Role == Roles.RangeDPS)
+                .Where(x => x.Role == Roles.RangeDPS)
                 .ToList();
 
             var magics = partyList
-                .Where(x => x.AsJob().Role == Roles.MagicDPS)
+                .Where(x => x.Role == Roles.MagicDPS)
                 .ToList();
 
             var healers = partyList
-                .Where(x => x.AsJob().Role == Roles.Healer)
+                .Where(x => x.Role == Roles.Healer)
                 .ToList();
 
             if (tanks.Any())
@@ -741,7 +740,7 @@ namespace FFXIV.Framework.FFXIVHelper
         /// </summary>
         /// <param name="name">名前</param>
         /// <returns>Combatant</returns>
-        public Combatant GetCombatant(
+        public CombatantEx GetCombatant(
             string name)
             => this.GetCombatantList().FirstOrDefault(x =>
                 string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase) ||
@@ -754,7 +753,7 @@ namespace FFXIV.Framework.FFXIVHelper
         #region Get Targets
 
         private static readonly object BossLock = new object();
-        private Combatant currentBoss;
+        private CombatantEx currentBoss;
         private string currentBossZoneName;
 
         public Func<double> GetBossHPThresholdCallback { get; set; }
@@ -795,7 +794,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 {
                     if (this.currentBoss != null)
                     {
-                        if (this.currentBoss.ObjectType != Actor.Type.Monster ||
+                        if (this.currentBoss.ActorType != Actor.Type.Monster ||
                             this.currentBossZoneName != currentZoneName)
                         {
                             this.currentBoss = null;
@@ -806,7 +805,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
 
                 // パーティのHP平均値を算出する
-                var players = party.Where(x => x.ObjectType == Actor.Type.PC);
+                var players = party.Where(x => x.ActorType == Actor.Type.PC);
                 if (!players.Any())
                 {
                     this.currentBoss = null;
@@ -828,7 +827,7 @@ namespace FFXIV.Framework.FFXIVHelper
                     where
                     (!x.Name?.Contains("Typeid") ?? false) &&
                     x.MaxHP >= threshold &&
-                    x.ObjectType == Actor.Type.Monster &&
+                    x.ActorType == Actor.Type.Monster &&
                     x.CurrentHP > 0
                     orderby
                     x.Level descending,
@@ -876,7 +875,7 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public Combatant GetBossInfo()
+        public CombatantEx GetBossInfo()
         {
             if (!this.IsAvailable)
             {
@@ -893,7 +892,7 @@ namespace FFXIV.Framework.FFXIVHelper
             OverlayType type)
             => this.GetTargetInfo(type)?.ID ?? 0;
 
-        public Combatant GetTargetInfo(
+        public CombatantEx GetTargetInfo(
             OverlayType type)
         {
             var actor = default(ActorItem);
@@ -1432,14 +1431,14 @@ namespace FFXIV.Framework.FFXIVHelper
             public CombatantsByRole(
                 Roles roleType,
                 string roleLabel,
-                IReadOnlyList<Combatant> combatants)
+                IReadOnlyList<CombatantEx> combatants)
             {
                 this.RoleType = roleType;
                 this.RoleLabel = roleLabel;
                 this.Combatants = combatants;
             }
 
-            public IReadOnlyList<Combatant> Combatants { get; set; }
+            public IReadOnlyList<CombatantEx> Combatants { get; set; }
             public string RoleLabel { get; set; }
             public Roles RoleType { get; set; }
         }

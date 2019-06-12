@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
-using FFXIV_ACT_Plugin.Common.Models;
 using Sharlayan;
 using Sharlayan.Core;
 using Sharlayan.Core.Enums;
@@ -185,13 +184,13 @@ namespace FFXIV.Framework.FFXIVHelper
         }
 
         private readonly List<ActorItem> ActorList = new List<ActorItem>(512);
-        private readonly List<Combatant> ActorPCCombatantList = new List<Combatant>(512);
-        private readonly List<Combatant> ActorCombatantList = new List<Combatant>(512);
+        private readonly List<CombatantEx> ActorPCCombatantList = new List<CombatantEx>(512);
+        private readonly List<CombatantEx> ActorCombatantList = new List<CombatantEx>(512);
         private readonly Dictionary<uint, ActorItem> ActorDictionary = new Dictionary<uint, ActorItem>(512);
         private readonly Dictionary<uint, ActorItem> NPCActorDictionary = new Dictionary<uint, ActorItem>(512);
 
-        private readonly Dictionary<uint, Combatant> CombatantsDictionary = new Dictionary<uint, Combatant>(5120);
-        private readonly Dictionary<uint, Combatant> NPCCombatantsDictionary = new Dictionary<uint, Combatant>(5120);
+        private readonly Dictionary<uint, CombatantEx> CombatantsDictionary = new Dictionary<uint, CombatantEx>(5120);
+        private readonly Dictionary<uint, CombatantEx> NPCCombatantsDictionary = new Dictionary<uint, CombatantEx>(5120);
 
         public Func<uint, (int WorldID, string WorldName)> GetWorldInfoCallback { get; set; }
 
@@ -201,7 +200,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private static readonly object CombatantsLock = new object();
 
-        public List<Combatant> PCCombatants
+        public List<CombatantEx> PCCombatants
         {
             get
             {
@@ -212,7 +211,7 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public List<Combatant> Combatants
+        public List<CombatantEx> Combatants
         {
             get
             {
@@ -519,7 +518,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
                         if (string.IsNullOrEmpty(enmity.Name))
                         {
-                            enmity.Name = Combatant.UnknownName;
+                            enmity.Name = CombatantEx.UnknownName;
                         }
 
                         this.EnmityDictionary[enmity.ID] = enmity;
@@ -627,10 +626,10 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public List<Combatant> ToCombatantList(
+        public List<CombatantEx> ToCombatantList(
             IEnumerable<ActorItem> actors)
         {
-            var combatantList = new List<Combatant>(actors.Count());
+            var combatantList = new List<CombatantEx>(actors.Count());
 
             foreach (var actor in actors)
             {
@@ -642,7 +641,7 @@ namespace FFXIV.Framework.FFXIVHelper
             return combatantList;
         }
 
-        public Combatant ToCombatant(
+        public CombatantEx ToCombatant(
             ActorItem actor)
         {
             if (actor == null)
@@ -653,7 +652,7 @@ namespace FFXIV.Framework.FFXIVHelper
             return this.TryGetOrNewCombatant(actor);
         }
 
-        private Combatant TryGetOrNewCombatant(
+        private CombatantEx TryGetOrNewCombatant(
             ActorItem actor)
         {
             if (actor == null)
@@ -661,7 +660,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 return null;
             }
 
-            var combatant = default(Combatant);
+            var combatant = default(CombatantEx);
             var dictionary = !actor.IsNPC() ?
                 this.CombatantsDictionary :
                 this.NPCCombatantsDictionary;
@@ -681,15 +680,15 @@ namespace FFXIV.Framework.FFXIVHelper
             return combatant;
         }
 
-        private Combatant CreateCombatant(
+        private CombatantEx CreateCombatant(
             ActorItem actor,
-            Combatant current = null)
+            CombatantEx current = null)
         {
-            var c = current ?? new Combatant();
+            var c = current ?? new CombatantEx();
 
             c.ActorItem = actor;
             c.ID = actor.ID;
-            c.ObjectType = actor.Type;
+            c.Type = (byte)actor.Type;
             c.Name = actor.Name;
             c.Level = actor.Level;
             c.Job = (byte)actor.Job;
@@ -737,7 +736,7 @@ namespace FFXIV.Framework.FFXIVHelper
         }
 
         public void SetTargetOfTarget(
-            Combatant player)
+            CombatantEx player)
         {
             if (!player.IsPlayer ||
                 player.TargetID == 0)
@@ -779,7 +778,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 foreach (var dictionary in array)
                 {
                     dictionary
-                        .Where(x => (now - x.Value.GetTimestamp()).TotalSeconds > threshold)
+                        .Where(x => (now - x.Value.Timestamp).TotalSeconds > threshold)
                         .ToArray()
                         .Walk(x =>
                         {
@@ -797,7 +796,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
     public static class ActorItemExtensions
     {
-        public static List<Combatant> ToCombatantList(
+        public static List<CombatantEx> ToCombatantList(
             this IEnumerable<ActorItem> actors)
             => SharlayanHelper.Instance.ToCombatantList(actors);
 
@@ -810,8 +809,8 @@ namespace FFXIV.Framework.FFXIVHelper
             => IsNPC(actor?.Type);
 
         public static bool IsNPC(
-            this Combatant actor)
-            => IsNPC(actor?.GetActorType());
+            this CombatantEx actor)
+            => IsNPC(actor?.ActorType);
 
         private static bool IsNPC(
             Actor.Type? actorType)
@@ -859,7 +858,7 @@ namespace FFXIV.Framework.FFXIVHelper
     {
         public static ActorItem CurrentPlayer { get; private set; }
 
-        public static Combatant CurrentPlayerCombatant { get; private set; }
+        public static CombatantEx CurrentPlayerCombatant { get; private set; }
 
         public static ProcessModel ProcessModel { get; private set; }
 
