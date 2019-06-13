@@ -117,7 +117,7 @@ namespace ACT.SpecialSpellTimer.Views
             }
             else
             {
-                var player = FFXIVPlugin.Instance.GetPlayer();
+                var player = CombatantsManager.Instance.Player;
                 if (player == null)
                 {
                     this.BaseGrid.Visibility = Visibility.Hidden;

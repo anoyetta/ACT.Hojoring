@@ -398,7 +398,7 @@ namespace ACT.XIVLog
                 return;
             }
 
-            var combatants = FFXIVPlugin.Instance?.GetCombatantList()?
+            var combatants = CombatantsManager.Instance.GetCombatants()
                 .Where(x => x.ActorType == Actor.Type.PC);
 
             if (combatants == null)

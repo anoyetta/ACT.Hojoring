@@ -38,7 +38,7 @@ namespace ACT.UltraScouter.Workers
 
         protected override void GetCombatant()
         {
-            var ti = FFXIVPlugin.Instance.GetPlayer();
+            var ti = CombatantsManager.Instance.Player;
 
             if (!string.IsNullOrEmpty(this.DummyAction))
             {

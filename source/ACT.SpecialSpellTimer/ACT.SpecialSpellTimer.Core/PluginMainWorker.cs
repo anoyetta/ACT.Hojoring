@@ -502,7 +502,7 @@ namespace ACT.SpecialSpellTimer
             this.lastWipeOutDetectDateTime = DateTime.Now;
 
             var party = default(IEnumerable<CombatantEx>);
-            party = FFXIVPlugin.Instance.GetPartyList();
+            party = CombatantsManager.Instance.GetPartyList();
 
             if (party == null ||
                 party.Count() < 1)
@@ -533,7 +533,7 @@ namespace ACT.SpecialSpellTimer
                 }
             }
 
-            var player = FFXIVPlugin.Instance.GetPlayer();
+            var player = CombatantsManager.Instance.Player;
             if (player != null)
             {
                 switch (player.JobInfo.Role)

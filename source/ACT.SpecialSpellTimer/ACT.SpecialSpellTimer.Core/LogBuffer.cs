@@ -482,7 +482,7 @@ namespace ACT.SpecialSpellTimer
             }
 
             // プレイヤー情報を取得する
-            var player = FFXIVPlugin.Instance.GetPlayer();
+            var player = CombatantsManager.Instance.Player;
 
             // プレイヤーが召喚士か？
             var palyerIsSummoner = false;
@@ -642,9 +642,9 @@ namespace ACT.SpecialSpellTimer
         {
             var result = false;
 
-            var party = FFXIVPlugin.Instance.GetPartyList();
+            var party = CombatantsManager.Instance.GetPartyList();
             if (party == null ||
-                party.Count < 1)
+                party.Count() < 1)
             {
                 return result;
             }
@@ -675,7 +675,7 @@ namespace ACT.SpecialSpellTimer
                 return false;
             }
 
-            if (FFXIVPlugin.Instance.CombatantPCCount <= 16)
+            if (CombatantsManager.Instance.CombatantsPCCount <= 16)
             {
                 return false;
             }
@@ -754,7 +754,7 @@ namespace ACT.SpecialSpellTimer
         public static void DumpPosition(
             bool isAuto = false)
         {
-            var player = FFXIVPlugin.Instance.GetPlayer();
+            var player = CombatantsManager.Instance.Player;
             if (player == null)
             {
                 return;

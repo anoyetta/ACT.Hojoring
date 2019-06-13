@@ -48,8 +48,8 @@ namespace ACT.TTSYukkuri
         public void WatchParty()
         {
             // パーティメンバの情報を取得する
-            var player = FFXIVPlugin.Instance.GetPlayer();
-            var partyList = FFXIVPlugin.Instance.GetPartyList();
+            var player = CombatantsManager.Instance.Player;
+            var partyList = CombatantsManager.Instance.GetPartyList();
 
             // パーティリストに存在しないメンバの前回の状態を消去する
             this.previouseParyMemberList.RemoveAll(x =>

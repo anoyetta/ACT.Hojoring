@@ -13,7 +13,6 @@ using ACT.UltraScouter.ViewModels.Bases;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
-using Sharlayan.Core;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.ViewModels
@@ -69,24 +68,24 @@ namespace ACT.UltraScouter.ViewModels
         public ICollectionView TacticalTargetView => this.TacticalTargetListSource.View;
 
         public void UpdateTargets(
-            IEnumerable<ActorItem> actors)
+            IEnumerable<CombatantEx> combatants)
         {
             if (this.Config.IsDesignMode ||
                 WPFHelper.IsDesignMode)
             {
-                actors = DesignTimeActorList;
+                combatants = DesignTimeCombatantList;
             }
 
             // ゴミを除去しておく
-            actors = actors.Where(x =>
+            combatants = combatants.Where(x =>
                 !string.IsNullOrEmpty(x.Name) &&
                 !x.Name.ContainsIgnoreCase("typeid"));
 
             using (this.TacticalTargetListSource.DeferRefresh())
             {
-                foreach (var actor in actors)
+                foreach (var combatant in combatants)
                 {
-                    var clone = actor.Clone();
+                    var clone = combatant.Clone();
 
                     var exists = this.TacticalTargetList.FirstOrDefault(x => x.ID == clone.UUID);
                     if (exists != null)
@@ -119,7 +118,7 @@ namespace ACT.UltraScouter.ViewModels
                 }
 
                 var toRemoveTargets = this.TacticalTargetList
-                    .Where(x => !actors.Any(y => y.UUID == x.ID))
+                    .Where(x => !combatants.Any(y => y.UUID == x.ID))
                     .ToArray();
 
                 foreach (var item in toRemoveTargets)
@@ -193,7 +192,7 @@ namespace ACT.UltraScouter.ViewModels
                     break;
 
                 case DirectionOrigin.Me:
-                    var player = FFXIVPlugin.Instance.GetPlayer();
+                    var player = CombatantsManager.Instance.Player;
                     if (player != null)
                     {
                         angle = player.HeadingDegree * -1;
@@ -213,48 +212,53 @@ namespace ACT.UltraScouter.ViewModels
 
         #region Design Time List
 
-        private static readonly ActorItem[] DesignTimeActorList = new[]
+        private static readonly CombatantEx[] DesignTimeCombatantList = new[]
         {
-            new ActorItem()
+            new CombatantEx()
             {
-                UUID = Guid.NewGuid().ToString(),
                 Name = "ガルーダ",
-                Type = Actor.Type.Monster,
-                Coordinate = new Coordinate(0, 0, 0),
+                Type = (byte)Actor.Type.Monster,
+                PosX = 0,
+                PosY = 0,
+                PosZ = 0,
             },
 
-            new ActorItem()
+            new CombatantEx()
             {
-                UUID = Guid.NewGuid().ToString(),
                 Name = "イフリート",
-                Type = Actor.Type.Monster,
-                Coordinate = new Coordinate(0, 0, 0),
+                Type = (byte)Actor.Type.Monster,
+                PosX = 0,
+                PosY = 0,
+                PosZ = 0,
             },
 
-            new ActorItem()
+            new CombatantEx()
             {
-                UUID = Guid.NewGuid().ToString(),
                 Name = "タイタン",
-                Type = Actor.Type.Monster,
-                Coordinate = new Coordinate(0, 0, 0),
+                Type = (byte)Actor.Type.Monster,
+                PosX = 0,
+                PosY = 0,
+                PosZ = 0,
             },
 
-            new ActorItem()
+            new CombatantEx()
             {
-                UUID = Guid.NewGuid().ToString(),
                 Name = "Himechan Hanako",
-                Type = Actor.Type.PC,
-                Job = Actor.Job.WHM,
-                Coordinate = new Coordinate(0, 0, 0),
+                Type = (byte)Actor.Type.PC,
+                Job = (int)Actor.Job.WHM,
+                PosX = 0,
+                PosY = 0,
+                PosZ = 0,
             },
 
-            new ActorItem()
+            new CombatantEx()
             {
-                UUID = Guid.NewGuid().ToString(),
                 Name = "Fairy Princess",
-                Type = Actor.Type.PC,
-                Job = Actor.Job.SCH,
-                Coordinate = new Coordinate(0, 0, 0),
+                Type = (byte)Actor.Type.PC,
+                Job = (int)Actor.Job.WHM,
+                PosX = 0,
+                PosY = 0,
+                PosZ = 0,
             },
         };
 

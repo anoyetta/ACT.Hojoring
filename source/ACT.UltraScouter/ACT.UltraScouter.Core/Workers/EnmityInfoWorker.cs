@@ -257,7 +257,7 @@ namespace ACT.UltraScouter.Workers
                 return;
             }
 
-            var player = SharlayanHelper.Instance.CurrentPlayer;
+            var player = CombatantsManager.Instance.Player;
             if (player == null)
             {
                 return;
@@ -286,9 +286,10 @@ namespace ACT.UltraScouter.Workers
             {
                 lock (LogLocker)
                 {
-                    if (this.currentInCombat != player.InCombat)
+                    var inCombat = FFXIVPlugin.Instance.InCombat;
+                    if (this.currentInCombat != inCombat)
                     {
-                        this.currentInCombat = player.InCombat;
+                        this.currentInCombat = inCombat;
 
                         if (this.currentInCombat)
                         {
@@ -339,7 +340,7 @@ namespace ACT.UltraScouter.Workers
                         fields.Add(now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
                         fields.Add("\"" + this.TargetInfo.Name + "\"");
 
-                        var party = FFXIVPlugin.Instance.GetPartyList();
+                        var party = CombatantsManager.Instance.GetPartyList();
 
                         foreach (var member in party)
                         {

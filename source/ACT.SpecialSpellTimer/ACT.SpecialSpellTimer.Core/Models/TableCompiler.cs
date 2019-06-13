@@ -692,7 +692,7 @@ namespace ACT.SpecialSpellTimer.Models
         private void RefreshCombatants()
         {
             var player = default(CombatantEx);
-            var party = default(IReadOnlyList<CombatantEx>);
+            var party = default(IEnumerable<CombatantEx>);
 
             lock (SimulationLocker)
             {
@@ -705,8 +705,8 @@ namespace ACT.SpecialSpellTimer.Models
                 }
                 else
                 {
-                    player = FFXIVPlugin.Instance?.GetPlayer();
-                    party = FFXIVPlugin.Instance?.GetPartyList();
+                    player = CombatantsManager.Instance.Player;
+                    party = CombatantsManager.Instance.GetPartyList();
                 }
             }
 
@@ -1018,7 +1018,7 @@ namespace ACT.SpecialSpellTimer.Models
             // ex. <MELEE>  -> (?<_MELEE>Taro Paladin|Jiro Paladin)
             // ex. <RANGE>  -> (?<_RANGE>Taro Paladin|Jiro Paladin)
             // ex. <MAGIC>  -> (?<_MAGIC>Taro Paladin|Jiro Paladin)
-            var partyListByRole = FFXIVPlugin.Instance.GetPatryListByRole();
+            var partyListByRole = CombatantsManager.Instance.GetPatryListByRole();
             foreach (var role in partyListByRole)
             {
                 names = string.Join("|", role.Combatants.Select(x => x.NamesRegex).ToArray());
@@ -1081,7 +1081,7 @@ namespace ACT.SpecialSpellTimer.Models
                 {
                     try
                     {
-                        var combatants = FFXIVPlugin.Instance.GetCombatantList();
+                        var combatants = CombatantsManager.Instance.GetCombatants();
                         if (combatants == null)
                         {
                             continue;

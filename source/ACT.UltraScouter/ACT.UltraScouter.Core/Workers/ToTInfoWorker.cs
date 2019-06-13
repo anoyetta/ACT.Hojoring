@@ -2,6 +2,7 @@ using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels;
 using FFXIV.Framework.FFXIVHelper;
+using FFXIV_ACT_Plugin.Common;
 
 namespace ACT.UltraScouter.Workers
 {

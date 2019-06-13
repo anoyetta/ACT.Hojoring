@@ -17,7 +17,7 @@ $7z = Get-Item .\tools\7za.exe
 $sln = Get-Item *.sln
 $archives = Get-Item .\archives\
 $libz = Get-Item .\tools\libz.exe
-$cevioLib = Get-Item FFXIV.Framework\Thirdparty\CeVIO.Talk.RemoteService.dll
+$cevioLib = Get-Item .\Thirdparty\CeVIO.Talk.RemoteService.dll
 
 # '●Version'
 $versionContent = $(Get-Content "@MasterVersion.txt").Trim("\r").Trim("\n")
@@ -101,7 +101,8 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "SuperSocket.ClientEngine.dll",
         "WebSocket4Net.dll",
         "MahApps.Metro.IconPacks.dll",
-        "ControlzEx.dll"
+        "ControlzEx.dll",
+        "PropertyChanged.dll"
     )
 
     New-Item -ItemType Directory "references" | Out-Null

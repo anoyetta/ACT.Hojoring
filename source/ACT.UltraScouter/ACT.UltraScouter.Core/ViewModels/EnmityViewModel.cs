@@ -61,7 +61,7 @@ namespace ACT.UltraScouter.ViewModels
 
                 if (this.Config.HideInSolo)
                 {
-                    if (FFXIVPlugin.Instance.PartyMemberCount <= 1)
+                    if (CombatantsManager.Instance.PartyCount <= 1)
                     {
                         return false;
                     }

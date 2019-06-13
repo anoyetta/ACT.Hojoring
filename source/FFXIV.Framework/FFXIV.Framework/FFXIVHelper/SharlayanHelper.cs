@@ -722,7 +722,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
             this.SetTargetOfTarget(c);
 
-            FFXIVPlugin.Instance.SetSkillName(c);
+            CombatantEx.SetSkillName(c);
             c.SetName(actor.Name);
 
             var worldInfo = GetWorldInfoCallback?.Invoke(c.ID);

@@ -5,7 +5,6 @@ using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels;
 using ACT.UltraScouter.Views;
 using FFXIV.Framework.FFXIVHelper;
-using Sharlayan.Core;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Workers
@@ -67,20 +66,22 @@ namespace ACT.UltraScouter.Workers
             }
 
             if (!config.Visible ||
-                !SharlayanHelper.Instance.IsExistsActors ||
+                (CombatantsManager.Instance.CombatantsMainCount + CombatantsManager.Instance.CombatantsOtherCount) <= 0 ||
                 !config.TacticalItems.Any(x => x.IsEnabled))
             {
                 clear();
                 return;
             }
 
-            var player = SharlayanHelper.Instance.CurrentPlayer ??
-                new ActorItem()
+            var player = CombatantsManager.Instance.Player ??
+                new CombatantEx()
                 {
-                    Coordinate = new Coordinate()
+                    PosX = 0,
+                    PosY = 0,
+                    PosZ = 0,
                 };
 
-            var actors = SharlayanHelper.Instance.Actors;
+            var actors = CombatantsManager.Instance.GetCombatants();
 
             var query =
                 from x in actors.Where(x => !string.IsNullOrEmpty(x?.Name))
@@ -92,7 +93,7 @@ namespace ACT.UltraScouter.Workers
                 {
                     Actor = x,
                     Config = y,
-                    Distance2D = x.Coordinate.Distance2D(player.Coordinate),
+                    Distance2D = x.HorizontalDistanceByPlayer,
                 };
 
             if (!query.Any())
@@ -105,24 +106,24 @@ namespace ACT.UltraScouter.Workers
                 where
                 x.Distance2D >= x.Config.DetectRangeMinimum &&
                 x.Distance2D <= x.Config.DetectRangeMaximum &&
-                x.Actor.HPMax != 0 &&
-                x.Actor.HPMax != 1 &&
-                (x.Actor.X + x.Actor.Y + x.Actor.Z) != 0 &&
+                x.Actor.MaxHP != 0 &&
+                x.Actor.MaxHP != 1 &&
+                (x.Actor.PosX + x.Actor.PosY + x.Actor.PosZ) != 0 &&
                 (
                     (
-                        x.Actor.Type == Actor.Type.Monster &&
-                        x.Actor.HPCurrent < x.Actor.HPMax &&
-                        x.Actor.HPCurrent > 0
+                        x.Actor.ActorType == Actor.Type.Monster &&
+                        x.Actor.CurrentHP < x.Actor.MaxHP &&
+                        x.Actor.CurrentHP > 0
                     )
                     ||
                     (
-                        x.Actor.Type == Actor.Type.PC &&
-                        x.Actor.HPCurrent >= 0
+                        x.Actor.ActorType == Actor.Type.PC &&
+                        x.Actor.CurrentHP >= 0
                     )
                     ||
                     (
-                        x.Actor.Type != Actor.Type.Monster &&
-                        x.Actor.Type != Actor.Type.PC
+                        x.Actor.ActorType != Actor.Type.Monster &&
+                        x.Actor.ActorType != Actor.Type.PC
                     )
                 )
                 group x by x.Actor.Name into g
@@ -219,7 +220,7 @@ namespace ACT.UltraScouter.Workers
 
             var model = this.Model as TacticalRadarModel;
 
-            var actors = default(IEnumerable<ActorItem>);
+            var actors = default(IEnumerable<CombatantEx>);
 
             lock (this.TargetInfoLock)
             {

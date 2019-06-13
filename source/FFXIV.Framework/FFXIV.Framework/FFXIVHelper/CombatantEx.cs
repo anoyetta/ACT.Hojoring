@@ -27,6 +27,8 @@ namespace FFXIV.Framework.FFXIVHelper
             var src = source;
             var dst = destination;
 
+            dst.LastUpdateTimestamp = DateTime.Now;
+
             dst.ID = src.ID;
             dst.OwnerID = src.OwnerID;
             dst.Type = src.type;
@@ -73,6 +75,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
             dst.UnknownNetworkBuffs.Clear();
             dst.UnknownNetworkBuffs.AddRange(src.UnknownNetworkBuffs);
+
+            SetSkillName(dst);
         }
 
         public static void CopyToEx(
@@ -81,6 +85,8 @@ namespace FFXIV.Framework.FFXIVHelper
         {
             var src = source;
             var dst = destination;
+
+            dst.LastUpdateTimestamp = DateTime.Now;
 
             dst.ID = src.ID;
             dst.OwnerID = src.OwnerID;
@@ -128,6 +134,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
             dst.UnknownNetworkBuffs.Clear();
             dst.UnknownNetworkBuffs.AddRange(src.UnknownNetworkBuffs);
+
+            dst.CastSkillName = src.CastSkillName;
         }
 
         #region Additional Properties
@@ -136,9 +144,11 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public DateTime Timestamp { get; } = DateTime.Now;
 
+        public DateTime LastUpdateTimestamp { get; private set; } = DateTime.Now;
+
         public ActorItemBase ActorItem { get; set; }
 
-        public CombatantEx Player => FFXIVPlugin.Instance.GetPlayer();
+        public CombatantEx Player => CombatantsManager.Instance.Player;
 
         public bool IsPlayer => this.ID == this.Player?.ID;
 
@@ -227,6 +237,39 @@ namespace FFXIV.Framework.FFXIVHelper
             const double Offset = 1.0;
             const double Pitch = 100.0;
             return ((rawVerticalPosition - Offset) / Pitch) + 0.01;
+        }
+
+        public static void SetSkillName(
+            CombatantEx combatant)
+        {
+            if (combatant == null ||
+                combatant.ActorType == Actor.Type.PC ||
+                combatant.ActorType == Actor.Type.Monster)
+            {
+                combatant.CastSkillName = string.Empty;
+                return;
+            }
+
+            var skills = FFXIVPlugin.Instance.SkillList;
+
+            if (combatant.IsCasting)
+            {
+                if (skills != null &&
+                    skills.ContainsKey((uint)combatant.CastBuffID))
+                {
+                    combatant.CastSkillName =
+                        skills[(uint)combatant.CastBuffID].Name;
+                }
+                else
+                {
+                    combatant.CastSkillName =
+                        $"UNKNOWN:{combatant.CastBuffID}";
+                }
+            }
+            else
+            {
+                combatant.CastSkillName = string.Empty;
+            }
         }
 
         #endregion Additional Properties

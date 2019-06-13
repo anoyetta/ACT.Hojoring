@@ -88,7 +88,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             var name = IS_TOT_ME;
 
-            var player = FFXIVPlugin.Instance.GetPlayer();
+            var player = CombatantsManager.Instance.Player;
             if (player != null)
             {
                 if (player.TargetOfTargetID != 0)

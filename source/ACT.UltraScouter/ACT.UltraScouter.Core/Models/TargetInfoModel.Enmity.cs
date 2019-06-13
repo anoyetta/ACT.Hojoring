@@ -230,7 +230,7 @@ namespace ACT.UltraScouter.Models
                         return;
                     }
 
-                    var partyCount = FFXIVPlugin.Instance.PartyMemberCount;
+                    var partyCount = CombatantsManager.Instance.PartyCount;
                     if (config.HideInSolo)
                     {
                         if (partyCount <= 1)

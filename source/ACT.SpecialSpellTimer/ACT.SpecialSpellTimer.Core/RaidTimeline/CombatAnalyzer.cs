@@ -218,7 +218,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 if (this.combatants == null)
                 {
                     // プレイヤ情報とパーティリストを取得する
-                    var ptlist = FFXIVPlugin.Instance.GetPartyList();
+                    var ptlist = CombatantsManager.Instance.GetPartyList();
 
                     this.combatants = ptlist.Where(x => x != null).ToList();
                 }

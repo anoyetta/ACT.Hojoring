@@ -626,7 +626,7 @@ namespace ACT.UltraScouter.Models
                 if (string.IsNullOrEmpty(characterName) ||
                     string.IsNullOrEmpty(serverName))
                 {
-                    var player = FFXIVPlugin.Instance.GetPlayer();
+                    var player = CombatantsManager.Instance.Player;
 
                     if (string.IsNullOrEmpty(characterName))
                     {

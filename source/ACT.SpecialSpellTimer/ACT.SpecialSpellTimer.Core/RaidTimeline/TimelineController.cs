@@ -1375,7 +1375,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // Combatantsを取得する
-            var combatants = FFXIVPlugin.Instance.GetCombatantList();
+            var combatants = CombatantsManager.Instance.GetCombatants();
             if (!combatants.Any())
             {
                 return;
@@ -1549,7 +1549,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (DumpStartsUsingLock)
             {
-                var castingCombatants = FFXIVPlugin.Instance.GetCombatantList()
+                var castingCombatants = CombatantsManager.Instance.GetCombatants()
                     .Where(x =>
                         x.ActorType == Actor.Type.Monster &&
                         x.IsCasting)

@@ -80,7 +80,7 @@ namespace ACT.UltraScouter.ViewModels
                     break;
 
                 case DirectionOrigin.Me:
-                    var player = FFXIVPlugin.Instance.GetPlayer();
+                    var player = CombatantsManager.Instance.Player;
                     if (player != null)
                     {
                         angle = player.HeadingDegree * -1;

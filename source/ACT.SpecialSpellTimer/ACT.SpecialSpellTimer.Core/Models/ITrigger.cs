@@ -128,7 +128,7 @@ namespace ACT.SpecialSpellTimer.Models
             }
             else
             {
-                var currentPartyComposition = FFXIVPlugin.Instance.PartyComposition.ToString();
+                var currentPartyComposition = CombatantsManager.Instance.PartyComposition.ToString();
                 var filters = trigger.PartyCompositionFilter.Split(',');
                 if (filters.Any(x =>
                     string.Equals(

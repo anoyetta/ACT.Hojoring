@@ -6,14 +6,13 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.FFXIVHelper;
 using Prism.Mvvm;
-using Sharlayan.Core;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Models
 {
     public class TacticalTarget : BindableBase
     {
-        public string ID => this.targetActor?.UUID;
+        public Guid ID => this.targetActor?.UUID ?? Guid.Empty;
 
         private int order;
 
@@ -35,7 +34,7 @@ namespace ACT.UltraScouter.Models
             }
             else
             {
-                if (this.TargetActor.Type == Actor.Type.PC)
+                if (this.TargetActor.ActorType == Actor.Type.PC)
                 {
                     this.Name = CombatantEx.NameToInitial(
                         this.TargetActor.Name,
@@ -50,21 +49,18 @@ namespace ACT.UltraScouter.Models
             this.HeadingAngle =
                 (this.Heading / CameraInfo.HeadingRange) * 360.0 * -1.0;
 
-            var player = SharlayanHelper.Instance.CurrentPlayer;
+            var player = CombatantsManager.Instance.Player;
             if (player == null)
             {
                 return;
             }
 
-            this.Distance = Math.Round(Math.Sqrt(
-                Math.Pow(this.X - player.X, 2) +
-                Math.Pow(this.Y - player.Y, 2)),
-                1, MidpointRounding.AwayFromZero);
+            this.Distance = this.targetActor.HorizontalDistanceByPlayer;
 
-            var x1 = player.X;
-            var y1 = player.Y;
-            var x2 = this.targetActor.X;
-            var y2 = this.targetActor.Y;
+            var x1 = player.PosX;
+            var y1 = player.PosY;
+            var x2 = this.targetActor.PosX;
+            var y2 = this.targetActor.PosY;
 
             var rad = Math.Atan2(
                 y2 - y1,
@@ -73,9 +69,9 @@ namespace ACT.UltraScouter.Models
             this.DirectionAngle = rad * 180.0 / Math.PI;
         }
 
-        private ActorItem targetActor;
+        private CombatantEx targetActor;
 
-        public ActorItem TargetActor
+        public CombatantEx TargetActor
         {
             get => this.targetActor;
             set
@@ -113,11 +109,11 @@ namespace ACT.UltraScouter.Models
             set => this.SetProperty(ref this.targetConfig, value);
         }
 
-        public bool IsPC => this.TargetActor?.Type == Actor.Type.PC;
+        public bool IsPC => this.TargetActor?.ActorType == Actor.Type.PC;
 
-        public bool IsMonster => this.TargetActor?.Type == Actor.Type.Monster;
+        public bool IsMonster => this.TargetActor?.ActorType == Actor.Type.Monster;
 
-        public BitmapSource JobIcon => JobIconDictionary.Instance.GetIcon(this.TargetActor?.Job ?? Actor.Job.Unknown);
+        public BitmapSource JobIcon => JobIconDictionary.Instance.GetIcon(this.TargetActor?.JobID ?? JobIDs.Unknown);
 
         public bool IsExistsName => !string.IsNullOrEmpty(this.name);
 
@@ -160,8 +156,8 @@ namespace ACT.UltraScouter.Models
         }
 
         public double Heading => this.targetActor?.Heading ?? 0;
-        public double X => this.targetActor?.X ?? 0;
-        public double Y => this.targetActor?.Y ?? 0;
-        public double Z => this.targetActor?.Z ?? 0;
+        public double X => this.targetActor?.PosX ?? 0;
+        public double Y => this.targetActor?.PosY ?? 0;
+        public double Z => this.targetActor?.PosZ ?? 0;
     }
 }

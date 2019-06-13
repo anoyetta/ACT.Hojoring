@@ -10,6 +10,7 @@ using ACT.UltraScouter.Views;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.WPF.Views;
+using FFXIV_ACT_Plugin.Common;
 using NLog;
 using Sharlayan.Core.Enums;
 

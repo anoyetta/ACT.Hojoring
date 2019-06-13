@@ -132,13 +132,13 @@
     <Compile Include="Extensions\TimeSpanExtensions.cs" />
     <Compile Include="FFXIVHelper\Buff.cs" />
     <Compile Include="FFXIVHelper\CameraInfo.cs" />
+    <Compile Include="FFXIVHelper\CombatantsManager.cs" />
     <Compile Include="FFXIVHelper\CombatantEx.cs" />
     <Compile Include="FFXIVHelper\EnmityEntry.cs" />
     <Compile Include="FFXIVHelper\FFXIVPlugin.cs" />
     <Compile Include="FFXIVHelper\Jobs.cs" />
     <Compile Include="FFXIVHelper\MessageType.cs" />
     <Compile Include="FFXIVHelper\NameStyles.cs" />
-    <Compile Include="FFXIVHelper\OverlayType.cs" />
     <Compile Include="FFXIVHelper\PCNameDictionary.cs" />
     <Compile Include="FFXIVHelper\PCOrder.cs" />
     <Compile Include="FFXIVHelper\SharlayanHelper.cs" />

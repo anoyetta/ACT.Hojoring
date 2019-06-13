@@ -599,8 +599,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             var model = new TimelineRazorModel();
 
-            var party = FFXIVPlugin.Instance.GetPartyList();
-            var player = FFXIVPlugin.Instance.GetPlayer();
+            var party = CombatantsManager.Instance.GetPartyList() as CombatantEx[];
+            var player = CombatantsManager.Instance.Player;
 
             model.Zone = ActGlobals.oFormActMain.CurrentZone;
             model.Locale = Settings.Default.FFXIVLocale.ToString();
@@ -637,7 +637,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             for (int i = 0; i < 8; i++)
             {
-                var data = i < party.Count ?
+                var data = i < party.Length ?
                     party[i] :
                     null;
 
