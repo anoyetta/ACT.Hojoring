@@ -479,6 +479,8 @@ namespace FFXIV.Framework.FFXIVHelper
                 var player = this.CurrentPlayer;
                 var first = default(EnmityEntry);
 
+                var combatantDictionary = CombatantsManager.Instance.GetCombatantMainDictionary();
+
                 foreach (var source in this.TargetInfo.EnmityItems)
                 {
                     Thread.Yield();
@@ -508,8 +510,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
                     if (!existing)
                     {
-                        var actor = this.ActorDictionary.ContainsKey(enmity.ID) ?
-                            this.ActorDictionary[enmity.ID] :
+                        var actor = combatantDictionary.ContainsKey(enmity.ID) ?
+                            combatantDictionary[enmity.ID] :
                             null;
 
                         enmity.Name = actor?.Name;

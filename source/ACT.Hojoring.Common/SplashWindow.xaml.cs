@@ -15,6 +15,12 @@ namespace ACT.Hojoring.Common
     /// </summary>
     public partial class SplashWindow : Window
     {
+#if DEBUG
+        private static readonly bool IsDebug = true;
+#else
+        private static readonly bool IsDebug = false;
+#endif
+
         public string FFXIVVersion => "for patch 5.0x";
 
         public static Version HojoringVersion => Assembly.GetExecutingAssembly()?.GetName()?.Version;
@@ -137,6 +143,7 @@ namespace ACT.Hojoring.Common
         public SplashWindow()
         {
             this.InitializeComponent();
+            this.Topmost = IsDebug;
 
             this.ToNonActive();
             this.ToTransparent();

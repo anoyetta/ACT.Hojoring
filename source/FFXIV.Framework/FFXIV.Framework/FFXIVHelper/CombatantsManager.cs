@@ -64,6 +64,22 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
+        public IDictionary<uint, CombatantEx> GetCombatantMainDictionary()
+        {
+            lock (LockObject)
+            {
+                return this.MainDictionary.Clone();
+            }
+        }
+
+        public IDictionary<uint, CombatantEx> GetCombatantOtherDictionary()
+        {
+            lock (LockObject)
+            {
+                return this.OtherDictionary.Clone();
+            }
+        }
+
         public CombatantEx GetCombatant(
             string name)
             => this.GetCombatants().FirstOrDefault(x =>

@@ -139,8 +139,13 @@ namespace FFXIV.Framework.FFXIVHelper
                         this.LoadSkillList();
                         this.LoadZoneList();
                         this.LoadWorldList();
+
                         this.MergeSkillList();
-                        this.MergeBuffList();
+
+#if false
+                        this.MergeSkillListToXIVPlugin();
+                        this.MergeBuffListToXIVPlugin();
+#endif
                     }
                 }
                 catch (Exception ex)
@@ -770,6 +775,11 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             var dictionary = this.dataRepository.GetResourceDictionary(ResourceType.WorldList_EN);
+            if (dictionary == null)
+            {
+                return;
+            }
+
             var newList = new Dictionary<uint, World>();
 
             foreach (var source in dictionary)
@@ -843,6 +853,11 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             var dictionary = this.dataRepository.GetResourceDictionary(ResourcesTypeDictionary[this.FFXIVLocale].Buff);
+            if (dictionary == null)
+            {
+                return;
+            }
+
             var newList = new Dictionary<uint, Buff>();
 
             foreach (var source in dictionary)
@@ -873,6 +888,11 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             var dictionary = this.dataRepository.GetResourceDictionary(ResourcesTypeDictionary[this.FFXIVLocale].Skill);
+            if (dictionary == null)
+            {
+                return;
+            }
+
             var newList = new Dictionary<uint, Skill>();
 
             foreach (var source in dictionary)
@@ -903,6 +923,11 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             var dictionary = this.dataRepository.GetResourceDictionary(ResourceType.ZoneList_EN);
+            if (dictionary == null)
+            {
+                return;
+            }
+
             var newList = new List<Zone>();
 
             foreach (var source in dictionary)
@@ -1018,8 +1043,8 @@ namespace FFXIV.Framework.FFXIVHelper
         }
 
         private volatile bool isMergedSkillList = false;
-        private volatile bool isLoadedSkillToFFXIV = false;
-        private volatile bool isMergedBuffList = false;
+        private volatile bool isMergedSkillToXIVPlugin = false;
+        private volatile bool isMergedBuffListToXIVPlugin = false;
 
         /// <summary>
         /// XIVDBのスキルリストとFFXIVプラグインのスキルリストをマージする
@@ -1049,14 +1074,11 @@ namespace FFXIV.Framework.FFXIVHelper
                     }
                 }
             }
-
-            // FFXIVプラグインにスキルリストを反映する
-            this.LoadSkillToFFXIVPlugin();
         }
 
-        private void LoadSkillToFFXIVPlugin()
+        private void MergeSkillListToXIVPlugin()
         {
-            if (this.isLoadedSkillToFFXIV)
+            if (this.isMergedSkillToXIVPlugin)
             {
                 return;
             }
@@ -1089,7 +1111,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
             if (XIVDB.Instance.ActionList.Any())
             {
-                this.isLoadedSkillToFFXIV = true;
+                this.isMergedSkillToXIVPlugin = true;
                 AppLogger.Trace("XIVDB Action list -> FFXIV Plugin");
             }
         }
@@ -1097,9 +1119,9 @@ namespace FFXIV.Framework.FFXIVHelper
         /// <summary>
         /// XIVDBのBuff(Status)リストとFFXIVプラグインのBuffリストをマージする
         /// </summary>
-        private void MergeBuffList()
+        private void MergeBuffListToXIVPlugin()
         {
-            if (this.isMergedBuffList)
+            if (this.isMergedBuffListToXIVPlugin)
             {
                 return;
             }
@@ -1141,7 +1163,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 AppLogger.Trace("XIVDB Status list -> FFXIV Plugin");
             }
 
-            this.isMergedBuffList = true;
+            this.isMergedBuffListToXIVPlugin = true;
         }
 
         #endregion Resources
