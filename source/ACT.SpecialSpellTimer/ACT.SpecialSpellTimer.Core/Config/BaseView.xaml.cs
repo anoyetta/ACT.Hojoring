@@ -18,8 +18,6 @@ namespace ACT.SpecialSpellTimer.Config
 
             // HelpViewを設定する
             this.HelpView.SetLocale(Settings.Default.UILocale);
-
-            this.HelpView.ViewModel.ConfigFile = Settings.Default.FileName;
             this.HelpView.ViewModel.ReloadConfigAction = null;
         }
 

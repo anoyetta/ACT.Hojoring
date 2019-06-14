@@ -13,7 +13,7 @@
   <system:String x:Key="Help_ContactToAnoyetta">DISCORDのフォーラムに参加する</system:String>
   <system:String x:Key="Help_ContactToAnoyettaTwitter">Twitterで連絡する</system:String>
 
-  <system:String x:Key="Help_OpenConfig">Configファイルを開く</system:String>
+  <system:String x:Key="Help_OpenConfig">Configフォルダを開く</system:String>
   <system:String x:Key="Help_ReloadConfig">Configをリロードする</system:String>
 
   <system:String x:Key="Help_OpenPluginLog">プラグインのログを開く</system:String>

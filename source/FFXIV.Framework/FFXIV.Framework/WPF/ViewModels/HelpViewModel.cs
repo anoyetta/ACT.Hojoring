@@ -212,8 +212,6 @@ namespace FFXIV.Framework.WPF.ViewModels
 
         public bool AvailableReloadConfigAction => this.ReloadConfigAction != null;
 
-        public string ConfigFile { get; set; }
-
         public string Log => AppLog.Log.ToString();
 
         #region Wiki
@@ -273,9 +271,13 @@ namespace FFXIV.Framework.WPF.ViewModels
         public ICommand OpenConfigCommand =>
             this.openConfigCommand ?? (this.openConfigCommand = new DelegateCommand(() =>
             {
-                if (File.Exists(this.ConfigFile))
+                var folder = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    @"anoyetta\ACT");
+
+                if (Directory.Exists(folder))
                 {
-                    Process.Start(this.ConfigFile);
+                    Process.Start(folder);
                 }
             }));
 

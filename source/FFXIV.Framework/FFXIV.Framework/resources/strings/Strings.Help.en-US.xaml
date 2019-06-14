@@ -13,7 +13,7 @@
   <system:String x:Key="Help_ContactToAnoyetta">Contact to anoyetta by DISCORD</system:String>
   <system:String x:Key="Help_ContactToAnoyettaTwitter">Contact to anoyetta by Twitter</system:String>
 
-  <system:String x:Key="Help_OpenConfig">Open config</system:String>
+  <system:String x:Key="Help_OpenConfig">Open config folder</system:String>
   <system:String x:Key="Help_ReloadConfig">Reload config</system:String>
 
   <system:String x:Key="Help_OpenPluginLog">Open Plugin log</system:String>

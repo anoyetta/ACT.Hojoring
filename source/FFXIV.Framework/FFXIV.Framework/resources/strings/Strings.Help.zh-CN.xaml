@@ -13,7 +13,7 @@
   <system:String x:Key="Help_ContactToAnoyetta">在DISCORD(DNS污染中)联系作者</system:String>
   <system:String x:Key="Help_ContactToAnoyettaTwitter">在Twitter(404)联系作者</system:String>
 
-  <system:String x:Key="Help_OpenConfig">打开配置</system:String>
+  <system:String x:Key="Help_OpenConfig">Open config folder</system:String>
   <system:String x:Key="Help_ReloadConfig">重载配置</system:String>
 
   <system:String x:Key="Help_OpenPluginLog">打开插件日志</system:String>

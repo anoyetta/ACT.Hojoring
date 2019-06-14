@@ -202,6 +202,16 @@
       </StackPanel>
 
       <!--  Buttons 2  -->
+      <!-- not used -->
+      <StackPanel
+        Visibility="Collapsed"
+        Margin="0,0,50,0"
+        HorizontalAlignment="Left"
+        DockPanel.Dock="Left"
+        Orientation="Vertical">
+      </StackPanel>
+
+      <!--  Buttons 3  -->
       <StackPanel
         Margin="0,0,50,0"
         HorizontalAlignment="Left"
@@ -227,34 +237,6 @@
           </StackPanel>
         </Button>
 
-        <Button
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderBrush="Transparent"
-          Command="{Binding ReloadConfigCommand, Mode=OneWay}"
-          Visibility="{Binding AvailableReloadConfigAction, Mode=OneWay, Converter={StaticResource BoolToCollapsedConverter}}">
-          <StackPanel Orientation="Horizontal">
-            <Label
-              VerticalAlignment="Center"
-              fa:Awesome.Content="Refresh"
-              FontSize="30"
-              Foreground="{StaticResource MainColor}" />
-            <TextBlock
-              Margin="5,0,10,0"
-              VerticalAlignment="Center"
-              FontSize="20"
-              Foreground="{StaticResource MainColor}"
-              Text="{DynamicResource Help_ReloadConfig}" />
-          </StackPanel>
-        </Button>
-      </StackPanel>
-
-      <!--  Buttons 3  -->
-      <StackPanel
-        Margin="0,0,50,0"
-        HorizontalAlignment="Left"
-        DockPanel.Dock="Left"
-        Orientation="Vertical">
         <Button
           HorizontalAlignment="Left"
           Background="Transparent"

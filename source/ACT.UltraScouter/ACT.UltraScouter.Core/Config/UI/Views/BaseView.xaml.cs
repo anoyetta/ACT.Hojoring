@@ -13,8 +13,7 @@ namespace ACT.UltraScouter.Config.UI.Views
 
             // HelpViewを設定する
             this.HelpView.SetLocale(Settings.Instance.UILocale);
-            this.HelpView.ViewModel.ConfigFile = Settings.Instance.FileName;
-            this.HelpView.ViewModel.ReloadConfigAction = () => Settings.Instance.Load();
+            this.HelpView.ViewModel.ReloadConfigAction = null;
         }
     }
 }

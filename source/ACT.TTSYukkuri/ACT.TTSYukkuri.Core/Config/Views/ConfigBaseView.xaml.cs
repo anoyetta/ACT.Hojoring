@@ -17,8 +17,7 @@ namespace ACT.TTSYukkuri.Config.Views
 
             // HelpViewを設定する
             this.HelpView.SetLocale(Settings.Default.UILocale);
-            this.HelpView.ViewModel.ConfigFile = Settings.FilePath;
-            this.HelpView.ViewModel.ReloadConfigAction = () => Settings.Default.Load();
+            this.HelpView.ViewModel.ReloadConfigAction = null;
         }
 
         public void SetLocale(Locales locale) => this.ReloadLocaleDictionary(locale);
