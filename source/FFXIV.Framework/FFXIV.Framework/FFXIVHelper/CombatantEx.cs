@@ -76,6 +76,7 @@ namespace FFXIV.Framework.FFXIVHelper
             dst.UnknownNetworkBuffs.Clear();
             dst.UnknownNetworkBuffs.AddRange(src.UnknownNetworkBuffs);
 
+            dst.SetName(src.Name);
             SetSkillName(dst);
         }
 
@@ -135,6 +136,7 @@ namespace FFXIV.Framework.FFXIVHelper
             dst.UnknownNetworkBuffs.Clear();
             dst.UnknownNetworkBuffs.AddRange(src.UnknownNetworkBuffs);
 
+            dst.SetName(src.Name);
             dst.CastSkillName = src.CastSkillName;
         }
 
@@ -307,6 +309,12 @@ namespace FFXIV.Framework.FFXIVHelper
         public void SetName(
             string fullName)
         {
+            if (string.IsNullOrEmpty(fullName))
+            {
+                this.Name = string.Empty;
+                return;
+            }
+
             fullName = fullName.Trim();
 
             if (this.ActorType != Actor.Type.PC)
