@@ -120,10 +120,5 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         private CollectionViewSource combatantsSource;
 
         public ICollectionView CombatantsView => this.combatantsSource?.View;
-
-        internal static void RefreshCombatants(CombatantEx[] combatantEx)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
