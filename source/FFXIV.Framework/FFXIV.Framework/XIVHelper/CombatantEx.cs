@@ -138,11 +138,14 @@ namespace FFXIV.Framework.XIVHelper
 
             dst.SetName(src.Name);
             dst.CastSkillName = src.CastSkillName;
+            dst.IsDummy = src.IsDummy;
         }
 
         #region Additional Properties
 
         public Guid UUID { get; } = Guid.NewGuid();
+
+        public bool IsDummy { get; set; } = false;
 
         public DateTime Timestamp { get; } = DateTime.Now;
 

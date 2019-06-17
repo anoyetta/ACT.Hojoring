@@ -46,7 +46,7 @@ namespace ACT.SpecialSpellTimer.Models
             this.CompileSpells();
             this.CompileTickers();
 
-            this.SubscribeXIVPluginEvent();
+            this.SubscribeXIVPluginEvents();
 
             this.worker = new System.Timers.Timer();
             this.worker.AutoReset = true;
@@ -75,13 +75,29 @@ namespace ACT.SpecialSpellTimer.Models
         private bool isPartyChanged = false;
         private bool isZoneChanged = false;
 
-        private void SubscribeXIVPluginEvent()
+        private void SubscribeXIVPluginEvents()
         {
-            var helper = XIVPluginHelper.Instance;
+            Task.Run(() =>
+            {
+                var helper = XIVPluginHelper.Instance;
 
-            helper.OnPrimaryPlayerChanged += () => setQueue(ref this.isPartyChanged);
-            helper.OnPartyListChanged += (_, __) => setQueue(ref this.isPartyChanged);
-            helper.OnZoneChanged += (_, __) => setQueue(ref this.isZoneChanged);
+                for (int i = 0; i < 60; i++)
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
+
+                    if (helper.IsAttached)
+                    {
+                        Thread.Sleep(TimeSpan.FromMilliseconds(200));
+                        helper.OnPrimaryPlayerChanged += () => setQueue(ref this.isPartyChanged);
+                        helper.OnPartyListChanged += (_, __) => setQueue(ref this.isPartyChanged);
+                        helper.OnZoneChanged += (_, __) => setQueue(ref this.isZoneChanged);
+
+                        setQueue(ref this.isPartyChanged);
+                        setQueue(ref this.isZoneChanged);
+                        break;
+                    }
+                }
+            });
 
             void setQueue(ref bool queue)
             {

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using FFXIV.Framework.Common;
 using FFXIV_ACT_Plugin.Common.Models;
@@ -118,19 +117,21 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         public IEnumerable<CombatantEx> Refresh(
-            IEnumerable<Combatant> source)
+            IEnumerable<Combatant> source,
+            bool isDummy = false)
         {
             lock (LockObject)
             {
-                return this.RefreshCore(source);
+                return this.RefreshCore(source, isDummy);
             }
         }
 
         private IEnumerable<CombatantEx> RefreshCore(
-            IEnumerable<Combatant> source)
+            IEnumerable<Combatant> source,
+            bool isDummy = false)
         {
-            var isFirst = true;
-            var party = new List<CombatantEx>(32);
+            var isFirstCombatant = true;
+            var partyIDList = new List<uint>(32);
             var addeds = new List<CombatantEx>(128);
 
             foreach (var combatant in source)
@@ -151,7 +152,13 @@ namespace FFXIV.Framework.XIVHelper
 
                 CombatantEx.CopyToEx(combatant, ex);
 
-                if (isFirst)
+                if (isDummy)
+                {
+                    ex.IsDummy = true;
+                    ex.PartyType = PartyTypeEnum.Party;
+                }
+
+                if (isFirstCombatant)
                 {
                     CombatantEx.CopyToEx(ex, this.Player);
                 }
@@ -165,10 +172,10 @@ namespace FFXIV.Framework.XIVHelper
 
                 if (ex.PartyType == PartyTypeEnum.Party)
                 {
-                    party.Add(ex);
+                    partyIDList.Add(ex.ID);
                 }
 
-                isFirst = false;
+                isFirstCombatant = false;
             }
 
             if (this.Player != null &&
@@ -179,9 +186,34 @@ namespace FFXIV.Framework.XIVHelper
                 this.Player.TargetOfTargetID = target.TargetID;
             }
 
-            if (this.queueRefreshPartyList)
+            if (partyIDList.Any())
             {
-                this.queueRefreshPartyList = false;
+                if (this.PartyCount <= 0 ||
+                    this.PartyCount != partyIDList.Count)
+                {
+                    this.RefreshPartyList(partyIDList);
+                }
+            }
+
+            this.TryGarbage();
+
+            this.CombatantsPCCount = this.MainDictionary.Count(x => x.Value.ActorType == Actor.Type.PC);
+            this.CombatantsMainCount = this.MainDictionary.Count;
+            this.CombatantsOtherCount = this.OtherDictionary.Count;
+
+            return addeds;
+        }
+
+        public void RefreshPartyList(
+            IEnumerable<uint> partyIDList)
+        {
+            lock (LockObject)
+            {
+                var dic = this.GetCombatantMainDictionary();
+                var party = partyIDList
+                    .Where(x => dic.ContainsKey(x))
+                    .Select(x => dic[x])
+                    .ToArray();
 
                 var sortedPartyList =
                     from x in party
@@ -197,7 +229,7 @@ namespace FFXIV.Framework.XIVHelper
                 this.PartyList.Clear();
                 this.PartyList.AddRange(sortedPartyList);
 
-                this.PartyCount = party.Count;
+                this.PartyCount = party.Length;
 
                 var composition = PartyCompositions.Unknown;
 
@@ -228,17 +260,9 @@ namespace FFXIV.Framework.XIVHelper
                 if (this.PartyComposition != composition)
                 {
                     this.PartyComposition = composition;
-                    AppLogger.Info($"party composition changed. current={composition} party_count={party.Count}");
+                    AppLogger.Info($"party composition changed. current={composition} party_count={party.Length}");
                 }
             }
-
-            this.TryGarbage();
-
-            this.CombatantsPCCount = this.MainDictionary.Count(x => x.Value.ActorType == Actor.Type.PC);
-            this.CombatantsMainCount = this.MainDictionary.Count;
-            this.CombatantsOtherCount = this.OtherDictionary.Count;
-
-            return addeds;
         }
 
         public IReadOnlyList<CombatantsByRole> GetPatryListByRole()
@@ -379,47 +403,6 @@ namespace FFXIV.Framework.XIVHelper
                 }
             }
         }
-
-        #region XIVPlugin event subscriber
-
-        private volatile bool queueRefreshPartyList = false;
-
-        public void SubscribeXIVPlugin()
-        {
-            var parent = XIVPluginHelper.Instance;
-            parent.OnPartyListChanged += this.XIVPlugin_PartyListChanged;
-            parent.OnZoneChanged += this.XIVPlugin_ZoneChanged;
-            parent.OnPrimaryPlayerChanged += this.XIVPlugin_PrimaryPlayerChanged;
-        }
-
-        public void UnsubscribeXIVPlugin()
-        {
-            var parent = XIVPluginHelper.Instance;
-            parent.OnPartyListChanged -= this.XIVPlugin_PartyListChanged;
-            parent.OnZoneChanged -= this.XIVPlugin_ZoneChanged;
-            parent.OnPrimaryPlayerChanged -= this.XIVPlugin_PrimaryPlayerChanged;
-        }
-
-        private void XIVPlugin_PartyListChanged(
-            ReadOnlyCollection<uint> partyList,
-            int partySize)
-        {
-            this.queueRefreshPartyList = true;
-        }
-
-        private void XIVPlugin_ZoneChanged(
-            uint ZoneID,
-            string ZoneName)
-        {
-            this.Clear();
-        }
-
-        private void XIVPlugin_PrimaryPlayerChanged()
-        {
-            this.Clear();
-        }
-
-        #endregion XIVPlugin event subscriber
     }
 
     public class CombatantsByRole

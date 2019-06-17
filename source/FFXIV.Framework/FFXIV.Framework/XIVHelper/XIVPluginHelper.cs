@@ -64,6 +64,11 @@ namespace FFXIV.Framework.XIVHelper
             set;
         } = Locales.JA;
 
+        public bool IsAttached =>
+            this.plugin != null &&
+            this.DataRepository != null &&
+            this.DataSubscription != null;
+
         public Process Process => this.DataRepository?.GetCurrentFFXIVProcess();
 
         public bool IsAvailable
@@ -246,7 +251,6 @@ namespace FFXIV.Framework.XIVHelper
 
             this.UnsubscribeLog();
             this.UnsubscribeXIVPluginEvents();
-            CombatantsManager.Instance.UnsubscribeXIVPlugin();
 
             // PC名記録をセーブする
             PCNameDictionary.Instance.Save();
@@ -259,6 +263,87 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         #endregion Start/End
+
+        #region Attach FFXIV Plugin
+
+        private void Attach()
+        {
+            lock (this)
+            {
+                if (this.plugin != null ||
+                    ActGlobals.oFormActMain == null)
+                {
+                    return;
+                }
+
+                var ffxivPlugin = (
+                    from x in ActGlobals.oFormActMain.ActPlugins
+                    where
+                    x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper()) &&
+                    x.lblPluginStatus.Text.ToUpper().Contains("FFXIV Plugin Started.".ToUpper())
+                    select
+                    x.pluginObj).FirstOrDefault();
+
+                if (ffxivPlugin != null)
+                {
+                    this.plugin = ffxivPlugin;
+                    this.DataRepository = this.plugin.DataRepository;
+                    this.DataSubscription = this.plugin.DataSubscription;
+
+                    this.SubscribeXIVPluginEvents();
+
+                    AppLogger.Trace("attached ffxiv plugin.");
+
+                    this.ActPluginAttachedCallback?.Invoke();
+                }
+            }
+        }
+
+        public PrimaryPlayerDelegate OnPrimaryPlayerChanged { get; set; }
+
+        public PartyListChangedDelegate OnPartyListChanged { get; set; }
+
+        public ZoneChangedDelegate OnZoneChanged { get; set; }
+
+        private void SubscribeXIVPluginEvents()
+        {
+            var xivPlugin = this.DataSubscription;
+
+            xivPlugin.PrimaryPlayerChanged += this.XivPlugin_PrimaryPlayerChanged;
+            xivPlugin.PartyListChanged += this.XivPlugin_PartyListChanged;
+            xivPlugin.ZoneChanged += this.XivPlugin_ZoneChanged;
+        }
+
+        private void UnsubscribeXIVPluginEvents()
+        {
+            var xivPlugin = this.DataSubscription;
+
+            xivPlugin.PrimaryPlayerChanged -= this.XivPlugin_PrimaryPlayerChanged;
+            xivPlugin.PartyListChanged -= this.XivPlugin_PartyListChanged;
+            xivPlugin.ZoneChanged -= this.XivPlugin_ZoneChanged;
+        }
+
+        private void XivPlugin_PrimaryPlayerChanged()
+        {
+            CombatantsManager.Instance.Clear();
+            this.OnPrimaryPlayerChanged?.Invoke();
+        }
+
+        private void XivPlugin_PartyListChanged(
+            ReadOnlyCollection<uint> partyList,
+            int partySize)
+        {
+            CombatantsManager.Instance.RefreshPartyList(partyList);
+            this.OnPartyListChanged?.Invoke(partyList, partySize);
+        }
+
+        private void XivPlugin_ZoneChanged(uint ZoneID, string ZoneName)
+        {
+            CombatantsManager.Instance.Clear();
+            this.OnZoneChanged(ZoneID, ZoneName);
+        }
+
+        #endregion Attach FFXIV Plugin
 
         #region Log Subscriber
 
@@ -469,7 +554,7 @@ namespace FFXIV.Framework.XIVHelper
             {
                 if (IsDebug)
                 {
-                    CombatantsManager.Instance.Refresh(DummyCombatants);
+                    CombatantsManager.Instance.Refresh(DummyCombatants, IsDebug);
                     raiseFirstCombatants();
                 }
 
@@ -498,18 +583,11 @@ namespace FFXIV.Framework.XIVHelper
 
             void raiseFirstCombatants()
             {
-                if (CombatantsManager.Instance.CombatantsMainCount > 0 &&
-                    this.isFirst)
+                if (this.isFirst &&
+                    CombatantsManager.Instance.CombatantsMainCount > 0)
                 {
                     this.isFirst = false;
                     this.OnPrimaryPlayerChanged?.Invoke();
-
-                    var party = new ReadOnlyCollection<uint>(CombatantsManager.Instance.GetPartyList()
-                        .Select(x => x.ID)
-                        .ToList());
-                    this.OnPartyListChanged?.Invoke(
-                        party,
-                        party.Count);
                 }
             }
         }
@@ -756,85 +834,6 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         #endregion Get Misc
-
-        #region Attach FFXIV Plugin
-
-        private void Attach()
-        {
-            lock (this)
-            {
-                if (this.plugin != null ||
-                    ActGlobals.oFormActMain == null)
-                {
-                    return;
-                }
-
-                var ffxivPlugin = (
-                    from x in ActGlobals.oFormActMain.ActPlugins
-                    where
-                    x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper()) &&
-                    x.lblPluginStatus.Text.ToUpper().Contains("FFXIV Plugin Started.".ToUpper())
-                    select
-                    x.pluginObj).FirstOrDefault();
-
-                if (ffxivPlugin != null)
-                {
-                    this.plugin = ffxivPlugin;
-                    this.DataRepository = this.plugin.DataRepository;
-                    this.DataSubscription = this.plugin.DataSubscription;
-
-                    this.SubscribeXIVPluginEvents();
-                    CombatantsManager.Instance.SubscribeXIVPlugin();
-
-                    AppLogger.Trace("attached ffxiv plugin.");
-
-                    this.ActPluginAttachedCallback?.Invoke();
-                }
-            }
-        }
-
-        public PrimaryPlayerDelegate OnPrimaryPlayerChanged { get; set; }
-
-        public PartyListChangedDelegate OnPartyListChanged { get; set; }
-
-        public ZoneChangedDelegate OnZoneChanged { get; set; }
-
-        private void SubscribeXIVPluginEvents()
-        {
-            var xivPlugin = this.DataSubscription;
-
-            xivPlugin.PrimaryPlayerChanged += this.XivPlugin_PrimaryPlayerChanged;
-            xivPlugin.PartyListChanged += this.XivPlugin_PartyListChanged;
-            xivPlugin.ZoneChanged += this.XivPlugin_ZoneChanged;
-        }
-
-        private void UnsubscribeXIVPluginEvents()
-        {
-            var xivPlugin = this.DataSubscription;
-
-            xivPlugin.PrimaryPlayerChanged -= this.XivPlugin_PrimaryPlayerChanged;
-            xivPlugin.PartyListChanged -= this.XivPlugin_PartyListChanged;
-            xivPlugin.ZoneChanged -= this.XivPlugin_ZoneChanged;
-        }
-
-        private void XivPlugin_PrimaryPlayerChanged()
-        {
-            this.OnPrimaryPlayerChanged?.Invoke();
-        }
-
-        private void XivPlugin_PartyListChanged(
-            ReadOnlyCollection<uint> partyList,
-            int partySize)
-        {
-            this.OnPartyListChanged?.Invoke(partyList, partySize);
-        }
-
-        private void XivPlugin_ZoneChanged(uint ZoneID, string ZoneName)
-        {
-            this.OnZoneChanged(ZoneID, ZoneName);
-        }
-
-        #endregion Attach FFXIV Plugin
 
         #region Resources
 

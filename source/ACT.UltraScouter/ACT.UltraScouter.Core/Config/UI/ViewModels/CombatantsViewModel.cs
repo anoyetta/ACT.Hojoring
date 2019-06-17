@@ -91,15 +91,6 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
             {
                 combatants.Remove(item);
             }
-
-            foreach (var combatant in combatants)
-            {
-                var src = source.FirstOrDefault(x => x.UUID == combatant.UUID);
-                if (src != null)
-                {
-                    src.NotifyProperties();
-                }
-            }
         }
 
         private CollectionViewSource combatantsSource;
