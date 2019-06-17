@@ -767,7 +767,7 @@ namespace FFXIV.Framework.XIVHelper
         public CombatantEx GetTargetInfo(
             OverlayType type)
         {
-            var target = this.DataRepository.GetCombatantByOverlayType(type);
+            var target = this.DataRepository?.GetCombatantByOverlayType(type);
 
             if (target == null)
             {
