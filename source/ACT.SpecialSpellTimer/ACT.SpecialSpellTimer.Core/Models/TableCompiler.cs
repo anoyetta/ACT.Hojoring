@@ -89,7 +89,9 @@ namespace ACT.SpecialSpellTimer.Models
                     {
                         Thread.Sleep(TimeSpan.FromMilliseconds(200));
                         helper.OnPrimaryPlayerChanged += () => setQueue(ref this.isPartyChanged);
+                        helper.OnPlayerJobChanged += () => setQueue(ref this.isPartyChanged);
                         helper.OnPartyListChanged += (_, __) => setQueue(ref this.isPartyChanged);
+                        helper.OnPlayerJobChanged += () => setQueue(ref this.isPartyChanged);
                         helper.OnZoneChanged += (_, __) => setQueue(ref this.isZoneChanged);
 
                         setQueue(ref this.isPartyChanged);

@@ -575,9 +575,11 @@ namespace FFXIV.Framework.XIVHelper
             if ((now - this.inCombatTimestamp).TotalSeconds >= 1.0)
             {
                 this.inCombatTimestamp = now;
-                this.RefreshInCombat();
-                this.RefreshBoss();
-                this.DetectPartyJobChange();
+
+                var party = CombatantsManager.Instance.GetPartyList();
+                this.RefreshInCombat(party);
+                this.RefreshBoss(party);
+                this.DetectPartyJobChange(party);
             }
 
             var combatants = this.DataRepository.GetCombatantList();
@@ -612,7 +614,8 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
-        private void RefreshInCombat()
+        private void RefreshInCombat(
+            IEnumerable<CombatantEx> party)
         {
             var result = false;
 
@@ -628,12 +631,11 @@ namespace FFXIV.Framework.XIVHelper
 
             if (!result)
             {
-                var combatants = CombatantsManager.Instance.GetPartyList();
-                if (combatants != null &&
-                    combatants.Any())
+                if (party != null &&
+                    party.Any())
                 {
                     result = (
-                        from x in combatants
+                        from x in party
                         where
                         x.CurrentHP != x.MaxHP ||
                         x.CurrentMP != x.MaxMP ||
@@ -649,15 +651,16 @@ namespace FFXIV.Framework.XIVHelper
             this.InCombat = result;
         }
 
-        private void DetectPartyJobChange()
+        private void DetectPartyJobChange(
+            IEnumerable<CombatantEx> party)
         {
-            var party = CombatantsManager.Instance.GetPartyList()
+            var partyIDs = party
                 .ToDictionary(x => x.ID, x => x.JobID);
 
-            if (this.previousPartyJobList.Count == party.Count)
+            if (this.previousPartyJobList.Count == partyIDs.Count)
             {
                 var isPartyJobChanged = false;
-                foreach (var pc in party)
+                foreach (var pc in partyIDs)
                 {
                     var currentJobID = pc.Value;
                     if (this.previousPartyJobList.ContainsKey(pc.Key))
@@ -690,7 +693,8 @@ namespace FFXIV.Framework.XIVHelper
 
         public Func<bool> GetAvailableBossCallback { get; set; }
 
-        private void RefreshBoss()
+        private void RefreshBoss(
+            IEnumerable<CombatantEx> party)
         {
             if (!this.IsAvailable ||
                 this.GetBossHPThresholdCallback == null ||
@@ -702,8 +706,8 @@ namespace FFXIV.Framework.XIVHelper
 
             lock (BossLock)
             {
-                var party = CombatantsManager.Instance.GetPartyList();
-                var combatants = CombatantsManager.Instance.GetCombatants();
+                var combatants = CombatantsManager.Instance.GetCombatants()
+                    .Where(x => x.ActorType == Actor.Type.Monster);
 
                 if (party == null ||
                     combatants == null ||
