@@ -45,7 +45,7 @@ namespace FFXIV.Framework.XIVHelper
             dst.MaxCP = src.MaxCP;
             dst.CurrentGP = src.CurrentGP;
             dst.MaxGP = src.MaxGP;
-            dst.IsCasting = src.IsCasting;
+            dst.IsCasting = src.CastBuffID != 0;
             dst.CastBuffID = src.CastBuffID;
             dst.CastTargetID = src.CastTargetID;
             dst.CastDurationCurrent = src.CastDurationCurrent;
@@ -105,7 +105,7 @@ namespace FFXIV.Framework.XIVHelper
             dst.MaxCP = src.MaxCP;
             dst.CurrentGP = src.CurrentGP;
             dst.MaxGP = src.MaxGP;
-            dst.IsCasting = src.IsCasting;
+            dst.IsCasting = src.CastBuffID != 0;
             dst.CastBuffID = src.CastBuffID;
             dst.CastTargetID = src.CastTargetID;
             dst.CastDurationCurrent = src.CastDurationCurrent;
