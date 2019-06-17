@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.Models
 {

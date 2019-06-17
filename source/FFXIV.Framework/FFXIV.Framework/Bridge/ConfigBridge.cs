@@ -1,4 +1,4 @@
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 
 namespace FFXIV.Framework.Bridge

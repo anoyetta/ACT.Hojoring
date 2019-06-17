@@ -8,7 +8,7 @@ using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.Utility;
 using ACT.SpecialSpellTimer.Views;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.WPF.Views;
 
 namespace ACT.SpecialSpellTimer
@@ -100,7 +100,7 @@ namespace ACT.SpecialSpellTimer
                             var messageReplaced = ConditionUtility.GetReplacedMessage(telop);
 
                             // PC名を置換する
-                            messageReplaced = FFXIVPlugin.Instance.ReplacePartyMemberName(
+                            messageReplaced = XIVPluginHelper.Instance.ReplacePartyMemberName(
                                 messageReplaced,
                                 Settings.Default.PCNameInitialOnDisplayStyle);
 
@@ -141,7 +141,7 @@ namespace ACT.SpecialSpellTimer
                         messageReplaced = match.Result(messageReplaced);
 
                         // PC名を置換する
-                        messageReplaced = FFXIVPlugin.Instance.ReplacePartyMemberName(
+                        messageReplaced = XIVPluginHelper.Instance.ReplacePartyMemberName(
                             messageReplaced,
                             Settings.Default.PCNameInitialOnDisplayStyle);
 

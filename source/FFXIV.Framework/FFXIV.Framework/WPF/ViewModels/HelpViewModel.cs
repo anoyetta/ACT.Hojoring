@@ -13,7 +13,7 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.WPF.Views;
 using Microsoft.VisualBasic.FileIO;
 using NLog;
@@ -188,7 +188,7 @@ namespace FFXIV.Framework.WPF.ViewModels
                 this.LocalTime = $" (LT) {now:yyyy/MM/dd HH:mm:ss K}";
                 this.EorzeaTime = $" (ET) {now.ToEorzeaTime()}";
 
-                var zoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
+                var zoneID = XIVPluginHelper.Instance?.GetCurrentZoneID();
                 var zoneName = ActGlobals.oFormActMain?.CurrentZone;
                 this.Zone = $"ZONE: {zoneID}\n{zoneName}";
             }

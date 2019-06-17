@@ -1,4 +1,4 @@
-namespace FFXIV.Framework.FFXIVHelper
+namespace FFXIV.Framework.XIVHelper
 {
     public class Skill
     {

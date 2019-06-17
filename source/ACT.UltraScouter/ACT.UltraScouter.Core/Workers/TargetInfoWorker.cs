@@ -8,7 +8,7 @@ using ACT.UltraScouter.ViewModels;
 using ACT.UltraScouter.ViewModels.Bases;
 using ACT.UltraScouter.Views;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.WPF.Views;
 using FFXIV_ACT_Plugin.Common;
 using NLog;
@@ -166,14 +166,14 @@ namespace ACT.UltraScouter.Workers
         }
 
         protected virtual void GetCombatantHoverOff(ref CombatantEx targetInfo)
-            => targetInfo = FFXIVPlugin.Instance.GetTargetInfo(OverlayType.Target);
+            => targetInfo = XIVPluginHelper.Instance.GetTargetInfo(OverlayType.Target);
 
         protected virtual void GetCombatantHoverOn(ref CombatantEx targetInfo)
         {
             var info = default(CombatantEx);
 
-            var ti = FFXIVPlugin.Instance.GetTargetInfo(OverlayType.Target);
-            var hi = FFXIVPlugin.Instance.GetTargetInfo(OverlayType.HoverTarget);
+            var ti = XIVPluginHelper.Instance.GetTargetInfo(OverlayType.Target);
+            var hi = XIVPluginHelper.Instance.GetTargetInfo(OverlayType.HoverTarget);
 
             if (hi == null)
             {
@@ -231,7 +231,7 @@ namespace ACT.UltraScouter.Workers
         /// </summary>
         protected virtual bool IsAllViewOff =>
             Settings.Instance == null ||
-            !FFXIVPlugin.Instance.IsFFXIVActive ||
+            !XIVPluginHelper.Instance.IsFFXIVActive ||
             (
                 !Settings.Instance.TargetName.Visible &&
                 !Settings.Instance.TargetAction.Visible &&

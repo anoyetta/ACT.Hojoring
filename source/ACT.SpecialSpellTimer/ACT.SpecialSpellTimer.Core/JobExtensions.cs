@@ -1,4 +1,4 @@
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer
 {

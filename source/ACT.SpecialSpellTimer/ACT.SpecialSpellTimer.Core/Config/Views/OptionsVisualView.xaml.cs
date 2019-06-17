@@ -5,7 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ACT.SpecialSpellTimer.resources;
 using FFXIV.Framework.Dialog;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.Globalization;
 using Prism.Commands;
 

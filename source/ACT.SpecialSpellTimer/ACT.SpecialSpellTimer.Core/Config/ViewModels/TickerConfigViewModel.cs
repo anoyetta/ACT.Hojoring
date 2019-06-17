@@ -9,7 +9,7 @@ using System.Windows.Input;
 using ACT.SpecialSpellTimer.Config.Models;
 using ACT.SpecialSpellTimer.Config.Views;
 using ACT.SpecialSpellTimer.Models;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -271,7 +271,7 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
                 zoneSelectors = new List<ZoneSelector>();
 
                 foreach (var zone in
-                    from x in FFXIVPlugin.Instance?.ZoneList
+                    from x in XIVPluginHelper.Instance?.ZoneList
                     orderby
                     x.IsAddedByUser ? 0 : 1,
                     x.Rank,

@@ -13,7 +13,7 @@ using ACT.SpecialSpellTimer.Sound;
 using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 using static ACT.SpecialSpellTimer.Sound.TTSDictionary;
 
@@ -77,12 +77,11 @@ namespace ACT.SpecialSpellTimer.Models
 
         private void SubscribeXIVPluginEvent()
         {
-            if (FFXIVPlugin.Instance.DataSubscription != null)
-            {
-                FFXIVPlugin.Instance.DataSubscription.PrimaryPlayerChanged += () => setQueue(ref this.isPartyChanged);
-                FFXIVPlugin.Instance.DataSubscription.PartyListChanged += (_, __) => setQueue(ref this.isPartyChanged);
-                FFXIVPlugin.Instance.DataSubscription.ZoneChanged += (_, __) => setQueue(ref this.isZoneChanged);
-            }
+            var helper = XIVPluginHelper.Instance;
+
+            helper.OnPrimaryPlayerChanged += () => setQueue(ref this.isPartyChanged);
+            helper.OnPartyListChanged += (_, __) => setQueue(ref this.isPartyChanged);
+            helper.OnZoneChanged += (_, __) => setQueue(ref this.isZoneChanged);
 
             void setQueue(ref bool queue)
             {
@@ -144,7 +143,7 @@ namespace ACT.SpecialSpellTimer.Models
                         PluginCore.Instance?.SaveSettingsAsync();
 
                         var zone = ActGlobals.oFormActMain.CurrentZone;
-                        var zoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
+                        var zoneID = XIVPluginHelper.Instance?.GetCurrentZoneID();
                         Logger.Write($"zone changed. zone={zone}, zone_id={zoneID}");
                         this.ZoneChanged?.Invoke(this, new EventArgs());
 
@@ -312,7 +311,7 @@ namespace ACT.SpecialSpellTimer.Models
                 }
                 else
                 {
-                    currentZoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
+                    currentZoneID = XIVPluginHelper.Instance?.GetCurrentZoneID();
                 }
             }
 

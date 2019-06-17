@@ -1,6 +1,6 @@
 using Prism.Mvvm;
 
-namespace FFXIV.Framework.FFXIVHelper
+namespace FFXIV.Framework.XIVHelper
 {
     public class Zone :
         BindableBase

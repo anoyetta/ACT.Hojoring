@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.Models
 {

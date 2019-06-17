@@ -18,7 +18,7 @@ using ActorItem = Sharlayan.Core.ActorItem;
 using EnmityItem = Sharlayan.Core.EnmityItem;
 using TargetInfo = Sharlayan.Core.TargetInfo;
 
-namespace FFXIV.Framework.FFXIVHelper
+namespace FFXIV.Framework.XIVHelper
 {
     [Flags]
     public enum PartyCompositions
@@ -134,8 +134,8 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void DetectFFXIVProcess()
         {
-            var ffxiv = FFXIVPlugin.Instance.Process;
-            var ffxivLanguage = FFXIVPlugin.Instance.LanguageID switch
+            var ffxiv = XIVPluginHelper.Instance.Process;
+            var ffxivLanguage = XIVPluginHelper.Instance.LanguageID switch
             {
                 Locales.EN => "English",
                 Locales.JA => "Japanese",
@@ -278,7 +278,7 @@ namespace FFXIV.Framework.FFXIVHelper
         private void ScanMemory()
         {
             if (!MemoryHandler.Instance.IsAttached ||
-                FFXIVPlugin.Instance.Process == null)
+                XIVPluginHelper.Instance.Process == null)
             {
                 Thread.Sleep((int)ProcessSubscribeInterval);
                 return;
@@ -301,7 +301,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
             void doScan()
             {
-                var currentZoneName = FFXIVPlugin.Instance.GetCurrentZoneName();
+                var currentZoneName = XIVPluginHelper.Instance.GetCurrentZoneName();
                 if (this.CurrentZoneName != currentZoneName)
                 {
                     this.CurrentZoneName = currentZoneName;

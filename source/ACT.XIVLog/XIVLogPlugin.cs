@@ -14,7 +14,7 @@ using System.Windows.Forms.Integration;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Sharlayan.Core.Enums;
 
 namespace ACT.XIVLog

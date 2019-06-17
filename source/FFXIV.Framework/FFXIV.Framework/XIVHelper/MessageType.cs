@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 using Advanced_Combat_Tracker;
 using Prism.Mvvm;
 
-namespace FFXIV.Framework.FFXIVHelper
+namespace FFXIV.Framework.XIVHelper
 {
     public enum MessageType : byte
     {

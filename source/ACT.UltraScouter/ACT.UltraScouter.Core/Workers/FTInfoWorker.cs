@@ -1,7 +1,7 @@
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using FFXIV_ACT_Plugin.Common;
 
 namespace ACT.UltraScouter.Workers
@@ -28,7 +28,7 @@ namespace ACT.UltraScouter.Workers
 
         protected override void GetCombatant()
         {
-            var ti = FFXIVPlugin.Instance.GetTargetInfo(OverlayType.FocusTarget);
+            var ti = XIVPluginHelper.Instance.GetTargetInfo(OverlayType.FocusTarget);
             lock (this.TargetInfoLock)
             {
                 this.TargetInfo = ti;
@@ -55,7 +55,7 @@ namespace ACT.UltraScouter.Workers
         protected override EnmityViewModel EnmityVM => null;
 
         protected override bool IsAllViewOff =>
-            !FFXIVPlugin.Instance.IsFFXIVActive ||
+            !XIVPluginHelper.Instance.IsFFXIVActive ||
             (
                 !(Settings.Instance?.FTName?.Visible ?? false) &&
                 !(Settings.Instance?.FTAction?.Visible ?? false) &&

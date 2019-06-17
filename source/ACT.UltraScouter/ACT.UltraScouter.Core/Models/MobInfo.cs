@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 using ACT.UltraScouter.Common;
 using ACT.UltraScouter.Config;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Prism.Commands;
 using Prism.Mvvm;
 using Sharlayan.Core.Enums;

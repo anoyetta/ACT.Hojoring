@@ -2,7 +2,7 @@ using System;
 using System.Windows;
 using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.WPF.Views;
 using Prism.Mvvm;
 

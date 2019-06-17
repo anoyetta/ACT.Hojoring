@@ -4,7 +4,7 @@ using ACT.UltraScouter.Config;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 using Sharlayan.Core.Enums;
 

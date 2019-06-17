@@ -7,7 +7,7 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using Microsoft.VisualBasic.FileIO;
 
-namespace FFXIV.Framework.FFXIVHelper
+namespace FFXIV.Framework.XIVHelper
 {
     public class XIVDB
     {

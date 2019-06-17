@@ -9,7 +9,7 @@ using PropertyChanged;
 using Sharlayan.Core;
 using Sharlayan.Core.Enums;
 
-namespace FFXIV.Framework.FFXIVHelper
+namespace FFXIV.Framework.XIVHelper
 {
     [AddINotifyPropertyChangedInterface]
     public class CombatantEx :
@@ -252,7 +252,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            var skills = FFXIVPlugin.Instance.SkillList;
+            var skills = XIVPluginHelper.Instance.SkillList;
 
             if (combatant.IsCasting)
             {

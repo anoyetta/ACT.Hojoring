@@ -4,7 +4,7 @@ using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels;
 using ACT.UltraScouter.Views;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Workers

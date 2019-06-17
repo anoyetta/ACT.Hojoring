@@ -11,7 +11,7 @@ using System.Windows.Threading;
 using ACT.UltraScouter.Common;
 using ACT.UltraScouter.Models.FFLogs;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.Globalization;
 
 namespace ACT.UltraScouter.Config

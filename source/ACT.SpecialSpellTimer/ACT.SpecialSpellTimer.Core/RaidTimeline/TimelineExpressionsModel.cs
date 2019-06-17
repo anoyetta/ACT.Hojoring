@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Threading;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline

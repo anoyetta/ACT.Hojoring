@@ -2,7 +2,7 @@ using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels;
 using ACT.UltraScouter.Views;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.Workers
 {
@@ -93,7 +93,7 @@ namespace ACT.UltraScouter.Workers
         #endregion MyMarker
 
         protected override bool IsAllViewOff =>
-            !FFXIVPlugin.Instance.IsFFXIVActive ||
+            !XIVPluginHelper.Instance.IsFFXIVActive ||
             (
                 !(Settings.Instance?.MeAction?.Visible ?? false) &&
                 !(Settings.Instance?.MPTicker?.Visible ?? false) &&

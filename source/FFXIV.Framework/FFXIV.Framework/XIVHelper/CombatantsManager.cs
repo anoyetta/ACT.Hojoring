@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using FFXIV.Framework.Common;
-using FFXIV_ACT_Plugin.Common;
 using FFXIV_ACT_Plugin.Common.Models;
 using Sharlayan.Core.Enums;
 
-namespace FFXIV.Framework.FFXIVHelper
+namespace FFXIV.Framework.XIVHelper
 {
     public class CombatantsManager
     {
@@ -385,35 +384,20 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private volatile bool queueRefreshPartyList = false;
 
-        public void SubscribeXIVPlugin(
-            IDataSubscription xivPlugin)
+        public void SubscribeXIVPlugin()
         {
-            if (xivPlugin == null)
-            {
-                return;
-            }
-
-            xivPlugin.PartyListChanged -= this.XIVPlugin_PartyListChanged;
-            xivPlugin.PartyListChanged += this.XIVPlugin_PartyListChanged;
-
-            xivPlugin.ZoneChanged -= this.XIVPlugin_ZoneChanged;
-            xivPlugin.ZoneChanged += this.XIVPlugin_ZoneChanged;
-
-            xivPlugin.PrimaryPlayerChanged -= this.XIVPlugin_PrimaryPlayerChanged;
-            xivPlugin.PrimaryPlayerChanged += this.XIVPlugin_PrimaryPlayerChanged;
+            var parent = XIVPluginHelper.Instance;
+            parent.OnPartyListChanged += this.XIVPlugin_PartyListChanged;
+            parent.OnZoneChanged += this.XIVPlugin_ZoneChanged;
+            parent.OnPrimaryPlayerChanged += this.XIVPlugin_PrimaryPlayerChanged;
         }
 
-        public void UnsubscribeXIVPlugin(
-            IDataSubscription xivPlugin)
+        public void UnsubscribeXIVPlugin()
         {
-            if (xivPlugin == null)
-            {
-                return;
-            }
-
-            xivPlugin.PartyListChanged -= this.XIVPlugin_PartyListChanged;
-            xivPlugin.ZoneChanged -= this.XIVPlugin_ZoneChanged;
-            xivPlugin.PrimaryPlayerChanged -= this.XIVPlugin_PrimaryPlayerChanged;
+            var parent = XIVPluginHelper.Instance;
+            parent.OnPartyListChanged -= this.XIVPlugin_PartyListChanged;
+            parent.OnZoneChanged -= this.XIVPlugin_ZoneChanged;
+            parent.OnPrimaryPlayerChanged -= this.XIVPlugin_PrimaryPlayerChanged;
         }
 
         private void XIVPlugin_PartyListChanged(

@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using FFXIV.Framework.Common;
 
-namespace FFXIV.Framework.FFXIVHelper
+namespace FFXIV.Framework.XIVHelper
 {
     public class PCNameDictionary
     {

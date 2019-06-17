@@ -13,7 +13,7 @@ using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -80,8 +80,8 @@ namespace ACT.SpecialSpellTimer
             ActGlobals.oFormActMain.OnLogLineRead += this.OnLogLineRead;
 
             // Added Combatantsイベントを登録する
-            FFXIVPlugin.Instance.AddedCombatants -= this.OnAddedCombatants;
-            FFXIVPlugin.Instance.AddedCombatants += this.OnAddedCombatants;
+            XIVPluginHelper.Instance.AddedCombatants -= this.OnAddedCombatants;
+            XIVPluginHelper.Instance.AddedCombatants += this.OnAddedCombatants;
 
             // 生ログの書き出しバッファを開始する
             ChatLogWorker.Instance.Begin();
@@ -107,7 +107,7 @@ namespace ACT.SpecialSpellTimer
 
             ActGlobals.oFormActMain.BeforeLogLineRead -= this.OnBeforeLogLineRead;
             ActGlobals.oFormActMain.OnLogLineRead -= this.OnLogLineRead;
-            FFXIVPlugin.Instance.AddedCombatants -= this.OnAddedCombatants;
+            XIVPluginHelper.Instance.AddedCombatants -= this.OnAddedCombatants;
 
             // 生ログの書き出しバッファを停止する
             ChatLogWorker.Instance.End();
@@ -333,7 +333,7 @@ namespace ACT.SpecialSpellTimer
         /// <param name="e"></param>
         private void OnAddedCombatants(
             object sender,
-            FFXIVPlugin.AddedCombatantsEventArgs e)
+            XIVPluginHelper.AddedCombatantsEventArgs e)
         {
             lock (this)
             {
@@ -735,7 +735,7 @@ namespace ACT.SpecialSpellTimer
                 return result;
             }
 
-            result = FFXIVPlugin.Instance.RemoveWorldName(logLine);
+            result = XIVPluginHelper.Instance.RemoveWorldName(logLine);
 
             return result;
         }

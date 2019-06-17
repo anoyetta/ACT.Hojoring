@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using NLog;
 using Prism.Mvvm;
 
@@ -97,22 +97,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                 var src = source.FirstOrDefault(x => x.UUID == combatant.UUID);
                 if (src != null)
                 {
-                    if (combatant.PosX != src.PosX ||
-                        combatant.PosY != src.PosY ||
-                        combatant.PosZ != src.PosZ ||
-                        combatant.Heading != src.Heading ||
-                        combatant.CurrentHP != src.CurrentHP ||
-                        combatant.MaxHP != src.MaxHP)
-                    {
-                        combatant.PosX = src.PosX;
-                        combatant.PosY = src.PosY;
-                        combatant.PosZ = src.PosZ;
-                        combatant.Heading = src.Heading;
-                        combatant.CurrentHP = src.CurrentHP;
-                        combatant.MaxHP = src.MaxHP;
-
-                        combatant.NotifyProperties();
-                    }
+                    src.NotifyProperties();
                 }
             }
         }

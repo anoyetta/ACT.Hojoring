@@ -1,5 +1,5 @@
 using System;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.Config.Models

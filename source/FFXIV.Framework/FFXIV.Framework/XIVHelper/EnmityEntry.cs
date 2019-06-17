@@ -1,6 +1,6 @@
 using System;
 
-namespace FFXIV.Framework.FFXIVHelper
+namespace FFXIV.Framework.XIVHelper
 {
     public class EnmityEntry
     {

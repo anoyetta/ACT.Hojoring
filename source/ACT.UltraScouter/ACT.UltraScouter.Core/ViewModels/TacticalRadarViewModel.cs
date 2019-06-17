@@ -12,7 +12,7 @@ using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.ViewModels

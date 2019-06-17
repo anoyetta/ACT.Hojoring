@@ -1,6 +1,6 @@
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.ViewModels.Bases;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.ViewModels
 {
@@ -36,7 +36,7 @@ namespace ACT.UltraScouter.ViewModels
                 }
 
                 if (this.Config.HideInNotCombat &&
-                    !FFXIVPlugin.Instance.InCombat)
+                    !XIVPluginHelper.Instance.InCombat)
                 {
                     return false;
                 }

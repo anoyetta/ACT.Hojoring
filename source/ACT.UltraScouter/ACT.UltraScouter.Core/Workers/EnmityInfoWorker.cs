@@ -12,7 +12,7 @@ using ACT.UltraScouter.Models.Enmity;
 using ACT.UltraScouter.ViewModels;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Workers
@@ -286,7 +286,7 @@ namespace ACT.UltraScouter.Workers
             {
                 lock (LogLocker)
                 {
-                    var inCombat = FFXIVPlugin.Instance.InCombat;
+                    var inCombat = XIVPluginHelper.Instance.InCombat;
                     if (this.currentInCombat != inCombat)
                     {
                         this.currentInCombat = inCombat;
@@ -382,7 +382,7 @@ namespace ACT.UltraScouter.Workers
             this.enmityVM ?? (this.enmityVM = new EnmityViewModel(Settings.Instance.Enmity, this.Model));
 
         protected override bool IsAllViewOff =>
-            !FFXIVPlugin.Instance.IsFFXIVActive ||
+            !XIVPluginHelper.Instance.IsFFXIVActive ||
             !Settings.Instance.Enmity.Visible;
 
         public override CombatantEx TargetInfo => TargetInfoWorker.Instance.TargetInfo;

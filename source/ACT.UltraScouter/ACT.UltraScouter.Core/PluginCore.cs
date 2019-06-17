@@ -14,7 +14,7 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.WPF.Views;
 using NLog;
 
@@ -70,8 +70,8 @@ namespace ACT.UltraScouter
                 MainWorker.Instance.End();
 
                 // FFXIVプラグインへのアクセスを終了する
-                FFXIVPlugin.Instance.End();
-                FFXIVPlugin.Free();
+                XIVPluginHelper.Instance.End();
+                XIVPluginHelper.Free();
 
                 // 設定ファイルを保存する
                 Settings.Instance.Save();
@@ -143,7 +143,7 @@ namespace ACT.UltraScouter
                     // FFXIVプラグインへのアクセスを開始する
                     await Task.Run(() =>
                     {
-                        FFXIVPlugin.Instance.Start(
+                        XIVPluginHelper.Instance.Start(
                             Settings.Instance.PollingRate,
                             Settings.Instance.FFXIVLocale);
                     });

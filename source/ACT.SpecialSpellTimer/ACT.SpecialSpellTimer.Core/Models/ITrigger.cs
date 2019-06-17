@@ -10,7 +10,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config.Models;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer.Models
 {

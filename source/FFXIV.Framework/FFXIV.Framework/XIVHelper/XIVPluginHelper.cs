@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -18,9 +19,9 @@ using FFXIV_ACT_Plugin.Common.Models;
 using Microsoft.VisualBasic.FileIO;
 using Sharlayan.Core.Enums;
 
-namespace FFXIV.Framework.FFXIVHelper
+namespace FFXIV.Framework.XIVHelper
 {
-    public class FFXIVPlugin
+    public class XIVPluginHelper
     {
 #if !DEBUG
         public static readonly bool IsDebug = false;
@@ -30,14 +31,14 @@ namespace FFXIV.Framework.FFXIVHelper
 
         #region Singleton
 
-        private static FFXIVPlugin instance;
+        private static XIVPluginHelper instance;
 
-        public static FFXIVPlugin Instance =>
-            instance ?? (instance = new FFXIVPlugin());
+        public static XIVPluginHelper Instance =>
+            instance ?? (instance = new XIVPluginHelper());
 
         public static void Free() => instance = null;
 
-        private FFXIVPlugin()
+        private XIVPluginHelper()
         {
         }
 
@@ -51,9 +52,9 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private dynamic plugin;
 
-        public IDataRepository DataRepository { get; private set; }
+        private IDataRepository DataRepository { get; set; }
 
-        public IDataSubscription DataSubscription { get; private set; }
+        private IDataSubscription DataSubscription { get; set; }
 
         public System.Action ActPluginAttachedCallback { get; set; }
 
@@ -142,8 +143,8 @@ namespace FFXIV.Framework.FFXIVHelper
                         this.LoadZoneList();
                         this.LoadWorldList();
 
+                        this.TranslateZoneList();
                         this.MergeSkillList();
-
 #if false
                         this.MergeSkillListToXIVPlugin();
                         this.MergeBuffListToXIVPlugin();
@@ -244,7 +245,8 @@ namespace FFXIV.Framework.FFXIVHelper
             this.attachFFXIVPluginWorker = null;
 
             this.UnsubscribeLog();
-            CombatantsManager.Instance.UnsubscribeXIVPlugin(this.DataSubscription);
+            this.UnsubscribeXIVPluginEvents();
+            CombatantsManager.Instance.UnsubscribeXIVPlugin();
 
             // PC名記録をセーブする
             PCNameDictionary.Instance.Save();
@@ -459,6 +461,8 @@ namespace FFXIV.Framework.FFXIVHelper
         private void OnAddedCombatants(
             AddedCombatantsEventArgs e) => this?.AddedCombatants?.Invoke(this, e);
 
+        private volatile bool isFirst = true;
+
         public void RefreshCombatantList()
         {
             if (!this.IsAvailable)
@@ -466,6 +470,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 if (IsDebug)
                 {
                     CombatantsManager.Instance.Refresh(DummyCombatants);
+                    raiseFirstCombatants();
                 }
 
                 return;
@@ -488,6 +493,25 @@ namespace FFXIV.Framework.FFXIVHelper
                     this,
                     new AddedCombatantsEventArgs(addeds));
             }
+
+            raiseFirstCombatants();
+
+            void raiseFirstCombatants()
+            {
+                if (CombatantsManager.Instance.CombatantsMainCount > 0 &&
+                    this.isFirst)
+                {
+                    this.isFirst = false;
+                    this.OnPrimaryPlayerChanged?.Invoke();
+
+                    var party = new ReadOnlyCollection<uint>(CombatantsManager.Instance.GetPartyList()
+                        .Select(x => x.ID)
+                        .ToList());
+                    this.OnPartyListChanged?.Invoke(
+                        party,
+                        party.Count);
+                }
+            }
         }
 
         private void RefreshInCombat()
@@ -495,34 +519,35 @@ namespace FFXIV.Framework.FFXIVHelper
             var result = false;
 
 #if true
-            var combatants = CombatantsManager.Instance.GetPartyList();
-            if (combatants != null &&
-                combatants.Any())
+            var player = CombatantsManager.Instance.Player;
+            if (player != null)
             {
-                result = (
-                    from x in combatants
-                    where
-                    x.CurrentHP != x.MaxHP ||
-                    x.CurrentMP != x.MaxMP ||
-                    x.CurrentTP != x.MaxTP
-                    select
-                    x).Any();
-            }
-            else
-            {
-                var player = CombatantsManager.Instance.Player;
-                if (player != null)
-                {
-                    result =
-                        player.CurrentHP != player.MaxHP ||
-                        player.CurrentMP != player.MaxMP ||
-                        player.CurrentTP != player.MaxTP;
-                }
+                result =
+                    player.CurrentHP != player.MaxHP ||
+                    player.CurrentMP != player.MaxMP ||
+                    player.CurrentTP != player.MaxTP;
             }
 
+            if (!result)
+            {
+                var combatants = CombatantsManager.Instance.GetPartyList();
+                if (combatants != null &&
+                    combatants.Any())
+                {
+                    result = (
+                        from x in combatants
+                        where
+                        x.CurrentHP != x.MaxHP ||
+                        x.CurrentMP != x.MaxMP ||
+                        x.CurrentTP != x.MaxTP
+                        select
+                        x).Any();
+                }
+            }
 #else
             result = SharlayanHelper.Instance.CurrentPlayer?.InCombat ?? false;
 #endif
+
             this.InCombat = result;
         }
 
@@ -758,13 +783,55 @@ namespace FFXIV.Framework.FFXIVHelper
                     this.DataRepository = this.plugin.DataRepository;
                     this.DataSubscription = this.plugin.DataSubscription;
 
-                    CombatantsManager.Instance.SubscribeXIVPlugin(this.DataSubscription);
+                    this.SubscribeXIVPluginEvents();
+                    CombatantsManager.Instance.SubscribeXIVPlugin();
 
                     AppLogger.Trace("attached ffxiv plugin.");
 
                     this.ActPluginAttachedCallback?.Invoke();
                 }
             }
+        }
+
+        public PrimaryPlayerDelegate OnPrimaryPlayerChanged { get; set; }
+
+        public PartyListChangedDelegate OnPartyListChanged { get; set; }
+
+        public ZoneChangedDelegate OnZoneChanged { get; set; }
+
+        private void SubscribeXIVPluginEvents()
+        {
+            var xivPlugin = this.DataSubscription;
+
+            xivPlugin.PrimaryPlayerChanged += this.XivPlugin_PrimaryPlayerChanged;
+            xivPlugin.PartyListChanged += this.XivPlugin_PartyListChanged;
+            xivPlugin.ZoneChanged += this.XivPlugin_ZoneChanged;
+        }
+
+        private void UnsubscribeXIVPluginEvents()
+        {
+            var xivPlugin = this.DataSubscription;
+
+            xivPlugin.PrimaryPlayerChanged -= this.XivPlugin_PrimaryPlayerChanged;
+            xivPlugin.PartyListChanged -= this.XivPlugin_PartyListChanged;
+            xivPlugin.ZoneChanged -= this.XivPlugin_ZoneChanged;
+        }
+
+        private void XivPlugin_PrimaryPlayerChanged()
+        {
+            this.OnPrimaryPlayerChanged?.Invoke();
+        }
+
+        private void XivPlugin_PartyListChanged(
+            ReadOnlyCollection<uint> partyList,
+            int partySize)
+        {
+            this.OnPartyListChanged?.Invoke(partyList, partySize);
+        }
+
+        private void XivPlugin_ZoneChanged(uint ZoneID, string ZoneName)
+        {
+            this.OnZoneChanged(ZoneID, ZoneName);
         }
 
         #endregion Attach FFXIV Plugin
@@ -786,6 +853,9 @@ namespace FFXIV.Framework.FFXIVHelper
         public IReadOnlyList<Zone> ZoneList => this.zoneList;
         public IReadOnlyDictionary<uint, Skill> SkillList => this.skillList;
         public IReadOnlyDictionary<uint, World> WorldList => this.worldList;
+
+        private bool isZoneListLoaded = false;
+        private bool isSkillListLoaded = false;
 
         public Regex WorldNameRemoveRegex { get; private set; }
 
@@ -924,6 +994,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
             this.skillList = newList;
             AppLogger.Trace("skill list loaded.");
+            this.isSkillListLoaded = true;
         }
 
         private void LoadZoneList()
@@ -973,7 +1044,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
             this.LoadZoneListAdded(newList);
             this.zoneList = newList;
-            this.TranslateZoneList();
+            this.isZoneListLoaded = true;
         }
 
         private void LoadZoneListAdded(
@@ -1034,8 +1105,17 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
+        private bool isZoneListTranslated = false;
+
         private void TranslateZoneList()
         {
+            if (this.isZoneListTranslated ||
+                !this.isZoneListLoaded ||
+                !XIVDB.Instance.PlacenameList.Any())
+            {
+                return;
+            }
+
             foreach (var zone in this.ZoneList)
             {
                 var place = (
@@ -1068,6 +1148,7 @@ namespace FFXIV.Framework.FFXIVHelper
             }
 
             AppLogger.Trace($"zone list translated.");
+            this.isZoneListTranslated = true;
         }
 
 #if false
@@ -1116,13 +1197,16 @@ namespace FFXIV.Framework.FFXIVHelper
         /// </summary>
         private void MergeSkillList()
         {
-            if (!this.isMergedSkillList)
+            if (this.isSkillListLoaded &&
+                !this.isMergedSkillList)
             {
                 lock (XIVDB.Instance.ActionList)
                 {
                     if (this.skillList != null &&
                         XIVDB.Instance.ActionList.Any())
                     {
+                        this.isMergedSkillList = true;
+
                         foreach (var action in XIVDB.Instance.ActionList)
                         {
                             var skill = new Skill()
@@ -1134,7 +1218,6 @@ namespace FFXIV.Framework.FFXIVHelper
                             this.skillList[action.Key] = skill;
                         }
 
-                        this.isMergedSkillList = true;
                         AppLogger.Trace("XIVDB Action list merged.");
                     }
                 }

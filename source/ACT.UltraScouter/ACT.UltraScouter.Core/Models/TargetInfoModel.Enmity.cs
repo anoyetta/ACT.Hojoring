@@ -10,7 +10,7 @@ using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models.Enmity;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Models
@@ -223,7 +223,7 @@ namespace ACT.UltraScouter.Models
                 else
                 {
                     if (config.HideInNotCombat &&
-                        !FFXIVPlugin.Instance.InCombat)
+                        !XIVPluginHelper.Instance.InCombat)
                     {
                         this.enmityList.Clear();
                         this.IsExistsEnmityList = false;

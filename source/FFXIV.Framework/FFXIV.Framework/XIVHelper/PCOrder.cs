@@ -5,7 +5,7 @@ using System.Text;
 using FFXIV.Framework.Common;
 using Microsoft.VisualBasic.FileIO;
 
-namespace FFXIV.Framework.FFXIVHelper
+namespace FFXIV.Framework.XIVHelper
 {
     public class PCOrder
     {

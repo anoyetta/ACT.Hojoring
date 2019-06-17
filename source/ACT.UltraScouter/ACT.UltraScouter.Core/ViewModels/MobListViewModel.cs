@@ -3,7 +3,7 @@ using System.Windows.Threading;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.ViewModels
 {

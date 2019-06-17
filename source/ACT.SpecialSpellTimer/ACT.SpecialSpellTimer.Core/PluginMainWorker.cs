@@ -12,7 +12,7 @@ using ACT.SpecialSpellTimer.Sound;
 using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -54,7 +54,7 @@ namespace ACT.SpecialSpellTimer
 
         private volatile bool existFFXIVProcess;
 
-        public bool IsFFXIVActive => FFXIVPlugin.Instance.IsFFXIVActive;
+        public bool IsFFXIVActive => XIVPluginHelper.Instance.IsFFXIVActive;
 
         private DateTime lastSaveTickerTableDateTime = DateTime.Now;
 
@@ -73,7 +73,7 @@ namespace ACT.SpecialSpellTimer
 
             // FFXIVのスキャンを開始する
             // FFXIVプラグインへのアクセスを開始する
-            await Task.Run(() => FFXIVPlugin.Instance.Start(
+            await Task.Run(() => XIVPluginHelper.Instance.Start(
                 Settings.Default.LogPollSleepInterval,
                 Settings.Default.FFXIVLocale));
 
@@ -227,8 +227,8 @@ namespace ACT.SpecialSpellTimer
             TableCompiler.Free();
 
             // FFXIVのスキャンを停止する
-            FFXIVPlugin.Instance.End();
-            FFXIVPlugin.Free();
+            XIVPluginHelper.Instance.End();
+            XIVPluginHelper.Free();
         }
 
         #endregion Begin / End
@@ -242,7 +242,7 @@ namespace ACT.SpecialSpellTimer
         private void BackgroundCore()
         {
             // FFXIVプロセスの有無を取得する
-            this.existFFXIVProcess = FFXIVPlugin.Instance.Process != null;
+            this.existFFXIVProcess = XIVPluginHelper.Instance.Process != null;
 
             if ((DateTime.Now - this.lastSaveTickerTableDateTime).TotalMinutes >= 1)
             {

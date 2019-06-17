@@ -8,7 +8,7 @@ using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models.FFLogs;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using NLog;
 using Prism.Mvvm;
 using Sharlayan.Core.Enums;

@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using ACT.TTSYukkuri.Config;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using NLog;
 
 namespace ACT.TTSYukkuri
@@ -154,7 +154,7 @@ namespace ACT.TTSYukkuri
             try
             {
                 // FF14Processがなければ何もしない
-                if (FFXIVPlugin.Instance.Process == null)
+                if (XIVPluginHelper.Instance.Process == null)
                 {
                     Thread.Sleep(WatcherLongInterval);
                     return;

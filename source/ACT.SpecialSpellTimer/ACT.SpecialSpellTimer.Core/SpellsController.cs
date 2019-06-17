@@ -11,7 +11,7 @@ using ACT.SpecialSpellTimer.Utility;
 using ACT.SpecialSpellTimer.Views;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.WPF.Views;
 
 namespace ACT.SpecialSpellTimer
@@ -113,7 +113,7 @@ namespace ACT.SpecialSpellTimer
                             var replacedTitle = ConditionUtility.GetReplacedTitle(targetSpell);
 
                             // PC名を置換する
-                            replacedTitle = FFXIVPlugin.Instance.ReplacePartyMemberName(
+                            replacedTitle = XIVPluginHelper.Instance.ReplacePartyMemberName(
                                 replacedTitle,
                                 Settings.Default.PCNameInitialOnDisplayStyle);
 
@@ -168,7 +168,7 @@ namespace ACT.SpecialSpellTimer
                                 var replacedTitle = match.Result(ConditionUtility.GetReplacedTitle(targetSpell));
 
                                 // PC名を置換する
-                                replacedTitle = FFXIVPlugin.Instance.ReplacePartyMemberName(
+                                replacedTitle = XIVPluginHelper.Instance.ReplacePartyMemberName(
                                     replacedTitle,
                                     Settings.Default.PCNameInitialOnDisplayStyle);
 
