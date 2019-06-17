@@ -50,8 +50,10 @@ namespace FFXIV.Framework.FFXIVHelper
         #endregion Logger
 
         private dynamic plugin;
-        private IDataRepository dataRepository;
-        private IDataSubscription dataSubscription;
+
+        public IDataRepository DataRepository { get; private set; }
+
+        public IDataSubscription DataSubscription { get; private set; }
 
         public System.Action ActPluginAttachedCallback { get; set; }
 
@@ -61,7 +63,7 @@ namespace FFXIV.Framework.FFXIVHelper
             set;
         } = Locales.JA;
 
-        public Process Process => this.dataRepository?.GetCurrentFFXIVProcess();
+        public Process Process => this.DataRepository?.GetCurrentFFXIVProcess();
 
         public bool IsAvailable
         {
@@ -69,8 +71,8 @@ namespace FFXIV.Framework.FFXIVHelper
             {
                 if (ActGlobals.oFormActMain == null ||
                     this.plugin == null ||
-                    this.dataRepository == null ||
-                    this.dataSubscription == null ||
+                    this.DataRepository == null ||
+                    this.DataSubscription == null ||
                     this.Process == null)
                 {
                     return false;
@@ -80,7 +82,7 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public Locales LanguageID => (int)this.dataRepository.GetSelectedLanguageID() switch
+        public Locales LanguageID => (int)this.DataRepository.GetSelectedLanguageID() switch
         {
             1 => Locales.EN,
             2 => Locales.FR,
@@ -241,15 +243,60 @@ namespace FFXIV.Framework.FFXIVHelper
             this.attachFFXIVPluginWorker.Dispose();
             this.attachFFXIVPluginWorker = null;
 
-            CombatantsManager.Instance.UnsubscribeXIVPlugin(this.dataSubscription);
+            this.UnsubscribeLog();
+            CombatantsManager.Instance.UnsubscribeXIVPlugin(this.DataSubscription);
 
             // PC名記録をセーブする
             PCNameDictionary.Instance.Save();
             PCNameDictionary.Free();
             PCOrder.Free();
+
+            this.plugin = null;
+            this.DataRepository = null;
+            this.DataSubscription = null;
         }
 
         #endregion Start/End
+
+        #region Log Subscriber
+
+        private readonly List<LogLinetDelegate> LogSubscribers = new List<LogLinetDelegate>(16);
+
+        public void SubscribeLog(LogLinetDelegate subscriber)
+        {
+            if (this.DataSubscription == null)
+            {
+                return;
+            }
+
+            lock (this.LogSubscribers)
+            {
+                this.DataSubscription.LogLine -= subscriber;
+                this.DataSubscription.LogLine += subscriber;
+
+                this.LogSubscribers.Add(subscriber);
+            }
+        }
+
+        private void UnsubscribeLog()
+        {
+            if (this.DataSubscription == null)
+            {
+                return;
+            }
+
+            lock (this.LogSubscribers)
+            {
+                foreach (var action in this.LogSubscribers)
+                {
+                    this.DataSubscription.LogLine -= action;
+                }
+
+                this.LogSubscribers.Clear();
+            }
+        }
+
+        #endregion Log Subscriber
 
         #region Refresh Active
 
@@ -281,8 +328,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 var hWnd = GetForegroundWindow();
 
                 // プロセスIDに変換する
-                int pid;
-                GetWindowThreadProcessId(hWnd, out pid);
+                GetWindowThreadProcessId(hWnd, out int pid);
 
                 if (pid == this.Process?.Id)
                 {
@@ -317,30 +363,6 @@ namespace FFXIV.Framework.FFXIVHelper
                 // ignore
             }
         }
-
-        #region NativeMethods
-
-        /// <summary>
-        /// フォアグラウンドWindowのハンドルを取得する
-        /// </summary>
-        /// <returns>
-        /// フォアグラウンドWindowのハンドル</returns>
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetForegroundWindow();
-
-        /// <summary>
-        /// WindowハンドルからそのプロセスIDを取得する
-        /// </summary>
-        /// <param name="hWnd">
-        /// プロセスIDを取得するWindowハンドル</param>
-        /// <param name="lpdwProcessId">
-        /// プロセスID</param>
-        /// <returns>
-        /// Windowを作成したスレッドのID</returns>
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
-
-        #endregion NativeMethods
 
         #endregion Refresh Active
 
@@ -453,14 +475,14 @@ namespace FFXIV.Framework.FFXIVHelper
             if ((now - this.inCombatTimestamp).TotalSeconds >= 1.0)
             {
                 this.inCombatTimestamp = now;
-                this.InCombat = this.RefreshInCombat();
+                this.RefreshInCombat();
                 this.RefreshBoss();
             }
 
-            var combatants = this.dataRepository.GetCombatantList();
+            var combatants = this.DataRepository.GetCombatantList();
             var addeds = CombatantsManager.Instance.Refresh(combatants);
 
-            if (addeds.Count() > 0)
+            if (addeds.Any())
             {
                 this.AddedCombatants?.Invoke(
                     this,
@@ -468,11 +490,11 @@ namespace FFXIV.Framework.FFXIVHelper
             }
         }
 
-        public bool RefreshInCombat()
+        private void RefreshInCombat()
         {
-#if true
             var result = false;
 
+#if true
             var combatants = CombatantsManager.Instance.GetPartyList();
             if (combatants != null &&
                 combatants.Any())
@@ -498,10 +520,10 @@ namespace FFXIV.Framework.FFXIVHelper
                 }
             }
 
-            return result;
 #else
-            return SharlayanHelper.Instance.CurrentPlayer?.InCombat ?? false;
+            result = SharlayanHelper.Instance.CurrentPlayer?.InCombat ?? false;
 #endif
+            this.InCombat = result;
         }
 
         #endregion Refresh Combatants
@@ -642,7 +664,7 @@ namespace FFXIV.Framework.FFXIVHelper
         public CombatantEx GetTargetInfo(
             OverlayType type)
         {
-            var target = this.dataRepository.GetCombatantByOverlayType(type);
+            var target = this.DataRepository.GetCombatantByOverlayType(type);
 
             if (target == null)
             {
@@ -660,7 +682,7 @@ namespace FFXIV.Framework.FFXIVHelper
 
         public int GetCurrentZoneID() =>
             this.IsAvailable ?
-            ((int)this.dataRepository?.GetCurrentTerritoryID()) :
+            ((int)this.DataRepository?.GetCurrentTerritoryID()) :
             0;
 
         public string GetCurrentZoneName() => ActGlobals.oFormActMain?.CurrentZone;
@@ -733,10 +755,10 @@ namespace FFXIV.Framework.FFXIVHelper
                 if (ffxivPlugin != null)
                 {
                     this.plugin = ffxivPlugin;
-                    this.dataRepository = this.plugin.DataRepository;
-                    this.dataSubscription = this.plugin.DataSubscription;
+                    this.DataRepository = this.plugin.DataRepository;
+                    this.DataSubscription = this.plugin.DataSubscription;
 
-                    CombatantsManager.Instance.SubscribeXIVPlugin(this.dataSubscription);
+                    CombatantsManager.Instance.SubscribeXIVPlugin(this.DataSubscription);
 
                     AppLogger.Trace("attached ffxiv plugin.");
 
@@ -790,7 +812,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            var dictionary = this.dataRepository.GetResourceDictionary(ResourceType.WorldList_EN);
+            var dictionary = this.DataRepository.GetResourceDictionary(ResourceType.WorldList_EN);
             if (dictionary == null)
             {
                 this.worldRetryCount++;
@@ -880,7 +902,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            var dictionary = this.dataRepository.GetResourceDictionary(ResourcesTypeDictionary[this.FFXIVLocale].Skill);
+            var dictionary = this.DataRepository.GetResourceDictionary(ResourcesTypeDictionary[this.FFXIVLocale].Skill);
             if (dictionary == null)
             {
                 this.skillRetryCount++;
@@ -927,7 +949,7 @@ namespace FFXIV.Framework.FFXIVHelper
                 return;
             }
 
-            var dictionary = this.dataRepository.GetResourceDictionary(ResourceType.ZoneList_EN);
+            var dictionary = this.DataRepository.GetResourceDictionary(ResourceType.ZoneList_EN);
             if (dictionary == null)
             {
                 this.zoneRetryCount++;
@@ -1210,5 +1232,29 @@ namespace FFXIV.Framework.FFXIVHelper
         }
 
         #endregion Resources
+
+        #region NativeMethods
+
+        /// <summary>
+        /// フォアグラウンドWindowのハンドルを取得する
+        /// </summary>
+        /// <returns>
+        /// フォアグラウンドWindowのハンドル</returns>
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+
+        /// <summary>
+        /// WindowハンドルからそのプロセスIDを取得する
+        /// </summary>
+        /// <param name="hWnd">
+        /// プロセスIDを取得するWindowハンドル</param>
+        /// <param name="lpdwProcessId">
+        /// プロセスID</param>
+        /// <returns>
+        /// Windowを作成したスレッドのID</returns>
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
+
+        #endregion NativeMethods
     }
 }

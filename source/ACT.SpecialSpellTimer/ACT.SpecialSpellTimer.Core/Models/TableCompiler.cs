@@ -15,7 +15,6 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.FFXIVHelper;
 using Prism.Mvvm;
-using Sharlayan.Core.Enums;
 using static ACT.SpecialSpellTimer.Sound.TTSDictionary;
 
 namespace ACT.SpecialSpellTimer.Models
@@ -47,6 +46,8 @@ namespace ACT.SpecialSpellTimer.Models
             this.CompileSpells();
             this.CompileTickers();
 
+            this.SubscribeXIVPluginEvent();
+
             this.worker = new System.Timers.Timer();
             this.worker.AutoReset = true;
             this.worker.Interval = WorkerInterval;
@@ -71,6 +72,32 @@ namespace ACT.SpecialSpellTimer.Models
 
         private DateTime lastDumpPositionTimestamp = DateTime.MinValue;
 
+        private bool isPartyChanged = false;
+        private bool isZoneChanged = false;
+
+        private void SubscribeXIVPluginEvent()
+        {
+            if (FFXIVPlugin.Instance.DataSubscription != null)
+            {
+                FFXIVPlugin.Instance.DataSubscription.PrimaryPlayerChanged += () => setQueue(ref this.isPartyChanged);
+                FFXIVPlugin.Instance.DataSubscription.PartyListChanged += (_, __) => setQueue(ref this.isPartyChanged);
+                FFXIVPlugin.Instance.DataSubscription.ZoneChanged += (_, __) => setQueue(ref this.isZoneChanged);
+            }
+
+            void setQueue(ref bool queue)
+            {
+                if (queue)
+                {
+                    return;
+                }
+
+                lock (this)
+                {
+                    queue = true;
+                }
+            }
+        }
+
         private void DoWork()
         {
             try
@@ -80,9 +107,6 @@ namespace ACT.SpecialSpellTimer.Models
                     this.RefreshCombatants();
 
                     var isSimulationChanged = false;
-                    var isPlayerChanged = this.IsPlayerChanged();
-                    var isPartyChanged = this.IsPartyChanged();
-                    var isZoneChanged = this.IsZoneChanged();
 
                     if (this.previousInSimulation != this.InSimulation)
                     {
@@ -90,22 +114,17 @@ namespace ACT.SpecialSpellTimer.Models
                         isSimulationChanged = true;
                     }
 
-                    if (isPlayerChanged)
+                    if (this.isPartyChanged ||
+                        this.isZoneChanged)
                     {
                         this.RefreshPlayerPlacceholder();
-                    }
-
-                    if (isZoneChanged ||
-                        isPartyChanged)
-                    {
                         this.RefreshPartyPlaceholders();
                         this.RefreshPetPlaceholder();
                     }
 
                     if (isSimulationChanged ||
-                        isPlayerChanged ||
-                        isPartyChanged ||
-                        isZoneChanged)
+                        this.isPartyChanged ||
+                        this.isZoneChanged)
                     {
                         this.RecompileSpells();
                         this.RecompileTickers();
@@ -116,7 +135,7 @@ namespace ACT.SpecialSpellTimer.Models
                         this.CompileConditionChanged?.Invoke(this, new EventArgs());
                     }
 
-                    if (isZoneChanged)
+                    if (this.isZoneChanged)
                     {
                         // インスタンススペルを消去する
                         SpellTable.Instance.RemoveInstanceSpellsAll();
@@ -148,6 +167,11 @@ namespace ACT.SpecialSpellTimer.Models
             catch (Exception ex)
             {
                 Logger.Write("table compiler error:", ex);
+            }
+            finally
+            {
+                this.isPartyChanged = false;
+                this.isZoneChanged = false;
             }
         }
 
@@ -567,10 +591,6 @@ namespace ACT.SpecialSpellTimer.Models
 
         #region 条件の変更を判定するメソッド群
 
-        private readonly List<CharacterCondition> previousPartyCondition = new List<CharacterCondition>(32);
-        private volatile CharacterCondition previousPlayerCondition = new CharacterCondition();
-        private volatile int previousZoneID = 0;
-        private volatile string previousZoneName = string.Empty;
         private volatile bool previousInSimulation = false;
 
         public readonly object SimulationLocker = new object();
@@ -599,6 +619,7 @@ namespace ACT.SpecialSpellTimer.Models
             set;
         }
 
+#if false
         public bool IsPartyChanged()
         {
             var r = false;
@@ -637,7 +658,9 @@ namespace ACT.SpecialSpellTimer.Models
 
             return r;
         }
+#endif
 
+#if false
         public bool IsPlayerChanged()
         {
             var r = false;
@@ -653,7 +676,9 @@ namespace ACT.SpecialSpellTimer.Models
 
             return r;
         }
+#endif
 
+#if false
         public bool IsZoneChanged()
         {
             var r = false;
@@ -688,6 +713,7 @@ namespace ACT.SpecialSpellTimer.Models
 
             return r;
         }
+#endif
 
         private void RefreshCombatants()
         {
