@@ -23,9 +23,9 @@ namespace FFXIV.Framework.FFXIVHelper
     public class FFXIVPlugin
     {
 #if !DEBUG
-        private static readonly bool IsDebug = false;
+        public static readonly bool IsDebug = false;
 #else
-        private static readonly bool IsDebug = true;
+        public static readonly bool IsDebug = true;
 #endif
 
         #region Singleton
@@ -756,6 +756,11 @@ namespace FFXIV.Framework.FFXIVHelper
         private Dictionary<uint, World> worldList = new Dictionary<uint, World>();
         private List<Zone> zoneList = new List<Zone>();
 
+        private static readonly int ResourcesRetryLimitCount = 8;
+        private int zoneRetryCount = 0;
+        private int skillRetryCount = 0;
+        private int worldRetryCount = 0;
+
         public IReadOnlyList<Zone> ZoneList => this.zoneList;
         public IReadOnlyDictionary<uint, Skill> SkillList => this.skillList;
         public IReadOnlyDictionary<uint, World> WorldList => this.worldList;
@@ -764,6 +769,17 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void LoadWorldList()
         {
+            if (this.worldRetryCount >= ResourcesRetryLimitCount)
+            {
+                if (this.worldRetryCount == ResourcesRetryLimitCount)
+                {
+                    AppLogger.Error("world list can't load.");
+                    this.worldRetryCount++;
+                }
+
+                return;
+            }
+
             if (this.worldList.Any())
             {
                 return;
@@ -777,6 +793,7 @@ namespace FFXIV.Framework.FFXIVHelper
             var dictionary = this.dataRepository.GetResourceDictionary(ResourceType.WorldList_EN);
             if (dictionary == null)
             {
+                this.worldRetryCount++;
                 return;
             }
 
@@ -840,43 +857,19 @@ namespace FFXIV.Framework.FFXIVHelper
             return text;
         }
 
-        private void LoadBuffList()
-        {
-            if (this.buffList.Any())
-            {
-                return;
-            }
-
-            if (this.plugin == null)
-            {
-                return;
-            }
-
-            var dictionary = this.dataRepository.GetResourceDictionary(ResourcesTypeDictionary[this.FFXIVLocale].Buff);
-            if (dictionary == null)
-            {
-                return;
-            }
-
-            var newList = new Dictionary<uint, Buff>();
-
-            foreach (var source in dictionary)
-            {
-                var entry = new Buff()
-                {
-                    ID = source.Key,
-                    Name = source.Value,
-                };
-
-                newList.Add(entry.ID, entry);
-            }
-
-            this.buffList = newList;
-            AppLogger.Trace("buff list loaded.");
-        }
-
         private void LoadSkillList()
         {
+            if (this.skillRetryCount >= ResourcesRetryLimitCount)
+            {
+                if (this.skillRetryCount == ResourcesRetryLimitCount)
+                {
+                    AppLogger.Error("skii list can't load.");
+                    this.skillRetryCount++;
+                }
+
+                return;
+            }
+
             if (this.skillList.Any())
             {
                 return;
@@ -890,6 +883,7 @@ namespace FFXIV.Framework.FFXIVHelper
             var dictionary = this.dataRepository.GetResourceDictionary(ResourcesTypeDictionary[this.FFXIVLocale].Skill);
             if (dictionary == null)
             {
+                this.skillRetryCount++;
                 return;
             }
 
@@ -912,6 +906,17 @@ namespace FFXIV.Framework.FFXIVHelper
 
         private void LoadZoneList()
         {
+            if (this.zoneRetryCount >= ResourcesRetryLimitCount)
+            {
+                if (this.zoneRetryCount == ResourcesRetryLimitCount)
+                {
+                    AppLogger.Error("zone list can't load.");
+                    this.zoneRetryCount++;
+                }
+
+                return;
+            }
+
             if (this.zoneList.Any())
             {
                 return;
@@ -925,6 +930,7 @@ namespace FFXIV.Framework.FFXIVHelper
             var dictionary = this.dataRepository.GetResourceDictionary(ResourceType.ZoneList_EN);
             if (dictionary == null)
             {
+                this.zoneRetryCount++;
                 return;
             }
 
@@ -1041,6 +1047,43 @@ namespace FFXIV.Framework.FFXIVHelper
 
             AppLogger.Trace($"zone list translated.");
         }
+
+#if false
+        private void LoadBuffList()
+        {
+            if (this.buffList.Any())
+            {
+                return;
+            }
+
+            if (this.plugin == null)
+            {
+                return;
+            }
+
+            var dictionary = this.dataRepository.GetResourceDictionary(ResourcesTypeDictionary[this.FFXIVLocale].Buff);
+            if (dictionary == null)
+            {
+                return;
+            }
+
+            var newList = new Dictionary<uint, Buff>();
+
+            foreach (var source in dictionary)
+            {
+                var entry = new Buff()
+                {
+                    ID = source.Key,
+                    Name = source.Value,
+                };
+
+                newList.Add(entry.ID, entry);
+            }
+
+            this.buffList = newList;
+            AppLogger.Trace("buff list loaded.");
+        }
+#endif
 
         private volatile bool isMergedSkillList = false;
         private volatile bool isMergedSkillToXIVPlugin = false;
