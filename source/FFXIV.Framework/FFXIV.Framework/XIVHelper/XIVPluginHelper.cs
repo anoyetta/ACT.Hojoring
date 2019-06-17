@@ -305,6 +305,14 @@ namespace FFXIV.Framework.XIVHelper
 
         public ZoneChangedDelegate OnZoneChanged { get; set; }
 
+        public delegate void PlayerJobChangedDelegate();
+
+        public delegate void PartyJobChangedDelegate();
+
+        public PlayerJobChangedDelegate OnPlayerJobChanged { get; set; }
+
+        public PartyJobChangedDelegate OnPartyJobChanged { get; set; }
+
         private void SubscribeXIVPluginEvents()
         {
             var xivPlugin = this.DataSubscription;
@@ -546,7 +554,9 @@ namespace FFXIV.Framework.XIVHelper
         private void OnAddedCombatants(
             AddedCombatantsEventArgs e) => this?.AddedCombatants?.Invoke(this, e);
 
-        private volatile bool isFirst = true;
+        private bool isFirst = true;
+        private JobIDs previousPlayerJobID = JobIDs.Unknown;
+        private readonly Dictionary<uint, JobIDs> previousPartyJobList = new Dictionary<uint, JobIDs>(8);
 
         public void RefreshCombatantList()
         {
@@ -567,6 +577,7 @@ namespace FFXIV.Framework.XIVHelper
                 this.inCombatTimestamp = now;
                 this.RefreshInCombat();
                 this.RefreshBoss();
+                this.DetectPartyJobChange();
             }
 
             var combatants = this.DataRepository.GetCombatantList();
@@ -580,6 +591,15 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             raiseFirstCombatants();
+
+            if (CombatantsManager.Instance.Player != null)
+            {
+                if (this.previousPlayerJobID != CombatantsManager.Instance.Player.JobID)
+                {
+                    this.previousPlayerJobID = CombatantsManager.Instance.Player.JobID;
+                    this.OnPlayerJobChanged?.Invoke();
+                }
+            }
 
             void raiseFirstCombatants()
             {
@@ -627,6 +647,35 @@ namespace FFXIV.Framework.XIVHelper
 #endif
 
             this.InCombat = result;
+        }
+
+        private void DetectPartyJobChange()
+        {
+            var party = CombatantsManager.Instance.GetPartyList()
+                .ToDictionary(x => x.ID, x => x.JobID);
+
+            if (this.previousPartyJobList.Count == party.Count)
+            {
+                var isPartyJobChanged = false;
+                foreach (var pc in party)
+                {
+                    var currentJobID = pc.Value;
+                    if (this.previousPartyJobList.ContainsKey(pc.Key))
+                    {
+                        var previousJobID = this.previousPartyJobList[pc.Key];
+                        if (currentJobID != previousJobID)
+                        {
+                            isPartyJobChanged = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (isPartyJobChanged)
+                {
+                    this.OnPartyJobChanged?.Invoke();
+                }
+            }
         }
 
         #endregion Refresh Combatants
