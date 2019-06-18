@@ -51,7 +51,9 @@ namespace FFXIV.Framework.XIVHelper
 
         public CombatantEx Player { get; } = new CombatantEx()
         {
-            Name = "Dummy Player"
+            Name = "Hojoring Hojo",
+            Job = (int)JobIDs.PLD,
+            IsDummy = true,
         };
 
         public IEnumerable<CombatantEx> GetCombatants()
