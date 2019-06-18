@@ -353,8 +353,18 @@ namespace FFXIV.Framework.XIVHelper
 
         public void Clear()
         {
+            if (this.CombatantsMainCount <= 0)
+            {
+                return;
+            }
+
             lock (LockObject)
             {
+                this.CombatantsPCCount = 0;
+                this.CombatantsMainCount = 0;
+                this.CombatantsOtherCount = 0;
+                this.PartyCount = 0;
+
                 this.Combatants.Clear();
                 this.MainDictionary.Clear();
                 this.OtherDictionary.Clear();
