@@ -32,6 +32,8 @@ namespace FFXIV.Framework.Common
         public void PlayWipeout()
             => this.PlayWave("_wipeout.wav");
 
+        private static readonly float Volume = 0.6f;
+
         private void PlayWave(
             string fileName)
         {
@@ -47,7 +49,7 @@ namespace FFXIV.Framework.Common
 
             if (PlayBridge.Instance.IsAvailable)
             {
-                PlayBridge.Instance.PlayMain(wave);
+                PlayBridge.Instance.PlayMain(wave, false, Volume);
             }
             else
             {
