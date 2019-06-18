@@ -34,8 +34,9 @@ namespace ACT.Hojoring.Common
                 () =>
                 {
                     var window = new SplashWindow();
+                    window.Loaded += (_, __) => window.StartFadeOut();
                     window.Show();
-                    window.StartFadeOut();
+                    window.Activate();
                 },
                 DispatcherPriority.Normal);
         }

@@ -9,7 +9,7 @@ using Microsoft.VisualBasic.FileIO;
 
 namespace FFXIV.Framework.XIVHelper
 {
-    public class XIVDB
+    public class XIVApi
     {
         #region Logger
 
@@ -19,9 +19,13 @@ namespace FFXIV.Framework.XIVHelper
 
         #region Singleton
 
-        private static XIVDB instance = new XIVDB();
+        private readonly static Lazy<XIVApi> LazyInstance = new Lazy<XIVApi>(() => new XIVApi());
 
-        public static XIVDB Instance => instance;
+        public static XIVApi Instance => LazyInstance.Value;
+
+        private XIVApi()
+        {
+        }
 
         #endregion Singleton
 
@@ -58,12 +62,12 @@ namespace FFXIV.Framework.XIVHelper
         private readonly Dictionary<int, Area> areaENList = new Dictionary<int, Area>();
         private readonly List<Area> areaList = new List<Area>();
         private readonly List<Placename> placenameList = new List<Placename>();
-        private readonly Dictionary<uint, XIVDBAction> actionList = new Dictionary<uint, XIVDBAction>();
+        private readonly Dictionary<uint, XIVApiAction> actionList = new Dictionary<uint, XIVApiAction>();
         private readonly Dictionary<uint, Buff> buffList = new Dictionary<uint, Buff>();
 
         public IReadOnlyList<Area> AreaList => this.areaList;
         public IReadOnlyList<Placename> PlacenameList => this.placenameList;
-        public IReadOnlyDictionary<uint, XIVDBAction> ActionList => this.actionList;
+        public IReadOnlyDictionary<uint, XIVApiAction> ActionList => this.actionList;
         public IReadOnlyDictionary<uint, Buff> BuffList => this.buffList;
 
         #endregion Resources Lists
@@ -79,7 +83,7 @@ namespace FFXIV.Framework.XIVHelper
         public string ResourcesDirectory =>
             this.resourcesDirectory ?? (this.resourcesDirectory = DirectoryHelper.FindSubDirectory("resources"));
 
-        public XIVDBAction FindAction(
+        public XIVApiAction FindAction(
             uint ID)
         {
             if (this.actionList.ContainsKey(ID))
@@ -90,7 +94,7 @@ namespace FFXIV.Framework.XIVHelper
             return null;
         }
 
-        public XIVDBAction FindAction(
+        public XIVApiAction FindAction(
             string ID)
         {
             try
@@ -108,6 +112,7 @@ namespace FFXIV.Framework.XIVHelper
         {
             Task.WaitAll(
                 Task.Run(() => this.LoadArea()),
+                Task.Run(() => this.LoadPlacename()),
                 Task.Run(() => this.LoadAction()),
                 Task.Run(() => this.LoadBuff()));
         }
@@ -166,7 +171,7 @@ namespace FFXIV.Framework.XIVHelper
                 }
             }
 
-            this.AppLogger.Trace($"XIVDB Area list loaded. {this.AreaFile}");
+            this.AppLogger.Trace($"xivapi area list loaded. {this.AreaFile}");
         }
 
         private void LoadAreaEN()
@@ -220,7 +225,7 @@ namespace FFXIV.Framework.XIVHelper
                 }
             }
 
-            this.AppLogger.Trace($"XIVDB Area list loaded. {this.AreaENFile}");
+            this.AppLogger.Trace($"xivapi area list loaded. {this.AreaENFile}");
         }
 
         private void LoadPlacename()
@@ -259,7 +264,7 @@ namespace FFXIV.Framework.XIVHelper
                 }
             }
 
-            this.AppLogger.Trace($"XIVDB Placement list loaded. {this.PlacenameFile}");
+            this.AppLogger.Trace($"xivapi placement list loaded. {this.PlacenameFile}");
         }
 
         private void LoadAction()
@@ -301,7 +306,7 @@ namespace FFXIV.Framework.XIVHelper
                             continue;
                         }
 
-                        var entry = new XIVDBAction()
+                        var entry = new XIVApiAction()
                         {
                             ID = id,
                             Name = fields[1]
@@ -311,7 +316,7 @@ namespace FFXIV.Framework.XIVHelper
                     }
                 }
 
-                this.AppLogger.Trace($"XIVDB Action list loaded. {this.SkillFile}");
+                this.AppLogger.Trace($"xivapi action list loaded. {this.SkillFile}");
 
                 // Userリストの方も読み込む
                 this.LoadUserAction();
@@ -354,7 +359,7 @@ namespace FFXIV.Framework.XIVHelper
                         continue;
                     }
 
-                    var entry = new XIVDBAction()
+                    var entry = new XIVApiAction()
                     {
                         ID = id,
                         Name = fields[1]
@@ -367,7 +372,7 @@ namespace FFXIV.Framework.XIVHelper
 
             if (isLoaded)
             {
-                this.AppLogger.Trace($"User Action list loaded.");
+                this.AppLogger.Trace($"user action list loaded.");
             }
         }
 
@@ -421,13 +426,13 @@ namespace FFXIV.Framework.XIVHelper
                 }
             }
 
-            this.AppLogger.Trace($"XIVDB Status list loaded. {this.BuffFile}");
+            this.AppLogger.Trace($"xivapi status list loaded. {this.BuffFile}");
         }
 
         #region Sub classes
 
         /// <summary>
-        /// Area ただしXIVDB上の呼称では「Instance」
+        /// Area ただしXIVApi上の呼称では「Instance」
         /// </summary>
         public class Area
         {
@@ -444,9 +449,9 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         /// <summary>
-        /// Skill ただしXIVDB上の呼称では「Action」
+        /// Skill ただしXIVApi上の呼称では「Action」
         /// </summary>
-        public class XIVDBAction
+        public class XIVApiAction
         {
             public uint ID { get; set; }
             public string Name { get; set; }

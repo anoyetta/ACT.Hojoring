@@ -149,7 +149,7 @@
     <Compile Include="XIVHelper\SharlayanHelper.cs" />
     <Compile Include="XIVHelper\Skill.cs" />
     <Compile Include="XIVHelper\World.cs" />
-    <Compile Include="XIVHelper\XIVDB.cs" />
+    <Compile Include="XIVHelper\XIVApi.cs" />
     <Compile Include="XIVHelper\Zone.cs" />
     <Compile Include="Globalization\Locales.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

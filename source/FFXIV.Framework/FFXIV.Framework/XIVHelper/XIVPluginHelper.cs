@@ -199,6 +199,11 @@ namespace FFXIV.Framework.XIVHelper
             // その他リソース読み込みを開始する
             await Task.Run(() =>
             {
+                // xivapiをロードする
+                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
+                XIVApi.Instance.FFXIVLocale = ffxivLocale;
+                XIVApi.Instance.Load();
+
                 // sharlayan を開始する
                 // Actor を取得しない
                 // Party を取得しない
@@ -212,11 +217,6 @@ namespace FFXIV.Framework.XIVHelper
 
                 Thread.Sleep(CommonHelper.GetRandomTimeSpan());
                 this.scanFFXIVWorker.Run();
-
-                // XIVDBをロードする
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                XIVDB.Instance.FFXIVLocale = ffxivLocale;
-                XIVDB.Instance.Load();
 
                 // PC名記録をロードする
                 Thread.Sleep(CommonHelper.GetRandomTimeSpan());
@@ -1108,7 +1108,7 @@ namespace FFXIV.Framework.XIVHelper
         {
             try
             {
-                var dir = XIVDB.Instance.ResourcesDirectory;
+                var dir = XIVApi.Instance.ResourcesDirectory;
                 var file = Path.Combine(dir, "Zones.csv");
 
                 if (!File.Exists(file))
@@ -1166,40 +1166,31 @@ namespace FFXIV.Framework.XIVHelper
         private void TranslateZoneList()
         {
             if (this.isZoneListTranslated ||
-                !this.isZoneListLoaded ||
-                !XIVDB.Instance.PlacenameList.Any())
+                !this.isZoneListLoaded)
             {
                 return;
             }
 
+            if (!XIVApi.Instance.AreaList.Any())
+            {
+                return;
+            }
+
+            var transDictionary = XIVApi.Instance.AreaList
+                .GroupBy(x => x.NameEn.ToLower())
+                .ToDictionary(
+                    x => x.Key,
+                    x => x.First());
+
             foreach (var zone in this.ZoneList)
             {
-                var place = (
-                    from x in XIVDB.Instance.PlacenameList.AsParallel()
-                    where
-                    string.Equals(x.NameEn, zone.Name, StringComparison.InvariantCultureIgnoreCase)
-                    select
-                    x).FirstOrDefault();
+                var key = zone.Name.ToLower();
 
-                if (place != null)
+                if (transDictionary.ContainsKey(key))
                 {
-                    zone.Name = place.Name;
-                    zone.IDonDB = place.ID;
-                }
-                else
-                {
-                    var area = (
-                        from x in XIVDB.Instance.AreaList.AsParallel()
-                        where
-                        string.Equals(x.NameEn, zone.Name, StringComparison.InvariantCultureIgnoreCase)
-                        select
-                        x).FirstOrDefault();
-
-                    if (area != null)
-                    {
-                        zone.Name = area.Name;
-                        zone.IDonDB = area.ID;
-                    }
+                    var area = transDictionary[key];
+                    zone.Name = area.Name;
+                    zone.IDonDB = area.ID;
                 }
             }
 
@@ -1249,21 +1240,21 @@ namespace FFXIV.Framework.XIVHelper
         private volatile bool isMergedBuffListToXIVPlugin = false;
 
         /// <summary>
-        /// XIVDBのスキルリストとFFXIVプラグインのスキルリストをマージする
+        /// XIVApiのスキルリストとFFXIVプラグインのスキルリストをマージする
         /// </summary>
         private void MergeSkillList()
         {
             if (this.isSkillListLoaded &&
                 !this.isMergedSkillList)
             {
-                lock (XIVDB.Instance.ActionList)
+                lock (XIVApi.Instance.ActionList)
                 {
                     if (this.skillList != null &&
-                        XIVDB.Instance.ActionList.Any())
+                        XIVApi.Instance.ActionList.Any())
                     {
                         this.isMergedSkillList = true;
 
-                        foreach (var action in XIVDB.Instance.ActionList)
+                        foreach (var action in XIVApi.Instance.ActionList)
                         {
                             var skill = new Skill()
                             {
@@ -1274,7 +1265,7 @@ namespace FFXIV.Framework.XIVHelper
                             this.skillList[action.Key] = skill;
                         }
 
-                        AppLogger.Trace("XIVDB Action list merged.");
+                        AppLogger.Trace("xivapi action list merged.");
                     }
                 }
             }
@@ -1305,7 +1296,7 @@ namespace FFXIV.Framework.XIVHelper
 
             var pluginSkillList = list as SortedDictionary<uint, string>;
 
-            foreach (var entry in XIVDB.Instance.ActionList)
+            foreach (var entry in XIVApi.Instance.ActionList)
             {
                 if (!pluginSkillList.ContainsKey(entry.Key))
                 {
@@ -1313,15 +1304,15 @@ namespace FFXIV.Framework.XIVHelper
                 }
             }
 
-            if (XIVDB.Instance.ActionList.Any())
+            if (XIVApi.Instance.ActionList.Any())
             {
                 this.isMergedSkillToXIVPlugin = true;
-                AppLogger.Trace("XIVDB Action list -> FFXIV Plugin");
+                AppLogger.Trace("xivapi action list -> XIVPlugin");
             }
         }
 
         /// <summary>
-        /// XIVDBのBuff(Status)リストとFFXIVプラグインのBuffリストをマージする
+        /// XIVApiのBuff(Status)リストとFFXIVプラグインのBuffリストをマージする
         /// </summary>
         private void MergeBuffListToXIVPlugin()
         {
@@ -1330,7 +1321,7 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            if (!XIVDB.Instance.BuffList.Any())
+            if (!XIVApi.Instance.BuffList.Any())
             {
                 return;
             }
@@ -1353,7 +1344,7 @@ namespace FFXIV.Framework.XIVHelper
 
             var pluginList = list as SortedDictionary<uint, string>;
 
-            foreach (var entry in XIVDB.Instance.BuffList)
+            foreach (var entry in XIVApi.Instance.BuffList)
             {
                 if (!pluginList.ContainsKey(entry.Key))
                 {
@@ -1362,9 +1353,9 @@ namespace FFXIV.Framework.XIVHelper
                 }
             }
 
-            if (XIVDB.Instance.BuffList.Any())
+            if (XIVApi.Instance.BuffList.Any())
             {
-                AppLogger.Trace("XIVDB Status list -> FFXIV Plugin");
+                AppLogger.Trace("xivapi status list -> XIVPlugin");
             }
 
             this.isMergedBuffListToXIVPlugin = true;

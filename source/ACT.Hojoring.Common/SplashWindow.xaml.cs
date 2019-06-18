@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -143,14 +142,12 @@ namespace ACT.Hojoring.Common
 
         public SplashWindow()
         {
-            Debug.WriteLine("debug_mode=" + IsDebug);
-
             this.InitializeComponent();
 
             this.ToNonActive();
             this.ToTransparent();
 
-            this.Topmost = true;
+            this.Topmost = IsDebug;
 
             var ver = HojoringVersion;
             if (ver != null)
@@ -158,15 +155,13 @@ namespace ACT.Hojoring.Common
                 this.VersionLabel.Content = $"v{ver.Major}.{ver.Minor}.{ver.Revision}";
             }
 
-            Timeline.SetDesiredFrameRate(this.OpacityAnimation, 40);
+            Timeline.SetDesiredFrameRate(this.OpacityAnimation, 30);
 
             this.OpacityAnimation.Completed += (x, y) => this.Close();
         }
 
         public async void StartFadeOut()
         {
-            this.Topmost = false;
-
             await Task.Delay(SplashDuration);
             await Application.Current.Dispatcher.InvokeAsync(
                 () => this.BeginAnimation(
