@@ -15,6 +15,7 @@ using ACT.TTSYukkuri.Voiceroid;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
 using NLog;
 
@@ -396,6 +397,11 @@ namespace ACT.TTSYukkuri
                     PluginStatusLabel.Text = "Plugin Started";
 
                     this.Logger.Trace("[YUKKURI] End InitPlugin");
+
+                    // 共通ビューを追加する
+                    ConfigBridge.Instance.SetUILocaleCallback(() => Settings.Default.UILocale);
+                    CommonViewHelper.Instance.AddCommonView(
+                       pluginScreenSpace.Parent as TabControl);
 
                     // アップデートを確認する
                     await Task.Run(() => this.Update());

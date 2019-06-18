@@ -21,8 +21,5 @@
     <TabItem Header="Config">
       <local:ConfigView />
     </TabItem>
-    <TabItem Header="Help">
-      <fw:HelpView x:Name="HelpView" />
-    </TabItem>
   </TabControl>
 </UserControl>

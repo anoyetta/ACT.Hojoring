@@ -29,8 +29,5 @@
     <TabItem Header="DISCORD">
       <discord:DiscordView />
     </TabItem>
-    <TabItem Header="Help">
-      <fw:HelpView x:Name="HelpView" />
-    </TabItem>
   </TabControl>
 </UserControl>

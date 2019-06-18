@@ -10,10 +10,6 @@ namespace ACT.UltraScouter.Config.UI.Views
         public BaseView()
         {
             this.InitializeComponent();
-
-            // HelpViewを設定する
-            this.HelpView.SetLocale(Settings.Instance.UILocale);
-            this.HelpView.ViewModel.ReloadConfigAction = null;
         }
     }
 }

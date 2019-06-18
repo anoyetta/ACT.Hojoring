@@ -14,6 +14,7 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
+using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
 using FFXIV.Framework.XIVHelper;
 using NLog;
@@ -159,6 +160,11 @@ namespace ACT.UltraScouter
 
                     this.PluginStatusLabel.Text = "Plugin started.";
                     this.Logger.Trace("[ULTRA SCOUTER] End InitPlugin");
+
+                    // 共通ビューを追加する
+                    ConfigBridge.Instance.SetUILocaleCallback(() => Settings.Instance.UILocale);
+                    CommonViewHelper.Instance.AddCommonView(
+                       pluginScreenSpace.Parent as TabControl);
 
                     // アップデートを確認する
                     await Task.Run(() => this.Update());
