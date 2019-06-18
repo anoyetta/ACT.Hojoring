@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Media;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -12,6 +11,7 @@ using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.XIVHelper;
 
@@ -586,7 +586,7 @@ namespace ACT.SpecialSpellTimer
 
             if (doneCommand)
             {
-                SystemSounds.Asterisk.Play();
+                CommonSounds.Instance.PlayAsterisk();
             }
 
             // ログファイルに出力する

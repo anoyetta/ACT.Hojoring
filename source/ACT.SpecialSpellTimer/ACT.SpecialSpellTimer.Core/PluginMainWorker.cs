@@ -568,7 +568,8 @@ namespace ACT.SpecialSpellTimer
                         // ACT本体に戦闘終了を通知する
                         if (Settings.Default.WipeoutNotifyToACT)
                         {
-                            ActGlobals.oFormActMain.ActCommands("end");
+                            ActGlobals.oFormActMain.EndCombat(true);
+                            CommonSounds.Instance.PlayWipeout();
                         }
                     });
                 }

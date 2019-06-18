@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Media;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -90,13 +89,13 @@ namespace FFXIV.Framework.WPF.Views
             if (view.HasDetails)
             {
                 view.WindowBorderBrush = Brushes.OrangeRed;
-                SystemSounds.Beep.Play();
+                CommonSounds.Instance.PlayBeep();
             }
             else
             {
                 view.WindowBorderBrush = Brushes.Gold;
                 view.SizeToContent = SizeToContent.WidthAndHeight;
-                SystemSounds.Asterisk.Play();
+                CommonSounds.Instance.PlayAsterisk();
             }
 
             view.RaisePropertyChanged(nameof(WindowBorderBrush));

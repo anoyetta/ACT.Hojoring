@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 
 namespace FFXIV.Framework.WPF.Views
@@ -45,7 +45,7 @@ namespace FFXIV.Framework.WPF.Views
                 DataFormats.Text,
                 "anoyetta@gmail.com");
 
-            SystemSounds.Asterisk.Play();
+            CommonSounds.Instance.PlayAsterisk();
         }
     }
 }
