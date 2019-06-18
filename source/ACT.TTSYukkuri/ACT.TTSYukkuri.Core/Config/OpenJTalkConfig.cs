@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Serialization;
 using Prism.Mvvm;
 
@@ -152,35 +151,11 @@ namespace ACT.TTSYukkuri.Config
         }
 
         [XmlIgnore]
-        public string OpenJTalkDirectory
+        public string OpenJTalkDirectory => new[]
         {
-            get
-            {
-                // ACTのパスを取得する
-                var asm = Assembly.GetEntryAssembly();
-                if (asm != null)
-                {
-                    var actDirectory = Path.GetDirectoryName(asm.Location);
-                    var resourcesUnderAct = Path.Combine(actDirectory, @"OpenJTalk");
-
-                    if (Directory.Exists(resourcesUnderAct))
-                    {
-                        return resourcesUnderAct;
-                    }
-                }
-
-                // 自身の場所を取得する
-                var selfDirectory = PluginCore.Instance.PluginDirectory ?? string.Empty;
-                var resourcesUnderThis = Path.Combine(selfDirectory, @"OpenJTalk");
-
-                if (Directory.Exists(resourcesUnderThis))
-                {
-                    return resourcesUnderThis;
-                }
-
-                return string.Empty;
-            }
-        }
+            Path.Combine(PluginCore.Instance.PluginDirectory, "bin", "OpenJTalk"),
+            Path.Combine(PluginCore.Instance.PluginDirectory, "OpenJTalk"),
+        }.FirstOrDefault(x => Directory.Exists(x));
 
         public OpenJTalkVoice[] EnumerateVoice()
         {

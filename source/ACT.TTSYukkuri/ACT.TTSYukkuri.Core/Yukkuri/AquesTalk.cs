@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using FFXIV.Framework.Common;
@@ -18,17 +19,23 @@ namespace ACT.TTSYukkuri.Yukkuri
         private const string YukkuriName = "AquesTalk";
         private const string YukkuriDriverLibName = "AquesTalkDriver";
 
-        private static readonly string YukkuriDllName = Path.Combine(
-            PluginCore.Instance.PluginDirectory,
-            $@"Yukkuri\{YukkuriName}.dll");
+        public static string YukkuriDirectory => new[]
+        {
+            Path.Combine(PluginCore.Instance.PluginDirectory, "bin", "Yukkuri"),
+            Path.Combine(PluginCore.Instance.PluginDirectory, "Yukkuri"),
+        }.FirstOrDefault(x => Directory.Exists(x));
 
-        private static readonly string YukkuriDriverDllName = Path.Combine(
-            PluginCore.Instance.PluginDirectory,
-            $@"Yukkuri\{YukkuriDriverLibName}.dll");
+        private string YukkuriDllName => Path.Combine(
+            YukkuriDirectory,
+            $@"{YukkuriName}.dll");
 
-        public static readonly string UserDictionaryEditor = Path.Combine(
-            PluginCore.Instance.PluginDirectory,
-            $@"Yukkuri\aq_dic\GenUserDic.exe");
+        private string YukkuriDriverDllName => Path.Combine(
+            YukkuriDirectory,
+            $@"{YukkuriDriverLibName}.dll");
+
+        public static string UserDictionaryEditor => Path.Combine(
+            YukkuriDirectory,
+            $@"aq_dic\GenUserDic.exe");
 
         private UnmanagedLibrary yukkuri;
         private UnmanagedLibrary yukkuriDriver;
@@ -46,26 +53,26 @@ namespace ACT.TTSYukkuri.Yukkuri
         {
             if (this.yukkuri == null)
             {
-                if (!File.Exists(YukkuriDllName))
+                if (!File.Exists(this.YukkuriDllName))
                 {
                     throw new FileNotFoundException(
-                        $"{Path.GetFileName(YukkuriDllName)} が見つかりません。アプリケーションの配置を確認してください。",
-                        YukkuriDllName);
+                        $"{Path.GetFileName(this.YukkuriDllName)} が見つかりません。アプリケーションの配置を確認してください。",
+                        this.YukkuriDllName);
                 }
 
-                this.yukkuri = new UnmanagedLibrary(YukkuriDllName);
+                this.yukkuri = new UnmanagedLibrary(this.YukkuriDllName);
             }
 
             if (this.yukkuriDriver == null)
             {
-                if (!File.Exists(YukkuriDriverDllName))
+                if (!File.Exists(this.YukkuriDriverDllName))
                 {
                     throw new FileNotFoundException(
-                        $"{Path.GetFileName(YukkuriDriverDllName)} が見つかりません。アプリケーションの配置を確認してください。",
-                        YukkuriDriverDllName);
+                        $"{Path.GetFileName(this.YukkuriDriverDllName)} が見つかりません。アプリケーションの配置を確認してください。",
+                        this.YukkuriDriverDllName);
                 }
 
-                this.yukkuriDriver = new UnmanagedLibrary(YukkuriDriverDllName);
+                this.yukkuriDriver = new UnmanagedLibrary(this.YukkuriDriverDllName);
             }
 
             if (this.yukkuriDriver == null)

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using FFXIV.Framework.Common;
 using NAudio.Wave;
@@ -21,7 +20,7 @@ namespace ACT.TTSYukkuri.Discord.Models
 
         private string FFMpeg =>
             Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                PluginCore.Instance.PluginDirectory,
                 "ffmpeg.exe");
 
         private Dictionary<string, byte[]> waves = new Dictionary<string, byte[]>();

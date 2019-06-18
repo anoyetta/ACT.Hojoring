@@ -18,15 +18,15 @@ namespace ACT.TTSYukkuri.Yukkuri
 
         private const string Kanji2KoeLibName = "AqKanji2Koe";
 
-        private readonly string Kanji2KoeDllName = Path.Combine(
-            PluginCore.Instance.PluginDirectory,
-            $@"Yukkuri\{Kanji2KoeLibName}.dll");
-
-        private readonly string Kanji2KoeDictionaryName = Path.Combine(
-            PluginCore.Instance.PluginDirectory,
-            $@"Yukkuri\aq_dic");
-
         private readonly Encoding ShiftJISEncoding = Encoding.GetEncoding("Shift_JIS");
+
+        private string Kanji2KoeDllName => Path.Combine(
+            AquesTalk.YukkuriDirectory,
+            $@"{Kanji2KoeLibName}.dll");
+
+        private string Kanji2KoeDictionaryName => Path.Combine(
+            AquesTalk.YukkuriDirectory,
+            $@"aq_dic");
 
         private UnmanagedLibrary kanji2KoeLib;
         private AqKanji2Koe_Create createDelegate;

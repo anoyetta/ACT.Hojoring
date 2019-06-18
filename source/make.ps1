@@ -89,6 +89,9 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     $references = @(
         "x64",
         "x86",
+        "ACT.SpecialSpellTimer.Core.dll",
+        "ACT.UltraScouter.Core.dll",
+        "ACT.TTSYukkuri.Core.dll",
         "Sharlayan.dll",
         "System.*.dll",
         "Microsoft.*.dll",
@@ -105,8 +108,8 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
         "PropertyChanged.dll"
     )
 
-    New-Item -ItemType Directory "references" | Out-Null
-    Move-Item -Path $references -Destination "references" | Out-Null
+    New-Item -ItemType Directory "bin" | Out-Null
+    Move-Item -Path $references -Destination "bin" | Out-Null
 
     '●TTSServer にCeVIOをマージする'
     (& $libz inject-dll -a "FFXIV.Framework.TTS.Common.dll" -i $cevioLib) | Select-String "Injecting"
@@ -155,6 +158,10 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Rename-Item OpenJTalk _openJTalk
     Rename-Item _yukkuri yukkuri
     Rename-Item _openJTalk openJTalk
+    Move-Item yukkuri .\bin\
+    Move-Item openJTalk .\bin\
+    Move-Item lib .\bin\
+    Move-Item tools .\bin\
 
     '●配布ファイルをアーカイブする'
     $archive = "ACT.Hojoring-" + $versionShort

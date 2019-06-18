@@ -78,7 +78,7 @@
     <Content Include="tools\7z\7za.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="update_hojoring_ignores.txt">
+    <None Include="config\update_hojoring_ignores.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

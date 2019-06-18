@@ -16,7 +16,13 @@ namespace FFXIV.Framework.Common
         private const int LogBufferMargin = 16;
         public const string ChatLoggerName = "ChatLogger";
         public const string DefaultLoggerName = "HojoringLogger";
-        public const string HojoringConfig = "ACT.Hojoring.NLog.config";
+        private const string HojoringConfigFileName = "ACT.Hojoring.NLog.config";
+
+        public static string HojoringConfig => new[]
+        {
+            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config", HojoringConfigFileName),
+            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), HojoringConfigFileName),
+        }.FirstOrDefault(x => File.Exists(x));
 
         public static readonly object locker = new object();
         public static readonly List<AppLogEntry> logBuffer = new List<AppLogEntry>(LogBufferSize + LogBufferMargin);

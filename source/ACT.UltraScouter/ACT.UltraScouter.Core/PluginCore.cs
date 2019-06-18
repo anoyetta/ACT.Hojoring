@@ -14,8 +14,8 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
 using NLog;
 
 namespace ACT.UltraScouter

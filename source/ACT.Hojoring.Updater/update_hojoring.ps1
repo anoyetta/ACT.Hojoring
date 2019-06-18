@@ -8,7 +8,7 @@ $isUsePreRelease = $FALSE
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev9'
+'* rev10'
 '* (c) anoyetta, 2019'
 '***************************************************'
 '* Start Update Hojoring'
@@ -76,9 +76,10 @@ $cd = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $cd
 
 # 更新の除外リストを読み込む
+$ignoreFile = ".\config\update_hojoring_ignores.txt"
 $updateExclude = @()
-if (Test-Path ".\update_hojoring_ignores.txt") {
-    $updateExclude = (Get-Content ".\update_hojoring_ignores.txt" -Encoding UTF8) -as [string[]]
+if (Test-Path $ignoreFile) {
+    $updateExclude = (Get-Content $ignoreFile -Encoding UTF8) -as [string[]]
 }
 
 # 引数があればアップデートチャンネルを書き換える
@@ -178,7 +179,7 @@ Invoke-WebRequest -Uri $info.AssetUrl -OutFile (Join-Path $updateDir $info.Asset
 
 Start-Sleep -Milliseconds 10
 
-$7za = Get-Item ".\tools\7z\7za.exe"
+$7za = Get-Item ".\bin\tools\7z\7za.exe"
 $archive = Get-Item ".\update\*.7z"
 
 ''
@@ -206,7 +207,7 @@ foreach ($src in $srcs) {
         New-Item (Split-Path $dst -Parent) -ItemType Directory -Force | Out-Null
         Copy-Item -Force $src $dst | Write-Output
         Write-Output ("--> " + $dst)
-		Start-Sleep -Milliseconds 1
+        Start-Sleep -Milliseconds 1
     }
 }
 '-> Updated'

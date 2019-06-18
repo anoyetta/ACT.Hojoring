@@ -335,7 +335,7 @@ namespace FFXIV.Framework.Common
                     var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                     var references = Path.Combine(
                         location,
-                        "references");
+                        "bin");
 
                     if (!Directory.Exists(references))
                     {
@@ -344,7 +344,7 @@ namespace FFXIV.Framework.Common
 
                         var prompt = new StringBuilder();
 
-                        prompt.AppendLine("\"references\" folder not found.");
+                        prompt.AppendLine("\"bin\" folder not found.");
                         prompt.AppendLine("Your setup is not complete.");
                         prompt.AppendLine(string.Empty);
                         prompt.AppendLine("Please check deployment of plugin.");
