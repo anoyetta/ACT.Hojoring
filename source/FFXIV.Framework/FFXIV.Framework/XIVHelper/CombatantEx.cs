@@ -247,9 +247,13 @@ namespace FFXIV.Framework.XIVHelper
         public static void SetSkillName(
             CombatantEx combatant)
         {
-            if (combatant == null ||
-                combatant.ActorType == Actor.Type.PC ||
-                combatant.ActorType == Actor.Type.Monster)
+            if (combatant == null)
+            {
+                return;
+            }
+
+            if (combatant.ActorType != Actor.Type.PC &&
+                combatant.ActorType != Actor.Type.Monster)
             {
                 combatant.CastSkillName = string.Empty;
                 return;
@@ -672,19 +676,6 @@ namespace FFXIV.Framework.XIVHelper
         #endregion ICloneable
 
         public override string ToString() => $"{this.Name} {this.JobID}";
-
-        public void NotifyProperties()
-        {
-            var pis = this.GetType().GetProperties();
-
-            WPFHelper.BeginInvoke(() =>
-            {
-                foreach (var pi in pis)
-                {
-                    this.RaisePropertyChanged(pi.Name);
-                }
-            });
-        }
     }
 
     public static class CombatantExtensions
