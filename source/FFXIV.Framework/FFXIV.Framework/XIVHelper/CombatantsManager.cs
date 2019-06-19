@@ -118,13 +118,31 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
+        private volatile bool isWorking = false;
+
+        private static readonly List<CombatantEx> EmptyCombatants = new List<CombatantEx>();
+
         public IEnumerable<CombatantEx> Refresh(
             IEnumerable<Combatant> source,
             bool isDummy = false)
         {
-            lock (LockObject)
+            if (this.isWorking)
             {
-                return this.RefreshCore(source, isDummy);
+                return EmptyCombatants;
+            }
+
+            try
+            {
+                this.isWorking = true;
+
+                lock (LockObject)
+                {
+                    return this.RefreshCore(source, isDummy);
+                }
+            }
+            finally
+            {
+                this.isWorking = false;
             }
         }
 

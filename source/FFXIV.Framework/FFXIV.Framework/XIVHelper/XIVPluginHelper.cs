@@ -689,7 +689,7 @@ namespace FFXIV.Framework.XIVHelper
             {
                 // パーティが変わっているか？
                 // TBD XIVプラグインバグ対応
-                this.XivPlugin_PartyListChanged(
+                this.OnPartyListChanged?.Invoke(
                     new ReadOnlyCollection<uint>(partyIDs.Select(x => x.Key).ToList()),
                     partyIDs.Count);
             }
