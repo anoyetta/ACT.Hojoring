@@ -555,8 +555,6 @@ namespace FFXIV.Framework.XIVHelper
             AddedCombatantsEventArgs e) => this?.AddedCombatants?.Invoke(this, e);
 
         private bool isFirst = true;
-        private JobIDs previousPlayerJobID = JobIDs.Unknown;
-        private readonly Dictionary<uint, JobIDs> previousPartyJobList = new Dictionary<uint, JobIDs>(8);
 
         public void RefreshCombatantList()
         {
@@ -579,7 +577,7 @@ namespace FFXIV.Framework.XIVHelper
                 var party = CombatantsManager.Instance.GetPartyList();
                 this.RefreshInCombat(party);
                 this.RefreshBoss(party);
-                this.DetectPartyJobChange(party);
+                this.DetectConditionChanges(party);
             }
 
             var combatants = this.DataRepository.GetCombatantList();
@@ -593,15 +591,6 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             raiseFirstCombatants();
-
-            if (CombatantsManager.Instance.Player != null)
-            {
-                if (this.previousPlayerJobID != CombatantsManager.Instance.Player.JobID)
-                {
-                    this.previousPlayerJobID = CombatantsManager.Instance.Player.JobID;
-                    this.OnPlayerJobChanged?.Invoke();
-                }
-            }
 
             void raiseFirstCombatants()
             {
@@ -651,14 +640,62 @@ namespace FFXIV.Framework.XIVHelper
             this.InCombat = result;
         }
 
-        private void DetectPartyJobChange(
+        private string previousZoneName = string.Empty;
+        private string previousPlayerName = string.Empty;
+        private JobIDs previousPlayerJobID = JobIDs.Unknown;
+        private readonly Dictionary<uint, JobIDs> previousPartyJobList = new Dictionary<uint, JobIDs>(8);
+
+        private void DetectConditionChanges(
             IEnumerable<CombatantEx> party)
         {
+            var currentPlayer = CombatantsManager.Instance.Player;
+
+            if (currentPlayer != null)
+            {
+                // プレイヤーが異なっているか？
+                // TBD XIVプラグインバグ対応
+                if (this.previousPlayerName != currentPlayer.Name)
+                {
+                    this.previousPlayerName = currentPlayer.Name;
+                    this.XivPlugin_PrimaryPlayerChanged();
+
+                    // プレイヤーチェンジならば抜ける
+                    return;
+                }
+
+                // プレイヤーのジョブが異なっているか？
+                if (this.previousPlayerJobID != currentPlayer.JobID)
+                {
+                    this.previousPlayerJobID = currentPlayer.JobID;
+                    this.OnPlayerJobChanged?.Invoke();
+                }
+            }
+
+            // ゾーン名が異なっているか？
+            // TBD XIVプラグインバグ対応
+            var currentZoneName = this.GetCurrentZoneName();
+            if (this.previousZoneName != currentZoneName)
+            {
+                this.XivPlugin_ZoneChanged(
+                    (uint)this.GetCurrentZoneID(),
+                    currentZoneName);
+            }
+
             var partyIDs = party
                 .ToDictionary(x => x.ID, x => x.JobID);
 
-            if (this.previousPartyJobList.Count == partyIDs.Count)
+            if (this.previousPartyJobList.Select(x => x.Key)
+                .SequenceEqual(partyIDs.Select(x => x.Key)))
             {
+                // パーティが変わっているか？
+                // TBD XIVプラグインバグ対応
+                this.XivPlugin_PartyListChanged(
+                    new ReadOnlyCollection<uint>(partyIDs.Select(x => x.Key).ToList()),
+                    partyIDs.Count);
+            }
+            else
+            {
+                // パーティのジョブが異なっているか？
                 var isPartyJobChanged = false;
                 foreach (var pc in partyIDs)
                 {
