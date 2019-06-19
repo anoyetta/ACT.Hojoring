@@ -32,7 +32,7 @@ namespace FFXIV.Framework.Common
         public void PlayWipeout()
             => this.PlayWave("_wipeout.wav");
 
-        private static readonly float Volume = 0.6f;
+        private static readonly float Volume = 0.3f;
 
         private void PlayWave(
             string fileName)
