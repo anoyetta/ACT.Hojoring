@@ -676,6 +676,7 @@ namespace FFXIV.Framework.XIVHelper
             var currentZoneName = this.GetCurrentZoneName();
             if (this.previousZoneName != currentZoneName)
             {
+                this.previousZoneName = currentZoneName;
                 this.XivPlugin_ZoneChanged(
                     (uint)this.GetCurrentZoneID(),
                     currentZoneName);
