@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using FFXIV.Framework.Common;
 using FFXIV_ACT_Plugin.Common.Models;
 using Sharlayan.Core.Enums;
@@ -180,6 +181,7 @@ namespace FFXIV.Framework.XIVHelper
 
                 if (isFirstCombatant)
                 {
+                    isFirstCombatant = false;
                     CombatantEx.CopyToEx(ex, this.Player);
                 }
 
@@ -195,7 +197,7 @@ namespace FFXIV.Framework.XIVHelper
                     partyIDList.Add(ex.ID);
                 }
 
-                isFirstCombatant = false;
+                Thread.Yield();
             }
 
             if (this.Player != null &&
@@ -430,6 +432,7 @@ namespace FFXIV.Framework.XIVHelper
                     }
 
                     this.Combatants.Remove(target);
+                    Thread.Yield();
                 }
             }
         }

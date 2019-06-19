@@ -649,6 +649,7 @@ namespace FFXIV.Framework.XIVHelper
             IEnumerable<CombatantEx> party)
         {
             var currentPlayer = CombatantsManager.Instance.Player;
+            var currentZoneName = this.GetCurrentZoneName();
 
             if (currentPlayer != null)
             {
@@ -673,7 +674,6 @@ namespace FFXIV.Framework.XIVHelper
 
             // ゾーン名が異なっているか？
             // TBD XIVプラグインバグ対応
-            var currentZoneName = this.GetCurrentZoneName();
             if (this.previousZoneName != currentZoneName)
             {
                 this.previousZoneName = currentZoneName;
