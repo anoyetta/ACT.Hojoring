@@ -614,15 +614,6 @@ namespace ACT.TTSYukkuri.Discord.Models
                     File.Move(src, sodium);
                 }
             }
-
-            if (Directory.Exists(libDirectory))
-            {
-                if (File.Exists(opus) &&
-                    File.Exists(sodium))
-                {
-                    Directory.Delete(libDirectory, true);
-                }
-            }
         }
     }
 
