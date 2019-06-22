@@ -552,25 +552,28 @@ namespace ACT.SpecialSpellTimer
             {
                 // リセットするのは15秒に1回にする
                 // 暗転中もずっとリセットし続けてしまうので
-                if ((DateTime.Now - this.lastWipeOutDateTime).TotalSeconds >= 15.0)
+                var now = DateTime.Now;
+                if ((now - this.lastWipeOutDateTime).TotalSeconds >= 15.0)
                 {
-                    this.lastWipeOutDateTime = DateTime.Now;
+                    this.lastWipeOutDateTime = now;
 
-                    // インスタンススペルを消去する
-                    SpellTable.ResetCount();
-                    TickerTable.Instance.ResetCount();
-
-                    // wipeoutログを発生させる
-                    LogParser.RaiseLog(DateTime.Now, ConstantKeywords.Wipeout);
-
-                    ActInvoker.Invoke(() =>
+                    Task.Run(() =>
                     {
+                        Thread.Sleep(TimeSpan.FromSeconds(4));
+
                         // ACT本体に戦闘終了を通知する
                         if (Settings.Default.WipeoutNotifyToACT)
                         {
-                            ActGlobals.oFormActMain.EndCombat(true);
                             CommonSounds.Instance.PlayWipeout();
+                            ActInvoker.Invoke(() => ActGlobals.oFormActMain.EndCombat(true));
                         }
+
+                        // トリガーをリセットする
+                        SpellTable.ResetCount();
+                        TickerTable.Instance.ResetCount();
+
+                        // wipeoutログを発生させる
+                        LogParser.RaiseLog(now, ConstantKeywords.Wipeout);
                     });
                 }
             }

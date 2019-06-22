@@ -476,7 +476,7 @@ namespace FFXIV.Framework.XIVHelper
                 }
 
                 var max = this.TargetInfo.EnmityItems.Max(x => x.Enmity);
-                var player = this.CurrentPlayer;
+                var player = CombatantsManager.Instance.Player;
                 var first = default(EnmityEntry);
 
                 var combatantDictionary = CombatantsManager.Instance.GetCombatantMainDictionary();
@@ -510,13 +510,13 @@ namespace FFXIV.Framework.XIVHelper
 
                     if (!existing)
                     {
-                        var actor = combatantDictionary.ContainsKey(enmity.ID) ?
+                        var combatant = combatantDictionary.ContainsKey(enmity.ID) ?
                             combatantDictionary[enmity.ID] :
                             null;
 
-                        enmity.Name = actor?.Name;
-                        enmity.OwnerID = actor?.OwnerID ?? 0;
-                        enmity.Job = (byte)(actor?.Job ?? 0);
+                        enmity.Name = combatant?.Name;
+                        enmity.OwnerID = combatant?.OwnerID ?? 0;
+                        enmity.Job = (byte)(combatant?.Job ?? 0);
 
                         if (string.IsNullOrEmpty(enmity.Name))
                         {

@@ -88,30 +88,40 @@ namespace ACT.SpecialSpellTimer.Models
                     if (helper.IsAttached)
                     {
                         Thread.Sleep(TimeSpan.FromMilliseconds(200));
-                        helper.OnPrimaryPlayerChanged += () => setQueue(ref this.isPartyChanged);
-                        helper.OnPlayerJobChanged += () => setQueue(ref this.isPartyChanged);
-                        helper.OnPartyListChanged += (_, __) => setQueue(ref this.isPartyChanged);
-                        helper.OnPlayerJobChanged += () => setQueue(ref this.isPartyChanged);
-                        helper.OnZoneChanged += (_, __) => setQueue(ref this.isZoneChanged);
+                        helper.OnPrimaryPlayerChanged += () => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
+                        helper.OnPlayerJobChanged += () => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
+                        helper.OnPartyListChanged += (_, __) => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
+                        helper.OnPlayerJobChanged += () => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
+                        helper.OnZoneChanged += (_, __) => setQueue(this.isZoneChanged, () => this.isZoneChanged = true);
 
-                        setQueue(ref this.isPartyChanged);
-                        setQueue(ref this.isZoneChanged);
+                        setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
+                        setQueue(this.isPartyChanged, () => this.isZoneChanged = true);
                         break;
                     }
                 }
             });
 
-            void setQueue(ref bool queue)
+            void setQueue(bool queue, Action setAction)
             {
                 if (queue)
                 {
                     return;
                 }
 
-                lock (this)
+                Task.Run(() =>
                 {
-                    queue = true;
-                }
+                    Thread.Sleep(TimeSpan.FromSeconds(3));
+
+                    if (queue)
+                    {
+                        return;
+                    }
+
+                    lock (this)
+                    {
+                        setAction();
+                    }
+                });
             }
         }
 
@@ -145,6 +155,12 @@ namespace ACT.SpecialSpellTimer.Models
                     {
                         this.RecompileSpells();
                         this.RecompileTickers();
+
+                        var fromEvent =
+                            isSimulationChanged ? "simulation changed" :
+                                this.isPartyChanged ? "party changed" :
+                                    this.isZoneChanged ? "zone changed" : string.Empty;
+                        Logger.Write($"recompiled triggers on {fromEvent}");
 
                         TickersController.Instance.GarbageWindows(this.TickerList);
                         SpellsController.Instance.GarbageSpellPanelWindows(this.SpellList);
