@@ -623,6 +623,21 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             notices.Add(notice2);
             notices.Add(notice3);
 
+            for (int i = 0; i < 6; i++)
+            {
+                notices.Add(new TimelineVisualNoticeModel()
+                {
+                    Enabled = true,
+                    TextToDisplay = "マーカー" + (i + 1),
+                    Duration = 10 + i + 1,
+                    DurationVisible = false,
+                    StyleModel = testStyle,
+                    Icon = "Marker.png",
+                    IsVisible = true,
+                    Order = i + 1
+                });
+            }
+
             return notices;
         }
 
