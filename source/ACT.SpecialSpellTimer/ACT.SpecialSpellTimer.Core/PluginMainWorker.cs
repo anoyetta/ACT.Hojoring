@@ -559,13 +559,13 @@ namespace ACT.SpecialSpellTimer
 
                     Task.Run(() =>
                     {
-                        Thread.Sleep(TimeSpan.FromSeconds(4));
+                        Thread.Sleep(TimeSpan.FromSeconds(3));
 
                         // ACT本体に戦闘終了を通知する
                         if (Settings.Default.WipeoutNotifyToACT)
                         {
-                            CommonSounds.Instance.PlayWipeout();
                             ActInvoker.Invoke(() => ActGlobals.oFormActMain.EndCombat(true));
+                            CommonSounds.Instance.PlayWipeout();
                         }
 
                         // トリガーをリセットする
@@ -573,7 +573,11 @@ namespace ACT.SpecialSpellTimer
                         TickerTable.Instance.ResetCount();
 
                         // wipeoutログを発生させる
-                        LogParser.RaiseLog(now, ConstantKeywords.Wipeout);
+                        Task.Run(() =>
+                        {
+                            Thread.Sleep(TimeSpan.FromSeconds(1.5));
+                            LogParser.RaiseLog(now, ConstantKeywords.Wipeout);
+                        });
                     });
                 }
             }
