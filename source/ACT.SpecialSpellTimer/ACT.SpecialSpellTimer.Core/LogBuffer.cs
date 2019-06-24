@@ -784,30 +784,4 @@ namespace ACT.SpecialSpellTimer
 
         #endregion その他のメソッド
     }
-
-    public class XIVLog
-    {
-        public XIVLog(
-            string logLine)
-        {
-            this.Timestamp = logLine.Substring(0, 15).TrimEnd();
-            this.Log = logLine.Remove(0, 15);
-        }
-
-        public XIVLog(
-            string timestamp,
-            string log)
-        {
-            this.Timestamp = timestamp;
-            this.Log = log;
-        }
-
-        public long No { get; set; } = 0;
-
-        public string Timestamp { get; set; } = string.Empty;
-
-        public string Log { get; set; } = string.Empty;
-
-        public string LogLine => $"{this.Timestamp} {this.Log}";
-    }
 }

@@ -44,6 +44,10 @@
       <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="FFXIV_ACT_Plugin.LogFile">
+      <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.LogFile.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -140,6 +144,7 @@
     <Compile Include="XIVHelper\CombatantsManager.cs" />
     <Compile Include="XIVHelper\CombatantEx.cs" />
     <Compile Include="XIVHelper\EnmityEntry.cs" />
+    <Compile Include="XIVHelper\XIVLog.cs" />
     <Compile Include="XIVHelper\XIVPluginHelper.cs" />
     <Compile Include="XIVHelper\Jobs.cs" />
     <Compile Include="XIVHelper\MessageType.cs" />

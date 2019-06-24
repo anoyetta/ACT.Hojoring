@@ -320,6 +320,8 @@ namespace FFXIV.Framework.XIVHelper
             xivPlugin.PrimaryPlayerChanged += this.XivPlugin_PrimaryPlayerChanged;
             xivPlugin.PartyListChanged += this.XivPlugin_PartyListChanged;
             xivPlugin.ZoneChanged += this.XivPlugin_ZoneChanged;
+
+            xivPlugin.LogLine += this.XivPlugin_LogLine;
         }
 
         private void UnsubscribeXIVPluginEvents()
@@ -329,6 +331,8 @@ namespace FFXIV.Framework.XIVHelper
             xivPlugin.PrimaryPlayerChanged -= this.XivPlugin_PrimaryPlayerChanged;
             xivPlugin.PartyListChanged -= this.XivPlugin_PartyListChanged;
             xivPlugin.ZoneChanged -= this.XivPlugin_ZoneChanged;
+
+            xivPlugin.LogLine -= this.XivPlugin_LogLine;
         }
 
         private void XivPlugin_PrimaryPlayerChanged()
@@ -351,13 +355,18 @@ namespace FFXIV.Framework.XIVHelper
             this.OnZoneChanged(ZoneID, ZoneName);
         }
 
+        private void XivPlugin_LogLine(uint EventType, uint Seconds, string logline)
+        {
+            var log = new XIVLog(logline, EventType);
+        }
+
         #endregion Attach FFXIV Plugin
 
         #region Log Subscriber
 
-        private readonly List<LogLinetDelegate> LogSubscribers = new List<LogLinetDelegate>(16);
+        private readonly List<LogLineDelegate> LogSubscribers = new List<LogLineDelegate>(16);
 
-        public void SubscribeLog(LogLinetDelegate subscriber)
+        public void SubscribeLog(LogLineDelegate subscriber)
         {
             if (this.DataSubscription == null)
             {
