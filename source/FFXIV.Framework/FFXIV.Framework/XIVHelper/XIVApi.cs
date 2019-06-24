@@ -309,7 +309,8 @@ namespace FFXIV.Framework.XIVHelper
                         var entry = new XIVApiAction()
                         {
                             ID = id,
-                            Name = fields[1]
+                            Name = fields[1],
+                            AttackType = fields[XIVApiAction.AttackTypeIndex]
                         };
 
                         this.actionList[entry.ID] = entry;
@@ -362,7 +363,7 @@ namespace FFXIV.Framework.XIVHelper
                     var entry = new XIVApiAction()
                     {
                         ID = id,
-                        Name = fields[1]
+                        Name = fields[1],
                     };
 
                     this.actionList[entry.ID] = entry;
@@ -453,8 +454,11 @@ namespace FFXIV.Framework.XIVHelper
         /// </summary>
         public class XIVApiAction
         {
+            public static readonly int AttackTypeIndex = 41;
+
             public uint ID { get; set; }
             public string Name { get; set; }
+            public string AttackType { get; set; }
         }
 
         #endregion Sub classes
