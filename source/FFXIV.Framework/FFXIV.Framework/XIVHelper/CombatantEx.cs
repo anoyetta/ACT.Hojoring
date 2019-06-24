@@ -179,6 +179,8 @@ namespace FFXIV.Framework.XIVHelper
 
         public string CastSkillName { get; set; } = string.Empty;
 
+        public AttackTypes CastSkillType { get; set; } = AttackTypes.Unknown;
+
         public double CurrentHPRate => this.MaxHP != 0 ? (this.CurrentHP / this.MaxHP) : 0;
 
         public uint TargetOfTargetID { get; set; }
@@ -266,8 +268,9 @@ namespace FFXIV.Framework.XIVHelper
                 if (skills != null &&
                     skills.ContainsKey((uint)combatant.CastBuffID))
                 {
-                    combatant.CastSkillName =
-                        skills[(uint)combatant.CastBuffID].Name;
+                    var skill = skills[(uint)combatant.CastBuffID];
+                    combatant.CastSkillName = skill.Name;
+                    combatant.CastSkillType = skill.AttackType;
                 }
                 else
                 {

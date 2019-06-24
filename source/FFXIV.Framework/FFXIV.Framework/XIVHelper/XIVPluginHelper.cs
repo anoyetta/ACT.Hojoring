@@ -1306,7 +1306,8 @@ namespace FFXIV.Framework.XIVHelper
                             var skill = new Skill()
                             {
                                 ID = action.Key,
-                                Name = action.Value.Name
+                                Name = action.Value.Name,
+                                AttackType = action.Value.AttackType,
                             };
 
                             this.skillList[action.Key] = skill;

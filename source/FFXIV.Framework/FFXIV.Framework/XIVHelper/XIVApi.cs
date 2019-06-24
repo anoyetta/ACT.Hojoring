@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FFXIV.Framework.Common;
@@ -310,9 +311,10 @@ namespace FFXIV.Framework.XIVHelper
                         {
                             ID = id,
                             Name = fields[1],
-                            AttackType = fields[XIVApiAction.AttackTypeIndex]
+                            AttackTypeName = fields[XIVApiAction.AttackTypeIndex]
                         };
 
+                        entry.SetAttackTypeEnum();
                         this.actionList[entry.ID] = entry;
                     }
                 }
@@ -458,9 +460,47 @@ namespace FFXIV.Framework.XIVHelper
 
             public uint ID { get; set; }
             public string Name { get; set; }
-            public string AttackType { get; set; }
+            public string AttackTypeName { get; set; }
+            public AttackTypes AttackType { get; private set; }
+
+            public void SetAttackTypeEnum()
+                => this.AttackType = ((AttackTypes[])Enum.GetValues(typeof(AttackTypes)))
+                    .FirstOrDefault(x => x.ToDisplay() == this.AttackTypeName);
         }
 
         #endregion Sub classes
+    }
+
+    public enum AttackTypes
+    {
+        Unknown = 0,
+        Slash = 1,
+        Pierce = 2,
+        Impact = 3,
+        Shoot = 4,
+        Magic = 5,
+        Breath = 6,
+        Sound = 7,
+        LimitBreak = 8
+    }
+
+    public static class AttackTypesExtensions
+    {
+        private static readonly string[] DisplayTexts = new[]
+        {
+            string.Empty,
+            "斬",
+            "突",
+            "打",
+            "射",
+            "魔法",
+            "ブレス",
+            "音波",
+            "リミットブレイク"
+        };
+
+        public static string ToDisplay(
+            this AttackTypes value)
+            => DisplayTexts[(int)value];
     }
 }
