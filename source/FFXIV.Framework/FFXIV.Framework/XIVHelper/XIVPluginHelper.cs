@@ -656,7 +656,7 @@ namespace FFXIV.Framework.XIVHelper
         private string previousZoneName = string.Empty;
         private string previousPlayerName = string.Empty;
         private JobIDs previousPlayerJobID = JobIDs.Unknown;
-        private readonly Dictionary<uint, JobIDs> previousPartyJobList = new Dictionary<uint, JobIDs>(8);
+        private Dictionary<uint, JobIDs> previousPartyJobList = new Dictionary<uint, JobIDs>(8);
 
         private void DetectConditionChanges(
             IEnumerable<CombatantEx> party)
@@ -698,38 +698,52 @@ namespace FFXIV.Framework.XIVHelper
             var partyIDs = party
                 .ToDictionary(x => x.ID, x => x.JobID);
 
-            if (this.previousPartyJobList.Select(x => x.Key)
-                .SequenceEqual(partyIDs.Select(x => x.Key)))
+            if (this.previousPartyJobList.Count != partyIDs.Count)
             {
-                // パーティが変わっているか？
-                // TBD XIVプラグインバグ対応
                 this.OnPartyListChanged?.Invoke(
                     new ReadOnlyCollection<uint>(partyIDs.Select(x => x.Key).ToList()),
                     partyIDs.Count);
             }
             else
             {
-                // パーティのジョブが異なっているか？
-                var isPartyJobChanged = false;
-                foreach (var pc in partyIDs)
+                var preIDs = this.previousPartyJobList.Select(x => x.Key).ToArray();
+                var nowIDs = partyIDs.Select(x => x.Key).ToArray();
+
+                if (preIDs.Any(x => !nowIDs.Contains(x)) ||
+                    nowIDs.Any(x => !preIDs.Contains(x)))
                 {
-                    var currentJobID = pc.Value;
-                    if (this.previousPartyJobList.ContainsKey(pc.Key))
+                    // パーティが変わっているか？
+                    // TBD XIVプラグインバグ対応
+                    this.OnPartyListChanged?.Invoke(
+                        new ReadOnlyCollection<uint>(partyIDs.Select(x => x.Key).ToList()),
+                        partyIDs.Count);
+                }
+                else
+                {
+                    // パーティのジョブが異なっているか？
+                    var isPartyJobChanged = false;
+                    foreach (var pc in partyIDs)
                     {
-                        var previousJobID = this.previousPartyJobList[pc.Key];
-                        if (currentJobID != previousJobID)
+                        var currentJobID = pc.Value;
+                        if (this.previousPartyJobList.ContainsKey(pc.Key))
                         {
-                            isPartyJobChanged = true;
-                            break;
+                            var previousJobID = this.previousPartyJobList[pc.Key];
+                            if (currentJobID != previousJobID)
+                            {
+                                isPartyJobChanged = true;
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (isPartyJobChanged)
-                {
-                    this.OnPartyJobChanged?.Invoke();
+                    if (isPartyJobChanged)
+                    {
+                        this.OnPartyJobChanged?.Invoke();
+                    }
                 }
             }
+
+            this.previousPartyJobList = partyIDs;
         }
 
         #endregion Refresh Combatants
