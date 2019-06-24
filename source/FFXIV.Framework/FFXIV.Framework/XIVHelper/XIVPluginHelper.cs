@@ -662,6 +662,7 @@ namespace FFXIV.Framework.XIVHelper
 
             if (currentPlayer != null)
             {
+                /*
                 // プレイヤーが異なっているか？
                 // TBD XIVプラグインバグ対応
                 if (this.previousPlayerName != currentPlayer.Name)
@@ -672,6 +673,7 @@ namespace FFXIV.Framework.XIVHelper
                     // プレイヤーチェンジならば抜ける
                     return;
                 }
+                */
 
                 // プレイヤーのジョブが異なっているか？
                 if (this.previousPlayerJobID != currentPlayer.JobID)
@@ -681,6 +683,7 @@ namespace FFXIV.Framework.XIVHelper
                 }
             }
 
+            /*
             // ゾーン名が異なっているか？
             // TBD XIVプラグインバグ対応
             if (this.previousZoneName != currentZoneName)
@@ -690,6 +693,7 @@ namespace FFXIV.Framework.XIVHelper
                     (uint)this.GetCurrentZoneID(),
                     currentZoneName);
             }
+            */
 
             var partyIDs = party
                 .ToDictionary(x => x.ID, x => x.JobID);
@@ -697,11 +701,13 @@ namespace FFXIV.Framework.XIVHelper
             if (this.previousPartyJobList.Select(x => x.Key)
                 .SequenceEqual(partyIDs.Select(x => x.Key)))
             {
+                /*
                 // パーティが変わっているか？
                 // TBD XIVプラグインバグ対応
                 this.OnPartyListChanged?.Invoke(
                     new ReadOnlyCollection<uint>(partyIDs.Select(x => x.Key).ToList()),
                     partyIDs.Count);
+                */
             }
             else
             {
