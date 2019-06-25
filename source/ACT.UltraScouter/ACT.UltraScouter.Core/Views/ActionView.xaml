@@ -144,20 +144,34 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Stretch="Uniform"
-            Height="{Binding CounterFontSize, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}">
-            <Grid>
-              <ContentPresenter x:Name="BaseIcon" Content="{Binding Model.CastSkillTypeIcon, Mode=OneWay}">
-                <ContentPresenter.Effect>
-                  <DropShadowEffect Color="White" Direction="0" ShadowDepth="0" BlurRadius="4" Opacity="0.99" />
-                </ContentPresenter.Effect>
-              </ContentPresenter>
-              <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-              <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-              <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-              <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-              <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-              <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-            </Grid>
+            Height="{Binding CounterFontSize, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1}">
+            <Border>
+              <Border.Effect>
+                <DropShadowEffect
+                  Color="White"
+                  Direction="0"
+                  ShadowDepth="0"
+                  BlurRadius="{Binding Config.DisplayText.Font.BlurRadius, Mode=OneWay}" />
+              </Border.Effect>
+
+              <Grid>
+                <Label x:Name="BaseIcon" Padding="0" Content="{Binding Model.CastSkillTypeIcon, Mode=OneWay}">
+                  <Label.Effect>
+                    <DropShadowEffect
+                      Color="White"
+                      Direction="0"
+                      ShadowDepth="0"
+                      BlurRadius="{Binding Config.DisplayText.Font.OutlineThickness, Mode=OneWay}" />
+                  </Label.Effect>
+                </Label>
+                <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+                <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+                <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+                <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+                <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+                <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+              </Grid>
+            </Border>
           </Viewbox>
 
           <!-- 残り秒数 -->
