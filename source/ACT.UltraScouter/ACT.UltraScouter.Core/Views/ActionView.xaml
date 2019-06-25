@@ -10,6 +10,7 @@
   xmlns:vm="clr-namespace:ACT.UltraScouter.ViewModels"
   xmlns:ctrl="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
   xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
   xmlns:debug="debug-mode"
   mc:Ignorable="d"
   AllowsTransparency="True"
@@ -36,6 +37,7 @@
     <fwcnv:AddConverter x:Key="AddConverter" />
     <fwcnv:MultipleConverter x:Key="MultipleConverter" />
     <fwcnv:ThicknessToMarginConverter x:Key="ThicknessToMarginConverter" />
+    <cnv:ToRightMarginConverter x:Key="ToRightMarginConverter" />
 
     <cnv:StrokeThicknessToBlurRadiusConverter x:Key="StrokeThicknessToBlurRadiusConverter" />
 
@@ -55,6 +57,16 @@
   </Window.Resources>
 
   <Grid>
+    <!--  dummy -->
+    <ctrl:LightOutlineTextBlock
+      x:Name="DummyCounterLabel"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Top"
+      Style="{StaticResource OutlineStyle}"
+      FontSize="{Binding CounterFontSize, Mode=OneWay}"
+      Text=" 000"
+      Visibility="Hidden" />
+
     <!-- Square Style Grid -->
     <Grid
       x:Name="SquareStyle"
@@ -113,34 +125,64 @@
 
         <Grid
           Grid.Row="2"
+          HorizontalAlignment="Center"
           Margin="0 0 0 0">
           <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
           </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="{Binding ElementName=DummyCounterLabel, Path=ActualWidth, Mode=OneWay}" />
+          </Grid.ColumnDefinitions>
+
+          <!-- 属性アイコン -->
+          <Viewbox
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Stretch="Uniform"
+            Height="{Binding CounterFontSize, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}">
+            <Grid>
+              <ContentPresenter x:Name="BaseIcon" Content="{Binding Model.CastSkillTypeIcon, Mode=OneWay}">
+                <ContentPresenter.Effect>
+                  <DropShadowEffect Color="White" Direction="0" ShadowDepth="0" BlurRadius="4" Opacity="0.99" />
+                </ContentPresenter.Effect>
+              </ContentPresenter>
+              <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+              <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+              <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+              <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+              <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+              <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+            </Grid>
+          </Viewbox>
 
           <!-- 残り秒数 -->
           <ctrl:LightOutlineTextBlock
             Grid.Row="0"
-            Margin="0 0 0 0"
+            Grid.Column="1"
             x:Name="RemainTextBlock"
-            HorizontalAlignment="Stretch"
-            HorizontalContentAlignment="Center"
+            HorizontalContentAlignment="Right"
             Style="{StaticResource OutlineStyle}"
             Text="{Binding CastingRemainText, Mode=OneWay}"
             FontSize="{Binding CounterFontSize, Mode=OneWay}"
+            Width="{Binding ElementName=DummyCounterLabel, Path=Width, Mode=OneWay}"
             Visibility="{Binding Config.CastingRemainVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
 
           <!-- 進捗率 -->
           <ctrl:LightOutlineTextBlock
             Grid.Row="1"
+            Grid.Column="1"
             Margin="0 0 1 0"
             x:Name="RateTextBlock"
-            HorizontalAlignment="Stretch"
-            HorizontalContentAlignment="Center"
+            HorizontalContentAlignment="Right"
             Style="{StaticResource OutlineStyle}"
             Text="{Binding CastingProgressRateToDisplay, Mode=OneWay, StringFormat=N0}"
             FontSize="{Binding CounterFontSize, Mode=OneWay}"
+            Width="{Binding ElementName=DummyCounterLabel, Path=Width, Mode=OneWay}"
             Visibility="{Binding Config.CastingRateVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
         </Grid>
       </Grid>
@@ -204,45 +246,80 @@
             StrokeOpacity="{Binding ElementName=ActionTextBlock, Path=StrokeOpacity, Mode=OneWay}"
             TextWrapping="NoWrap" />
 
-          <!-- 残り秒数 -->
-          <ctrl:LightOutlineTextBlock
-            Canvas.ZIndex="0"
-            HorizontalAlignment="Center"
-            Margin="0 0 0 0"
-            Fill="{Binding ElementName=RemainTextBlock, Path=Fill, Mode=OneWay}"
-            Stroke="{Binding ElementName=RemainTextBlock, Path=Stroke, Mode=OneWay}"
-            StrokeThickness="{Binding ElementName=RemainTextBlock, Path=StrokeThickness, Mode=OneWay}"
-            FontFamily="{Binding ElementName=RemainTextBlock, Path=FontFamily, Mode=OneWay}"
-            FontSize="{Binding ElementName=RemainTextBlock, Path=FontSize, Mode=OneWay}"
-            FontStretch="{Binding ElementName=RemainTextBlock, Path=FontStretch, Mode=OneWay}"
-            FontWeight="{Binding ElementName=RemainTextBlock, Path=FontWeight, Mode=OneWay}"
-            FontStyle="{Binding ElementName=RemainTextBlock, Path=FontStyle, Mode=OneWay}"
-            Text="{Binding ElementName=RemainTextBlock, Path=Text, Mode=OneWay}"
-            Visibility="{Binding ElementName=RemainTextBlock, Path=Visibility, Mode=OneWay}"
-            BlurRadius="{Binding ElementName=RemainTextBlock, Path=BlurRadius, Mode=OneWay}"
-            BlurOpacity="{Binding ElementName=RemainTextBlock, Path=BlurOpacity, Mode=OneWay}"
-            StrokeOpacity="{Binding ElementName=RemainTextBlock, Path=StrokeOpacity, Mode=OneWay}"
-            TextWrapping="NoWrap" />
+          <Grid HorizontalAlignment="Center" Panel.ZIndex="0">
+            <Grid.RowDefinitions>
+              <RowDefinition />
+              <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition Width="{Binding ElementName=DummyCounterLabel, Path=ActualWidth, Mode=OneWay}" />
+            </Grid.ColumnDefinitions>
 
-          <!-- 進捗率 -->
-          <ctrl:LightOutlineTextBlock
-            Canvas.ZIndex="0"
-            HorizontalAlignment="Center"
-            Margin="0 0 0 0"
-            Fill="{Binding ElementName=RateTextBlock, Path=Fill, Mode=OneWay}"
-            Stroke="{Binding ElementName=RateTextBlock, Path=Stroke, Mode=OneWay}"
-            StrokeThickness="{Binding ElementName=RateTextBlock, Path=StrokeThickness, Mode=OneWay}"
-            FontFamily="{Binding ElementName=RateTextBlock, Path=FontFamily, Mode=OneWay}"
-            FontSize="{Binding ElementName=RateTextBlock, Path=FontSize, Mode=OneWay}"
-            FontStretch="{Binding ElementName=RateTextBlock, Path=FontStretch, Mode=OneWay}"
-            FontWeight="{Binding ElementName=RateTextBlock, Path=FontWeight, Mode=OneWay}"
-            FontStyle="{Binding ElementName=RateTextBlock, Path=FontStyle, Mode=OneWay}"
-            Text="{Binding ElementName=RateTextBlock, Path=Text, Mode=OneWay}"
-            Visibility="{Binding ElementName=RateTextBlock, Path=Visibility, Mode=OneWay}"
-            BlurRadius="{Binding ElementName=RateTextBlock, Path=BlurRadius, Mode=OneWay}"
-            BlurOpacity="{Binding ElementName=RateTextBlock, Path=BlurOpacity, Mode=OneWay}"
-            StrokeOpacity="{Binding ElementName=RateTextBlock, Path=StrokeOpacity, Mode=OneWay}"
-            TextWrapping="NoWrap" />
+            <!-- 属性アイコン -->
+            <Viewbox
+              Grid.Row="0"
+              Grid.RowSpan="2"
+              Grid.Column="0"
+              VerticalAlignment="Center"
+              Height="{Binding CounterFontSize, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}">
+              <Grid>
+                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+              </Grid>
+            </Viewbox>
+
+            <!-- 残り秒数 -->
+            <ctrl:LightOutlineTextBlock
+              Grid.Row="0"
+              Grid.Column="1"
+              Canvas.ZIndex="0"
+              HorizontalContentAlignment="Right"
+              Width="{Binding ElementName=DummyCounterCircleLabel, Path=Width, Mode=OneWay}"
+              Margin="0 0 0 0"
+              Fill="{Binding ElementName=RemainTextBlock, Path=Fill, Mode=OneWay}"
+              Stroke="{Binding ElementName=RemainTextBlock, Path=Stroke, Mode=OneWay}"
+              StrokeThickness="{Binding ElementName=RemainTextBlock, Path=StrokeThickness, Mode=OneWay}"
+              FontFamily="{Binding ElementName=RemainTextBlock, Path=FontFamily, Mode=OneWay}"
+              FontSize="{Binding ElementName=RemainTextBlock, Path=FontSize, Mode=OneWay}"
+              FontStretch="{Binding ElementName=RemainTextBlock, Path=FontStretch, Mode=OneWay}"
+              FontWeight="{Binding ElementName=RemainTextBlock, Path=FontWeight, Mode=OneWay}"
+              FontStyle="{Binding ElementName=RemainTextBlock, Path=FontStyle, Mode=OneWay}"
+              Text="{Binding ElementName=RemainTextBlock, Path=Text, Mode=OneWay}"
+              Visibility="{Binding ElementName=RemainTextBlock, Path=Visibility, Mode=OneWay}"
+              BlurRadius="{Binding ElementName=RemainTextBlock, Path=BlurRadius, Mode=OneWay}"
+              BlurOpacity="{Binding ElementName=RemainTextBlock, Path=BlurOpacity, Mode=OneWay}"
+              StrokeOpacity="{Binding ElementName=RemainTextBlock, Path=StrokeOpacity, Mode=OneWay}"
+              TextWrapping="NoWrap" />
+
+            <!-- 進捗率 -->
+            <ctrl:LightOutlineTextBlock
+              Grid.Row="1"
+              Grid.Column="1"
+              Canvas.ZIndex="0"
+              HorizontalContentAlignment="Right"
+              Width="{Binding ElementName=DummyCounterCircleLabel, Path=Width, Mode=OneWay}"
+              Margin="0 0 0 0"
+              Fill="{Binding ElementName=RateTextBlock, Path=Fill, Mode=OneWay}"
+              Stroke="{Binding ElementName=RateTextBlock, Path=Stroke, Mode=OneWay}"
+              StrokeThickness="{Binding ElementName=RateTextBlock, Path=StrokeThickness, Mode=OneWay}"
+              FontFamily="{Binding ElementName=RateTextBlock, Path=FontFamily, Mode=OneWay}"
+              FontSize="{Binding ElementName=RateTextBlock, Path=FontSize, Mode=OneWay}"
+              FontStretch="{Binding ElementName=RateTextBlock, Path=FontStretch, Mode=OneWay}"
+              FontWeight="{Binding ElementName=RateTextBlock, Path=FontWeight, Mode=OneWay}"
+              FontStyle="{Binding ElementName=RateTextBlock, Path=FontStyle, Mode=OneWay}"
+              Text="{Binding ElementName=RateTextBlock, Path=Text, Mode=OneWay}"
+              Visibility="{Binding ElementName=RateTextBlock, Path=Visibility, Mode=OneWay}"
+              BlurRadius="{Binding ElementName=RateTextBlock, Path=BlurRadius, Mode=OneWay}"
+              BlurOpacity="{Binding ElementName=RateTextBlock, Path=BlurOpacity, Mode=OneWay}"
+              StrokeOpacity="{Binding ElementName=RateTextBlock, Path=StrokeOpacity, Mode=OneWay}"
+              TextWrapping="NoWrap" />
+          </Grid>
         </StackPanel>
       </Grid>
     </Grid>

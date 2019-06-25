@@ -191,6 +191,7 @@
     <Compile Include="ViewModels\MobListViewModel.cs" />
     <Compile Include="ViewModels\MPTickerViewModel.cs" />
     <Compile Include="ViewModels\FFLogsViewModel.cs" />
+    <Compile Include="Views\Converters\ToRightMarginConverter.cs" />
     <Compile Include="Views\Converters\ToTopMarginConverter.cs" />
     <Compile Include="Views\Converters\WidthToRadiusConverter.cs" />
     <Compile Include="Views\EnmityView.xaml.cs">

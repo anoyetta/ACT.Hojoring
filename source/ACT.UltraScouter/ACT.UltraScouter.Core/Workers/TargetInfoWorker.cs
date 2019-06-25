@@ -394,6 +394,7 @@ namespace ACT.UltraScouter.Workers
                 {
                     if (string.IsNullOrEmpty(this.DummyAction))
                     {
+                        this.Model.CastSkillType = AttackTypes.Unknown;
                         this.Model.CastSkillName = string.Empty;
                         this.Model.CastDurationCurrent = 0;
                         this.Model.CastDurationMax = 0;
@@ -405,6 +406,7 @@ namespace ACT.UltraScouter.Workers
                         {
                             if (!this.Model.IsCasting)
                             {
+                                this.Model.CastSkillType = AttackTypes.Slash;
                                 this.Model.CastSkillName = this.DummyAction;
                                 this.Model.CastDurationMax = 5.5f;
                                 this.Model.CastDurationCurrent = 0;
@@ -601,6 +603,7 @@ namespace ACT.UltraScouter.Workers
             {
                 this.Model.CastSkillID = targetInfo.CastBuffID;
                 this.Model.CastSkillName = targetInfo.CastSkillName;
+                this.Model.CastSkillType = targetInfo.CastSkillType;
                 this.Model.CastDurationMax = targetInfo.CastDurationMax;
                 this.Model.CastDurationCurrent = targetInfo.CastDurationCurrent;
 

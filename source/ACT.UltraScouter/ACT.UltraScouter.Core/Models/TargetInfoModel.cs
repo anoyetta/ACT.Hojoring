@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models.FFLogs;
+using ControlzEx;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.XIVHelper;
+using MahApps.Metro.IconPacks;
 using NLog;
 using Prism.Mvvm;
 using Sharlayan.Core.Enums;
@@ -124,6 +126,82 @@ namespace ACT.UltraScouter.Models
         {
             get => this.castSkillID;
             set => this.SetProperty(ref this.castSkillID, value);
+        }
+
+        private AttackTypes castSkillType;
+
+        public AttackTypes CastSkillType
+        {
+            get => this.castSkillType;
+            set
+            {
+                if (this.SetProperty(ref this.castSkillType, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.CastSkillTypeIcon));
+                    this.RaisePropertyChanged(nameof(this.CastSkillTypeBrush));
+                }
+            }
+        }
+
+        private static readonly Lazy<Dictionary<AttackTypes, PackIconBase>> LazyAttackTypeIcons = new Lazy<Dictionary<AttackTypes, PackIconBase>>(() =>
+            new Dictionary<AttackTypes, PackIconBase>()
+            {
+                { AttackTypes.Unknown, new PackIconMaterial() { Kind = PackIconMaterialKind.Help } },
+                { AttackTypes.Slash, new PackIconMaterial() { Kind = PackIconMaterialKind.Sword } },
+                { AttackTypes.Pierce, new PackIconModern() { Kind = PackIconModernKind.Directions } },
+                { AttackTypes.Impact, new PackIconFontAwesome() { Kind = PackIconFontAwesomeKind.GavelSolid } },
+                { AttackTypes.Shoot, new PackIconMaterial() { Kind = PackIconMaterialKind.Pistol } },
+                { AttackTypes.Magic, new PackIconFontAwesome() { Kind = PackIconFontAwesomeKind.FireSolid } },
+                { AttackTypes.Breath, new PackIconMaterial() { Kind = PackIconMaterialKind.Wifi } },
+                { AttackTypes.Sound, new PackIconFontAwesome() { Kind = PackIconFontAwesomeKind.MusicSolid } },
+                { AttackTypes.LimitBreak, new PackIconMaterial() { Kind = PackIconMaterialKind.SwordCross } },
+            });
+
+        private static readonly Lazy<Dictionary<AttackTypes, Brush>> LazyAttackTypeBrushes = new Lazy<Dictionary<AttackTypes, Brush>>(() =>
+            new Dictionary<AttackTypes, Brush>()
+            {
+                { AttackTypes.Unknown, new SolidColorBrush(FromARGB("#383c3c")) },
+                { AttackTypes.Slash, new SolidColorBrush(FromARGB("#e2041b")) },
+                { AttackTypes.Pierce, new SolidColorBrush(FromARGB("#e2041b")) },
+                { AttackTypes.Impact, new SolidColorBrush(FromARGB("#e2041b")) },
+                { AttackTypes.Shoot, new SolidColorBrush(FromARGB("#e2041b")) },
+                { AttackTypes.Magic, new SolidColorBrush(FromARGB("#2ca9e1")) },
+                { AttackTypes.Breath, new SolidColorBrush(FromARGB("#b8d200")) },
+                { AttackTypes.Sound, new SolidColorBrush(FromARGB("#b8d200")) },
+                { AttackTypes.LimitBreak, new SolidColorBrush(FromARGB("#ffd900")) },
+            });
+
+        private static Color FromARGB(string argb)
+            => (Color)ColorConverter.ConvertFromString(argb);
+
+        public PackIconBase CastSkillTypeIcon
+        {
+            get
+            {
+                var icon = LazyAttackTypeIcons.Value[this.CastSkillType];
+                icon.Foreground = this.CastSkillTypeBrush;
+                return icon;
+            }
+        }
+
+        public Brush CastSkillTypeBrush
+        {
+            get
+            {
+                var brush = LazyAttackTypeBrushes.Value[this.CastSkillType];
+                if (!brush.IsFrozen)
+                {
+                    brush.Freeze();
+                }
+
+                return brush;
+            }
+        }
+
+        public void RaiseCastSkillIconChanged()
+        {
+            this.RaisePropertyChanged(nameof(this.CastSkillTypeIcon));
+            this.RaisePropertyChanged(nameof(this.CastSkillTypeBrush));
         }
 
         public double CastingRemain =>
