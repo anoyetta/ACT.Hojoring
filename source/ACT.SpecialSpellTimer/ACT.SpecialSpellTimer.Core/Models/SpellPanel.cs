@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config.Models;
 using ACT.SpecialSpellTimer.Views;
+using FFXIV_ACT_Plugin.Logfile;
 
 namespace ACT.SpecialSpellTimer.Models
 {
@@ -348,9 +349,13 @@ namespace ACT.SpecialSpellTimer.Models
 
         #endregion ITreeItem
 
+        // ダミー
+        [XmlIgnore]
+        public LogMessageType KeywordMessageType => LogMessageType.LogLine;
+
+        // ダミー
         public void MatchTrigger(string logLine)
         {
-            // キャスト用のダミーメソッド
         }
     }
 }

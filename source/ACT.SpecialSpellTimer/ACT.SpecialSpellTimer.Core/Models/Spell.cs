@@ -15,6 +15,7 @@ using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.WPF.Views;
+using FFXIV_ACT_Plugin.Logfile;
 
 namespace ACT.SpecialSpellTimer.Models
 {
@@ -269,6 +270,15 @@ namespace ACT.SpecialSpellTimer.Models
                     }
                 }
             }
+        }
+
+        private LogMessageType keywordMessageType;
+
+        [XmlIgnore]
+        public LogMessageType KeywordMessageType
+        {
+            get => this.keywordMessageType;
+            private set => this.SetProperty(ref this.keywordMessageType, value);
         }
 
         public string Keyword

@@ -14,6 +14,7 @@ using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
+using FFXIV_ACT_Plugin.Logfile;
 using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -419,32 +420,32 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             new IgnoreLogType()
             {
-                MessageType = MessageType.NetworkAbility,
+                MessageType = LogMessageType.NetworkAbility,
                 IsIgnore = false
             },
             new IgnoreLogType()
             {
-                MessageType = MessageType.NetworkAOEAbility,
+                MessageType = LogMessageType.NetworkAOEAbility,
                 IsIgnore = false
             },
             new IgnoreLogType()
             {
-                MessageType = MessageType.NetworkCancelAbility,
+                MessageType = LogMessageType.NetworkCancelAbility,
                 IsIgnore = true
             },
             new IgnoreLogType()
             {
-                MessageType = MessageType.NetworkDoT,
+                MessageType = LogMessageType.NetworkDoT,
                 IsIgnore = true
             },
             new IgnoreLogType()
             {
-                MessageType = MessageType.NetworkDeath,
+                MessageType = LogMessageType.NetworkDeath,
                 IsIgnore = true
             },
             new IgnoreLogType()
             {
-                MessageType = MessageType.CombatantHP,
+                MessageType = LogMessageType.CombatantHP,
                 IsIgnore = false
             },
         };

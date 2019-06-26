@@ -14,6 +14,7 @@ using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.XIVHelper;
+using FFXIV_ACT_Plugin.Logfile;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -440,7 +441,7 @@ namespace ACT.SpecialSpellTimer
         /// </summary>
         public static readonly string[] IgnoreLogKeywords = new[]
         {
-            MessageType.NetworkDoT.ToKeyword(),
+            LogMessageType.NetworkDoT.ToKeyword(),
         };
 
         /// <summary>
@@ -448,8 +449,8 @@ namespace ACT.SpecialSpellTimer
         /// </summary>
         public static readonly string[] IgnoreDetailLogKeywords = new[]
         {
-            MessageType.NetworkAbility.ToKeyword(),
-            MessageType.NetworkAOEAbility.ToKeyword()
+            LogMessageType.NetworkAbility.ToKeyword(),
+            LogMessageType.NetworkAOEAbility.ToKeyword()
         };
 
         public bool IsEmpty => this.logInfoQueue.IsEmpty;
@@ -462,7 +463,7 @@ namespace ACT.SpecialSpellTimer
         public static bool IsHPLogByPartyMember(
             string log)
         {
-            if (!log.Contains(MessageType.CombatantHP.ToKeyword()))
+            if (!log.Contains(LogMessageType.CombatantHP.ToKeyword()))
             {
                 return false;
             }
