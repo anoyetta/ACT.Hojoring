@@ -70,6 +70,7 @@
     <!-- Square Style Grid -->
     <Grid
       x:Name="SquareStyle"
+      Margin="0 0 0 50"
       Visibility="{Binding Config.IsSquareStyle, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
 
       <Grid
@@ -132,53 +133,15 @@
             <RowDefinition />
           </Grid.RowDefinitions>
           <Grid.ColumnDefinitions>
-            <ColumnDefinition />
             <ColumnDefinition Width="{Binding ElementName=DummyCounterLabel, Path=ActualWidth, Mode=OneWay}" />
           </Grid.ColumnDefinitions>
-
-          <!-- 属性アイコン -->
-          <Viewbox
-            Grid.Row="0"
-            Grid.RowSpan="2"
-            Grid.Column="0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Stretch="Uniform"
-            Height="{Binding CounterFontSize, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=1}">
-            <Border>
-              <Border.Effect>
-                <DropShadowEffect
-                  Color="White"
-                  Direction="0"
-                  ShadowDepth="0"
-                  BlurRadius="{Binding Config.DisplayText.Font.BlurRadius, Mode=OneWay}" />
-              </Border.Effect>
-
-              <Grid>
-                <Label x:Name="BaseIcon" Padding="0" Content="{Binding Model.CastSkillTypeIcon, Mode=OneWay}">
-                  <Label.Effect>
-                    <DropShadowEffect
-                      Color="White"
-                      Direction="0"
-                      ShadowDepth="0"
-                      BlurRadius="{Binding Config.DisplayText.Font.OutlineThickness, Mode=OneWay}" />
-                  </Label.Effect>
-                </Label>
-                <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-                <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-                <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-                <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-                <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-                <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-              </Grid>
-            </Border>
-          </Viewbox>
 
           <!-- 残り秒数 -->
           <ctrl:LightOutlineTextBlock
             Grid.Row="0"
-            Grid.Column="1"
+            Grid.Column="0"
             x:Name="RemainTextBlock"
+            VerticalAlignment="Center"
             HorizontalContentAlignment="Right"
             Style="{StaticResource OutlineStyle}"
             Text="{Binding CastingRemainText, Mode=OneWay}"
@@ -189,9 +152,10 @@
           <!-- 進捗率 -->
           <ctrl:LightOutlineTextBlock
             Grid.Row="1"
-            Grid.Column="1"
+            Grid.Column="0"
             Margin="0 0 1 0"
             x:Name="RateTextBlock"
+            VerticalAlignment="Center"
             HorizontalContentAlignment="Right"
             Style="{StaticResource OutlineStyle}"
             Text="{Binding CastingProgressRateToDisplay, Mode=OneWay, StringFormat=N0}"
@@ -206,7 +170,7 @@
     <!-- Circle Style Grid -->
     <Grid
       x:Name="CircleStyle"
-      Margin="16"
+      Margin="16 16 16 50"
       Visibility="{Binding Config.IsCircleStyle, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
 
       <Grid
@@ -266,34 +230,16 @@
               <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-              <ColumnDefinition />
               <ColumnDefinition Width="{Binding ElementName=DummyCounterLabel, Path=ActualWidth, Mode=OneWay}" />
             </Grid.ColumnDefinitions>
-
-            <!-- 属性アイコン -->
-            <Viewbox
-              Grid.Row="0"
-              Grid.RowSpan="2"
-              Grid.Column="0"
-              VerticalAlignment="Center"
-              Height="{Binding CounterFontSize, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.8}">
-              <Grid>
-                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-                <ContentPresenter Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
-              </Grid>
-            </Viewbox>
 
             <!-- 残り秒数 -->
             <ctrl:LightOutlineTextBlock
               Grid.Row="0"
-              Grid.Column="1"
+              Grid.Column="0"
               Canvas.ZIndex="0"
               HorizontalContentAlignment="Right"
+              VerticalAlignment="Center"
               Width="{Binding ElementName=DummyCounterCircleLabel, Path=Width, Mode=OneWay}"
               Margin="0 0 0 0"
               Fill="{Binding ElementName=RemainTextBlock, Path=Fill, Mode=OneWay}"
@@ -314,9 +260,10 @@
             <!-- 進捗率 -->
             <ctrl:LightOutlineTextBlock
               Grid.Row="1"
-              Grid.Column="1"
+              Grid.Column="0"
               Canvas.ZIndex="0"
               HorizontalContentAlignment="Right"
+              VerticalAlignment="Center"
               Width="{Binding ElementName=DummyCounterCircleLabel, Path=Width, Mode=OneWay}"
               Margin="0 0 0 0"
               Fill="{Binding ElementName=RateTextBlock, Path=Fill, Mode=OneWay}"
@@ -338,5 +285,58 @@
       </Grid>
     </Grid>
     <!-- end Circle Style Grid -->
+
+    <!-- 属性アイコン -->
+    <Canvas
+      Panel.ZIndex="100">
+      <Canvas.Resources>
+        <Color x:Key="BlurColor">Black</Color>
+      </Canvas.Resources>
+
+      <Viewbox
+        Margin="0"
+        Canvas.Left="{Binding Config.CastingTypeLocation.X, Mode=OneWay}"
+        Canvas.Top="{Binding Config.CastingTypeLocation.Y, Mode=OneWay}"
+        Visibility="{Binding Config.CastingTypeVisible, Mode=OneWay, Converter={StaticResource BoolToHiddenConverter}}"
+        Height="22"
+        Width="22">
+        <Viewbox.LayoutTransform>
+          <ScaleTransform
+              ScaleX="{Binding Config.CastingTypeScale, Mode=OneWay}"
+              ScaleY="{Binding Config.CastingTypeScale, Mode=OneWay}" />
+        </Viewbox.LayoutTransform>
+
+        <Border>
+          <Border.Effect>
+            <DropShadowEffect
+              Color="{StaticResource BlurColor}"
+              Direction="0"
+              ShadowDepth="0"
+              BlurRadius="1" />
+          </Border.Effect>
+
+          <Grid>
+            <Label
+              x:Name="BaseIcon"
+              Padding="0"
+              Content="{Binding Model.CastSkillTypeIcon, Mode=OneWay}">
+              <Label.Effect>
+                <DropShadowEffect
+                  Color="{StaticResource BlurColor}"
+                  Direction="0"
+                  ShadowDepth="0"
+                  BlurRadius="4" />
+              </Label.Effect>
+            </Label>
+            <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+            <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+            <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+            <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+            <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+            <Label Padding="0" Content="{Binding ElementName=BaseIcon, Path=Content, Mode=OneWay}" Effect="{Binding ElementName=BaseIcon, Path=Effect, Mode=OneWay}" />
+          </Grid>
+        </Border>
+      </Viewbox>
+    </Canvas>
   </Grid>
 </Window>

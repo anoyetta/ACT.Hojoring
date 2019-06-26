@@ -24,6 +24,7 @@ namespace ACT.UltraScouter.Views
 
             // アクティブにさせないようにする
             this.ToNonActive();
+
             this.Loaded += (s, e) => this.SubscribeZOrderCorrector();
 
             // ドラッグによる移動を設定する
@@ -98,11 +99,7 @@ namespace ACT.UltraScouter.Views
         {
             this.SetFPS();
 
-#if false
-            this.Animation.Duration = TimeSpan.FromSeconds(durationFromSecconds);
-#else
             this.LinerAnimation.Duration = TimeSpan.FromSeconds(durationFromSecconds);
-#endif
 
             this.Bar.BeginAnimation(
                 RichProgressBar.ProgressProperty,

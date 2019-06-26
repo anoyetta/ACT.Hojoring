@@ -12,6 +12,12 @@ namespace ACT.UltraScouter.ViewModels.Bases
     {
         private bool isTransparentWindow;
 
+        public bool IsTransparentWindow
+        {
+            get => this.isTransparentWindow;
+            set => this.SetProperty(ref this.isTransparentWindow, value);
+        }
+
         public Window View { get; set; }
 
         public abstract void Initialize();
@@ -24,7 +30,7 @@ namespace ACT.UltraScouter.ViewModels.Bases
         public void SetTransparentWindow(
             bool clickThrough)
         {
-            if (this.isTransparentWindow != clickThrough)
+            if (this.IsTransparentWindow != clickThrough)
             {
                 if (clickThrough)
                 {
@@ -35,7 +41,7 @@ namespace ACT.UltraScouter.ViewModels.Bases
                     this.View.ToNotTransparent();
                 }
 
-                this.isTransparentWindow = clickThrough;
+                this.IsTransparentWindow = clickThrough;
             }
         }
 

@@ -406,7 +406,7 @@ namespace ACT.UltraScouter.Workers
                         {
                             if (!this.Model.IsCasting)
                             {
-                                this.Model.CastSkillType = AttackTypes.Slash;
+                                this.Model.CastSkillType = this.GetDummyAttackType();
                                 this.Model.CastSkillName = this.DummyAction;
                                 this.Model.CastDurationMax = 5.5f;
                                 this.Model.CastDurationCurrent = 0;
@@ -473,6 +473,22 @@ namespace ACT.UltraScouter.Workers
 #endif
             // 表示を更新する
             updateVisibility(overlayVisible);
+        }
+
+        private int currentAttackTypeValue = 1;
+
+        private AttackTypes GetDummyAttackType()
+        {
+            if (this.currentAttackTypeValue > (int)AttackTypes.LimitBreak)
+            {
+                this.currentAttackTypeValue = 0;
+            }
+
+            var result = (AttackTypes)Enum.ToObject(typeof(AttackTypes), this.currentAttackTypeValue);
+
+            this.currentAttackTypeValue++;
+
+            return result;
         }
 
         /// <summary>

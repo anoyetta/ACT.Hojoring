@@ -8,7 +8,7 @@ namespace FFXIV.Framework.Common
         private const double DefaultMin = 0.05;
         private const double DefaultMax = 1.00;
 
-        private static readonly Random random = new Random();
+        private static readonly Random random = new Random((int)DateTime.Now.Ticks);
 
         public static Random Random => random;
 

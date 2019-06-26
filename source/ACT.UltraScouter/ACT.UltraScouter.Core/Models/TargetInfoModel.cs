@@ -160,15 +160,15 @@ namespace ACT.UltraScouter.Models
         private static readonly Lazy<Dictionary<AttackTypes, Brush>> LazyAttackTypeBrushes = new Lazy<Dictionary<AttackTypes, Brush>>(() =>
             new Dictionary<AttackTypes, Brush>()
             {
-                { AttackTypes.Unknown, new SolidColorBrush(FromARGB("#383c3c")) },
-                { AttackTypes.Slash, new SolidColorBrush(FromARGB("#e2041b")) },
-                { AttackTypes.Pierce, new SolidColorBrush(FromARGB("#e2041b")) },
-                { AttackTypes.Impact, new SolidColorBrush(FromARGB("#e2041b")) },
-                { AttackTypes.Shoot, new SolidColorBrush(FromARGB("#e2041b")) },
-                { AttackTypes.Magic, new SolidColorBrush(FromARGB("#2ca9e1")) },
-                { AttackTypes.Breath, new SolidColorBrush(FromARGB("#b8d200")) },
-                { AttackTypes.Sound, new SolidColorBrush(FromARGB("#b8d200")) },
-                { AttackTypes.LimitBreak, new SolidColorBrush(FromARGB("#ffd900")) },
+                { AttackTypes.Unknown, new SolidColorBrush(FromARGB("#fcfcfc")) },
+                { AttackTypes.Slash, new SolidColorBrush(FromARGB("#ff2828")) },
+                { AttackTypes.Pierce, new SolidColorBrush(FromARGB("#ff2828")) },
+                { AttackTypes.Impact, new SolidColorBrush(FromARGB("#ff2828")) },
+                { AttackTypes.Shoot, new SolidColorBrush(FromARGB("#ff2828")) },
+                { AttackTypes.Magic, new SolidColorBrush(FromARGB("#33ffff")) },
+                { AttackTypes.Breath, new SolidColorBrush(FromARGB("#ff60ff")) },
+                { AttackTypes.Sound, new SolidColorBrush(FromARGB("#ff60ff")) },
+                { AttackTypes.LimitBreak, new SolidColorBrush(FromARGB("#ff9933")) },
             });
 
         private static Color FromARGB(string argb)
