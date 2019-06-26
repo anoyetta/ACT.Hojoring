@@ -181,7 +181,7 @@ namespace FFXIV.Framework.XIVHelper
 
         public AttackTypes CastSkillType { get; set; } = AttackTypes.Unknown;
 
-        public double CurrentHPRate => this.MaxHP != 0 ? (this.CurrentHP / this.MaxHP) : 0;
+        public double CurrentHPRate => this.MaxHP != 0 ? ((double)this.CurrentHP / (double)this.MaxHP) : 0;
 
         public uint TargetOfTargetID { get; set; }
 
