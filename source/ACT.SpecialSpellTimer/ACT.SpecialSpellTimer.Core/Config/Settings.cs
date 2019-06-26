@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Media;
 using System.Text;
 using System.Windows.Interop;
 using System.Xml;
@@ -14,9 +13,9 @@ using ACT.SpecialSpellTimer.Views;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
 using FFXIV.Framework.Globalization;
 using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.Config
@@ -565,20 +564,20 @@ namespace ACT.SpecialSpellTimer.Config
                 {
                     if (this.polonCounter < NomarlPolonCount)
                     {
-                        SystemSounds.Asterisk.Play();
+                        CommonSounds.Instance.PlayAsterisk();
                     }
                     else
                     {
                         var index = this.polonCounter - NomarlPolonCount;
                         if (index >= this.PolonMessages.Length)
                         {
-                            SystemSounds.Asterisk.Play();
+                            CommonSounds.Instance.PlayAsterisk();
                         }
                         else
                         {
                             if (!PlayBridge.Instance.IsAvailable)
                             {
-                                SystemSounds.Asterisk.Play();
+                                CommonSounds.Instance.PlayAsterisk();
                             }
                             else
                             {

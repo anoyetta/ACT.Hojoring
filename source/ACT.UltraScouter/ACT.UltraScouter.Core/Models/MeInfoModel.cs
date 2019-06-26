@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Windows.Threading;
 using ACT.UltraScouter.Config;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.Models
 {

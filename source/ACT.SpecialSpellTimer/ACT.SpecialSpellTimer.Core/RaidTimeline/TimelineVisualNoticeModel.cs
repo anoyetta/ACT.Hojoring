@@ -8,7 +8,7 @@ using System.Windows.Threading;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -526,12 +526,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            var combatant = default(Combatant);
+            var combatant = default(CombatantEx);
             foreach (Group g in tri.SyncMatch.Groups)
             {
                 foreach (Capture cap in g.Captures)
                 {
-                    var c = FFXIVPlugin.Instance.GetCombatant(cap.Value);
+                    var c = CombatantsManager.Instance.GetCombatant(cap.Value);
                     if (c != null)
                     {
                         combatant = c;
@@ -622,6 +622,21 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             notices.Add(notice1);
             notices.Add(notice2);
             notices.Add(notice3);
+
+            for (int i = 0; i < 6; i++)
+            {
+                notices.Add(new TimelineVisualNoticeModel()
+                {
+                    Enabled = true,
+                    TextToDisplay = "マーカー" + (i + 1),
+                    Duration = 10 + i + 1,
+                    DurationVisible = false,
+                    StyleModel = testStyle,
+                    Icon = "Marker.png",
+                    IsVisible = true,
+                    Order = i + 1
+                });
+            }
 
             return notices;
         }

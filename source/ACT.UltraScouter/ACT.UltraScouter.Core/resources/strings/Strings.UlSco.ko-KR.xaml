@@ -55,6 +55,7 @@
   <system:String x:Key="Action_VisibleRemainOfCasting">남은 캐스팅 시간 표시</system:String>
   <system:String x:Key="Action_VisibleRemainAsInteger">정수로 표시</system:String>
   <system:String x:Key="Action_VisibleRateOfCasting">캐스팅 진행율 표시</system:String>
+  <system:String x:Key="Action_VisibleType">Visible attack type</system:String>
   <system:String x:Key="Action_DummyActionName">더미 기술 이름</system:String>
   <system:String x:Key="Action_CastingBar">캐스팅 바</system:String>
   <system:String x:Key="Action_CastingBarStrokeColor">캐스팅 바 윤곽선색</system:String>

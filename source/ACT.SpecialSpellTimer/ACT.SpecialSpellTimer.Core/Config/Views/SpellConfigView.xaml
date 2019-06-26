@@ -591,7 +591,7 @@
             <!-- Misc -->
             <Label Margin="0 15 0 0" Content="{DynamicResource Common_Misc}" FontWeight="Bold" />
             <StackPanel Margin="5 5 0 0">
-              <CheckBox Content="{DynamicResource Spell_NotResetAtWipeout}" IsChecked="{Binding Model.BlinkTime}" />
+              <CheckBox Content="{DynamicResource Spell_NotResetAtWipeout}" IsChecked="{Binding Model.IsNotResetAtWipeout, Mode=TwoWay}" />
             </StackPanel>
           </StackPanel>
         </ScrollViewer>

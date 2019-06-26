@@ -574,7 +574,11 @@ namespace ACT.TTSYukkuri.Discord.Models
             }
 
             var entryDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            var libDirectory = Path.Combine(PluginCore.Instance.PluginDirectory, "lib");
+            var libDirectory = new[]
+            {
+                Path.Combine(PluginCore.Instance.PluginDirectory, "bin", "lib"),
+                Path.Combine(PluginCore.Instance.PluginDirectory, "lib"),
+            }.FirstOrDefault(x => Directory.Exists(x));
 
             var opus = Path.Combine(entryDirectory, "opus.dll");
             var sodium = Path.Combine(entryDirectory, "libsodium.dll");
@@ -608,15 +612,6 @@ namespace ACT.TTSYukkuri.Discord.Models
                 {
                     this.AppendLogLine("Install Sodium.");
                     File.Move(src, sodium);
-                }
-            }
-
-            if (Directory.Exists(libDirectory))
-            {
-                if (File.Exists(opus) &&
-                    File.Exists(sodium))
-                {
-                    Directory.Delete(libDirectory, true);
                 }
             }
         }

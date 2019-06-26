@@ -93,6 +93,34 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.castingRateVisible, value);
         }
 
+        private bool castingTypeVisible;
+
+        [DataMember]
+        public bool CastingTypeVisible
+        {
+            get => this.castingTypeVisible;
+            set => this.SetProperty(ref this.castingTypeVisible, value);
+        }
+
+        private double castingTypeScale = 1.0;
+
+        [DataMember]
+        public double CastingTypeScale
+        {
+            get => this.castingTypeScale;
+            set => this.SetProperty(ref this.castingTypeScale, value);
+        }
+
+        private Location castingTypeLocation = new Location() { X = 8, Y = 8 };
+
+        [DataMember]
+        public Location CastingTypeLocation
+
+        {
+            get => this.castingTypeLocation;
+            set => this.SetProperty(ref this.castingTypeLocation, value);
+        }
+
         /// <summary>
         /// WAVEサウンドが有効か？
         /// </summary>

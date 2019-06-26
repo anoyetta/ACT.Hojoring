@@ -13,7 +13,7 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.WPF.Views;
 using Microsoft.VisualBasic.FileIO;
 using NLog;
@@ -89,12 +89,6 @@ namespace FFXIV.Framework.WPF.ViewModels
                     {
                         text.AppendLine($"FFXIV_ACT_Plugin v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FileBuildPart}.{vi.FilePrivatePart}");
                     }
-                }
-
-                var xivReaderVersion = FFXIVReader.Instance.Version;
-                if (xivReaderVersion != null)
-                {
-                    text.AppendLine($"FFXIV_MemoryReader v{xivReaderVersion}");
                 }
 
                 var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -194,7 +188,7 @@ namespace FFXIV.Framework.WPF.ViewModels
                 this.LocalTime = $" (LT) {now:yyyy/MM/dd HH:mm:ss K}";
                 this.EorzeaTime = $" (ET) {now.ToEorzeaTime()}";
 
-                var zoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
+                var zoneID = XIVPluginHelper.Instance?.GetCurrentZoneID();
                 var zoneName = ActGlobals.oFormActMain?.CurrentZone;
                 this.Zone = $"ZONE: {zoneID}\n{zoneName}";
             }
@@ -217,8 +211,6 @@ namespace FFXIV.Framework.WPF.ViewModels
         }
 
         public bool AvailableReloadConfigAction => this.ReloadConfigAction != null;
-
-        public string ConfigFile { get; set; }
 
         public string Log => AppLog.Log.ToString();
 
@@ -279,9 +271,13 @@ namespace FFXIV.Framework.WPF.ViewModels
         public ICommand OpenConfigCommand =>
             this.openConfigCommand ?? (this.openConfigCommand = new DelegateCommand(() =>
             {
-                if (File.Exists(this.ConfigFile))
+                var folder = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    @"anoyetta\ACT");
+
+                if (Directory.Exists(folder))
                 {
-                    Process.Start(this.ConfigFile);
+                    Process.Start(folder);
                 }
             }));
 

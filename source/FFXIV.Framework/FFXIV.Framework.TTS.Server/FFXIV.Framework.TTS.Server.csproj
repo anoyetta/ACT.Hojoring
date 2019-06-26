@@ -44,8 +44,9 @@
     <StartupObject>FFXIV.Framework.TTS.Server.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CeVIO.Talk.RemoteService">
-      <HintPath>..\thirdparty\CeVIO.Talk.RemoteService.DLL</HintPath>
+    <Reference Include="CeVIO.Talk.RemoteService, Version=2.1.2.0, Culture=neutral, PublicKeyToken=8c8a62729f45e96f, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ThirdParty\CeVIO.Talk.RemoteService.DLL</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -114,7 +115,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="FFXIV.Framework.TTS.Server.NLog.config">
+    <Content Include="config\FFXIV.Framework.TTS.Server.NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="TaskTrayComponent.resx">

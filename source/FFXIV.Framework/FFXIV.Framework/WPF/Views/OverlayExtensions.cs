@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace FFXIV.Framework.WPF.Views
 {
@@ -250,7 +250,7 @@ namespace FFXIV.Framework.WPF.Views
                     if (overlay is Window window &&
                         window.IsLoaded)
                     {
-                        if (FFXIVPlugin.Instance.Process == null)
+                        if (XIVPluginHelper.Instance.Process == null)
                         {
                             overlay.EnsureTopMost();
                             continue;

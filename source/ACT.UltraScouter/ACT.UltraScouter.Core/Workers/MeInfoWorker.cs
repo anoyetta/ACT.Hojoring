@@ -2,7 +2,7 @@ using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels;
 using ACT.UltraScouter.Views;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.Workers
 {
@@ -38,7 +38,7 @@ namespace ACT.UltraScouter.Workers
 
         protected override void GetCombatant()
         {
-            var ti = FFXIVPlugin.Instance.GetPlayer();
+            var ti = CombatantsManager.Instance.Player;
 
             if (!string.IsNullOrEmpty(this.DummyAction))
             {
@@ -93,7 +93,7 @@ namespace ACT.UltraScouter.Workers
         #endregion MyMarker
 
         protected override bool IsAllViewOff =>
-            !FFXIVPlugin.Instance.IsFFXIVActive ||
+            !XIVPluginHelper.Instance.IsFFXIVActive ||
             (
                 !(Settings.Instance?.MeAction?.Visible ?? false) &&
                 !(Settings.Instance?.MPTicker?.Visible ?? false) &&
@@ -112,7 +112,7 @@ namespace ACT.UltraScouter.Workers
         }
 
         protected override void RefreshModel(
-            Combatant targetInfo)
+            CombatantEx targetInfo)
         {
             base.RefreshModel(targetInfo);
 
@@ -121,7 +121,7 @@ namespace ACT.UltraScouter.Workers
         }
 
         protected virtual void RefreshMPTickerView(
-            Combatant targetInfo)
+            CombatantEx targetInfo)
         {
             if (this.MPTickerView == null)
             {

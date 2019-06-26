@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 
 namespace ACT.UltraScouter.Config

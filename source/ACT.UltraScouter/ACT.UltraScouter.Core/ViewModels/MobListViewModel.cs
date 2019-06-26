@@ -3,7 +3,7 @@ using System.Windows.Threading;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.ViewModels
 {
@@ -73,31 +73,24 @@ namespace ACT.UltraScouter.ViewModels
 
             var angle = 0d;
 
-            if (!FFXIVReader.Instance.IsAvailable)
+            switch (this.Config.DirectionOrigin)
             {
-                angle = 0;
-            }
-            else
-            {
-                switch (this.Config.DirectionOrigin)
-                {
-                    case DirectionOrigin.North:
-                        angle = 0;
-                        break;
+                case DirectionOrigin.North:
+                    angle = 0;
+                    break;
 
-                    case DirectionOrigin.Me:
-                        var player = FFXIVPlugin.Instance.GetPlayer();
-                        if (player != null)
-                        {
-                            angle = player.HeadingDegree * -1;
-                        }
-                        break;
+                case DirectionOrigin.Me:
+                    var player = CombatantsManager.Instance.Player;
+                    if (player != null)
+                    {
+                        angle = player.HeadingDegree * -1;
+                    }
+                    break;
 
-                    case DirectionOrigin.Camera:
-                        CameraInfo.Instance.Refresh();
-                        angle = CameraInfo.Instance.HeadingDegree * -1;
-                        break;
-                }
+                case DirectionOrigin.Camera:
+                    CameraInfo.Instance.Refresh();
+                    angle = CameraInfo.Instance.HeadingDegree * -1;
+                    break;
             }
 
             // 補正角度を加算する

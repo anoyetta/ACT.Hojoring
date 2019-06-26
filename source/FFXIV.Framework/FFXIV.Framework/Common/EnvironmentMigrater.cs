@@ -10,7 +10,7 @@ namespace FFXIV.Framework.Common
         {
             lock (locker)
             {
-                var references = DirectoryHelper.FindSubDirectory("references");
+                var references = DirectoryHelper.FindSubDirectory("bin");
                 if (Directory.Exists(references))
                 {
                     var sqlite = Path.Combine(references, "SQLite.Interop.dll");

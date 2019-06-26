@@ -13,7 +13,7 @@ using ACT.UltraScouter.Config;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Newtonsoft.Json;
 using NLog;
 using Prism.Mvvm;
@@ -98,7 +98,7 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         public void RefreshCharacterName()
         {
-            this.CharacterName = Combatant.NameToInitial(this.characterNameFull, ConfigBridge.Instance.PCNameStyle);
+            this.CharacterName = CombatantEx.NameToInitial(this.characterNameFull, ConfigBridge.Instance.PCNameStyle);
         }
 
         private static readonly string[] SpecialNameHash = new[]

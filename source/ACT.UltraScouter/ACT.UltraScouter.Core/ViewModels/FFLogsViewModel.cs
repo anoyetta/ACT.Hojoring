@@ -1,7 +1,7 @@
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.ViewModels
@@ -58,7 +58,7 @@ namespace ACT.UltraScouter.ViewModels
                 }
 
                 if (this.Config.HideInCombat &&
-                    FFXIVPlugin.Instance.InCombat)
+                    XIVPluginHelper.Instance.InCombat)
                 {
                     return false;
                 }

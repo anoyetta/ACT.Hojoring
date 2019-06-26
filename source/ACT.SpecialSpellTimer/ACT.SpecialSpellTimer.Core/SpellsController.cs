@@ -11,7 +11,7 @@ using ACT.SpecialSpellTimer.Utility;
 using ACT.SpecialSpellTimer.Views;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.WPF.Views;
 
 namespace ACT.SpecialSpellTimer
@@ -82,7 +82,6 @@ namespace ACT.SpecialSpellTimer
         {
             var regex = spell.Regex;
             var notifyNeeded = false;
-            var matched = false;
 
             if (!spell.IsInstance)
             {
@@ -105,7 +104,6 @@ namespace ACT.SpecialSpellTimer
                         // キーワードが含まれるか？
                         if (logLine.Contains(keyword, StringComparison.OrdinalIgnoreCase))
                         {
-                            matched = true;
                             var targetSpell = spell;
 
                             // ヒットしたログを格納する
@@ -115,7 +113,7 @@ namespace ACT.SpecialSpellTimer
                             var replacedTitle = ConditionUtility.GetReplacedTitle(targetSpell);
 
                             // PC名を置換する
-                            replacedTitle = FFXIVPlugin.Instance.ReplacePartyMemberName(
+                            replacedTitle = XIVPluginHelper.Instance.ReplacePartyMemberName(
                                 replacedTitle,
                                 Settings.Default.PCNameInitialOnDisplayStyle);
 
@@ -127,15 +125,7 @@ namespace ACT.SpecialSpellTimer
 
                             var now = DateTime.Now;
 
-                            // ホットバーからリキャスト時間の読込みを試みる
-                            double d = 0d;
-                            if (!this.TryGetHotbarRecast(targetSpell, out d))
-                            {
-                                d = targetSpell.RecastTime;
-                            }
-
-                            targetSpell.CompleteScheduledTime = now.AddSeconds(d);
-
+                            targetSpell.CompleteScheduledTime = now.AddSeconds(targetSpell.RecastTime);
                             targetSpell.MatchDateTime = now;
 
                             // マッチング計測終了
@@ -159,7 +149,6 @@ namespace ACT.SpecialSpellTimer
                         var match = regex.Match(logLine);
                         if (match.Success)
                         {
-                            matched = true;
 #if DEBUG
                             if (logLine.Contains("MARK"))
                             {
@@ -179,7 +168,7 @@ namespace ACT.SpecialSpellTimer
                                 var replacedTitle = match.Result(ConditionUtility.GetReplacedTitle(targetSpell));
 
                                 // PC名を置換する
-                                replacedTitle = FFXIVPlugin.Instance.ReplacePartyMemberName(
+                                replacedTitle = XIVPluginHelper.Instance.ReplacePartyMemberName(
                                     replacedTitle,
                                     Settings.Default.PCNameInitialOnDisplayStyle);
 
@@ -219,14 +208,6 @@ namespace ACT.SpecialSpellTimer
                                 d < 9999)
                             {
                                 duration = d;
-                            }
-                            else
-                            {
-                                // ホットバーからリキャスト時間の読込を試みる
-                                if (this.TryGetHotbarRecast(targetSpell, out d))
-                                {
-                                    duration = d;
-                                }
                             }
 
                             targetSpell.CompleteScheduledTime = now.AddSeconds(duration);
@@ -363,36 +344,6 @@ namespace ACT.SpecialSpellTimer
             }
             // end if 延長マッチング
 
-            // ホットバー情報を更新する
-            if (!matched)
-            {
-                var now = DateTime.Now;
-
-                if (spell.CompleteScheduledTime > now)
-                {
-                    double d;
-                    if (this.TryGetHotbarRecast(spell, out d))
-                    {
-                        // ホットバー情報と0.6秒以上乖離したら補正する
-                        var newSchedule = now.AddSeconds(d);
-
-                        if (Math.Abs((newSchedule - spell.CompleteScheduledTime).TotalSeconds)
-                            >= 0.6d)
-                        {
-                            spell.CompleteScheduledTime = newSchedule;
-                            spell.BeforeDone = false;
-                            spell.UpdateDone = false;
-
-                            notifyNeeded = true;
-
-                            spell.StartOverSoundTimer();
-                            spell.StartBeforeSoundTimer();
-                            spell.StartTimeupSoundTimer();
-                        }
-                    }
-                }
-            }
-
             // ACT標準のSpellTimerに変更を通知する
             if (notifyNeeded)
             {
@@ -518,37 +469,6 @@ namespace ACT.SpecialSpellTimer
             {
                 TableCompiler.Instance.CompileSpells();
             }
-        }
-
-        private bool TryGetHotbarRecast(
-            Spell spell,
-            out double recastTime)
-        {
-            var result = false;
-            recastTime = 0;
-
-            if (FFXIVReader.Instance.IsAvailable &&
-                spell.UseHotbarRecastTime &&
-                !string.IsNullOrEmpty(spell.HotbarName))
-            {
-                var hotbarList = FFXIVReader.Instance.GetHotbarRecastV1();
-                if (hotbarList != null)
-                {
-                    foreach (var hotbar in hotbarList)
-                    {
-                        if (hotbar != null &&
-                            hotbar.Name.Equals(spell.HotbarName, StringComparison.OrdinalIgnoreCase) &&
-                            hotbar.CoolDownPercent > 0)
-                        {
-                            recastTime = hotbar.RemainingOrCost;
-                            result = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return result;
         }
 
         #region Panel controller

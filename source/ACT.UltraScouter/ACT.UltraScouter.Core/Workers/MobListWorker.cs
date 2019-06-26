@@ -9,7 +9,7 @@ using ACT.UltraScouter.ViewModels;
 using ACT.UltraScouter.Views;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Workers
@@ -80,11 +80,11 @@ namespace ACT.UltraScouter.Workers
                 {
                     Name = "TEST:シルバーの吉田直樹",
                     Rank = "EX",
-                    Combatant = new Combatant()
+                    Combatant = new CombatantEx()
                     {
                         ID = 1,
                         Name = "TEST:シルバーの吉田直樹",
-                        ObjectType = Actor.Type.Monster,
+                        Type = (byte)Actor.Type.Monster,
                         MaxHP = 1,
                         PosX = 0,
                         PosY = 10,
@@ -96,11 +96,11 @@ namespace ACT.UltraScouter.Workers
                 {
                     Name = "TEST:イクシオン",
                     Rank = "EX",
-                    Combatant = new Combatant()
+                    Combatant = new CombatantEx()
                     {
                         ID = 2,
                         Name = "TEST:イクシオン",
-                        ObjectType = Actor.Type.Monster,
+                        Type = (byte)Actor.Type.Monster,
                         MaxHP = 1,
                         PosX = 100,
                         PosY = 100,
@@ -112,11 +112,11 @@ namespace ACT.UltraScouter.Workers
                 {
                     Name = "TEST:イクシオン",
                     Rank = "EX",
-                    Combatant = new Combatant()
+                    Combatant = new CombatantEx()
                     {
                         ID = 21,
                         Name = "TEST:イクシオン",
-                        ObjectType = Actor.Type.Monster,
+                        Type = (byte)Actor.Type.Monster,
                         MaxHP = 1,
                         PosX = 100,
                         PosY = 100,
@@ -128,11 +128,11 @@ namespace ACT.UltraScouter.Workers
                 {
                     Name = "TEST:ソルト・アンド・ライト",
                     Rank = "S",
-                    Combatant = new Combatant()
+                    Combatant = new CombatantEx()
                     {
                         ID = 3,
                         Name = "TEST:ソルト・アンド・ライト",
-                        ObjectType = Actor.Type.Monster,
+                        Type = (byte)Actor.Type.Monster,
                         MaxHP = 1,
                         PosX = 10,
                         PosY = 0,
@@ -144,11 +144,11 @@ namespace ACT.UltraScouter.Workers
                 {
                     Name = "TEST:オルクス",
                     Rank = "A",
-                    Combatant = new Combatant()
+                    Combatant = new CombatantEx()
                     {
                         ID = 4,
                         Name = "TEST:オルクス",
-                        ObjectType = Actor.Type.Monster,
+                        Type = (byte)Actor.Type.Monster,
                         MaxHP = 1,
                         PosX = 100,
                         PosY = -100,
@@ -160,11 +160,11 @@ namespace ACT.UltraScouter.Workers
                 {
                     Name = "TEST:宵闇のヤミニ",
                     Rank = "B",
-                    Combatant = new Combatant()
+                    Combatant = new CombatantEx()
                     {
                         ID = 5,
                         Name = "TEST:宵闇のヤミニ",
-                        ObjectType = Actor.Type.Monster,
+                        Type = (byte)Actor.Type.Monster,
                         MaxHP = 1,
                         PosX = 0,
                         PosY = -100,
@@ -174,13 +174,13 @@ namespace ACT.UltraScouter.Workers
 
                 dummyTargets.Add(new MobInfo()
                 {
-                    Name = Combatant.NameToInitial("TEST:Hime Hana", ConfigBridge.Instance.PCNameStyle),
+                    Name = CombatantEx.NameToInitial("TEST:Hime Hana", ConfigBridge.Instance.PCNameStyle),
                     Rank = "DEAD",
-                    Combatant = new Combatant()
+                    Combatant = new CombatantEx()
                     {
                         ID = 7,
-                        Name = Combatant.NameToInitial("TEST:Hime Hana", ConfigBridge.Instance.PCNameStyle),
-                        ObjectType = Actor.Type.PC,
+                        Name = CombatantEx.NameToInitial("TEST:Hime Hana", ConfigBridge.Instance.PCNameStyle),
+                        Type = (byte)Actor.Type.Monster,
                         Job = (byte)JobIDs.BLM,
                         MaxHP = 43462,
                         PosX = -100,
@@ -200,15 +200,13 @@ namespace ACT.UltraScouter.Workers
 
             #endregion Test Mode
 
-            if (!SharlayanHelper.Instance.IsExistsActors)
+            if ((CombatantsManager.Instance.CombatantsMainCount + CombatantsManager.Instance.CombatantsOtherCount) <= 0)
             {
                 return;
             }
 
             var targets = default(IEnumerable<MobInfo>);
-
-            SharlayanHelper.Instance.IsScanNPC = Settings.Instance.MobList.IsScanNPC;
-            var combatants = SharlayanHelper.Instance.Combatants;
+            var combatants = CombatantsManager.Instance.GetCombatants();
 
             // モブを検出する
             IEnumerable<MobInfo> GetTargetMobs()
@@ -246,13 +244,13 @@ namespace ACT.UltraScouter.Workers
             var deadmenInfo = Settings.Instance.MobList.GetDetectDeadmenInfo;
             if (!string.IsNullOrEmpty(deadmenInfo.Name))
             {
-                var party = FFXIVPlugin.Instance.GetPartyList();
+                var party = CombatantsManager.Instance.GetPartyList();
                 var deadmen =
                     from x in party
                     where
                     x != null &&
                     !x.IsPlayer &&
-                    x.ObjectType == Actor.Type.PC &&
+                    x.ActorType == Actor.Type.PC &&
                     x.MaxHP > 0 && x.CurrentHP <= 0
                     select new MobInfo()
                     {
@@ -333,7 +331,7 @@ namespace ACT.UltraScouter.Workers
         }
 
         protected override void RefreshModel(
-            Combatant targetInfo)
+            CombatantEx targetInfo)
         {
             base.RefreshModel(targetInfo);
 
@@ -342,7 +340,7 @@ namespace ACT.UltraScouter.Workers
         }
 
         protected virtual void RefreshMobListView(
-            Combatant targetInfo)
+            CombatantEx targetInfo)
         {
             if (this.MobListView == null)
             {
@@ -361,7 +359,7 @@ namespace ACT.UltraScouter.Workers
             }
 
             // プレイヤー情報を更新する
-            var player = FFXIVPlugin.Instance.GetPlayer();
+            var player = CombatantsManager.Instance.Player;
             model.MeX = player?.PosX ?? 0;
             model.MeY = player?.PosY ?? 0;
             model.MeZ = player?.PosZ ?? 0;
@@ -447,7 +445,7 @@ namespace ACT.UltraScouter.Workers
                         Thread.Yield();
 
                         var item = model.MobList.FirstOrDefault(x =>
-                            x.Combatant?.GUID == mob.Combatant?.GUID);
+                            x.Combatant?.UUID == mob.Combatant?.UUID);
 
                         // 存在しないものは追加する
                         if (item == null)
@@ -482,7 +480,7 @@ namespace ACT.UltraScouter.Workers
                     var itemsForRemove = model.MobList
                         .Where(x =>
                             !targets.Any(y =>
-                                y.Combatant?.GUID == x.Combatant?.GUID))
+                                y.Combatant?.UUID == x.Combatant?.UUID))
                         .ToArray();
 
                     // 除去する

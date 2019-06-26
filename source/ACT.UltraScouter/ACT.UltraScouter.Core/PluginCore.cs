@@ -14,8 +14,9 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
 using NLog;
 
 namespace ACT.UltraScouter
@@ -70,9 +71,8 @@ namespace ACT.UltraScouter
                 MainWorker.Instance.End();
 
                 // FFXIVプラグインへのアクセスを終了する
-                FFXIVPlugin.Instance.End();
-                FFXIVPlugin.Free();
-                FFXIVReader.Free();
+                XIVPluginHelper.Instance.End();
+                XIVPluginHelper.Free();
 
                 // 設定ファイルを保存する
                 Settings.Instance.Save();
@@ -109,12 +109,8 @@ namespace ACT.UltraScouter
             WPFHelper.Start();
             WPFHelper.BeginInvoke(async () =>
             {
-                // FFXIV_MemoryReaderを先にロードさせる
-                var result = await FFXIVReader.Instance.WaitForReaderToStartedAsync(pluginScreenSpace);
-
                 AppLog.LoadConfiguration(AppLog.HojoringConfig);
                 this.Logger.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
-                result.WriteLog(this.Logger);
 
                 try
                 {
@@ -148,24 +144,7 @@ namespace ACT.UltraScouter
                     // FFXIVプラグインへのアクセスを開始する
                     await Task.Run(() =>
                     {
-                        // FFXIVプラグインのバージョンをチェックする
-                        FFXIVPlugin.Instance.ActPluginAttachedCallback = () =>
-                        {
-                            var ver = FFXIVPlugin.Instance.ActPlugin.GetType().Assembly.GetName().Version;
-                            if (ver.Major >= 2)
-                            {
-                                WPFHelper.InvokeAsync(() =>
-                                {
-                                    ModernMessageBox.ShowDialog(
-                                        "This Hojoring not supported FFXIV_ACT_Plugin v2 or later." + Environment.NewLine +
-                                        "You should update to Hojoring v7 or later.",
-                                        "Attention",
-                                        System.Windows.MessageBoxButton.OK);
-                                });
-                            }
-                        };
-
-                        FFXIVPlugin.Instance.Start(
+                        XIVPluginHelper.Instance.Start(
                             Settings.Instance.PollingRate,
                             Settings.Instance.FFXIVLocale);
                     });
@@ -181,6 +160,11 @@ namespace ACT.UltraScouter
 
                     this.PluginStatusLabel.Text = "Plugin started.";
                     this.Logger.Trace("[ULTRA SCOUTER] End InitPlugin");
+
+                    // 共通ビューを追加する
+                    ConfigBridge.Instance.SetUILocaleCallback(() => Settings.Instance.UILocale);
+                    CommonViewHelper.Instance.AddCommonView(
+                       pluginScreenSpace.Parent as TabControl);
 
                     // アップデートを確認する
                     await Task.Run(() => this.Update());

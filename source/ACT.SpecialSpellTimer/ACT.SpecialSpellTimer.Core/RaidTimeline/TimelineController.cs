@@ -15,7 +15,7 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 using Sharlayan.Core.Enums;
 
@@ -204,7 +204,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 if (string.Equals(
-                        FFXIVPlugin.Instance?.GetCurrentZoneID().ToString().Trim(),
+                        XIVPluginHelper.Instance?.GetCurrentZoneID().ToString().Trim(),
                         this.Model.Zone.Trim()))
                 {
                     return true;
@@ -228,7 +228,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         x.Trim(),
                         StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(
-                        FFXIVPlugin.Instance?.GetCurrentZoneID().ToString().Trim(),
+                        XIVPluginHelper.Instance?.GetCurrentZoneID().ToString().Trim(),
                         x.Trim()));
             }
         }
@@ -1375,7 +1375,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // Combatantsを取得する
-            var combatants = FFXIVPlugin.Instance.GetCombatantList();
+            var combatants = CombatantsManager.Instance.GetCombatants();
             if (!combatants.Any())
             {
                 return;
@@ -1549,9 +1549,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (DumpStartsUsingLock)
             {
-                var castingCombatants = FFXIVPlugin.Instance.GetCombatantList()
+                var castingCombatants = CombatantsManager.Instance.GetCombatants()
                     .Where(x =>
-                        x.ObjectType == Actor.Type.Monster &&
+                        x.ActorType == Actor.Type.Monster &&
                         x.IsCasting)
                     .ToArray();
 
@@ -2171,7 +2171,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
 
                     // PC名をルールに従って置換する
-                    v.TextToDisplay = FFXIVPlugin.Instance.ReplacePartyMemberName(
+                    v.TextToDisplay = XIVPluginHelper.Instance.ReplacePartyMemberName(
                         v.TextToDisplay,
                         Settings.Default.PCNameInitialOnDisplayStyle);
 
@@ -2268,7 +2268,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
 
                     // PC名をルールに従って置換する
-                    v.TextToDisplay = FFXIVPlugin.Instance.ReplacePartyMemberName(
+                    v.TextToDisplay = XIVPluginHelper.Instance.ReplacePartyMemberName(
                         v.TextToDisplay,
                         Settings.Default.PCNameInitialOnDisplayStyle);
 

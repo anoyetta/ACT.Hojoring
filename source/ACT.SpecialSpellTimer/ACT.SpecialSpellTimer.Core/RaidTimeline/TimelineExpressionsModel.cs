@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Threading;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -88,7 +88,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             var name = IS_TOT_ME;
 
-            var player = FFXIVPlugin.Instance.GetPlayer();
+            var player = CombatantsManager.Instance.Player;
             if (player != null)
             {
                 if (player.TargetOfTargetID != 0)

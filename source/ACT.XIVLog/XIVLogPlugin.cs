@@ -14,7 +14,7 @@ using System.Windows.Forms.Integration;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Sharlayan.Core.Enums;
 
 namespace ACT.XIVLog
@@ -398,8 +398,8 @@ namespace ACT.XIVLog
                 return;
             }
 
-            var combatants = FFXIVPlugin.Instance?.GetCombatantList()?
-                .Where(x => x.ObjectType == Actor.Type.PC);
+            var combatants = CombatantsManager.Instance.GetCombatants()
+                .Where(x => x.ActorType == Actor.Type.PC);
 
             if (combatants == null)
             {
@@ -419,7 +419,7 @@ namespace ACT.XIVLog
             foreach (var com in combatants)
             {
                 var alias = new Alias(
-                    $"{com.AsJob()?.NameEN.Replace(" ", string.Empty) ?? "Unknown"} {JobAliases[com.Job % 10]}",
+                    $"{com.JobInfo?.NameEN.Replace(" ", string.Empty) ?? "Unknown"} {JobAliases[com.Job % 10]}",
                     DateTime.Now);
                 PCNameDictionary[com.Name] = alias;
                 PCNameDictionary[com.NameFI] = alias;

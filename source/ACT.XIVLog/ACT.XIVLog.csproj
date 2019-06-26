@@ -36,12 +36,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Advanced Combat Tracker">
-      <HintPath>..\ACTv3\Advanced Combat Tracker.exe</HintPath>
+      <HintPath>..\ThirdParty\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FFXIV_MemoryReader.Model, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\FFXIV.Framework\Thirdparty\FFXIV_MemoryReader.Model.dll</HintPath>
+    <Reference Include="FFXIV_ACT_Plugin.Common">
+      <HintPath>..\ThirdParty\SDK\FFXIV_ACT_Plugin.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />

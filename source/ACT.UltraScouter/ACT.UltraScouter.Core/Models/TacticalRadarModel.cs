@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Sharlayan.Core;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.Models
 {
@@ -8,7 +8,7 @@ namespace ACT.UltraScouter.Models
     {
         public new static TacticalRadarModel Instance { get; } = new TacticalRadarModel();
 
-        public List<ActorItem> TargetActors { get; } = new List<ActorItem>(8);
+        public List<CombatantEx> TargetActors { get; } = new List<CombatantEx>(8);
 
         public TacticalRadarModel()
         {

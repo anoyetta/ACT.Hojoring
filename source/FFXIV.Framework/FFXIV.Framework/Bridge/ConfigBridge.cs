@@ -1,4 +1,6 @@
-using FFXIV.Framework.FFXIVHelper;
+using System;
+using FFXIV.Framework.Globalization;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 
 namespace FFXIV.Framework.Bridge
@@ -24,6 +26,17 @@ namespace FFXIV.Framework.Bridge
         {
             get => this.pcNameStyle;
             set => this.SetProperty(ref this.pcNameStyle, value);
+        }
+
+        public Func<Locales> GetUILocaleCallback { get; private set; }
+
+        public void SetUILocaleCallback(
+            Func<Locales> callback)
+        {
+            if (this.GetUILocaleCallback == null)
+            {
+                this.GetUILocaleCallback = callback;
+            }
         }
     }
 }

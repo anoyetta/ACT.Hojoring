@@ -301,4 +301,6 @@ __pycache__/
 /pull.ps1
 /merge_into_master.ps1
 
-source/archives/back/
+/source/archives/back/
+/source/ThirdParty/SDK/*.dll
+/source/ThirdParty/*.dll

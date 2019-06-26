@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Config.Models;
@@ -13,8 +12,7 @@ using ACT.SpecialSpellTimer.Sound;
 using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
-using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -56,7 +54,7 @@ namespace ACT.SpecialSpellTimer
 
         private volatile bool existFFXIVProcess;
 
-        public bool IsFFXIVActive => FFXIVPlugin.Instance.IsFFXIVActive;
+        public bool IsFFXIVActive => XIVPluginHelper.Instance.IsFFXIVActive;
 
         private DateTime lastSaveTickerTableDateTime = DateTime.Now;
 
@@ -73,26 +71,9 @@ namespace ACT.SpecialSpellTimer
         {
             this.isOver = false;
 
-            // FFXIVプラグインのバージョンをチェックする
-            FFXIVPlugin.Instance.ActPluginAttachedCallback = () =>
-            {
-                var ver = FFXIVPlugin.Instance.ActPlugin.GetType().Assembly.GetName().Version;
-                if (ver.Major >= 2)
-                {
-                    WPFHelper.InvokeAsync(() =>
-                    {
-                        ModernMessageBox.ShowDialog(
-                            "This Hojoring not supported FFXIV_ACT_Plugin v2 or later." + Environment.NewLine +
-                            "You should update to Hojoring v7 or later.",
-                            "Attention",
-                            MessageBoxButton.OK);
-                    });
-                }
-            };
-
             // FFXIVのスキャンを開始する
             // FFXIVプラグインへのアクセスを開始する
-            await Task.Run(() => FFXIVPlugin.Instance.Start(
+            await Task.Run(() => XIVPluginHelper.Instance.Start(
                 Settings.Default.LogPollSleepInterval,
                 Settings.Default.FFXIVLocale));
 
@@ -246,9 +227,8 @@ namespace ACT.SpecialSpellTimer
             TableCompiler.Free();
 
             // FFXIVのスキャンを停止する
-            FFXIVPlugin.Instance.End();
-            FFXIVPlugin.Free();
-            FFXIVReader.Free();
+            XIVPluginHelper.Instance.End();
+            XIVPluginHelper.Free();
         }
 
         #endregion Begin / End
@@ -262,7 +242,7 @@ namespace ACT.SpecialSpellTimer
         private void BackgroundCore()
         {
             // FFXIVプロセスの有無を取得する
-            this.existFFXIVProcess = FFXIVPlugin.Instance.Process != null;
+            this.existFFXIVProcess = XIVPluginHelper.Instance.Process != null;
 
             if ((DateTime.Now - this.lastSaveTickerTableDateTime).TotalMinutes >= 1)
             {
@@ -521,8 +501,8 @@ namespace ACT.SpecialSpellTimer
 
             this.lastWipeOutDetectDateTime = DateTime.Now;
 
-            var party = default(IEnumerable<Combatant>);
-            party = FFXIVPlugin.Instance.GetPartyList();
+            var party = default(IEnumerable<CombatantEx>);
+            party = CombatantsManager.Instance.GetPartyList();
 
             if (party == null ||
                 party.Count() < 1)
@@ -553,10 +533,10 @@ namespace ACT.SpecialSpellTimer
                 }
             }
 
-            var player = FFXIVPlugin.Instance.GetPlayer();
+            var player = CombatantsManager.Instance.Player;
             if (player != null)
             {
-                switch (player.AsJob().Role)
+                switch (player.JobInfo.Role)
                 {
                     case Roles.Crafter:
                     case Roles.Gatherer:
@@ -572,24 +552,32 @@ namespace ACT.SpecialSpellTimer
             {
                 // リセットするのは15秒に1回にする
                 // 暗転中もずっとリセットし続けてしまうので
-                if ((DateTime.Now - this.lastWipeOutDateTime).TotalSeconds >= 15.0)
+                var now = DateTime.Now;
+                if ((now - this.lastWipeOutDateTime).TotalSeconds >= 15.0)
                 {
-                    this.lastWipeOutDateTime = DateTime.Now;
+                    this.lastWipeOutDateTime = now;
 
-                    // インスタンススペルを消去する
-                    SpellTable.ResetCount();
-                    TickerTable.Instance.ResetCount();
-
-                    // wipeoutログを発生させる
-                    LogParser.RaiseLog(DateTime.Now, ConstantKeywords.Wipeout);
-
-                    ActInvoker.Invoke(() =>
+                    Task.Run(() =>
                     {
+                        Thread.Sleep(TimeSpan.FromSeconds(3));
+
                         // ACT本体に戦闘終了を通知する
                         if (Settings.Default.WipeoutNotifyToACT)
                         {
-                            ActGlobals.oFormActMain.ActCommands("end");
+                            ActInvoker.Invoke(() => ActGlobals.oFormActMain.EndCombat(true));
+                            CommonSounds.Instance.PlayWipeout();
                         }
+
+                        // トリガーをリセットする
+                        SpellTable.ResetCount();
+                        TickerTable.Instance.ResetCount();
+
+                        // wipeoutログを発生させる
+                        Task.Run(() =>
+                        {
+                            Thread.Sleep(TimeSpan.FromSeconds(1.5));
+                            LogParser.RaiseLog(now, ConstantKeywords.Wipeout);
+                        });
                     });
                 }
             }

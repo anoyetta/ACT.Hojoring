@@ -8,7 +8,7 @@
   xmlns:fw="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ACT.UltraScouter.Config.UI.Views"
-  xmlns:ffxiv="clr-namespace:FFXIV.Framework.FFXIVHelper;assembly=FFXIV.Framework"
+  xmlns:ffxiv="clr-namespace:FFXIV.Framework.XIVHelper;assembly=FFXIV.Framework"
   mc:Ignorable="d"
   Title="CombatantsView"
   TextOptions.TextFormattingMode="Display"
@@ -60,12 +60,12 @@
         <DataGridTextColumn
           IsReadOnly="True"
           Header="ID"
-          Binding="{Binding GetID, Mode=OneWay, StringFormat=0x{0:X8}}"
+          Binding="{Binding ID, Mode=OneWay, StringFormat=0x{0:X8}}"
           MinWidth="120" />
         <DataGridTextColumn
           IsReadOnly="True"
           Header="Name"
-          Binding="{Binding GetName, Mode=OneWay}"
+          Binding="{Binding Name, Mode=OneWay}"
           MinWidth="350" />
         <DataGridTextColumn
           IsReadOnly="True"

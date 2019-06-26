@@ -348,9 +348,9 @@ namespace ACT.SpecialSpellTimer.Models
 
         #endregion ITreeItem
 
+        // ダミー
         public void MatchTrigger(string logLine)
         {
-            // キャスト用のダミーメソッド
         }
     }
 }

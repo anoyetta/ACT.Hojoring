@@ -9,9 +9,9 @@
   mc:Ignorable="d"
   Title="ACT.Hojoring"
   TextOptions.TextFormattingMode="Ideal"
-  TextOptions.TextHintingMode="Auto"
+  TextOptions.TextHintingMode="Animated"
   TextOptions.TextRenderingMode="ClearType"
-  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.ClearTypeHint="Auto"
   RenderOptions.BitmapScalingMode="Fant"
   RenderOptions.EdgeMode="Unspecified"
   AllowsTransparency="True"
@@ -30,13 +30,17 @@
     <FontFamily x:Key="Font">Century Gothic</FontFamily>
     <FontFamily x:Key="SubFont">Century Gothic Italic</FontFamily>
 
-    <SolidColorBrush x:Key="BackgroudBrush" Color="#0d0015" />
-    <SolidColorBrush x:Key="MainForegroundBrush" Color="#eaf4fc" />
+    <SolidColorBrush x:Key="BackgroudBrush" Color="#f8f4e6" />
+    <SolidColorBrush x:Key="MainForegroundBrush" Color="#383c3c" />
+    <SolidColorBrush x:Key="ReiwaForegroundBrush" Color="#887f7a" />
 
     <sys:Double x:Key="TitleSize">40</sys:Double>
-    <sys:Double x:Key="CopySize">9</sys:Double>
-    <sys:Double x:Key="VersionSize">16</sys:Double>
-    <sys:Double x:Key="PatchSize">11</sys:Double>
+    <sys:Double x:Key="CopySize">10</sys:Double>
+    <sys:Double x:Key="VersionSize">18</sys:Double>
+    <sys:Double x:Key="PatchSize">12</sys:Double>
+    <sys:Double x:Key="BlurRadiusReiwa">2</sys:Double>
+    <sys:Double x:Key="BlurRadiusMain">2</sys:Double>
+    <sys:Double x:Key="BlurRadiusSub">0</sys:Double>
 
     <Style x:Key="TitleLabelStyle" TargetType="Label">
       <Setter Property="HorizontalAlignment" Value="{Binding ElementName=TitleLabel, Path=HorizontalAlignment, Mode=OneWay}" />
@@ -86,7 +90,7 @@
       <Setter Property="HorizontalAlignment" Value="{Binding ElementName=ReiwaLabel, Path=HorizontalAlignment, Mode=OneWay}" />
       <Setter Property="VerticalAlignment" Value="{Binding ElementName=ReiwaLabel, Path=VerticalAlignment, Mode=OneWay}" />
       <Setter Property="Content" Value="{Binding ElementName=ReiwaLabel, Path=Content, Mode=OneWay}" />
-      <Setter Property="Foreground" Value="{Binding ElementName=ReiwaLabel, Path=Foreground, Mode=OneWay}" />
+      <Setter Property="Foreground" Value="{DynamicResource ReiwaForegroundBrush}" />
       <Setter Property="FontFamily" Value="{Binding ElementName=ReiwaLabel, Path=FontFamily, Mode=OneWay}" />
       <Setter Property="FontWeight" Value="{Binding ElementName=ReiwaLabel, Path=FontWeight, Mode=OneWay}" />
       <Setter Property="FontSize" Value="{Binding ElementName=ReiwaLabel, Path=FontSize, Mode=OneWay}" />
@@ -96,13 +100,15 @@
 
   <Grid RenderTransformOrigin="0.5 0.5" Opacity="0.95">
     <Grid.RenderTransform>
-      <ScaleTransform ScaleX="{StaticResource Scale}" ScaleY="{StaticResource Scale}" />
+      <ScaleTransform
+        ScaleX="{StaticResource Scale}"
+        ScaleY="{StaticResource Scale}" />
     </Grid.RenderTransform>
 
-    <Rectangle Panel.ZIndex="-2" Width="260" Height="260" Fill="{StaticResource BackgroudBrush}" RadiusX="1" RadiusY="1" Opacity="0.6">
+    <Rectangle x:Name="BackgroundRect" Panel.ZIndex="-2" Width="260" Height="260" Fill="{StaticResource BackgroudBrush}" RadiusX="1" RadiusY="1" Opacity="0.6">
       <Rectangle.Effect>
         <DropShadowEffect
-          Color="#0d0015"
+          Color="{Binding ElementName=BackgroundRect, Mode=OneWay, Path=Fill.Color}"
           ShadowDepth="0"
           Direction="0"
           BlurRadius="6" />
@@ -112,14 +118,19 @@
       </Rectangle.LayoutTransform>
     </Rectangle>
 
+    <Label x:Name="ReiwaDummy" Visibility="Collapsed" Foreground="{DynamicResource ReiwaForegroundBrush}" />
+
     <StackPanel Panel.ZIndex="-1" VerticalAlignment="Center" HorizontalAlignment="Center">
       <Grid Margin="0 0 0 0">
-        <Label x:Name="ReiwaLabel" Content="令" Foreground="#adadad" FontSize="40" FontFamily="{Binding ReiwaFont, Mode=OneWay}">
-          <!--
+        <Label x:Name="ReiwaLabel" Content="令" FontSize="40" FontFamily="{Binding ReiwaFont, Mode=OneWay}">
           <Label.Effect>
-            <DropShadowEffect Opacity="0.3" Direction="0" ShadowDepth="0" Color="#e7e7eb" BlurRadius="6" />
+            <DropShadowEffect
+              Opacity="0.2"
+              Direction="0"
+              ShadowDepth="0"
+              Color="{Binding ElementName=ReiwaDummy, Path=Foreground.Color, Mode=OneWay}"
+              BlurRadius="{DynamicResource BlurRadiusReiwa}" />
           </Label.Effect>
-          -->
         </Label>
 
         <Label Style="{DynamicResource ReiwaLabelStyle}" />
@@ -147,20 +158,18 @@
       <!---
       <Label x:Name="Dummy" Background="{Binding MainBrush, Mode=OneWay}" Visibility="Collapsed" />
       -->
-      <Label x:Name="Dummy" Background="#e7e7eb" Visibility="Collapsed" />
+      <Label x:Name="Dummy" Background="{DynamicResource MainForegroundBrush}" Visibility="Collapsed" />
 
       <Grid>
         <Label x:Name="TitleLabel" Content="Hojoring" Foreground="{DynamicResource MainForegroundBrush}" FontFamily="{StaticResource Font}" FontSize="{DynamicResource TitleSize}">
-          <!--
           <Label.Effect>
             <DropShadowEffect
-              Opacity="1"
+              Opacity="0.2"
               Direction="0"
               ShadowDepth="0"
               Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
-              BlurRadius="3" />
+              BlurRadius="{DynamicResource BlurRadiusMain}" />
           </Label.Effect>
-          -->
         </Label>
         <Label Style="{DynamicResource TitleLabelStyle}" />
         <Label Style="{DynamicResource TitleLabelStyle}" />
@@ -180,11 +189,11 @@
           <!--
           <Label.Effect>
             <DropShadowEffect
-              Opacity="1"
+              Opacity="0"
               Direction="0"
               ShadowDepth="0"
               Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
-              BlurRadius="2" />
+              BlurRadius="{DynamicResource BlurRadiusSub}" />
           </Label.Effect>
           -->
         </Label>
@@ -205,11 +214,11 @@
           <!--
           <Label.Effect>
             <DropShadowEffect
-              Opacity="1"
+              Opacity="0"
               Direction="0"
               ShadowDepth="0"
               Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
-              BlurRadius="2" />
+              BlurRadius="{DynamicResource BlurRadiusSub}" />
           </Label.Effect>
           -->
         </Label>
@@ -232,11 +241,11 @@
           <!--
           <Label.Effect>
             <DropShadowEffect
-              Opacity="1"
+              Opacity="0"
               Direction="0"
               ShadowDepth="0"
               Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
-              BlurRadius="2" />
+              BlurRadius="{DynamicResource BlurRadiusSub}" />
           </Label.Effect>
           -->
         </Label>

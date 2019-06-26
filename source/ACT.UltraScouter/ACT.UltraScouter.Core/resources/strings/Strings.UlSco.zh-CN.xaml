@@ -55,6 +55,7 @@
   <system:String x:Key="Action_VisibleRemainOfCasting">显示剩余时间</system:String>
   <system:String x:Key="Action_VisibleRemainAsInteger">整数显示</system:String>
   <system:String x:Key="Action_VisibleRateOfCasting">现实读条进度</system:String>
+  <system:String x:Key="Action_VisibleType">Visible attack type</system:String>
   <system:String x:Key="Action_DummyActionName">测试用技能名</system:String>
   <system:String x:Key="Action_CastingBar">咏唱</system:String>
   <system:String x:Key="Action_CastingBarStrokeColor">咏唱条轮廓颜色</system:String>

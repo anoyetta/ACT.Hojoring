@@ -34,9 +34,9 @@ namespace ACT.TTSYukkuri
                     var directories = new string[]
                     {
                         pluginDirectory,
-                        Path.Combine(pluginDirectory, "references"),
+                        Path.Combine(pluginDirectory, "bin"),
                         Path.Combine(pluginDirectory, $@"{architect}"),
-                        Path.Combine(pluginDirectory, $@"references\{architect}"),
+                        Path.Combine(pluginDirectory, $@"bin\{architect}"),
                         Path.Combine(
                             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                             @"Advanced Combat Tracker\Plugins"),

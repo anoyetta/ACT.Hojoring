@@ -1,5 +1,4 @@
 using System;
-using System.Media;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
@@ -135,7 +134,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 try
                 {
                     Clipboard.SetDataObject(this.XMLEditor.Text);
-                    SystemSounds.Asterisk.Play();
+                    CommonSounds.Instance.PlayAsterisk();
                     break;
                 }
                 catch (Exception ex) when (ex is InvalidOperationException || ex is COMException)
@@ -173,7 +172,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
             if (!string.IsNullOrEmpty(text))
             {
                 this.XMLEditor.Text = text;
-                SystemSounds.Asterisk.Play();
+                CommonSounds.Instance.PlayAsterisk();
             }
         }
 

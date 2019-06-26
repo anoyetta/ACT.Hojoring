@@ -55,6 +55,7 @@
   <system:String x:Key="Action_VisibleRemainOfCasting">キャストの残り時間を表示する</system:String>
   <system:String x:Key="Action_VisibleRemainAsInteger">整数で表示する</system:String>
   <system:String x:Key="Action_VisibleRateOfCasting">キャストの進捗率を表示する</system:String>
+  <system:String x:Key="Action_VisibleType">攻撃タイプを表示する</system:String>
   <system:String x:Key="Action_DummyActionName">ダミーアクション名 (位置調整向け)</system:String>
   <system:String x:Key="Action_CastingBar">キャストバー</system:String>
   <system:String x:Key="Action_CastingBarStrokeColor">キャストバーのアウトラインのカラー</system:String>

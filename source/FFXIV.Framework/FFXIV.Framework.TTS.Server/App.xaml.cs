@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -131,13 +132,17 @@ namespace FFXIV.Framework.TTS.Server
             }
         }
 
+        private static string NLogConfig => new[]
+        {
+            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config", "FFXIV.Framework.TTS.Server.NLog.config"),
+            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "FFXIV.Framework.TTS.Server.NLog.config"),
+        }.FirstOrDefault(x => File.Exists(x));
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void App_Startup(object sender, StartupEventArgs e)
         {
             // NLogを設定する
-            AppLog.LoadConfiguration(Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                "FFXIV.Framework.TTS.Server.NLog.config"));
+            AppLog.LoadConfiguration(NLogConfig);
 
             try
             {

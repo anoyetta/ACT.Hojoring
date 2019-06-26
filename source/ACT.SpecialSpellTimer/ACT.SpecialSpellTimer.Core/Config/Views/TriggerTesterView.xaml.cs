@@ -16,7 +16,7 @@ using ACT.SpecialSpellTimer.resources;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.Globalization;
 using FFXIV.Framework.WPF.Views;
 using Prism.Mvvm;
@@ -440,7 +440,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
             x.ID != JobIDs.ADV).ToList();
 
         public IReadOnlyList<Zone> ZoneList => (
-            from x in FFXIVPlugin.Instance?.ZoneList
+            from x in XIVPluginHelper.Instance?.ZoneList
             orderby
             x.IsAddedByUser ? 0 : 1,
             x.Rank,
@@ -601,8 +601,8 @@ namespace ACT.SpecialSpellTimer.Config.Views
                         continue;
                     }
 
-                    var combatant = new Combatant();
-                    combatant.ObjectType = Actor.Type.PC;
+                    var combatant = new CombatantEx();
+                    combatant.Type = (byte)Actor.Type.PC;
                     combatant.SetName(dummy.Name);
                     combatant.Job = (byte)dummy.Job;
 

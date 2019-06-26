@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Media;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -12,8 +11,10 @@ using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
+using FFXIV_ACT_Plugin.Logfile;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -80,8 +81,8 @@ namespace ACT.SpecialSpellTimer
             ActGlobals.oFormActMain.OnLogLineRead += this.OnLogLineRead;
 
             // Added Combatantsイベントを登録する
-            FFXIVPlugin.Instance.AddedCombatants -= this.OnAddedCombatants;
-            FFXIVPlugin.Instance.AddedCombatants += this.OnAddedCombatants;
+            XIVPluginHelper.Instance.AddedCombatants -= this.OnAddedCombatants;
+            XIVPluginHelper.Instance.AddedCombatants += this.OnAddedCombatants;
 
             // 生ログの書き出しバッファを開始する
             ChatLogWorker.Instance.Begin();
@@ -107,7 +108,7 @@ namespace ACT.SpecialSpellTimer
 
             ActGlobals.oFormActMain.BeforeLogLineRead -= this.OnBeforeLogLineRead;
             ActGlobals.oFormActMain.OnLogLineRead -= this.OnLogLineRead;
-            FFXIVPlugin.Instance.AddedCombatants -= this.OnAddedCombatants;
+            XIVPluginHelper.Instance.AddedCombatants -= this.OnAddedCombatants;
 
             // 生ログの書き出しバッファを停止する
             ChatLogWorker.Instance.End();
@@ -333,7 +334,7 @@ namespace ACT.SpecialSpellTimer
         /// <param name="e"></param>
         private void OnAddedCombatants(
             object sender,
-            FFXIVPlugin.AddedCombatantsEventArgs e)
+            XIVPluginHelper.AddedCombatantsEventArgs e)
         {
             lock (this)
             {
@@ -440,7 +441,7 @@ namespace ACT.SpecialSpellTimer
         /// </summary>
         public static readonly string[] IgnoreLogKeywords = new[]
         {
-            MessageType.NetworkDoT.ToKeyword(),
+            LogMessageType.NetworkDoT.ToKeyword(),
         };
 
         /// <summary>
@@ -448,8 +449,8 @@ namespace ACT.SpecialSpellTimer
         /// </summary>
         public static readonly string[] IgnoreDetailLogKeywords = new[]
         {
-            MessageType.NetworkAbility.ToKeyword(),
-            MessageType.NetworkAOEAbility.ToKeyword()
+            LogMessageType.NetworkAbility.ToKeyword(),
+            LogMessageType.NetworkAOEAbility.ToKeyword()
         };
 
         public bool IsEmpty => this.logInfoQueue.IsEmpty;
@@ -462,7 +463,7 @@ namespace ACT.SpecialSpellTimer
         public static bool IsHPLogByPartyMember(
             string log)
         {
-            if (!log.Contains(MessageType.CombatantHP.ToKeyword()))
+            if (!log.Contains(LogMessageType.CombatantHP.ToKeyword()))
             {
                 return false;
             }
@@ -482,13 +483,13 @@ namespace ACT.SpecialSpellTimer
             }
 
             // プレイヤー情報を取得する
-            var player = FFXIVPlugin.Instance.GetPlayer();
+            var player = CombatantsManager.Instance.Player;
 
             // プレイヤーが召喚士か？
             var palyerIsSummoner = false;
             if (player != null)
             {
-                var job = player.AsJob();
+                var job = player.JobInfo;
                 if (job != null)
                 {
                     palyerIsSummoner = job.IsSummoner();
@@ -586,7 +587,7 @@ namespace ACT.SpecialSpellTimer
 
             if (doneCommand)
             {
-                SystemSounds.Asterisk.Play();
+                CommonSounds.Instance.PlayAsterisk();
             }
 
             // ログファイルに出力する
@@ -642,9 +643,9 @@ namespace ACT.SpecialSpellTimer
         {
             var result = false;
 
-            var party = FFXIVPlugin.Instance.GetPartyList();
+            var party = CombatantsManager.Instance.GetPartyList();
             if (party == null ||
-                party.Count < 1)
+                party.Count() < 1)
             {
                 return result;
             }
@@ -675,7 +676,7 @@ namespace ACT.SpecialSpellTimer
                 return false;
             }
 
-            if (FFXIVPlugin.Instance.CombatantPCCount <= 16)
+            if (CombatantsManager.Instance.CombatantsPCCount <= 16)
             {
                 return false;
             }
@@ -735,7 +736,7 @@ namespace ACT.SpecialSpellTimer
                 return result;
             }
 
-            result = FFXIVPlugin.Instance.RemoveWorldName(logLine);
+            result = XIVPluginHelper.Instance.RemoveWorldName(logLine);
 
             return result;
         }
@@ -754,7 +755,7 @@ namespace ACT.SpecialSpellTimer
         public static void DumpPosition(
             bool isAuto = false)
         {
-            var player = FFXIVPlugin.Instance.GetPlayer();
+            var player = CombatantsManager.Instance.Player;
             if (player == null)
             {
                 return;
@@ -783,31 +784,5 @@ namespace ACT.SpecialSpellTimer
         }
 
         #endregion その他のメソッド
-    }
-
-    public class XIVLog
-    {
-        public XIVLog(
-            string logLine)
-        {
-            this.Timestamp = logLine.Substring(0, 15).TrimEnd();
-            this.Log = logLine.Remove(0, 15);
-        }
-
-        public XIVLog(
-            string timestamp,
-            string log)
-        {
-            this.Timestamp = timestamp;
-            this.Log = log;
-        }
-
-        public long No { get; set; } = 0;
-
-        public string Timestamp { get; set; } = string.Empty;
-
-        public string Log { get; set; } = string.Empty;
-
-        public string LogLine => $"{this.Timestamp} {this.Log}";
     }
 }

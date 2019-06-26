@@ -33,23 +33,20 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>latest</LangVersion>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Advanced Combat Tracker">
-      <HintPath>..\..\ACTv3\Advanced Combat Tracker.exe</HintPath>
+      <HintPath>..\..\ThirdParty\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FFXIV_MemoryReader.Base">
-      <HintPath>..\Thirdparty\FFXIV_MemoryReader.Base.dll</HintPath>
+    <Reference Include="FFXIV_ACT_Plugin.Common">
+      <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.Common.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="FFXIV_MemoryReader.Core">
-      <HintPath>..\Thirdparty\FFXIV_MemoryReader.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FFXIV_MemoryReader.Model, Version=1.4.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Thirdparty\FFXIV_MemoryReader.Model.dll</HintPath>
+    <Reference Include="FFXIV_ACT_Plugin.LogFile">
+      <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.LogFile.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
@@ -91,6 +88,7 @@
     <Compile Include="Common\EqualityComparer.cs" />
     <Compile Include="Common\JobIconDictionary.cs" />
     <Compile Include="Common\MasterFilePublisher.cs" />
+    <Compile Include="Common\CommonSounds.cs" />
     <Compile Include="Common\WrappingStream.cs" />
     <Compile Include="Common\XAudioPlayer.cs" />
     <Compile Include="Common\DirectoryHelper.cs" />
@@ -137,24 +135,27 @@
     <Compile Include="Extensions\ObservableCollectionExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TimeSpanExtensions.cs" />
-    <Compile Include="FFXIVHelper\Buff.cs" />
-    <Compile Include="FFXIVHelper\CameraInfo.cs" />
-    <Compile Include="FFXIVHelper\Combatant.cs" />
-    <Compile Include="FFXIVHelper\Effect.cs" />
-    <Compile Include="FFXIVHelper\EnmityEntry.cs" />
-    <Compile Include="FFXIVHelper\FFXIVPlugin.cs" />
-    <Compile Include="FFXIVHelper\FFXIVReader.cs" />
-    <Compile Include="FFXIVHelper\Jobs.cs" />
-    <Compile Include="FFXIVHelper\MessageType.cs" />
-    <Compile Include="FFXIVHelper\NameStyles.cs" />
-    <Compile Include="FFXIVHelper\OverlayType.cs" />
-    <Compile Include="FFXIVHelper\PCNameDictionary.cs" />
-    <Compile Include="FFXIVHelper\PCOrder.cs" />
-    <Compile Include="FFXIVHelper\SharlayanHelper.cs" />
-    <Compile Include="FFXIVHelper\Skill.cs" />
-    <Compile Include="FFXIVHelper\World.cs" />
-    <Compile Include="FFXIVHelper\XIVDB.cs" />
-    <Compile Include="FFXIVHelper\Zone.cs" />
+    <Compile Include="WPF\CommonViewHelper.cs" />
+    <Compile Include="WPF\Views\CommonView.xaml.cs">
+      <DependentUpon>CommonView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="XIVHelper\Buff.cs" />
+    <Compile Include="XIVHelper\CameraInfo.cs" />
+    <Compile Include="XIVHelper\CombatantsManager.cs" />
+    <Compile Include="XIVHelper\CombatantEx.cs" />
+    <Compile Include="XIVHelper\EnmityEntry.cs" />
+    <Compile Include="XIVHelper\XIVLog.cs" />
+    <Compile Include="XIVHelper\XIVPluginHelper.cs" />
+    <Compile Include="XIVHelper\Jobs.cs" />
+    <Compile Include="XIVHelper\LogMessageTypeEx.cs" />
+    <Compile Include="XIVHelper\NameStyles.cs" />
+    <Compile Include="XIVHelper\PCNameDictionary.cs" />
+    <Compile Include="XIVHelper\PCOrder.cs" />
+    <Compile Include="XIVHelper\SharlayanHelper.cs" />
+    <Compile Include="XIVHelper\Skill.cs" />
+    <Compile Include="XIVHelper\World.cs" />
+    <Compile Include="XIVHelper\XIVApi.cs" />
+    <Compile Include="XIVHelper\Zone.cs" />
     <Compile Include="Globalization\Locales.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -286,6 +287,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="WPF\Views\CommonView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WPF\Views\HelpView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -317,6 +322,11 @@
   <ItemGroup>
     <PackageReference Include="CommonServiceLocator">
       <Version>2.0.4</Version>
+    </PackageReference>
+    <PackageReference Include="Fody">
+      <Version>5.0.6</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="FontAwesome.WPF">
       <Version>4.7.0.9</Version>
@@ -356,6 +366,9 @@
     </PackageReference>
     <PackageReference Include="Prism.Wpf">
       <Version>7.1.0.431</Version>
+    </PackageReference>
+    <PackageReference Include="PropertyChanged.Fody">
+      <Version>3.0.1</Version>
     </PackageReference>
     <PackageReference Include="Sharlayan">
       <Version>5.0.4</Version>

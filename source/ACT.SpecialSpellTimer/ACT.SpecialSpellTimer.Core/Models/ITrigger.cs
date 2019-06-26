@@ -10,7 +10,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config.Models;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer.Models
 {
@@ -58,8 +58,8 @@ namespace ACT.SpecialSpellTimer.Models
 
         public static bool PredicateFilters(
             this IFilterizableTrigger trigger,
-            Combatant player,
-            IEnumerable<Combatant> partyList,
+            CombatantEx player,
+            IEnumerable<CombatantEx> partyList,
             int? currentZoneID)
         {
             // パーティリストからプレイヤーを除外する
@@ -128,7 +128,7 @@ namespace ACT.SpecialSpellTimer.Models
             }
             else
             {
-                var currentPartyComposition = FFXIVPlugin.Instance.PartyComposition.ToString();
+                var currentPartyComposition = CombatantsManager.Instance.PartyComposition.ToString();
                 var filters = trigger.PartyCompositionFilter.Split(',');
                 if (filters.Any(x =>
                     string.Equals(

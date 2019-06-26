@@ -1,7 +1,7 @@
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.Workers
 {
@@ -19,8 +19,8 @@ namespace ACT.UltraScouter.Workers
 
         private BossInfoWorker()
         {
-            FFXIVPlugin.Instance.GetAvailableBossCallback = () => !this.IsAllViewOff;
-            FFXIVPlugin.Instance.GetBossHPThresholdCallback = () => Settings.Instance.BossHPThreshold;
+            XIVPluginHelper.Instance.GetAvailableBossCallback = () => !this.IsAllViewOff;
+            XIVPluginHelper.Instance.GetBossHPThresholdCallback = () => Settings.Instance.BossHPThreshold;
         }
 
         #endregion Singleton
@@ -29,7 +29,7 @@ namespace ACT.UltraScouter.Workers
 
         protected override void GetCombatant()
         {
-            var ti = FFXIVPlugin.Instance?.GetBossInfo();
+            var ti = XIVPluginHelper.Instance?.GetBossInfo();
 
             if (ti != null)
             {
@@ -93,7 +93,7 @@ namespace ACT.UltraScouter.Workers
         protected override EnmityViewModel EnmityVM => null;
 
         protected override bool IsAllViewOff =>
-            !FFXIVPlugin.Instance.IsFFXIVActive ||
+            !XIVPluginHelper.Instance.IsFFXIVActive ||
             (
                 !(Settings.Instance?.BossName?.Visible ?? false) &&
                 !(Settings.Instance?.BossAction?.Visible ?? false) &&

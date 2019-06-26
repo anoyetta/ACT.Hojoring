@@ -13,9 +13,8 @@ using ACT.SpecialSpellTimer.Sound;
 using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
-using Sharlayan.Core.Enums;
 using static ACT.SpecialSpellTimer.Sound.TTSDictionary;
 
 namespace ACT.SpecialSpellTimer.Models
@@ -47,6 +46,8 @@ namespace ACT.SpecialSpellTimer.Models
             this.CompileSpells();
             this.CompileTickers();
 
+            this.SubscribeXIVPluginEvents();
+
             this.worker = new System.Timers.Timer();
             this.worker.AutoReset = true;
             this.worker.Interval = WorkerInterval;
@@ -71,6 +72,59 @@ namespace ACT.SpecialSpellTimer.Models
 
         private DateTime lastDumpPositionTimestamp = DateTime.MinValue;
 
+        private bool isPartyChanged = false;
+        private bool isZoneChanged = false;
+
+        private void SubscribeXIVPluginEvents()
+        {
+            Task.Run(() =>
+            {
+                var helper = XIVPluginHelper.Instance;
+
+                for (int i = 0; i < 60; i++)
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
+
+                    if (helper.IsAttached)
+                    {
+                        Thread.Sleep(TimeSpan.FromMilliseconds(200));
+                        helper.OnPrimaryPlayerChanged += () => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
+                        helper.OnPlayerJobChanged += () => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
+                        helper.OnPartyListChanged += (_, __) => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
+                        helper.OnPlayerJobChanged += () => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
+                        helper.OnZoneChanged += (_, __) => setQueue(this.isZoneChanged, () => this.isZoneChanged = true);
+
+                        setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
+                        setQueue(this.isPartyChanged, () => this.isZoneChanged = true);
+                        break;
+                    }
+                }
+            });
+
+            void setQueue(bool queue, Action setAction)
+            {
+                if (queue)
+                {
+                    return;
+                }
+
+                Task.Run(() =>
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(3));
+
+                    if (queue)
+                    {
+                        return;
+                    }
+
+                    lock (this)
+                    {
+                        setAction();
+                    }
+                });
+            }
+        }
+
         private void DoWork()
         {
             try
@@ -80,9 +134,6 @@ namespace ACT.SpecialSpellTimer.Models
                     this.RefreshCombatants();
 
                     var isSimulationChanged = false;
-                    var isPlayerChanged = this.IsPlayerChanged();
-                    var isPartyChanged = this.IsPartyChanged();
-                    var isZoneChanged = this.IsZoneChanged();
 
                     if (this.previousInSimulation != this.InSimulation)
                     {
@@ -90,25 +141,26 @@ namespace ACT.SpecialSpellTimer.Models
                         isSimulationChanged = true;
                     }
 
-                    if (isPlayerChanged)
+                    if (this.isPartyChanged ||
+                        this.isZoneChanged)
                     {
                         this.RefreshPlayerPlacceholder();
-                    }
-
-                    if (isZoneChanged ||
-                        isPartyChanged)
-                    {
                         this.RefreshPartyPlaceholders();
                         this.RefreshPetPlaceholder();
                     }
 
                     if (isSimulationChanged ||
-                        isPlayerChanged ||
-                        isPartyChanged ||
-                        isZoneChanged)
+                        this.isPartyChanged ||
+                        this.isZoneChanged)
                     {
                         this.RecompileSpells();
                         this.RecompileTickers();
+
+                        var fromEvent =
+                            isSimulationChanged ? "simulation changed" :
+                                this.isPartyChanged ? "party changed" :
+                                    this.isZoneChanged ? "zone changed" : string.Empty;
+                        Logger.Write($"recompiled triggers on {fromEvent}");
 
                         TickersController.Instance.GarbageWindows(this.TickerList);
                         SpellsController.Instance.GarbageSpellPanelWindows(this.SpellList);
@@ -116,7 +168,7 @@ namespace ACT.SpecialSpellTimer.Models
                         this.CompileConditionChanged?.Invoke(this, new EventArgs());
                     }
 
-                    if (isZoneChanged)
+                    if (this.isZoneChanged)
                     {
                         // インスタンススペルを消去する
                         SpellTable.Instance.RemoveInstanceSpellsAll();
@@ -125,7 +177,7 @@ namespace ACT.SpecialSpellTimer.Models
                         PluginCore.Instance?.SaveSettingsAsync();
 
                         var zone = ActGlobals.oFormActMain.CurrentZone;
-                        var zoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
+                        var zoneID = XIVPluginHelper.Instance?.GetCurrentZoneID();
                         Logger.Write($"zone changed. zone={zone}, zone_id={zoneID}");
                         this.ZoneChanged?.Invoke(this, new EventArgs());
 
@@ -149,17 +201,22 @@ namespace ACT.SpecialSpellTimer.Models
             {
                 Logger.Write("table compiler error:", ex);
             }
+            finally
+            {
+                this.isPartyChanged = false;
+                this.isZoneChanged = false;
+            }
         }
 
         #region Compilers
 
-        public Combatant Player => this.player;
+        public CombatantEx Player => this.player;
 
-        public IList<Combatant> SortedPartyList => this.partyList;
+        public IList<CombatantEx> SortedPartyList => this.partyList;
 
-        private List<Combatant> partyList = new List<Combatant>();
+        private List<CombatantEx> partyList = new List<CombatantEx>();
 
-        private Combatant player = new Combatant();
+        private CombatantEx player = new CombatantEx();
 
         private List<Spell> spellList = new List<Spell>();
 
@@ -267,9 +324,9 @@ namespace ACT.SpecialSpellTimer.Models
         /// </summary>
         /// <returns>
         /// プレイヤー, パーティリスト, ゾーンID</returns>
-        private (Combatant Player, IEnumerable<Combatant> PartyList, int? ZoneID) GetCurrentFilterCondition()
+        private (CombatantEx Player, IEnumerable<CombatantEx> PartyList, int? ZoneID) GetCurrentFilterCondition()
         {
-            var currentPlayer = this.player ?? new Combatant()
+            var currentPlayer = this.player ?? new CombatantEx()
             {
                 ID = 0,
                 Name = "Dummy Player",
@@ -288,7 +345,7 @@ namespace ACT.SpecialSpellTimer.Models
                 }
                 else
                 {
-                    currentZoneID = FFXIVPlugin.Instance?.GetCurrentZoneID();
+                    currentZoneID = XIVPluginHelper.Instance?.GetCurrentZoneID();
                 }
             }
 
@@ -567,10 +624,6 @@ namespace ACT.SpecialSpellTimer.Models
 
         #region 条件の変更を判定するメソッド群
 
-        private readonly List<CharacterCondition> previousPartyCondition = new List<CharacterCondition>(32);
-        private volatile CharacterCondition previousPlayerCondition = new CharacterCondition();
-        private volatile int previousZoneID = 0;
-        private volatile string previousZoneName = string.Empty;
         private volatile bool previousInSimulation = false;
 
         public readonly object SimulationLocker = new object();
@@ -581,17 +634,17 @@ namespace ACT.SpecialSpellTimer.Models
             set;
         } = false;
 
-        public Combatant SimulationPlayer
+        public CombatantEx SimulationPlayer
         {
             get;
             set;
         }
 
-        public List<Combatant> SimulationParty
+        public List<CombatantEx> SimulationParty
         {
             get;
             private set;
-        } = new List<Combatant>();
+        } = new List<CombatantEx>();
 
         public int SimulationZoneID
         {
@@ -599,12 +652,13 @@ namespace ACT.SpecialSpellTimer.Models
             set;
         }
 
+#if false
         public bool IsPartyChanged()
         {
             var r = false;
 
             var party = this.partyList
-                .Where(x => x.ObjectType == Actor.Type.PC)
+                .Where(x => x.ActorType == Actor.Type.PC)
                 .ToList();
 
             if (this.previousPartyCondition.Count !=
@@ -632,12 +686,14 @@ namespace ACT.SpecialSpellTimer.Models
             this.previousPartyCondition.AddRange(party.Select(x => new CharacterCondition()
             {
                 Name = x.Name,
-                Job = x.Job,
+                Job = (byte)x.Job,
             }));
 
             return r;
         }
+#endif
 
+#if false
         public bool IsPlayerChanged()
         {
             var r = false;
@@ -649,11 +705,13 @@ namespace ACT.SpecialSpellTimer.Models
             }
 
             this.previousPlayerCondition.Name = this.player.Name;
-            this.previousPlayerCondition.Job = this.player.Job;
+            this.previousPlayerCondition.Job = (byte)this.player.Job;
 
             return r;
         }
+#endif
 
+#if false
         public bool IsZoneChanged()
         {
             var r = false;
@@ -688,11 +746,12 @@ namespace ACT.SpecialSpellTimer.Models
 
             return r;
         }
+#endif
 
         private void RefreshCombatants()
         {
-            var player = default(Combatant);
-            var party = default(IReadOnlyList<Combatant>);
+            var player = default(CombatantEx);
+            var party = default(IEnumerable<CombatantEx>);
 
             lock (SimulationLocker)
             {
@@ -705,8 +764,8 @@ namespace ACT.SpecialSpellTimer.Models
                 }
                 else
                 {
-                    player = FFXIVPlugin.Instance?.GetPlayer();
-                    party = FFXIVPlugin.Instance?.GetPartyList();
+                    player = CombatantsManager.Instance.Player;
+                    party = CombatantsManager.Instance.GetPartyList();
                 }
             }
 
@@ -717,7 +776,7 @@ namespace ACT.SpecialSpellTimer.Models
 
             if (party != null)
             {
-                var newList = new List<Combatant>(party);
+                var newList = new List<CombatantEx>(party);
 
                 if (newList.Count < 1 &&
                     !string.IsNullOrEmpty(this.player?.Name))
@@ -1018,7 +1077,7 @@ namespace ACT.SpecialSpellTimer.Models
             // ex. <MELEE>  -> (?<_MELEE>Taro Paladin|Jiro Paladin)
             // ex. <RANGE>  -> (?<_RANGE>Taro Paladin|Jiro Paladin)
             // ex. <MAGIC>  -> (?<_MAGIC>Taro Paladin|Jiro Paladin)
-            var partyListByRole = FFXIVPlugin.Instance.GetPatryListByRole();
+            var partyListByRole = CombatantsManager.Instance.GetPatryListByRole();
             foreach (var role in partyListByRole)
             {
                 names = string.Join("|", role.Combatants.Select(x => x.NamesRegex).ToArray());
@@ -1066,7 +1125,7 @@ namespace ACT.SpecialSpellTimer.Models
                 return;
             }
 
-            var playerJob = this.player.AsJob();
+            var playerJob = this.player.JobInfo;
             if (playerJob != null &&
                 !playerJob.IsSummoner())
             {
@@ -1081,7 +1140,7 @@ namespace ACT.SpecialSpellTimer.Models
                 {
                     try
                     {
-                        var combatants = FFXIVPlugin.Instance.GetCombatantList();
+                        var combatants = CombatantsManager.Instance.GetCombatants();
                         if (combatants == null)
                         {
                             continue;

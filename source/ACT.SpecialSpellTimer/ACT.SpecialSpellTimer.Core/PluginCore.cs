@@ -14,8 +14,9 @@ using ACT.SpecialSpellTimer.Sound;
 using ACT.SpecialSpellTimer.Utility;
 using ACT.SpecialSpellTimer.Views;
 using Advanced_Combat_Tracker;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
 
 namespace ACT.SpecialSpellTimer
@@ -148,14 +149,10 @@ namespace ACT.SpecialSpellTimer
             WPFHelper.Start();
             WPFHelper.BeginInvoke(async () =>
             {
-                // FFXIV_MemoryReaderを先にロードさせる
-                var result = await FFXIVReader.Instance.WaitForReaderToStartedAsync(pluginScreenSpace);
-
                 this.PluginStatusLabel = pluginStatusText;
 
                 AppLog.LoadConfiguration(AppLog.HojoringConfig);
                 this.AppLogger.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
-                result.WriteLog(this.AppLogger);
 
                 try
                 {
@@ -228,6 +225,11 @@ namespace ACT.SpecialSpellTimer
                     this.PluginStatusLabel.Text = "Plugin Started";
 
                     Logger.Write("[SPESPE] End InitPlugin");
+
+                    // 共通ビューを追加する
+                    ConfigBridge.Instance.SetUILocaleCallback(() => Settings.Default.UILocale);
+                    CommonViewHelper.Instance.AddCommonView(
+                       pluginScreenSpace.Parent as TabControl);
 
                     // アップデートを確認する
                     await Task.Run(() => this.Update());

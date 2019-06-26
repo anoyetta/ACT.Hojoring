@@ -55,6 +55,7 @@
   <system:String x:Key="Action_VisibleRemainOfCasting">Visible remain of casting</system:String>
   <system:String x:Key="Action_VisibleRemainAsInteger">As integer</system:String>
   <system:String x:Key="Action_VisibleRateOfCasting">Visible rate of casting</system:String>
+  <system:String x:Key="Action_VisibleType">Visible attack type</system:String>
   <system:String x:Key="Action_DummyActionName">Dummy action name</system:String>
   <system:String x:Key="Action_CastingBar">Casting bar</system:String>
   <system:String x:Key="Action_CastingBarStrokeColor">Casting bar stroke color</system:String>

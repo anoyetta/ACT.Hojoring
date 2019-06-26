@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Media;
 using System.Text.RegularExpressions;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.Sound;
+using FFXIV.Framework.Common;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -332,7 +332,7 @@ namespace ACT.SpecialSpellTimer
             // コマンドを実行したらシステム音を鳴らす
             if (commandDone)
             {
-                SystemSounds.Asterisk.Play();
+                CommonSounds.Instance.PlayAsterisk();
             }
         }
     }

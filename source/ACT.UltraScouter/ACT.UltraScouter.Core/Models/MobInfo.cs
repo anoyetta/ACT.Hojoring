@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 using ACT.UltraScouter.Common;
 using ACT.UltraScouter.Config;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Prism.Commands;
 using Prism.Mvvm;
 using Sharlayan.Core.Enums;
@@ -102,7 +102,7 @@ namespace ACT.UltraScouter.Models
         }
 
         private int index;
-        private Combatant combatant;
+        private CombatantEx combatant;
         private string name;
         private string rank = "DUMMY";
         private bool ttsEnabled = true;
@@ -138,7 +138,7 @@ namespace ACT.UltraScouter.Models
             set => this.SetProperty(ref this.index, value);
         }
 
-        public Combatant Combatant
+        public CombatantEx Combatant
         {
             get => this.combatant;
             set
@@ -195,7 +195,7 @@ namespace ACT.UltraScouter.Models
             this.RaisePropertyChanged(nameof(this.JobIcon));
         }
 
-        public bool IsPC => this.combatant?.ObjectType == Actor.Type.PC;
+        public bool IsPC => this.combatant?.ActorType == Actor.Type.PC;
 
         public BitmapSource JobIcon => JobIconDictionary.Instance.GetIcon(this.combatant?.JobID ?? JobIDs.Unknown);
 
@@ -382,9 +382,9 @@ namespace ACT.UltraScouter.Models
             set => this.SetProperty(ref this.targetHeight, value);
         }
 
-        public double XonMap => Combatant.ToHorizontalMapPosition(this.X);
-        public double YonMap => Combatant.ToHorizontalMapPosition(this.Y);
-        public double ZonMap => Combatant.ToVerticalMapPosition(this.Z);
+        public double XonMap => CombatantEx.ToHorizontalMapPosition(this.X);
+        public double YonMap => CombatantEx.ToHorizontalMapPosition(this.Y);
+        public double ZonMap => CombatantEx.ToVerticalMapPosition(this.Z);
 
         public bool IsNear
         {

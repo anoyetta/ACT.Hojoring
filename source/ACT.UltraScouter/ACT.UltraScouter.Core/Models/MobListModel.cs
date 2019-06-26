@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.Models
 {
@@ -133,9 +133,9 @@ namespace ACT.UltraScouter.Models
             }
         }
 
-        public double MeXonMap => Combatant.ToHorizontalMapPosition(this.MeX);
-        public double MeYonMap => Combatant.ToHorizontalMapPosition(this.MeY);
-        public double MeZonMap => Combatant.ToVerticalMapPosition(this.MeZ);
+        public double MeXonMap => CombatantEx.ToHorizontalMapPosition(this.MeX);
+        public double MeYonMap => CombatantEx.ToHorizontalMapPosition(this.MeY);
+        public double MeZonMap => CombatantEx.ToVerticalMapPosition(this.MeZ);
 
         public void ClearMobList()
         {

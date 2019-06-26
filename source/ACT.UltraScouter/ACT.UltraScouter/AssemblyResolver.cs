@@ -71,11 +71,11 @@ namespace ACT.UltraScouter
                 if (!this.Directories.Any(x => x == pluginDirectory))
                 {
                     this.Directories.Add(pluginDirectory);
-                    this.Directories.Add(Path.Combine(pluginDirectory, "references"));
+                    this.Directories.Add(Path.Combine(pluginDirectory, "bin"));
 
                     var architect = Environment.Is64BitProcess ? "x64" : "x86";
                     this.Directories.Add(Path.Combine(pluginDirectory, $@"{architect}"));
-                    this.Directories.Add(Path.Combine(pluginDirectory, $@"references\{architect}"));
+                    this.Directories.Add(Path.Combine(pluginDirectory, $@"bin\{architect}"));
                 }
             }
 

@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models.FFLogs;
+using ControlzEx;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
+using MahApps.Metro.IconPacks;
 using NLog;
 using Prism.Mvvm;
 using Sharlayan.Core.Enums;
@@ -51,12 +53,11 @@ namespace ACT.UltraScouter.Models
         protected float castDurationCurrent;
         protected float castDurationMax;
         protected string castSkillName;
-        protected int castSkillID;
+        protected uint castSkillID;
 
         protected double currentHP;
         protected double currentHPRate;
         protected double distance;
-        protected bool isEffectiveDistance;
         protected double maxHP;
         protected string name;
 
@@ -121,10 +122,86 @@ namespace ACT.UltraScouter.Models
             set => this.SetProperty(ref this.castSkillName, value);
         }
 
-        public int CastSkillID
+        public uint CastSkillID
         {
             get => this.castSkillID;
             set => this.SetProperty(ref this.castSkillID, value);
+        }
+
+        private AttackTypes castSkillType;
+
+        public AttackTypes CastSkillType
+        {
+            get => this.castSkillType;
+            set
+            {
+                if (this.SetProperty(ref this.castSkillType, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.CastSkillTypeIcon));
+                    this.RaisePropertyChanged(nameof(this.CastSkillTypeBrush));
+                }
+            }
+        }
+
+        private static readonly Lazy<Dictionary<AttackTypes, PackIconBase>> LazyAttackTypeIcons = new Lazy<Dictionary<AttackTypes, PackIconBase>>(() =>
+            new Dictionary<AttackTypes, PackIconBase>()
+            {
+                { AttackTypes.Unknown, new PackIconMaterial() { Kind = PackIconMaterialKind.Help } },
+                { AttackTypes.Slash, new PackIconMaterial() { Kind = PackIconMaterialKind.Sword } },
+                { AttackTypes.Pierce, new PackIconModern() { Kind = PackIconModernKind.Directions } },
+                { AttackTypes.Impact, new PackIconFontAwesome() { Kind = PackIconFontAwesomeKind.GavelSolid } },
+                { AttackTypes.Shoot, new PackIconMaterial() { Kind = PackIconMaterialKind.Pistol } },
+                { AttackTypes.Magic, new PackIconFontAwesome() { Kind = PackIconFontAwesomeKind.FireSolid } },
+                { AttackTypes.Breath, new PackIconMaterial() { Kind = PackIconMaterialKind.Wifi } },
+                { AttackTypes.Sound, new PackIconFontAwesome() { Kind = PackIconFontAwesomeKind.MusicSolid } },
+                { AttackTypes.LimitBreak, new PackIconMaterial() { Kind = PackIconMaterialKind.SwordCross } },
+            });
+
+        private static readonly Lazy<Dictionary<AttackTypes, Brush>> LazyAttackTypeBrushes = new Lazy<Dictionary<AttackTypes, Brush>>(() =>
+            new Dictionary<AttackTypes, Brush>()
+            {
+                { AttackTypes.Unknown, new SolidColorBrush(FromARGB("#fcfcfc")) },
+                { AttackTypes.Slash, new SolidColorBrush(FromARGB("#ff2828")) },
+                { AttackTypes.Pierce, new SolidColorBrush(FromARGB("#ff2828")) },
+                { AttackTypes.Impact, new SolidColorBrush(FromARGB("#ff2828")) },
+                { AttackTypes.Shoot, new SolidColorBrush(FromARGB("#ff2828")) },
+                { AttackTypes.Magic, new SolidColorBrush(FromARGB("#33ffff")) },
+                { AttackTypes.Breath, new SolidColorBrush(FromARGB("#ff60ff")) },
+                { AttackTypes.Sound, new SolidColorBrush(FromARGB("#ff60ff")) },
+                { AttackTypes.LimitBreak, new SolidColorBrush(FromARGB("#ff9933")) },
+            });
+
+        private static Color FromARGB(string argb)
+            => (Color)ColorConverter.ConvertFromString(argb);
+
+        public PackIconBase CastSkillTypeIcon
+        {
+            get
+            {
+                var icon = LazyAttackTypeIcons.Value[this.CastSkillType];
+                icon.Foreground = this.CastSkillTypeBrush;
+                return icon;
+            }
+        }
+
+        public Brush CastSkillTypeBrush
+        {
+            get
+            {
+                var brush = LazyAttackTypeBrushes.Value[this.CastSkillType];
+                if (!brush.IsFrozen)
+                {
+                    brush.Freeze();
+                }
+
+                return brush;
+            }
+        }
+
+        public void RaiseCastSkillIconChanged()
+        {
+            this.RaisePropertyChanged(nameof(this.CastSkillTypeIcon));
+            this.RaisePropertyChanged(nameof(this.CastSkillTypeBrush));
         }
 
         public double CastingRemain =>
@@ -256,18 +333,7 @@ namespace ACT.UltraScouter.Models
             }
         }
 
-        public bool IsEffectiveDistance
-        {
-            get => this.isEffectiveDistance;
-            set
-            {
-                if (this.SetProperty(ref this.isEffectiveDistance, value))
-                {
-                    this.RaisePropertyChanged(nameof(this.DistanceText));
-                    this.UpdateDictanceIndicator();
-                }
-            }
-        }
+        public bool IsEffectiveDistance => true;
 
         public string DistanceText
         {
@@ -638,7 +704,7 @@ namespace ACT.UltraScouter.Models
                 if (string.IsNullOrEmpty(characterName) ||
                     string.IsNullOrEmpty(serverName))
                 {
-                    var player = FFXIVPlugin.Instance.GetPlayer();
+                    var player = CombatantsManager.Instance.Player;
 
                     if (string.IsNullOrEmpty(characterName))
                     {

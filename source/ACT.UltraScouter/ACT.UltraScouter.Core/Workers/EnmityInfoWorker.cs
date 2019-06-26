@@ -12,7 +12,7 @@ using ACT.UltraScouter.Models.Enmity;
 using ACT.UltraScouter.ViewModels;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
-using FFXIV.Framework.FFXIVHelper;
+using FFXIV.Framework.XIVHelper;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Workers
@@ -83,7 +83,7 @@ namespace ACT.UltraScouter.Workers
 
             if (!Settings.Instance.Enmity.IsDesignMode)
             {
-                if (targetInfo.ObjectType == Actor.Type.Monster)
+                if (targetInfo.ActorType == Actor.Type.Monster)
                 {
                     var enmityEntryList = SharlayanHelper.Instance.EnmityList;
                     this.RefreshCurrentEnmityModelList(enmityEntryList);
@@ -128,13 +128,13 @@ namespace ACT.UltraScouter.Workers
                     var name = entry.Name;
                     if (string.IsNullOrEmpty(name))
                     {
-                        name = Combatant.UnknownName;
+                        name = CombatantEx.UnknownName;
                     }
                     else
                     {
                         name = config.IsSelfDisplayYou && entry.IsMe ?
                             "YOU" :
-                            Combatant.NameToInitial(entry.Name, pcNameStyle);
+                            CombatantEx.NameToInitial(entry.Name, pcNameStyle);
                     }
 
                     var model = new EnmityModel();
@@ -257,7 +257,7 @@ namespace ACT.UltraScouter.Workers
                 return;
             }
 
-            var player = SharlayanHelper.Instance.CurrentPlayer;
+            var player = CombatantsManager.Instance.Player;
             if (player == null)
             {
                 return;
@@ -286,9 +286,10 @@ namespace ACT.UltraScouter.Workers
             {
                 lock (LogLocker)
                 {
-                    if (this.currentInCombat != player.InCombat)
+                    var inCombat = XIVPluginHelper.Instance.InCombat;
+                    if (this.currentInCombat != inCombat)
                     {
-                        this.currentInCombat = player.InCombat;
+                        this.currentInCombat = inCombat;
 
                         if (this.currentInCombat)
                         {
@@ -339,7 +340,7 @@ namespace ACT.UltraScouter.Workers
                         fields.Add(now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
                         fields.Add("\"" + this.TargetInfo.Name + "\"");
 
-                        var party = FFXIVPlugin.Instance.GetPartyList();
+                        var party = CombatantsManager.Instance.GetPartyList();
 
                         foreach (var member in party)
                         {
@@ -381,16 +382,16 @@ namespace ACT.UltraScouter.Workers
             this.enmityVM ?? (this.enmityVM = new EnmityViewModel(Settings.Instance.Enmity, this.Model));
 
         protected override bool IsAllViewOff =>
-            !FFXIVPlugin.Instance.IsFFXIVActive ||
+            !XIVPluginHelper.Instance.IsFFXIVActive ||
             !Settings.Instance.Enmity.Visible;
 
-        public override Combatant TargetInfo => TargetInfoWorker.Instance.TargetInfo;
+        public override CombatantEx TargetInfo => TargetInfoWorker.Instance.TargetInfo;
 
-        public override Combatant TargetInfoClone => TargetInfoWorker.Instance.TargetInfoClone;
+        public override CombatantEx TargetInfoClone => TargetInfoWorker.Instance.TargetInfoClone;
 
         private DateTime enmityTimestamp = DateTime.MinValue;
 
-        protected override void RefreshEnmityView(Combatant targetInfo)
+        protected override void RefreshEnmityView(CombatantEx targetInfo)
         {
             if (this.EnmityView == null)
             {

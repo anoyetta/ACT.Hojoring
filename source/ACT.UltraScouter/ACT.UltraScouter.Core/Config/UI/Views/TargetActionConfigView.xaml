@@ -10,6 +10,7 @@
   xmlns:local="clr-namespace:ACT.UltraScouter.Config.UI.Views"
   xmlns:mainv="clr-namespace:ACT.UltraScouter.Views"
   xmlns:cnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   mc:Ignorable="d"
   Title="TargetActionConfigView"
   TextOptions.TextFormattingMode="Display"
@@ -82,9 +83,9 @@
         Content="{DynamicResource Common_Location}" />
       <StackPanel Orientation="Horizontal">
         <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
-        <TextBox Margin="0 0 0 0" TextAlignment="Right" Text="{Binding Action.Location.X, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+        <xctk:DoubleUpDown Value="{Binding Action.Location.X, Mode=TwoWay}" Width="75" Increment="1" />
         <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
-        <TextBox Margin="0 0 0 0" TextAlignment="Right" Text="{Binding Action.Location.Y, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+        <xctk:DoubleUpDown Value="{Binding Action.Location.Y, Mode=TwoWay}" Width="75" Increment="1" />
       </StackPanel>
 
       <Label
@@ -222,6 +223,36 @@
           Width="60" />
       </StackPanel>
 
+      <!-- 攻撃タイプ -->
+      <CheckBox
+        Margin="0 15 0 0"
+        Content="{DynamicResource Action_VisibleType}"
+        IsChecked="{Binding Action.CastingTypeVisible, Mode=TwoWay}" />
+      <StackPanel
+        Margin="15 5 0 0"
+        Visibility="{Binding Action.CastingTypeVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+        <Label
+          Content="{DynamicResource Common_Scale}" />
+        <xctk:DoubleUpDown
+          HorizontalAlignment="Left"
+          Value="{Binding Action.CastingTypeScale, Mode=TwoWay}"
+          Width="75"
+          FormatString="N2"
+          Increment="0.01"
+          Minimum="0.10"
+          Maximum="4.00" />
+
+        <Label
+          Margin="0 5 0 0"
+          Content="{DynamicResource Common_Location}" />
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
+          <xctk:DoubleUpDown Value="{Binding Action.CastingTypeLocation.X, Mode=TwoWay}" Width="75" Increment="1" />
+          <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
+          <xctk:DoubleUpDown Value="{Binding Action.CastingTypeLocation.Y, Mode=TwoWay}" Width="75" Increment="1" />
+        </StackPanel>
+      </StackPanel>
+
       <!-- サウンド -->
       <Label
         Margin="0 20 0 0"
@@ -246,9 +277,8 @@
       </StackPanel>
 
       <CheckBox
-        Margin="0 15 0 0"
-        Content="{DynamicResource Common_TTS}"
-        IsChecked="{Binding Action.TTSEnabled, Mode=TwoWay}" />
+        Margin="0 5 0 0"
+        Content="{DynamicResource Common_TTS}" />
     </StackPanel>
   </ScrollViewer>
 </Page>

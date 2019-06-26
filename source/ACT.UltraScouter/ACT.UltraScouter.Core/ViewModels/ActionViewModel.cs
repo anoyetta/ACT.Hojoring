@@ -76,9 +76,11 @@ namespace ACT.UltraScouter.ViewModels
         {
             switch (e.PropertyName)
             {
+                case nameof(this.Config.IsCircleStyle):
                 case nameof(this.Config.CastingRateVisible):
                 case nameof(this.Config.CastingRemainVisible):
                     this.RaisePropertyChanged(nameof(this.CounterFontSize));
+                    this.Model.RaiseCastSkillIconChanged();
                     break;
             }
         }
