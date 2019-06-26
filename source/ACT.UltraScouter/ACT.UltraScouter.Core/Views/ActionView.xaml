@@ -288,6 +288,7 @@
 
     <!-- 属性アイコン -->
     <Canvas
+      Visibility="{Binding Model.IsCasting, Converter={StaticResource BoolToHiddenConverter}, Mode=OneWay}"
       Panel.ZIndex="100">
       <Canvas.Resources>
         <Color x:Key="BlurColor">Black</Color>
