@@ -11,15 +11,12 @@ using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config.Models;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
-using FFXIV_ACT_Plugin.Logfile;
 
 namespace ACT.SpecialSpellTimer.Models
 {
     public interface ITrigger
     {
         ItemTypes ItemType { get; }
-
-        LogMessageType KeywordMessageType { get; }
 
         void MatchTrigger(string logLine);
     }
