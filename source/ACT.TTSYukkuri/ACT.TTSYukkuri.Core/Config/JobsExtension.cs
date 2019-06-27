@@ -9,6 +9,7 @@ namespace ACT.TTSYukkuri.Config
         Paladin,
         Warrior,
         DarkKnight,
+        Gunbreaker,
 
         WhiteMage,
         Scholar,
@@ -21,6 +22,7 @@ namespace ACT.TTSYukkuri.Config
 
         Bard,
         Machinist,
+        Dancer,
 
         BlackMage,
         Summoner,
@@ -72,6 +74,8 @@ namespace ACT.TTSYukkuri.Config
             { "Samurai",        "さむらい",          "Samurai",         "Samurai",        "Samurai",           "武士",},
             { "Red Mage",       "あかまどうし",      "Red Mage",        "Red Mage",       "Red Mage",          "赤魔",},
             { "Blue Mage",      "あおまどうし",      "Blue Mage",       "Blue Mage",      "Blue Mage",         "Blue Mage",},
+            { "Gunbreaker",     "がんぶれいかー",    "Pistosabreur",    "Revolverklinge", "Gunbreaker",        "Gunbreaker",},
+            { "Dancer",         "おどりこ",          "Danseur",         "Tänzer",        "Dancer",            "Dancer",},
         };
 
         public static readonly AlertCategories[] JobAlertCategories = new AlertCategories[]
@@ -113,6 +117,8 @@ namespace ACT.TTSYukkuri.Config
             AlertCategories.Samurai,
             AlertCategories.RedMage,
             AlertCategories.BlueMage,
+            AlertCategories.Gunbreaker,
+            AlertCategories.Dancer,
         };
 
         public static string GetPhonetic(
@@ -135,6 +141,7 @@ namespace ACT.TTSYukkuri.Config
             { "Paladin/Gladiator", "ナイト・剣術士","Paladin/Gladiator","Paladin/Gladiator","Paladin/Gladiator","骑士", },
             { "Warrior/Marauder", "戦士・斧術士","Warrior/Marauder","Warrior/Marauder","Warrior/Marauder","战士", },
             { "Dark Knight", "暗黒騎士","Dark Knight","Dark Knight","Dark Knight","黑骑", },
+            { "Gunbreaker", "ガンブレイカー","Gunbreaker","Gunbreaker","Gunbreaker","Gunbreaker", },
             { "White Mage/Conjurer", "白魔道士・幻術士","White Mage/Conjurer","White Mage/Conjurer","White Mage/Conjurer","白魔", },
             { "Scholar", "学者","Scholar","Scholar","Scholar","学者", },
             { "Astrologian", "占星術師","Astrologian","Astrologian","Astrologian","占星", },
@@ -144,6 +151,7 @@ namespace ACT.TTSYukkuri.Config
             { "Samurai", "侍","Samurai","Samurai","Samurai","武士", },
             { "Bard/Archer", "吟遊詩人・弓術士","Bard/Archer","Bard/Archer","Bard/Archer","诗人", },
             { "Machinist", "機工士","Machinist","Machinist","Machinist","机工", },
+            { "Dancer", "踊り子","Dancer","Dancer","Dancer","Dancer", },
             { "Black Mage/Thaumaturge", "黒魔道士・呪術師","Black Mage/Thaumaturge","Black Mage/Thaumaturge","Black Mage/Thaumaturge","黑魔", },
             { "Summoner/Arcanist", "召喚士・巴術士","Summoner/Arcanist","Summoner/Arcanist","Summoner/Arcanist","召唤", },
             { "Red Mage", "赤魔道士","Red Mage","Red Mage","Red Mage","赤魔", },

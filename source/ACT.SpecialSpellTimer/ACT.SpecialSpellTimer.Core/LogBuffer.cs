@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Models;
-using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
@@ -45,20 +42,10 @@ namespace ACT.SpecialSpellTimer
 
         #endregion Constants
 
-        /// <summary>
-        /// 内部バッファ
-        /// </summary>
-        private readonly ConcurrentQueue<LogLineEventArgs> logInfoQueue = new ConcurrentQueue<LogLineEventArgs>();
+        private readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer = new Lazy<ConcurrentQueue<XIVLog>>(()
+            => XIVPluginHelper.Instance.SubscribeXIVLogAsync().Result);
 
-        /// <summary>
-        /// 内部バッファ
-        /// </summary>
-        public ConcurrentQueue<LogLineEventArgs> LogInfoQueue => this.logInfoQueue;
-
-        /// <summary>
-        /// 最初のログが到着したか？
-        /// </summary>
-        private bool firstLogArrived;
+        public ConcurrentQueue<XIVLog> XIVLogQueue => LazyXIVLogBuffer.Value;
 
         #region コンストラクター/デストラクター/Dispose
 
@@ -73,13 +60,6 @@ namespace ACT.SpecialSpellTimer
         /// </summary>
         public LogBuffer()
         {
-            // BeforeLogLineReadイベントを登録する 無理やり一番目に処理されるようにする
-            this.AddOnBeforeLogLineRead();
-
-            // LogLineReadイベントを登録する
-            ActGlobals.oFormActMain.OnLogLineRead -= this.OnLogLineRead;
-            ActGlobals.oFormActMain.OnLogLineRead += this.OnLogLineRead;
-
             // Added Combatantsイベントを登録する
             XIVPluginHelper.Instance.AddedCombatants -= this.OnAddedCombatants;
             XIVPluginHelper.Instance.AddedCombatants += this.OnAddedCombatants;
@@ -91,10 +71,7 @@ namespace ACT.SpecialSpellTimer
         /// <summary>
         /// デストラクター
         /// </summary>
-        ~LogBuffer()
-        {
-            this.Dispose();
-        }
+        ~LogBuffer() => this.Dispose();
 
         /// <summary>
         /// Dispose
@@ -106,8 +83,6 @@ namespace ACT.SpecialSpellTimer
                 return;
             }
 
-            ActGlobals.oFormActMain.BeforeLogLineRead -= this.OnBeforeLogLineRead;
-            ActGlobals.oFormActMain.OnLogLineRead -= this.OnLogLineRead;
             XIVPluginHelper.Instance.AddedCombatants -= this.OnAddedCombatants;
 
             // 生ログの書き出しバッファを停止する
@@ -118,6 +93,7 @@ namespace ACT.SpecialSpellTimer
 
         #region ACT event hander
 
+#if false
         /// <summary>
         /// OnBeforeLogLineRead イベントを追加する
         /// </summary>
@@ -238,65 +214,9 @@ namespace ACT.SpecialSpellTimer
                 // 例外は握りつぶす
             }
         }
+#endif
 
-        private double[] lpss = new double[60];
-        private int currentLpsIndex;
-        private long currentLineCount;
-        private Stopwatch lineCountTimer = new Stopwatch();
-
-        /// <summary>
-        /// LPS lines/s
-        /// </summary>
-        public double LPS
-        {
-            get
-            {
-                var availableLPSs = this.lpss.Where(x => x > 0);
-                if (!availableLPSs.Any())
-                {
-                    return 0;
-                }
-
-                return availableLPSs.Sum() / availableLPSs.Count();
-            }
-        }
-
-        /// <summary>
-        /// LPSを計測する
-        /// </summary>
-        private void CountLPS()
-        {
-            this.currentLineCount++;
-
-            if (!this.lineCountTimer.IsRunning)
-            {
-                this.lineCountTimer.Restart();
-            }
-
-            if (this.lineCountTimer.Elapsed >= TimeSpan.FromSeconds(1))
-            {
-                this.lineCountTimer.Stop();
-
-                var secounds = this.lineCountTimer.Elapsed.TotalSeconds;
-                if (secounds > 0)
-                {
-                    var lps = this.currentLineCount / secounds;
-                    if (lps > 0)
-                    {
-                        if (this.currentLpsIndex > this.lpss.GetUpperBound(0))
-                        {
-                            this.currentLpsIndex = 0;
-                        }
-
-                        this.lpss[this.currentLpsIndex] = lps;
-                        this.currentLpsIndex++;
-                    }
-                }
-
-                this.currentLineCount = 0;
-            }
-        }
-
+#if false
         /// <summary>
         /// OnLogLineRead
         /// </summary>
@@ -326,6 +246,7 @@ namespace ACT.SpecialSpellTimer
 
             this.firstLogArrived = true;
         }
+#endif
 
         /// <summary>
         /// OnAddedCombatants
@@ -453,7 +374,7 @@ namespace ACT.SpecialSpellTimer
             LogMessageType.NetworkAOEAbility.ToKeyword()
         };
 
-        public bool IsEmpty => this.logInfoQueue.IsEmpty;
+        public bool IsEmpty => this.XIVLogQueue.IsEmpty;
 
         /// <summary>
         /// パーティメンバについてのHPログか？
@@ -477,7 +398,7 @@ namespace ACT.SpecialSpellTimer
         /// <returns>ログ行の配列</returns>
         public IReadOnlyList<XIVLog> GetLogLines()
         {
-            if (this.logInfoQueue.IsEmpty)
+            if (this.XIVLogQueue.IsEmpty)
             {
                 return EmptyLogLineList;
             }
@@ -497,7 +418,7 @@ namespace ACT.SpecialSpellTimer
             }
 
             // マッチング用のログリスト
-            var list = new List<XIVLog>(logInfoQueue.Count);
+            var list = new List<XIVLog>(this.XIVLogQueue.Count);
 
             var summoned = false;
             var doneCommand = false;
@@ -508,10 +429,10 @@ namespace ACT.SpecialSpellTimer
 #if DEBUG
             var sw = System.Diagnostics.Stopwatch.StartNew();
 #endif
-            while (logInfoQueue.TryDequeue(
-                out LogLineEventArgs logInfo))
+            while (this.XIVLogQueue.TryDequeue(
+                out XIVLog xivlog))
             {
-                var logLine = logInfo.logLine;
+                var logLine = xivlog.LogLine;
 
                 // 直前とまったく同じ行はカットする
                 if (preLog[0] == logLine ||
@@ -529,12 +450,6 @@ namespace ACT.SpecialSpellTimer
 
                 // 無効なログ行をカットする
                 if (IgnoreLogKeywords.Any(x => logLine.Contains(x)))
-                {
-                    continue;
-                }
-
-                // ダメージ系ログをカットする
-                if (IsDamageLog(logLine))
                 {
                     continue;
                 }
@@ -572,7 +487,7 @@ namespace ACT.SpecialSpellTimer
                 doneCommand |= TextCommandController.MatchCommandCore(logLine);
                 doneCommand |= TextCommandBridge.Instance.TryExecute(logLine);
 
-                list.Add(new XIVLog(logLine));
+                list.Add(xivlog);
             }
 
             if (summoned)

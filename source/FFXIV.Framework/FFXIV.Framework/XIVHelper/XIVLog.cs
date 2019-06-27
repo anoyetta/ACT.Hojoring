@@ -5,28 +5,52 @@ namespace FFXIV.Framework.XIVHelper
 {
     public class XIVLog
     {
-        public XIVLog(
-            string logLine,
-            uint logType = 0)
-        {
-            this.MessageType = Enum.IsDefined(typeof(FFXIV_ACT_Plugin.Logfile.LogMessageType), (int)logType) ?
-                    (FFXIV_ACT_Plugin.Logfile.LogMessageType)Enum.ToObject(typeof(FFXIV_ACT_Plugin.Logfile.LogMessageType), (int)logType) :
-                    FFXIV_ACT_Plugin.Logfile.LogMessageType.LogLine;
+        private static uint simulationSequence = 0;
 
-            this.Timestamp = logLine.Substring(0, 15).TrimEnd();
-            this.Log = logLine.Remove(0, 15);
+        public static XIVLog CreateToSimulation(
+            DateTime timestamp,
+            string logline)
+            => new XIVLog()
+            {
+                Seq = simulationSequence++,
+                MessageType = LogMessageType.LogLine,
+                Timestamp = timestamp,
+                LogLine = logline,
+            };
+
+        public XIVLog()
+        {
         }
 
-        public long Seq { get; set; } = 0;
+        public XIVLog(
+            uint seq,
+            int messageType,
+            string logLine) : this(
+                seq,
+                (LogMessageType)Enum.ToObject(typeof(LogMessageType), messageType),
+                logLine)
+        {
+        }
 
-        public string Timestamp { get; set; } = string.Empty;
+        public XIVLog(
+            uint seq,
+            LogMessageType messageType,
+            string logLine)
+        {
+            this.Seq = seq;
+            this.MessageType = messageType;
+            this.LogLine = logLine;
+        }
 
-        public LogMessageType MessageType { get; set; } = FFXIV_ACT_Plugin.Logfile.LogMessageType.LogLine;
+        public uint Seq { get; private set; } = 0;
 
-        public string Log { get; set; } = string.Empty;
+        public LogMessageType MessageType { get; set; } = LogMessageType.LogLine;
 
-        public string LogLine => $"{this.Timestamp} {this.Log}";
+        public DateTime Timestamp { get; private set; } = DateTime.Now;
 
-        public override string ToString() => this.LogLine;
+        public string LogLine { get; set; } = string.Empty;
+
+        public override string ToString()
+            => $"{this.Timestamp:HH:mm:ss.fff} {this.LogLine}";
     }
 }

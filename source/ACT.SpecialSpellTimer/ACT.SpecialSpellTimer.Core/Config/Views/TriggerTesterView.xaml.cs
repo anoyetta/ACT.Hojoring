@@ -16,9 +16,9 @@ using ACT.SpecialSpellTimer.resources;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.Globalization;
 using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 using Sharlayan.Core.Enums;
 
@@ -377,14 +377,11 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
                 foreach (var log in logs)
                 {
-                    var logInfo = new LogLineEventArgs(
-                        $"[{DateTime.Now:HH:mm:ss.fff}] {log.Log}",
-                        0,
+                    var xivlog = XIVLog.CreateToSimulation(
                         DateTime.Now,
-                        string.Empty,
-                        true);
+                        log.Log);
 
-                    PluginMainWorker.Instance.LogBuffer.LogInfoQueue.Enqueue(logInfo);
+                    PluginMainWorker.Instance.LogBuffer.XIVLogQueue.Enqueue(xivlog);
 
                     log.IsDone = true;
                     Thread.Yield();
@@ -405,18 +402,15 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 return;
             }
 
-            var logInfo = new LogLineEventArgs(
-                $"[{DateTime.Now:HH:mm:ss.fff}] {this.LogLine}",
-                0,
+            var xivlog = XIVLog.CreateToSimulation(
                 DateTime.Now,
-                string.Empty,
-                true);
+                this.LogLine);
 
-            PluginMainWorker.Instance.LogBuffer.LogInfoQueue.Enqueue(logInfo);
+            PluginMainWorker.Instance.LogBuffer.XIVLogQueue.Enqueue(xivlog);
 
             await WPFHelper.InvokeAsync(() =>
             {
-                this.Logs.Add(new TestLog(logInfo.logLine)
+                this.Logs.Add(new TestLog(xivlog.LogLine)
                 {
                     Seq = this.Logs.Count() + 1,
                     IsDone = true,
