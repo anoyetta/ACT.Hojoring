@@ -251,7 +251,7 @@ namespace ACT.SpecialSpellTimer
                 if (this.existFFXIVProcess)
                 {
                     // ついでにLPSを出力する
-                    var lps = this.LogBuffer.LPS;
+                    var lps = XIVPluginHelper.Instance.LPS;
                     if (lps > 0 &&
                         this.lastLPS != lps)
                     {
@@ -316,16 +316,16 @@ namespace ACT.SpecialSpellTimer
             var triggers = TableCompiler.Instance.TriggerList;
             this.lastActiveTriggerCount = triggers.Count;
 
-            var logs = logsTask.Result;
-            if (logs.Count > 0)
+            var xivlogs = logsTask.Result;
+            if (xivlogs.Count > 0)
             {
                 if (triggers.Count > 0)
                 {
                     triggers.AsParallel().ForAll((trigger) =>
                     {
-                        foreach (var log in logs)
+                        foreach (var xivlog in xivlogs)
                         {
-                            trigger.MatchTrigger(log.Log);
+                            trigger.MatchTrigger(xivlog.LogLine);
                         }
                     });
                 }
@@ -335,10 +335,10 @@ namespace ACT.SpecialSpellTimer
 
 #if DEBUG
             sw.Stop();
-            if (logs.Count != 0)
+            if (xivlogs.Count != 0)
             {
                 var time = sw.ElapsedMilliseconds;
-                var count = logs.Count;
+                var count = xivlogs.Count;
                 System.Diagnostics.Debug.WriteLine(
                     $"●DetectLogs\t{time:N1} ms\t{count:N0} lines\tavg {time / count:N2}");
             }

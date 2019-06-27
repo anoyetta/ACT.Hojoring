@@ -75,9 +75,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // テキストコマンドを登録する
             TimelineTextCommands.SetSubscribeTextCommands();
 
-            ActGlobals.oFormActMain.OnLogLineRead -= OnLogLineRead;
-            ActGlobals.oFormActMain.OnLogLineRead += OnLogLineRead;
-
             isDetectLogWorking = true;
             if (!LogWorker.IsAlive)
             {
@@ -92,31 +89,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (LogWorker.IsAlive)
             {
                 LogWorker.Abort();
-            }
-
-            ActGlobals.oFormActMain.OnLogLineRead -= OnLogLineRead;
-        }
-
-        private static void OnLogLineRead(
-            bool isImport,
-            LogLineEventArgs logInfo)
-        {
-            try
-            {
-                if (isImport)
-                {
-                    return;
-                }
-
-                CurrentController?.ArrivalLogLine(
-                    CurrentController,
-                    logInfo);
-            }
-            catch (Exception ex)
-            {
-                AppLog.DefaultLogger?.Error(
-                    ex,
-                    $"[TL] Error OnLoglineRead.");
             }
         }
 
@@ -304,8 +276,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 TimelineNoticeOverlay.ShowNotice();
 
-                this.logInfoQueue = new ConcurrentQueue<LogLineEventArgs>();
-
                 this.StartNotifyWorker();
 
                 this.Status = TimelineStatus.Loaded;
@@ -327,8 +297,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.CurrentTime = TimeSpan.Zero;
                 this.ClearActivity();
                 this.Model.RefreshActivitiesView();
-
-                this.logInfoQueue = null;
 
                 this.StopNotifyWorker();
 
@@ -740,51 +708,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region Log 関係のスレッド
 
-        private ConcurrentQueue<LogLineEventArgs> logInfoQueue;
+        private static readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer = new Lazy<ConcurrentQueue<XIVLog>>(()
+            => XIVPluginHelper.Instance.SubscribeXIVLog());
 
-        public void EnqueueLog(
-            LogLineEventArgs logInfo)
-        {
-            if (!this.IsReady)
-            {
-                return;
-            }
-
-            this.logInfoQueue?.Enqueue(logInfo);
-        }
-
-        private void ArrivalLogLine(
-            TimelineController controller,
-            LogLineEventArgs logInfo)
-        {
-            try
-            {
-                if (!TimelineSettings.Instance.Enabled)
-                {
-                    return;
-                }
-
-                if (!this.IsReady)
-                {
-                    return;
-                }
-
-                // 18文字以下のログは読み捨てる
-                // なぜならば、タイムスタンプ＋ログタイプのみのログだから
-                if (logInfo.logLine.Length <= 18)
-                {
-                    return;
-                }
-
-                this.logInfoQueue?.Enqueue(logInfo);
-            }
-            catch (Exception ex)
-            {
-                this.AppLogger.Error(
-                    ex,
-                    $"[TL] Error ArrivalLogLine. name={this.Model.TimelineName}, zone={this.Model.Zone}, file={this.Model.SourceFile}");
-            }
-        }
+        public static ConcurrentQueue<XIVLog> XIVLogQueue => LazyXIVLogBuffer.Value;
 
         private static volatile bool isDetectLogWorking = false;
 
@@ -867,8 +794,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 // 以後ログに対して判定する
-                if (this.logInfoQueue == null ||
-                    this.logInfoQueue.IsEmpty)
+                if (XIVLogQueue == null ||
+                    XIVLogQueue.IsEmpty)
                 {
                     return existsLog;
                 }
@@ -890,76 +817,67 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             return existsLog;
         }
 
-        private long no = 0L;
-
         private IReadOnlyList<XIVLog> GetLogs()
         {
-            var list = new List<XIVLog>(this.logInfoQueue.Count);
+            var list = new List<XIVLog>(XIVLogQueue.Count);
 
-            if (this.logInfoQueue != null)
+            if (XIVLogQueue == null)
             {
-                var prelog = new string[3];
-                var prelogIndex = 0;
+                return list;
+            }
 
-                var ignores = TimelineSettings.Instance.IgnoreLogTypes.Where(x => x.IsIgnore);
+            var prelog = new string[3];
+            var prelogIndex = 0;
 
-                while (this.logInfoQueue.TryDequeue(out LogLineEventArgs logInfo))
+            var ignores = TimelineSettings.Instance.IgnoreLogTypes.Where(x => x.IsIgnore);
+
+            while (XIVLogQueue.TryDequeue(out XIVLog xivlog))
+            {
+                var logLine = xivlog.LogLine;
+
+                // 直前とまったく同じログはスキップする
+                if (prelog[0] == logLine ||
+                    prelog[1] == logLine ||
+                    prelog[2] == logLine)
                 {
-                    var logLine = logInfo.logLine;
-
-                    // 直前とまったく同じログはスキップする
-                    if (prelog[0] == logLine ||
-                        prelog[1] == logLine ||
-                        prelog[2] == logLine)
-                    {
-                        continue;
-                    }
-
-                    prelog[prelogIndex++] = logLine;
-                    if (prelogIndex >= 3)
-                    {
-                        prelogIndex = 0;
-                    }
-
-                    // [TL]キーワードが含まれていればスキップする
-                    if (logLine.Contains(TLSymbol))
-                    {
-                        continue;
-                    }
-
-                    // ダメージ系ログをカットする
-                    if (LogBuffer.IsDamageLog(logLine))
-                    {
-                        continue;
-                    }
-
-                    // 無効キーワードが含まれていればスキップする
-                    if (ignores.Any(x => logLine.Contains(x.Keyword)))
-                    {
-                        continue;
-                    }
-
-                    // 自動カット対象ならばスキップする
-                    if (LogBuffer.IsAutoIgnoreLog(logLine))
-                    {
-                        continue;
-                    }
-
-                    // パーティメンバに対するHPログならばスキップする
-                    if (LogBuffer.IsHPLogByPartyMember(logLine))
-                    {
-                        continue;
-                    }
-
-                    // ツールチップシンボル, ワールド名を除去する
-                    logLine = LogBuffer.RemoveTooltipSynbols(logLine);
-                    logLine = LogBuffer.RemoveWorldName(logLine);
-
-                    list.Add(new XIVLog(logLine)
-                    {
-                        Seq = this.no++
-                    });
+                    continue;
                 }
+
+                prelog[prelogIndex++] = logLine;
+                if (prelogIndex >= 3)
+                {
+                    prelogIndex = 0;
+                }
+
+                // [TL]キーワードが含まれていればスキップする
+                if (logLine.Contains(TLSymbol))
+                {
+                    continue;
+                }
+
+                // 無効キーワードが含まれていればスキップする
+                if (ignores.Any(x => logLine.Contains(x.Keyword)))
+                {
+                    continue;
+                }
+
+                // 自動カット対象ならばスキップする
+                if (LogBuffer.IsAutoIgnoreLog(logLine))
+                {
+                    continue;
+                }
+
+                // パーティメンバに対するHPログならばスキップする
+                if (LogBuffer.IsHPLogByPartyMember(logLine))
+                {
+                    continue;
+                }
+
+                // ツールチップシンボル, ワールド名を除去する
+                logLine = LogBuffer.RemoveTooltipSynbols(logLine);
+                logLine = LogBuffer.RemoveWorldName(logLine);
+
+                list.Add(xivlog);
             }
 
             return list;
@@ -1111,7 +1029,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var key = (
                 from x in keywords
                 where
-                xivlog.Log.ContainsIgnoreCase(x.Keyword)
+                xivlog.LogLine.ContainsIgnoreCase(x.Keyword)
                 select
                 x).FirstOrDefault();
 
@@ -1145,7 +1063,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 if (this.Model.StartTriggerRegex != null)
                 {
-                    var match = this.Model.StartTriggerRegex.Match(xivlog.Log);
+                    var match = this.Model.StartTriggerRegex.Match(xivlog.LogLine);
                     if (match.Success)
                     {
                         WPFHelper.BeginInvoke(this.StartActivityLine);
@@ -1171,11 +1089,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     break;
 
                 case TimelineVisualNoticeModel vnotice:
-                    vnotice.TryHide(xivlog.Log);
+                    vnotice.TryHide(xivlog.LogLine);
                     break;
 
                 case TimelineImageNoticeModel inotice:
-                    inotice.TryHide(xivlog.Log);
+                    inotice.TryHide(xivlog.LogLine);
                     break;
             }
         }
@@ -1194,7 +1112,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return false;
                 }
 
-                match = act.TryMatch(xivlog.Log);
+                match = act.TryMatch(xivlog.LogLine);
                 if (match == null ||
                     !match.Success)
                 {
@@ -1258,7 +1176,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             lock (tri)
             {
-                var match = tri.TryMatch(xivlog.Log);
+                var match = tri.TryMatch(xivlog.LogLine);
                 if (match == null ||
                     !match.Success)
                 {

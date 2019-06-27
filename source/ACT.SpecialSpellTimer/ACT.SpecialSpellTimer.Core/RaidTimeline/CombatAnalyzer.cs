@@ -14,8 +14,8 @@ using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.Globalization;
+using FFXIV.Framework.XIVHelper;
 using Microsoft.VisualBasic.FileIO;
 using NPOI.SS.UserModel;
 using Sharlayan.Core.Enums;
@@ -377,7 +377,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             foreach (var log in logs)
             {
                 // ダメージ系の不要なログか？
-                if (LogBuffer.IsDamageLog(log.logLine))
+                if (XIVPluginHelper.IsDamageLog(log.logLine))
                 {
                     continue;
                 }
@@ -1281,7 +1281,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         if (log.Length <= 3 ||
                             ignores.Any(x => log.Contains(x.Keyword)) ||
                             log.Contains(TimelineController.TLSymbol) ||
-                            LogBuffer.IsDamageLog(log))
+                            XIVPluginHelper.IsDamageLog(log))
                         {
                             continue;
                         }

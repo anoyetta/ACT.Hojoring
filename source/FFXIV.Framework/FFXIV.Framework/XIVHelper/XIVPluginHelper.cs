@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -16,6 +17,7 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using FFXIV_ACT_Plugin.Common;
 using FFXIV_ACT_Plugin.Common.Models;
+using FFXIV_ACT_Plugin.Logfile;
 using Microsoft.VisualBasic.FileIO;
 using Sharlayan.Core.Enums;
 
@@ -249,8 +251,9 @@ namespace FFXIV.Framework.XIVHelper
             this.attachFFXIVPluginWorker.Dispose();
             this.attachFFXIVPluginWorker = null;
 
-            this.UnsubscribeLog();
             this.UnsubscribeXIVPluginEvents();
+            this.UnsubscribeParsedLogLine();
+            this.ClearXIVLogBuffers();
 
             // PC名記録をセーブする
             PCNameDictionary.Instance.Save();
@@ -291,6 +294,7 @@ namespace FFXIV.Framework.XIVHelper
                     this.DataSubscription = this.plugin.DataSubscription;
 
                     this.SubscribeXIVPluginEvents();
+                    this.SubscribeParsedLogLine();
 
                     AppLogger.Trace("attached ffxiv plugin.");
 
@@ -315,10 +319,7 @@ namespace FFXIV.Framework.XIVHelper
 
         private void SubscribeXIVPluginEvents()
         {
-            this.SubscribeXIVLogAsync(new ParsedLogLineDelegate((uint seq, int code, string message) =>
-            {
-                Debug.WriteLine($"seq={seq} code={code} message={message}");
-            }));
+            // NO-OP
         }
 
         private void UnsubscribeXIVPluginEvents()
@@ -342,54 +343,213 @@ namespace FFXIV.Framework.XIVHelper
 
         #region Log Subscriber
 
-        private readonly List<ParsedLogLineDelegate> LogSubscribers = new List<ParsedLogLineDelegate>(16);
+        private readonly object LogBufferLocker = new object();
 
-        public async void SubscribeXIVLogAsync(
-            ParsedLogLineDelegate subscriber)
+        private readonly List<ConcurrentQueue<XIVLog>> XIVLogBuffers = new List<ConcurrentQueue<XIVLog>>(16);
+
+        public ConcurrentQueue<XIVLog> SubscribeXIVLog()
         {
-            if (this.DataSubscription != null)
+            lock (this.LogBufferLocker)
             {
-                subscribe();
-                return;
-            }
-
-            await Task.Run(() =>
-            {
-                do
-                {
-                    Thread.Sleep(TimeSpan.FromSeconds(0.5));
-                } while (this.DataSubscription == null);
-
-                subscribe();
-            });
-
-            void subscribe()
-            {
-                lock (this.LogSubscribers)
-                {
-                    this.DataSubscription.ParsedLogLine -= subscriber;
-                    this.DataSubscription.ParsedLogLine += subscriber;
-
-                    this.LogSubscribers.Add(subscriber);
-                }
+                var buffer = new ConcurrentQueue<XIVLog>();
+                this.XIVLogBuffers.Add(buffer);
+                return buffer;
             }
         }
 
-        private void UnsubscribeLog()
+        private void SubscribeParsedLogLine()
+            => this.DataSubscription.ParsedLogLine += this.OnParsedLogLine;
+
+        private void UnsubscribeParsedLogLine()
+            => this.DataSubscription.ParsedLogLine -= this.OnParsedLogLine;
+
+        private void ClearXIVLogBuffers()
         {
-            if (this.DataSubscription == null)
+            lock (this.LogBufferLocker)
+            {
+                this.XIVLogBuffers.Clear();
+            }
+        }
+
+        private void OnParsedLogLine(
+            uint sequence,
+            int messagetype,
+            string message)
+        {
+            var parsedLog = message;
+
+            // 長さによるカット
+            if (parsedLog.Length <= 3)
             {
                 return;
             }
 
-            lock (this.LogSubscribers)
+            // 明らかに使用しないログをカットする
+            // タイプによるカット
+            var type = (LogMessageType)Enum.ToObject(typeof(LogMessageType), messagetype);
+            switch (type)
             {
-                foreach (var action in this.LogSubscribers)
+                case LogMessageType.NetworkDoT:
+                    return;
+
+                case LogMessageType.LogLine:
+                    // ダメージ系をカットする
+                    if (DamageLogPattern.IsMatch(parsedLog))
+                    {
+                        return;
+                    }
+
+                    break;
+            }
+
+            var currentZoneName = this.GetCurrentZoneName();
+
+            lock (this.LogBufferLocker)
+            {
+                var xivlog = new XIVLog(
+                    sequence,
+                    messagetype,
+                    parsedLog)
                 {
-                    this.DataSubscription.ParsedLogLine -= action;
+                    Zone = currentZoneName
+                };
+
+                foreach (var buffer in this.XIVLogBuffers)
+                {
+                    buffer.Enqueue(xivlog);
+                }
+            }
+
+            // LPSを更新する
+            this.CountLPS();
+        }
+
+        /// <summary>
+        /// 設定によらず必ずカットするログのキーワード
+        /// </summary>
+        public static readonly string[] IgnoreLogKeywords = new[]
+        {
+            LogMessageType.NetworkDoT.ToKeyword(),
+        };
+
+        /*
+        // ダメージ系ログ
+        "] 00:0aa9:",
+        "] 00:0b29:",
+        "] 00:1129:",
+        "] 00:12a9:",
+        "] 00:1329:",
+        "] 00:28a9:",
+        "] 00:2929:",
+        "] 00:2c29:",
+        "] 00:2ca9:",
+        "] 00:30a9:",
+        "] 00:3129:",
+        "] 00:32a9:",
+        "] 00:3429:",
+        "] 00:34a9:",
+        "] 00:3aa9:",
+        "] 00:42a9:",
+        "] 00:4aa9:",
+        "] 00:4b29:",
+
+        // 回復系ログ
+        "] 00:08ad:",
+        "] 00:092d:",
+        "] 00:0c2d:",
+        "] 00:0cad:",
+        "] 00:10ad:",
+        "] 00:112d:",
+        "] 00:142d:",
+        "] 00:14ad:",
+        "] 00:28ad:",
+        "] 00:292d:",
+        "] 00:2aad:",
+        "] 00:30ad:",
+        "] 00:312d:",
+        "] 00:412d:",
+        "] 00:48ad:",
+        "] 00:492d:",
+        "] 00:4cad:",
+        */
+
+        /// <summary>
+        /// ダメージ関係のログを示すキーワード
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        private static readonly Regex DamageLogPattern =
+            new Regex(
+                @"^00:..(29|a9|2d|ad):",
+                RegexOptions.Compiled |
+                RegexOptions.IgnoreCase |
+                RegexOptions.ExplicitCapture);
+
+        /// <summary>
+        /// ダメージ関係のログか？
+        /// </summary>
+        /// <param name="logLine">判定対象とするログ行</param>
+        /// <returns>真/偽</returns>
+        public static bool IsDamageLog(
+            string logLine)
+        {
+            if (!logLine.StartsWith("00:"))
+            {
+                return false;
+            }
+
+            return DamageLogPattern.IsMatch(logLine);
+        }
+
+        private double[] lpss = new double[60];
+        private int currentLpsIndex;
+        private long currentLineCount;
+        private Stopwatch lineCountTimer = new Stopwatch();
+
+        public double LPS
+        {
+            get
+            {
+                var availableLPSs = this.lpss.Where(x => x > 0);
+                if (!availableLPSs.Any())
+                {
+                    return 0;
                 }
 
-                this.LogSubscribers.Clear();
+                return availableLPSs.Sum() / availableLPSs.Count();
+            }
+        }
+
+        private void CountLPS()
+        {
+            this.currentLineCount++;
+
+            if (!this.lineCountTimer.IsRunning)
+            {
+                this.lineCountTimer.Restart();
+            }
+
+            if (this.lineCountTimer.Elapsed >= TimeSpan.FromSeconds(1))
+            {
+                this.lineCountTimer.Stop();
+
+                var secounds = this.lineCountTimer.Elapsed.TotalSeconds;
+                if (secounds > 0)
+                {
+                    var lps = this.currentLineCount / secounds;
+                    if (lps > 0)
+                    {
+                        if (this.currentLpsIndex > this.lpss.GetUpperBound(0))
+                        {
+                            this.currentLpsIndex = 0;
+                        }
+
+                        this.lpss[this.currentLpsIndex] = lps;
+                        this.currentLpsIndex++;
+                    }
+                }
+
+                this.currentLineCount = 0;
             }
         }
 

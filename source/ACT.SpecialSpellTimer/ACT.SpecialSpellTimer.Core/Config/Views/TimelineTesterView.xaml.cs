@@ -12,9 +12,9 @@ using System.Windows;
 using System.Windows.Threading;
 using ACT.SpecialSpellTimer.RaidTimeline;
 using ACT.SpecialSpellTimer.resources;
-using Advanced_Combat_Tracker;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.Globalization;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.Config.Views
@@ -269,14 +269,11 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
                 foreach (var log in logs)
                 {
-                    var logInfo = new LogLineEventArgs(
-                        $"[{DateTime.Now:HH:mm:ss.fff}] {log.Log}",
-                        0,
+                    var xivlog = XIVLog.CreateToSimulation(
                         DateTime.Now,
-                        string.Empty,
-                        true);
+                        log.Log);
 
-                    TimelineController.CurrentController?.EnqueueLog(logInfo);
+                    TimelineController.XIVLogQueue.Enqueue(xivlog);
 
                     log.IsDone = true;
                     Thread.Yield();
