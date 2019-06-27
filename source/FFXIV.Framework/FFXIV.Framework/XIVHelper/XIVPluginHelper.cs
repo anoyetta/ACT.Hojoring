@@ -332,10 +332,10 @@ namespace FFXIV.Framework.XIVHelper
             this.OnPrimaryPlayerChanged?.Invoke();
         }
 
-        private void RaiseZoneChanged(uint ZoneID, string ZoneName)
+        private void RaiseZoneChanged(uint zoneID, string zoneName)
         {
             CombatantsManager.Instance.Clear();
-            this.OnZoneChanged(ZoneID, ZoneName);
+            this.OnZoneChanged(zoneID, zoneName);
         }
 
         #endregion Attach FFXIV Plugin
