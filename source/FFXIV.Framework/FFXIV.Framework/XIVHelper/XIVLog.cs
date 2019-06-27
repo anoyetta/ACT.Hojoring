@@ -17,7 +17,7 @@ namespace FFXIV.Framework.XIVHelper
             this.Log = logLine.Remove(0, 15);
         }
 
-        public long No { get; set; } = 0;
+        public long Seq { get; set; } = 0;
 
         public string Timestamp { get; set; } = string.Empty;
 

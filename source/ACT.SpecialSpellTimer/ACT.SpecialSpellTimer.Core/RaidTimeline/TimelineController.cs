@@ -957,7 +957,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                     list.Add(new XIVLog(logLine)
                     {
-                        No = this.no++
+                        Seq = this.no++
                     });
                 }
             }
@@ -1284,7 +1284,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 var toNotice = tri.Clone();
-                toNotice.LogSeq = xivlog.No;
+                toNotice.LogSeq = xivlog.Seq;
 
                 var vnotices = toNotice.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
                 if (vnotices.Any())

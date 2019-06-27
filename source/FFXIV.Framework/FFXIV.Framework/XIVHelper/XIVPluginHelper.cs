@@ -315,62 +315,36 @@ namespace FFXIV.Framework.XIVHelper
 
         private void SubscribeXIVPluginEvents()
         {
-            /*
-            var xivPlugin = this.DataSubscription;
-
-            xivPlugin.PrimaryPlayerChanged += this.XivPlugin_PrimaryPlayerChanged;
-            xivPlugin.PartyListChanged += this.XivPlugin_PartyListChanged;
-            xivPlugin.ZoneChanged += this.XivPlugin_ZoneChanged;
-
-            xivPlugin.LogLine += this.XivPlugin_LogLine;
-            */
+            this.SubscribeLog(new ParsedLogLineDelegate((uint seq, int code, string message) =>
+            {
+                Debug.WriteLine($"seq={seq} code={code} message={message}");
+            }));
         }
 
         private void UnsubscribeXIVPluginEvents()
         {
-            /*
-            var xivPlugin = this.DataSubscription;
-
-            xivPlugin.PrimaryPlayerChanged -= this.XivPlugin_PrimaryPlayerChanged;
-            xivPlugin.PartyListChanged -= this.XivPlugin_PartyListChanged;
-            xivPlugin.ZoneChanged -= this.XivPlugin_ZoneChanged;
-
-            xivPlugin.LogLine -= this.XivPlugin_LogLine;
-            */
+            // NO-OP
         }
 
-        private void XivPlugin_PrimaryPlayerChanged()
+        private void RaisePrimaryPlayerChanged()
         {
             CombatantsManager.Instance.Clear();
             this.OnPrimaryPlayerChanged?.Invoke();
         }
 
-        private void XivPlugin_PartyListChanged(
-            ReadOnlyCollection<uint> partyList,
-            int partySize)
-        {
-            CombatantsManager.Instance.RefreshPartyList(partyList);
-            this.OnPartyListChanged?.Invoke(partyList, partySize);
-        }
-
-        private void XivPlugin_ZoneChanged(uint ZoneID, string ZoneName)
+        private void RaiseZoneChanged(uint ZoneID, string ZoneName)
         {
             CombatantsManager.Instance.Clear();
             this.OnZoneChanged(ZoneID, ZoneName);
-        }
-
-        private void XivPlugin_LogLine(uint EventType, uint Seconds, string logline)
-        {
-            var log = new XIVLog(logline, EventType);
         }
 
         #endregion Attach FFXIV Plugin
 
         #region Log Subscriber
 
-        private readonly List<LogLineDelegate> LogSubscribers = new List<LogLineDelegate>(16);
+        private readonly List<ParsedLogLineDelegate> LogSubscribers = new List<ParsedLogLineDelegate>(16);
 
-        public void SubscribeLog(LogLineDelegate subscriber)
+        public void SubscribeLog(ParsedLogLineDelegate subscriber)
         {
             if (this.DataSubscription == null)
             {
@@ -379,8 +353,8 @@ namespace FFXIV.Framework.XIVHelper
 
             lock (this.LogSubscribers)
             {
-                this.DataSubscription.LogLine -= subscriber;
-                this.DataSubscription.LogLine += subscriber;
+                this.DataSubscription.ParsedLogLine -= subscriber;
+                this.DataSubscription.ParsedLogLine += subscriber;
 
                 this.LogSubscribers.Add(subscriber);
             }
@@ -397,7 +371,7 @@ namespace FFXIV.Framework.XIVHelper
             {
                 foreach (var action in this.LogSubscribers)
                 {
-                    this.DataSubscription.LogLine -= action;
+                    this.DataSubscription.ParsedLogLine -= action;
                 }
 
                 this.LogSubscribers.Clear();
@@ -671,7 +645,7 @@ namespace FFXIV.Framework.XIVHelper
                 if (this.previousPlayerName != currentPlayer.Name)
                 {
                     this.previousPlayerName = currentPlayer.Name;
-                    this.XivPlugin_PrimaryPlayerChanged();
+                    this.RaisePrimaryPlayerChanged();
 
                     // プレイヤーチェンジならば抜ける
                     return;
@@ -690,7 +664,7 @@ namespace FFXIV.Framework.XIVHelper
             if (this.previousZoneName != currentZoneName)
             {
                 this.previousZoneName = currentZoneName;
-                this.XivPlugin_ZoneChanged(
+                this.RaiseZoneChanged(
                     (uint)this.GetCurrentZoneID(),
                     currentZoneName);
             }
