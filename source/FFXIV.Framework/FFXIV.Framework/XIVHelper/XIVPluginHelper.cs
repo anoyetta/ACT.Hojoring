@@ -315,7 +315,7 @@ namespace FFXIV.Framework.XIVHelper
 
         private void SubscribeXIVPluginEvents()
         {
-            this.SubscribeLog(new ParsedLogLineDelegate((uint seq, int code, string message) =>
+            this.SubscribeXIVLogAsync(new ParsedLogLineDelegate((uint seq, int code, string message) =>
             {
                 Debug.WriteLine($"seq={seq} code={code} message={message}");
             }));
@@ -344,19 +344,34 @@ namespace FFXIV.Framework.XIVHelper
 
         private readonly List<ParsedLogLineDelegate> LogSubscribers = new List<ParsedLogLineDelegate>(16);
 
-        public void SubscribeLog(ParsedLogLineDelegate subscriber)
+        public async void SubscribeXIVLogAsync(
+            ParsedLogLineDelegate subscriber)
         {
-            if (this.DataSubscription == null)
+            if (this.DataSubscription != null)
             {
+                subscribe();
                 return;
             }
 
-            lock (this.LogSubscribers)
+            await Task.Run(() =>
             {
-                this.DataSubscription.ParsedLogLine -= subscriber;
-                this.DataSubscription.ParsedLogLine += subscriber;
+                do
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(0.5));
+                } while (this.DataSubscription == null);
 
-                this.LogSubscribers.Add(subscriber);
+                subscribe();
+            });
+
+            void subscribe()
+            {
+                lock (this.LogSubscribers)
+                {
+                    this.DataSubscription.ParsedLogLine -= subscriber;
+                    this.DataSubscription.ParsedLogLine += subscriber;
+
+                    this.LogSubscribers.Add(subscriber);
+                }
             }
         }
 
