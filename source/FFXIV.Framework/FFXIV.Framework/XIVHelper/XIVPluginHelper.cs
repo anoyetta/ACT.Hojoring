@@ -358,10 +358,14 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         private void SubscribeParsedLogLine()
-            => this.DataSubscription.ParsedLogLine += this.OnParsedLogLine;
+        {
+            ActGlobals.oFormActMain.OnLogLineRead += this.OnLogLineRead;
+        }
 
         private void UnsubscribeParsedLogLine()
-            => this.DataSubscription.ParsedLogLine -= this.OnParsedLogLine;
+        {
+            ActGlobals.oFormActMain.OnLogLineRead -= this.OnLogLineRead;
+        }
 
         private void ClearXIVLogBuffers()
         {
@@ -369,6 +373,34 @@ namespace FFXIV.Framework.XIVHelper
             {
                 this.XIVLogBuffers.Clear();
             }
+        }
+
+        private uint sequence = 1;
+
+        private void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
+        {
+            var line = logInfo.logLine;
+
+            // 18文字未満のログは書式エラーになるため無視する
+            if (line.Length < 18)
+            {
+                return;
+            }
+
+            // メッセージタイプを抽出する
+            var messagetypeText = line.Substring(15, 2);
+            if (!int.TryParse(messagetypeText, out int messagetype))
+            {
+                return;
+            }
+
+            // メッセージ部分だけを抽出する
+            var message = line.Substring(15);
+
+            this.OnParsedLogLine(
+                this.sequence++,
+                messagetype,
+                message);
         }
 
         private void OnParsedLogLine(
@@ -506,18 +538,17 @@ namespace FFXIV.Framework.XIVHelper
         private long currentLineCount;
         private Stopwatch lineCountTimer = new Stopwatch();
 
-        public double LPS
-        {
-            get
-            {
-                var availableLPSs = this.lpss.Where(x => x > 0);
-                if (!availableLPSs.Any())
-                {
-                    return 0;
-                }
+        public double LPS => this.GetLPS();
 
-                return availableLPSs.Sum() / availableLPSs.Count();
+        private double GetLPS()
+        {
+            var availableLPSs = this.lpss.Where(x => x > 0);
+            if (!availableLPSs.Any())
+            {
+                return 0;
             }
+
+            return availableLPSs.Sum() / availableLPSs.Count();
         }
 
         private void CountLPS()
