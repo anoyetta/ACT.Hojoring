@@ -114,8 +114,6 @@ For use for commercial purposes, a license to use the library is required.</syst
 &lt;hpp&gt;     HP rate (%)
 &lt;mp&gt;      MP value
 &lt;mpp&gt;     MP rate (%)
-&lt;tp&gt;      TP value
-&lt;tpp&gt;     TP rate (%)
 &lt;gp&gt;      GP value
 &lt;gpp&gt;     GP rate (%)
 
@@ -125,8 +123,5 @@ For use for commercial purposes, a license to use the library is required.</syst
 
 &lt;pcname&gt;,MP&lt;mpp&gt;.
 → White Mage T,MP30%.
-
-&lt;pcname&gt;,TP&lt;tpp&gt;.
-→ Ninja P,TP20%.
   </system:String>
 </ResourceDictionary>

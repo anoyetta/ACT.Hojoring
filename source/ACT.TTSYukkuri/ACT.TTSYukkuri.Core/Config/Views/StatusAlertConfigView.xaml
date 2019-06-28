@@ -180,7 +180,8 @@
         BorderThickness="2"
         BorderBrush="Gold"
         CornerRadius="2"
-        Padding="8">
+        Padding="8"
+        Visibility="Collapsed">
 
         <StackPanel Orientation="Vertical">
           <Label Margin="0 0 0 20" Content="TP" FontWeight="Black" FontSize="20" />
