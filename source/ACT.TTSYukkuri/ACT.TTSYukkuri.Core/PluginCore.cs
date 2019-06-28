@@ -322,7 +322,9 @@ namespace ACT.TTSYukkuri
                     }
 
                     // 設定ファイルを読み込む
+                    // TP廃止につき無効化する
                     Settings.Default.Load();
+                    Settings.Default.StatusAlertSettings.EnabledTPAlert = false;
 
                     // 漢字変換を初期化する
                     KanjiTranslator.Default.Initialize();

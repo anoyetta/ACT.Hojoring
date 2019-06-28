@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
 using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.Views
@@ -106,8 +107,7 @@ namespace ACT.SpecialSpellTimer.Views
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            var lps = PluginMainWorker.Instance?.LogBuffer?.LPS ?? 0;
-            this.LPSTextBlock.Text = lps.ToString("N0");
+            this.LPSTextBlock.Text = XIVPluginHelper.Instance.LPS.ToString("N0");
 
             // ついでにクリック透過を切り替える
             this.ClickTransparent = Settings.Default.ClickThroughEnabled;

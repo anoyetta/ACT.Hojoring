@@ -278,7 +278,8 @@
 
       <CheckBox
         Margin="0 5 0 0"
-        Content="{DynamicResource Common_TTS}" />
+        Content="{DynamicResource Common_TTS}"
+        IsChecked="{Binding Action.TTSEnabled, Mode=TwoWay}" />
     </StackPanel>
   </ScrollViewer>
 </Page>

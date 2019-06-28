@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -16,6 +17,7 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using FFXIV_ACT_Plugin.Common;
 using FFXIV_ACT_Plugin.Common.Models;
+using FFXIV_ACT_Plugin.Logfile;
 using Microsoft.VisualBasic.FileIO;
 using Sharlayan.Core.Enums;
 
@@ -249,8 +251,9 @@ namespace FFXIV.Framework.XIVHelper
             this.attachFFXIVPluginWorker.Dispose();
             this.attachFFXIVPluginWorker = null;
 
-            this.UnsubscribeLog();
             this.UnsubscribeXIVPluginEvents();
+            this.UnsubscribeParsedLogLine();
+            this.ClearXIVLogBuffers();
 
             // PC名記録をセーブする
             PCNameDictionary.Instance.Save();
@@ -291,6 +294,7 @@ namespace FFXIV.Framework.XIVHelper
                     this.DataSubscription = this.plugin.DataSubscription;
 
                     this.SubscribeXIVPluginEvents();
+                    this.SubscribeParsedLogLine();
 
                     AppLogger.Trace("attached ffxiv plugin.");
 
@@ -315,92 +319,268 @@ namespace FFXIV.Framework.XIVHelper
 
         private void SubscribeXIVPluginEvents()
         {
-            /*
-            var xivPlugin = this.DataSubscription;
-
-            xivPlugin.PrimaryPlayerChanged += this.XivPlugin_PrimaryPlayerChanged;
-            xivPlugin.PartyListChanged += this.XivPlugin_PartyListChanged;
-            xivPlugin.ZoneChanged += this.XivPlugin_ZoneChanged;
-
-            xivPlugin.LogLine += this.XivPlugin_LogLine;
-            */
+            // NO-OP
         }
 
         private void UnsubscribeXIVPluginEvents()
         {
-            /*
-            var xivPlugin = this.DataSubscription;
-
-            xivPlugin.PrimaryPlayerChanged -= this.XivPlugin_PrimaryPlayerChanged;
-            xivPlugin.PartyListChanged -= this.XivPlugin_PartyListChanged;
-            xivPlugin.ZoneChanged -= this.XivPlugin_ZoneChanged;
-
-            xivPlugin.LogLine -= this.XivPlugin_LogLine;
-            */
+            // NO-OP
         }
 
-        private void XivPlugin_PrimaryPlayerChanged()
+        private void RaisePrimaryPlayerChanged()
         {
             CombatantsManager.Instance.Clear();
             this.OnPrimaryPlayerChanged?.Invoke();
         }
 
-        private void XivPlugin_PartyListChanged(
-            ReadOnlyCollection<uint> partyList,
-            int partySize)
-        {
-            CombatantsManager.Instance.RefreshPartyList(partyList);
-            this.OnPartyListChanged?.Invoke(partyList, partySize);
-        }
-
-        private void XivPlugin_ZoneChanged(uint ZoneID, string ZoneName)
+        private void RaiseZoneChanged(uint zoneID, string zoneName)
         {
             CombatantsManager.Instance.Clear();
-            this.OnZoneChanged(ZoneID, ZoneName);
-        }
-
-        private void XivPlugin_LogLine(uint EventType, uint Seconds, string logline)
-        {
-            var log = new XIVLog(logline, EventType);
+            this.OnZoneChanged(zoneID, zoneName);
         }
 
         #endregion Attach FFXIV Plugin
 
         #region Log Subscriber
 
-        private readonly List<LogLineDelegate> LogSubscribers = new List<LogLineDelegate>(16);
+        private readonly object LogBufferLocker = new object();
 
-        public void SubscribeLog(LogLineDelegate subscriber)
+        private readonly List<ConcurrentQueue<XIVLog>> XIVLogBuffers = new List<ConcurrentQueue<XIVLog>>(16);
+
+        public ConcurrentQueue<XIVLog> SubscribeXIVLog()
         {
-            if (this.DataSubscription == null)
+            lock (this.LogBufferLocker)
             {
-                return;
-            }
-
-            lock (this.LogSubscribers)
-            {
-                this.DataSubscription.LogLine -= subscriber;
-                this.DataSubscription.LogLine += subscriber;
-
-                this.LogSubscribers.Add(subscriber);
+                var buffer = new ConcurrentQueue<XIVLog>();
+                this.XIVLogBuffers.Add(buffer);
+                return buffer;
             }
         }
 
-        private void UnsubscribeLog()
+        private void SubscribeParsedLogLine()
         {
-            if (this.DataSubscription == null)
+            ActGlobals.oFormActMain.OnLogLineRead += this.OnLogLineRead;
+        }
+
+        private void UnsubscribeParsedLogLine()
+        {
+            ActGlobals.oFormActMain.OnLogLineRead -= this.OnLogLineRead;
+        }
+
+        private void ClearXIVLogBuffers()
+        {
+            lock (this.LogBufferLocker)
+            {
+                this.XIVLogBuffers.Clear();
+            }
+        }
+
+        private uint sequence = 1;
+
+        private void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
+        {
+            var line = logInfo.logLine;
+
+            // 18文字未満のログは書式エラーになるため無視する
+            if (line.Length < 18)
             {
                 return;
             }
 
-            lock (this.LogSubscribers)
+            // メッセージタイプを抽出する
+            var messagetypeText = line.Substring(15, 2);
+            if (!int.TryParse(messagetypeText, out int messagetype))
             {
-                foreach (var action in this.LogSubscribers)
+                return;
+            }
+
+            // メッセージ部分だけを抽出する
+            var message = line.Substring(15);
+
+            this.OnParsedLogLine(
+                this.sequence++,
+                messagetype,
+                message);
+        }
+
+        private void OnParsedLogLine(
+            uint sequence,
+            int messagetype,
+            string message)
+        {
+            var parsedLog = message;
+
+            // 長さによるカット
+            if (parsedLog.Length <= 3)
+            {
+                return;
+            }
+
+            // 明らかに使用しないログをカットする
+            // タイプによるカット
+            var type = (LogMessageType)Enum.ToObject(typeof(LogMessageType), messagetype);
+            switch (type)
+            {
+                case LogMessageType.NetworkDoT:
+                    return;
+
+                case LogMessageType.LogLine:
+                    // ダメージ系をカットする
+                    if (DamageLogPattern.IsMatch(parsedLog))
+                    {
+                        return;
+                    }
+
+                    break;
+            }
+
+            var currentZoneName = this.GetCurrentZoneName();
+
+            lock (this.LogBufferLocker)
+            {
+                var xivlog = new XIVLog(
+                    sequence,
+                    messagetype,
+                    parsedLog)
                 {
-                    this.DataSubscription.LogLine -= action;
+                    Zone = currentZoneName
+                };
+
+                foreach (var buffer in this.XIVLogBuffers)
+                {
+                    buffer.Enqueue(xivlog);
+                }
+            }
+
+            // LPSを更新する
+            this.CountLPS();
+        }
+
+        /// <summary>
+        /// 設定によらず必ずカットするログのキーワード
+        /// </summary>
+        public static readonly string[] IgnoreLogKeywords = new[]
+        {
+            LogMessageType.NetworkDoT.ToKeyword(),
+        };
+
+        /*
+        // ダメージ系ログ
+        "] 00:0aa9:",
+        "] 00:0b29:",
+        "] 00:1129:",
+        "] 00:12a9:",
+        "] 00:1329:",
+        "] 00:28a9:",
+        "] 00:2929:",
+        "] 00:2c29:",
+        "] 00:2ca9:",
+        "] 00:30a9:",
+        "] 00:3129:",
+        "] 00:32a9:",
+        "] 00:3429:",
+        "] 00:34a9:",
+        "] 00:3aa9:",
+        "] 00:42a9:",
+        "] 00:4aa9:",
+        "] 00:4b29:",
+
+        // 回復系ログ
+        "] 00:08ad:",
+        "] 00:092d:",
+        "] 00:0c2d:",
+        "] 00:0cad:",
+        "] 00:10ad:",
+        "] 00:112d:",
+        "] 00:142d:",
+        "] 00:14ad:",
+        "] 00:28ad:",
+        "] 00:292d:",
+        "] 00:2aad:",
+        "] 00:30ad:",
+        "] 00:312d:",
+        "] 00:412d:",
+        "] 00:48ad:",
+        "] 00:492d:",
+        "] 00:4cad:",
+        */
+
+        /// <summary>
+        /// ダメージ関係のログを示すキーワード
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        private static readonly Regex DamageLogPattern =
+            new Regex(
+                @"^00:..(29|a9|2d|ad):",
+                RegexOptions.Compiled |
+                RegexOptions.IgnoreCase |
+                RegexOptions.ExplicitCapture);
+
+        /// <summary>
+        /// ダメージ関係のログか？
+        /// </summary>
+        /// <param name="logLine">判定対象とするログ行</param>
+        /// <returns>真/偽</returns>
+        public static bool IsDamageLog(
+            string logLine)
+        {
+            if (!logLine.StartsWith("00:"))
+            {
+                return false;
+            }
+
+            return DamageLogPattern.IsMatch(logLine);
+        }
+
+        private double[] lpss = new double[60];
+        private int currentLpsIndex;
+        private long currentLineCount;
+        private Stopwatch lineCountTimer = new Stopwatch();
+
+        public double LPS => this.GetLPS();
+
+        private double GetLPS()
+        {
+            var availableLPSs = this.lpss.Where(x => x > 0);
+            if (!availableLPSs.Any())
+            {
+                return 0;
+            }
+
+            return availableLPSs.Sum() / availableLPSs.Count();
+        }
+
+        private void CountLPS()
+        {
+            this.currentLineCount++;
+
+            if (!this.lineCountTimer.IsRunning)
+            {
+                this.lineCountTimer.Restart();
+            }
+
+            if (this.lineCountTimer.Elapsed >= TimeSpan.FromSeconds(1))
+            {
+                this.lineCountTimer.Stop();
+
+                var secounds = this.lineCountTimer.Elapsed.TotalSeconds;
+                if (secounds > 0)
+                {
+                    var lps = this.currentLineCount / secounds;
+                    if (lps > 0)
+                    {
+                        if (this.currentLpsIndex > this.lpss.GetUpperBound(0))
+                        {
+                            this.currentLpsIndex = 0;
+                        }
+
+                        this.lpss[this.currentLpsIndex] = lps;
+                        this.currentLpsIndex++;
+                    }
                 }
 
-                this.LogSubscribers.Clear();
+                this.currentLineCount = 0;
             }
         }
 
@@ -671,7 +851,7 @@ namespace FFXIV.Framework.XIVHelper
                 if (this.previousPlayerName != currentPlayer.Name)
                 {
                     this.previousPlayerName = currentPlayer.Name;
-                    this.XivPlugin_PrimaryPlayerChanged();
+                    this.RaisePrimaryPlayerChanged();
 
                     // プレイヤーチェンジならば抜ける
                     return;
@@ -690,7 +870,7 @@ namespace FFXIV.Framework.XIVHelper
             if (this.previousZoneName != currentZoneName)
             {
                 this.previousZoneName = currentZoneName;
-                this.XivPlugin_ZoneChanged(
+                this.RaiseZoneChanged(
                     (uint)this.GetCurrentZoneID(),
                     currentZoneName);
             }

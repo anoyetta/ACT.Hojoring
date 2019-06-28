@@ -114,8 +114,6 @@
 &lt;hpp&gt;     HPの割合(%)
 &lt;mp&gt;      MPの値
 &lt;mpp&gt;     MPの割合(%)
-&lt;tp&gt;      TPの値
-&lt;tpp&gt;     TPの割合(%)
 &lt;gp&gt;      GPの値
 &lt;gpp&gt;     GPの割合(%)
 
@@ -125,8 +123,5 @@
 
 &lt;pcname&gt;,MP&lt;mpp&gt;.
 → 白魔道士T,MP30%.
-
-&lt;pcname&gt;,TP&lt;tpp&gt;.
-→ 忍者P,TP20%.
   </system:String>
 </ResourceDictionary>
