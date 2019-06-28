@@ -315,6 +315,14 @@ namespace FFXIV.Framework.XIVHelper
                         };
 
                         entry.SetAttackTypeEnum();
+
+#if DEBUG
+                        if (!string.IsNullOrEmpty(entry.AttackTypeName))
+                        {
+                            System.Diagnostics.Debug.WriteLine(entry.AttackTypeName);
+                        }
+#endif
+
                         this.actionList[entry.ID] = entry;
                     }
                 }
@@ -456,7 +464,7 @@ namespace FFXIV.Framework.XIVHelper
         /// </summary>
         public class XIVApiAction
         {
-            public static readonly int AttackTypeIndex = 41;
+            public static readonly int AttackTypeIndex = 43;
 
             public uint ID { get; set; }
             public string Name { get; set; }
@@ -466,6 +474,9 @@ namespace FFXIV.Framework.XIVHelper
             public void SetAttackTypeEnum()
                 => this.AttackType = ((AttackTypes[])Enum.GetValues(typeof(AttackTypes)))
                     .FirstOrDefault(x => x.ToDisplay() == this.AttackTypeName);
+
+            public override string ToString()
+                => $"0x{this.ID:X4}({this.ID}) {this.Name} {this.AttackTypeName}";
         }
 
         #endregion Sub classes
