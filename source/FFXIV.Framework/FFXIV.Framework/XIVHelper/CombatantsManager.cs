@@ -157,6 +157,22 @@ namespace FFXIV.Framework.XIVHelper
 
             foreach (var combatant in source)
             {
+                switch (combatant.GetActorType())
+                {
+                    // 必要なCombatant
+                    case Actor.Type.PC:
+                    case Actor.Type.Monster:
+                    case Actor.Type.NPC:
+                    case Actor.Type.Aetheryte:
+                    case Actor.Type.Gathering:
+                    case Actor.Type.EventObject:
+                        break;
+
+                    // 上記以外は捨てる
+                    default:
+                        continue;
+                }
+
                 var isMain = combatant.GetActorType() switch
                 {
                     Actor.Type.PC => true,
