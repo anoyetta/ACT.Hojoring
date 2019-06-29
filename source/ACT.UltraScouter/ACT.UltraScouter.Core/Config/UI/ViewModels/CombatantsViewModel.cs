@@ -76,8 +76,15 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
             var combatants = Combatants;
 
-            if (source == null ||
-                !source.Any())
+            if (source == null)
+            {
+                combatants.Clear();
+                return;
+            }
+
+            source = source.Where(x => !string.IsNullOrEmpty(x.Name));
+
+            if (!source.Any())
             {
                 combatants.Clear();
                 return;

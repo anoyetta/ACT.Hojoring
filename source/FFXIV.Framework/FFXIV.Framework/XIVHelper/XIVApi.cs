@@ -316,13 +316,6 @@ namespace FFXIV.Framework.XIVHelper
 
                         entry.SetAttackTypeEnum();
 
-#if DEBUG
-                        if (!string.IsNullOrEmpty(entry.AttackTypeName))
-                        {
-                            System.Diagnostics.Debug.WriteLine(entry.AttackTypeName);
-                        }
-#endif
-
                         this.actionList[entry.ID] = entry;
                     }
                 }

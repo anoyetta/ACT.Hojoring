@@ -101,12 +101,12 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         public CombatantEx GetCombatantOther(
-            uint id)
+            uint npcid)
         {
             lock (LockObject)
             {
-                return this.OtherDictionary.ContainsKey(id) ?
-                    this.MainDictionary[id] :
+                return this.OtherDictionary.ContainsKey(npcid) ?
+                    this.MainDictionary[npcid] :
                     null;
             }
         }
@@ -165,11 +165,13 @@ namespace FFXIV.Framework.XIVHelper
                 };
 
                 var dic = isMain ? this.MainDictionary : this.OtherDictionary;
-                var isNew = !dic.ContainsKey(combatant.ID);
+                var key = isMain ? combatant.ID : combatant.BNpcID;
+
+                var isNew = !dic.ContainsKey(key);
 
                 var ex = isNew ?
                     new CombatantEx() :
-                    dic[combatant.ID];
+                    dic[key];
 
                 CombatantEx.CopyToEx(combatant, ex);
 
@@ -189,7 +191,7 @@ namespace FFXIV.Framework.XIVHelper
                 {
                     addeds.Add(ex);
                     this.Combatants.Add(ex);
-                    dic[combatant.ID] = ex;
+                    dic[key] = ex;
                 }
 
                 if (ex.PartyType == PartyTypeEnum.Party)
