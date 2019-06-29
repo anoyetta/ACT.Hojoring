@@ -460,6 +460,8 @@ namespace ACT.XIVLog
             $"\"{this.GetReplacedLog()}\"," +
             $"\"{this.ZoneName}\"";
 
+        public override string ToString() => this.GetReplacedLog();
+
         public class Alias
         {
             public Alias(

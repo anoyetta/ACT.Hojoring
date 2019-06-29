@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -389,7 +390,11 @@ namespace FFXIV.Framework.XIVHelper
 
             // メッセージタイプを抽出する
             var messagetypeText = line.Substring(15, 2);
-            if (!int.TryParse(messagetypeText, out int messagetype))
+            if (!int.TryParse(
+                messagetypeText,
+                NumberStyles.HexNumber,
+                CultureInfo.InvariantCulture,
+                out int messagetype))
             {
                 return;
             }

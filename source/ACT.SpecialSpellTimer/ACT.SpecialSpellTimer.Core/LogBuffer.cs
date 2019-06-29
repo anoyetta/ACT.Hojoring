@@ -360,12 +360,14 @@ namespace ACT.SpecialSpellTimer
                     preLogIndex = 0;
                 }
 
+                /*
                 // 詳細なログをカット
                 if (Settings.Default.IgnoreDetailLogs &&
                     IgnoreDetailLogKeywords.Any(x => logLine.Contains(x)))
                 {
                     continue;
                 }
+                */
 
                 if (IsAutoIgnoreLog(logLine))
                 {
