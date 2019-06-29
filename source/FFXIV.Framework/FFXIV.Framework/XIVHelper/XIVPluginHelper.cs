@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -389,7 +390,11 @@ namespace FFXIV.Framework.XIVHelper
 
             // メッセージタイプを抽出する
             var messagetypeText = line.Substring(15, 2);
-            if (!int.TryParse(messagetypeText, out int messagetype))
+            if (!int.TryParse(
+                messagetypeText,
+                NumberStyles.HexNumber,
+                CultureInfo.InvariantCulture,
+                out int messagetype))
             {
                 return;
             }
@@ -807,8 +812,7 @@ namespace FFXIV.Framework.XIVHelper
             {
                 result =
                     player.CurrentHP != player.MaxHP ||
-                    player.CurrentMP != player.MaxMP ||
-                    player.CurrentTP != player.MaxTP;
+                    player.CurrentMP != player.MaxMP;
             }
 
             if (!result)
@@ -820,8 +824,7 @@ namespace FFXIV.Framework.XIVHelper
                         from x in party
                         where
                         x.CurrentHP != x.MaxHP ||
-                        x.CurrentMP != x.MaxMP ||
-                        x.CurrentTP != x.MaxTP
+                        x.CurrentMP != x.MaxMP
                         select
                         x).Any();
                 }

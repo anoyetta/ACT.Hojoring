@@ -32,15 +32,11 @@ namespace FFXIV.Framework.Bridge
             }
 
             // ログのタイムスタンプとコードを除去してコメント行を判定する
-            var log = logLine.Remove(0, 15);
-            if (log.Length > 8)
+            logLine = logLine.Trim();
+            if (logLine.StartsWith("#") ||
+                logLine.StartsWith("//"))
             {
-                log = log.Substring(8);
-                if (log.TrimStart().StartsWith("#") ||
-                    log.TrimStart().StartsWith("//"))
-                {
-                    return false;
-                }
+                return false;
             }
 
             var executed = false;
