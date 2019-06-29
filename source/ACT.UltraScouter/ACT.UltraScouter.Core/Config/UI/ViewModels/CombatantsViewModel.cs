@@ -67,7 +67,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                 return;
             }
 
-            if ((DateTime.Now - lastUpdateDatetime).TotalSeconds <= 1.0d)
+            if ((DateTime.Now - lastUpdateDatetime).TotalSeconds <= 3.0d)
             {
                 return;
             }
@@ -90,14 +90,18 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                 return;
             }
 
-            var toAdds = source.Where(x => !combatants.Any(y => y.UUID == x.UUID));
+#if true
+            var toAdds = source.Where(x => !combatants.Any(y => y.UniqueObjectID == x.UniqueObjectID));
             combatants.AddRange(toAdds);
 
-            var toRemoves = combatants.Where(x => !source.Any(y => y.UUID == x.UUID)).ToArray();
+            var toRemoves = combatants.Where(x => !source.Any(y => y.UniqueObjectID == x.UniqueObjectID)).ToArray();
             foreach (var item in toRemoves)
             {
                 combatants.Remove(item);
             }
+#else
+            combatants.AddRange(source);
+#endif
         }
 
         private CollectionViewSource combatantsSource;

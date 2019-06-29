@@ -100,12 +100,12 @@
         <DataGridTextColumn
           IsReadOnly="True"
           Header="HP"
-          Binding="{Binding GetCurrentHP, Mode=OneWay, StringFormat={}{0:N0}}"
+          Binding="{Binding CurrentHP, Mode=OneWay, StringFormat={}{0:N0}}"
           MinWidth="150" />
         <DataGridTextColumn
           IsReadOnly="True"
           Header="MaxHP"
-          Binding="{Binding GetMaxHP, Mode=OneWay, StringFormat={}{0:N0}}"
+          Binding="{Binding MaxHP, Mode=OneWay, StringFormat={}{0:N0}}"
           MinWidth="150" />
       </DataGrid.Columns>
     </DataGrid>

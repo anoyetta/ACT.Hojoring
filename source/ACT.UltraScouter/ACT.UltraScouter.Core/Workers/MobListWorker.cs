@@ -452,7 +452,7 @@ namespace ACT.UltraScouter.Workers
                         Thread.Yield();
 
                         var item = model.MobList.FirstOrDefault(x =>
-                            x.Combatant?.UUID == mob.Combatant?.UUID);
+                            x.Combatant?.UniqueObjectID == mob.Combatant?.UniqueObjectID);
 
                         // 存在しないものは追加する
                         if (item == null)
@@ -487,7 +487,7 @@ namespace ACT.UltraScouter.Workers
                     var itemsForRemove = model.MobList
                         .Where(x =>
                             !targets.Any(y =>
-                                y.Combatant?.UUID == x.Combatant?.UUID))
+                                y.Combatant?.UniqueObjectID == x.Combatant?.UniqueObjectID))
                         .ToArray();
 
                     // 除去する
