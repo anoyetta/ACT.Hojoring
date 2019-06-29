@@ -812,8 +812,7 @@ namespace FFXIV.Framework.XIVHelper
             {
                 result =
                     player.CurrentHP != player.MaxHP ||
-                    player.CurrentMP != player.MaxMP ||
-                    player.CurrentTP != player.MaxTP;
+                    player.CurrentMP != player.MaxMP;
             }
 
             if (!result)
@@ -825,8 +824,7 @@ namespace FFXIV.Framework.XIVHelper
                         from x in party
                         where
                         x.CurrentHP != x.MaxHP ||
-                        x.CurrentMP != x.MaxMP ||
-                        x.CurrentTP != x.MaxTP
+                        x.CurrentMP != x.MaxMP
                         select
                         x).Any();
                 }
