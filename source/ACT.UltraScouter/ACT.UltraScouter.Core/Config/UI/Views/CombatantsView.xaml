@@ -60,7 +60,7 @@
         <DataGridTextColumn
           IsReadOnly="True"
           Header="ID"
-          Binding="{Binding ID, Mode=OneWay, StringFormat=0x{0:X8}}"
+          Binding="{Binding UniqueObjectID, Mode=OneWay, StringFormat=0x{0:X8}}"
           MinWidth="120" />
         <DataGridTextColumn
           IsReadOnly="True"

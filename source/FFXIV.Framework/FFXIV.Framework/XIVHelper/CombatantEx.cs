@@ -143,6 +143,8 @@ namespace FFXIV.Framework.XIVHelper
 
         #region Additional Properties
 
+        public uint UniqueObjectID => !this.IsNPC() ? this.ID : this.BNpcID;
+
         public Guid UUID { get; } = Guid.NewGuid();
 
         public bool IsDummy { get; set; } = false;
