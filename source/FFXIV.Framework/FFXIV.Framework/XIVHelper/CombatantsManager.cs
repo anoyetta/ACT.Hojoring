@@ -32,11 +32,9 @@ namespace FFXIV.Framework.XIVHelper
 
         private static readonly object LockObject = new object();
 
-        private readonly List<CombatantEx> Combatants = new List<CombatantEx>(5120);
-
         private readonly Dictionary<uint, CombatantEx> MainDictionary = new Dictionary<uint, CombatantEx>(2560);
 
-        private readonly Dictionary<uint, CombatantEx> OtherDictionary = new Dictionary<uint, CombatantEx>(2560);
+        private readonly List<CombatantEx> OtherList = new List<CombatantEx>(1024);
 
         private readonly List<CombatantEx> PartyList = new List<CombatantEx>(8);
 
@@ -61,7 +59,10 @@ namespace FFXIV.Framework.XIVHelper
         {
             lock (LockObject)
             {
-                return this.Combatants.ToArray();
+                return
+                    this.MainDictionary.Select(x => x.Value)
+                    .Concat(this.OtherList)
+                    .ToArray();
             }
         }
 
@@ -70,14 +71,6 @@ namespace FFXIV.Framework.XIVHelper
             lock (LockObject)
             {
                 return this.MainDictionary.Clone();
-            }
-        }
-
-        public IDictionary<uint, CombatantEx> GetCombatantOtherDictionary()
-        {
-            lock (LockObject)
-            {
-                return this.OtherDictionary.Clone();
             }
         }
 
@@ -96,17 +89,6 @@ namespace FFXIV.Framework.XIVHelper
             {
                 return this.MainDictionary.ContainsKey(id) ?
                     this.MainDictionary[id] :
-                    null;
-            }
-        }
-
-        public CombatantEx GetCombatantOther(
-            uint npcid)
-        {
-            lock (LockObject)
-            {
-                return this.OtherDictionary.ContainsKey(npcid) ?
-                    this.MainDictionary[npcid] :
                     null;
             }
         }
@@ -155,6 +137,8 @@ namespace FFXIV.Framework.XIVHelper
             var partyIDList = new List<uint>(32);
             var addeds = new List<CombatantEx>(128);
 
+            this.OtherList.Clear();
+
             foreach (var combatant in source)
             {
                 switch (combatant.GetActorType())
@@ -180,39 +164,46 @@ namespace FFXIV.Framework.XIVHelper
                     _ => false,
                 };
 
-                var dic = isMain ? this.MainDictionary : this.OtherDictionary;
-                var key = isMain ? combatant.ID : combatant.BNpcID;
-
-                var isNew = !dic.ContainsKey(key);
-
-                var ex = isNew ?
-                    new CombatantEx() :
-                    dic[key];
-
-                CombatantEx.CopyToEx(combatant, ex);
-
-                if (isDummy)
+                if (isMain)
                 {
-                    ex.IsDummy = true;
-                    ex.PartyType = PartyTypeEnum.Party;
+                    var dic = this.MainDictionary;
+                    var key = combatant.ID;
+                    var isNew = !dic.ContainsKey(key);
+
+                    var ex = isNew ?
+                        new CombatantEx() :
+                        dic[key];
+
+                    CombatantEx.CopyToEx(combatant, ex);
+
+                    if (isDummy)
+                    {
+                        ex.IsDummy = true;
+                        ex.PartyType = PartyTypeEnum.Party;
+                    }
+
+                    if (isFirstCombatant)
+                    {
+                        isFirstCombatant = false;
+                        CombatantEx.CopyToEx(ex, this.Player);
+                    }
+
+                    if (isNew)
+                    {
+                        addeds.Add(ex);
+                        dic[key] = ex;
+                    }
+
+                    if (ex.PartyType == PartyTypeEnum.Party)
+                    {
+                        partyIDList.Add(ex.ID);
+                    }
                 }
-
-                if (isFirstCombatant)
+                else
                 {
-                    isFirstCombatant = false;
-                    CombatantEx.CopyToEx(ex, this.Player);
-                }
-
-                if (isNew)
-                {
-                    addeds.Add(ex);
-                    this.Combatants.Add(ex);
-                    dic[key] = ex;
-                }
-
-                if (ex.PartyType == PartyTypeEnum.Party)
-                {
-                    partyIDList.Add(ex.ID);
+                    var ex = new CombatantEx();
+                    CombatantEx.CopyToEx(combatant, ex);
+                    this.OtherList.Add(ex);
                 }
 
                 Thread.Yield();
@@ -239,7 +230,7 @@ namespace FFXIV.Framework.XIVHelper
 
             this.CombatantsPCCount = this.MainDictionary.Count(x => x.Value.ActorType == Actor.Type.PC);
             this.CombatantsMainCount = this.MainDictionary.Count;
-            this.CombatantsOtherCount = this.OtherDictionary.Count;
+            this.CombatantsOtherCount = this.OtherList.Count;
 
             return addeds;
         }
@@ -408,9 +399,8 @@ namespace FFXIV.Framework.XIVHelper
                 this.CombatantsOtherCount = 0;
                 this.PartyCount = 0;
 
-                this.Combatants.Clear();
                 this.MainDictionary.Clear();
-                this.OtherDictionary.Clear();
+                this.OtherList.Clear();
                 this.PartyList.Clear();
                 this.PartyComposition = PartyCompositions.Unknown;
             }
@@ -434,7 +424,7 @@ namespace FFXIV.Framework.XIVHelper
         {
             lock (LockObject)
             {
-                var targets = this.Combatants
+                var targets = this.MainDictionary.Select(x => x.Value)
                     .Where(x => (DateTime.Now - x.LastUpdateTimestamp).TotalSeconds >= GarbageThreshold)
                     .ToArray();
 
@@ -447,14 +437,13 @@ namespace FFXIV.Framework.XIVHelper
                         _ => false,
                     };
 
-                    var dic = isMain ? this.MainDictionary : this.OtherDictionary;
+                    var dic = this.MainDictionary;
 
                     if (dic.ContainsKey(target.ID))
                     {
                         dic.Remove(target.ID);
                     }
 
-                    this.Combatants.Remove(target);
                     Thread.Yield();
                 }
             }
