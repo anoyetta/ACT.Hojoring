@@ -213,12 +213,19 @@ namespace ACT.UltraScouter.Workers
             {
                 foreach (var x in combatants)
                 {
-                    if (x == null ||
-                        string.IsNullOrEmpty(x.Name) ||
-                        x.MaxHP <= 0 ||
-                        (x.MaxHP > 0 && x.CurrentHP <= 0))
+                    if (string.IsNullOrEmpty(x?.Name))
                     {
                         continue;
+                    }
+
+                    if (x.ActorType == Actor.Type.PC ||
+                        x.ActorType == Actor.Type.Monster)
+                    {
+                        if (x.MaxHP <= 0 ||
+                            (x.MaxHP > 0 && x.CurrentHP <= 0))
+                        {
+                            continue;
+                        }
                     }
 
                     var targetInfo = Settings.Instance.MobList.GetTargetMobInfo(x.Name);
