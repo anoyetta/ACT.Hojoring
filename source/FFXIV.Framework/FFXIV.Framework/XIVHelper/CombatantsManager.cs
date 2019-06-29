@@ -291,7 +291,12 @@ namespace FFXIV.Framework.XIVHelper
         {
             var list = new List<CombatantsByRole>(8);
 
+            var player = this.Player;
             var partyList = this.GetPartyList();
+            if (!partyList.Any() && player != null)
+            {
+                partyList = partyList.Concat(new[] { player });
+            }
 
             var tanks = partyList
                 .Where(x => x.Role == Roles.Tank)
