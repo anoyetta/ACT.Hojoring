@@ -136,6 +136,7 @@ namespace ACT.UltraScouter.Config
                     var data = this.Serializer.Deserialize(xr) as Settings;
                     if (data != null)
                     {
+                        this.Migrate(data);
                         instance = data;
                     }
                 }
@@ -177,6 +178,22 @@ namespace ACT.UltraScouter.Config
                     this.FileName,
                     buffer.ToString() + Environment.NewLine,
                     new UTF8Encoding(false));
+            }
+        }
+
+        private void Migrate(
+            Settings settings)
+        {
+            // 矢印の基準をカメラ基準だった場合、北基準に変更する
+            if (settings.MobList.DirectionOrigin == DirectionOrigin.Camera)
+            {
+                settings.MobList.DirectionOrigin = DirectionOrigin.North;
+            }
+
+            // 矢印の基準をカメラ基準だった場合、北基準に変更する
+            if (settings.TacticalRadar.DirectionOrigin == DirectionOrigin.Camera)
+            {
+                settings.TacticalRadar.DirectionOrigin = DirectionOrigin.North;
             }
         }
 

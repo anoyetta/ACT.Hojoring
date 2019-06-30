@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows.Input;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.Workers;
@@ -22,7 +23,10 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
         public MobList MobList => Settings.Instance.MobList;
 
-        public DirectionOrigin[] DirectionOrigins => Enum.GetValues(typeof(DirectionOrigin)) as DirectionOrigin[];
+        public DirectionOrigin[] DirectionOrigins =>
+            (Enum.GetValues(typeof(DirectionOrigin)) as DirectionOrigin[])
+            .Where(x => x != DirectionOrigin.Camera)
+            .ToArray();
 
         private ICommand testModeCommand;
 

@@ -8,7 +8,7 @@ $isUsePreRelease = $FALSE
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev10'
+'* rev11'
 '* (c) anoyetta, 2019'
 '***************************************************'
 '* Start Update Hojoring'
@@ -179,7 +179,19 @@ Invoke-WebRequest -Uri $info.AssetUrl -OutFile (Join-Path $updateDir $info.Asset
 
 Start-Sleep -Milliseconds 10
 
-$7za = Get-Item ".\bin\tools\7z\7za.exe"
+$7zaOld = ".\tools\7z\7za.exe"
+$7zaNew = ".\bin\tools\7z\7za.exe"
+
+$7za = $null
+if (Test-Path($7zaNew)) {
+    $7za = Get-Item $7zaNew
+}
+else {
+    if (Test-Path($7zaOld)) {
+        $7za = Get-Item $7zaOld
+    }
+}
+
 $archive = Get-Item ".\update\*.7z"
 
 ''
@@ -195,6 +207,9 @@ Remove-Directory ".\references"
 if (Test-Path ".\*.dll") {
     Remove-Item ".\*.dll" -Force
 }
+Remove-Directory ".\openJTalk"
+Remove-Directory ".\yukkuri"
+Remove-Directory ".\tools"
 # Clean <-
 
 ''
