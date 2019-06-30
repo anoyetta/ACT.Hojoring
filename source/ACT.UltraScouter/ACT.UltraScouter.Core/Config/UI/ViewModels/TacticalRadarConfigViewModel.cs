@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows.Input;
 using FFXIV.Framework.Common;
 using NLog;
@@ -17,7 +18,10 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
         public TacticalRadar TacticalRadar => Settings.Instance.TacticalRadar;
 
-        public DirectionOrigin[] DirectionOrigins => Enum.GetValues(typeof(DirectionOrigin)) as DirectionOrigin[];
+        public DirectionOrigin[] DirectionOrigins =>
+            (Enum.GetValues(typeof(DirectionOrigin)) as DirectionOrigin[])
+            .Where(x => x != DirectionOrigin.Camera)
+            .ToArray();
 
         private ICommand changeFontCommand;
         private ICommand changeTextColorCommand;
