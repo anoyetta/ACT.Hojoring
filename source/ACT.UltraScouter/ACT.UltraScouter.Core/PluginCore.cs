@@ -114,6 +114,12 @@ namespace ACT.UltraScouter
 
                 try
                 {
+                    EnvironmentHelper.StartActivator(() =>
+                    {
+                        BaseView.Instance.SetActivationStatus(false);
+                        this.EndPlugin();
+                    });
+
                     this.Logger.Trace("[ULTRA SCOUTER] Start InitPlugin");
 
                     this.PluginTabPage = pluginScreenSpace;
