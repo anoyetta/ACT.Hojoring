@@ -303,6 +303,12 @@ namespace ACT.TTSYukkuri
                 try
                 {
                     EnvironmentHelper.GarbageLogs();
+                    EnvironmentHelper.StartActivator(() =>
+                    {
+                        ConfigBaseView.Instance.SetActivationStatus(false);
+                        this.DeInitPlugin();
+                    });
+
                     this.Logger.Trace("[YUKKURI] Start InitPlugin");
 
                     this.PluginStatusLabel = pluginStatusText;

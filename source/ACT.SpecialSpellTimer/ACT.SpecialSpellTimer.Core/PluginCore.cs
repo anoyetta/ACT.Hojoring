@@ -157,6 +157,12 @@ namespace ACT.SpecialSpellTimer
                 try
                 {
                     EnvironmentHelper.GarbageLogs();
+                    EnvironmentHelper.StartActivator(() =>
+                    {
+                        BaseView.Instance.SetActivationStatus(false);
+                        this.DeInitPluginCore();
+                    });
+
                     Logger.Init();
                     Logger.Write("[SPESPE] Start InitPlugin");
 
