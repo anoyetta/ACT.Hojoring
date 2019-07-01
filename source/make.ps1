@@ -133,6 +133,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     
     '●その他のDLLをマージする'
     $libs = @(
+        "ACT.Hojoring.Activator.dll",
         "FFXIV_MemoryReader*.dll",
         "FontAwesome.WPF.dll",
         "Octokit.dll",

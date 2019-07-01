@@ -762,6 +762,7 @@ namespace FFXIV.Framework.XIVHelper
                 {
                     CombatantsManager.Instance.Refresh(DummyCombatants, IsDebug);
                     raiseFirstCombatants();
+                    tryActivation();
                 }
 
                 return;
@@ -789,6 +790,7 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             raiseFirstCombatants();
+            tryActivation();
 
             void raiseFirstCombatants()
             {
@@ -797,6 +799,15 @@ namespace FFXIV.Framework.XIVHelper
                 {
                     this.isFirst = false;
                     this.OnPrimaryPlayerChanged?.Invoke();
+                }
+            }
+
+            void tryActivation()
+            {
+                var player = CombatantsManager.Instance.Player;
+                if (player != null)
+                {
+                    var result = EnvironmentHelper.TryActivation(player.Name, player.WorldName, string.Empty);
                 }
             }
         }
