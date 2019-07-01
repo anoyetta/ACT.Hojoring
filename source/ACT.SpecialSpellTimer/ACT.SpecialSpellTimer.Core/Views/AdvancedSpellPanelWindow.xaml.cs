@@ -202,7 +202,7 @@ namespace ACT.SpecialSpellTimer.Views
 
                 spell.Visibility = !toHide ?
                     Visibility.Visible :
-                    Visibility.Hidden;
+                    Visibility.Collapsed;
             }
 
             if (!spells.Any(x => x.Visibility == Visibility.Visible))
