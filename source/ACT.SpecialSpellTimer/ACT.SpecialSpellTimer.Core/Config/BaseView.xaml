@@ -20,23 +20,38 @@
   IsTabStop="False"
   Focusable="False"
   mc:Ignorable="d">
-  <TabControl>
-    <TabItem Header="Triggers" IsSelected="True">
-      <views:TriggersView x:Name="TriggersView" />
-    </TabItem>
-    <TabItem Header="Timeline">
-      <views:TimelineView x:Name="TimelineView" />
-    </TabItem>
-    <!--
-    <TabItem Header="Calendar">
-      <views:CalendarView x:Name="CalendarView" />
-    </TabItem>
-    -->
-    <TabItem Header="Options">
-      <views:OptionsView x:Name="OptionsView" />
-    </TabItem>
-    <TabItem Header="Informations">
-      <views:InformationsView x:Name="InfomationsView" />
-    </TabItem>
-  </TabControl>
+  <Grid>
+    <TabControl>
+      <TabItem Header="Triggers" IsSelected="True">
+        <views:TriggersView x:Name="TriggersView" />
+      </TabItem>
+      <TabItem Header="Timeline">
+        <views:TimelineView x:Name="TimelineView" />
+      </TabItem>
+      <!--
+      <TabItem Header="Calendar">
+        <views:CalendarView x:Name="CalendarView" />
+      </TabItem>
+      -->
+      <TabItem Header="Options">
+        <views:OptionsView x:Name="OptionsView" />
+      </TabItem>
+      <TabItem Header="Informations">
+        <views:InformationsView x:Name="InfomationsView" />
+      </TabItem>
+    </TabControl>
+
+    <Label
+      x:Name="DenyMessageLabel"
+      Visibility="Collapsed"
+      Panel.ZIndex="100"
+      Background="#B0FFFFFF"
+      HorizontalAlignment="Stretch"
+      VerticalAlignment="Stretch"
+      HorizontalContentAlignment="Center"
+      VerticalContentAlignment="Center"
+      Content="Hojoring is not allowed for You."
+      FontFamily="Century Gothic"
+      FontSize="50" />
+  </Grid>
 </UserControl>

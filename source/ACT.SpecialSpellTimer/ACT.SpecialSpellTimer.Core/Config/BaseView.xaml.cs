@@ -7,10 +7,18 @@ namespace ACT.SpecialSpellTimer.Config
     /// </summary>
     public partial class BaseView : UserControl
     {
-        public BaseView(
-            System.Drawing.Font font = null)
+        public static BaseView Instance { get; private set; }
+
+        public BaseView(System.Drawing.Font font = null)
         {
+            Instance = this;
             this.InitializeComponent();
         }
+
+        public void SetActivationStatus(
+            bool isAllow)
+            => this.DenyMessageLabel.Visibility = isAllow ?
+                System.Windows.Visibility.Collapsed :
+                System.Windows.Visibility.Visible;
     }
 }

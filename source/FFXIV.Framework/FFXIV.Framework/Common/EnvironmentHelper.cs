@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
+using ACT.Hojoring.Activator;
 
 namespace FFXIV.Framework.Common
 {
@@ -143,5 +145,41 @@ namespace FFXIV.Framework.Common
 
             return v;
         }
+
+        private static volatile bool isStarted;
+        public static readonly string ActivationDenyMessage = "Hojoring is not allowed for you.";
+
+        private static readonly List<Action> ActivationDeniedCallbackList = new List<Action>();
+
+        public static void StartActivator(
+            Action callback)
+        {
+            if (!isStarted)
+            {
+                ActivationManager.Instance.ActivationDeniedCallback += () =>
+                {
+                    AppLog.DefaultLogger.Fatal(ActivationDenyMessage);
+
+                    WPFHelper.Invoke(() =>
+                    {
+                        foreach (var callback in ActivationDeniedCallbackList)
+                        {
+                            callback.Invoke();
+                        }
+                    });
+                };
+            }
+
+            isStarted = true;
+
+            ActivationDeniedCallbackList.Add(callback);
+            ActivationManager.Instance.Start();
+        }
+
+        internal static bool TryActivation(
+            string name,
+            string server,
+            string guild)
+            => ActivationManager.Instance.TryActivation(name, server, guild);
     }
 }

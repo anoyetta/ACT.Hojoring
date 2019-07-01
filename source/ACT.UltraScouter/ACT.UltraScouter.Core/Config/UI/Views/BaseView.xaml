@@ -17,9 +17,24 @@
   FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
   FontSize="17"
   d:DesignWidth="600">
-  <TabControl>
-    <TabItem Header="Config">
-      <local:ConfigView />
-    </TabItem>
-  </TabControl>
+  <Grid>
+    <TabControl>
+      <TabItem Header="Config">
+        <local:ConfigView />
+      </TabItem>
+    </TabControl>
+
+    <Label
+      x:Name="DenyMessageLabel"
+      Visibility="Collapsed"
+      Panel.ZIndex="100"
+      Background="#B0FFFFFF"
+      HorizontalAlignment="Stretch"
+      VerticalAlignment="Stretch"
+      HorizontalContentAlignment="Center"
+      VerticalContentAlignment="Center"
+      Content="Hojoring is not allowed for You."
+      FontFamily="Century Gothic"
+      FontSize="50" />
+  </Grid>
 </UserControl>
