@@ -18,42 +18,6 @@
 # # is comment line.
 #
 
-# 5.0 SHADOWBRINGERS
-## Rank EX
-## Rank S
-Aglaope                     S
-"The Forgiven Rebellion"    S
-Ixtab                       S
-Gunitt                      S
-
-## Rank A
-Nariphon                    A
-Nuckelavee                  A
-"O Poorest Pauldia"         A
-"The Mudman"                A
-"Li'l Murderer"             A
-Huracan                     A
-Maliktender                 A
-Sugaar                      A
-Grassman                    A
-Supay                       A
-Baal                        A
-Rusalka                     A
-
-## Rank B
-"La Velue"                  B
-Itzpapalotl                 B
-Domovoi                     B
-Vulpangue                   B
-Coquecigrue                 B
-Indomitable                 B
-"Worm of the Well"          B
-"Juggler Hecatomb"          B
-Mindmaker                   B
-Deacon                      B
-Pachamama                   B
-"Gilshs Aath Swiftclaw"     B
-
 # 4.0 STORM BLOOD
 ## Rank EX
 Ixion                           EX
