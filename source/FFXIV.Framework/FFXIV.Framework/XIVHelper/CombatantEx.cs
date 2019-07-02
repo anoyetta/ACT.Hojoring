@@ -214,20 +214,11 @@ namespace FFXIV.Framework.XIVHelper
                 Math.Pow(from.PosY - to.PosY, 2)),
             1, MidpointRounding.AwayFromZero);
 
-        public float PosXMap => this.NormalizeCoordinate(this.PosX);
+        public float PosXMap => (float)ToHorizontalMapPosition(this.PosX);
 
-        public float PosYMap => this.NormalizeCoordinate(this.PosY);
+        public float PosYMap => (float)ToHorizontalMapPosition(this.PosY);
 
-        public float PosZMap => this.NormalizeCoordinate(this.PosZ);
-
-        private float CoordinateNorm => (float)Math.Sqrt(Math.Pow(this.PosX, 2) + Math.Pow(this.PosY, 2) + Math.Pow(this.PosZ, 2));
-
-        private float NormalizeCoordinate(
-            float raw)
-        {
-            var norm = this.CoordinateNorm;
-            return norm != 0 ? (raw / norm) : 0;
-        }
+        public float PosZMap => (float)ToVerticalMapPosition(this.PosZ);
 
         public double HeadingDegree => (this.Heading + 3.0) / 6.0 * 360.0 * -1.0;
 
