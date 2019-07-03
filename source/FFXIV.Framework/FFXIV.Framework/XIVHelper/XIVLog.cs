@@ -52,6 +52,8 @@ namespace FFXIV.Framework.XIVHelper
 
         public string LogLine { get; set; } = string.Empty;
 
+        public string OriginalLogLine => $"[{this.Timestamp:HH:mm:ss.fff}] {this.LogLine}";
+
         public override string ToString()
             => $"{this.Timestamp:HH:mm:ss.fff} {this.LogLine}";
     }
