@@ -171,6 +171,7 @@ namespace ACT.UltraScouter.Models
 
             // 単純な計算角度を算出する
             this.DirectionAngle = rad * 180.0 / Math.PI;
+            this.RaisePropertyChanged(nameof(this.DirectionAngle));
 
             // 0 - 360 に補正する
             var deg = this.DirectionAngle % 360.0;
@@ -189,7 +190,7 @@ namespace ACT.UltraScouter.Models
             }
 
             // 距離は最後にセットする
-            this.Distance = Math.Round(this.combatant.DistanceByPlayer, 1);
+            this.Distance = Math.Round(this.combatant.HorizontalDistanceByPlayer, 1);
 
             this.RaisePropertyChanged(nameof(this.IsPC));
             this.RaisePropertyChanged(nameof(this.JobIcon));
