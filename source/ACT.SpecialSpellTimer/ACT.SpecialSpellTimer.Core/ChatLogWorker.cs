@@ -60,7 +60,7 @@ namespace ACT.SpecialSpellTimer
 
                     foreach (var log in logList)
                     {
-                        this.LogBuffer.AppendLine(log.LogLine);
+                        this.LogBuffer.AppendLine(log.OriginalLogLine);
                         Thread.Yield();
                     }
                 }
