@@ -553,12 +553,6 @@ namespace ACT.SpecialSpellTimer
                 return result;
             }
 
-            if (!logLine.Contains("] 00:") &&
-                !logLine.StartsWith("00:"))
-            {
-                return result;
-            }
-
             result = XIVPluginHelper.Instance.RemoveWorldName(logLine);
 
             return result;
