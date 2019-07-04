@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Threading;
 using CeVIO.Talk.RemoteService;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.TTS.Common.Models;
@@ -261,7 +262,11 @@ namespace FFXIV.Framework.TTS.Server.Models
                     }
                 }
 
-                this.cevioTalker.Speak(textToSpeak);
+                var state = this.cevioTalker.Speak(textToSpeak);
+                while (!state.IsCompleted)
+                {
+                    Thread.Sleep(20);
+                }
             }
         }
     }
