@@ -173,6 +173,16 @@ namespace FFXIV.Framework.TTS.Server
                     return;
                 }
 
+                if (speed == -1)
+                {
+                    speed = 50;
+                }
+
+                if (volume == -1)
+                {
+                    volume = 50;
+                }
+
                 this.SpeakQueue.Enqueue(new SpeakTask()
                 {
                     Speed = (uint)speed,
