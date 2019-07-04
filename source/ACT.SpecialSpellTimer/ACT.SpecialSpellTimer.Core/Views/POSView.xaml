@@ -45,8 +45,20 @@
     <StackPanel
       Orientation="Vertical">
 
-      <DockPanel VerticalAlignment="Center">
+      <Grid HorizontalAlignment="Left" Width="76">
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
         <ctrl:LightOutlineTextBlock
+          Grid.Row="0"
+          Grid.Column="0"
           Margin="0 1 0 0"
           VerticalAlignment="Center"
           Text="X"
@@ -57,8 +69,10 @@
           FontSize="10" />
 
         <ctrl:LightOutlineTextBlock
+          Grid.Row="0"
+          Grid.Column="1"
+          Margin="8 0 0 0"
           x:Name="XText"
-          Width="70"
           HorizontalContentAlignment="Right"
           VerticalAlignment="Center"
           Text="999.99"
@@ -66,10 +80,10 @@
           Stroke="#e2041b"
           StrokeThickness="2"
           BlurRadius="0" />
-      </DockPanel>
 
-      <DockPanel VerticalAlignment="Center">
         <ctrl:LightOutlineTextBlock
+          Grid.Row="1"
+          Grid.Column="0"
           Margin="0 1 0 0"
           VerticalAlignment="Center"
           Text="Y"
@@ -80,8 +94,10 @@
           FontSize="10" />
 
         <ctrl:LightOutlineTextBlock
+          Grid.Row="1"
+          Grid.Column="1"
+          Margin="8 0 0 0"
           x:Name="YText"
-          Width="70"
           HorizontalContentAlignment="Right"
           VerticalAlignment="Center"
           Text="999.99"
@@ -89,10 +105,10 @@
           Stroke="#82ae46"
           StrokeThickness="2"
           BlurRadius="0" />
-      </DockPanel>
 
-      <DockPanel VerticalAlignment="Center">
         <ctrl:LightOutlineTextBlock
+          Grid.Row="2"
+          Grid.Column="0"
           Margin="0 1 0 0"
           VerticalAlignment="Center"
           Text="Z"
@@ -103,8 +119,10 @@
           FontSize="10" />
 
         <ctrl:LightOutlineTextBlock
+          Grid.Row="2"
+          Grid.Column="1"
+          Margin="8 0 0 0"
           x:Name="ZText"
-          Width="70"
           HorizontalContentAlignment="Right"
           VerticalAlignment="Center"
           Text="999.99"
@@ -112,7 +130,7 @@
           Stroke="#0095d9"
           StrokeThickness="2"
           BlurRadius="0" />
-      </DockPanel>
+      </Grid>
 
       <StackPanel
         x:Name="DebugInfoPanel"
@@ -131,98 +149,125 @@
 
         <ctrl:LightOutlineTextBlock
           Style="{StaticResource DebugInfo}"
-          Text="POS Raw"
-          FontSize="7" />
+          Text="Raw"
+          FontSize="10" />
 
-        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="38" />
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+
           <ctrl:LightOutlineTextBlock
+            Grid.Row="0"
+            Grid.Column="0"
             VerticalAlignment="Center"
             Style="{StaticResource DebugInfo}"
             Text="X"
-            FontSize="6" />
+            FontSize="10" />
           <ctrl:LightOutlineTextBlock
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="8 0 0 0"
             x:Name="XRaw"
             VerticalAlignment="Center"
             Style="{StaticResource DebugInfo}"
             HorizontalAlignment="Right"
-            Text="999.99"
-            FontSize="10" />
-        </DockPanel>
+            Text="999.99" />
 
-        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
           <ctrl:LightOutlineTextBlock
+            Grid.Row="1"
+            Grid.Column="0"
             VerticalAlignment="Center"
             Style="{StaticResource DebugInfo}"
             Text="Y"
-            FontSize="6" />
+            FontSize="10" />
           <ctrl:LightOutlineTextBlock
+            Grid.Row="1"
+            Grid.Column="1"
             x:Name="YRaw"
             VerticalAlignment="Center"
             Style="{StaticResource DebugInfo}"
             HorizontalAlignment="Right"
-            Text="999.99"
-            FontSize="10" />
-        </DockPanel>
+            Text="999.99" />
 
-        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
           <ctrl:LightOutlineTextBlock
+            Grid.Row="2"
+            Grid.Column="0"
             VerticalAlignment="Center"
             Style="{StaticResource DebugInfo}"
             Text="Z"
-            FontSize="6" />
+            FontSize="10" />
           <ctrl:LightOutlineTextBlock
+            Grid.Row="2"
+            Grid.Column="1"
             x:Name="ZRaw"
             VerticalAlignment="Center"
             Style="{StaticResource DebugInfo}"
             HorizontalAlignment="Right"
-            Text="999.99"
-            FontSize="10" />
-        </DockPanel>
+            Text="999.99" />
 
-        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
           <ctrl:LightOutlineTextBlock
+            Grid.Row="3"
+            Grid.Column="0"
             VerticalAlignment="Center"
             Style="{StaticResource DebugInfo}"
-            Text="head"
-            FontSize="6" />
+            Text="H"
+            FontSize="10" />
           <ctrl:LightOutlineTextBlock
+            Grid.Row="3"
+            Grid.Column="1"
             x:Name="Head"
             VerticalAlignment="Center"
             Style="{StaticResource DebugInfo}"
             HorizontalAlignment="Right"
-            Text="999.99"
-            FontSize="10" />
-        </DockPanel>
+            Text="999.99" />
 
-        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
           <ctrl:LightOutlineTextBlock
+            Grid.Row="4"
+            Grid.Column="0"
             VerticalAlignment="Center"
             Style="{StaticResource DebugInfo}"
-            Text="head(d)"
-            FontSize="6" />
+            Text="(deg.)"
+            FontSize="7" />
           <ctrl:LightOutlineTextBlock
+            Grid.Row="4"
+            Grid.Column="1"
             x:Name="HeadDegree"
             VerticalAlignment="Center"
             Style="{StaticResource DebugInfo}"
             HorizontalAlignment="Right"
-            Text="999.99"
-            FontSize="10" />
-        </DockPanel>
+            Text="999.99" />
 
-        <DockPanel Margin="3 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="65">
           <ctrl:LightOutlineTextBlock
+            Grid.Row="5"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
             VerticalAlignment="Center"
+            VerticalContentAlignment="Center"
             HorizontalAlignment="Center"
+            HorizontalContentAlignment="Center"
             Style="{StaticResource DebugInfo}"
             Text="⬆"
-            FontSize="15"
+            Height="25"
+            Width="25"
+            FontSize="20"
             RenderTransformOrigin="0.5 0.5">
             <ctrl:LightOutlineTextBlock.RenderTransform>
               <RotateTransform Angle="{Binding HeadDegree, Mode=OneWay}" />
             </ctrl:LightOutlineTextBlock.RenderTransform>
           </ctrl:LightOutlineTextBlock>
-        </DockPanel>
+        </Grid>
 
+        <!--
         <ctrl:LightOutlineTextBlock
           Margin="0 8 0 0"
           Style="{StaticResource DebugInfo}"
@@ -302,6 +347,7 @@
             Text="0"
             FontSize="10" />
         </DockPanel>
+        -->
       </StackPanel>
     </StackPanel>
   </Grid>

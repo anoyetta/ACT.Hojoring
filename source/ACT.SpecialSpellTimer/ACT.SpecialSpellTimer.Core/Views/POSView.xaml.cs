@@ -2,8 +2,8 @@ using System;
 using System.Windows;
 using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
-using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.Views
@@ -136,6 +136,7 @@ namespace ACT.SpecialSpellTimer.Views
                     this.HeadDegree.Text = player.HeadingDegree.ToString("N0");
                     this.ViewModel.HeadDegree = player.HeadingDegree;
 
+                    /*
                     CameraInfo.Instance.Refresh();
                     if (CameraInfo.Instance.IsAvailable)
                     {
@@ -153,6 +154,7 @@ namespace ACT.SpecialSpellTimer.Views
                         this.ViewModel.CameraDegree = 0;
                         this.CameraAlt.Text = string.Empty;
                     }
+                    */
 
                     this.BaseGrid.Visibility = Visibility.Visible;
                 }

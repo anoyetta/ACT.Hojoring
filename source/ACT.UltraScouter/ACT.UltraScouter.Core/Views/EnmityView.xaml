@@ -187,10 +187,11 @@
                       Margin="10 0 0 0"
                       DockPanel.Dock="Right"
                       HorizontalAlignment="Right">
+
                       <!-- Absolute Value -->
                       <ctrl:DenomiNumericTextBlock
                         IsDenomi="{Binding Config.IsDenomi, Mode=OneWay}"
-                        IsDisableBottom="True"
+                        IsDisableBottom="False"
                         Style="{DynamicResource DenomiNumericStyle}"
                         Value="{Binding Enmity, Mode=OneWay}"
                         Visibility="{Binding Config.IsNotDisplayDifference, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
@@ -202,7 +203,7 @@
                         <ctrl:DenomiNumericTextBlock
                           Visibility="{Binding IsMe, Mode=OneWay, Converter={StaticResource NotVisibilityConverter}}"
                           IsDenomi="{Binding Config.IsDenomi, Mode=OneWay}"
-                          IsDisableBottom="True"
+                          IsDisableBottom="False"
                           IsSign="True"
                           Style="{DynamicResource DenomiNumericStyle}"
                           Value="{Binding EnmityDifference, Mode=OneWay}" />

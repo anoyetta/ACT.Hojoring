@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,9 +11,6 @@ using NLog;
 
 namespace FFXIV.Framework.TTS.Server
 {
-    /// <summary>
-    /// App.xaml の相互作用ロジック
-    /// </summary>
     public partial class App :
         Application
     {
@@ -43,10 +39,12 @@ namespace FFXIV.Framework.TTS.Server
         {
             instance = this;
 
-            AssemblyResolver.Instance.Initialize();
-            Assembly.Load("FFXIV.Framework");
-
+            CosturaUtility.Initialize();
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+            // configをロードする
+            var config = Config.Instance;
+            config.StartAutoSave();
 
             this.Startup += this.App_Startup;
             this.Exit += this.App_Exit;
@@ -104,7 +102,9 @@ namespace FFXIV.Framework.TTS.Server
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void App_Exit(object sender, ExitEventArgs e)
+        private void App_Exit(object sender, ExitEventArgs e) => this.CloseApp();
+
+        private void CloseApp()
         {
             try
             {
@@ -112,12 +112,15 @@ namespace FFXIV.Framework.TTS.Server
 
                 // サーバを終了する
                 RemoteTTSServer.Instance.Close();
+                BoyomiTcpServer.Instance.Stop();
 
                 if (this.taskTrayComponet != null)
                 {
                     this.taskTrayComponet.Dispose();
                     this.taskTrayComponet = null;
                 }
+
+                Config.Instance.Save();
             }
             catch (Exception ex)
             {
@@ -154,6 +157,12 @@ namespace FFXIV.Framework.TTS.Server
                 // サーバを開始する
                 RemoteTTSServer.Instance.Open();
 
+                // Boyomiサーバーを開始する
+                if (Config.Instance.IsBoyomiServerAutoStart)
+                {
+                    BoyomiTcpServer.Instance.Start(Config.Instance.BoyomiServerPortNo);
+                }
+
                 // シャットダウンタイマーをセットする
                 this.shutdownTimer.Tick -= this.ShutdownTimerOnTick;
                 this.shutdownTimer.Tick += this.ShutdownTimerOnTick;
@@ -173,14 +182,17 @@ namespace FFXIV.Framework.TTS.Server
 
         private void ShutdownTimerOnTick(object sender, EventArgs e)
         {
-            if (Process.GetProcessesByName("Advanced Combat Tracker").Length < 1 &&
-                Process.GetProcessesByName("ACTx86").Length < 1)
+#if true
+            if (System.Diagnostics.Process.GetProcessesByName("Advanced Combat Tracker").Length < 1 &&
+                System.Diagnostics.Process.GetProcessesByName("ACTx86").Length < 1)
             {
                 this.Logger.Trace("ACT not found. shutdown server.");
 
                 this.shutdownTimer.Stop();
+                this.CloseApp();
                 this.Shutdown();
             }
+#endif
         }
     }
 }

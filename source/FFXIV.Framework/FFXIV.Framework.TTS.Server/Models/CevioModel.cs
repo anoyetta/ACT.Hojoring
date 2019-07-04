@@ -193,5 +193,67 @@ namespace FFXIV.Framework.TTS.Server.Models
                 }
             }
         }
+
+        /// <summary>
+        /// 話す
+        /// </summary>
+        /// <param name="textToSpeak">TTS</param>
+        /// <param name="speed">スピード(0-100)</param>
+        /// <param name="volume">ボリューム(0-100)</param>
+        /// <param name="tone">音の高さ(0-100)</param>
+        /// <param name="alpha">声質(0-100)</param>
+        /// <param name="toneScale">抑揚(0-100)</param>
+        public void Speak(
+            string textToSpeak,
+            uint? speed = null,
+            uint? volume = null,
+            uint? tone = null,
+            uint? alpha = null,
+            uint? toneScale = null,
+            int? castNo = null)
+        {
+            if (string.IsNullOrEmpty(textToSpeak))
+            {
+                return;
+            }
+
+            this.StartCevio();
+
+            if (speed.HasValue)
+            {
+                this.cevioTalker.Speed = speed.Value;
+            }
+
+            if (volume.HasValue)
+            {
+                this.cevioTalker.Volume = volume.Value;
+            }
+
+            if (tone.HasValue)
+            {
+                this.cevioTalker.Tone = tone.Value;
+            }
+
+            if (alpha.HasValue)
+            {
+                this.cevioTalker.Alpha = alpha.Value;
+            }
+
+            if (toneScale.HasValue)
+            {
+                this.cevioTalker.ToneScale = toneScale.Value;
+            }
+
+            if (castNo.HasValue)
+            {
+                var casts = Talker.AvailableCasts;
+                if (castNo.Value < casts.Length)
+                {
+                    this.cevioTalker.Cast = casts[castNo.Value];
+                }
+            }
+
+            this.cevioTalker.Speak(textToSpeak);
+        }
     }
 }

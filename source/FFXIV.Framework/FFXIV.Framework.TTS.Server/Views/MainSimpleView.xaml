@@ -19,11 +19,16 @@
   FontSize="16"
   WindowStartupLocation="CenterScreen"
   Icon="/FFXIV.Framework.TTS.Server;component/speak.ico"
-  Width="800" Height="450">
+  Width="800" Height="510">
 
   <Window.DataContext>
     <vm:MainSimpleViewModel />
   </Window.DataContext>
+
+  <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+  </Window.Resources>
+
   <DockPanel>
     <StackPanel DockPanel.Dock="Top" Orientation="Vertical" VerticalAlignment="Top">
       <Label Content="IPC Channel URI" Margin="5" />
@@ -35,6 +40,60 @@
         Margin="5"
         Content="Start CeVIO Creative Studio"
         Command="{Binding StartCevioCommand, Mode=OneWay}" />
+
+      <Label Content="Boyomi TCP Server" Margin="5" />
+      <StackPanel Margin="12 0 0 0">
+        <Label Content="Port" Padding="0" FontSize="13" />
+        <StackPanel
+          Margin="0 5 0 0"
+          Orientation="Horizontal">
+          <TextBox
+            Text="{Binding Config.BoyomiServerPortNo, Mode=TwoWay}"
+            VerticalContentAlignment="Center"
+            Height="22"
+            MaxLength="5"
+            HorizontalAlignment="Left"
+            Width="60"
+            HorizontalContentAlignment="Right"
+            ToolTip="* default 50002" />
+          <Button
+            Margin="5 0 0 0"
+            FontSize="13"
+            Width="40"
+            BorderThickness="0"
+            Background="Transparent"
+            Foreground="MediumBlue"
+            Content="Start"
+            Command="{Binding StartServerCommand, Mode=OneWay}" />
+          <Button
+            Margin="5 0 0 0"
+            FontSize="13"
+            Width="40"
+            BorderThickness="0"
+            Background="Transparent"
+            Foreground="MediumBlue"
+            Content="Stop"
+            Command="{Binding StopServerCommand, Mode=OneWay}" />
+          <CheckBox
+            Margin="5 0 0 0"
+            VerticalAlignment="Center"
+            VerticalContentAlignment="Center"
+            FontSize="13"
+            Content="Auto Start"
+            IsChecked="{Binding Config.IsBoyomiServerAutoStart, Mode=TwoWay}" />
+        </StackPanel>
+
+        <Label
+          Visibility="{Binding TcpServer.IsRunning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+          HorizontalAlignment="Left"
+          Margin="0 5 0 0"
+          Padding="0"
+          FontSize="14"
+          FontStyle="Italic"
+          FontWeight="Bold"
+          Foreground="Green"
+          Content="Running..." />
+      </StackPanel>
     </StackPanel>
 
     <StackPanel DockPanel.Dock="Bottom" Orientation="Vertical" VerticalAlignment="Bottom">

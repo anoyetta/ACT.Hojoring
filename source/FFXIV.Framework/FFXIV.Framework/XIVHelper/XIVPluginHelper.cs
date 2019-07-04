@@ -758,12 +758,14 @@ namespace FFXIV.Framework.XIVHelper
         {
             if (!this.IsAvailable)
             {
+#if true
                 if (IsDebug)
                 {
                     CombatantsManager.Instance.Refresh(DummyCombatants, IsDebug);
                     raiseFirstCombatants();
                     tryActivation();
                 }
+#endif
 
                 return;
             }
