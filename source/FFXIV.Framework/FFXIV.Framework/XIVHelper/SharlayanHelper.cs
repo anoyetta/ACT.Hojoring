@@ -172,7 +172,8 @@ namespace FFXIV.Framework.XIVHelper
 
                     MemoryHandler.Instance.SetProcess(
                         model,
-                        ffxivLanguage);
+                        gameLanguage: ffxivLanguage,
+                        useLocalCache: false);
 
                     ReaderEx.SetProcessModel(model);
 
