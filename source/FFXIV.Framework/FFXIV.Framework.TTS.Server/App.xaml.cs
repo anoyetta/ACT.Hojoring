@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -43,9 +42,7 @@ namespace FFXIV.Framework.TTS.Server
         {
             instance = this;
 
-            AssemblyResolver.Instance.Initialize();
-            Assembly.Load("FFXIV.Framework");
-
+            CosturaUtility.Initialize();
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             // configをロードする
@@ -189,8 +186,8 @@ namespace FFXIV.Framework.TTS.Server
         private void ShutdownTimerOnTick(object sender, EventArgs e)
         {
 #if true
-            if (Process.GetProcessesByName("Advanced Combat Tracker").Length < 1 &&
-                Process.GetProcessesByName("ACTx86").Length < 1)
+            if (System.Diagnostics.Process.GetProcessesByName("Advanced Combat Tracker").Length < 1 &&
+                System.Diagnostics.Process.GetProcessesByName("ACTx86").Length < 1)
             {
                 this.Logger.Trace("ACT not found. shutdown server.");
 

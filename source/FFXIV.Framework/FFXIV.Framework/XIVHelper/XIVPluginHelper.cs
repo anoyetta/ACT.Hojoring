@@ -758,7 +758,7 @@ namespace FFXIV.Framework.XIVHelper
         {
             if (!this.IsAvailable)
             {
-#if false
+#if true
                 if (IsDebug)
                 {
                     CombatantsManager.Instance.Refresh(DummyCombatants, IsDebug);
