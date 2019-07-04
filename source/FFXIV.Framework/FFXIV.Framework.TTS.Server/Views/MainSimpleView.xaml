@@ -48,7 +48,7 @@
           Margin="0 5 0 0"
           Orientation="Horizontal">
           <TextBox
-            Text="{Binding Config.BoyomiServrPortNo, Mode=TwoWay}"
+            Text="{Binding Config.BoyomiServerPortNo, Mode=TwoWay}"
             VerticalContentAlignment="Center"
             Height="22"
             MaxLength="5"
@@ -63,7 +63,8 @@
             BorderThickness="0"
             Background="Transparent"
             Foreground="MediumBlue"
-            Content="Start" />
+            Content="Start"
+            Command="{Binding StartServerCommand, Mode=OneWay}" />
           <Button
             Margin="5 0 0 0"
             FontSize="13"
@@ -71,7 +72,8 @@
             BorderThickness="0"
             Background="Transparent"
             Foreground="MediumBlue"
-            Content="Stop" />
+            Content="Stop"
+            Command="{Binding StopServerCommand, Mode=OneWay}" />
           <CheckBox
             Margin="5 0 0 0"
             VerticalAlignment="Center"

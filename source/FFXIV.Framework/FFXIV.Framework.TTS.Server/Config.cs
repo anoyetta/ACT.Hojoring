@@ -25,7 +25,7 @@ namespace FFXIV.Framework.TTS.Server
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "anoyetta",
             "ACT",
-            $"TTServer.config");
+            $"TTSServer.config");
 
         public static Config Load() => Load(FileName);
 

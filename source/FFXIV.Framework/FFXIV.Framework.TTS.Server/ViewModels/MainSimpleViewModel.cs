@@ -6,6 +6,7 @@ using System.Windows.Input;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.TTS.Server.Models;
 using FFXIV.Framework.TTS.Server.Views;
+using Prism.Commands;
 
 namespace FFXIV.Framework.TTS.Server.ViewModels
 {
@@ -77,6 +78,22 @@ namespace FFXIV.Framework.TTS.Server.ViewModels
                     sb.ToString());
             }
         })));
+
+        private DelegateCommand startServerCommand;
+
+        public DelegateCommand StartServerCommand =>
+            this.startServerCommand ?? (this.startServerCommand = new DelegateCommand(this.ExecuteStartServerCommand));
+
+        private void ExecuteStartServerCommand()
+            => BoyomiTcpServer.Instance.Start(Config.Instance.BoyomiServerPortNo);
+
+        private DelegateCommand stopServerCommand;
+
+        public DelegateCommand StopServerCommand =>
+            this.stopServerCommand ?? (this.stopServerCommand = new DelegateCommand(this.ExecuteStopServerCommand));
+
+        private void ExecuteStopServerCommand()
+            => BoyomiTcpServer.Instance.Stop();
 
         #region INotifyPropertyChanged
 

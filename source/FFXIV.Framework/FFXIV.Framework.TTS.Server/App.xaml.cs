@@ -48,6 +48,10 @@ namespace FFXIV.Framework.TTS.Server
 
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
+            // configをロードする
+            var config = Config.Instance;
+            config.StartAutoSave();
+
             this.Startup += this.App_Startup;
             this.Exit += this.App_Exit;
             this.DispatcherUnhandledException += this.App_DispatcherUnhandledException;
@@ -154,17 +158,13 @@ namespace FFXIV.Framework.TTS.Server
                 // バージョンを出力する
                 this.Logger.Info($"{EnvironmentHelper.GetProductName()} {EnvironmentHelper.GetVersion().ToStringShort()}");
 
-                // configをロードする
-                var config = Config.Instance;
-                config.StartAutoSave();
-
                 // サーバを開始する
                 RemoteTTSServer.Instance.Open();
 
                 // Boyomiサーバーを開始する
-                if (config.IsBoyomiServerAutoStart)
+                if (Config.Instance.IsBoyomiServerAutoStart)
                 {
-                    BoyomiTcpServer.Instance.Start(config.BoyomiServerPortNo);
+                    BoyomiTcpServer.Instance.Start(Config.Instance.BoyomiServerPortNo);
                 }
 
                 // シャットダウンタイマーをセットする

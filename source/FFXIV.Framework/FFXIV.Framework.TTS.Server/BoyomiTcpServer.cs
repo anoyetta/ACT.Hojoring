@@ -124,20 +124,41 @@ namespace FFXIV.Framework.TTS.Server
 
             using (var reader = new BinaryReader(stream))
             {
+                var speed = default(short);
+                var tone = default(short);
+                var volume = default(short);
+                var type = default(short);
+                var textEncoding = default(byte);
+                var textSize = default(int);
+                var textChars = default(byte[]);
+
                 var command = reader.ReadInt16();
-                if (command != 0)
+                switch (command)
                 {
-                    this.Logger.Error($"Boyomi TCP server errer. invalid command [{command}].");
-                    return;
+                    case 0:
+                        speed = reader.ReadInt16();
+                        tone = -1;
+                        volume = reader.ReadInt16();
+                        type = reader.ReadInt16();
+                        textEncoding = reader.ReadByte();
+                        textSize = reader.ReadInt32();
+                        textChars = reader.ReadBytes(textSize);
+                        break;
+
+                    case 1:
+                        speed = reader.ReadInt16();
+                        tone = reader.ReadInt16();
+                        volume = reader.ReadInt16();
+                        type = reader.ReadInt16();
+                        textEncoding = reader.ReadByte();
+                        textSize = reader.ReadInt32();
+                        textChars = reader.ReadBytes(textSize);
+                        break;
+
+                    default:
+                        this.Logger.Error($"Boyomi TCP server error. invalid command [{command}].");
+                        return;
                 }
-
-                var speed = reader.ReadInt16();
-                var volume = reader.ReadInt16();
-                var type = reader.ReadInt16();
-
-                var textEncoding = reader.ReadByte();
-                var textSize = reader.ReadInt32();
-                var textChars = reader.ReadBytes(textSize);
 
                 var text = textEncoding switch
                 {
@@ -157,7 +178,7 @@ namespace FFXIV.Framework.TTS.Server
                     Speed = (uint)speed,
                     Volume = (uint)volume,
                     CastNo = type,
-                    Text = text,
+                    Text = text.Trim(),
                 });
             }
         }
