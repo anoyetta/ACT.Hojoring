@@ -112,12 +112,15 @@ namespace FFXIV.Framework.TTS.Server
 
                 // サーバを終了する
                 RemoteTTSServer.Instance.Close();
+                BoyomiTcpServer.Instance.Stop();
 
                 if (this.taskTrayComponet != null)
                 {
                     this.taskTrayComponet.Dispose();
                     this.taskTrayComponet = null;
                 }
+
+                Config.Instance.Save();
             }
             catch (Exception ex)
             {
@@ -151,8 +154,18 @@ namespace FFXIV.Framework.TTS.Server
                 // バージョンを出力する
                 this.Logger.Info($"{EnvironmentHelper.GetProductName()} {EnvironmentHelper.GetVersion().ToStringShort()}");
 
+                // configをロードする
+                var config = Config.Instance;
+                config.StartAutoSave();
+
                 // サーバを開始する
                 RemoteTTSServer.Instance.Open();
+
+                // Boyomiサーバーを開始する
+                if (config.IsBoyomiServerAutoStart)
+                {
+                    BoyomiTcpServer.Instance.Start(config.BoyomiServerPortNo);
+                }
 
                 // シャットダウンタイマーをセットする
                 this.shutdownTimer.Tick -= this.ShutdownTimerOnTick;
@@ -174,7 +187,8 @@ namespace FFXIV.Framework.TTS.Server
         private void ShutdownTimerOnTick(object sender, EventArgs e)
         {
             if (Process.GetProcessesByName("Advanced Combat Tracker").Length < 1 &&
-                Process.GetProcessesByName("ACTx86").Length < 1)
+                Process.GetProcessesByName("ACTx86").Length < 1 &&
+                Process.GetProcessesByName("devenv").Length < 1)
             {
                 this.Logger.Trace("ACT not found. shutdown server.");
 
