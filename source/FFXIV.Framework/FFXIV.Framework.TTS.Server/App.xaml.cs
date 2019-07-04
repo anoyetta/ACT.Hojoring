@@ -108,7 +108,9 @@ namespace FFXIV.Framework.TTS.Server
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void App_Exit(object sender, ExitEventArgs e)
+        private void App_Exit(object sender, ExitEventArgs e) => this.CloseApp();
+
+        private void CloseApp()
         {
             try
             {
@@ -186,15 +188,17 @@ namespace FFXIV.Framework.TTS.Server
 
         private void ShutdownTimerOnTick(object sender, EventArgs e)
         {
+#if true
             if (Process.GetProcessesByName("Advanced Combat Tracker").Length < 1 &&
-                Process.GetProcessesByName("ACTx86").Length < 1 &&
-                Process.GetProcessesByName("devenv").Length < 1)
+                Process.GetProcessesByName("ACTx86").Length < 1)
             {
                 this.Logger.Trace("ACT not found. shutdown server.");
 
                 this.shutdownTimer.Stop();
+                this.CloseApp();
                 this.Shutdown();
             }
+#endif
         }
     }
 }

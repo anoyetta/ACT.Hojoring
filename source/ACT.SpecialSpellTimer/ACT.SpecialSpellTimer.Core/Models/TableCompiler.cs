@@ -948,6 +948,12 @@ namespace ACT.SpecialSpellTimer.Models
 
         public void RefreshPartyPlaceholders()
         {
+            if (string.IsNullOrEmpty(this.player.Name) ||
+                this.player.ID == 0)
+            {
+                return;
+            }
+
             // PC名辞書を更新する
             foreach (var pc in this.partyList)
             {
@@ -1191,7 +1197,8 @@ namespace ACT.SpecialSpellTimer.Models
 
         public void RefreshPlayerPlacceholder()
         {
-            if (string.IsNullOrEmpty(this.player.Name))
+            if (string.IsNullOrEmpty(this.player.Name) ||
+                this.player.ID == 0)
             {
                 return;
             }
