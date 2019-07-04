@@ -116,25 +116,28 @@ namespace FFXIV.Framework.TTS.Server.Models
                 return;
             }
 
-            // キャストを最初に指定する
-            this.cevioTalker.Cast = talkerModel.Cast;
-
-            this.cevioTalker.Volume = talkerModel.Volume;
-            this.cevioTalker.Speed = talkerModel.Speed;
-            this.cevioTalker.Tone = talkerModel.Tone;
-            this.cevioTalker.Alpha = talkerModel.Alpha;
-            this.cevioTalker.ToneScale = talkerModel.ToneScale;
-
-            if (this.cevioTalker.Components != null)
+            lock (this)
             {
-                // Components にはインデックスでしかアクセスできない
-                for (int i = 0; i < this.cevioTalker.Components.Length; i++)
+                // キャストを最初に指定する
+                this.cevioTalker.Cast = talkerModel.Cast;
+
+                this.cevioTalker.Volume = talkerModel.Volume;
+                this.cevioTalker.Speed = talkerModel.Speed;
+                this.cevioTalker.Tone = talkerModel.Tone;
+                this.cevioTalker.Alpha = talkerModel.Alpha;
+                this.cevioTalker.ToneScale = talkerModel.ToneScale;
+
+                if (this.cevioTalker.Components != null)
                 {
-                    var component = this.cevioTalker.Components[i];
-                    var src = talkerModel.Components.FirstOrDefault(x => x.Id == component.Id);
-                    if (src != null)
+                    // Components にはインデックスでしかアクセスできない
+                    for (int i = 0; i < this.cevioTalker.Components.Length; i++)
                     {
-                        component.Value = src.Value;
+                        var component = this.cevioTalker.Components[i];
+                        var src = talkerModel.Components.FirstOrDefault(x => x.Id == component.Id);
+                        if (src != null)
+                        {
+                            component.Value = src.Value;
+                        }
                     }
                 }
             }
@@ -152,44 +155,47 @@ namespace FFXIV.Framework.TTS.Server.Models
 
             this.StartCevio();
 
-            var tempWave = Path.GetTempFileName();
-
-            try
+            lock (this)
             {
-                var result = this.cevioTalker.OutputWaveToFile(
-                    textToSpeak,
-                    tempWave);
+                var tempWave = Path.GetTempFileName();
 
-                if (result)
+                try
                 {
-                    FileHelper.CreateDirectory(waveFileName);
+                    var result = this.cevioTalker.OutputWaveToFile(
+                        textToSpeak,
+                        tempWave);
 
-                    if (gain != 1.0)
+                    if (result)
                     {
-                        // ささらは音量が小さめなので増幅する
-                        using (var reader = new WaveFileReader(tempWave))
-                        {
-                            var prov = new VolumeWaveProvider16(reader)
-                            {
-                                Volume = gain
-                            };
+                        FileHelper.CreateDirectory(waveFileName);
 
-                            WaveFileWriter.CreateWaveFile(
-                                waveFileName,
-                                prov);
+                        if (gain != 1.0)
+                        {
+                            // ささらは音量が小さめなので増幅する
+                            using (var reader = new WaveFileReader(tempWave))
+                            {
+                                var prov = new VolumeWaveProvider16(reader)
+                                {
+                                    Volume = gain
+                                };
+
+                                WaveFileWriter.CreateWaveFile(
+                                    waveFileName,
+                                    prov);
+                            }
+                        }
+                        else
+                        {
+                            File.Move(tempWave, waveFileName);
                         }
                     }
-                    else
-                    {
-                        File.Move(tempWave, waveFileName);
-                    }
                 }
-            }
-            finally
-            {
-                if (File.Exists(tempWave))
+                finally
                 {
-                    File.Delete(tempWave);
+                    if (File.Exists(tempWave))
+                    {
+                        File.Delete(tempWave);
+                    }
                 }
             }
         }
@@ -217,43 +223,46 @@ namespace FFXIV.Framework.TTS.Server.Models
                 return;
             }
 
-            this.StartCevio();
-
-            if (speed.HasValue)
+            lock (this)
             {
-                this.cevioTalker.Speed = speed.Value;
-            }
+                this.StartCevio();
 
-            if (volume.HasValue)
-            {
-                this.cevioTalker.Volume = volume.Value;
-            }
-
-            if (tone.HasValue)
-            {
-                this.cevioTalker.Tone = tone.Value;
-            }
-
-            if (alpha.HasValue)
-            {
-                this.cevioTalker.Alpha = alpha.Value;
-            }
-
-            if (toneScale.HasValue)
-            {
-                this.cevioTalker.ToneScale = toneScale.Value;
-            }
-
-            if (castNo.HasValue)
-            {
-                var casts = Talker.AvailableCasts;
-                if (castNo.Value < casts.Length)
+                if (speed.HasValue)
                 {
-                    this.cevioTalker.Cast = casts[castNo.Value];
+                    this.cevioTalker.Speed = speed.Value;
                 }
-            }
 
-            this.cevioTalker.Speak(textToSpeak);
+                if (volume.HasValue)
+                {
+                    this.cevioTalker.Volume = volume.Value;
+                }
+
+                if (tone.HasValue)
+                {
+                    this.cevioTalker.Tone = tone.Value;
+                }
+
+                if (alpha.HasValue)
+                {
+                    this.cevioTalker.Alpha = alpha.Value;
+                }
+
+                if (toneScale.HasValue)
+                {
+                    this.cevioTalker.ToneScale = toneScale.Value;
+                }
+
+                if (castNo.HasValue)
+                {
+                    var casts = Talker.AvailableCasts;
+                    if (castNo.Value < casts.Length)
+                    {
+                        this.cevioTalker.Cast = casts[castNo.Value];
+                    }
+                }
+
+                this.cevioTalker.Speak(textToSpeak);
+            }
         }
     }
 }

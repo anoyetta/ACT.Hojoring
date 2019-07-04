@@ -194,7 +194,7 @@ namespace FFXIV.Framework.TTS.Server
             while (this.SpeakQueue.TryDequeue(out SpeakTask task))
             {
                 CevioModel.Instance.Speak(task.Text);
-                Thread.Sleep(1);
+                Thread.Sleep(50);
             }
         }
     }

@@ -49,6 +49,7 @@ namespace ACT.TTSYukkuri.Sasara
                 if (!File.Exists(wave))
                 {
                     // 音声waveファイルを生成する
+                    Settings.Default.SasaraSettings.SetToRemote();
                     RemoteTTSClient.Instance.TTSModel.TextToWave(
                         TTSTypes.CeVIO,
                         text,

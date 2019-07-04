@@ -51,8 +51,8 @@ namespace FFXIV.Framework.XIVHelper
             dst.CastDurationCurrent = src.CastDurationCurrent;
             dst.CastDurationMax = src.CastDurationMax;
             dst.PosX = src.PosX;
-            dst.PosY = src.PosZ;    // TBD XIVプラグインのYZが反転しているためここでスワップする
-            dst.PosZ = src.PosY;    // TBD XIVプラグインのYZが反転しているためここでスワップする
+            dst.PosY = src.PosY;
+            dst.PosZ = src.PosZ;
             dst.Heading = src.Heading;
             dst.CurrentWorldID = src.CurrentWorldID;
             dst.WorldID = src.WorldID;
