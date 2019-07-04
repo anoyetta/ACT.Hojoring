@@ -153,6 +153,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     '●不要なファイルを削除する'
     Remove-Item -Force *.exe.config
+    Remove-Item -Force Costura.dll
 
     '●フォルダをリネームする'
     Rename-Item Yukkuri _yukkuri
