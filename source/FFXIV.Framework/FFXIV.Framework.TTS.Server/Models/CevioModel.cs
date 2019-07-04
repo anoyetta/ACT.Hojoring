@@ -193,5 +193,17 @@ namespace FFXIV.Framework.TTS.Server.Models
                 }
             }
         }
+
+        public void Speak(
+            string textToSpeak)
+        {
+            if (string.IsNullOrEmpty(textToSpeak))
+            {
+                return;
+            }
+
+            this.StartCevio();
+            this.cevioTalker.Speak(textToSpeak);
+        }
     }
 }

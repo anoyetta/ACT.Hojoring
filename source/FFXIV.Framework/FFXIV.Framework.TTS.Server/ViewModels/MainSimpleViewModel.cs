@@ -18,6 +18,10 @@ namespace FFXIV.Framework.TTS.Server.ViewModels
 
         #endregion View
 
+        public Config Config => Config.Instance;
+
+        public BoyomiTcpServer TcpServer => BoyomiTcpServer.Instance;
+
         private string ipcChannelUri;
         private ICommand refreshIPCChannelCommand;
         private ICommand startCevioCommand;

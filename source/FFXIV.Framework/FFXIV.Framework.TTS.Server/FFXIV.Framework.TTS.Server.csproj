@@ -73,6 +73,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AssemblyResolver.cs" />
+    <Compile Include="BoyomiTcpServer.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Models\CevioModel.cs" />
     <Compile Include="Models\TTSModel.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
