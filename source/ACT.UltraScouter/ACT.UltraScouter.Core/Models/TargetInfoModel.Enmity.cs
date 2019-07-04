@@ -68,7 +68,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Ryusan Sky",
                 JobID = JobIDs.DRG,
                 HateRate = 0.32f,
-                Enmity = DesignTopEnmity * 0.32f,
+                Enmity = DesignTopEnmity * 0.4799f,
             },
             new EnmityModel()
             {
@@ -95,7 +95,7 @@ namespace ACT.UltraScouter.Models
                 Name = "Ridea Numako",
                 JobID = JobIDs.SMN,
                 HateRate = 0.10f,
-                Enmity = DesignTopEnmity * 0.10f,
+                Enmity = DesignTopEnmity * 0.0001f,
             },
         });
 
