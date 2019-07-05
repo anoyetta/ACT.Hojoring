@@ -6,6 +6,11 @@ namespace ACT.Hojoring
 {
     public class UpdateChecker
     {
+        public UpdateChecker()
+        {
+            CosturaUtility.Initialize();
+        }
+
         public bool UsePreRelease { get; set; }
 
         public ReleaseInfo GetNewerVersion()
