@@ -213,6 +213,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "オートタレット", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "デミ・バハムート", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "アーサリースター", Category = KewordTypes.Pet },
+            new AnalyzeKeyword() { Keyword = "オートマトン・", Category = KewordTypes.Pet },
+            new AnalyzeKeyword() { Keyword = "セラフィム", Category = KewordTypes.Pet },
+            new AnalyzeKeyword() { Keyword = "デミ・フェニックス", Category = KewordTypes.Pet },
+            new AnalyzeKeyword() { Keyword = "英雄の影身", Category = KewordTypes.Pet },
+            new AnalyzeKeyword() { Keyword = "分身", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "を唱えた。", Category = KewordTypes.Cast },
             new AnalyzeKeyword() { Keyword = "の構え。", Category = KewordTypes.Cast },
             new AnalyzeKeyword() { Keyword = "starts using", Category = KewordTypes.Cast },
@@ -283,7 +288,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(EffectRegex),
-                CreateRegex(@"1A:(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.+?) for (?<duration>[0-9\.]*?) Seconds.$")
+                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.+?) for (?<duration>[0-9\.]*?) Seconds.$")
             },
             {
                 nameof(MarkerRegex),
@@ -389,7 +394,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(EffectRegex),
-                CreateRegex(@"1A:(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.+?) for (?<duration>[0-9\.]*?) Seconds.$")
+                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.+?) for (?<duration>[0-9\.]*?) Seconds.$")
             },
             {
                 nameof(MarkerRegex),
@@ -494,7 +499,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(EffectRegex),
-                CreateRegex(@"1A:(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.+?) for (?<duration>[0-9\.]*?) Seconds.$")
+                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.+?) for (?<duration>[0-9\.]*?) Seconds.$")
             },
             {
                 nameof(MarkerRegex),
@@ -600,7 +605,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(EffectRegex),
-                CreateRegex(@"1A:(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.+?) for (?<duration>[0-9\.]*?) Seconds.$")
+                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.+?) for (?<duration>[0-9\.]*?) Seconds.$")
             },
             {
                 nameof(MarkerRegex),
