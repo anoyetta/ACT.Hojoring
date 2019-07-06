@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -253,16 +254,30 @@ namespace FFXIV.Framework.Common
             return r;
         }
 
+        private static readonly string UpdateScriptUrl = "https://raw.githubusercontent.com/anoyetta/ACT.Hojoring/master/source/ACT.Hojoring.Updater/update_hojoring.ps1";
+
         /// <summary>
         /// アップデートスクリプトを起動する
         /// </summary>
         /// <param name="usePreRelease">
         /// プレリリースを取得するか？</param>
-        public static void StartUpdateScript(
+        public static async void StartUpdateScript(
             bool usePreRelease = false)
         {
             var cd = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var script = Path.Combine(cd, "update_hojoring.ps1");
+
+            using (var web = new WebClient())
+            {
+                var temp = Path.GetTempFileName();
+                File.Delete(temp);
+
+                await web.DownloadFileTaskAsync(
+                    UpdateScriptUrl,
+                    temp);
+
+                File.Copy(temp, script, true);
+            }
 
             if (File.Exists(script))
             {
