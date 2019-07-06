@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Windows;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.TTS.Server.Models;
@@ -35,6 +36,8 @@ namespace FFXIV.Framework.TTS.Server
 
         private void ExitMenuItem_Click(object sender, EventArgs e)
         {
+            (App.Current as App)?.CloseApp();
+            Thread.Sleep(500);
             Application.Current.Shutdown();
         }
 

@@ -109,7 +109,7 @@ namespace FFXIV.Framework.TTS.Server
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void App_Exit(object sender, ExitEventArgs e) => this.CloseApp();
 
-        private void CloseApp()
+        public void CloseApp()
         {
             try
             {
