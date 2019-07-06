@@ -382,6 +382,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     continue;
                 }
 
+                // ツールチップシンボル, ワールド名を除去する
+                log.logLine = LogBuffer.RemoveTooltipSynbols(log.logLine);
+                log.logLine = LogBuffer.RemoveWorldName(log.logLine);
+
                 this.AnalyzeLogLine(log);
                 Thread.Yield();
             }

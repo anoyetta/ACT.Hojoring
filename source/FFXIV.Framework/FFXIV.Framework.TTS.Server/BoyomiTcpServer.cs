@@ -42,6 +42,10 @@ namespace FFXIV.Framework.TTS.Server
             set => this.SetProperty(ref this.isRunning, value);
         }
 
+        private volatile bool isServerStarted = false;
+
+        private int port;
+
         public void Start(
             int port)
         {
@@ -59,9 +63,9 @@ namespace FFXIV.Framework.TTS.Server
                     return;
                 }
 
+                this.port = port;
                 this.server = new TcpListener(IPAddress.Any, port);
-                this.server.Start();
-                this.BeginAccept();
+                this.isServerStarted = false;
 
                 this.speakTask = new ThreadWorker(
                     this.DoSpeak,
@@ -72,7 +76,6 @@ namespace FFXIV.Framework.TTS.Server
                 this.speakTask.Run();
 
                 this.IsRunning = true;
-                this.Logger.Info($"Boyomi TCP server started. port={port}");
             }
         }
 
@@ -201,6 +204,30 @@ namespace FFXIV.Framework.TTS.Server
 
         private void DoSpeak()
         {
+            if (this.server == null)
+            {
+                Thread.Sleep(1000);
+                return;
+            }
+
+            if (!this.isServerStarted)
+            {
+                try
+                {
+                    this.server.Start();
+                    this.BeginAccept();
+                    this.isServerStarted = true;
+                    this.Logger.Info($"Boyomi TCP server started. port={this.port}");
+                }
+                catch (SocketException ex)
+                {
+                    this.Logger.Warn(
+                        $"Boyomi server open faild. message={ex.Message}");
+                    Thread.Sleep(10 * 1000);
+                    return;
+                }
+            }
+
             while (this.SpeakQueue.TryDequeue(out SpeakTask task))
             {
                 CevioModel.Instance.Speak(
