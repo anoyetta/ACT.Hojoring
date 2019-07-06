@@ -876,6 +876,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 // ツールチップシンボル, ワールド名を除去する
                 logLine = LogBuffer.RemoveTooltipSynbols(logLine);
                 logLine = LogBuffer.RemoveWorldName(logLine);
+                xivlog.LogLine = logLine;
 
                 list.Add(xivlog);
             }

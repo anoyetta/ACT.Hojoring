@@ -377,6 +377,7 @@ namespace ACT.SpecialSpellTimer
                 // ツールチップシンボル, ワールド名を除去する
                 logLine = RemoveTooltipSynbols(logLine);
                 logLine = RemoveWorldName(logLine);
+                xivlog.LogLine = logLine;
 
                 // ペットジョブで召喚をしたか？
                 if (!summoned &&
@@ -549,6 +550,12 @@ namespace ACT.SpecialSpellTimer
             var result = logLine;
 
             if (!Settings.Default.RemoveWorldName)
+            {
+                return result;
+            }
+
+            if (!logLine.Contains("] 00:") &&
+                !logLine.StartsWith("00:"))
             {
                 return result;
             }

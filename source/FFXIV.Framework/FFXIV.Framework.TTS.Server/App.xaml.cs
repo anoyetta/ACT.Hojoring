@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using FFXIV.Framework.Common;
@@ -88,6 +89,10 @@ namespace FFXIV.Framework.TTS.Server
                 {
                     this.Logger.Fatal(e.Exception, message);
                     LogManager.Flush();
+
+                    // サーバを終了する
+                    RemoteTTSServer.Instance.Close();
+                    BoyomiTcpServer.Instance.Stop();
                 }
                 catch (Exception)
                 {
@@ -104,7 +109,7 @@ namespace FFXIV.Framework.TTS.Server
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void App_Exit(object sender, ExitEventArgs e) => this.CloseApp();
 
-        private void CloseApp()
+        public void CloseApp()
         {
             try
             {
@@ -190,6 +195,8 @@ namespace FFXIV.Framework.TTS.Server
 
                 this.shutdownTimer.Stop();
                 this.CloseApp();
+
+                Thread.Sleep(1000);
                 this.Shutdown();
             }
 #endif
