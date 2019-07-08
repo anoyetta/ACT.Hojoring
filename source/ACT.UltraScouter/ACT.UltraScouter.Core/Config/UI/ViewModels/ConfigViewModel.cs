@@ -155,7 +155,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                             }
                         },
 
-                        new TreeSource("MP Ticker")
+                        new TreeSource("3s Ticker")
                         {
                             Content = new MPTickerConfigView()
                             {
