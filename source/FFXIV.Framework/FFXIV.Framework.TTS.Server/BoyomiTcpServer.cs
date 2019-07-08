@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.TTS.Server.Models;
 using NLog;
@@ -33,6 +34,7 @@ namespace FFXIV.Framework.TTS.Server
         #endregion Logger
 
         private TcpListener server;
+        private CancellationTokenSource cancellation;
 
         private bool isRunning;
 
@@ -86,6 +88,7 @@ namespace FFXIV.Framework.TTS.Server
                 if (this.server != null)
                 {
                     this.server.Stop();
+                    this.cancellation?.Cancel();
                     this.server = null;
                 }
 
@@ -100,21 +103,23 @@ namespace FFXIV.Framework.TTS.Server
             }
         }
 
-        private void BeginAccept()
+        private async void BeginAccept()
         {
-            this.server.AcceptTcpClientAsync().ContinueWith(t =>
+            try
             {
-                lock (this)
-                {
-                    if (this.server == null)
-                    {
-                        return;
-                    }
+                this.cancellation = new CancellationTokenSource();
 
-                    this.BeginAccept();
-                    this.ProcessMessage(t.Result?.GetStream());
-                }
-            });
+                await Task.Run(async () =>
+                {
+                    var client = await this.server.AcceptTcpClientAsync();
+                    this.ProcessMessage(client.GetStream());
+                },
+                this.cancellation.Token);
+            }
+            finally
+            {
+                this.BeginAccept();
+            }
         }
 
         private void ProcessMessage(
