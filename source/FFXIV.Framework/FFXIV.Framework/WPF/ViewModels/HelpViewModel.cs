@@ -13,8 +13,8 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
 using Microsoft.VisualBasic.FileIO;
 using NLog;
 using NLog.Targets;
@@ -486,22 +486,35 @@ namespace FFXIV.Framework.WPF.ViewModels
                 anyDest,
                 true);
 
-            // ツリーを保存する
+            // Hojoringのツリーを保存する
             var pluginDirectory = Path.Combine(temp, "ACT.Hojoring");
             if (!Directory.Exists(pluginDirectory))
             {
                 Directory.CreateDirectory(pluginDirectory);
             }
 
-            var here = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            using (var p = new Process())
+            {
+                var here = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                p.StartInfo.FileName = "cmd.exe";
+                p.StartInfo.Arguments = $@"/c ""tree ""{here}"" /F > ""{pluginDirectory}\tree.txt""";
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.CreateNoWindow = true;
+                p.Start();
+                p.WaitForExit();
+            }
 
-            var p = new Process();
-            p.StartInfo.FileName = "cmd.exe";
-            p.StartInfo.Arguments = $@"/c ""tree ""{here}"" /F > ""{pluginDirectory}\tree.txt""";
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.CreateNoWindow = true;
-            p.Start();
-            p.WaitForExit();
+            // ACT本体のツリーを保存する
+            using (var p = new Process())
+            {
+                var here = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                p.StartInfo.FileName = "cmd.exe";
+                p.StartInfo.Arguments = $@"/c ""tree ""{here}"" /F > ""{actDest}\tree.txt""";
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.CreateNoWindow = true;
+                p.Start();
+                p.WaitForExit();
+            }
 
             // 追加バックアップを行う
             HelpBridge.Instance.BackupCallback?.Invoke(temp);
