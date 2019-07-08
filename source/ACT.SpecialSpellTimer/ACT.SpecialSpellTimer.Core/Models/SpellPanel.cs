@@ -58,6 +58,19 @@ namespace ACT.SpecialSpellTimer.Models
         public SpellPanel()
         {
             this.SetupChildrenSource();
+
+            this.PropertyChanged += (_, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(this.Margin):
+                    case nameof(this.Horizontal):
+                    case nameof(this.IsAdvancedDesignMode):
+                    case nameof(this.StackPanelOrientation):
+                        this.RaisePropertyChanged(nameof(MarginTickness));
+                        break;
+                }
+            };
         }
 
         [XmlIgnore]
@@ -133,7 +146,19 @@ namespace ACT.SpecialSpellTimer.Models
             set => this.SetProperty(ref this.locked, value);
         }
 
-        public double Margin { get; set; } = 0;
+        private double margin = 0;
+
+        public double Margin
+        {
+            get => this.margin;
+            set => this.SetProperty(ref this.margin, value);
+        }
+
+        [XmlIgnore]
+        public Thickness MarginTickness =>
+            !this.Horizontal ?
+            new Thickness(0, 0, 0, this.Margin) :
+            new Thickness(0, 0, this.Margin, 0);
 
         [XmlIgnore]
         public bool ToClose { get; set; } = false;

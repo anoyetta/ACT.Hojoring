@@ -42,7 +42,7 @@
               x:Name="SpellControl"
               HorizontalAlignment="Left"
               DataContext="{Binding}"
-              Margin="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=SpellMargin, Mode=OneWay}"
+              Margin="{Binding Panel.MarginTickness, Mode=OneWay}"
               Visibility="{Binding Visibility, Mode=OneWay}"
               Opacity="0"
               Loaded="SpellControl_Loaded" />
