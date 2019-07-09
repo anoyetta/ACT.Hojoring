@@ -24,8 +24,6 @@ using FFXIV.Framework.WPF.Views;
 using FFXIV.Framework.XIVHelper;
 using Prism.Commands;
 using RazorEngine;
-using RazorEngine.Compilation;
-using RazorEngine.Compilation.ReferenceResolver;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
 using RazorEngine.Text;
@@ -563,7 +561,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             config.Namespaces.Add("System.Text.RegularExpressions");
             config.Namespaces.Add("FFXIV.Framework.Common");
             config.Namespaces.Add("FFXIV.Framework.Extensions");
-            config.Namespaces.Add("ACT.SpecialSpellTimer.RaidTimeline");
+            config.Namespaces.Add("ACT.SpecialSpellTimer.RazorModel");
 
             config.EncodedStringFactory = new RawStringFactory();
 
@@ -575,7 +573,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 var path = Path.Combine(
-                    TimelineManager.Instance.TimelineDirectory,
+                    TimelineRazorModel.Instance.TimelineDirectory,
                     name);
 
                 if (File.Exists(path))
@@ -995,15 +993,5 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         #endregion Dummy Timeline
-    }
-
-    public class RazorReferenceResolver : IReferenceResolver
-    {
-        public IEnumerable<CompilerReference> GetReferences(
-            TypeContext context,
-            IEnumerable<CompilerReference> includeAssemblies = null) =>
-            new UseCurrentAssembliesReferenceResolver()
-                .GetReferences(context, includeAssemblies)
-                .Where(f => !f.GetFile().EndsWith(".winmd"));
     }
 }

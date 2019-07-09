@@ -16,8 +16,6 @@ $startdir = Get-Location
 $7z = Get-Item .\tools\7za.exe
 $sln = Get-Item *.sln
 $archives = Get-Item .\archives\
-$libz = Get-Item .\tools\libz.exe
-$cevioLib = Get-Item .\Thirdparty\CeVIO.Talk.RemoteService.dll
 
 # '●Version'
 $versionContent = $(Get-Content "@MasterVersion.txt").Trim("\r").Trim("\n")
@@ -56,10 +54,6 @@ Start-Sleep -m 500
 if (Test-Path .\ACT.Hojoring\bin\Release) {
     Set-Location .\ACT.Hojoring\bin\Release
 
-    '●Hojoring.dll を削除する'
-    Remove-Item -Force ACT.Hojoring.dll
-    Remove-Item -Recurse * -Include *.pdb
-
     '●不要なロケールを削除する'
     $locales = @(
         "de",
@@ -86,70 +80,13 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     }
 
     '●外部参照用DLLを逃がす'
-    $references = @(
-        "x64",
-        "x86",
-        "ACT.SpecialSpellTimer.Core.dll",
-        "ACT.UltraScouter.Core.dll",
-        "ACT.TTSYukkuri.Core.dll",
-        "Sharlayan.dll",
-        "System.*.dll",
-        "Microsoft.*.dll",
-        "Newtonsoft.Json.dll",
-        "NLog*.dll",
-        "ICSharpCode.SharpZipLib.dll",
-        "ICSharpCode.AvalonEdit.dll"
-        "CommonServiceLocator.dll",
-        "ReactiveProperty*.dll",
-        "SuperSocket.ClientEngine.dll",
-        "WebSocket4Net.dll",
-        "MahApps.Metro.IconPacks.dll",
-        "ControlzEx.dll",
-        "PropertyChanged.dll"
-    )
-
     New-Item -ItemType Directory "bin" | Out-Null
-    Move-Item -Path $references -Destination "bin" | Out-Null
-
-    '●TTSServer にCeVIOをマージする'
-    (& $libz inject-dll -a "FFXIV.Framework.TTS.Common.dll" -i $cevioLib) | Select-String "Injecting"
-
-    # ●作業ディレクトリを作る
-    New-Item -ItemType Directory "temp" | Out-Null
-
-    '●TTSYukkuri のAssemblyをマージする'
-    $libs = @(
-        "Discord.*.dll",
-        "RucheHome*.dll"
-    )
-
-    Move-Item -Path $libs -Destination "temp" | Out-Null
-    (& $libz inject-dll -a "ACT.TTSYukkuri.Core.dll" -i "temp\*.dll" --move) | Select-String "Injecting"
-
-    
-    '●その他のDLLをマージする'
-    $libs = @(
-        "ACT.Hojoring.Activator.dll",
-        "FFXIV_MemoryReader*.dll",
-        "FontAwesome.WPF.dll",
-        "Octokit.dll",
-        "NAudio.dll",
-        "Hjson.dll",
-        "Prism*.dll",
-        "Xceed.*.dll",
-        "NPOI*.dll",
-        "AWSSDK.*.dll"
-    )
-
-    Move-Item -Path $libs -Destination "temp" | Out-Null
-    (& $libz inject-dll -a "FFXIV.Framework.dll" -i "temp\*.dll" --move) | Select-String "Injecting"
-
-    # ●作業ディレクトリを削除する
-    Remove-Item -Force -Recurse "temp"
+    Move-Item -Path @("x86", "x64") -Destination "bin" | Out-Null
 
     '●不要なファイルを削除する'
+    Remove-Item -Force *.pdb
+    Remove-Item -Force *.xml
     Remove-Item -Force *.exe.config
-    Remove-Item -Force Costura.dll
 
     '●フォルダをリネームする'
     Rename-Item Yukkuri _yukkuri

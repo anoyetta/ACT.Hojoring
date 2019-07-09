@@ -1,0 +1,15 @@
+﻿<Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
+  <Costura
+    IncludeDebugSymbols="false">
+    <ExcludeAssemblies>
+      ACT.Hojoring.Common
+      ACT.Hojoring.Updater
+      ACT.SpecialSpellTimer*
+      ACT.TTSYukkuri*
+      ACT.UltraScouter*
+      FFXIV.Framework
+      FFXIV.Framework.TTS.Server*
+      RazorEngine
+    </ExcludeAssemblies>
+  </Costura>
+</Weavers>

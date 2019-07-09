@@ -45,6 +45,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RazorReferenceResolver.cs" />
     <Compile Include="TimelineRazorModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -60,6 +61,9 @@
     </PackageReference>
     <PackageReference Include="Prism.Wpf">
       <Version>7.1.0.431</Version>
+    </PackageReference>
+    <PackageReference Include="RazorEngine">
+      <Version>3.10.0</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
