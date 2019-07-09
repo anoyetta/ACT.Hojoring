@@ -105,6 +105,10 @@ namespace FFXIV.Framework.Common
 
             try
             {
+                // エントリアセンブリのパスを出力する
+                var entry = Assembly.GetEntryAssembly().Location;
+                Logger.Trace($"Entry {entry}");
+
                 // ついでにFFXIV_ACT_Pluginのバージョンを出力する
                 var ffxivPlugin = ActGlobals.oFormActMain?.ActPlugins?
                     .FirstOrDefault(
@@ -116,22 +120,7 @@ namespace FFXIV.Framework.Common
                     var vi = FileVersionInfo.GetVersionInfo(ffxivPlugin);
                     if (vi != null)
                     {
-                        Logger.Trace($"*** FFXIV_ACT_Plugin v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FileBuildPart}.{vi.FilePrivatePart} ***");
-                    }
-                }
-
-                // ついでにFFXIV_MemoryReaderのバージョンを出力する
-                var memoryReader = ActGlobals.oFormActMain?.ActPlugins?
-                    .FirstOrDefault(
-                        x => x.pluginFile.Name.ContainsIgnoreCase("FFXIV_MemoryReader"))?
-                    .pluginFile.FullName;
-
-                if (File.Exists(memoryReader))
-                {
-                    var vi = FileVersionInfo.GetVersionInfo(memoryReader);
-                    if (vi != null)
-                    {
-                        Logger.Trace($"*** FFXIV_MemoryReader v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FileBuildPart}.{vi.FilePrivatePart} ***");
+                        Logger.Trace($"FFXIV_ACT_Plugin v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FileBuildPart}.{vi.FilePrivatePart}");
                     }
                 }
 
@@ -142,7 +131,7 @@ namespace FFXIV.Framework.Common
                     var ver = hojoring.Version as Version;
                     if (ver != null)
                     {
-                        Logger.Trace($"*** Hojoring v{ver.Major}.{ver.Minor}.{ver.Revision} ***");
+                        Logger.Trace($"Hojoring v{ver.Major}.{ver.Minor}.{ver.Revision}");
                     }
 
                     hojoring.ShowSplash();
@@ -323,8 +312,8 @@ namespace FFXIV.Framework.Common
 
                 Logger.Info(
                     result ?
-                    $"*** .NET Framework is Available. ***" :
-                    $"*** .NET Framework is OLD. ***");
+                    $".NET Framework is Available." :
+                    $".NET Framework is OLD.");
 
                 if (!result)
                 {
@@ -451,8 +440,8 @@ namespace FFXIV.Framework.Common
                 osBuildNo = i;
             }
 
-            Logger.Info($"*** {productName} v{releaseId}, build {buildNo} ***");
-            Logger.Info($"*** .NET Framework v{dotNetVersion}, release {dotNetReleaseID} ***");
+            Logger.Info($"{productName} v{releaseId}, build {buildNo}");
+            Logger.Info($".NET Framework v{dotNetVersion}, release {dotNetReleaseID}");
         }
 
         public static bool IsWindowsNewer =>

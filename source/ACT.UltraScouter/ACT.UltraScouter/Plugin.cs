@@ -15,6 +15,7 @@ namespace ACT.UltraScouter
         [MethodImpl(MethodImplOptions.NoInlining)]
         public Plugin()
         {
+            CosturaUtility.Initialize();
             AssemblyResolver.Instance.Initialize(this);
         }
 

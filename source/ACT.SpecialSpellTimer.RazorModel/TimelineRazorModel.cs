@@ -1,25 +1,32 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
+using System.Windows.Threading;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.Globalization;
 using Hjson;
 using Newtonsoft.Json.Linq;
+using Prism.Mvvm;
 
-namespace ACT.SpecialSpellTimer.RaidTimeline
+namespace ACT.SpecialSpellTimer.RazorModel
 {
     public class TimelineRazorModel
     {
-        /// <summary>
-        /// Local Time
-        /// </summary>
-        public DateTimeOffset LT => DateTimeOffset.Now;
+        #region Lazy Singleton
 
-#if false
-        public EorzeaTime ET => this.LT.ToEorzeaTime();
-#endif
+        private static readonly Lazy<TimelineRazorModel> LazyInstance = new Lazy<TimelineRazorModel>(() => new TimelineRazorModel());
+
+        public static TimelineRazorModel Instance => LazyInstance.Value;
+
+        private TimelineRazorModel()
+        {
+        }
+
+        #endregion Lazy Singleton
+
+        public DateTimeOffset LT => DateTimeOffset.Now;
 
         public TimelineRazorVariable Var { get; } = new TimelineRazorVariable();
 
@@ -27,15 +34,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public string Zone { get; set; } = string.Empty;
 
-        public string Locale { get; set; } = Locales.JA.ToString();
+        public string Locale { get; set; } = "JA";
 
         public TimelineRazorPlayer Player { get; set; }
 
         public TimelineRazorPlayer[] Party { get; set; }
 
-        public string TimelineDirectory => TimelineManager.Instance.TimelineDirectory;
+        public string TimelineDirectory => this.BaseDirectory;
 
         public string TimelineFile { get; private set; } = string.Empty;
+
+        internal string BaseDirectory { get; set; }
 
         internal void UpdateCurrentTimelineFile(
             string currentTimelineFile)
@@ -55,10 +64,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             string name,
             object value,
             bool global = false) =>
-            TimelineExpressionsModel.SetVariable(
+            TimelineRazorVariable.SetVarDelegate?.Invoke(
                 name,
                 value,
-                global ? TimelineModel.GlobalZone : this.Zone);
+                global ? "{GLOBAL}" : this.Zone);
 
         /// <summary>
         /// 一時変数をセットする
@@ -70,9 +79,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public void SetTemp(
             string name,
             object value) =>
-            TimelineExpressionsModel.SetVariable(
+            TimelineRazorVariable.SetVarDelegate?.Invoke(
                 name,
-                value);
+                value,
+                null);
 
         public bool InZone(
             params string[] zones)
@@ -106,7 +116,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (!File.Exists(file))
             {
                 file = Path.Combine(
-                    TimelineManager.Instance.TimelineDirectory,
+                    this.BaseDirectory,
                     file);
 
                 if (!File.Exists(file))
@@ -132,7 +142,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (!File.Exists(file))
             {
                 file = Path.Combine(
-                    TimelineManager.Instance.TimelineDirectory,
+                    this.BaseDirectory,
                     file);
 
                 if (!File.Exists(file))
@@ -180,12 +190,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
     public class TimelineRazorVariable
     {
+        public static Func<IReadOnlyDictionary<string, TimelineVariable>> GetVarDelegate { get; set; }
+
+        public static Func<string, object, string, bool> SetVarDelegate { get; set; }
+
         public TimelineRazorVariable()
         {
-            this.variables = TimelineExpressionsModel.GetVariables();
+            this.variables = TimelineRazorVariable.GetVarDelegate?.Invoke();
         }
 
-        private IReadOnlyDictionary<string, TimelineExpressionsModel.Variable> variables;
+        private IReadOnlyDictionary<string, TimelineVariable> variables;
 
         public object this[string name]
         {
@@ -200,5 +214,70 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return this.variables[name].Value;
             }
         }
+    }
+
+    public class TimelineVariable : BindableBase
+    {
+        /// <summary>
+        /// 空フラグ
+        /// </summary>
+        public static readonly TimelineVariable EmptyVariable = new TimelineVariable("Empty");
+
+        public TimelineVariable(
+            string name)
+        {
+            this.Name = name;
+        }
+
+        private string name = string.Empty;
+
+        public string Name
+        {
+            get => this.name;
+            set => this.SetProperty(ref this.name, value);
+        }
+
+        private object value = null;
+
+        public object Value
+        {
+            get => this.value;
+            set
+            {
+                this.value = value;
+
+                var action = new Action(() => this.RaisePropertyChanged());
+                Application.Current?.Dispatcher.BeginInvoke(
+                    action,
+                    DispatcherPriority.Background);
+            }
+        }
+
+        private int counter = 0;
+
+        public int Counter
+        {
+            get => this.counter;
+            set => this.SetProperty(ref this.counter, value);
+        }
+
+        private DateTime expiration = DateTime.MaxValue;
+
+        public DateTime Expiration
+        {
+            get => this.expiration;
+            set => this.SetProperty(ref this.expiration, value);
+        }
+
+        private string zone = string.Empty;
+
+        public string Zone
+        {
+            get => this.zone;
+            set => this.SetProperty(ref this.zone, value);
+        }
+
+        public override string ToString() =>
+            $"{this.Name}={this.Value}, counter={this.Counter}";
     }
 }

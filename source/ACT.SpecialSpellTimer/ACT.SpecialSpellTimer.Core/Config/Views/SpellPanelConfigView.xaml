@@ -388,7 +388,7 @@
                 <Label Margin="0 15 0 0" Content="Padding" />
                 <TextBox HorizontalAlignment="Left" Width="100" Text="{Binding Model.GridPaddingString, Mode=TwoWay}" />
 
-                <TextBlock Margin="0 15 0 0" HorizontalAlignment="Left">
+                <TextBlock Margin="0 19 0 0" HorizontalAlignment="Left">
                   <Hyperlink Command="{Binding ChangeAdvancedBackgroundColorCommand}">
                     <TextBlock Text="{DynamicResource SpellPanel_BackgroundColor}" />
                   </Hyperlink>
@@ -408,6 +408,14 @@
                     </StackPanel>
                   </CheckBox.Content>
                 </CheckBox>
+
+                <Label Margin="0 15 0 0" Content="Margin of spells" />
+                <xctk:DoubleUpDown
+                  HorizontalAlignment="Left"
+                  Value="{Binding Model.Margin, Mode=TwoWay}"
+                  FormatString="N0"
+                  Increment="1"
+                  Width="75" />
               </StackPanel>
 
               <StackPanel Margin="40 0 0 0">
@@ -418,7 +426,7 @@
             <!-- パネルのレイアウト end -->
 
             <!-- スペルのレイアウト -->
-            <Label Margin="0 20 0 0" Content="{DynamicResource SpellPanel_SpellsLayout}" FontSize="18" FontWeight="Bold" />
+            <Label Margin="0 22 0 0" Content="{DynamicResource SpellPanel_SpellsLayout}" FontSize="18" FontWeight="Bold" />
             <ItemsControl
               Margin="5 10 0 0"
               BorderThickness="0"

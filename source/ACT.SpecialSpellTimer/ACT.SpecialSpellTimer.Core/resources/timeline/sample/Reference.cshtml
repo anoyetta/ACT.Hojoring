@@ -8,10 +8,9 @@
 @{ var rev = "rev27"; }
 
 <!-- ●●この辺は Razor構文（非常に高度な機能）の説明なので読み飛ばして良い●● ↓ここから -->
-@using ACT.SpecialSpellTimer.RaidTimeline
 @{
   // 最初にデータモデルをキャストしておく
-  var data = Model as TimelineRazorModel;
+  var data = Model;
 }
 @{
   var sign = "anoyetta";

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.RaidTimeline.Views;
+using ACT.SpecialSpellTimer.RazorModel;
 using ACT.SpecialSpellTimer.Sound;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
@@ -2039,7 +2040,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             var isSync =
-                (TimelineModel.RazorModel?.SyncTTS ?? false) ||
+                (TimelineRazorModel.Instance?.SyncTTS ?? false) ||
                 act.NoticeSync.Value;
 
             RaiseLog(log);
@@ -2138,7 +2139,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             var isSync =
-                (TimelineModel.RazorModel?.SyncTTS ?? false) ||
+                (TimelineRazorModel.Instance?.SyncTTS ?? false) ||
                 tri.NoticeSync.Value;
 
             RaiseLog(log);

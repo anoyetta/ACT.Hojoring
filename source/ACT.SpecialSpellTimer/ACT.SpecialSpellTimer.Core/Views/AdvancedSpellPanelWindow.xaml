@@ -130,6 +130,7 @@
             <local:SpellControl
               DataContext="{Binding}"
               Visibility="{Binding Visibility, Mode=OneWay}"
+              Margin="{Binding Panel.MarginTickness, Mode=OneWay}"
               Opacity="0"
               Loaded="SpellControl_Loaded" />
           </DataTemplate>

@@ -85,6 +85,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Costura.Fody">
+      <Version>4.0.0</Version>
+    </PackageReference>
     <PackageReference Include="NLog.Config">
       <Version>4.5.11</Version>
     </PackageReference>
@@ -94,6 +97,14 @@
     <PackageReference Include="Sharlayan">
       <Version>5.0.4</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FodyWeavers.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

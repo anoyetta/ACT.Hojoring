@@ -14,6 +14,7 @@ namespace ACT.SpecialSpellTimer
         [MethodImpl(MethodImplOptions.NoInlining)]
         public Plugin()
         {
+            CosturaUtility.Initialize();
             AssemblyResolver.Instance.Initialize(this);
         }
 

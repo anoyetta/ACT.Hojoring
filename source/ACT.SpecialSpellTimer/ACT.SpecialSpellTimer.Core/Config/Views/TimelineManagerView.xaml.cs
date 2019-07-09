@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using ACT.SpecialSpellTimer.RaidTimeline;
 using ACT.SpecialSpellTimer.RaidTimeline.Views;
+using ACT.SpecialSpellTimer.RazorModel;
 using ACT.SpecialSpellTimer.resources;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
@@ -417,7 +418,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 }
             }));
 
-        public ObservableCollection<TimelineExpressionsModel.Variable> Variables { get; } = new ObservableCollection<TimelineExpressionsModel.Variable>();
+        public ObservableCollection<TimelineVariable> Variables { get; } = new ObservableCollection<TimelineVariable>();
 
         private void RefreshVariables()
         {

@@ -102,19 +102,28 @@ namespace FFXIV.Framework.TTS.Server
 
         private void BeginAccept()
         {
-            this.server.AcceptTcpClientAsync().ContinueWith(t =>
+            this.server.BeginAcceptTcpClient((result) =>
             {
-                lock (this)
+                if (this.server == null)
                 {
-                    if (this.server == null)
-                    {
-                        return;
-                    }
-
-                    this.BeginAccept();
-                    this.ProcessMessage(t.Result?.GetStream());
+                    return;
                 }
-            });
+
+                try
+                {
+                    var client = this.server.EndAcceptTcpClient(result);
+                    this.ProcessMessage(client.GetStream());
+                }
+                catch (Exception ex)
+                {
+                    this.Logger.Error(ex, $"Boyomi TCP server error.");
+                }
+                finally
+                {
+                    this.BeginAccept();
+                }
+            },
+            this.server);
         }
 
         private void ProcessMessage(

@@ -22,6 +22,7 @@ namespace ACT.TTSYukkuri
         public Plugin()
         {
             instance = this;
+            CosturaUtility.Initialize();
 
             // このDLLの配置場所とACT標準のPluginディレクトリも解決の対象にする
             AppDomain.CurrentDomain.AssemblyResolve += (s, e) =>

@@ -195,7 +195,6 @@
     <Compile Include="RaidTimeline\TimelineModel.DefaultValues.cs" />
     <Compile Include="RaidTimeline\TimelineModel.cs" />
     <Compile Include="RaidTimeline\TimelinePositionSyncModel.cs" />
-    <Compile Include="RaidTimeline\TimelineRazorModel.cs" />
     <Compile Include="RaidTimeline\TimelineSettings.cs" />
     <Compile Include="RaidTimeline\TimelineStyle.cs" />
     <Compile Include="RaidTimeline\TimelineSubroutineModel.cs" />
@@ -1307,6 +1306,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ACT.SpecialSpellTimer.RazorModel\ACT.SpecialSpellTimer.RazorModel.csproj">
+      <Project>{450f38fa-7f7d-41b9-9bbb-503efc6c0a72}</Project>
+      <Name>ACT.SpecialSpellTimer.RazorModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
       <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>
       <Name>FFXIV.Framework</Name>

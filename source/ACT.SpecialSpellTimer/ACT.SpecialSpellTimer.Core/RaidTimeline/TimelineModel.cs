@@ -15,16 +15,15 @@ using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config;
+using ACT.SpecialSpellTimer.RazorModel;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.Globalization;
 using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
 using Prism.Commands;
 using RazorEngine;
-using RazorEngine.Compilation;
-using RazorEngine.Compilation.ReferenceResolver;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
 using RazorEngine.Text;
@@ -526,7 +525,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             string file)
         {
             // Razorモデルに対象のファイルパスを設定する
-            razorModel.UpdateCurrentTimelineFile(file);
+            TimelineRazorModel.Instance.UpdateCurrentTimelineFile(file);
 
             var sb = new StringBuilder();
 
@@ -537,7 +536,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     file,
                     sw,
                     typeof(TimelineRazorModel),
-                    razorModel);
+                    TimelineRazorModel.Instance);
             }
 
             return sb;
@@ -562,7 +561,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             config.Namespaces.Add("System.Text.RegularExpressions");
             config.Namespaces.Add("FFXIV.Framework.Common");
             config.Namespaces.Add("FFXIV.Framework.Extensions");
-            config.Namespaces.Add("ACT.SpecialSpellTimer.RaidTimeline");
+            config.Namespaces.Add("ACT.SpecialSpellTimer.RazorModel");
 
             config.EncodedStringFactory = new RawStringFactory();
 
@@ -574,7 +573,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 var path = Path.Combine(
-                    TimelineManager.Instance.TimelineDirectory,
+                    TimelineRazorModel.Instance.TimelineDirectory,
                     name);
 
                 if (File.Exists(path))
@@ -588,22 +587,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             return RazorEngineService.Create(config);
         }
 
-        private static TimelineRazorModel razorModel;
-
-        public static TimelineRazorModel RazorModel => razorModel;
-
         /// <summary>
         /// Razorパーサに渡すモデルを更新する
         /// </summary>
         public static void RefreshRazorModel()
         {
-            var model = new TimelineRazorModel();
+            var model = TimelineRazorModel.Instance;
+
+            TimelineRazorVariable.GetVarDelegate ??= () => TimelineExpressionsModel.GetVariables();
+            TimelineRazorVariable.SetVarDelegate ??= (name, value, zone) => TimelineExpressionsModel.SetVariable(name, value, zone);
+
+            model.BaseDirectory = TimelineManager.Instance.TimelineDirectory;
+            model.Zone = ActGlobals.oFormActMain.CurrentZone;
+            model.Locale = Settings.Default.FFXIVLocale.ToString();
 
             var party = CombatantsManager.Instance.GetPartyList() as CombatantEx[];
             var player = CombatantsManager.Instance.Player;
-
-            model.Zone = ActGlobals.oFormActMain.CurrentZone;
-            model.Locale = Settings.Default.FFXIVLocale.ToString();
 
             if (player == null)
             {
@@ -619,8 +618,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     new TimelineRazorPlayer(),
                     new TimelineRazorPlayer(),
                 };
-
-                razorModel = model;
 
                 return;
             }
@@ -653,8 +650,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             model.Party = combatants.ToArray();
-
-            razorModel = model;
         }
 
         private static readonly Regex TimelineTagRegex = new Regex(
@@ -998,15 +993,5 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         #endregion Dummy Timeline
-    }
-
-    public class RazorReferenceResolver : IReferenceResolver
-    {
-        public IEnumerable<CompilerReference> GetReferences(
-            TypeContext context,
-            IEnumerable<CompilerReference> includeAssemblies = null) =>
-            new UseCurrentAssembliesReferenceResolver()
-                .GetReferences(context, includeAssemblies)
-                .Where(f => !f.GetFile().EndsWith(".winmd"));
     }
 }
