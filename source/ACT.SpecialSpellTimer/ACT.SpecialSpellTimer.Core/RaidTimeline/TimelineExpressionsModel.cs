@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Threading;
 using System.Xml.Serialization;
-using FFXIV.Framework.Common;
+using ACT.SpecialSpellTimer.RazorModel;
 using FFXIV.Framework.XIVHelper;
-using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -140,14 +138,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             lock (ExpressionLocker)
             {
-                var variable = default(Variable);
+                var variable = default(TimelineVariable);
                 if (Variables.ContainsKey(name))
                 {
                     variable = Variables[name];
                 }
                 else
                 {
-                    variable = new Variable(name);
+                    variable = new TimelineVariable(name);
                     Variables[name] = variable;
                     result = true;
                 }
@@ -205,18 +203,18 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <summary>
         /// フラグ格納領域
         /// </summary>
-        private static readonly Dictionary<string, Variable> Variables = new Dictionary<string, Variable>(128);
+        private static readonly Dictionary<string, TimelineVariable> Variables = new Dictionary<string, TimelineVariable>(128);
 
         /// <summary>
         /// 変数領域のクローンを取得する
         /// </summary>
         /// <returns>
         /// Variable Dictionary</returns>
-        public static IReadOnlyDictionary<string, Variable> GetVariables()
+        public static IReadOnlyDictionary<string, TimelineVariable> GetVariables()
         {
             lock (ExpressionLocker)
             {
-                return new Dictionary<string, Variable>(Variables);
+                return new Dictionary<string, TimelineVariable>(Variables);
             }
         }
 
@@ -291,14 +289,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     expretion = DateTime.Now.AddSeconds(set.TTL.GetValueOrDefault());
                 }
 
-                var variable = default(Variable);
+                var variable = default(TimelineVariable);
                 if (Variables.ContainsKey(set.Name))
                 {
                     variable = Variables[set.Name];
                 }
                 else
                 {
-                    variable = new Variable(set.Name);
+                    variable = new TimelineVariable(set.Name);
                     Variables[set.Name] = variable;
                 }
 
@@ -356,7 +354,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 var variable = Variables.ContainsKey(pre.Name) ?
                     Variables[pre.Name] :
-                    Variable.EmptyVariable;
+                    TimelineVariable.EmptyVariable;
 
                 if (!pre.Count.HasValue)
                 {
@@ -381,70 +379,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             return totalResult;
-        }
-
-        public class Variable : BindableBase
-        {
-            /// <summary>
-            /// 空フラグ
-            /// </summary>
-            public static readonly Variable EmptyVariable = new Variable("Empty");
-
-            public Variable(
-                string name)
-            {
-                this.Name = name;
-            }
-
-            private string name = string.Empty;
-
-            public string Name
-            {
-                get => this.name;
-                set => this.SetProperty(ref this.name, value);
-            }
-
-            private object value = null;
-
-            public object Value
-            {
-                get => this.value;
-                set
-                {
-                    this.value = value;
-
-                    WPFHelper.BeginInvoke(
-                        () => this.RaisePropertyChanged(),
-                        DispatcherPriority.Background);
-                }
-            }
-
-            private int counter = 0;
-
-            public int Counter
-            {
-                get => this.counter;
-                set => this.SetProperty(ref this.counter, value);
-            }
-
-            private DateTime expiration = DateTime.MaxValue;
-
-            public DateTime Expiration
-            {
-                get => this.expiration;
-                set => this.SetProperty(ref this.expiration, value);
-            }
-
-            private string zone = string.Empty;
-
-            public string Zone
-            {
-                get => this.zone;
-                set => this.SetProperty(ref this.zone, value);
-            }
-
-            public override string ToString() =>
-                $"{this.Name}={this.Value}, counter={this.Counter}";
         }
     }
 

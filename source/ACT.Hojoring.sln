@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFLogsRankingDonwloader", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.Hojoring.Updater.Driver", "ACT.Hojoring.Updater.Driver\ACT.Hojoring.Updater.Driver.csproj", "{BE74A0EE-AFCC-4B0F-9ABA-698B5FEA871C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.SpecialSpellTimer.RazorModel", "ACT.SpecialSpellTimer.RazorModel\ACT.SpecialSpellTimer.RazorModel.csproj", "{450F38FA-7F7D-41B9-9BBB-503EFC6C0A72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -167,6 +169,14 @@ Global
 		{BE74A0EE-AFCC-4B0F-9ABA-698B5FEA871C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BE74A0EE-AFCC-4B0F-9ABA-698B5FEA871C}.Release|x86.ActiveCfg = Release|Any CPU
 		{BE74A0EE-AFCC-4B0F-9ABA-698B5FEA871C}.Release|x86.Build.0 = Release|Any CPU
+		{450F38FA-7F7D-41B9-9BBB-503EFC6C0A72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{450F38FA-7F7D-41B9-9BBB-503EFC6C0A72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{450F38FA-7F7D-41B9-9BBB-503EFC6C0A72}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{450F38FA-7F7D-41B9-9BBB-503EFC6C0A72}.Debug|x86.Build.0 = Debug|Any CPU
+		{450F38FA-7F7D-41B9-9BBB-503EFC6C0A72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{450F38FA-7F7D-41B9-9BBB-503EFC6C0A72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{450F38FA-7F7D-41B9-9BBB-503EFC6C0A72}.Release|x86.ActiveCfg = Release|Any CPU
+		{450F38FA-7F7D-41B9-9BBB-503EFC6C0A72}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -183,9 +193,10 @@ Global
 		{18CE9B28-4F0B-45D1-AE3F-14F3982F0E59} = {EC98C548-6268-4B67-BC45-88DCD9B63960}
 		{D504E286-56EC-494F-82CD-FD71AEFEF606} = {F9A5BAFF-4C35-4F15-BDD6-81CB8EC6977D}
 		{CFC5E5E2-EFFE-4FC4-9EFD-79D15B1ABF45} = {F9A5BAFF-4C35-4F15-BDD6-81CB8EC6977D}
+		{450F38FA-7F7D-41B9-9BBB-503EFC6C0A72} = {F9A5BAFF-4C35-4F15-BDD6-81CB8EC6977D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		        SolutionGuid = {2A11DDD1-7A46-4236-969A-3942CBE6A01A}
 		SolutionGuid = {91001FDF-B748-4513-A399-35F7E9BD37F8}
+		        SolutionGuid = {2A11DDD1-7A46-4236-969A-3942CBE6A01A}
 	EndGlobalSection
 EndGlobal
