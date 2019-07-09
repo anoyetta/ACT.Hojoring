@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.TTS.Server.Models;
 using NLog;
@@ -34,7 +33,6 @@ namespace FFXIV.Framework.TTS.Server
         #endregion Logger
 
         private TcpListener server;
-        private CancellationTokenSource cancellation;
 
         private bool isRunning;
 
@@ -88,7 +86,6 @@ namespace FFXIV.Framework.TTS.Server
                 if (this.server != null)
                 {
                     this.server.Stop();
-                    this.cancellation?.Cancel();
                     this.server = null;
                 }
 
@@ -103,23 +100,30 @@ namespace FFXIV.Framework.TTS.Server
             }
         }
 
-        private async void BeginAccept()
+        private void BeginAccept()
         {
-            try
+            this.server.BeginAcceptTcpClient((result) =>
             {
-                this.cancellation = new CancellationTokenSource();
-
-                await Task.Run(async () =>
+                if (this.server == null)
                 {
-                    var client = await this.server.AcceptTcpClientAsync();
+                    return;
+                }
+
+                try
+                {
+                    var client = this.server.EndAcceptTcpClient(result);
                     this.ProcessMessage(client.GetStream());
-                },
-                this.cancellation.Token);
-            }
-            finally
-            {
-                this.BeginAccept();
-            }
+                }
+                catch (Exception ex)
+                {
+                    this.Logger.Error(ex, $"Boyomi TCP server error.");
+                }
+                finally
+                {
+                    this.BeginAccept();
+                }
+            },
+            this.server);
         }
 
         private void ProcessMessage(
