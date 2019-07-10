@@ -66,6 +66,28 @@ namespace ACT.UltraScouter.Workers
 
         protected override EnmityViewModel EnmityVM => null;
 
+        #region MyMarker
+
+        // HP
+        protected MyHPView myHPView;
+
+        public MyHPView MyHPView => this.myHPView;
+
+        protected MyHPViewModel myHPVM;
+
+        protected MyHPViewModel MyHPVM => this.myHPVM ??= new MyHPViewModel();
+
+        // MP
+        protected MyMPView myMPView;
+
+        public MyMPView MyMPView => this.myMPView;
+
+        protected MyMPViewModel myMPVM;
+
+        protected MyMPViewModel MyMPVM => this.myMPVM ??= new MyMPViewModel();
+
+        #endregion MyMarker
+
         #region MPTicker
 
         protected MPTickerView mpTickerView;
@@ -96,6 +118,8 @@ namespace ACT.UltraScouter.Workers
             !XIVPluginHelper.Instance.IsFFXIVActive ||
             (
                 !(Settings.Instance?.MeAction?.Visible ?? false) &&
+                !(Settings.Instance?.MyHP?.Visible ?? false) &&
+                !(Settings.Instance?.MyMP?.Visible ?? false) &&
                 !(Settings.Instance?.MPTicker?.Visible ?? false) &&
                 !(Settings.Instance?.MyMarker?.Visible ?? false)
             );
@@ -103,6 +127,12 @@ namespace ACT.UltraScouter.Workers
         protected override void CreateViews()
         {
             base.CreateViews();
+
+            this.CreateView(ref this.myHPView, this.MyHPVM);
+            this.TryAddViewAndViewModel(this.myHPView, this.myHPView?.ViewModel);
+
+            this.CreateView(ref this.myMPView, this.MyMPVM);
+            this.TryAddViewAndViewModel(this.myMPView, this.myMPView?.ViewModel);
 
             this.CreateView(ref this.mpTickerView, this.MPTickerVM);
             this.TryAddViewAndViewModel(this.MPTickerView, this.MPTickerView?.ViewModel);
@@ -116,8 +146,30 @@ namespace ACT.UltraScouter.Workers
         {
             base.RefreshModel(targetInfo);
 
+            // MyHP・MPを更新する
+            this.RefreshStatusView(targetInfo);
+
             // MPTickerを更新する
             this.RefreshMPTickerView(targetInfo);
+        }
+
+        protected virtual void RefreshStatusView(
+            CombatantEx targetInfo)
+        {
+            if (this.MyHPView == null &&
+                this.MyMPView == null)
+            {
+                return;
+            }
+
+            if (!this.MyHPView.ViewModel.OverlayVisible &&
+                !this.MyMPView.ViewModel.OverlayVisible)
+            {
+                return;
+            }
+
+            var model = MyStatusModel.Instance;
+            model.Update(targetInfo);
         }
 
         protected virtual void RefreshMPTickerView(

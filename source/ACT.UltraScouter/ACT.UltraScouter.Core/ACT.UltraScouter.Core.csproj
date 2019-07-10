@@ -82,6 +82,7 @@
     <Compile Include="Config\MobList.cs" />
     <Compile Include="Config\MyMarker.cs" />
     <Compile Include="Config\MPTicker.cs" />
+    <Compile Include="Config\MyStatus.cs" />
     <Compile Include="Config\ProgressBarColorRange.cs" />
     <Compile Include="Config\ProgressBar.cs" />
     <Compile Include="Config\Settings.Defaults.cs" />
@@ -174,6 +175,7 @@
     <Compile Include="Models\MeInfoModel.cs" />
     <Compile Include="Models\MobInfo.cs" />
     <Compile Include="Models\MobListModel.cs" />
+    <Compile Include="Models\MyStatusModel.cs" />
     <Compile Include="Models\TacticalRadarModel.cs" />
     <Compile Include="Models\TacticalTarget.cs" />
     <Compile Include="Models\TargetInfoModel.Enmity.cs" />
@@ -186,6 +188,8 @@
     <Compile Include="resources\LocalizeExtensions.cs" />
     <Compile Include="ViewModels\EnmityViewModel.cs" />
     <Compile Include="ViewModels\HPBarViewModel.cs" />
+    <Compile Include="ViewModels\MyMPViewModel.cs" />
+    <Compile Include="ViewModels\MyHPViewModel.cs" />
     <Compile Include="ViewModels\MyMarkerViewModel.cs" />
     <Compile Include="ViewModels\TacticalRadarViewModel.cs" />
     <Compile Include="ViewModels\MobListViewModel.cs" />
@@ -208,6 +212,12 @@
     </Compile>
     <Compile Include="Views\FFLogsView.xaml.cs">
       <DependentUpon>FFLogsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MyMPView.xaml.cs">
+      <DependentUpon>MyMPView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MyHPView.xaml.cs">
+      <DependentUpon>MyHPView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MyMarkerView.xaml.cs">
       <DependentUpon>MyMarkerView.xaml</DependentUpon>
@@ -371,6 +381,14 @@
     <Page Include="Views\FFLogsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MyMPView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MyHPView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MyMarkerView.xaml">
       <SubType>Designer</SubType>
