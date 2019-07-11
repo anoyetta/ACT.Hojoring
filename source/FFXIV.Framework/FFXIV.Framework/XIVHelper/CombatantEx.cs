@@ -345,9 +345,13 @@ namespace FFXIV.Framework.XIVHelper
             this.NameIF = name3;
             this.NameII = name4;
 
-            this.Names = string.Join(
-                "|",
-                new[] { name1, name2, name3, name4 });
+            var names = new List<string>() { name1, name2, name3, name4 };
+            if (this.IsPlayer)
+            {
+                names.Add("You");
+            }
+
+            this.Names = string.Join("|", names.ToArray());
         }
 
         public string NamesRegex => this.Names

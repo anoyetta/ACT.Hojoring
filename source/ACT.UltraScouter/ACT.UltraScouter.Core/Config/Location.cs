@@ -42,4 +42,26 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.y, Math.Round(value));
         }
     }
+
+    [Serializable]
+    public class BindableSize : BindableBase
+    {
+        private double w;
+
+        [XmlAttribute]
+        public double W
+        {
+            get => this.w;
+            set => this.SetProperty(ref this.w, value);
+        }
+
+        private double h;
+
+        [XmlAttribute]
+        public double H
+        {
+            get => this.h;
+            set => this.SetProperty(ref this.h, value);
+        }
+    }
 }

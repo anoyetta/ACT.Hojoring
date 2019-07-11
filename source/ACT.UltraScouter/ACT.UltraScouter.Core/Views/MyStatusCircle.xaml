@@ -1,0 +1,29 @@
+﻿<UserControl
+  x:Class="ACT.UltraScouter.Views.MyStatusCircle"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ACT.UltraScouter.Views"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:vm="clr-namespace:ACT.UltraScouter.ViewModels"
+  xmlns:ctrl="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  mc:Ignorable="d"
+  d:DesignHeight="450" d:DesignWidth="800"
+  Focusable="False"
+  IsTabStop="False"
+  Background="Transparent"
+  d:DataContext="{d:DesignInstance Type=vm:MyHPViewModel, IsDesignTimeCreatable=True}">
+
+  <UserControl.Resources>
+    <fwcnv:MultipleConverter x:Key="MultipleConverter" />
+  </UserControl.Resources>
+
+  <ctrl:ProgressCircle
+    Radius="{Binding Config.ProgressBar.Width, Mode=OneWay, Converter={StaticResource MultipleConverter}, ConverterParameter=0.5}"
+    Thickness="{Binding Config.ProgressBar.Height, Mode=OneWay}"
+    Fill="{Binding BarFill, Mode=OneWay}"
+    Stroke="{Binding BarStroke, Mode=OneWay}"
+    Progress="{Binding Progress, Mode=OneWay}"
+    IsCCW="True" />
+</UserControl>

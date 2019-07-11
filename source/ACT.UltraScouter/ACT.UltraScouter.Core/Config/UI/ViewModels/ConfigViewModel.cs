@@ -155,6 +155,22 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                             }
                         },
 
+                        new TreeSource("HP")
+                        {
+                            Content = new MyStatusConfigView()
+                            {
+                                DataContext = new MyHPConfigViewModel()
+                            }
+                        },
+
+                        new TreeSource("MP")
+                        {
+                            Content = new MyStatusConfigView()
+                            {
+                                DataContext = new MyMPConfigViewModel()
+                            }
+                        },
+
                         new TreeSource("3s Ticker")
                         {
                             Content = new MPTickerConfigView()

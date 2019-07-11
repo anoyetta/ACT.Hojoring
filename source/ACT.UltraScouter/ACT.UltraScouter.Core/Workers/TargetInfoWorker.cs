@@ -421,9 +421,7 @@ namespace ACT.UltraScouter.Workers
                 }
 
                 // デザインモード？
-                if (Settings.Instance.MPTicker.TestMode ||
-                    Settings.Instance.FFLogs.IsDesignMode ||
-                    Settings.Instance.Enmity.IsDesignMode ||
+                if (Settings.Instance.IsAnyDesignMode ||
                     TargetInfoModel.IsAvailableParseTotalTextCommand)
                 {
                     if (Settings.Instance.FFLogs.IsDesignMode ||

@@ -24,6 +24,8 @@
 
   <system:String x:Key="Common_Visible">Visible</system:String>
   <system:String x:Key="Common_Location">Location</system:String>
+  <system:String x:Key="Common_Layout">Layout</system:String>
+  <system:String x:Key="Common_Style">Style</system:String>
   <system:String x:Key="Common_Alignment">Alignment</system:String>
   <system:String x:Key="Common_BarWidth">Bar width</system:String>
   <system:String x:Key="Common_BarSize">Bar size</system:String>
@@ -32,6 +34,9 @@
   <system:String x:Key="Common_Font">Font</system:String>
   <system:String x:Key="Common_FillColor">Fill Color</system:String>
   <system:String x:Key="Common_StrokeColor">Stroke Color</system:String>
+  <system:String x:Key="Common_Text">Text</system:String>
+  <system:String x:Key="Common_Bar">Bar</system:String>
+  <system:String x:Key="Common_RefreshDisplay">Refresh</system:String>
   <system:String x:Key="Common_Add">add</system:String>
   <system:String x:Key="Common_Change">change</system:String>
   <system:String x:Key="Common_Delete">delete</system:String>
@@ -71,6 +76,12 @@
   <system:String x:Key="BOSS_BossVSTargetHideBoss">If BOSS='Target' then to hide BOSS</system:String>
   <system:String x:Key="BOSS_BossVSFTHideBoss">If BOSS='Focus Target' then to hide BOSS</system:String>
   <system:String x:Key="BOSS_BossVSToTHideBoss">If BOSS='Target of Target' then to hide BOSS</system:String>
+
+  <system:String x:Key="MyStatus_VisibleText">Visible value</system:String>
+  <system:String x:Key="MyStatus_VisibleBar">Visible bar</system:String>
+  <system:String x:Key="MyStatus_ObjectLayout">Object layout</system:String>
+  <system:String x:Key="MyStatus_HorizontalAlignment">Horizontal alignment</system:String>
+  <system:String x:Key="MyStatus_ColorRange">Color ranges (%)</system:String>
 
   <system:String x:Key="MPTicker_VisibleCounter">Visible counter</system:String>
   <system:String x:Key="MPTicker_Bar">Bar</system:String>

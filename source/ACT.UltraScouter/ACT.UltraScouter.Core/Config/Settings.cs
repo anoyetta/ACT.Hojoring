@@ -263,6 +263,13 @@ namespace ACT.UltraScouter.Config
         private ThreadPriority scanMemoryThreadPriority = ThreadPriority.Normal;
         private DispatcherPriority uiThreadPriority = DispatcherPriority.Background;
 
+        public bool IsAnyDesignMode =>
+            this.MPTicker.TestMode ||
+            this.FFLogs.IsDesignMode ||
+            this.Enmity.IsDesignMode ||
+            this.MyHP.IsDesignMode ||
+            this.MyMP.IsDesignMode;
+
         /// <summary>
         /// プラグインのUIのロケール
         /// </summary>
@@ -634,15 +641,27 @@ namespace ACT.UltraScouter.Config
         public TargetAction MeAction { get; set; }
 
         /// <summary>
-        /// MP Ticker
+        /// MyHP
         /// </summary>
         [DataMember(Order = 152)]
+        public MyStatus MyHP { get; set; }
+
+        /// <summary>
+        /// MyMP
+        /// </summary>
+        [DataMember(Order = 153)]
+        public MyStatus MyMP { get; set; }
+
+        /// <summary>
+        /// MP Ticker
+        /// </summary>
+        [DataMember(Order = 154)]
         public MPTicker MPTicker { get; set; }
 
         /// <summary>
         /// MyMarker
         /// </summary>
-        [DataMember(Order = 153)]
+        [DataMember(Order = 155)]
         public MyMarker MyMarker { get; set; }
 
         #endregion Me

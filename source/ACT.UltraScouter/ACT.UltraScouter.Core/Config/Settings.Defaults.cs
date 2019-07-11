@@ -11,8 +11,8 @@ using System.Windows.Threading;
 using ACT.UltraScouter.Common;
 using ACT.UltraScouter.Models.FFLogs;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.Globalization;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.Config
 {
@@ -575,6 +575,81 @@ namespace ACT.UltraScouter.Config
                     LinkOutlineColor = true,
                     OutlineColor = DefaultColorStroke,
                 }
+            }},
+
+            { nameof(Settings.MyHP), new MyStatus()
+            {
+                Visible = false,
+                Location = new Location() { X = 200, Y = 200 },
+                HideInNotCombat = true,
+                Size = new BindableSize() { W = 250, H = 50 },
+                Scale = 1.0d,
+                VisibleText = true,
+                VisibleBar = true,
+                LinkFontColorToBarColor = false,
+                LinkFontOutlineColorToBarColor = true,
+                TextLocation = new Location { X = 10, Y = 0 },
+                TextHorizontalAlignment = HorizontalAlignment.Right,
+                BarLocation = new Location { X = 10, Y = 20 },
+                BarStyle = StatusStyles.Horizontal,
+                DisplayText = new DisplayText()
+                {
+                    Font = DefaultFont,
+                    Color = Colors.White,
+                    OutlineColor = Colors.Navy,
+                },
+                ProgressBar = new ProgressBar()
+                {
+                    Height = 10,
+                    Width = 200,
+                    ColorRange = new ObservableCollection<ProgressBarColorRange>()
+                    {
+                        new ProgressBarColorRange() { Min = 0, Max = 10, Color = Colors.Red },
+                        new ProgressBarColorRange() { Min = 10, Max = 20, Color = Colors.OrangeRed },
+                        new ProgressBarColorRange() { Min = 20, Max = 50, Color = Colors.DarkOrange },
+                        new ProgressBarColorRange() { Min = 50, Max = 75, Color = Colors.LightSeaGreen },
+                        new ProgressBarColorRange() { Min = 75, Max = 100, Color = Colors.RoyalBlue },
+                    },
+                    LinkOutlineColor = true,
+                    OutlineColor = DefaultColorStroke,
+                },
+            }},
+
+            { nameof(Settings.MyMP), new MyStatus()
+            {
+                Visible = false,
+                Location = new Location() { X = 200, Y = 230 },
+                HideInNotCombat = true,
+                Size = new BindableSize() { W = 250, H = 50 },
+                Scale = 1.0d,
+                VisibleText = true,
+                VisibleBar = true,
+                LinkFontColorToBarColor = false,
+                LinkFontOutlineColorToBarColor = true,
+                TextLocation = new Location { X = 10, Y = 0 },
+                TextHorizontalAlignment = HorizontalAlignment.Right,
+                BarLocation = new Location { X = 10, Y = 20 },
+                BarStyle = StatusStyles.Horizontal,
+                DisplayText = new DisplayText()
+                {
+                    Font = DefaultFont,
+                    Color = Colors.White,
+                    OutlineColor = Colors.Navy,
+                },
+                ProgressBar = new ProgressBar()
+                {
+                    Height = 10,
+                    Width = 200,
+                    ColorRange = new ObservableCollection<ProgressBarColorRange>()
+                    {
+                        new ProgressBarColorRange() { Min = 0, Max = 30, Color = Colors.Red },
+                        new ProgressBarColorRange() { Min = 30, Max = 60, Color = Colors.OrangeRed },
+                        new ProgressBarColorRange() { Min = 60, Max = 90, Color = Colors.LightSeaGreen },
+                        new ProgressBarColorRange() { Min = 90, Max = 100, Color = Colors.RoyalBlue },
+                    },
+                    LinkOutlineColor = true,
+                    OutlineColor = DefaultColorStroke,
+                },
             }},
 
             { nameof(Settings.MPTicker), new MPTicker()

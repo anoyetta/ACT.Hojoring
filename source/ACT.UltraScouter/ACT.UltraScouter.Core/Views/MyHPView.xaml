@@ -1,0 +1,75 @@
+﻿<Window
+  x:Class="ACT.UltraScouter.Views.MyHPView"
+  Title="MyHPView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="clr-namespace:ACT.UltraScouter.Views"
+  xmlns:cnv="clr-namespace:ACT.UltraScouter.Views.Converters"
+  xmlns:vm="clr-namespace:ACT.UltraScouter.ViewModels"
+  xmlns:ctrl="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  mc:Ignorable="d"
+  AllowsTransparency="True"
+  Background="#01000000"
+  WindowStyle="None"
+  ShowInTaskbar="False"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="Fant"
+  RenderOptions.EdgeMode="Unspecified"
+  Left="{Binding Config.Location.X, Mode=TwoWay}"
+  Top="{Binding Config.Location.Y, Mode=TwoWay}"
+  Width="{Binding Config.Size.W, Mode=TwoWay}"
+  Height="{Binding Config.Size.H, Mode=TwoWay}"
+  ResizeMode="{Binding ResizeMode, Mode=OneWay}"
+  d:DataContext="{d:DesignInstance Type=vm:MyHPViewModel, IsDesignTimeCreatable=True}">
+
+  <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+    <fwcnv:MultipleConverter x:Key="MultipleConverter" />
+
+    <Style x:Key="ValueText" TargetType="ctrl:LightOutlineTextBlock">
+      <Setter Property="Fill" Value="{Binding TextFill, Mode=OneWay}" />
+      <Setter Property="Stroke" Value="{Binding TextStroke, Mode=OneWay}" />
+      <Setter Property="StrokeThickness" Value="{Binding Config.DisplayText.Font.OutlineThickness, Mode=OneWay}" />
+      <Setter Property="FontFamily" Value="{Binding Config.DisplayText.Font.FontFamily, Mode=OneWay}" />
+      <Setter Property="FontSize" Value="{Binding Config.DisplayText.Font.Size, Mode=OneWay}" />
+      <Setter Property="FontStretch" Value="{Binding Config.DisplayText.Font.Stretch, Mode=OneWay}" />
+      <Setter Property="FontWeight" Value="{Binding Config.DisplayText.Font.Weight, Mode=OneWay}" />
+      <Setter Property="FontStyle" Value="{Binding Config.DisplayText.Font.Style, Mode=OneWay}" />
+      <Setter Property="BlurRadius" Value="{Binding Config.DisplayText.Font.BlurRadius, Mode=OneWay}" />
+      <Setter Property="BlurOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+      <Setter Property="StrokeOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+      <Setter Property="HorizontalContentAlignment" Value="{Binding Config.TextHorizontalAlignment, Mode=OneWay}" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="TextWrapping" Value="NoWrap" />
+    </Style>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.LayoutTransform>
+      <ScaleTransform
+        ScaleX="{Binding Config.Scale, Mode=OneWay}"
+        ScaleY="{Binding Config.Scale, Mode=OneWay}" />
+    </Grid.LayoutTransform>
+
+    <Canvas>
+      <ContentPresenter
+        x:Name="BarPresenter"
+        Panel.ZIndex="-1"
+        Canvas.Left="{Binding Config.BarLocation.X, Mode=TwoWay}"
+        Canvas.Top="{Binding Config.BarLocation.Y, Mode=TwoWay}" />
+
+      <ctrl:LightOutlineTextBlock
+        Style="{StaticResource ValueText}"
+        Canvas.Left="{Binding Config.TextLocation.X, Mode=TwoWay}"
+        Canvas.Top="{Binding Config.TextLocation.Y, Mode=TwoWay}"
+        Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight, Converter={StaticResource MultipleConverter}, ConverterParameter=9}"
+        Text="{Binding Model.CurrentHP, StringFormat=N0, Mode=OneWay}" />
+    </Canvas>
+  </Grid>
+</Window>
