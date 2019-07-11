@@ -30,6 +30,24 @@
 
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+    <fwcnv:MultipleConverter x:Key="MultipleConverter" />
+
+    <Style x:Key="ValueText" TargetType="ctrl:LightOutlineTextBlock">
+      <Setter Property="Fill" Value="{Binding TextFill, Mode=OneWay}" />
+      <Setter Property="Stroke" Value="{Binding TextStroke, Mode=OneWay}" />
+      <Setter Property="StrokeThickness" Value="{Binding Config.DisplayText.Font.OutlineThickness, Mode=OneWay}" />
+      <Setter Property="FontFamily" Value="{Binding Config.DisplayText.Font.FontFamily, Mode=OneWay}" />
+      <Setter Property="FontSize" Value="{Binding Config.DisplayText.Font.Size, Mode=OneWay}" />
+      <Setter Property="FontStretch" Value="{Binding Config.DisplayText.Font.Stretch, Mode=OneWay}" />
+      <Setter Property="FontWeight" Value="{Binding Config.DisplayText.Font.Weight, Mode=OneWay}" />
+      <Setter Property="FontStyle" Value="{Binding Config.DisplayText.Font.Style, Mode=OneWay}" />
+      <Setter Property="BlurRadius" Value="{Binding Config.DisplayText.Font.BlurRadius, Mode=OneWay}" />
+      <Setter Property="BlurOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+      <Setter Property="StrokeOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+      <Setter Property="HorizontalContentAlignment" Value="{Binding Config.TextHorizontalAlignment, Mode=OneWay}" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="TextWrapping" Value="NoWrap" />
+    </Style>
   </Window.Resources>
 
   <Grid>
@@ -38,8 +56,20 @@
         ScaleX="{Binding Config.Scale, Mode=OneWay}"
         ScaleY="{Binding Config.Scale, Mode=OneWay}" />
     </Grid.LayoutTransform>
-    <TextBlock
-      Text="My HP View"
-      Foreground="White" />
+
+    <Canvas>
+      <ContentPresenter
+        x:Name="BarPresenter"
+        Panel.ZIndex="-1"
+        Canvas.Left="{Binding Config.BarLocation.X, Mode=TwoWay}"
+        Canvas.Top="{Binding Config.BarLocation.Y, Mode=TwoWay}" />
+
+      <ctrl:LightOutlineTextBlock
+        Style="{StaticResource ValueText}"
+        Canvas.Left="{Binding Config.TextLocation.X, Mode=TwoWay}"
+        Canvas.Top="{Binding Config.TextLocation.Y, Mode=TwoWay}"
+        Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight, Converter={StaticResource MultipleConverter}, ConverterParameter=9}"
+        Text="{Binding Model.CurrentHP, StringFormat=N0, Mode=OneWay}" />
+    </Canvas>
   </Grid>
 </Window>

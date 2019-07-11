@@ -24,6 +24,8 @@
 
   <system:String x:Key="Common_Visible">表示する</system:String>
   <system:String x:Key="Common_Location">ロケーション</system:String>
+  <system:String x:Key="Common_Layout">レイアウト</system:String>
+  <system:String x:Key="Common_Style">スタイル</system:String>
   <system:String x:Key="Common_Alignment">アライメント</system:String>
   <system:String x:Key="Common_BarWidth">バーの幅</system:String>
   <system:String x:Key="Common_BarSize">バーのサイズ</system:String>
@@ -32,6 +34,9 @@
   <system:String x:Key="Common_Font">フォント</system:String>
   <system:String x:Key="Common_FillColor">塗りつぶし(内側)のカラー</system:String>
   <system:String x:Key="Common_StrokeColor">アウトラインのカラー</system:String>
+  <system:String x:Key="Common_Text">テキスト</system:String>
+  <system:String x:Key="Common_Bar">バー</system:String>
+  <system:String x:Key="Common_RefreshDisplay">表示を更新する</system:String>
   <system:String x:Key="Common_Add">追加</system:String>
   <system:String x:Key="Common_Change">変更</system:String>
   <system:String x:Key="Common_Delete">削除</system:String>
@@ -71,6 +76,12 @@
   <system:String x:Key="BOSS_BossVSTargetHideBoss">検出したBOSSとTargetが同じ対象ならばBOSSを表示しない</system:String>
   <system:String x:Key="BOSS_BossVSFTHideBoss">検出したBOSSとFocus Targetが同じ対象ならばBOSSを表示しない</system:String>
   <system:String x:Key="BOSS_BossVSToTHideBoss">検出したBOSSとTarget of Targetが同じ対象ならばBOSSを表示しない</system:String>
+
+  <system:String x:Key="MyStatus_VisibleText">テキストを表示する</system:String>
+  <system:String x:Key="MyStatus_VisibleBar">バーを表示する</system:String>
+  <system:String x:Key="MyStatus_ObjectLayout">オブジェクトのレイアウト</system:String>
+  <system:String x:Key="MyStatus_HorizontalAlignment">水平アライメント</system:String>
+  <system:String x:Key="MyStatus_ColorRange">カラーレンジ(%)</system:String>
 
   <system:String x:Key="MPTicker_VisibleCounter">カウンターを表示する</system:String>
   <system:String x:Key="MPTicker_Bar">バー</system:String>

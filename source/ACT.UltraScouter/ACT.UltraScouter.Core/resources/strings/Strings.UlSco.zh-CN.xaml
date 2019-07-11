@@ -24,6 +24,8 @@
 
   <system:String x:Key="Common_Visible">显示</system:String>
   <system:String x:Key="Common_Location">位置</system:String>
+  <system:String x:Key="Common_Layout">Layout</system:String>
+  <system:String x:Key="Common_Style">Style</system:String>
   <system:String x:Key="Common_Alignment">Alignment</system:String>
   <system:String x:Key="Common_BarWidth">Bar width</system:String>
   <system:String x:Key="Common_BarSize">Bar size</system:String>
@@ -32,6 +34,9 @@
   <system:String x:Key="Common_Font">字体</system:String>
   <system:String x:Key="Common_FillColor">填充色</system:String>
   <system:String x:Key="Common_StrokeColor">轮廓色</system:String>
+  <system:String x:Key="Common_Text">Text</system:String>
+  <system:String x:Key="Common_Bar">Bar</system:String>
+  <system:String x:Key="Common_RefreshDisplay">Refresh</system:String>
   <system:String x:Key="Common_Add">添加</system:String>
   <system:String x:Key="Common_Change">变更</system:String>
   <system:String x:Key="Common_Delete">删除</system:String>
@@ -71,6 +76,12 @@
   <system:String x:Key="BOSS_BossVSTargetHideBoss">BOSS='目标'时隐藏</system:String>
   <system:String x:Key="BOSS_BossVSFTHideBoss">BOSS='焦点'时隐藏</system:String>
   <system:String x:Key="BOSS_BossVSToTHideBoss">BOSS='目标的目标'时隐藏</system:String>
+
+  <system:String x:Key="MyStatus_VisibleText">Visible value</system:String>
+  <system:String x:Key="MyStatus_VisibleBar">Visible bar</system:String>
+  <system:String x:Key="MyStatus_ObjectLayout">Object layout</system:String>
+  <system:String x:Key="MyStatus_HorizontalAlignment">Horizontal alignment</system:String>
+  <system:String x:Key="MyStatus_ColorRange">Color ranges (%)</system:String>
 
   <system:String x:Key="MPTicker_VisibleCounter">显示值</system:String>
   <system:String x:Key="MPTicker_Bar">条</system:String>

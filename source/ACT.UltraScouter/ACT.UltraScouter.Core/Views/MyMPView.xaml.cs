@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.ViewModels;
 using FFXIV.Framework.WPF.Views;
@@ -16,7 +17,23 @@ namespace ACT.UltraScouter.Views
         {
             this.InitializeComponent();
             this.ToNonActive();
-            this.Loaded += (_, __) => this.SubscribeZOrderCorrector();
+
+            this.Loaded += (_, __) =>
+            {
+                this.SubscribeZOrderCorrector();
+                this.SwitchBarStyle();
+            };
+
+            this.Config.PropertyChanged += (_, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(this.Config.BarStyle):
+                        this.SwitchBarStyle();
+                        break;
+                }
+            };
+
             this.MouseLeftButtonDown += (_, __) =>
             {
                 if (!this.Config.IsLock)
@@ -28,6 +45,10 @@ namespace ACT.UltraScouter.Views
             this.Opacity = 0;
         }
 
+        private MyStatus Config => Settings.Instance.MyMP;
+
+        public MyMPViewModel ViewModel => this.DataContext as MyMPViewModel;
+
         private bool overlayVisible;
 
         public bool OverlayVisible
@@ -36,8 +57,22 @@ namespace ACT.UltraScouter.Views
             set => this.SetOverlayVisible(ref this.overlayVisible, value, Settings.Instance.Opacity);
         }
 
-        private MyStatus Config => Settings.Instance.MyHP;
+        private void SwitchBarStyle()
+        {
+            var content = this.Config.BarStyle switch
+            {
+                StatusStyles.Horizontal => new MyStatusHorizontal() as UserControl,
+                StatusStyles.Vertical => new MyStatusVertical() as UserControl,
+                StatusStyles.Circle => new MyStatusCircle() as UserControl,
+                _ => null,
+            };
 
-        public MyMPViewModel ViewModel => this.DataContext as MyMPViewModel;
+            if (content != null)
+            {
+                content.DataContext = this.DataContext;
+            }
+
+            this.BarPresenter.Content = content;
+        }
     }
 }

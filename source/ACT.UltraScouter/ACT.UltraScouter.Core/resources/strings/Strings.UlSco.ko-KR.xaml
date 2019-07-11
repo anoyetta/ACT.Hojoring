@@ -24,6 +24,8 @@
 
   <system:String x:Key="Common_Visible">표시</system:String>
   <system:String x:Key="Common_Location">위치</system:String>
+  <system:String x:Key="Common_Layout">Layout</system:String>
+  <system:String x:Key="Common_Style">Style</system:String>
   <system:String x:Key="Common_Alignment">정렬</system:String>
   <system:String x:Key="Common_BarWidth">바의 폭</system:String>
   <system:String x:Key="Common_BarSize">바 크기</system:String>
@@ -32,6 +34,9 @@
   <system:String x:Key="Common_Font">폰트</system:String>
   <system:String x:Key="Common_FillColor">글자색</system:String>
   <system:String x:Key="Common_StrokeColor">윤곽선색</system:String>
+  <system:String x:Key="Common_Text">Text</system:String>
+  <system:String x:Key="Common_Bar">Bar</system:String>
+  <system:String x:Key="Common_RefreshDisplay">Refresh</system:String>
   <system:String x:Key="Common_Add">추가</system:String>
   <system:String x:Key="Common_Change">변경</system:String>
   <system:String x:Key="Common_Delete">삭제</system:String>
@@ -71,6 +76,12 @@
   <system:String x:Key="BOSS_BossVSTargetHideBoss">인식한 BOSS와 Target이 같은 대상이라면 BOSS 숨김</system:String>
   <system:String x:Key="BOSS_BossVSFTHideBoss">인식한 BOSS와 Focus Target이 같은 대상이라면 BOSS 숨김</system:String>
   <system:String x:Key="BOSS_BossVSToTHideBoss">인식한 BOSS와 Target of Target이 같은 대상이라면 BOSS 숨김</system:String>
+
+  <system:String x:Key="MyStatus_VisibleText">Visible value</system:String>
+  <system:String x:Key="MyStatus_VisibleBar">Visible bar</system:String>
+  <system:String x:Key="MyStatus_ObjectLayout">Object layout</system:String>
+  <system:String x:Key="MyStatus_HorizontalAlignment">Horizontal alignment</system:String>
+  <system:String x:Key="MyStatus_ColorRange">Color ranges (%)</system:String>
 
   <system:String x:Key="MPTicker_VisibleCounter">카운터 표시</system:String>
   <system:String x:Key="MPTicker_Bar">바</system:String>

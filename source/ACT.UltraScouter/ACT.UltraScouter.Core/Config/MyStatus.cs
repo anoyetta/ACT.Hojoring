@@ -17,6 +17,15 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.visible, value);
         }
 
+        private bool isDesignMode;
+
+        [XmlIgnore]
+        public bool IsDesignMode
+        {
+            get => this.isDesignMode;
+            set => this.SetProperty(ref this.isDesignMode, value);
+        }
+
         private bool hideInNotCombat = true;
 
         public bool HideInNotCombat

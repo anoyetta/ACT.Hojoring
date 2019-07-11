@@ -1,4 +1,5 @@
 ﻿using System;
+using ACT.UltraScouter.Config;
 using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 
@@ -33,6 +34,13 @@ namespace ACT.UltraScouter.Models
         public void Update(
             CombatantEx me)
         {
+            if (Settings.Instance.MyHP.IsDesignMode ||
+                Settings.Instance.MyMP.IsDesignMode)
+            {
+                this.UpdateDesignData();
+                return;
+            }
+
             var isHPChanged = false;
             var isMPChanged = false;
 
@@ -57,6 +65,30 @@ namespace ACT.UltraScouter.Models
 
             if (isMPChanged)
             {
+                this.RaisePropertyChanged(nameof(this.CurrentMP));
+            }
+        }
+
+        private static readonly uint DummyMaxHP = 112233;
+
+        private void UpdateDesignData()
+        {
+            this.MaxHP = DummyMaxHP;
+
+            var rate = (double)(((DateTime.Now.Second % 10) + 1)) / 10d;
+
+            var currentHP = (uint)(DummyMaxHP * rate);
+            var currentMP = (uint)(this.MaxMP * rate);
+
+            if (this.CurrentHP != currentHP)
+            {
+                this.CurrentHP = currentHP;
+                this.RaisePropertyChanged(nameof(this.CurrentHP));
+            }
+
+            if (this.CurrentMP != currentMP)
+            {
+                this.CurrentMP = currentMP;
                 this.RaisePropertyChanged(nameof(this.CurrentMP));
             }
         }

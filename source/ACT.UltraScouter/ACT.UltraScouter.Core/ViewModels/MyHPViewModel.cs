@@ -20,7 +20,7 @@ namespace ACT.UltraScouter.ViewModels
             MyStatus config,
             MyStatusModel model)
         {
-            this.Config = config ?? Settings.Instance.MyHP;
+            this.Config = config ?? this.GetConfig;
             this.Model = model ?? MyStatusModel.Instance;
 
             this.RaisePropertyChanged(nameof(Config));
@@ -28,6 +28,12 @@ namespace ACT.UltraScouter.ViewModels
 
             this.Initialize();
         }
+
+        protected virtual MyStatus GetConfig => Settings.Instance.MyHP;
+
+        protected virtual string ValuePropertyName => nameof(this.Model.CurrentHP);
+
+        public virtual double Progress => this.Model.CurrentHPRate;
 
         public override void Initialize()
         {
@@ -45,11 +51,10 @@ namespace ACT.UltraScouter.ViewModels
 
         private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
+            if (e.PropertyName == this.ValuePropertyName)
             {
-                case nameof(this.Model.CurrentHP):
-                    this.UpdateBrushes();
-                    break;
+                this.UpdateBrushes();
+                this.RaisePropertyChanged(nameof(this.Progress));
             }
         }
 
@@ -63,9 +68,9 @@ namespace ACT.UltraScouter.ViewModels
             }
         }
 
-        public virtual MyStatus Config { get; private set; }
+        public virtual MyStatus Config { get; protected set; }
 
-        public virtual MyStatusModel Model { get; private set; }
+        public virtual MyStatusModel Model { get; protected set; }
 
         public bool OverlayVisible => this.Config.Visible;
 
@@ -73,7 +78,7 @@ namespace ACT.UltraScouter.ViewModels
             ResizeMode.NoResize :
             ResizeMode.CanResizeWithGrip;
 
-        private SolidColorBrush textFill;
+        private SolidColorBrush textFill = Brushes.White;
 
         public SolidColorBrush TextFill
         {
@@ -81,7 +86,7 @@ namespace ACT.UltraScouter.ViewModels
             set => this.SetProperty(ref this.textFill, value);
         }
 
-        private SolidColorBrush textStroke;
+        private SolidColorBrush textStroke = Brushes.Navy;
 
         public SolidColorBrush TextStroke
         {
@@ -89,7 +94,7 @@ namespace ACT.UltraScouter.ViewModels
             set => this.SetProperty(ref this.textStroke, value);
         }
 
-        private SolidColorBrush barFill;
+        private SolidColorBrush barFill = Brushes.Orange;
 
         public SolidColorBrush BarFill
         {
@@ -97,7 +102,7 @@ namespace ACT.UltraScouter.ViewModels
             set => this.SetProperty(ref this.barFill, value);
         }
 
-        private SolidColorBrush barStroke;
+        private SolidColorBrush barStroke = Brushes.Orange;
 
         public SolidColorBrush BarStroke
         {
@@ -107,7 +112,7 @@ namespace ACT.UltraScouter.ViewModels
 
         private void UpdateBrushes()
         {
-            var currentValue = this.Model.CurrentHPRate;
+            var currentValue = this.Progress * 100;
 
             var barFillColor = this.Config.ProgressBar.AvailableColor(currentValue);
             this.BarFill = GetBrush(barFillColor);

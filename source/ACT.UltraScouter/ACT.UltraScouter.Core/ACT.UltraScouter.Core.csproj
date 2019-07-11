@@ -100,6 +100,8 @@
     <Compile Include="Config\UI\ViewModels\ConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\BossConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\CombatantsViewModel.cs" />
+    <Compile Include="Config\UI\ViewModels\MyMPConfigViewModel.cs" />
+    <Compile Include="Config\UI\ViewModels\MyHPConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MyMarkerConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\TacticalRadarConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MobListConfigViewModel.cs" />
@@ -123,6 +125,9 @@
     </Compile>
     <Compile Include="Config\UI\Views\EnmityConfigView.xaml.cs">
       <DependentUpon>EnmityConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\UI\Views\MyStatusConfigView.xaml.cs">
+      <DependentUpon>MyStatusConfigView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Config\UI\Views\MyMarkerConfigView.xaml.cs">
       <DependentUpon>MyMarkerConfigView.xaml</DependentUpon>
@@ -222,6 +227,15 @@
     <Compile Include="Views\MyMarkerView.xaml.cs">
       <DependentUpon>MyMarkerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MyStatusVertical.xaml.cs">
+      <DependentUpon>MyStatusVertical.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MyStatusCircle.xaml.cs">
+      <DependentUpon>MyStatusCircle.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MyStatusHorizontal.xaml.cs">
+      <DependentUpon>MyStatusHorizontal.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TacticalRadarView.xaml.cs">
       <DependentUpon>TacticalRadarView.xaml</DependentUpon>
     </Compile>
@@ -283,6 +297,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Config\UI\Views\EnmityConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Config\UI\Views\MyStatusConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -391,6 +409,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MyMarkerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MyStatusVertical.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MyStatusCircle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MyStatusHorizontal.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

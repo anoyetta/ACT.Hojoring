@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
-using ACT.UltraScouter.Workers;
 
 namespace ACT.UltraScouter.Config.UI.ViewModels
 {
@@ -17,6 +16,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         }
 
         private Action refreshViewAction;
+
         public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter) => true;
@@ -40,6 +40,8 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                 Settings.Instance.BossAction.ProgressBar.ColorRange,
 
                 Settings.Instance.MeAction.ProgressBar.ColorRange,
+                Settings.Instance.MyHP.ProgressBar.ColorRange,
+                Settings.Instance.MyMP.ProgressBar.ColorRange,
                 Settings.Instance.MPTicker.ProgressBar.ColorRange,
             };
 

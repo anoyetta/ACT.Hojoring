@@ -263,6 +263,13 @@ namespace ACT.UltraScouter.Config
         private ThreadPriority scanMemoryThreadPriority = ThreadPriority.Normal;
         private DispatcherPriority uiThreadPriority = DispatcherPriority.Background;
 
+        public bool IsAnyDesignMode =>
+            this.MPTicker.TestMode ||
+            this.FFLogs.IsDesignMode ||
+            this.Enmity.IsDesignMode ||
+            this.MyHP.IsDesignMode ||
+            this.MyMP.IsDesignMode;
+
         /// <summary>
         /// プラグインのUIのロケール
         /// </summary>
