@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Xml.Serialization;
-using Prism.Commands;
 using Prism.Mvvm;
 
 namespace ACT.UltraScouter.Config
@@ -113,13 +112,7 @@ namespace ACT.UltraScouter.Config
         [XmlIgnore]
         public Action RefreshViewDelegate { get; set; }
 
-        private DelegateCommand refreshViewCommand;
-
-        [XmlIgnore]
-        public DelegateCommand RefreshViewCommand =>
-            this.refreshViewCommand ?? (this.refreshViewCommand = new DelegateCommand(this.ExecuteRefreshViewCommand));
-
-        private void ExecuteRefreshViewCommand()
+        public void ExecuteRefreshViewCommand()
             => this.RefreshViewDelegate?.Invoke();
     }
 

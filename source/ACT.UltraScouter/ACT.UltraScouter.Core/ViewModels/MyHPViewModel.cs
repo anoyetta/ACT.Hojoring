@@ -5,6 +5,7 @@ using System.Windows.Media;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.ViewModels
 {
@@ -72,7 +73,27 @@ namespace ACT.UltraScouter.ViewModels
 
         public virtual MyStatusModel Model { get; protected set; }
 
-        public bool OverlayVisible => this.Config.Visible;
+        public bool OverlayVisible
+        {
+            get
+            {
+                if (!this.Config.Visible)
+                {
+                    return false;
+                }
+
+                if (!this.Config.IsDesignMode)
+                {
+                    if (this.Config.HideInNotCombat &&
+                        !XIVPluginHelper.Instance.InCombat)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
 
         public ResizeMode ResizeMode => this.Config.IsLock ?
             ResizeMode.NoResize :

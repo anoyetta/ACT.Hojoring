@@ -188,7 +188,7 @@
                   Background="{Binding Color, Converter={StaticResource ColorToBrushConverter}}">
                   <TextBlock>
                     <Hyperlink
-                      Command="{Binding ChangeColorCommand}"
+                      Command="{Binding ChangeColorCommand, Mode=OneWay}"
                       CommandParameter="{Binding}">
                       <TextBlock Text="{DynamicResource Common_Change}" Foreground="White" FontSize="15" />
                     </Hyperlink>
@@ -197,8 +197,8 @@
 
                 <TextBlock Margin="10,0,0,0">
                   <Hyperlink
-                    Command="{Binding DeleteColorCommand}"
-                    CommandParameter="{Binding ID}">
+                    Command="{Binding DeleteColorCommand, Mode=OneWay}"
+                    CommandParameter="{Binding ID, Mode=OneWay}">
                     <TextBlock Text="{DynamicResource Common_Delete}" />
                   </Hyperlink>
                 </TextBlock>
@@ -208,7 +208,7 @@
         </ListView>
 
         <TextBlock Margin="8 0 0 0">
-        <Hyperlink Command="{Binding TargetHPBarAddCommand}">
+        <Hyperlink Command="{Binding BarAddCommand, Mode=OneWay}">
           <TextBlock Text="{DynamicResource Common_Add}" />
         </Hyperlink>
       </TextBlock>
@@ -221,13 +221,13 @@
           HorizontalAlignment="Left"
           Width="100"
           Height="30"
-          Background="{Binding Config.ProgressBar.OutlineColor, Converter={StaticResource ColorToBrushConverter}}">
+          Background="{Binding Config.ProgressBar.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}">
           <TextBlock
             VerticalAlignment="Center"
             HorizontalAlignment="Center">
           <Hyperlink
-            Command="{Binding TargetHPProgressBarOutlineColorCommand}"
-            CommandParameter="{Binding Config.ProgressBar.OutlineColor}">
+            Command="{Binding ProgressBarOutlineColorCommand}"
+            CommandParameter="{Binding Config.ProgressBar.OutlineColor, Mode=OneWay}">
             <TextBlock Text="{DynamicResource Common_Change}" Foreground="White" FontSize="15" />
           </Hyperlink>
         </TextBlock>
@@ -242,9 +242,25 @@
         <Label Content="{DynamicResource Common_Font}" Margin="0 20 0 0" />
         <TextBlock Margin="7,0,0,0" FontWeight="Bold">
           <Hyperlink
-            Command="{Binding TargetHPDisplayTextFontCommand}"
-            CommandParameter="{Binding Config.DisplayText.Font}">
-            <TextBlock Text="{Binding Config.DisplayText.Font.DisplayText}" />
+            Command="{Binding DisplayTextFontCommand}"
+            CommandParameter="{Binding Config.DisplayText.Font, Mode=OneWay}">
+            <TextBlock Text="{Binding Config.DisplayText.Font.DisplayText, Mode=OneWay}" />
+          </Hyperlink>
+        </TextBlock>
+
+        <TextBlock Margin="7,8,0,0" FontWeight="Bold">
+          <Hyperlink
+            Command="{Binding DisplayTextColorCommand, Mode=OneWay}"
+            CommandParameter="{Binding Config.DisplayText.Color, Mode=OneWay}">
+            <TextBlock Text="{DynamicResource Common_FillColor}" />
+          </Hyperlink>
+        </TextBlock>
+
+        <TextBlock Margin="7,0,0,0" FontWeight="Bold">
+          <Hyperlink
+            Command="{Binding DisplayTextOutlineColorCommand, Mode=OneWay}"
+            CommandParameter="{Binding Config.DisplayText.OutlineColor, Mode=OneWay}">
+            <TextBlock Text="{DynamicResource Common_StrokeColor}" />
           </Hyperlink>
         </TextBlock>
 
