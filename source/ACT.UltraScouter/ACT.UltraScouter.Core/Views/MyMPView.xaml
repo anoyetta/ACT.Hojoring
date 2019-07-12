@@ -59,12 +59,14 @@
 
     <Canvas>
       <ContentPresenter
+        Visibility="{Binding Config.VisibleBar, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
         x:Name="BarPresenter"
         Panel.ZIndex="-1"
         Canvas.Left="{Binding Config.BarLocation.X, Mode=TwoWay}"
         Canvas.Top="{Binding Config.BarLocation.Y, Mode=TwoWay}" />
 
       <ctrl:LightOutlineTextBlock
+        Visibility="{Binding Config.VisibleText, Mode=OneWay, Converter={StaticResource VisibilityConverter}}"
         Style="{StaticResource ValueText}"
         Canvas.Left="{Binding Config.TextLocation.X, Mode=TwoWay}"
         Canvas.Top="{Binding Config.TextLocation.Y, Mode=TwoWay}"
