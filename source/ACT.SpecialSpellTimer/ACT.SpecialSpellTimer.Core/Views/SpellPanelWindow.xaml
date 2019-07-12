@@ -40,9 +40,10 @@
           <DataTemplate>
             <local:SpellControl
               x:Name="SpellControl"
+              VerticalAlignment="Top"
               HorizontalAlignment="Left"
               DataContext="{Binding}"
-              Margin="{Binding Panel.MarginTickness, Mode=OneWay}"
+              Margin="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=SpellMargin, Mode=OneWay}"
               Visibility="{Binding Visibility, Mode=OneWay}"
               Opacity="0"
               Loaded="SpellControl_Loaded" />

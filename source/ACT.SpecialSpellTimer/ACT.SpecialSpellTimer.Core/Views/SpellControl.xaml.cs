@@ -219,6 +219,8 @@ namespace ACT.SpecialSpellTimer.Views
             else
             {
                 image.Source = IconController.BlankBitmap;
+                image.Height = this.Spell.SpellIconSize;
+                image.Width = this.Spell.SpellIconSize;
                 this.SpellIconPanel.Background = Brushes.Transparent;
             }
 
