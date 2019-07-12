@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using ACT.SpecialSpellTimer.Config;
@@ -145,6 +146,22 @@ namespace ACT.SpecialSpellTimer.Views
             set => this.SetProperty(ref this.backgroundBrush, value);
         }
 
+        private Orientation spellOrientation = Orientation.Vertical;
+
+        public Orientation SpellOrientation
+        {
+            get => this.spellOrientation;
+            set => this.SetProperty(ref this.spellOrientation, value);
+        }
+
+        private Thickness spellMargin = new Thickness();
+
+        public Thickness SpellMargin
+        {
+            get => this.spellMargin;
+            set => this.SetProperty(ref this.spellMargin, value);
+        }
+
         /// <summary>
         /// SpellTimerの描画をRefreshする
         /// </summary>
@@ -255,6 +272,18 @@ namespace ACT.SpecialSpellTimer.Views
                         select
                         x;
                     break;
+            }
+
+            // 向きを設定する
+            if (!this.Panel.Horizontal)
+            {
+                this.SpellOrientation = Orientation.Vertical;
+                this.SpellMargin = new Thickness(0, 0, 0, this.Panel.Margin);
+            }
+            else
+            {
+                this.SpellOrientation = Orientation.Horizontal;
+                this.SpellMargin = new Thickness(0, 0, this.Panel.Margin, 0);
             }
 
             // 背景色を設定する

@@ -215,11 +215,19 @@ namespace ACT.SpecialSpellTimer.Views
                 }
 
                 this.SpellIconPanel.Background = Brushes.Black;
+
+                image.Visibility = Visibility.Visible;
+                this.SpellIconPanel.Visibility = Visibility.Visible;
             }
             else
             {
                 image.Source = IconController.BlankBitmap;
+                image.Height = 0;
+                image.Width = 0;
                 this.SpellIconPanel.Background = Brushes.Transparent;
+
+                image.Visibility = Visibility.Collapsed;
+                this.SpellIconPanel.Visibility = Visibility.Collapsed;
             }
 
             // Titleを描画する

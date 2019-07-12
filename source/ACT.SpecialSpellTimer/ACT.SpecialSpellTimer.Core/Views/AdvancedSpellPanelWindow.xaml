@@ -128,6 +128,8 @@
         <ItemsControl.ItemTemplate>
           <DataTemplate>
             <local:SpellControl
+              VerticalAlignment="Top"
+              HorizontalAlignment="Left"
               DataContext="{Binding}"
               Visibility="{Binding Visibility, Mode=OneWay}"
               Margin="{Binding Panel.MarginTickness, Mode=OneWay}"

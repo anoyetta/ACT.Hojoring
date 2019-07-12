@@ -134,9 +134,30 @@ namespace ACT.SpecialSpellTimer.Models
             }
         }
 
-        public bool FixedPositionSpell { get; set; } = false;
+        private bool fixedPositionSpell;
 
-        public bool Horizontal { get; set; } = false;
+        public bool FixedPositionSpell
+        {
+            get => this.fixedPositionSpell;
+            set => this.SetProperty(ref this.fixedPositionSpell, value);
+        }
+
+        private bool horizontal;
+
+        public bool Horizontal
+        {
+            get => this.horizontal;
+            set
+            {
+                if (this.SetProperty(ref this.horizontal, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.SpellOrientation));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public Orientation SpellOrientation => !this.Horizontal ? Orientation.Vertical : Orientation.Horizontal;
 
         private bool locked;
 
