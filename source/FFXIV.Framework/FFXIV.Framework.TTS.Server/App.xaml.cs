@@ -187,6 +187,11 @@ namespace FFXIV.Framework.TTS.Server
 
         private void ShutdownTimerOnTick(object sender, EventArgs e)
         {
+            if (Config.Instance.IsBoyomiServerAutoStart)
+            {
+                return;
+            }
+
 #if true
             if (System.Diagnostics.Process.GetProcessesByName("Advanced Combat Tracker").Length < 1 &&
                 System.Diagnostics.Process.GetProcessesByName("ACTx86").Length < 1)
