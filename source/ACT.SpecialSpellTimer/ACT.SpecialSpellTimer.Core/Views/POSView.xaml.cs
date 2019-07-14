@@ -95,7 +95,7 @@ namespace ACT.SpecialSpellTimer.Views
 
         private void POSView_Loaded(object sender, RoutedEventArgs e)
         {
-            this.timer.Interval = TimeSpan.FromSeconds(1.0);
+            this.timer.Interval = TimeSpan.FromMilliseconds(60);
             this.timer.Tick += this.Timer_Tick;
             this.timer.Start();
 
@@ -128,13 +128,16 @@ namespace ACT.SpecialSpellTimer.Views
                     this.YText.Text = player.PosYMap.ToString("N2");
                     this.ZText.Text = player.PosZMap.ToString("N2");
 
-                    this.XRaw.Text = player.PosX.ToString("N2");
-                    this.YRaw.Text = player.PosY.ToString("N2");
-                    this.ZRaw.Text = player.PosZ.ToString("N2");
-                    this.Head.Text = player.Heading.ToString("N2");
+                    if (Settings.Default.POSViewVisibleDebugInfo)
+                    {
+                        this.XRaw.Text = player.PosX.ToString("N2");
+                        this.YRaw.Text = player.PosY.ToString("N2");
+                        this.ZRaw.Text = player.PosZ.ToString("N2");
+                        this.Head.Text = player.Heading.ToString("N2");
 
-                    this.HeadDegree.Text = player.HeadingDegree.ToString("N0");
-                    this.ViewModel.HeadDegree = player.HeadingDegree;
+                        this.HeadDegree.Text = player.HeadingDegree.ToString("N0");
+                        this.ViewModel.HeadDegree = player.HeadingDegree;
+                    }
 
                     /*
                     CameraInfo.Instance.Refresh();
