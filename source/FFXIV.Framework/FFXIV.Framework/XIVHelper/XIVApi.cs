@@ -356,8 +356,7 @@ namespace FFXIV.Framework.XIVHelper
                         continue;
                     }
 
-                    uint id;
-                    if (!uint.TryParse(fields[0], out id) ||
+                    if (!uint.TryParse(fields[0], out uint id) ||
                         string.IsNullOrEmpty(fields[1]))
                     {
                         continue;
