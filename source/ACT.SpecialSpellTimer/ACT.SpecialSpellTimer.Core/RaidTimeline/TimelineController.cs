@@ -1206,11 +1206,27 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 var toNotice = tri.Clone();
                 toNotice.LogSeq = xivlog.Seq;
 
+                var durationOverride = (double?)null;
+                var durationText = match.Groups["duration"].Value;
+                if (!string.IsNullOrEmpty(durationText))
+                {
+                    if (double.TryParse(durationText, out double d) &&
+                        d < 9999d)
+                    {
+                        durationOverride = d;
+                    }
+                }
+
                 var vnotices = toNotice.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
                 if (vnotices.Any())
                 {
                     foreach (var vnotice in vnotices)
                     {
+                        if (durationOverride.HasValue)
+                        {
+                            vnotice.Duration = durationOverride;
+                        }
+
                         vnotice.Timestamp = detectTime;
 
                         // 自動ジョブアイコンをセットする
@@ -1223,6 +1239,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     foreach (var inotice in inotices)
                     {
+                        if (durationOverride.HasValue)
+                        {
+                            inotice.Duration = durationOverride;
+                        }
+
                         inotice.Timestamp = detectTime;
                     }
                 }
