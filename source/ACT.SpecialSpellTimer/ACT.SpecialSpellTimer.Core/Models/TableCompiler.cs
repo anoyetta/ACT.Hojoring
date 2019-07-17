@@ -875,12 +875,13 @@ namespace ACT.SpecialSpellTimer.Models
 #if DEBUG
             placeholdersInSim.Clear();
 #endif
-            // ID系プレースホルダ
+            // 汎用プレースホルダ
             var idsInSim = new[]
             {
                 new PlaceholderContainer(createPH("id"), @"([0-9a-fA-F]+|<id>|\[id\]|<id4>|\[id4\]|<id8>|\[id8\])", PlaceholderTypes.Custom),
                 new PlaceholderContainer(createPH("id4"), @"([0-9a-fA-F]{4}|<id4>|\[id4\])", PlaceholderTypes.Custom),
-                new PlaceholderContainer(createPH("id8"), @"([0-9a-fA-F]{8}|<id8>|\[id8\])", PlaceholderTypes.Custom)
+                new PlaceholderContainer(createPH("id8"), @"([0-9a-fA-F]{8}|<id8>|\[id8\])", PlaceholderTypes.Custom),
+                new PlaceholderContainer(createPH("duration"), @"(?<_duration>[\d\.]+)", PlaceholderTypes.Custom)
             };
 
             var jobs = Enum.GetNames(typeof(JobIDs));
@@ -1300,20 +1301,20 @@ namespace ACT.SpecialSpellTimer.Models
             public PlaceholderTypes Type { get; set; }
         }
 
-        private class RegexEx
-        {
-            public RegexEx(
-                Regex regex,
-                string regexPattern)
-            {
-                this.Regex = regex;
-                this.RegexPattern = regexPattern;
-            }
+        #endregion Sub classes
+    }
 
-            public Regex Regex { get; set; }
-            public string RegexPattern { get; set; }
+    public class RegexEx
+    {
+        public RegexEx(
+            Regex regex,
+            string regexPattern)
+        {
+            this.Regex = regex;
+            this.RegexPattern = regexPattern;
         }
 
-        #endregion Sub classes
+        public Regex Regex { get; set; }
+        public string RegexPattern { get; set; }
     }
 }

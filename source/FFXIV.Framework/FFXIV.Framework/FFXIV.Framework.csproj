@@ -51,6 +51,10 @@
       <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.LogFile.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="FFXIV_ACT_Plugin.Resource">
+      <HintPath>..\..\..\..\ACT.ProvokeAssistant\source\ThirdPaty\SDK\FFXIV_ACT_Plugin.Resource.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -136,6 +140,7 @@
     <Compile Include="Extensions\NumericExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Extensions\RegexExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TimeSpanExtensions.cs" />
     <Compile Include="WPF\CommonViewHelper.cs" />

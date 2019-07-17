@@ -1207,14 +1207,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 toNotice.LogSeq = xivlog.Seq;
 
                 var durationOverride = (double?)null;
-                var durationText = match.Groups["duration"].Value;
-                if (!string.IsNullOrEmpty(durationText))
+                if (RegexExtensions.TryGetDuration(match, out double d))
                 {
-                    if (double.TryParse(durationText, out double d) &&
-                        d < 9999d)
-                    {
-                        durationOverride = d;
-                    }
+                    durationOverride = d;
                 }
 
                 var vnotices = toNotice.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
