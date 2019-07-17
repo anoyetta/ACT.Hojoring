@@ -11,8 +11,8 @@ using ACT.SpecialSpellTimer.Utility;
 using ACT.SpecialSpellTimer.Views;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Extensions;
-using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -202,10 +202,7 @@ namespace ACT.SpecialSpellTimer
                             // 最大値9999を超えていた場合は無視する
                             var duration = targetSpell.RecastTime;
 
-                            var d = 0d;
-                            var durationAsText = match.Groups["duration"].Value;
-                            if (double.TryParse(durationAsText, out d) &&
-                                d < 9999)
+                            if (RegexExtensions.TryGetDuration(match, out double d))
                             {
                                 duration = d;
                             }

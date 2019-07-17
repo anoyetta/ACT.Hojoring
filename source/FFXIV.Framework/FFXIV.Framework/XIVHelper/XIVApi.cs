@@ -32,6 +32,14 @@ namespace FFXIV.Framework.XIVHelper
 
         #region Resources Files
 
+        public string TerritoryFile => Path.Combine(
+            this.ResourcesDirectory + @"\xivdb",
+            $@"TerritoryType.{this.FFXIVLocale.ToResourcesName()}.csv");
+
+        public string TerritoryENFile => Path.Combine(
+            this.ResourcesDirectory + @"\xivdb",
+            $@"TerritoryType.en-US.csv");
+
         public string AreaFile => Path.Combine(
             this.ResourcesDirectory + @"\xivdb",
             $@"Instance.{this.FFXIVLocale.ToResourcesName()}.csv");
@@ -60,12 +68,15 @@ namespace FFXIV.Framework.XIVHelper
 
         #region Resources Lists
 
+        private readonly List<Area> territoryList = new List<Area>();
+        private readonly List<Area> territoryENList = new List<Area>();
         private readonly Dictionary<int, Area> areaENList = new Dictionary<int, Area>();
         private readonly List<Area> areaList = new List<Area>();
         private readonly List<Placename> placenameList = new List<Placename>();
         private readonly Dictionary<uint, XIVApiAction> actionList = new Dictionary<uint, XIVApiAction>();
         private readonly Dictionary<uint, Buff> buffList = new Dictionary<uint, Buff>();
 
+        public IReadOnlyList<Area> TerritoryList => this.territoryList;
         public IReadOnlyList<Area> AreaList => this.areaList;
         public IReadOnlyList<Placename> PlacenameList => this.placenameList;
         public IReadOnlyDictionary<uint, XIVApiAction> ActionList => this.actionList;
@@ -112,10 +123,93 @@ namespace FFXIV.Framework.XIVHelper
         public void Load()
         {
             Task.WaitAll(
+                Task.Run(() => this.LoadTerritory()),
                 Task.Run(() => this.LoadArea()),
                 Task.Run(() => this.LoadPlacename()),
                 Task.Run(() => this.LoadAction()),
                 Task.Run(() => this.LoadBuff()));
+        }
+
+        private static readonly int AddtionalTerritoryStartID = 813;
+
+        private void LoadTerritory()
+        {
+            var en = this.LoadTerritoryCore(this.TerritoryENFile);
+            var la = this.LoadTerritoryCore(this.TerritoryFile);
+
+            if (en == null ||
+                la == null)
+            {
+                return;
+            }
+
+            var dic = en.ToDictionary(x => x.ID);
+
+            foreach (var item in la)
+            {
+                if (dic.ContainsKey(item.ID))
+                {
+                    item.NameEn = dic[item.ID].Name;
+                }
+            }
+
+            this.territoryList.Clear();
+            this.territoryList.AddRange(la);
+        }
+
+        private List<Area> LoadTerritoryCore(string file)
+        {
+            if (!File.Exists(file))
+            {
+                return null;
+            }
+
+            var list = new List<Area>(2048);
+
+            // UTF-8 BOMあり
+            using (var sr = new StreamReader(file, new UTF8Encoding(true)))
+            using (var parser = new TextFieldParser(sr)
+            {
+                TextFieldType = FieldType.Delimited,
+                Delimiters = new[] { "," },
+                HasFieldsEnclosedInQuotes = true,
+                TrimWhiteSpace = true,
+                CommentTokens = new[] { "#" },
+            })
+            {
+                while (!parser.EndOfData)
+                {
+                    var fields = parser.ReadFields();
+
+                    if (fields == null ||
+                        fields.Length < 5)
+                    {
+                        continue;
+                    }
+
+                    int id;
+                    if (!int.TryParse(fields[0], out id) ||
+                        string.IsNullOrEmpty(fields[6]))
+                    {
+                        continue;
+                    }
+
+                    if (id < AddtionalTerritoryStartID)
+                    {
+                        continue;
+                    }
+
+                    var entry = new Area()
+                    {
+                        ID = id,
+                        Name = fields[6]
+                    };
+
+                    list.Add(entry);
+                }
+            }
+
+            return list;
         }
 
         private void LoadArea()
@@ -356,8 +450,7 @@ namespace FFXIV.Framework.XIVHelper
                         continue;
                     }
 
-                    uint id;
-                    if (!uint.TryParse(fields[0], out id) ||
+                    if (!uint.TryParse(fields[0], out uint id) ||
                         string.IsNullOrEmpty(fields[1]))
                     {
                         continue;

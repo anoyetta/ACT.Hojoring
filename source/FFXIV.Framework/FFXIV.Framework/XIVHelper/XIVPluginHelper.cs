@@ -19,6 +19,7 @@ using FFXIV.Framework.Globalization;
 using FFXIV_ACT_Plugin.Common;
 using FFXIV_ACT_Plugin.Common.Models;
 using FFXIV_ACT_Plugin.Logfile;
+using FFXIV_ACT_Plugin.Resource;
 using Microsoft.VisualBasic.FileIO;
 using Sharlayan.Core.Enums;
 
@@ -58,6 +59,8 @@ namespace FFXIV.Framework.XIVHelper
         private IDataRepository DataRepository { get; set; }
 
         private IDataSubscription DataSubscription { get; set; }
+
+        private dynamic IOCContainer { get; set; }
 
         public System.Action ActPluginAttachedCallback { get; set; }
 
@@ -149,14 +152,15 @@ namespace FFXIV.Framework.XIVHelper
                     {
                         this.LoadSkillList();
                         this.LoadZoneList();
+                        this.LoadZoneListFromTerritory();
                         this.LoadWorldList();
 
-                        this.TranslateZoneList();
                         this.MergeSkillList();
-#if false
-                        this.MergeSkillListToXIVPlugin();
-                        this.MergeBuffListToXIVPlugin();
-#endif
+
+                        this.ComplementSkillList();
+                        this.ComplementBuffList();
+
+                        this.TranslateZoneList();
                     }
                 }
                 catch (Exception ex)
@@ -294,6 +298,12 @@ namespace FFXIV.Framework.XIVHelper
                     this.DataRepository = this.plugin.DataRepository;
                     this.DataSubscription = this.plugin.DataSubscription;
 
+                    this.IOCContainer = ffxivPlugin.GetType()
+                        .GetField(
+                            "_iocContainer",
+                            BindingFlags.NonPublic | BindingFlags.Instance)
+                        .GetValue(ffxivPlugin);
+
                     this.SubscribeXIVPluginEvents();
                     this.SubscribeParsedLogLine();
 
@@ -339,6 +349,9 @@ namespace FFXIV.Framework.XIVHelper
             CombatantsManager.Instance.Clear();
             this.OnZoneChanged(zoneID, zoneName);
         }
+
+        public ResolveType Resolve<ResolveType>() where ResolveType : class
+            => this.IOCContainer?.Resolve<ResolveType>();
 
         #endregion Attach FFXIV Plugin
 
@@ -1106,7 +1119,19 @@ namespace FFXIV.Framework.XIVHelper
             ((int)this.DataRepository?.GetCurrentTerritoryID()) :
             0;
 
-        public string GetCurrentZoneName() => ActGlobals.oFormActMain?.CurrentZone;
+        public string GetCurrentZoneName() => this.ExecuteGetCurrentZoneName();
+
+        private string ExecuteGetCurrentZoneName()
+        {
+            var name = ActGlobals.oFormActMain?.CurrentZone;
+            if (string.IsNullOrEmpty(name) ||
+                name.Contains("Unknown"))
+            {
+                name = this.GetTerritoryNameByID(this.GetCurrentZoneID());
+            }
+
+            return name;
+        }
 
         public string ReplacePartyMemberName(
             string text,
@@ -1422,6 +1447,43 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
+        private volatile bool isLoadedZoneFromTerritory = false;
+
+        private void LoadZoneListFromTerritory()
+        {
+            if (this.isLoadedZoneFromTerritory)
+            {
+                return;
+            }
+
+            if (!XIVApi.Instance.TerritoryList.Any())
+            {
+                return;
+            }
+
+            this.isLoadedZoneFromTerritory = true;
+
+            var added = false;
+            foreach (var territory in XIVApi.Instance.TerritoryList)
+            {
+                if (!this.zoneList.Any(x => x.ID == territory.ID))
+                {
+                    this.zoneList.Add(new Zone()
+                    {
+                        ID = territory.ID,
+                        Name = territory.Name,
+                    });
+
+                    added = true;
+                }
+            }
+
+            if (added)
+            {
+                AppLogger.Trace($"zone list added from territory.");
+            }
+        }
+
         private bool isZoneListTranslated = false;
 
         private void TranslateZoneList()
@@ -1432,20 +1494,21 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            if (!XIVApi.Instance.AreaList.Any())
+            if (!XIVApi.Instance.AreaList.Any() ||
+                !XIVApi.Instance.TerritoryList.Any())
             {
                 return;
             }
 
             var transDictionary = XIVApi.Instance.AreaList
-                .GroupBy(x => x.NameEn.ToLower())
+                .GroupBy(x => normalize(x.NameEn))
                 .ToDictionary(
                     x => x.Key,
                     x => x.First());
 
             foreach (var zone in this.ZoneList)
             {
-                var key = zone.Name.ToLower();
+                var key = normalize(zone.Name);
 
                 if (transDictionary.ContainsKey(key))
                 {
@@ -1457,48 +1520,28 @@ namespace FFXIV.Framework.XIVHelper
 
             AppLogger.Trace($"zone list translated.");
             this.isZoneListTranslated = true;
+
+            string normalize(string text)
+            {
+                text = text.Replace(" ", string.Empty);
+                text = text.Replace(".", string.Empty);
+                text = text.Replace("/", string.Empty);
+                text = text.Replace("-", string.Empty);
+                text = text.Replace("(", string.Empty);
+                text = text.Replace(")", string.Empty);
+                text = text.Replace("[", string.Empty);
+                text = text.Replace("]", string.Empty);
+                text = text.Replace("_", string.Empty);
+                text = text.Replace(":", string.Empty);
+                text = text.Replace(";", string.Empty);
+
+                return text.ToLower();
+            }
         }
-
-#if false
-        private void LoadBuffList()
-        {
-            if (this.buffList.Any())
-            {
-                return;
-            }
-
-            if (this.plugin == null)
-            {
-                return;
-            }
-
-            var dictionary = this.dataRepository.GetResourceDictionary(ResourcesTypeDictionary[this.FFXIVLocale].Buff);
-            if (dictionary == null)
-            {
-                return;
-            }
-
-            var newList = new Dictionary<uint, Buff>();
-
-            foreach (var source in dictionary)
-            {
-                var entry = new Buff()
-                {
-                    ID = source.Key,
-                    Name = source.Value,
-                };
-
-                newList.Add(entry.ID, entry);
-            }
-
-            this.buffList = newList;
-            AppLogger.Trace("buff list loaded.");
-        }
-#endif
 
         private volatile bool isMergedSkillList = false;
-        private volatile bool isMergedSkillToXIVPlugin = false;
-        private volatile bool isMergedBuffListToXIVPlugin = false;
+        private volatile bool isComplementedSkillList = false;
+        private volatile bool isComplementedBuffList = false;
 
         /// <summary>
         /// XIVApiのスキルリストとFFXIVプラグインのスキルリストをマージする
@@ -1533,52 +1576,71 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
-        private void MergeSkillListToXIVPlugin()
+        private void ComplementSkillList()
         {
-            if (this.isMergedSkillToXIVPlugin)
+            if (this.isComplementedSkillList)
             {
                 return;
             }
 
-            if (this.plugin == null)
+            if (this.plugin == null ||
+                this.IOCContainer == null)
             {
                 return;
             }
 
-            var t = (this.plugin as object).GetType().Module.Assembly.GetType("FFXIV_ACT_Plugin.Resources.SkillList");
-            var obj = t.GetField(
-                "_instance",
-                BindingFlags.NonPublic | BindingFlags.Static)
-                .GetValue(null);
+            if (!XIVApi.Instance.ActionList.Any())
+            {
+                return;
+            }
 
-            var list = obj.GetType().GetField(
-                "_SkillList",
-                BindingFlags.NonPublic | BindingFlags.Instance)
-                .GetValue(obj);
+            var resourcesData = this.Resolve<IResourceData>();
+            var dataContainer = resourcesData?.GetType()
+                .GetField(
+                    "_skillList",
+                    BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(resourcesData);
+            var innerList = dataContainer?.GetType()
+                .GetField(
+                    "_SkillList",
+                    BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(dataContainer)
+                as SortedDictionary<uint, string>;
 
-            var pluginSkillList = list as SortedDictionary<uint, string>;
+            if (innerList == null)
+            {
+                this.isComplementedSkillList = true;
+                AppLogger.Error("skill list not found in XIVPlugin.");
+                return;
+            }
 
+            var added = false;
             foreach (var entry in XIVApi.Instance.ActionList)
             {
-                if (!pluginSkillList.ContainsKey(entry.Key))
+                if (!innerList.ContainsKey(entry.Key))
                 {
-                    pluginSkillList[entry.Key] = entry.Value.Name;
+                    innerList[entry.Key] = entry.Value.Name;
+                    added = true;
                 }
             }
 
-            if (XIVApi.Instance.ActionList.Any())
+            this.isComplementedSkillList = true;
+
+            if (added)
             {
-                this.isMergedSkillToXIVPlugin = true;
-                AppLogger.Trace("xivapi action list -> XIVPlugin");
+                AppLogger.Trace("skill list complemented to XIVPlugin.");
             }
         }
 
-        /// <summary>
-        /// XIVApiのBuff(Status)リストとFFXIVプラグインのBuffリストをマージする
-        /// </summary>
-        private void MergeBuffListToXIVPlugin()
+        private void ComplementBuffList()
         {
-            if (this.isMergedBuffListToXIVPlugin)
+            if (this.isComplementedBuffList)
+            {
+                return;
+            }
+
+            if (this.plugin == null ||
+                this.IOCContainer == null)
             {
                 return;
             }
@@ -1588,40 +1650,48 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            if (this.plugin == null)
+            var resourcesData = this.Resolve<IResourceData>();
+            var dataContainer = resourcesData?.GetType()
+                .GetField(
+                    "_buffList",
+                    BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(resourcesData);
+            var innerList = dataContainer?.GetType()
+                .GetField(
+                    "_BuffList",
+                    BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(dataContainer)
+                as SortedDictionary<uint, string>;
+
+            if (innerList == null)
             {
+                this.isComplementedBuffList = true;
+                AppLogger.Error("buff list not found in XIVPlugin.");
                 return;
             }
 
-            var t = (this.plugin as object).GetType().Module.Assembly.GetType("FFXIV_ACT_Plugin.Resources.BuffList");
-            var obj = t.GetField(
-                "_instance",
-                BindingFlags.NonPublic | BindingFlags.Static)
-                .GetValue(null);
-
-            var list = obj.GetType().GetField(
-                "_BuffList",
-                BindingFlags.NonPublic | BindingFlags.Instance)
-                .GetValue(obj);
-
-            var pluginList = list as SortedDictionary<uint, string>;
-
+            var added = false;
             foreach (var entry in XIVApi.Instance.BuffList)
             {
-                if (!pluginList.ContainsKey(entry.Key))
+                if (!innerList.ContainsKey(entry.Key))
                 {
-                    pluginList[entry.Key] = entry.Value.Name;
-                    Debug.WriteLine(entry.ToString());
+                    innerList[entry.Key] = entry.Value.Name;
+                    added = true;
                 }
             }
 
-            if (XIVApi.Instance.BuffList.Any())
-            {
-                AppLogger.Trace("xivapi status list -> XIVPlugin");
-            }
+            this.isComplementedBuffList = true;
 
-            this.isMergedBuffListToXIVPlugin = true;
+            if (added)
+            {
+                AppLogger.Trace("buff list complemented to XIVPlugin.");
+            }
         }
+
+        public string GetTerritoryNameByID(
+            int id) =>
+            XIVApi.Instance.TerritoryList.FirstOrDefault(x => x.ID == id)?.NameEn ??
+            "Unknown Zone (0x" + Convert.ToString(id, 16) + ")";
 
         #endregion Resources
 

@@ -265,7 +265,7 @@ namespace FFXIV.Framework.TTS.Server.Models
                 var state = this.cevioTalker.Speak(textToSpeak);
                 while (!state.IsCompleted)
                 {
-                    Thread.Sleep(20);
+                    Thread.Sleep(150);
                 }
             }
         }
