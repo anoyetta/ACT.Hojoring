@@ -826,6 +826,7 @@ namespace ACT.SpecialSpellTimer.Models
             new PlaceholderContainer("<id>", "[0-9a-fA-F]+", PlaceholderTypes.Custom),
             new PlaceholderContainer("<id4>", "[0-9a-fA-F]{4}", PlaceholderTypes.Custom),
             new PlaceholderContainer("<id8>", "[0-9a-fA-F]{8}", PlaceholderTypes.Custom),
+            new PlaceholderContainer("<_duration>", @"(?<_duration>[\d\.]+)", PlaceholderTypes.Custom)
         };
 
         private volatile List<PlaceholderContainer> placeholderList =
@@ -881,7 +882,7 @@ namespace ACT.SpecialSpellTimer.Models
                 new PlaceholderContainer(createPH("id"), @"([0-9a-fA-F]+|<id>|\[id\]|<id4>|\[id4\]|<id8>|\[id8\])", PlaceholderTypes.Custom),
                 new PlaceholderContainer(createPH("id4"), @"([0-9a-fA-F]{4}|<id4>|\[id4\])", PlaceholderTypes.Custom),
                 new PlaceholderContainer(createPH("id8"), @"([0-9a-fA-F]{8}|<id8>|\[id8\])", PlaceholderTypes.Custom),
-                new PlaceholderContainer(createPH("duration"), @"(?<_duration>[\d\.]+)", PlaceholderTypes.Custom)
+                new PlaceholderContainer(createPH("_duration"), @"(?<_duration>[\d\.]+)", PlaceholderTypes.Custom)
             };
 
             var jobs = Enum.GetNames(typeof(JobIDs));
