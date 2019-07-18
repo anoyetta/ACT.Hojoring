@@ -185,13 +185,7 @@ namespace ACT.UltraScouter.Workers
                 return;
             }
 
-            var model = this.Model as MeInfoModel;
-            if (model != null)
-            {
-                model.JobID = targetInfo.JobID;
-                model.MaxMP = targetInfo.MaxMP;
-                model.CurrentMP = targetInfo.CurrentMP;
-            }
+            TickerModel.Instance.Update(targetInfo);
         }
     }
 }

@@ -84,6 +84,8 @@
   <system:String x:Key="MyStatus_ColorRange">Color ranges (%)</system:String>
 
   <system:String x:Key="MPTicker_VisibleCounter">카운터 표시</system:String>
+  <system:String x:Key="MPTicker_SyncHoT">Sync to HoT</system:String>
+  <system:String x:Key="MPTicker_SyncDoT">Sync to DoT</system:String>
   <system:String x:Key="MPTicker_Bar">바</system:String>
   <system:String x:Key="MPTicker_BarStrokeColor">바 윤곽선색</system:String>
   <system:String x:Key="MPTicker_LinkBarStrokeColorToBarColor">바의 윤곽선색을 바 색상과 같게</system:String>

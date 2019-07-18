@@ -84,6 +84,8 @@
   <system:String x:Key="MyStatus_ColorRange">Color ranges (%)</system:String>
 
   <system:String x:Key="MPTicker_VisibleCounter">显示值</system:String>
+  <system:String x:Key="MPTicker_SyncHoT">Sync to HoT</system:String>
+  <system:String x:Key="MPTicker_SyncDoT">Sync to DoT</system:String>
   <system:String x:Key="MPTicker_Bar">条</system:String>
   <system:String x:Key="MPTicker_BarStrokeColor">条轮廓颜色</system:String>
   <system:String x:Key="MPTicker_LinkBarStrokeColorToBarColor">关联'条轮廓颜色' &lt;- '条颜色'</system:String>
