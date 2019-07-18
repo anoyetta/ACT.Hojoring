@@ -12,6 +12,7 @@ namespace FFLogsRankingDonwloader
     {
         static Program()
         {
+            CosturaUtility.Initialize();
             AssemblyResolver.Instance.Initialize();
         }
 

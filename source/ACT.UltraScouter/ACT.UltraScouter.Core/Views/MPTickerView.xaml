@@ -1,6 +1,6 @@
 <Window
   x:Class="ACT.UltraScouter.Views.MPTickerView"
-  Title="MPTickerView"
+  Title="3s Ticker"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -16,11 +16,11 @@
   AllowsTransparency="True"
   ShowInTaskbar="False"
   SizeToContent="WidthAndHeight"
-  TextOptions.TextFormattingMode="Ideal"
-  TextOptions.TextHintingMode="Fixed"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
   TextOptions.TextRenderingMode="ClearType"
   RenderOptions.ClearTypeHint="Enabled"
-  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.BitmapScalingMode="Fant"
   RenderOptions.EdgeMode="Unspecified"
   WindowStyle="None"
   Background="Transparent"
@@ -58,7 +58,7 @@
 
       <Grid
         Margin="13"
-        Visibility="{Binding Model.MPTickerAvailable, Converter={StaticResource BoolToHiddenConverter}, Mode=OneWay}">
+        Visibility="{Binding Model.InTargetJob, Converter={StaticResource BoolToHiddenConverter}, Mode=OneWay}">
         <Grid.RowDefinitions>
           <RowDefinition />
           <RowDefinition Height="3" />
@@ -132,7 +132,7 @@
       Visibility="{Binding Config.IsCircleStyle, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
 
       <Grid
-        Visibility="{Binding Model.MPTickerAvailable, Converter={StaticResource BoolToHiddenConverter}, Mode=OneWay}">
+        Visibility="{Binding Model.InTargetJob, Converter={StaticResource BoolToHiddenConverter}, Mode=OneWay}">
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
           <!-- プログレスサークル -->
           <ctrl:ProgressCircle

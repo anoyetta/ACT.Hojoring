@@ -184,6 +184,7 @@
     <Compile Include="Models\TacticalRadarModel.cs" />
     <Compile Include="Models\TacticalTarget.cs" />
     <Compile Include="Models\TargetInfoModel.Enmity.cs" />
+    <Compile Include="Models\TickerModel.cs" />
     <Compile Include="Models\ToTInfoModel.cs" />
     <Compile Include="Models\TargetInfoModel.cs" />
     <Compile Include="Models\BossInfoModel.cs" />

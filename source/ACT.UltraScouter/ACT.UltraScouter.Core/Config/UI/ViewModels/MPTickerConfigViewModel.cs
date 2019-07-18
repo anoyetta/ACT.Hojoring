@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
-using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels;
 using ACT.UltraScouter.Workers;
 using Prism.Commands;
@@ -16,18 +15,6 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
         private MPTickerViewModel GetViewModel() =>
             MainWorker.Instance.GetViewModelList(ViewCategories.Me).FirstOrDefault(x => x is MPTickerViewModel) as MPTickerViewModel;
-
-        private ICommand testModeCommand;
-
-        public ICommand TestModeCommand =>
-            this.testModeCommand ?? (this.testModeCommand = new DelegateCommand<bool?>((testMode) =>
-            {
-                if (testMode.HasValue &&
-                    testMode.Value)
-                {
-                    MeInfoModel.Instance.BeginMPTicker(true);
-                }
-            }));
 
         private ICommand targetActionDisplayTextFontCommand;
         private ICommand targetActionDisplayTextColorCommand;
