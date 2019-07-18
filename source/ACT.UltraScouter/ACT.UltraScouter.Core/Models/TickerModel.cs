@@ -195,7 +195,9 @@ namespace ACT.UltraScouter.Models
                 return;
             }
 
-            var text = logline.Substring(0, 14);
+            var text = logline.Substring(0, 14)
+                .Replace("[", string.Empty)
+                .Replace("]", string.Empty);
             if (!DateTime.TryParse(text, out DateTime timestamp))
             {
                 return;
