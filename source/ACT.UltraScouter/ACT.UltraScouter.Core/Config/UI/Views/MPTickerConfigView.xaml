@@ -48,19 +48,25 @@
         Content="{DynamicResource Common_Visible}"
         IsChecked="{Binding MPTicker.Visible, Mode=TwoWay}" />
       <CheckBox
-        Margin="0 10 0 0"
+        Margin="0 5 0 0"
         Content="{DynamicResource MPTicker_VisibleCounter}"
         IsChecked="{Binding MPTicker.CounterVisible, Mode=TwoWay}" />
       <CheckBox
-        Margin="0 10 0 0"
+        Margin="0 5 0 0"
+        Content="{DynamicResource MPTicker_SyncHoT}"
+        IsChecked="{Binding MPTicker.IsSyncHoT, Mode=TwoWay}" />
+      <CheckBox
+        Margin="0 5 0 0"
+        Content="{DynamicResource MPTicker_SyncDoT}"
+        IsChecked="{Binding MPTicker.IsSyncDoT, Mode=TwoWay}" />
+      <CheckBox
+        Margin="0 5 0 0"
         x:Name="TestModeCheckBox"
         Content="{DynamicResource Common_TestMode}"
-        Command="{Binding TestModeCommand}"
-        CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
         IsChecked="{Binding MPTicker.TestMode, Mode=TwoWay}" />
 
       <Label
-        Margin="0 20 0 0"
+        Margin="0 15 0 0"
         Content="{DynamicResource Common_Location}" />
       <StackPanel Orientation="Horizontal">
         <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
@@ -70,7 +76,7 @@
       </StackPanel>
 
       <Label
-        Margin="0 20 0 0"
+        Margin="0 15 0 0"
         Content="{DynamicResource Common_Font}" />
 
       <TextBlock Margin="7,0,0,0" FontWeight="Bold">
@@ -99,11 +105,11 @@
 
       <!-- バー -->
       <Label
-        Margin="0 20 0 0"
+        Margin="0 15 0 0"
         Content="{DynamicResource MPTicker_Bar}" />
 
       <ListView
-        Margin="0 10 0 0"
+        Margin="0 5 0 0"
         ItemsSource="{Binding MPTicker.ProgressBar.ColorRange}"
         BorderThickness="0"
         HorizontalAlignment="Left">
@@ -209,13 +215,16 @@
         Padding="0"
         Content="{DynamicResource MPTicker_ExplationTimeForDisplay2}" />
       <Slider
+        HorizontalAlignment="Left"
+        Width="520"
         Name="ExplationTimeForDisplaySlider"
         Minimum="0" Maximum="300"
         LargeChange="1"
         SmallChange="1"
         Value="{Binding MPTicker.ExplationTimeForDisplay, Mode=TwoWay}" />
       <TextBlock
-        Margin="8 0 0 0"
+        HorizontalAlignment="Left"
+        Margin="8 3 0 0"
         Text="{Binding ElementName=ExplationTimeForDisplaySlider, Path=Value, Mode=OneWay, StringFormat={}{0:N0}}" />
 
       <Label

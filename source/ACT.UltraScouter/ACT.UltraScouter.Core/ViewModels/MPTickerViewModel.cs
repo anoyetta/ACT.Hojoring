@@ -1,12 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Threading;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels.Bases;
 using ACT.UltraScouter.Views;
+using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.ViewModels
 {
@@ -21,42 +25,118 @@ namespace ACT.UltraScouter.ViewModels
 
         public override void Initialize()
         {
-            this.Model.MPRecovered -= this.Model_MPRecovered;
-            this.Model.MPRecovered += this.Model_MPRecovered;
-        }
+            this.Model.RestartTickerCallback = () => WPFHelper.InvokeAsync(() =>
+            {
+                (this.View as MPTickerView)?.BeginAnimation();
+            },
+            DispatcherPriority.Normal);
 
-        public override void Dispose()
-        {
-            this.Model.MPRecovered -= this.Model_MPRecovered;
+            this.Config.PropertyChanged += (_, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(this.Config.Visible):
+                        if (this.Config.Visible)
+                        {
+                            this.Model.StartSync();
+                        }
+                        else
+                        {
+                            this.Model.StopSync();
+                        }
+                        break;
 
-            base.Dispose();
+                    case nameof(this.Config.TestMode):
+                        if (this.Config.TestMode)
+                        {
+                            (this.View as MPTickerView)?.BeginAnimation();
+                        }
+                        break;
+                }
+            };
+
+            if (this.Config.Visible)
+            {
+                this.Model.StartSync();
+            }
         }
 
         public virtual Settings RootConfig => Settings.Instance;
+
         public virtual MPTicker Config => Settings.Instance.MPTicker;
-        public virtual MeInfoModel Model => MeInfoModel.Instance;
 
-        public bool OverlayVisible => this.Config.Visible;
+        public virtual TickerModel Model => TickerModel.Instance;
 
-        /// <summary>
-        /// 規定のMP回復を検知した
-        /// </summary>
-        /// <param name="sender">モデル</param>
-        /// <param name="e">イベント引数</param>
-        private void Model_MPRecovered(
-            object sender,
-            EventArgs e)
+        private volatile bool previousCombatStat = false;
+        private DateTime endCombatTimestamp = DateTime.MinValue;
+
+        public bool OverlayVisible
         {
-            var view = this.View as MPTickerView;
-            if (view != null)
+            get
             {
-                view.BeginAnimation();
+                if (!this.Config.Visible)
+                {
+                    return false;
+                }
+
+                if (this.Config.TestMode)
+                {
+                    return true;
+                }
+
+                var inCombat = XIVPluginHelper.Instance.InCombat;
+                if (inCombat)
+                {
+                    this.previousCombatStat = inCombat;
+                    return true;
+                }
+
+                if (this.Config.ExplationTimeForDisplay > 0)
+                {
+                    if (this.previousCombatStat != inCombat)
+                    {
+                        this.previousCombatStat = inCombat;
+                        this.endCombatTimestamp = DateTime.Now;
+                    }
+
+                    if ((DateTime.Now - this.endCombatTimestamp).TotalSeconds >=
+                        this.Config.ExplationTimeForDisplay)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
     }
 
     namespace MPTickerConverters
     {
+        public static class BrushContainer
+        {
+            private static readonly Dictionary<Color, SolidColorBrush> BrushDictionary = new Dictionary<Color, SolidColorBrush>(8);
+
+            public static SolidColorBrush GetBrush(
+                Color color)
+            {
+                var brush = default(SolidColorBrush);
+
+                if (BrushDictionary.ContainsKey(color))
+                {
+                    brush = BrushDictionary[color];
+                }
+                else
+                {
+                    brush = new SolidColorBrush(color);
+                    brush.Freeze();
+                    BrushDictionary[color] = brush;
+                }
+
+                return brush;
+            }
+        }
+
         public class BarForeColorConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -67,7 +147,7 @@ namespace ACT.UltraScouter.ViewModels
                 }
 
                 var counter = (double)value;
-                return new SolidColorBrush(
+                return BrushContainer.GetBrush(
                     Settings.Instance.MPTicker.ProgressBar.AvailableColor(counter));
             }
 
@@ -84,7 +164,7 @@ namespace ACT.UltraScouter.ViewModels
                 }
 
                 var baseColor = ((SolidColorBrush)value).Color;
-                return new SolidColorBrush(
+                return BrushContainer.GetBrush(
                     Settings.Instance.MPTicker.UseCircle ?
                     baseColor.ChangeBrightness(Settings.Instance.ProgressBarDarkRatio) :
                     baseColor.ChangeBrightness(Settings.Instance.CircleBackBrightnessRate));
@@ -120,7 +200,7 @@ namespace ACT.UltraScouter.ViewModels
                 }
 
                 var baseColor = ((SolidColorBrush)value).Color;
-                return new SolidColorBrush(
+                return BrushContainer.GetBrush(
                     Settings.Instance.MPTicker.ProgressBar.LinkOutlineColor ?
                     baseColor :
                     Settings.Instance.MPTicker.ProgressBar.OutlineColor);

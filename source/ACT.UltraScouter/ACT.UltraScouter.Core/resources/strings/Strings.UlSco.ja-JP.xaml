@@ -84,6 +84,8 @@
   <system:String x:Key="MyStatus_ColorRange">カラーレンジ(%)</system:String>
 
   <system:String x:Key="MPTicker_VisibleCounter">カウンターを表示する</system:String>
+  <system:String x:Key="MPTicker_SyncHoT">HoTの周期に同期する</system:String>
+  <system:String x:Key="MPTicker_SyncDoT">DoTの周期に同期する</system:String>
   <system:String x:Key="MPTicker_Bar">バー</system:String>
   <system:String x:Key="MPTicker_BarStrokeColor">バーのアウトラインのカラー</system:String>
   <system:String x:Key="MPTicker_LinkBarStrokeColorToBarColor">バーのアウトラインのカラーをバー本体のカラーに同調させる</system:String>
@@ -91,7 +93,7 @@
   <system:String x:Key="MPTicker_CircleStyle">サークルスタイル</system:String>
   <system:String x:Key="MPTicker_RotateCCW">回転を反時計周りにする</system:String>
   <system:String x:Key="MPTicker_SwapBarAndText">バーとテキストの位置を入れ替える</system:String>
-  <system:String x:Key="MPTicker_ExplationTimeForDisplay1">MPの変化がなくなり下記の秒数が経過したら非表示にする (sec)</system:String>
+  <system:String x:Key="MPTicker_ExplationTimeForDisplay1">非戦闘状態になり下記の秒数が経過したら非表示にする (sec)</system:String>
   <system:String x:Key="MPTicker_ExplationTimeForDisplay2">※0で無限。常に表示されます</system:String>
   <system:String x:Key="MPTicker_TargetJobs">自分が下記のジョブのとき表示する</system:String>
 

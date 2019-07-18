@@ -11,16 +11,7 @@ namespace ACT.UltraScouter.Config
     public class MPTicker :
         BindableBase
     {
-        [XmlIgnore] private bool visible;
-        [XmlIgnore] private bool counterVisible;
-        [XmlIgnore] private ObservableCollection<JobAvailablity> targetJobs = new ObservableCollection<JobAvailablity>();
-        [XmlIgnore] private double explationTimeForDisplay;
-        [XmlIgnore] private bool useCircle;
-        [XmlIgnore] private bool isCircleReverse;
-        [XmlIgnore] private bool testMode;
-        [XmlIgnore] private bool swapBarAndText = false;
-        [XmlIgnore] private double barRowNumber = 2;
-        [XmlIgnore] private double textRowNumber = 0;
+        private bool testMode;
 
         /// <summary>
         /// テストモード？
@@ -32,6 +23,8 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.testMode, value);
         }
 
+        private bool visible;
+
         /// <summary>
         /// 表示？
         /// </summary>
@@ -41,6 +34,41 @@ namespace ACT.UltraScouter.Config
             get => this.visible;
             set => this.SetProperty(ref this.visible, value);
         }
+
+        private bool isSyncHoT = true;
+
+        /// <summary>
+        /// HoTに同期する
+        /// </summary>
+        public bool IsSyncHoT
+        {
+            get => this.isSyncHoT;
+            set => this.SetProperty(ref this.isSyncHoT, value);
+        }
+
+        private bool isSyncDoT;
+
+        /// <summary>
+        /// DoTに同期する
+        /// </summary>
+        public bool IsSyncDoT
+        {
+            get => this.isSyncDoT;
+            set => this.SetProperty(ref this.isSyncDoT, value);
+        }
+
+        private double resyncInterval = 30.0d;
+
+        /// <summary>
+        /// 再同期までの間隔（秒)
+        /// </summary>
+        public double ResyncInterval
+        {
+            get => this.resyncInterval;
+            set => this.SetProperty(ref this.resyncInterval, value);
+        }
+
+        private bool counterVisible;
 
         /// <summary>
         /// カウンターを表示するか？
@@ -52,6 +80,8 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.counterVisible, value);
         }
 
+        private ObservableCollection<JobAvailablity> targetJobs = new ObservableCollection<JobAvailablity>();
+
         /// <summary>
         /// 対象とするジョブ
         /// </summary>
@@ -61,6 +91,8 @@ namespace ACT.UltraScouter.Config
             get => this.targetJobs;
             set => this.SetProperty(ref this.targetJobs, value);
         }
+
+        private double explationTimeForDisplay;
 
         /// <summary>
         /// 表示の有効期限（秒）
@@ -90,6 +122,8 @@ namespace ACT.UltraScouter.Config
         [DataMember]
         public ProgressBar ProgressBar { get; set; } = new ProgressBar();
 
+        private bool useCircle;
+
         /// <summary>
         /// Circleを使用する？
         /// </summary>
@@ -108,7 +142,10 @@ namespace ACT.UltraScouter.Config
         }
 
         public bool IsSquareStyle => !this.UseCircle;
+
         public bool IsCircleStyle => this.UseCircle;
+
+        private bool isCircleReverse;
 
         /// <summary>
         /// サークルの動作を反転させるか？
@@ -119,6 +156,8 @@ namespace ACT.UltraScouter.Config
             get => this.isCircleReverse;
             set => this.SetProperty(ref this.isCircleReverse, value);
         }
+
+        private bool swapBarAndText = false;
 
         /// <summary>
         /// バーとテキストの位置を入れ替える
@@ -145,6 +184,8 @@ namespace ACT.UltraScouter.Config
             }
         }
 
+        private double barRowNumber = 2;
+
         /// <summary>
         /// バーの行番号
         /// </summary>
@@ -154,6 +195,8 @@ namespace ACT.UltraScouter.Config
             get => this.barRowNumber;
             set => this.SetProperty(ref this.barRowNumber, value);
         }
+
+        private double textRowNumber = 0;
 
         /// <summary>
         /// テキストの行番号
