@@ -104,7 +104,7 @@ namespace FFXIV.Framework.TTS.Server
         {
             lock (this)
             {
-                this.server.BeginAcceptTcpClient((result) =>
+                this.server?.BeginAcceptTcpClient((result) =>
                 {
                     if (this.server == null)
                     {
