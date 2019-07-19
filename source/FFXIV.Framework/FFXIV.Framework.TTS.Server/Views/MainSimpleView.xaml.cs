@@ -31,6 +31,7 @@ namespace FFXIV.Framework.TTS.Server.Views
             this.InitializeComponent();
             this.ViewModel.View = this;
             this.StateChanged += this.MainView_StateChanged;
+            this.Closed += (_, __) => BoyomiTcpServer.Instance.Stop();
         }
 
         public MainSimpleViewModel ViewModel => (MainSimpleViewModel)this.DataContext;
