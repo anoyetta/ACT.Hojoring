@@ -114,8 +114,11 @@ namespace FFXIV.Framework.TTS.Server
                     try
                     {
                         Thread.Sleep(10);
-                        var client = this.server.EndAcceptTcpClient(result);
-                        this.ProcessMessage(client.GetStream());
+
+                        using (var client = this.server.EndAcceptTcpClient(result))
+                        {
+                            this.ProcessMessage(client.GetStream());
+                        }
                     }
                     catch (Exception ex)
                     {
