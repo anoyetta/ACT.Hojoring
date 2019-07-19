@@ -220,7 +220,7 @@ namespace ACT.UltraScouter.Models
             Task.Run(() =>
             {
                 Thread.Sleep(nextTick - DateTime.Now);
-                this.RestartTicker();
+                this.RestartTickerCallback?.Invoke(); 
                 this.AppLogger.Trace("3s ticker synced.");
             });
         }
