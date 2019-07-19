@@ -63,6 +63,7 @@
           <RowDefinition />
           <RowDefinition Height="3" />
           <RowDefinition />
+          <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
           <ColumnDefinition />
@@ -116,6 +117,24 @@
             FontWeight="{Binding Path=Config.DisplayText.Font.Weight, Mode=OneWay}"
             FontStyle="{Binding Path=Config.DisplayText.Font.Style, Mode=OneWay}"
             Visibility="{Binding Config.CounterVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+            BlurRadius="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}"
+            BlurOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
+            StrokeOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
+            TextWrapping="NoWrap" />
+
+          <ctrl:LightOutlineTextBlock
+            DockPanel.Dock="Left"
+            HorizontalAlignment="Left"
+            Text="sync"
+            Visibility="{Binding IsVisibleSyncIndicator, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+            Fill="{Binding Path=Config.DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+            Stroke="{Binding Path=Config.DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+            StrokeThickness="{Binding Path=Config.DisplayText.Font.OutlineThickness, Mode=OneWay}"
+            FontFamily="{Binding Path=Config.DisplayText.Font.FontFamily, Mode=OneWay}"
+            FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay}"
+            FontStretch="{Binding Path=Config.DisplayText.Font.Stretch, Mode=OneWay}"
+            FontWeight="{Binding Path=Config.DisplayText.Font.Weight, Mode=OneWay}"
+            FontStyle="{Binding Path=Config.DisplayText.Font.Style, Mode=OneWay}"
             BlurRadius="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}"
             BlurOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
             StrokeOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
@@ -179,6 +198,24 @@
             BlurRadius="{Binding ElementName=RemainTextBlock, Path=BlurRadius, Mode=OneWay}"
             BlurOpacity="{Binding ElementName=RemainTextBlock, Path=BlurOpacity, Mode=OneWay}"
             StrokeOpacity="{Binding ElementName=RemainTextBlock, Path=StrokeOpacity, Mode=OneWay}"
+            TextWrapping="NoWrap" />
+
+          <ctrl:LightOutlineTextBlock
+            HorizontalAlignment="Center"
+            Margin="0 3 0 0"
+            Text="sync"
+            Visibility="{Binding IsVisibleSyncIndicator, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+            Fill="{Binding Path=Config.DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+            Stroke="{Binding Path=Config.DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}"
+            StrokeThickness="{Binding Path=Config.DisplayText.Font.OutlineThickness, Mode=OneWay}"
+            FontFamily="{Binding Path=Config.DisplayText.Font.FontFamily, Mode=OneWay}"
+            FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay}"
+            FontStretch="{Binding Path=Config.DisplayText.Font.Stretch, Mode=OneWay}"
+            FontWeight="{Binding Path=Config.DisplayText.Font.Weight, Mode=OneWay}"
+            FontStyle="{Binding Path=Config.DisplayText.Font.Style, Mode=OneWay}"
+            BlurRadius="{Binding Path=Config.DisplayText.Font.BlurRadius, Mode=OneWay}"
+            BlurOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
+            StrokeOpacity="{Binding Path=Config.DisplayText.OutlineColor.ScA, Mode=OneWay}"
             TextWrapping="NoWrap" />
         </StackPanel>
       </Grid>

@@ -197,7 +197,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
             }
 
-            Thread.Sleep(10);
+            await Task.Delay(10);
 
             // RazorEngine にわたすモデルを更新する
             TimelineModel.RefreshRazorModel();
@@ -226,7 +226,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         ex);
                 }
 
-                Thread.Sleep(10);
+                await Task.Delay(10);
             }
 
             // グローバルトリガをロードする
@@ -235,7 +235,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             foreach (var tl in globals)
             {
                 this.LoadGlobalTriggers(tl);
-                Thread.Sleep(10);
+                await Task.Delay(10);
             }
 
             await WPFHelper.InvokeAsync(() =>

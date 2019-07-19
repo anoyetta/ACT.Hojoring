@@ -10,6 +10,7 @@
   xmlns:local="clr-namespace:ACT.UltraScouter.Config.UI.Views"
   xmlns:mainv="clr-namespace:ACT.UltraScouter.Views"
   xmlns:cnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   mc:Ignorable="d"
   Title="TargetActionConfigView"
   TextOptions.TextFormattingMode="Display"
@@ -70,9 +71,9 @@
         Content="{DynamicResource Common_Location}" />
       <StackPanel Orientation="Horizontal">
         <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
-        <TextBox Margin="0 0 0 0" TextAlignment="Right" Text="{Binding MPTicker.Location.X, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+        <xctk:DoubleUpDown Value="{Binding MPTicker.Location.X, Mode=TwoWay}" Width="75" Increment="1" />
         <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
-        <TextBox Margin="0 0 0 0" TextAlignment="Right" Text="{Binding MPTicker.Location.Y, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+        <xctk:DoubleUpDown Value="{Binding MPTicker.Location.Y, Mode=TwoWay}" Width="75" Increment="1" />
       </StackPanel>
 
       <Label
@@ -116,9 +117,9 @@
         <ListView.ItemTemplate>
           <DataTemplate>
             <StackPanel Orientation="Horizontal">
-              <TextBox Margin="0 0 0 0" TextAlignment="Right" Width="60" Text="{Binding Min, Mode=TwoWay}" />
+              <xctk:DoubleUpDown Margin="0 0 0 0" Width="68" Value="{Binding Min, Mode=TwoWay}" FormatString="N1" Increment="0.1" />
               <TextBlock Margin="3 0 3 0" Text="-" />
-              <TextBox Margin="5 0 0 0" TextAlignment="Right" Width="60" Text="{Binding Max, Mode=TwoWay}" />
+              <xctk:DoubleUpDown Margin="0 0 0 0" Width="68" Value="{Binding Max, Mode=TwoWay}" FormatString="N1" Increment="0.1" />
 
               <Border
                 Margin="10 0 0 0"
@@ -182,9 +183,9 @@
         Content="{DynamicResource MPTicker_BarSize}" />
       <StackPanel Orientation="Horizontal">
         <TextBlock Margin="6 0 5 0" Text="W" VerticalAlignment="Center" />
-        <TextBox Margin="0,0,0,0" TextAlignment="Right" Text="{Binding MPTicker.ProgressBar.Width, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+        <xctk:DoubleUpDown Value="{Binding MPTicker.ProgressBar.Width, Mode=TwoWay}" Width="75" Increment="1" />
         <TextBlock Margin="10 0 5 0" Text="H" VerticalAlignment="Center" />
-        <TextBox Margin="0,0,0,0" TextAlignment="Right" Text="{Binding MPTicker.ProgressBar.Height, Mode=TwoWay}" Width="60" HorizontalAlignment="Left" />
+        <xctk:DoubleUpDown Value="{Binding MPTicker.ProgressBar.Height, Mode=TwoWay}" Width="75" Increment="1" />
       </StackPanel>
 
       <StackPanel Margin="0 15 0 0" Orientation="Horizontal">
@@ -204,6 +205,24 @@
           Content="{DynamicResource MPTicker_SwapBarAndText}"
           Visibility="{Binding MPTicker.IsSquareStyle, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
           IsChecked="{Binding MPTicker.SwapBarAndText, Mode=TwoWay}" />
+      </StackPanel>
+
+      <Label
+        Margin="0 15 0 0"
+        Content="{DynamicResource MPTicker_ResyncInterval}" />
+      <StackPanel Orientation="Horizontal">
+        <xctk:DoubleUpDown
+          HorizontalAlignment="Left"
+          Value="{Binding MPTicker.ResyncInterval, Mode=TwoWay}"
+          Width="75"
+          Minimum="3"
+          Maximum="180"
+          Increment="1" />
+
+        <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">
+          <Hyperlink
+            Command="{Binding RestartTickerCommand, Mode=OneWay}">Restart</Hyperlink>
+        </TextBlock>
       </StackPanel>
 
       <Label
