@@ -1,5 +1,5 @@
 using System;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using ACT.SpecialSpellTimer.Config.Models;
 using ACT.SpecialSpellTimer.Sound;
@@ -72,19 +72,19 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
         private ICommand testSequencialTTSCommand;
 
         public ICommand TestSequencialTTSCommand =>
-            this.testSequencialTTSCommand ?? (this.testSequencialTTSCommand = new DelegateCommand(() =>
+            this.testSequencialTTSCommand ?? (this.testSequencialTTSCommand = new DelegateCommand(async () =>
             {
                 var config = this.Model.MatchAdvancedConfig;
 
                 this.Model.Play("シンクロ再生のテストを開始します。", config);
-                Thread.Sleep(2 * 1000);
+                await Task.Delay(2 * 1000);
 
                 this.Model.Play("おしらせ1番", config);
                 this.Model.Play("おしらせ2番", config);
                 this.Model.Play("おしらせ3番", config);
                 this.Model.Play("おしらせ4番", config);
 
-                Thread.Sleep(3 * 1000);
+                await Task.Delay(3 * 1000);
 
                 this.Model.Play("/sync 4 1番目に登録したシンク4通知です", config);
                 this.Model.Play("/sync 3 2番目に登録したシンク3通知です", config);

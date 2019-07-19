@@ -187,6 +187,12 @@ namespace ACT.UltraScouter.Models
 
         public Action RestartTickerCallback { get; set; }
 
+        public void RestartTicker()
+        {
+            this.lastSyncTimestamp = DateTime.MinValue;
+            this.RestartTickerCallback?.Invoke();
+        }
+
         private void Sync(
             string logline)
         {
@@ -214,7 +220,7 @@ namespace ACT.UltraScouter.Models
             Task.Run(() =>
             {
                 Thread.Sleep(nextTick - DateTime.Now);
-                this.RestartTickerCallback?.Invoke();
+                this.RestartTicker();
                 this.AppLogger.Trace("3s ticker synced.");
             });
         }

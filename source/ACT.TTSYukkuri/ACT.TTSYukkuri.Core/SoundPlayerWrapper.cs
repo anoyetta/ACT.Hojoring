@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using ACT.TTSYukkuri.Config;
@@ -197,15 +196,15 @@ namespace ACT.TTSYukkuri
 
             WPFHelper.BeginInvoke(() =>
             { },
-            DispatcherPriority.ContextIdle).Task.ContinueWith((_) =>
+            DispatcherPriority.ContextIdle).Task.ContinueWith(async (_) =>
             {
                 if (!isNow)
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(60));
+                    await Task.Delay(TimeSpan.FromSeconds(60));
                 }
                 else
                 {
-                    Thread.Sleep(TimeSpan.FromMilliseconds(100));
+                    await Task.Delay(TimeSpan.FromMilliseconds(100));
                 }
 
                 var dirs = new[]

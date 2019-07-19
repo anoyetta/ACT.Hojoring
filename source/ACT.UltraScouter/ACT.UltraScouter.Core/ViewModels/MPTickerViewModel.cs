@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -25,11 +26,9 @@ namespace ACT.UltraScouter.ViewModels
 
         public override void Initialize()
         {
-            this.Model.RestartTickerCallback = () => WPFHelper.InvokeAsync(() =>
-            {
-                (this.View as MPTickerView)?.BeginAnimation();
-            },
-            DispatcherPriority.Normal);
+            this.Model.RestartTickerCallback = () => WPFHelper.InvokeAsync(
+                this.BeginAnimation,
+                DispatcherPriority.Normal);
 
             this.Config.PropertyChanged += (_, e) =>
             {
@@ -49,7 +48,7 @@ namespace ACT.UltraScouter.ViewModels
                     case nameof(this.Config.TestMode):
                         if (this.Config.TestMode)
                         {
-                            (this.View as MPTickerView)?.BeginAnimation();
+                            this.BeginAnimation();
                         }
                         break;
                 }
@@ -59,6 +58,20 @@ namespace ACT.UltraScouter.ViewModels
             {
                 this.Model.StartSync();
             }
+        }
+
+        private void BeginAnimation()
+        {
+            this.IsVisibleSyncIndicator = true;
+
+            (this.View as MPTickerView)?.BeginAnimation();
+
+            WPFHelper.BeginInvoke(async () =>
+            {
+                await Task.Delay(1200);
+                this.IsVisibleSyncIndicator = false;
+            },
+            DispatcherPriority.Normal);
         }
 
         public virtual Settings RootConfig => Settings.Instance;
@@ -108,6 +121,14 @@ namespace ACT.UltraScouter.ViewModels
 
                 return true;
             }
+        }
+
+        private bool isVisibleSyncIndicator = WPFHelper.IsDesignMode;
+
+        public bool IsVisibleSyncIndicator
+        {
+            get => this.isVisibleSyncIndicator;
+            set => this.SetProperty(ref this.isVisibleSyncIndicator, value);
         }
     }
 
