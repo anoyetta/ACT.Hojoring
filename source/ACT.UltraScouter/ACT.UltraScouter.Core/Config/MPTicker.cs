@@ -207,5 +207,13 @@ namespace ACT.UltraScouter.Config
             get => this.textRowNumber;
             set => this.SetProperty(ref this.textRowNumber, value);
         }
+
+        private double syncLabelRowNumber;
+
+        public double SyncLabelRowNumber
+        {
+            get => this.syncLabelRowNumber;
+            set => this.SetProperty(ref this.syncLabelRowNumber, value);
+        }
     }
 }
