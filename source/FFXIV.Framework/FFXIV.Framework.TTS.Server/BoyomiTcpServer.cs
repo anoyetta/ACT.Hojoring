@@ -104,7 +104,7 @@ namespace FFXIV.Framework.TTS.Server
         {
             lock (this)
             {
-                this.server.BeginAcceptTcpClient((result) =>
+                this.server?.BeginAcceptTcpClient((result) =>
                 {
                     if (this.server == null)
                     {
@@ -170,6 +170,15 @@ namespace FFXIV.Framework.TTS.Server
                         textSize = reader.ReadInt32();
                         textChars = reader.ReadBytes(textSize);
                         break;
+
+                    case 48:
+                        this.Logger.Info($"[{command}] skip talk queues, but no process on this server.");
+                        return;
+
+                    case 64:
+                        while (this.SpeakQueue.TryDequeue(out SpeakTask t)) ;
+                        this.Logger.Info($"[{command}] clear talk queues.");
+                        return;
 
                     default:
                         this.Logger.Error($"Boyomi TCP server error. invalid command [{command}].");
