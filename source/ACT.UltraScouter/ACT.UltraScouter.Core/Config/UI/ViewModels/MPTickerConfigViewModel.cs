@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
+using ACT.UltraScouter.Models;
 using ACT.UltraScouter.ViewModels;
 using ACT.UltraScouter.Workers;
 using Prism.Commands;
@@ -71,5 +72,13 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
         public ICommand RefreshMPTickerCommand =>
             this.refreshMPTickerCommand ?? (this.refreshMPTickerCommand = new DelegateCommand(
                 () => this.GetViewModel()?.RaiseAllPropertiesChanged()));
+
+        private DelegateCommand restartTickerCommand;
+
+        public DelegateCommand RestartTickerCommand =>
+            this.restartTickerCommand ?? (this.restartTickerCommand = new DelegateCommand(this.ExecuteRestartTickerCommand));
+
+        private void ExecuteRestartTickerCommand()
+            => TickerModel.Instance.RestartTicker();
     }
 }
