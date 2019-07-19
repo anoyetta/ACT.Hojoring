@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -129,10 +128,10 @@ namespace ACT.TTSYukkuri.Config.ViewModels
         public DelegateCommand ResetWasapiDeviceCommand =>
             this.resetWasapiDeviceCommand ?? (this.resetWasapiDeviceCommand = new DelegateCommand(this.ExecuteResetWasapiDeviceCommand));
 
-        private void ExecuteResetWasapiDeviceCommand()
+        private async void ExecuteResetWasapiDeviceCommand()
         {
             SoundPlayerWrapper.Init();
-            Thread.Sleep(10);
+            await Task.Delay(10);
             SoundPlayerWrapper.LoadTTSCache();
 
             this.Logger.Info("Reset WASAPI Player, and Reload TTS chache.");
