@@ -29,6 +29,7 @@
 
     <FontFamily x:Key="Font">Century Gothic</FontFamily>
     <FontFamily x:Key="SubFont">Century Gothic Italic</FontFamily>
+    <FontFamily x:Key="SubNomalFont">Century Gothic</FontFamily>
 
     <SolidColorBrush x:Key="BackgroudBrush" Color="#f8f4e6" />
     <SolidColorBrush x:Key="MainForegroundBrush" Color="#383c3c" />
@@ -121,7 +122,7 @@
     <Label x:Name="ReiwaDummy" Visibility="Collapsed" Foreground="{DynamicResource ReiwaForegroundBrush}" />
 
     <StackPanel Panel.ZIndex="-1" VerticalAlignment="Center" HorizontalAlignment="Center">
-      <Grid Margin="0 0 0 0">
+      <Grid Margin="0 0 0 0" Visibility="Collapsed">
         <Label x:Name="ReiwaLabel" Content="令" FontSize="40" FontFamily="{Binding ReiwaFont, Mode=OneWay}">
           <Label.Effect>
             <DropShadowEffect
@@ -140,9 +141,9 @@
         <Label Style="{DynamicResource ReiwaLabelStyle}" />
       </Grid>
 
-      <Label Height="130" />
+      <Label Height="130" Visibility="Collapsed" />
 
-      <Grid>
+      <Grid Visibility="Collapsed">
         <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
         <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
         <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
@@ -153,7 +154,11 @@
       </Grid>
     </StackPanel>
 
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <StackPanel
+      Margin="0 15 0 0"
+      Orientation="Vertical"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center">
 
       <!---
       <Label x:Name="Dummy" Background="{Binding MainBrush, Mode=OneWay}" Visibility="Collapsed" />
@@ -238,16 +243,6 @@
           Foreground="{DynamicResource MainForegroundBrush}"
           FontFamily="{DynamicResource SubFont}"
           FontSize="{DynamicResource PatchSize}">
-          <!--
-          <Label.Effect>
-            <DropShadowEffect
-              Opacity="0"
-              Direction="0"
-              ShadowDepth="0"
-              Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
-              BlurRadius="{DynamicResource BlurRadiusSub}" />
-          </Label.Effect>
-          -->
         </Label>
         <Label Style="{DynamicResource FFXIVLabelStyle}" />
         <Label Style="{DynamicResource FFXIVLabelStyle}" />
@@ -255,6 +250,17 @@
         <Label Style="{DynamicResource FFXIVLabelStyle}" />
         <Label Style="{DynamicResource FFXIVLabelStyle}" />
         <Label Style="{DynamicResource FFXIVLabelStyle}" />
+      </Grid>
+
+      <Grid Margin="0 5 0 0">
+        <Label
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Content="#KYOANISTRONG"
+          Foreground="{DynamicResource MainForegroundBrush}"
+          FontFamily="{DynamicResource SubNomalFont}"
+          FontSize="{DynamicResource PatchSize}">
+        </Label>
       </Grid>
     </StackPanel>
   </Grid>

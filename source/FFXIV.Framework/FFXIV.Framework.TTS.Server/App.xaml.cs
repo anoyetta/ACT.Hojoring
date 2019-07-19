@@ -185,6 +185,12 @@ namespace FFXIV.Framework.TTS.Server
             }
         }
 
+#if DEBUG
+        public static readonly bool IsDebug = true;
+#else
+        public static readonly bool IsDebug = false;
+#endif
+
         private void ShutdownTimerOnTick(object sender, EventArgs e)
         {
             /*
@@ -196,15 +202,19 @@ namespace FFXIV.Framework.TTS.Server
 
 #if true
             if (System.Diagnostics.Process.GetProcessesByName("Advanced Combat Tracker").Length < 1 &&
-                System.Diagnostics.Process.GetProcessesByName("ACTx86").Length < 1)
+                System.Diagnostics.Process.GetProcessesByName("ACTx86").Length < 1 &&
+                System.Diagnostics.Process.GetProcessesByName("RINGS").Length < 1)
             {
-                this.Logger.Trace("ACT not found. shutdown server.");
+                if (!IsDebug)
+                {
+                    this.Logger.Trace("ACT not found. shutdown server.");
 
-                this.shutdownTimer.Stop();
-                this.CloseApp();
+                    this.shutdownTimer.Stop();
+                    this.CloseApp();
 
-                Thread.Sleep(1000);
-                this.Shutdown();
+                    Thread.Sleep(1000);
+                    this.Shutdown();
+                }
             }
 #endif
         }
