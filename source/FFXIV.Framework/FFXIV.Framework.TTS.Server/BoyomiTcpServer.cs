@@ -171,6 +171,15 @@ namespace FFXIV.Framework.TTS.Server
                         textChars = reader.ReadBytes(textSize);
                         break;
 
+                    case 48:
+                        this.Logger.Info($"[{command}] skip talk queues, but no process on this server.");
+                        return;
+
+                    case 64:
+                        while (this.SpeakQueue.TryDequeue(out SpeakTask t)) ;
+                        this.Logger.Info($"[{command}] clear talk queues.");
+                        return;
+
                     default:
                         this.Logger.Error($"Boyomi TCP server error. invalid command [{command}].");
                         return;
