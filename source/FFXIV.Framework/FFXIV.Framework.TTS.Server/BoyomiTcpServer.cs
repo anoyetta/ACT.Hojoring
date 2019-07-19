@@ -61,21 +61,29 @@ namespace FFXIV.Framework.TTS.Server
                     return;
                 }
 
-                this.port = port;
-                this.server = new TcpListener(IPAddress.Any, port);
-                this.server.Start();
-                this.BeginAccept();
-                this.Logger.Info($"Boyomi TCP server started. port={this.port}");
+                try
+                {
+                    this.port = port;
+                    this.server = new TcpListener(IPAddress.Any, port);
+                    this.server.Start();
+                    this.BeginAccept();
+                    this.Logger.Info($"Boyomi TCP server started. port={this.port}");
 
-                this.speakTask = new ThreadWorker(
-                    this.DoSpeak,
-                    SpeakDefaultInterval,
-                    "Boyomi clone server speak task",
-                    ThreadPriority.Lowest);
+                    this.speakTask = new ThreadWorker(
+                        this.DoSpeak,
+                        SpeakDefaultInterval,
+                        "Boyomi clone server speak task",
+                        ThreadPriority.Lowest);
 
-                this.speakTask.Run();
+                    this.speakTask.Run();
 
-                this.IsRunning = true;
+                    this.IsRunning = true;
+                }
+                catch (Exception)
+                {
+                    this.server?.Stop();
+                    this.server = null;
+                }
             }
         }
 
@@ -83,20 +91,18 @@ namespace FFXIV.Framework.TTS.Server
         {
             lock (this)
             {
-                if (this.speakTask != null)
-                {
-                    this.speakTask.Abort();
-                    this.speakTask = null;
-                }
+                this.speakTask?.Abort();
+                this.speakTask = null;
 
-                if (this.server != null)
-                {
-                    this.server.Stop();
-                    this.server = null;
-                }
+                this.server?.Stop();
+                Thread.Sleep(100);
+                this.server = null;
 
-                this.IsRunning = false;
-                this.Logger.Info($"Boyomi TCP server stoped.");
+                if (this.isRunning)
+                {
+                    this.IsRunning = false;
+                    this.Logger.Info($"Boyomi TCP server stoped.");
+                }
             }
         }
 
@@ -116,8 +122,9 @@ namespace FFXIV.Framework.TTS.Server
                         Thread.Sleep(10);
 
                         using (var client = this.server.EndAcceptTcpClient(result))
+                        using (var ns = client.GetStream())
                         {
-                            this.ProcessMessage(client.GetStream());
+                            this.ProcessMessage(ns);
                         }
                     }
                     catch (Exception ex)
