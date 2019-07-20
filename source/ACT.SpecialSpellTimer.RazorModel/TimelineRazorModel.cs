@@ -97,6 +97,17 @@ namespace ACT.SpecialSpellTimer.RazorModel
             return zones.Any(x => this.Zone.ContainsIgnoreCase(x));
         }
 
+        public bool InZone(
+            params int[] zones)
+        {
+            if (zones == null)
+            {
+                return false;
+            }
+
+            return zones.Any(x => x == this.ZoneID);
+        }
+
         public dynamic ParseJsonString(
             string hjson)
         {
