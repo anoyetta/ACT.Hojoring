@@ -199,11 +199,18 @@ namespace FFXIV.Framework.TTS.Server
                 return;
             }
             */
-
 #if true
-            if (System.Diagnostics.Process.GetProcessesByName("Advanced Combat Tracker").Length < 1 &&
-                System.Diagnostics.Process.GetProcessesByName("ACTx86").Length < 1 &&
-                System.Diagnostics.Process.GetProcessesByName("RINGS").Length < 1)
+            var processNames = new[]
+            {
+                "Advanced Combat Tracker",
+                "ACTx86",
+                "RINGS",
+                "FF14TextReader",
+                "CeVIO Creative Studio",
+            };
+
+            var count = processNames.Sum(x => System.Diagnostics.Process.GetProcessesByName(x).Length);
+            if (count < 1)
             {
                 if (!IsDebug)
                 {

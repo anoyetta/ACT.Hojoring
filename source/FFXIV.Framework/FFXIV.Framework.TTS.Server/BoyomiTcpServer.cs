@@ -110,21 +110,29 @@ namespace FFXIV.Framework.TTS.Server
         {
             lock (this)
             {
+                if (this.server == null)
+                {
+                    return;
+                }
+
                 this.server?.BeginAcceptTcpClient((result) =>
                 {
-                    if (this.server == null)
-                    {
-                        return;
-                    }
-
                     try
                     {
-                        Thread.Sleep(10);
-
-                        using (var client = this.server.EndAcceptTcpClient(result))
-                        using (var ns = client.GetStream())
+                        lock (this)
                         {
-                            this.ProcessMessage(ns);
+                            if (this.server == null)
+                            {
+                                return;
+                            }
+
+                            Thread.Sleep(10);
+
+                            using (var client = this.server?.EndAcceptTcpClient(result))
+                            using (var ns = client?.GetStream())
+                            {
+                                this.ProcessMessage(ns);
+                            }
                         }
                     }
                     catch (Exception ex)
