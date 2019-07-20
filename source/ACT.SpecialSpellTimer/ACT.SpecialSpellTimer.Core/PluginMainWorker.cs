@@ -238,6 +238,8 @@ namespace ACT.SpecialSpellTimer
         private double lastLPS;
         private int lastActiveTriggerCount;
         private int lastLogedActiveTriggerCount;
+        private EorzeaTime previousET = EorzeaTime.Now;
+        private int previousZoneID = 0;
 
         private void BackgroundCore()
         {
@@ -267,6 +269,35 @@ namespace ACT.SpecialSpellTimer
                         this.lastLogedActiveTriggerCount = count;
                         Logger.Write($"ActiveTriggers={count.ToString("N0")}");
                     }
+                }
+            }
+
+            if (this.existFFXIVProcess)
+            {
+                var zoneID = XIVPluginHelper.Instance.GetCurrentZoneID();
+                var zoneName = XIVPluginHelper.Instance.GetCurrentZoneName();
+
+                // ついでにETを出力する
+                var nowET = EorzeaTime.Now;
+                if (nowET.Hour != this.previousET.Hour)
+                {
+                    if ((nowET.Hour % 2) == 0)
+                    {
+                        LogParser.RaiseLog(
+                            DateTime.Now,
+                            $"[EX] ETTick ET{nowET.Hour:00}:00 Zone:{zoneID:000} {zoneName}");
+                    }
+                }
+
+                this.previousET = nowET;
+
+                if (this.previousZoneID != zoneID)
+                {
+                    this.previousZoneID = zoneID;
+
+                    LogParser.RaiseLog(
+                        DateTime.Now,
+                        $"[EX] ZoneChanged ET{nowET.Hour:00}:00 Zone:{zoneID:000} {zoneName}");
                 }
             }
         }

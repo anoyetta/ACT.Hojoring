@@ -32,6 +32,8 @@ namespace ACT.SpecialSpellTimer.RazorModel
 
         public bool SyncTTS { get; set; } = false;
 
+        public int ZoneID { get; set; } = 0;
+
         public string Zone { get; set; } = string.Empty;
 
         public string Locale { get; set; } = "JA";
