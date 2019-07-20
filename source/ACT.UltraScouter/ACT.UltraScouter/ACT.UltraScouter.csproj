@@ -36,6 +36,9 @@
     <ApplicationIcon>ACT.Hojoring.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ACT.Hojoring.Activator">
+      <HintPath>..\..\ThirdParty\ACT.Hojoring.Activator.dll</HintPath>
+    </Reference>
     <Reference Include="Advanced Combat Tracker">
       <HintPath>..\..\ThirdParty\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
