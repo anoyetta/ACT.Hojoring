@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ACT.SpecialSpellTimer.Models;
+using ACT.SpecialSpellTimer.RaidTimeline.Views;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
@@ -230,8 +231,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // グローバルトリガをロードする
+            await WPFHelper.InvokeAsync(() =>
+            {
+                TimelineNoticeOverlay.CloseNotice();
+                TimelineImageNoticeModel.Collect();
+            });
+
             this.globalTriggers.Clear();
             var globals = list.Where(x => x.IsGlobalZone);
+
             foreach (var tl in globals)
             {
                 this.LoadGlobalTriggers(tl);

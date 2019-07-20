@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -414,16 +415,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         [XmlIgnore]
-        public BitmapSource BitmapImage => GetBitmapImage(this.Image);
+        public BitmapSource BitmapImage => GetBitmapImageAsync(this.Image);
 
         [XmlIgnore]
         public bool ExistsImage => this.BitmapImage != null;
 
         private static readonly Dictionary<string, BitmapSource> ImageDictionary = new Dictionary<string, BitmapSource>();
 
-        private static BitmapSource GetBitmapImage(
+        private static readonly Regex UriRegex = new Regex(
+            @"^s?https?://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+$",
+            RegexOptions.Compiled);
+
+        private static BitmapSource GetBitmapImageAsync(
             string image)
         {
+            var webImage = GetBitmapImageFromUrl(image);
+            if (webImage != null)
+            {
+                return webImage;
+            }
+
             lock (ImageDictionary)
             {
                 image = image.ToLower();
@@ -467,6 +478,44 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
+        private static readonly Dictionary<string, BitmapImage> WebImageDictionary = new Dictionary<string, BitmapImage>(128);
+
+        private static BitmapSource GetBitmapImageFromUrl(
+            string image)
+        {
+            if (!UriRegex.IsMatch(image))
+            {
+                return null;
+            }
+
+            var bitmap = default(BitmapImage);
+
+            if (WebImageDictionary.ContainsKey(image))
+            {
+                bitmap = WebImageDictionary[image];
+            }
+            else
+            {
+                using (var web = new WebClient())
+                {
+                    var bytes = web.DownloadData(image);
+                    using (var stream = new MemoryStream(bytes))
+                    {
+                        bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.StreamSource = stream;
+                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmap.EndInit();
+                        bitmap.Freeze();
+                    }
+                }
+
+                WebImageDictionary[image] = bitmap;
+            }
+
+            return bitmap;
+        }
+
         #region Commmands
 
         private static readonly System.Windows.Forms.OpenFileDialog OpenFileDialog = new System.Windows.Forms.OpenFileDialog()
@@ -487,7 +536,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 var result = OpenFileDialog.ShowDialog();
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
-                    this.Image = Path.GetFileName(OpenFileDialog.FileName);
+                    var file = OpenFileDialog.FileName;
+
+                    if (UriRegex.IsMatch(file))
+                    {
+                        this.Image = file;
+                    }
+                    else
+                    {
+                        this.Image = Path.GetFileName(OpenFileDialog.FileName);
+                    }
                 }
             }));
 

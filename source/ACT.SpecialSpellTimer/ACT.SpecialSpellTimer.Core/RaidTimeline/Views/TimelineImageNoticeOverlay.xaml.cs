@@ -108,6 +108,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
 
         public TimelineImageNoticeOverlay()
         {
+            ElementHost.EnableModelessKeyboardInterop(this);
             this.InitializeComponent();
             this.LoadConfigViewResources();
 
