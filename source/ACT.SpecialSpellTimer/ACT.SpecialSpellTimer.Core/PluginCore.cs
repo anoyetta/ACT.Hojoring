@@ -152,7 +152,7 @@ namespace ACT.SpecialSpellTimer
                 this.PluginStatusLabel = pluginStatusText;
 
                 AppLog.LoadConfiguration(AppLog.HojoringConfig);
-                this.AppLogger.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+                this.AppLogger?.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
 
                 try
                 {

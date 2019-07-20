@@ -376,7 +376,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
             }
 
-            void initElement(TimelineBase element)
+            async void initElement(TimelineBase element)
             {
                 // サブルーチンにトリガをインポートする
                 if (element is TimelineSubroutineModel sub)
@@ -393,7 +393,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 // ImageNoticeを準備する
                 if (element is TimelineImageNoticeModel image)
                 {
-                    image.StanbyNotice();
+                    await WPFHelper.InvokeAsync(image.StanbyNotice);
                 }
 
                 // アクティビティにスタイルを設定する
