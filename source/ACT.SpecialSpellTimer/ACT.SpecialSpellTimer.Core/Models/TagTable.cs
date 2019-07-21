@@ -71,12 +71,16 @@ namespace ACT.SpecialSpellTimer.Models
             this.Tags.Remove(tag);
         }
 
+        private bool isLoaded = false;
+
         public void Load()
         {
             var file = this.DefaultFile;
 
             try
             {
+                this.isLoaded = true;
+
                 // サイズ0のファイルがもしも存在したら消す
                 if (File.Exists(file))
                 {
@@ -126,6 +130,11 @@ namespace ACT.SpecialSpellTimer.Models
         {
             lock (this)
             {
+                if (!this.isLoaded)
+                {
+                    return;
+                }
+
                 var file = this.DefaultFile;
 
                 FileHelper.CreateDirectory(file);

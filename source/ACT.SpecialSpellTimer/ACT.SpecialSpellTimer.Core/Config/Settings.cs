@@ -739,6 +739,8 @@ namespace ACT.SpecialSpellTimer.Config
 
         private readonly object locker = new object();
 
+        private bool isLoaded = false;
+
         public void Load()
         {
             lock (this.locker)
@@ -747,6 +749,7 @@ namespace ACT.SpecialSpellTimer.Config
 
                 if (!File.Exists(this.FileName))
                 {
+                    this.isLoaded = true;
                     this.Save();
                     return;
                 }
@@ -754,6 +757,7 @@ namespace ACT.SpecialSpellTimer.Config
                 var fi = new FileInfo(this.FileName);
                 if (fi.Length <= 0)
                 {
+                    this.isLoaded = true;
                     this.Save();
                     return;
                 }
@@ -770,6 +774,8 @@ namespace ACT.SpecialSpellTimer.Config
                         }
                     }
                 }
+
+                this.isLoaded = true;
             }
         }
 
@@ -777,6 +783,11 @@ namespace ACT.SpecialSpellTimer.Config
         {
             lock (this.locker)
             {
+                if (!this.isLoaded)
+                {
+                    return;
+                }
+
                 var directoryName = Path.GetDirectoryName(this.FileName);
 
                 if (!Directory.Exists(directoryName))
