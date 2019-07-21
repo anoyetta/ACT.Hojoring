@@ -23,7 +23,7 @@ namespace ACT.SpecialSpellTimer.Utility
         /// <param name="text">書き込む内容</param>
         public static void Write(string text)
         {
-            AppLogger.Trace(text);
+            AppLogger?.Trace(text);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace ACT.SpecialSpellTimer.Utility
         /// <param name="ex">例外情報</param>
         public static void Write(string text, Exception ex)
         {
-            AppLogger.Error(ex, text);
+            AppLogger?.Error(ex, text);
         }
     }
 }

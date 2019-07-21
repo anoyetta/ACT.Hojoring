@@ -298,7 +298,7 @@ namespace ACT.TTSYukkuri
             WPFHelper.BeginInvoke(async () =>
             {
                 AppLog.LoadConfiguration(AppLog.HojoringConfig);
-                this.Logger.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+                this.Logger?.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
 
                 try
                 {

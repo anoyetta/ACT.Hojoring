@@ -118,7 +118,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
     {
         public const string Wipeout = "wipeout";
         public const string ImportLog = "00:0000:import";
-        public static readonly string WipeoutLog = $"00:0000:{Wipeout}";
+        public static readonly string WipeoutLog = $"00:0000:Hojoring:{Wipeout}";
         public static readonly string WipeoutLogEcho = $"00:0038:{Wipeout}";
 
         private static Dictionary<Locales, AnalyzerContainer> analyzerDictionary;

@@ -1243,6 +1243,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
                 }
 
+                // 外部ツールの起動引数を正規表現で置換する
+                if (!string.IsNullOrEmpty(toNotice.Arguments))
+                {
+                    toNotice.Arguments = match.Result(toNotice.Arguments);
+                }
+
                 NotifyQueue.Enqueue(toNotice);
                 tri.Execute();
             }

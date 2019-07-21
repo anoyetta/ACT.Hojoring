@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ACT.SpecialSpellTimer.Models;
+using ACT.SpecialSpellTimer.RaidTimeline.Views;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
@@ -105,6 +106,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (this)
             {
+                WPFHelper.Invoke(() =>
+                {
+                    TimelineNoticeOverlay.CloseNotice();
+                    TimelineImageNoticeModel.Collect();
+                });
+
                 var timelines = TimelineManager.Instance.TimelineModels.ToArray();
 
                 // グローバルトリガとリファンレスファイルをリロードする
@@ -232,6 +239,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // グローバルトリガをロードする
             this.globalTriggers.Clear();
             var globals = list.Where(x => x.IsGlobalZone);
+
             foreach (var tl in globals)
             {
                 this.LoadGlobalTriggers(tl);
@@ -376,7 +384,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
             }
 
-            void initElement(TimelineBase element)
+            async void initElement(TimelineBase element)
             {
                 // サブルーチンにトリガをインポートする
                 if (element is TimelineSubroutineModel sub)
@@ -393,7 +401,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 // ImageNoticeを準備する
                 if (element is TimelineImageNoticeModel image)
                 {
-                    image.StanbyNotice();
+                    await WPFHelper.InvokeAsync(image.StanbyNotice);
                 }
 
                 // アクティビティにスタイルを設定する

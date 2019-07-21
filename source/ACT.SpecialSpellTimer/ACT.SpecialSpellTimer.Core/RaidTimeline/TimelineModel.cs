@@ -598,6 +598,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             TimelineRazorVariable.SetVarDelegate ??= (name, value, zone) => TimelineExpressionsModel.SetVariable(name, value, zone);
 
             model.BaseDirectory = TimelineManager.Instance.TimelineDirectory;
+            model.ZoneID = XIVPluginHelper.Instance.GetCurrentZoneID();
             model.Zone = ActGlobals.oFormActMain.CurrentZone;
             model.Locale = Settings.Default.FFXIVLocale.ToString();
 

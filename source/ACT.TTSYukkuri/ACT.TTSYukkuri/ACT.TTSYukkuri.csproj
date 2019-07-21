@@ -42,6 +42,9 @@
     <ApplicationIcon>ACT.Hojoring.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ACT.Hojoring.Activator">
+      <HintPath>..\..\ThirdParty\ACT.Hojoring.Activator.dll</HintPath>
+    </Reference>
     <Reference Include="Advanced Combat Tracker">
       <HintPath>..\..\ThirdParty\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
@@ -64,6 +67,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyResolver.cs" />
     <Compile Include="ISpeak.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

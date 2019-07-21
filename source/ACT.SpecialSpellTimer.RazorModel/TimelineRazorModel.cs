@@ -32,6 +32,8 @@ namespace ACT.SpecialSpellTimer.RazorModel
 
         public bool SyncTTS { get; set; } = false;
 
+        public int ZoneID { get; set; } = 0;
+
         public string Zone { get; set; } = string.Empty;
 
         public string Locale { get; set; } = "JA";
@@ -93,6 +95,17 @@ namespace ACT.SpecialSpellTimer.RazorModel
             }
 
             return zones.Any(x => this.Zone.ContainsIgnoreCase(x));
+        }
+
+        public bool InZone(
+            params int[] zones)
+        {
+            if (zones == null)
+            {
+                return false;
+            }
+
+            return zones.Any(x => x == this.ZoneID);
         }
 
         public dynamic ParseJsonString(
