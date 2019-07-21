@@ -239,7 +239,6 @@ namespace ACT.SpecialSpellTimer
         private int lastActiveTriggerCount;
         private int lastLogedActiveTriggerCount;
         private EorzeaTime previousET = EorzeaTime.Now;
-        private int previousZoneID = 0;
 
         private void BackgroundCore()
         {
@@ -287,15 +286,6 @@ namespace ACT.SpecialSpellTimer
                 }
 
                 this.previousET = nowET;
-
-                if (this.previousZoneID != zoneID)
-                {
-                    this.previousZoneID = zoneID;
-
-                    LogParser.RaiseLog(
-                        DateTime.Now,
-                        $"[EX] ZoneChanged ET{nowET.Hour:00}:00 Zone:{zoneID:000} {zoneName}");
-                }
             }
         }
 

@@ -729,6 +729,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 try
                 {
+                    if (TimelineManager.Instance.IsLoading)
+                    {
+                        return;
+                    }
+
                     if (CurrentController != null &&
                         CurrentController.IsReady)
                     {

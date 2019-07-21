@@ -9,6 +9,7 @@ using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.RaidTimeline.Views;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
+using NLog;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -63,6 +64,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         private volatile bool isLoading = false;
+
+        public bool IsLoading => this.isLoading;
 
         /// <summary>
         /// タイムラインに関連する条件が変わった
@@ -227,6 +230,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     this.AppLogger.Error(
                         ex,
                         $"[TL] Load error. file={file}");
+                    LogManager.Flush();
 
                     throw new FileLoadException(
                         $"Timeline file Load error.\n{Path.GetFileName(file)}",
