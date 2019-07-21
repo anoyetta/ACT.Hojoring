@@ -86,12 +86,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            this.isLoading = true;
-
-            WPFHelper.BeginInvoke(async () =>
+            WPFHelper.InvokeAsync(async () =>
             {
                 try
                 {
+                    this.isLoading = true;
+
                     await Task.Delay(TimeSpan.FromSeconds(5));
                     this.LoadCurrentTimeline();
                 }

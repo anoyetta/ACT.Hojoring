@@ -42,7 +42,7 @@ namespace ACT.SpecialSpellTimer
         #endregion Constants
 
         private readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer = new Lazy<ConcurrentQueue<XIVLog>>(()
-            => XIVPluginHelper.Instance.SubscribeXIVLog());
+            => XIVPluginHelper.Instance.SubscribeXIVLog(() => true));
 
         public ConcurrentQueue<XIVLog> XIVLogQueue => LazyXIVLogBuffer.Value;
 
