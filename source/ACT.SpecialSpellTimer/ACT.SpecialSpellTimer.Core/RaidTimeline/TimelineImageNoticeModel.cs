@@ -34,11 +34,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public TimelineImageNoticeModel()
         {
-            lock (INoticeList)
-            {
-                INoticeList.Add(this);
-            }
-
             this.PropertyChanged += (s, e) =>
             {
                 switch (e.PropertyName)
@@ -329,6 +324,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public void StanbyNotice()
         {
+            lock (INoticeList)
+            {
+                INoticeList.Add(this);
+            }
+
             lock (this)
             {
                 if (this.overlay != null)

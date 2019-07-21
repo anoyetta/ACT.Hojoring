@@ -106,6 +106,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (this)
             {
+                WPFHelper.Invoke(() =>
+                {
+                    TimelineNoticeOverlay.CloseNotice();
+                    TimelineImageNoticeModel.Collect();
+                });
+
                 var timelines = TimelineManager.Instance.TimelineModels.ToArray();
 
                 // グローバルトリガとリファンレスファイルをリロードする
@@ -231,12 +237,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // グローバルトリガをロードする
-            await WPFHelper.InvokeAsync(() =>
-            {
-                TimelineNoticeOverlay.CloseNotice();
-                TimelineImageNoticeModel.Collect();
-            });
-
             this.globalTriggers.Clear();
             var globals = list.Where(x => x.IsGlobalZone);
 
