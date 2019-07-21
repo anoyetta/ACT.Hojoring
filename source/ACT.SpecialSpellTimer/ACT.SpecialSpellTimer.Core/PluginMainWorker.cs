@@ -281,12 +281,9 @@ namespace ACT.SpecialSpellTimer
                 var nowET = EorzeaTime.Now;
                 if (nowET.Hour != this.previousET.Hour)
                 {
-                    if ((nowET.Hour % 2) == 0)
-                    {
-                        LogParser.RaiseLog(
-                            DateTime.Now,
-                            $"[EX] ETTick ET{nowET.Hour:00}:00 Zone:{zoneID:000} {zoneName}");
-                    }
+                    LogParser.RaiseLog(
+                        DateTime.Now,
+                        $"[EX] ETTick ET{nowET.Hour:00}:00 Zone:{zoneID:000} {zoneName}");
                 }
 
                 this.previousET = nowET;
