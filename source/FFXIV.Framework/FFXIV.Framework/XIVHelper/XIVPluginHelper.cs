@@ -359,14 +359,15 @@ namespace FFXIV.Framework.XIVHelper
 
         private readonly object LogBufferLocker = new object();
 
-        private readonly List<ConcurrentQueue<XIVLog>> XIVLogBuffers = new List<ConcurrentQueue<XIVLog>>(16);
+        private readonly List<(ConcurrentQueue<XIVLog> Buffer, Func<bool> IsActive)> XIVLogBuffers = new List<(ConcurrentQueue<XIVLog>, Func<bool>)>(16);
 
-        public ConcurrentQueue<XIVLog> SubscribeXIVLog()
+        public ConcurrentQueue<XIVLog> SubscribeXIVLog(
+            Func<bool> isActiveCallback)
         {
             lock (this.LogBufferLocker)
             {
                 var buffer = new ConcurrentQueue<XIVLog>();
-                this.XIVLogBuffers.Add(buffer);
+                this.XIVLogBuffers.Add((buffer, isActiveCallback));
                 return buffer;
             }
         }
@@ -464,9 +465,12 @@ namespace FFXIV.Framework.XIVHelper
                     Zone = currentZoneName
                 };
 
-                foreach (var buffer in this.XIVLogBuffers)
+                foreach (var container in this.XIVLogBuffers)
                 {
-                    buffer.Enqueue(xivlog);
+                    if (container.IsActive())
+                    {
+                        container.Buffer.Enqueue(xivlog);
+                    }
                 }
             }
 

@@ -710,7 +710,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         #region Log 関係のスレッド
 
         private static readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer = new Lazy<ConcurrentQueue<XIVLog>>(()
-            => XIVPluginHelper.Instance.SubscribeXIVLog());
+            => XIVPluginHelper.Instance.SubscribeXIVLog(() =>
+                CurrentController != null &&
+                CurrentController.IsReady));
 
         public static ConcurrentQueue<XIVLog> XIVLogQueue => LazyXIVLogBuffer.Value;
 
@@ -731,7 +733,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     if (TimelineManager.Instance.IsLoading)
                     {
-                        return;
+                        Thread.Sleep(TimeSpan.FromSeconds(3));
+                        continue;
                     }
 
                     if (CurrentController != null &&
