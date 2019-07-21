@@ -181,11 +181,18 @@ namespace ACT.SpecialSpellTimer.Models
                         Logger.Write($"zone changed. zone={zone}, zone_id={zoneID}");
                         this.ZoneChanged?.Invoke(this, new EventArgs());
 
-                        // 自分の座標をダンプする
                         Task.Run(() =>
                         {
-                            Thread.Sleep(TimeSpan.FromSeconds(5));
+                            Thread.Sleep(TimeSpan.FromSeconds(6));
+
+                            // 自分の座標をダンプする
                             LogBuffer.DumpPosition(true);
+
+                            // ETを出力する
+                            var nowET = EorzeaTime.Now;
+                            LogParser.RaiseLog(
+                                DateTime.Now,
+                                $"[EX] ZoneChanged ET{nowET.Hour:00}:00 Zone:{zoneID:000} {zone}");
                         });
                     }
 
