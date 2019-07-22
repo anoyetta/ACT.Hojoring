@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
@@ -77,7 +78,7 @@ namespace ACT.SpecialSpellTimer
         /// <summary>
         /// すべての設定を保存する
         /// </summary>
-        public async void SaveSettingsAsync() => await WPFHelper.InvokeAsync(() =>
+        public async void SaveSettingsAsync() => await WPFHelper.InvokeAsync(async () =>
         {
             SpellPanelTable.Instance.Save();
             SpellTable.Instance.Save();
@@ -85,6 +86,7 @@ namespace ACT.SpecialSpellTimer
             TagTable.Instance.Save();
             TimelineSettings.Save();
             Settings.Default.Save();
+            await Task.Delay(50);
         },
         DispatcherPriority.Background);
 
@@ -111,6 +113,7 @@ namespace ACT.SpecialSpellTimer
                 Settings.Default.Save();
                 Settings.Default.DeInit();
                 FFXIV.Framework.Config.Save();
+                Thread.Sleep(50);
 
                 Logger.Write("Plugin Exited.");
             }

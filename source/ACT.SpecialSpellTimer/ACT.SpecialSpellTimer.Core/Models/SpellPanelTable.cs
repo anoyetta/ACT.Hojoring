@@ -156,10 +156,11 @@ namespace ACT.SpecialSpellTimer.Models
 
                 sb.Replace("utf-16", "utf-8");
 
-                File.WriteAllText(
-                    this.DefaultFile,
-                    sb.ToString(),
-                    new UTF8Encoding(false));
+                using (var sw = new StreamWriter(this.DefaultFile, false, new UTF8Encoding(false)))
+                {
+                    sw.Write(sb.ToString());
+                    sw.Flush();
+                }
             }
         }
 
