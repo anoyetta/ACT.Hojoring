@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using CeVIO.Talk.RemoteService;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.TTS.Common.Models;
@@ -144,6 +145,8 @@ namespace FFXIV.Framework.TTS.Server.Models
             }
         }
 
+        private volatile bool isSpeaking = false;
+
         public void TextToWave(
             string textToSpeak,
             string waveFileName,
@@ -162,6 +165,8 @@ namespace FFXIV.Framework.TTS.Server.Models
 
                 try
                 {
+                    this.isSpeaking = true;
+
                     var result = this.cevioTalker.OutputWaveToFile(
                         textToSpeak,
                         tempWave);
@@ -197,6 +202,12 @@ namespace FFXIV.Framework.TTS.Server.Models
                     {
                         File.Delete(tempWave);
                     }
+
+                    Task.Run(() =>
+                    {
+                        Thread.Sleep(100);
+                        this.isSpeaking = false;
+                    });
                 }
             }
         }
@@ -222,6 +233,11 @@ namespace FFXIV.Framework.TTS.Server.Models
             if (string.IsNullOrEmpty(textToSpeak))
             {
                 return;
+            }
+
+            while (this.isSpeaking)
+            {
+                Thread.Sleep(25);
             }
 
             lock (this)
@@ -267,6 +283,8 @@ namespace FFXIV.Framework.TTS.Server.Models
                 {
                     Thread.Sleep(150);
                 }
+
+                Thread.Sleep(100);
             }
         }
     }

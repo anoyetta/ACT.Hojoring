@@ -206,7 +206,6 @@ namespace FFXIV.Framework.TTS.Server
                 "ACTx86",
                 "RINGS",
                 "FF14TextReader",
-                "CeVIO Creative Studio",
             };
 
             var count = processNames.Sum(x => System.Diagnostics.Process.GetProcessesByName(x).Length);
