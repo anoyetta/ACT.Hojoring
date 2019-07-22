@@ -8,7 +8,7 @@ $isUsePreRelease = $FALSE
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev11'
+'* rev12'
 '* (c) anoyetta, 2019'
 '***************************************************'
 '* Start Update Hojoring'
@@ -56,7 +56,6 @@ function Exit-Update (
 
 function Get-NewerVersion(
     [bool] $usePreRelease) {
-
     $cd = Convert-Path .
     $dll = Join-Path $cd "ACT.Hojoring.Updater.dll"
 
@@ -207,6 +206,8 @@ Remove-Directory ".\references"
 if (Test-Path ".\*.dll") {
     Remove-Item ".\*.dll" -Force
 }
+Remove-Item ".\bin\*" -Recurse -Include *.dll
+Remove-Item ".\bin\*" -Recurse -Include *.exe
 Remove-Directory ".\openJTalk"
 Remove-Directory ".\yukkuri"
 Remove-Directory ".\tools"
