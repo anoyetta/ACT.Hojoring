@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ACT.TTSYukkuri.Config;
-using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.Globalization;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.TTSYukkuri
 {
@@ -266,8 +266,7 @@ namespace ACT.TTSYukkuri
 
                 // GPをチェックして読上げる
                 if (hp > 0 &&
-                    partyMember.MaxGP > 0 &&
-                    partyMember.JobID.GetInfo()?.Role == Roles.Gatherer)
+                    partyMember.MaxGP > 0)
                 {
                     if (config.EnabledGPAlert &&
                         !string.IsNullOrWhiteSpace(gpTextToSpeak))
