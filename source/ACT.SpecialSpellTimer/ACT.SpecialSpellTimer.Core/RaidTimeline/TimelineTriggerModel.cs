@@ -256,6 +256,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SyncCount = int.TryParse(value, out var v) ? v : (int?)null;
         }
 
+        private int? syncInterval = null;
+
+        [XmlIgnore]
+        public int? SyncInterval
+        {
+            get => this.syncInterval;
+            set => this.SetProperty(ref this.syncInterval, value);
+        }
+
+        [XmlAttribute(AttributeName = "sync-interval")]
+        public string SyncIntervalXML
+        {
+            get => this.SyncInterval?.ToString();
+            set => this.SyncInterval = int.TryParse(value, out var v) ? v : (int?)null;
+        }
+
         public string gotoDestination = null;
 
         [XmlAttribute(AttributeName = "goto")]
@@ -395,6 +411,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.matchedCounter, value);
         }
 
+        private DateTime matchedTimestamp;
+
+        [XmlIgnore]
+        public DateTime MatchedTimestamp
+        {
+            get => this.matchedTimestamp;
+            set => this.SetProperty(ref this.matchedTimestamp, value);
+        }
+
         private long logSeq = 0L;
 
         [XmlIgnore]
@@ -429,6 +454,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (this)
             {
+                this.MatchedTimestamp = DateTime.MinValue;
                 this.MatchedCounter = 0;
 
                 if (this.PositionSyncStatements != null)
