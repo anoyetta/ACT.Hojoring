@@ -424,8 +424,6 @@ namespace FFXIV.Framework.XIVHelper
         {
             lock (LockObject)
             {
-                var isGabaged = false;
-
                 var targets = this.MainDictionary.Select(x => x.Value)
                     .Where(x => (DateTime.Now - x.LastUpdateTimestamp).TotalSeconds >= GarbageThreshold)
                     .ToArray();
@@ -444,15 +442,9 @@ namespace FFXIV.Framework.XIVHelper
                     if (dic.ContainsKey(target.ID))
                     {
                         dic.Remove(target.ID);
-                        isGabaged = true;
                     }
 
                     Thread.Yield();
-                }
-
-                if (isGabaged)
-                {
-                    GC.Collect();
                 }
             }
         }

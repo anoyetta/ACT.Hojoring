@@ -29,8 +29,13 @@
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
   </Window.Resources>
 
-  <DockPanel>
-    <StackPanel DockPanel.Dock="Top" Orientation="Vertical" VerticalAlignment="Top">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+
+    <StackPanel Grid.Row="0" Orientation="Vertical" VerticalAlignment="Top">
       <Label Content="IPC Channel URI" Margin="5" />
       <TextBox
         Margin="5"
@@ -96,21 +101,20 @@
       </StackPanel>
     </StackPanel>
 
-    <StackPanel DockPanel.Dock="Bottom" Orientation="Vertical" VerticalAlignment="Bottom">
-      <ScrollViewer
-        Name="MessagesScrollViewer"
-        VerticalScrollBarVisibility="Auto"
-        HorizontalScrollBarVisibility="Auto"
-        Margin="5"
-        Height="250">
-        <TextBox
-          TextWrapping="NoWrap"
-          IsReadOnly="True"
-          BorderThickness="0"
-          FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
-          FontSize="14"
-          Text="{Binding Messages, Mode=OneWay}" />
-      </ScrollViewer>
-    </StackPanel>
-  </DockPanel>
+    <ScrollViewer
+      Grid.Row="1"
+      Margin="5 20 5 5"
+      Name="MessagesScrollViewer"
+      VerticalScrollBarVisibility="Auto"
+      HorizontalScrollBarVisibility="Auto"
+      VerticalAlignment="Stretch">
+      <TextBox
+        TextWrapping="NoWrap"
+        IsReadOnly="True"
+        BorderThickness="0"
+        FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
+        FontSize="14"
+        Text="{Binding Messages, Mode=OneWay}" />
+    </ScrollViewer>
+  </Grid>
 </Window>

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
 スペスペたいむの書き方の説明
-(c) anoyetta, 2018
+(c) anoyetta, 2018-2019
 
 変更履歴はファイル末尾に。
 -->
-@{ var rev = "rev27"; }
+@{ var rev = "rev28"; }
 
 <!-- ●●この辺は Razor構文（非常に高度な機能）の説明なので読み飛ばして良い●● ↓ここから -->
 @{
-  // 最初にデータモデルをキャストしておく
+  // データモデルを取得する
   var data = Model;
 }
 @{
@@ -36,6 +36,7 @@
 
   LT     : @(data.LT)
   Zone   : @(data.Zone)
+  ZoneID : @(data.ZoneID)
   Locale : @(data.Locale)
 
   Player.Number : @(data.Player.Number)
@@ -75,11 +76,15 @@
 
   * Zone の判定
     if (Model.Zone == "Sigmascape")
+    if (Model.ZoneID == 123)
     と通常の条件式を使用してもよいが判定用のメソッドも提供されている。
 
     bool Model.InZone(param string[] zones)
     現在のゾーンが引数で与えられたゾーンのリストのいずれかに該当するかを返す。
     大文字/小文字は識別しない。現在のゾーン名に引数のゾーン名が含まれるとき、真を返す。
+
+    bool Model.InZone(param int[] zoneIDs)
+    現在のゾーンが引数で与えられたゾーンIDのリストのいずれかに該当するかを返す。
 
   * Job の判定
     Zone と同様に専用の判定メソッドが提供されている。
@@ -135,7 +140,7 @@
        で参照できます。
 
        例)
-       if (modeel.Var["TANK_ROLE"] == "MT") 
+       if (modeel.Var["TANK_ROLE"] == "MT")
        {
            // Do somthing...
        }
@@ -163,7 +168,6 @@
        model.SetTemp(string name, object value)
 -->
 <!-- ●●この辺は Razor構文（非常に高度な機能）の説明なので読み飛ばして良い●● ↑ここまで -->
-
 <!--
 <timeline> タグ
   ルート要素
@@ -198,7 +202,6 @@
   <!-- コピーライトを明記する場合
   <author>(c)anoyetta</author>
   -->
-
   <!-- 改変等によって複数人の作者が存在する場合
   <author>
     anoyetta
@@ -207,7 +210,6 @@
     and my friends...
   </author>
   -->
-
   <!--
   <license> タグ
     string, 任意項目
@@ -215,7 +217,7 @@
     このファイルのライセンスを記述します。
 
     特に気にしない場合は
-    クリエイティブ・コモンズ 表示 - 継承 非移植 
+    クリエイティブ・コモンズ 表示 - 継承 非移植
     (CC BY-SA)
     https://creativecommons.org/licenses/by-sa/4.0/deed.ja
     としておくことをおすすめします。
@@ -236,7 +238,6 @@
   <!--
   <license>Public Domain</license>
   -->
-
   <!--
   <zone> タグ
     string, 任意項目
@@ -371,7 +372,6 @@
     bool, 任意項目, 既定値true
     このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
   -->
-
   <!-- トリガ -->
   <t text="天雷掌" sync="白虎は「天雷掌」の構え。" notice="天雷掌" goto="フェーズ1" />
   <!--
@@ -405,6 +405,11 @@
     2ならば、2回目のマッチング時のみトリガを実行する。
   ...
     という仕組み。
+
+  sync-interval :
+    int, 任意項目, 既定値0
+    最後マッチしてから次にマッチするまでの秒数を設定する。
+    0ならば間隔を考慮せず毎回判定する。
 
   goto :
     string, 任意項目
@@ -450,7 +455,7 @@
   args :
     string, 任意項目, 既定値null
     exec で指示されたアプリケーションに渡されるコマンドライン引数を指定する。
-  
+
   exec-hidden :
     bool, 任意項目, 既定値false
     exec で起動するアプリケーションの Window を非表示にする。
@@ -460,7 +465,6 @@
     bool, 任意項目, 既定値true
     このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
   -->
-
   <!-- トリガ＋ロード -->
   <t name="to Phase1" sync="オオオオオ……この衝動、もはや止められん！">
     <load target="フェーズ1" truncate="true" />
@@ -485,7 +489,6 @@
     bool, 任意項目, 既定値true
     このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
   -->
-
   <!-- トリガ＋v-notice -->
   <t name="to Phase1" sync="オオオオオ……この衝動、もはや止められん！">
     <v-notice text="おおおお！" />
@@ -556,15 +559,13 @@
     bool, 任意項目, 既定値true
     このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
   -->
-
   <!-- トリガ＋i-notice -->
   <t name="to Phase1" sync="オオオオオ……この衝動、もはや止められん！">
-    <i-notice 
-      image="Sample.png"
-      duration="5"
-      scale="1.0"
-      left="500"
-      top="100" />
+    <i-notice image="Sample.png"
+              duration="5"
+              scale="1.0"
+              left="500"
+              top="100" />
   </t>
   <!--
   <i-notice> タグ
@@ -602,7 +603,6 @@
     bool, 任意項目, 既定値true
     このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
   -->
-
   <!-- トリガ＋p-sync -->
   <t text="楔がポップ！">
     <p-sync interval="30">
@@ -612,18 +612,16 @@
       <combatant name="炎の楔" X="70.0" Y="80.0" Z="0" tolerance="0.01" />
     </p-sync>
 
-    <v-notice
-      duration="5"
-      duration-visible="false"
-      style="NOTICE_NORMAL"
-      icon="Marker.png" />
+    <v-notice duration="5"
+              duration-visible="false"
+              style="NOTICE_NORMAL"
+              icon="Marker.png" />
 
-    <i-notice 
-      image="フォーメーションA.png"
-      duration="5"
-      scale="1.0"
-      left="500"
-      top="100" />
+    <i-notice image="フォーメーションA.png"
+              duration="5"
+              scale="1.0"
+              left="500"
+              top="100" />
   </t>
   <!--
   <p-sync> タグ
@@ -664,7 +662,7 @@
 
   <combatant> タグ
     p-syncの条件となる combatant の座標を定義する。
-  
+
   name :
     string(RegEx), 必須項目
     対象とする combatant の名前。
@@ -684,8 +682,6 @@
     bool, 任意項目, 既定値true
     このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
   -->
-
-
   <!-- トリガ＋expressions -->
   <!-- 1回目 横回転の定義 -->
   <t text="横回転" sync="^15:[id8]:ミドガルズオルム:31C7" notice="横回転。">
@@ -749,7 +745,7 @@
   value :
     object, 任意項目, 既定値true
     変数に格納する値。bool, int, double, string など任意の変数型を使用できる。
-  
+
   toggle :
     bool, 任意項目, 既定値false
     フラグに対してトグル操作を行う。
@@ -768,7 +764,7 @@
     変数の有効期限、秒数で指定する。
     ttl="30" とした場合、30秒経過後にはこの変数は false として扱われる
     count 属性を使用した場合はTLLの概念は適用されない。
-  
+
   * 環境変数
     システムが自動的に更新する環境変数を用意しています。
     setタグ によって任意にセットした変数と同様に preタグ の判定で参照することができます。
@@ -776,7 +772,6 @@
 
     IS_TOT_ME   : bool型 Target of Target が自分であるかどうか？
   -->
-
   <!-- サブルーチン -->
   <s name="メインフェーズ">
     <a time="00:29" text="乾坤一擲" notice="次は、乾坤一擲。" />
@@ -804,7 +799,6 @@
     bool, 任意項目, 既定値true
     このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
   -->
-
   <!-- サブルーチン+import -->
   <s name="トリガ定義">
     <t sync="starts using パンチ" notice="パンチ！" />
@@ -830,7 +824,6 @@
     bool, 任意項目, 既定値true
     このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
   -->
-
   <!-- デフォルト値設定 -->
   <default target-element="Activity" target-attr="notice-o" value="-3" />
   <!--
@@ -842,7 +835,7 @@
   target-element :
     enum
     規定値を設定する要素を指定する
-    
+
     Activity      : a タグ（アクティビティ）に対して適用する
     Trigger       : t タグ（トリガ）に対して適用する
     Subroutine    : s タグ（サブルーチン）に対して適用する
@@ -874,6 +867,9 @@
 
 <!--
 変更履歴
+
+2019-07-24 rev28
+  * trigger 再度判定するまでの間隔を指定する属性 sync-interval を追加した
 
 2019-06-05 rev27
   * trigger に外部ツールを起動する属性 exec, args, exec-hidden を追加した

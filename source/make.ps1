@@ -81,7 +81,6 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     '●外部参照用DLLを逃がす'
     New-Item -ItemType Directory "bin" | Out-Null
-    Move-Item -Path @("x86", "x64") -Destination "bin" | Out-Null
 
     '●不要なファイルを削除する'
     Remove-Item -Force *.pdb
