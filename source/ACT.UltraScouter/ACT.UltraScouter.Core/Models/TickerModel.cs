@@ -159,22 +159,25 @@ namespace ACT.UltraScouter.Models
                 }
 
                 var sync = false;
+                var target = string.Empty;
 
                 if (!string.IsNullOrEmpty(this.syncKeywordToHoT) &&
                     config.IsSyncHoT)
                 {
                     sync = logInfo.logLine.Contains(this.syncKeywordToHoT);
+                    target = "HoT";
                 }
 
                 if (!string.IsNullOrEmpty(this.syncKeywordToDoT) &&
                     config.IsSyncDoT)
                 {
                     sync = logInfo.logLine.Contains(this.syncKeywordToDoT);
+                    target = "DoT";
                 }
 
                 if (sync)
                 {
-                    this.Sync(logInfo.logLine);
+                    this.Sync(logInfo.logLine, target);
                 }
             }
             finally
@@ -194,7 +197,8 @@ namespace ACT.UltraScouter.Models
         }
 
         private void Sync(
-            string logline)
+            string logline,
+            string syncTarget)
         {
             if (logline.Length < 14)
             {
@@ -220,8 +224,8 @@ namespace ACT.UltraScouter.Models
             Task.Run(() =>
             {
                 Thread.Sleep(nextTick - DateTime.Now);
-                this.RestartTickerCallback?.Invoke(); 
-                this.AppLogger.Trace("3s ticker synced.");
+                this.RestartTickerCallback?.Invoke();
+                this.AppLogger.Trace($"3s ticker synced to {syncTarget}.");
             });
         }
     }

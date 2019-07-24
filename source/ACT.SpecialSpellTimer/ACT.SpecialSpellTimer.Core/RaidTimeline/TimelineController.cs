@@ -1206,10 +1206,18 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
                 }
 
+                if (tri.SyncInterval != 0 &&
+                    (detectTime - tri.MatchedTimestamp).TotalSeconds <= tri.SyncInterval)
+                {
+                    return false;
+                }
+
                 if (!tri.ExecuteExpressions())
                 {
                     return false;
                 }
+
+                tri.MatchedTimestamp = detectTime;
 
                 var toNotice = tri.Clone();
                 toNotice.LogSeq = xivlog.Seq;

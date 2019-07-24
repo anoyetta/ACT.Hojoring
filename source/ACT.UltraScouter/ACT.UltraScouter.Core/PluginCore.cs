@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
@@ -77,6 +78,7 @@ namespace ACT.UltraScouter
                 // 設定ファイルを保存する
                 Settings.Instance.Save();
                 FFXIV.Framework.Config.Save();
+                Thread.Sleep(50);
 
                 // 参照を開放する
                 WavePlayer.Free();

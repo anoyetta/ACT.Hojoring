@@ -174,10 +174,12 @@ namespace ACT.UltraScouter.Config
                 }
 
                 buffer.Replace("utf-16", "utf-8");
-                File.WriteAllText(
-                    this.FileName,
-                    buffer.ToString() + Environment.NewLine,
-                    new UTF8Encoding(false));
+
+                using (var sw = new StreamWriter(this.FileName, false, new UTF8Encoding(false)))
+                {
+                    sw.Write(buffer.ToString() + Environment.NewLine);
+                    sw.Flush();
+                }
             }
         }
 

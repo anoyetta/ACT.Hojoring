@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
@@ -487,6 +488,7 @@ namespace ACT.TTSYukkuri
                 // 設定を保存する
                 Settings.Default.Save();
                 FFXIV.Framework.Config.Save();
+                Thread.Sleep(50);
 
                 this.PluginStatusLabel.Text = "Plugin Exited";
             }

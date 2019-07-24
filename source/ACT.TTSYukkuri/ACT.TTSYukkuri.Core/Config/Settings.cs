@@ -483,10 +483,12 @@ namespace ACT.TTSYukkuri.Config
                 }
 
                 buffer.Replace("utf-16", "utf-8");
-                File.WriteAllText(
-                    file,
-                    buffer.ToString() + Environment.NewLine,
-                    new UTF8Encoding(false));
+
+                using (var sw = new StreamWriter(file, false, new UTF8Encoding(false)))
+                {
+                    sw.Write(buffer.ToString() + Environment.NewLine);
+                    sw.Flush();
+                }
             }
         }
     }

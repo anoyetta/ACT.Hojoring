@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using FFXIV.Framework.TTS.Server.Models;
 using NLog;
 using Prism.Mvvm;
@@ -226,13 +227,19 @@ namespace FFXIV.Framework.TTS.Server
                     volume = 50;
                 }
 
-                this.SpeakQueue.Enqueue(new SpeakTask()
+                // 99文字ずつで分割する
+                var texts = text.Split(99);
+
+                foreach (var tts in texts)
                 {
-                    Speed = (uint)speed,
-                    Volume = (uint)volume,
-                    CastNo = type,
-                    Text = text.Trim(),
-                });
+                    this.SpeakQueue.Enqueue(new SpeakTask()
+                    {
+                        Speed = (uint)speed,
+                        Volume = (uint)volume,
+                        CastNo = type,
+                        Text = tts.Trim(),
+                    });
+                }
             }
         }
 
@@ -256,8 +263,6 @@ namespace FFXIV.Framework.TTS.Server
                     task.Text,
                     speed: task.Speed,
                     volume: task.Volume);
-
-                Thread.Sleep(50);
             }
         }
     }

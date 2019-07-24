@@ -38,6 +38,9 @@ namespace FFXIV.Framework.Common
 
         public static void SetTLSProtocol()
         {
+            // 同時接続数を増やしておく
+            ServicePointManager.DefaultConnectionLimit = 32;
+
             // TLS1.0, 1.1 を無効化する
             ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
             ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls11;
@@ -154,6 +157,8 @@ namespace FFXIV.Framework.Common
         public static void StartActivator(
             Action callback)
         {
+            SetTLSProtocol();
+
             if (!isStarted)
             {
                 ActivationManager.Instance.ActivationDeniedCallback += () =>
