@@ -151,6 +151,14 @@ namespace FFXIV.Framework
             }
         }
 
+        private Locales xivLocale = GetDefaultLocale();
+
+        public Locales XIVLocale
+        {
+            get => this.xivLocale;
+            set => this.SetProperty(ref this.xivLocale, value);
+        }
+
         public static Locales GetDefaultLocale()
             => CultureInfo.CurrentCulture.Name switch
             {

@@ -68,7 +68,6 @@ namespace ACT.UltraScouter.Config
         public static readonly Dictionary<string, object> DefaultValues = new Dictionary<string, object>()
         {
             { nameof(Settings.LastUpdateDateTime), DateTime.MinValue },
-            { nameof(Settings.FFXIVLocale), FFXIV.Framework.Config.GetDefaultLocale() },
             { nameof(Settings.Opacity), 1.0 },
             { nameof(Settings.TextOutlineThicknessGain), 1.0d },
             { nameof(Settings.TextBlurGain), 2.0d },

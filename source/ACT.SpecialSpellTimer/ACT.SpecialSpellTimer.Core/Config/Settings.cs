@@ -81,13 +81,7 @@ namespace ACT.SpecialSpellTimer.Config
         [XmlIgnore]
         public Locales UILocale => FFXIV.Framework.Config.Instance.UILocale;
 
-        private Locales ffxivLocale = FFXIV.Framework.Config.GetDefaultLocale();
-
-        public Locales FFXIVLocale
-        {
-            get => this.ffxivLocale;
-            set => this.SetProperty(ref this.ffxivLocale, value);
-        }
+        public Locales FFXIVLocale => FFXIV.Framework.Config.Instance.XIVLocale;
 
         private bool overlayVisible;
 
