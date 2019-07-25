@@ -90,8 +90,6 @@ namespace ACT.TTSYukkuri.Config
         private StatusAlertConfig statusAlertSettings = new StatusAlertConfig();
         private DiscordSettings discordSettings = new DiscordSettings();
 
-        private Locales ffxivLocale = FFXIV.Framework.Config.GetDefaultLocale();
-
         /// <summary>
         /// プラグインのUIのロケール
         /// </summary>
@@ -101,11 +99,7 @@ namespace ACT.TTSYukkuri.Config
         /// <summary>
         /// FFXIVのロケール
         /// </summary>
-        public Locales FFXIVLocale
-        {
-            get => this.ffxivLocale;
-            set => this.SetProperty(ref this.ffxivLocale, value);
-        }
+        public Locales FFXIVLocale => FFXIV.Framework.Config.Instance.XIVLocale;
 
         /// <summary>
         /// 最終アップデート日時
