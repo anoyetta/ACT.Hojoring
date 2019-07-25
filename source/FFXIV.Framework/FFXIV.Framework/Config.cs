@@ -1,9 +1,13 @@
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Globalization;
 using Prism.Mvvm;
 
 namespace FFXIV.Framework
@@ -24,14 +28,28 @@ namespace FFXIV.Framework
         {
         }
 
+        public static void Free() => instance = null;
+
         #endregion Singleton
 
         #region Load & Save
 
-        public static string FileName => Assembly.GetExecutingAssembly().Location.Replace(".dll", ".config");
+        private static string OldFileName => Assembly.GetExecutingAssembly().Location.Replace(".dll", ".config");
+
+        public static string FileName => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "anoyetta",
+            "ACT",
+            Path.GetFileName(Assembly.GetExecutingAssembly().Location.Replace(".dll", ".config")));
 
         public static Config Load()
         {
+            if (File.Exists(OldFileName) &&
+                !File.Exists(FileName))
+            {
+                File.Move(OldFileName, FileName);
+            }
+
             if (!File.Exists(FileName))
             {
                 return null;
@@ -87,10 +105,11 @@ namespace FFXIV.Framework
 
                 sb.Replace("utf-16", "utf-8");
 
-                File.WriteAllText(
-                    FileName,
-                    sb.ToString(),
-                    new UTF8Encoding(false));
+                using (var sw = new StreamWriter(FileName, false, new UTF8Encoding(false)))
+                {
+                    sw.Write(sb.ToString() + Environment.NewLine);
+                    sw.Flush();
+                }
             }
         }
 
@@ -104,6 +123,46 @@ namespace FFXIV.Framework
         private const double WasapiLoopBufferDurationDefault = 20;
 
         #endregion Default Values
+
+        [field: NonSerialized]
+        public event EventHandler UILocaleChanged;
+
+        public void SubscribeUILocale(
+            Action changedAction)
+            => this.UILocaleChanged += (_, __) => changedAction?.Invoke();
+
+        private Locales uiLocale = GetDefaultLocale();
+
+        public Locales UILocale
+        {
+            get => this.uiLocale;
+            set
+            {
+                if (this.SetProperty(ref this.uiLocale, value))
+                {
+                    EorzeaTime.DefaultLocale = this.uiLocale == Locales.JA ?
+                        EorzeaCalendarLocale.JA :
+                        EorzeaCalendarLocale.EN;
+
+                    this.UILocaleChanged?.Invoke(this, new EventArgs());
+
+                    Task.Run(() => Save());
+                }
+            }
+        }
+
+        public static Locales GetDefaultLocale()
+            => CultureInfo.CurrentCulture.Name switch
+            {
+                "ja-JP" => Locales.JA,
+                "en-US" => Locales.EN,
+                "fr-FR" => Locales.FR,
+                "de-DE" => Locales.DE,
+                "ko-KR" => Locales.KO,
+                "zh-CN" => Locales.CN,
+                "zh-TW" => Locales.CN,
+                _ => Locales.EN,
+            };
 
         [XmlIgnore]
         public bool SupportWin7 => SupportWin7Default;

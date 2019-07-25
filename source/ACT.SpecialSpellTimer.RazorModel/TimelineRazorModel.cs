@@ -28,6 +28,8 @@ namespace ACT.SpecialSpellTimer.RazorModel
 
         public DateTimeOffset LT => DateTimeOffset.Now;
 
+        public string ET { get; set; } = "00:00";
+
         public TimelineRazorVariable Var { get; } = new TimelineRazorVariable();
 
         public bool SyncTTS { get; set; } = false;
