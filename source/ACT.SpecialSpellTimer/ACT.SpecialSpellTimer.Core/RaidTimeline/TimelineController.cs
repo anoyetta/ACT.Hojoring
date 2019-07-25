@@ -801,8 +801,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // グローバル変数を更新する
-            TimelineExpressionsModel.RefreshIsToTMe();
-            TimelineExpressionsModel.RefreshIsFirstEnmityMe();
+            TimelineExpressionsModel.RefreshGlobalVariables();
 
             // P-Syncを判定する
             var detectPSyncTask = default(Task);
