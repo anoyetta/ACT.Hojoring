@@ -222,6 +222,8 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
         #endregion Menu
 
+        public FFXIV.Framework.Config FrameworkConfig => FFXIV.Framework.Config.Instance;
+
         public Settings Config => Settings.Instance;
 
         public static IEnumerable<ThreadPriority> ThreadPriorities

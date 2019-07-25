@@ -78,6 +78,7 @@ namespace ACT.UltraScouter
                 // 設定ファイルを保存する
                 Settings.Instance.Save();
                 FFXIV.Framework.Config.Save();
+                FFXIV.Framework.Config.Free();
                 Thread.Sleep(50);
 
                 // 参照を開放する
@@ -170,7 +171,6 @@ namespace ACT.UltraScouter
                     this.Logger.Trace("[ULTRA SCOUTER] End InitPlugin");
 
                     // 共通ビューを追加する
-                    ConfigBridge.Instance.SetUILocaleCallback(() => Settings.Instance.UILocale);
                     CommonViewHelper.Instance.AddCommonView(
                        pluginScreenSpace.Parent as TabControl);
 

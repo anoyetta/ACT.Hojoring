@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 
@@ -12,7 +11,7 @@ namespace FFXIV.Framework.WPF.Views
     /// </summary>
     public partial class CommonView : UserControl
     {
-        private Locales UILocale => ConfigBridge.Instance.GetUILocaleCallback?.Invoke() ?? Locales.EN;
+        private Locales UILocale => Config.Instance.UILocale;
 
         public CommonView()
         {

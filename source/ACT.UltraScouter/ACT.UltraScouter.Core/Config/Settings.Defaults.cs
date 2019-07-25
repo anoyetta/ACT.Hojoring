@@ -11,7 +11,6 @@ using System.Windows.Threading;
 using ACT.UltraScouter.Common;
 using ACT.UltraScouter.Models.FFLogs;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.Globalization;
 using FFXIV.Framework.XIVHelper;
 
 namespace ACT.UltraScouter.Config
@@ -69,8 +68,7 @@ namespace ACT.UltraScouter.Config
         public static readonly Dictionary<string, object> DefaultValues = new Dictionary<string, object>()
         {
             { nameof(Settings.LastUpdateDateTime), DateTime.MinValue },
-            { nameof(Settings.UILocale), Locales.JA },
-            { nameof(Settings.FFXIVLocale), Locales.JA },
+            { nameof(Settings.FFXIVLocale), FFXIV.Framework.Config.GetDefaultLocale() },
             { nameof(Settings.Opacity), 1.0 },
             { nameof(Settings.TextOutlineThicknessGain), 1.0d },
             { nameof(Settings.TextBlurGain), 2.0d },
