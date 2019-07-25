@@ -20,6 +20,8 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
         public void SetLocale(Locales locale) => this.ReloadLocaleDictionary(locale);
 
+        public FFXIV.Framework.Config FrameworkConfig => FFXIV.Framework.Config.Instance;
+
         public Settings Config => Settings.Default;
     }
 }

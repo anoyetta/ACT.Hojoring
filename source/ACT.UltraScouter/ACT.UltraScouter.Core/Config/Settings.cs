@@ -259,8 +259,7 @@ namespace ACT.UltraScouter.Config
         #region Data
 
         private double opacity;
-        private Locales uiLocale;
-        private Locales ffxivLocale;
+        private Locales ffxivLocale = FFXIV.Framework.Config.GetDefaultLocale();
         private int animationMaxFPS;
         private ThreadPriority scanMemoryThreadPriority = ThreadPriority.Normal;
         private DispatcherPriority uiThreadPriority = DispatcherPriority.Background;
@@ -276,11 +275,8 @@ namespace ACT.UltraScouter.Config
         /// プラグインのUIのロケール
         /// </summary>
         [DataMember(Order = 8)]
-        public Locales UILocale
-        {
-            get => this.uiLocale;
-            set => this.SetProperty(ref this.uiLocale, value);
-        }
+        [XmlIgnore]
+        public Locales UILocale => FFXIV.Framework.Config.Instance.UILocale;
 
         /// <summary>
         /// FFXIVのロケール

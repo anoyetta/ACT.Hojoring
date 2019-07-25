@@ -408,7 +408,6 @@ namespace ACT.TTSYukkuri
                     this.Logger.Trace("[YUKKURI] End InitPlugin");
 
                     // 共通ビューを追加する
-                    ConfigBridge.Instance.SetUILocaleCallback(() => Settings.Default.UILocale);
                     CommonViewHelper.Instance.AddCommonView(
                        pluginScreenSpace.Parent as TabControl);
 
@@ -488,6 +487,7 @@ namespace ACT.TTSYukkuri
                 // 設定を保存する
                 Settings.Default.Save();
                 FFXIV.Framework.Config.Save();
+                FFXIV.Framework.Config.Free();
                 Thread.Sleep(50);
 
                 this.PluginStatusLabel.Text = "Plugin Exited";
