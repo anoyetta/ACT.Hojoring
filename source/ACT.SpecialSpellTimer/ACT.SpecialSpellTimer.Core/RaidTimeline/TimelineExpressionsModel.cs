@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.RazorModel;
-using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
     [XmlType(TypeName = "expresions")]
     [Serializable]
-    public class TimelineExpressionsModel :
+    public partial class TimelineExpressionsModel :
         TimelineBase
     {
         #region TimelineBase
@@ -71,128 +70,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         #endregion Children
-
-        #region Global Variable
-
-        /// <summary>
-        /// TargetOfTargetが自分か？
-        /// </summary>
-        public const string IS_TOT_ME = "IS_TOT_ME";
-
-        /// <summary>
-        /// IS_TOT_ME を更新する
-        /// </summary>
-        public static void RefreshIsToTMe()
-        {
-            var name = IS_TOT_ME;
-
-            var player = CombatantsManager.Instance.Player;
-            if (player != null)
-            {
-                if (player.TargetOfTargetID != 0)
-                {
-                    var value = player.IsTargetOfTargetMe;
-                    if (SetVariable(name, value))
-                    {
-                        TimelineController.RaiseLog(
-                            $"{TimelineController.TLSymbol} set ENV[\"{name}\"] = {value}");
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 第一敵視が自分か？
-        /// </summary>
-        public const string IS_FIRST_ENMITY_ME = "IS_FIRST_ENMITY_ME";
-
-        /// <summary>
-        /// IS_FIRST_ENMITY_ME を更新する
-        /// </summary>
-        public static void RefreshIsFirstEnmityMe()
-        {
-            var name = IS_FIRST_ENMITY_ME;
-
-            var value = SharlayanHelper.Instance.IsFirstEnmityMe;
-
-            if (SetVariable(name, value))
-            {
-                TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} set ENV[\"{name}\"] = {value}");
-            }
-        }
-
-        /// <summary>
-        /// グローバル変数をセットする
-        /// </summary>
-        /// <param name="name">グローバル変数名</param>
-        /// <param name="value">値</param>
-        /// <param name="zone"ゾーン名</param>
-        /// <returns>is changed</returns>
-        public static bool SetVariable(
-            string name,
-            object value,
-            string zone = null)
-        {
-            var result = false;
-
-            lock (ExpressionLocker)
-            {
-                var variable = default(TimelineVariable);
-                if (Variables.ContainsKey(name))
-                {
-                    variable = Variables[name];
-                }
-                else
-                {
-                    variable = new TimelineVariable(name);
-                    Variables[name] = variable;
-                    result = true;
-                }
-
-                switch (value)
-                {
-                    case bool b:
-                        if (!(variable.Value is bool current) ||
-                            current != b)
-                        {
-                            variable.Value = b;
-                            variable.Expiration = DateTime.MaxValue;
-                            result = true;
-                        }
-                        break;
-
-                    case int i:
-                        if (variable.Counter != i)
-                        {
-                            variable.Counter = i;
-                            variable.Expiration = DateTime.MaxValue;
-                            result = true;
-                        }
-                        break;
-
-                    default:
-                        if (!ObjectComparer.Equals(value, variable.Value))
-                        {
-                            variable.Value = value;
-                            variable.Expiration = DateTime.MaxValue;
-                            result = true;
-                        }
-                        break;
-                }
-
-                variable.Zone = zone ?? string.Empty;
-            }
-
-            if (result)
-            {
-                OnVariableChanged?.Invoke(new EventArgs());
-            }
-
-            return result;
-        }
-
-        #endregion Global Variable
 
         public static readonly object ExpressionLocker = new object();
 
