@@ -15,7 +15,6 @@ using ACT.SpecialSpellTimer.Sound;
 using ACT.SpecialSpellTimer.Utility;
 using ACT.SpecialSpellTimer.Views;
 using Advanced_Combat_Tracker;
-using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
@@ -113,6 +112,7 @@ namespace ACT.SpecialSpellTimer
                 Settings.Default.Save();
                 Settings.Default.DeInit();
                 FFXIV.Framework.Config.Save();
+                FFXIV.Framework.Config.Free();
                 Thread.Sleep(50);
 
                 Logger.Write("Plugin Exited.");
@@ -236,7 +236,6 @@ namespace ACT.SpecialSpellTimer
                     Logger.Write("[SPESPE] End InitPlugin");
 
                     // 共通ビューを追加する
-                    ConfigBridge.Instance.SetUILocaleCallback(() => Settings.Default.UILocale);
                     CommonViewHelper.Instance.AddCommonView(
                        pluginScreenSpace.Parent as TabControl);
 

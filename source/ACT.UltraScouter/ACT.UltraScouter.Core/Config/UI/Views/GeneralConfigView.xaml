@@ -58,7 +58,7 @@
         ItemsSource="{Binding Source={x:Static global:LocalesExtensions.Enums}}"
         DisplayMemberPath="Text"
         SelectedValuePath="Value"
-        SelectedValue="{Binding Path=Config.UILocale, Mode=TwoWay}">
+        SelectedValue="{Binding Path=FrameworkConfig.UILocale, Mode=TwoWay}">
       </ComboBox>
 
       <Label

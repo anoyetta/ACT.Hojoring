@@ -79,25 +79,9 @@ namespace ACT.SpecialSpellTimer.Config
         #region Data
 
         [XmlIgnore]
-        public string Language => this.UILocale == Locales.JA ? "JP" : "EN";
+        public Locales UILocale => FFXIV.Framework.Config.Instance.UILocale;
 
-        private Locales uiLocale = Locales.JA;
-
-        public Locales UILocale
-        {
-            get => this.uiLocale;
-            set
-            {
-                if (this.SetProperty(ref this.uiLocale, value))
-                {
-                    EorzeaTime.DefaultLocale = this.uiLocale == Locales.JA ?
-                        EorzeaCalendarLocale.JA :
-                        EorzeaCalendarLocale.EN;
-                }
-            }
-        }
-
-        private Locales ffxivLocale = Locales.JA;
+        private Locales ffxivLocale = FFXIV.Framework.Config.GetDefaultLocale();
 
         public Locales FFXIVLocale
         {

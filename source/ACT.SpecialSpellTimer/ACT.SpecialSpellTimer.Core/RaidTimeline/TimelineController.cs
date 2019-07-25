@@ -71,25 +71,42 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public static void Init()
         {
-            TimelineOverlay.LoadResourcesDictionary();
-
-            // テキストコマンドを登録する
-            TimelineTextCommands.SetSubscribeTextCommands();
-
-            isDetectLogWorking = true;
-            if (!LogWorker.IsAlive)
+            lock (Locker)
             {
-                LogWorker.Start();
+                TimelineOverlay.LoadResourcesDictionary();
+
+                // テキストコマンドを登録する
+                TimelineTextCommands.SetSubscribeTextCommands();
+
+                isDetectLogWorking = true;
+
+                if (LogWorker == null)
+                {
+                    LogWorker = new Thread(DetectLogLoopRoot)
+                    {
+                        IsBackground = true
+                    };
+                }
+
+                if (!LogWorker.IsAlive)
+                {
+                    LogWorker.Start();
+                }
             }
         }
 
         public static void Free()
         {
-            isDetectLogWorking = false;
-            LogWorker.Join(100);
-            if (LogWorker.IsAlive)
+            lock (Locker)
             {
-                LogWorker.Abort();
+                isDetectLogWorking = false;
+                LogWorker.Join(100);
+                if (LogWorker.IsAlive)
+                {
+                    LogWorker.Abort();
+                }
+
+                LogWorker = null;
             }
         }
 
@@ -711,17 +728,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private static readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer = new Lazy<ConcurrentQueue<XIVLog>>(()
             => XIVPluginHelper.Instance.SubscribeXIVLog(() =>
-                CurrentController != null &&
-                CurrentController.IsReady));
+                TimelineManager.Instance.IsLoading ||
+                (CurrentController != null && CurrentController.IsReady)));
 
         public static ConcurrentQueue<XIVLog> XIVLogQueue => LazyXIVLogBuffer.Value;
 
         private static volatile bool isDetectLogWorking = false;
 
-        private static readonly Thread LogWorker = new Thread(DetectLogLoopRoot)
-        {
-            IsBackground = true
-        };
+        private static Thread LogWorker;
 
         private static void DetectLogLoopRoot()
         {
