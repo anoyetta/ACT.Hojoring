@@ -435,6 +435,9 @@ namespace FFXIV.Framework.Common
         public override string ToString()
             => $"{this.Year:0000}/{this.Month:00}/{this.Day:00} {this.Hour:00}:{this.Minute:00}:{this.Second:00}";
 
+        public string ToStringTime()
+            => $"{this.Hour:00}:{this.Minute:00}";
+
         public string ToStringFlat()
             => $"{this.Year:0000}{this.Month:00}{this.Day:00}{this.Hour:00}{this.Minute:00}{this.Second:00}";
 
