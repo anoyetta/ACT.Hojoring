@@ -728,8 +728,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private static readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer = new Lazy<ConcurrentQueue<XIVLog>>(()
             => XIVPluginHelper.Instance.SubscribeXIVLog(() =>
-                CurrentController != null &&
-                CurrentController.IsReady));
+                TimelineManager.Instance.IsLoading ||
+                (CurrentController != null && CurrentController.IsReady)));
 
         public static ConcurrentQueue<XIVLog> XIVLogQueue => LazyXIVLogBuffer.Value;
 
