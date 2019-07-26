@@ -20,20 +20,24 @@
   FontSize="17"
   Margin="0"
   d:DesignHeight="576" d:DesignWidth="1024"
-  d:DataContext="{d:DesignInstance Type=vm:ConfigViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  d:DataContext="{d:DesignInstance Type=vm:ConfigViewModel, IsDesignTimeCreatable=True}">
 
   <UserControl.Resources>
-    <Style x:Key="MenuStyle" TargetType="{x:Type TreeViewItem}">
-      <Setter Property="Padding" Value="5 10 10 10" />
-      <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-      <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-      <Style.Resources>
-        <Style TargetType="{x:Type Border}">
-          <Setter Property="Grid.ColumnSpan" Value="2" />
-        </Style>
-      </Style.Resources>
-    </Style>
+    <ResourceDictionary>
+      <Style x:Key="MenuStyle" TargetType="{x:Type TreeViewItem}">
+        <Setter Property="Padding" Value="5 10 10 10" />
+        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+        <Style.Resources>
+          <Style TargetType="{x:Type Border}">
+            <Setter Property="Grid.ColumnSpan" Value="2" />
+          </Style>
+        </Style.Resources>
+      </Style>
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../../resources/strings/Strings.UlSco.en-US.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
   </UserControl.Resources>
 
   <Grid>
@@ -48,20 +52,36 @@
 
     <!-- メニューツリー -->
     <DockPanel Grid.Column="0" Name="MenuPanel">
-      <TreeView
-        Name="MenuTreeView"
-        ItemContainerStyle="{StaticResource MenuStyle}"
-        ItemsSource="{Binding MenuTreeViewItems}"
-        BorderThickness="0">
-        <TreeView.ItemTemplate>
-          <HierarchicalDataTemplate
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TreeView
+          Grid.Row="0"
+          Name="MenuTreeView"
+          ItemContainerStyle="{StaticResource MenuStyle}"
+          ItemsSource="{Binding MenuTreeViewItems}"
+          BorderThickness="0">
+          <TreeView.ItemTemplate>
+            <HierarchicalDataTemplate
             ItemContainerStyle="{StaticResource MenuStyle}"
             DataType="{x:Type fw:TreeSource}"
             ItemsSource="{Binding Child}">
-            <TextBlock Text="{Binding Text, Mode=OneWay}" />
-          </HierarchicalDataTemplate>
-        </TreeView.ItemTemplate>
-      </TreeView>
+              <TextBlock Text="{Binding Text, Mode=OneWay}" />
+            </HierarchicalDataTemplate>
+          </TreeView.ItemTemplate>
+        </TreeView>
+
+        <CheckBox
+          Grid.Row="1"
+          Margin="8"
+          VerticalContentAlignment="Center"
+          HorizontalAlignment="Left"
+          Content="{DynamicResource GeneralConfig_ClickThrough}"
+          IsChecked="{Binding Config.ClickThrough, Mode=TwoWay}" />
+      </Grid>
     </DockPanel>
 
     <!-- コンテンツ領域 -->
