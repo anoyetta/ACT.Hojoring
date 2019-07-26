@@ -282,11 +282,7 @@ namespace ACT.UltraScouter.Config
         /// FFXIVのロケール
         /// </summary>
         [DataMember(Order = 9)]
-        public Locales FFXIVLocale
-        {
-            get => this.ffxivLocale;
-            set => this.SetProperty(ref this.ffxivLocale, value);
-        }
+        public Locales FFXIVLocale => FFXIV.Framework.Config.Instance.XIVLocale;
 
         /// <summary>
         /// アイドル時のインターバル
@@ -304,11 +300,17 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.opacity, value);
         }
 
+        private bool clickThrough;
+
         /// <summary>
         /// クリックスルー
         /// </summary>
         [DataMember(Order = 12)]
-        public bool ClickThrough { get; set; }
+        public bool ClickThrough
+        {
+            get => this.clickThrough;
+            set => this.SetProperty(ref this.clickThrough, value);
+        }
 
         /// <summary>
         /// テキストのアウトラインの増幅率
