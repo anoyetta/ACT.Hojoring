@@ -26,6 +26,12 @@ namespace ACT.UltraScouter.Models
                 DetectInterval,
                 "3s ticker detect target subscriber",
                 ThreadPriority.Lowest);
+
+            this.mpSubscriber = new ThreadWorker(
+                this.DetectMP,
+                Settings.Instance.MPTicker.DetectMPInterval,
+                "3s ticker MP subscriber",
+                ThreadPriority.BelowNormal);
         }
 
         #endregion Lazy Singleton
@@ -41,6 +47,7 @@ namespace ACT.UltraScouter.Models
         private static readonly double DetectInterval = 1000;
         private static readonly double DetectIdelInterval = 5000;
         private ThreadWorker detectTargetSubscriber;
+        private ThreadWorker mpSubscriber;
 
         private volatile bool isRunnning = false;
 
@@ -98,6 +105,11 @@ namespace ACT.UltraScouter.Models
                 this.detectTargetSubscriber.Run();
             }
 
+            if (!this.mpSubscriber.IsRunning)
+            {
+                this.mpSubscriber.Run();
+            }
+
             ActGlobals.oFormActMain.OnLogLineRead -= this.OnLogLineRead;
             ActGlobals.oFormActMain.OnLogLineRead += this.OnLogLineRead;
 
@@ -128,12 +140,86 @@ namespace ACT.UltraScouter.Models
             this.syncKeywordToDoT = target != null ?
                 $"18:DoT Tick on {target.Name}" :
                 string.Empty;
+
+            if (Settings.Instance.MPTicker.IsSyncMP &&
+                Settings.Instance.MPTicker.IsUnlockMPSync)
+            {
+                var playerStatus = XIVPluginHelper.Instance.GetPlayerStatus();
+
+                // 標準回復量200 + (PIE - PIE初期値340) / PIE22ごと
+                HealerInCombatMPRecoverValue = 200 + ((playerStatus.Pie - 340) / 22);
+
+                if (this.mpSubscriber != null)
+                {
+                    this.mpSubscriber.Interval = Settings.Instance.MPTicker.DetectMPInterval;
+                }
+            }
+        }
+
+        private volatile uint previousMP = 0;
+
+        private void DetectMP()
+        {
+            var config = Settings.Instance.MPTicker;
+
+            if (!this.isRunnning ||
+                !config.IsSyncMP ||
+                !config.IsUnlockMPSync)
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(DetectIdelInterval));
+                return;
+            }
+
+            if ((DateTime.Now - this.lastSyncTimestamp).TotalSeconds <= config.ResyncInterval)
+            {
+                return;
+            }
+
+            var player = CombatantsManager.Instance.Player;
+
+            if (player.CurrentHP <= 0)
+            {
+                return;
+            }
+
+            var mpDiff = player.CurrentMP - this.previousMP;
+            if (mpDiff <= 0)
+            {
+                return;
+            }
+
+            if (mpDiff == HealerInCombatMPRecoverValue ||
+                StandardMPRecoveryValues.Contains(mpDiff))
+            {
+                this.lastSyncTimestamp = DateTime.Now;
+                this.RestartTickerCallback?.Invoke();
+                this.AppLogger.Trace($"3s ticker synced to MP. diff={mpDiff}");
+            }
+
+            this.previousMP = player.CurrentMP;
         }
 
         private volatile string syncKeywordToHoT = string.Empty;
         private volatile string syncKeywordToDoT = string.Empty;
 
         private volatile bool semaphore = false;
+
+        private static readonly uint[] StandardMPRecoveryValues = new[]
+        {
+            // 戦闘時のMP自然回復量
+            (uint)200,      // 2%
+            (uint)3200,     // 32%  UI1
+            (uint)4700,     // 47%  UI2
+            (uint)6200,     // 62%  UI3
+
+            // 非戦闘時のMP自然回復量
+            (uint)600,      // 6%
+            (uint)3600,     // 36%  UI1
+            (uint)5100,     // 51%  UI2
+            (uint)6600,     // 66%  UI3
+        };
+
+        private static volatile uint HealerInCombatMPRecoverValue;
 
         private void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
         {
