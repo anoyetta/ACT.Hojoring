@@ -1,7 +1,9 @@
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
+using FFXIV.Framework.Common;
 using Prism.Mvvm;
 
 namespace ACT.UltraScouter.Config
@@ -55,6 +57,60 @@ namespace ACT.UltraScouter.Config
         {
             get => this.isSyncDoT;
             set => this.SetProperty(ref this.isSyncDoT, value);
+        }
+
+        private bool isSyncMP;
+
+        /// <summary>
+        /// MPに同期する
+        /// </summary>
+        public bool IsSyncMP
+        {
+            get => this.isSyncMP;
+            set => this.SetProperty(ref this.isSyncMP, value);
+        }
+
+        private bool isUnlockMPSync;
+
+        /// <summary>
+        /// MPへの同期のロックが解除されているか？
+        /// </summary>
+        public bool IsUnlockMPSync
+        {
+            get => this.isUnlockMPSync;
+            set => this.SetProperty(ref this.isUnlockMPSync, value);
+        }
+
+        /// <summary>
+        /// MPSyncを解除するか？
+        /// </summary>
+        /// <remarks>
+        /// この処理の内容を外部に漏らすことを禁止する。
+        /// これによる解除方法が広まっていることが分かった場合MPSync機能は削除されます
+        /// </remarks>
+        public void UpdateUnlockMPSync()
+        {
+            var unlockFile = Path.Combine(
+                PluginCore.Instance.PluginDirectory,
+                "UNLOCK_MPSYNC");
+
+            var exists = File.Exists(unlockFile);
+
+            WPFHelper.InvokeAsync(() =>
+            {
+                this.IsUnlockMPSync = exists;
+            });
+        }
+
+        private int detectMPInterval = 20;
+
+        /// <summary>
+        /// MPの監視間隔
+        /// </summary>
+        public int DetectMPInterval
+        {
+            get => this.detectMPInterval;
+            set => this.SetProperty(ref this.detectMPInterval, value);
         }
 
         private double resyncInterval = 30.0d;

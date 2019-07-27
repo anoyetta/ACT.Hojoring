@@ -86,6 +86,7 @@
   <system:String x:Key="MPTicker_VisibleCounter">Visible counter</system:String>
   <system:String x:Key="MPTicker_SyncHoT">Sync to HoT</system:String>
   <system:String x:Key="MPTicker_SyncDoT">Sync to DoT</system:String>
+  <system:String x:Key="MPTicker_SyncMP">Sync to MP</system:String>
   <system:String x:Key="MPTicker_ResyncInterval">Resync interval (sec)</system:String>
   <system:String x:Key="MPTicker_Bar">Bar</system:String>
   <system:String x:Key="MPTicker_BarStrokeColor">Bar stroke color</system:String>

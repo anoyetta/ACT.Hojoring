@@ -1118,6 +1118,8 @@ namespace FFXIV.Framework.XIVHelper
 
         #region Get Misc
 
+        public Player GetPlayerStatus() => this.DataRepository?.GetPlayer();
+
         public int GetCurrentZoneID() =>
             this.IsAvailable ?
             ((int)this.DataRepository?.GetCurrentTerritoryID()) :

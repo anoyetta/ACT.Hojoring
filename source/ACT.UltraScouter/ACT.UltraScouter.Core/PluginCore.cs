@@ -138,6 +138,7 @@ namespace ACT.UltraScouter
 
                     // 設定ファイルを読み込む
                     Settings.Instance.Load();
+                    Settings.Instance.MPTicker.UpdateUnlockMPSync();
 
                     // HojoringのSplashを表示する
                     WPFHelper.Start();
