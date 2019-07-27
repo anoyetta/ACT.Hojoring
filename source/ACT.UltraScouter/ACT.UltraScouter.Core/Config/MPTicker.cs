@@ -75,6 +75,7 @@ namespace ACT.UltraScouter.Config
         /// <summary>
         /// MPへの同期のロックが解除されているか？
         /// </summary>
+        [XmlIgnore]
         public bool IsUnlockMPSync
         {
             get => this.isUnlockMPSync;
