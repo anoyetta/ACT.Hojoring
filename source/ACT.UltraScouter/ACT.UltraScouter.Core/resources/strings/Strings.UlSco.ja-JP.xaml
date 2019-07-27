@@ -86,6 +86,7 @@
   <system:String x:Key="MPTicker_VisibleCounter">カウンターを表示する</system:String>
   <system:String x:Key="MPTicker_SyncHoT">HoTの周期に同期する</system:String>
   <system:String x:Key="MPTicker_SyncDoT">DoTの周期に同期する</system:String>
+  <system:String x:Key="MPTicker_SyncMP">MPの周期に同期する</system:String>
   <system:String x:Key="MPTicker_ResyncInterval">再同期までの間隔（秒）</system:String>
   <system:String x:Key="MPTicker_Bar">バー</system:String>
   <system:String x:Key="MPTicker_BarStrokeColor">バーのアウトラインのカラー</system:String>
