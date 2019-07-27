@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -519,13 +518,19 @@ namespace ACT.SpecialSpellTimer
 
             this.lastWipeOutDetectDateTime = DateTime.Now;
 
-            var party = default(IEnumerable<CombatantEx>);
-            party = CombatantsManager.Instance.GetPartyList();
+            var player = CombatantsManager.Instance.Player;
+            var party = CombatantsManager.Instance.GetPartyList();
 
             if (party == null ||
                 party.Count() < 1)
             {
-                return;
+                if (player == null ||
+                    player.ID == 0)
+                {
+                    return;
+                }
+
+                party = new[] { player };
             }
 
             // 異常なデータ？
@@ -551,7 +556,6 @@ namespace ACT.SpecialSpellTimer
                 }
             }
 
-            var player = CombatantsManager.Instance.Player;
             if (player != null)
             {
                 switch (player.JobInfo.Role)
