@@ -62,6 +62,11 @@
         IsChecked="{Binding MPTicker.IsSyncDoT, Mode=TwoWay}" />
       <CheckBox
         Margin="0 5 0 0"
+        Content="{DynamicResource MPTicker_SyncMP}"
+        IsChecked="{Binding MPTicker.IsSyncMP, Mode=TwoWay}"
+        Visibility="{Binding MPTicker.IsUnlockMPSync, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+      <CheckBox
+        Margin="0 5 0 0"
         x:Name="TestModeCheckBox"
         Content="{DynamicResource Common_TestMode}"
         IsChecked="{Binding MPTicker.TestMode, Mode=TwoWay}" />
