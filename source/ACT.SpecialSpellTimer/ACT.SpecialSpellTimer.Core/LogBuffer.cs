@@ -471,12 +471,19 @@ namespace ACT.SpecialSpellTimer
             if (party == null ||
                 party.Count() < 1)
             {
-                return result;
+                var player = CombatantsManager.Instance.Player;
+                if (player == null ||
+                    player.ID == 0)
+                {
+                    return false;
+                }
+
+                party = new[] { player };
             }
 
             foreach (var combatant in party)
             {
-                result = logLine.Contains($"19:{combatant.Name} was defeated by");
+                result = logLine.Contains($"19:{combatant.Name} was defeated");
 
                 if (result)
                 {
