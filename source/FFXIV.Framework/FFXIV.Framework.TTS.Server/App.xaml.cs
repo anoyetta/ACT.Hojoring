@@ -43,13 +43,13 @@ namespace FFXIV.Framework.TTS.Server
             CosturaUtility.Initialize();
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
-            // configをロードする
-            var config = Config.Instance;
-            config.StartAutoSave();
-
             this.Startup += this.App_Startup;
             this.Exit += this.App_Exit;
             this.DispatcherUnhandledException += this.App_DispatcherUnhandledException;
+
+            // configをロードする
+            var config = Config.Instance;
+            config.StartAutoSave();
         }
 
         public static void ShowMessageBoxException(
