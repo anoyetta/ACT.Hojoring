@@ -52,7 +52,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="FFXIV_ACT_Plugin.Resource">
-      <HintPath>..\..\..\..\ACT.ProvokeAssistant\source\ThirdPaty\SDK\FFXIV_ACT_Plugin.Resource.dll</HintPath>
+      <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.Resource.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
