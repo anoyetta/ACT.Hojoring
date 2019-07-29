@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Interop;
 using System.Xml;
 using System.Xml.Serialization;
@@ -791,6 +792,22 @@ namespace ACT.SpecialSpellTimer.Config
                     sw.Flush();
                 }
             }
+        }
+
+        private DateTime lastAutoSaveTimestamp = DateTime.MinValue;
+
+        public void StartAutoSave()
+        {
+            this.PropertyChanged += async (_, __) =>
+            {
+                var now = DateTime.Now;
+
+                if ((now - this.lastAutoSaveTimestamp).TotalSeconds > 20)
+                {
+                    this.lastAutoSaveTimestamp = now;
+                    await Task.Run(() => this.Save());
+                }
+            };
         }
 
         /// <summary>
