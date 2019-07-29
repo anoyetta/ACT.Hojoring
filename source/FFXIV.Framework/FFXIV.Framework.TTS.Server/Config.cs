@@ -84,10 +84,12 @@ namespace FFXIV.Framework.TTS.Server
                 }
 
                 buffer.Replace("utf-16", "utf-8");
-                File.WriteAllText(
-                    fileName,
-                    buffer.ToString() + Environment.NewLine,
-                    new UTF8Encoding(false));
+
+                using (var sw = new StreamWriter(fileName, false, new UTF8Encoding(false)))
+                {
+                    sw.Write(buffer.ToString() + Environment.NewLine);
+                    sw.Flush();
+                }
             }
         }
 
