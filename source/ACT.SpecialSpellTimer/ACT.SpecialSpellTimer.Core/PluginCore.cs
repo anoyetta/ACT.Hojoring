@@ -180,6 +180,7 @@ namespace ACT.SpecialSpellTimer
                     // メイン設定ファイルを読み込む
                     Settings.Default.Load();
                     Settings.Default.ApplyRenderMode();
+                    Settings.Default.StartAutoSave();
 
                     // 最小化する？
                     if (Settings.Default.IsMinimizeOnStart)
