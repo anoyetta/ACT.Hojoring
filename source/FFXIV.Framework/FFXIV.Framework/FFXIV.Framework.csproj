@@ -36,9 +36,6 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ACT.Hojoring.Activator">
-      <HintPath>..\..\ThirdParty\ACT.Hojoring.Activator.dll</HintPath>
-    </Reference>
     <Reference Include="Advanced Combat Tracker">
       <HintPath>..\..\ThirdParty\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
@@ -321,6 +318,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ACT.Hojoring.Activator\ACT.Hojoring.Activator.csproj">
+      <Project>{c1bc2d6e-e10d-4a7f-900b-5fd84f39bf0a}</Project>
+      <Name>ACT.Hojoring.Activator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ACT.Hojoring.Common\ACT.Hojoring.Common.csproj">
       <Project>{7e1502b5-db00-4b2e-bdba-19e3379670b3}</Project>
       <Name>ACT.Hojoring.Common</Name>
@@ -359,7 +360,7 @@
       <Version>1.9.0</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.1</Version>
+      <Version>12.0.2</Version>
     </PackageReference>
     <PackageReference Include="NLog.Config">
       <Version>4.5.11</Version>

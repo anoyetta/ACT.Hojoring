@@ -39,9 +39,6 @@
     <ApplicationIcon>ACT.Hojoring.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ACT.Hojoring.Activator">
-      <HintPath>..\..\ThirdParty\ACT.Hojoring.Activator.dll</HintPath>
-    </Reference>
     <Reference Include="Advanced Combat Tracker">
       <HintPath>..\..\ThirdParty\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
@@ -62,6 +59,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ACT.Hojoring.Activator\ACT.Hojoring.Activator.csproj">
+      <Project>{c1bc2d6e-e10d-4a7f-900b-5fd84f39bf0a}</Project>
+      <Name>ACT.Hojoring.Activator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ACT.UltraScouter.Core\ACT.UltraScouter.Core.csproj">
       <Project>{6d17f2c1-f9bd-4c9c-96c9-1a60ad975e4b}</Project>
       <Name>ACT.UltraScouter.Core</Name>
