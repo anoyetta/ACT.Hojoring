@@ -132,6 +132,10 @@ namespace ACT.Hojoring.Activator
                 result = !isMatch;
             }
 
+            var status = result ? "allow" : "deny";
+            Logger.Instance.Write(
+                $"n={name} s={server} g={guild} is {status}.");
+
             return result;
         }
 
