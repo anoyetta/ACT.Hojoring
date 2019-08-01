@@ -48,6 +48,8 @@ namespace ACT.Hojoring.Activator
                 ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls11;
                 ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
+                Account.GetHash("fdsjakljglkjfdsuykyi0-9ir4ui90gfdsut8fdkj:");
+
                 Task.Run(() =>
                 {
                     Thread.Sleep(TimeSpan.FromSeconds(10));

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
@@ -67,14 +68,15 @@ namespace ACT.Hojoring.Activator.Models
 
             try
             {
-                result = System.Activator.CreateInstance(
-                    "ACT.Hojoring.Activator.Encoder",
-                    "ACT.Hojoring.Activator.Encoder.Crypto");
+                var asm = Assembly.Load("ACT.Hojoring.Activator.Encoder");
+                var type = asm.GetType("ACT.Hojoring.Activator.Encoder.Crypto");
+                result = System.Activator.CreateInstance(type);
 
                 Logger.Instance.Write("encoder loaded.");
             }
             catch (Exception)
             {
+                Logger.Instance.Write("encoder nothing.");
                 result = null;
             }
 
