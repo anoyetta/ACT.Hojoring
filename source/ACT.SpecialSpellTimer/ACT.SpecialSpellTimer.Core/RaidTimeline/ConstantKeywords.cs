@@ -322,10 +322,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "-Egi", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "Eos", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "Selene", Category = KewordTypes.Pet },
+            new AnalyzeKeyword() { Keyword = "Seraph", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "Carbuncle", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "Autoturret", Category = KewordTypes.Pet },
+            new AnalyzeKeyword() { Keyword = "Automaton Queen", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "Demi-Bahamut", Category = KewordTypes.Pet },
+            new AnalyzeKeyword() { Keyword = "Demi-Phoenix", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "Earthly Star", Category = KewordTypes.Pet },
+            new AnalyzeKeyword() { Keyword = "Esteem", Category = KewordTypes.Pet },
+            new AnalyzeKeyword() { Keyword = "Bunshin", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "begins casting", Category = KewordTypes.Cast },
             new AnalyzeKeyword() { Keyword = "readies", Category = KewordTypes.Cast },
             new AnalyzeKeyword() { Keyword = "starts using", Category = KewordTypes.Cast },
@@ -351,14 +356,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "00:0139:", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutLog, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutLogEcho, Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "uses", Category = KewordTypes.Action },
+            new AnalyzeKeyword() { Keyword = "uses", Category = KewordTypes.Action },    //not used in E1s and E2s instead of 'casts',considering deleting.
+            new AnalyzeKeyword() { Keyword = "casts", Category = KewordTypes.Action },
         };
 
         private static readonly Dictionary<string, Regex> AnalyzeRegexesEN = new Dictionary<string, Regex>()
         {
             {
                 nameof(ActionRegex),
-                CreateRegex(@"\[.+?\] 00:....:(?<actor>.+?) uses (?<skill>.+?)\.$")
+                CreateRegex(@"\[.+?\] 00:....:(?<actor>.+?) (casts|uses) (?<skill>.+?)\.$")
             },
             {
                 nameof(AddedRegex),
