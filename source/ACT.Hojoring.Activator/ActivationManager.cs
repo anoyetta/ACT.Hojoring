@@ -48,6 +48,8 @@ namespace ACT.Hojoring.Activator
                 ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls11;
                 ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
+                Account.GetHash("fdsjakljglkjfdsuykyi0-9ir4ui90gfdsut8fdkj:");
+
                 Task.Run(() =>
                 {
                     Thread.Sleep(TimeSpan.FromSeconds(10));
@@ -131,6 +133,10 @@ namespace ACT.Hojoring.Activator
                 this.CurrentStatus = isMatch ? ActivationStatus.Deny : ActivationStatus.Allow;
                 result = !isMatch;
             }
+
+            var status = result ? "allow" : "deny";
+            Logger.Instance.Write(
+                $"n={name} s={server} g={guild} is {status}.");
 
             return result;
         }

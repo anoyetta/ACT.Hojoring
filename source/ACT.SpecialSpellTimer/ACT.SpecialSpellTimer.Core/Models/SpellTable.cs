@@ -327,6 +327,8 @@ namespace ACT.SpecialSpellTimer.Models
             this.Save(file, work);
         }
 
+        private static readonly Encoding DefaultEncoding = new UTF8Encoding(false);
+
         public void Save(
             string file,
             List<Spell> list)
@@ -351,11 +353,10 @@ namespace ACT.SpecialSpellTimer.Models
 
                 sb.Replace("utf-16", "utf-8");
 
-                using (var sw = new StreamWriter(file, false, new UTF8Encoding(false)))
-                {
-                    sw.Write(sb.ToString());
-                    sw.Flush();
-                }
+                File.WriteAllText(
+                    file,
+                    sb.ToString() + Environment.NewLine,
+                    DefaultEncoding);
             }
         }
 

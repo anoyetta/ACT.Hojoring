@@ -61,6 +61,8 @@ namespace FFXIV.Framework.TTS.Server
 
         public void Save() => this.Save(FileName);
 
+        private static readonly Encoding DefaultEncoding = new UTF8Encoding(false);
+
         public void Save(
             string fileName)
         {
@@ -85,11 +87,10 @@ namespace FFXIV.Framework.TTS.Server
 
                 buffer.Replace("utf-16", "utf-8");
 
-                using (var sw = new StreamWriter(fileName, false, new UTF8Encoding(false)))
-                {
-                    sw.Write(buffer.ToString() + Environment.NewLine);
-                    sw.Flush();
-                }
+                File.WriteAllText(
+                    fileName,
+                    buffer.ToString() + Environment.NewLine,
+                    DefaultEncoding);
             }
         }
 

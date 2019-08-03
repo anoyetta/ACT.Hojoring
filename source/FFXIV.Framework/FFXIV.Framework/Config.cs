@@ -77,6 +77,8 @@ namespace FFXIV.Framework
             return instance;
         }
 
+        private static readonly Encoding DefaultEncoding = new UTF8Encoding(false);
+
         public static void Save()
         {
             if (instance == null)
@@ -105,11 +107,10 @@ namespace FFXIV.Framework
 
                 sb.Replace("utf-16", "utf-8");
 
-                using (var sw = new StreamWriter(FileName, false, new UTF8Encoding(false)))
-                {
-                    sw.Write(sb.ToString() + Environment.NewLine);
-                    sw.Flush();
-                }
+                File.WriteAllText(
+                    FileName,
+                    sb.ToString() + Environment.NewLine,
+                    DefaultEncoding);
             }
         }
 

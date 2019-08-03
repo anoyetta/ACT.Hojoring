@@ -169,6 +169,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                 this.Log($@"[FFLogs] new rankings ""{encounter.Name}"".");
 
                 var page = 1;
+                var count = 0;
                 var rankings = default(RankingsModel);
 
                 do
@@ -187,6 +188,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                         rankings = JsonConvert.DeserializeObject<RankingsModel>(json);
                         if (rankings != null)
                         {
+                            count += rankings.Count;
                             var targets = rankings.Rankings;
                             targets.AsParallel().ForAll(item =>
                             {
@@ -207,7 +209,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                         {
                             this.InsertRanking(rankingFileName, rankingBuffer);
                             rankingBuffer.Clear();
-                            this.Log($@"[FFLogs] new rankings downloaded. ""{encounter.Name}"" page {page}.");
+                            this.Log($@"[FFLogs] new rankings downloaded. ""{encounter.Name}"" page={page} count={count}.");
                         }
 
                         page++;
@@ -225,7 +227,7 @@ namespace ACT.UltraScouter.Models.FFLogs
 
                 this.InsertRanking(rankingFileName, rankingBuffer);
                 rankingBuffer.Clear();
-                this.Log($@"[FFLogs] new rankings downloaded. ""{encounter.Name}"" page {page}.");
+                this.Log($@"[FFLogs] new rankings downloaded. ""{encounter.Name}"" page={page} count={count}.");
             }
 
             this.Log($@"[FFLogs] new rankings downloaded.");

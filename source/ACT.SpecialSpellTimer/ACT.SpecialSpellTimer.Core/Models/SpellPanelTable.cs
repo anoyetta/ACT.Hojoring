@@ -127,6 +127,8 @@ namespace ACT.SpecialSpellTimer.Models
             }
         }
 
+        private static readonly Encoding DefaultEncoding = new UTF8Encoding(false);
+
         public void Save()
         {
             if (this.table == null ||
@@ -156,11 +158,10 @@ namespace ACT.SpecialSpellTimer.Models
 
                 sb.Replace("utf-16", "utf-8");
 
-                using (var sw = new StreamWriter(this.DefaultFile, false, new UTF8Encoding(false)))
-                {
-                    sw.Write(sb.ToString());
-                    sw.Flush();
-                }
+                File.WriteAllText(
+                    this.DefaultFile,
+                    sb.ToString() + Environment.NewLine,
+                    DefaultEncoding);
             }
         }
 
