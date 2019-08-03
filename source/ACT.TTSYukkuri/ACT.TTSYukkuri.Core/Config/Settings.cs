@@ -443,6 +443,8 @@ namespace ACT.TTSYukkuri.Config
             }
         }
 
+        private static readonly Encoding DefaultEncoding = new UTF8Encoding(false);
+
         /// <summary>
         /// 設定をセーブする
         /// </summary>
@@ -474,11 +476,10 @@ namespace ACT.TTSYukkuri.Config
 
                 buffer.Replace("utf-16", "utf-8");
 
-                using (var sw = new StreamWriter(file, false, new UTF8Encoding(false)))
-                {
-                    sw.Write(buffer.ToString() + Environment.NewLine);
-                    sw.Flush();
-                }
+                File.WriteAllText(
+                    file,
+                    buffer.ToString() + Environment.NewLine,
+                    DefaultEncoding);
             }
         }
     }

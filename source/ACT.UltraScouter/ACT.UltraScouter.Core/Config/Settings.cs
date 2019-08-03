@@ -143,6 +143,8 @@ namespace ACT.UltraScouter.Config
             }
         }
 
+        private static readonly Encoding DefaultEncoding = new UTF8Encoding(false);
+
         /// <summary>
         /// Save
         /// </summary>
@@ -175,11 +177,10 @@ namespace ACT.UltraScouter.Config
 
                 buffer.Replace("utf-16", "utf-8");
 
-                using (var sw = new StreamWriter(this.FileName, false, new UTF8Encoding(false)))
-                {
-                    sw.Write(buffer.ToString() + Environment.NewLine);
-                    sw.Flush();
-                }
+                File.WriteAllText(
+                    this.FileName,
+                    buffer.ToString() + Environment.NewLine,
+                    DefaultEncoding);
             }
         }
 
