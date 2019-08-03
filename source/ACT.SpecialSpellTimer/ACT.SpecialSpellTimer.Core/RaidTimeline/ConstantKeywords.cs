@@ -276,7 +276,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(DialogRegex),
-                CreateRegex(@"00:(0044|0839):(?<dialog>.+?)$")
+                CreateRegex(@"00:(0044|0839):(?<speaker>.+?):(?<dialog>.+?)$")
             },
             {
                 nameof(CombatStartRegex),
@@ -388,7 +388,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(DialogRegex),
-                CreateRegex(@"00:(0044|0839):(?<dialog>.+?)$")
+                CreateRegex(@"00:(0044|0839):(?<speaker>.+?):(?<dialog>.+?)$")
             },
             {
                 nameof(CombatStartRegex),
@@ -493,7 +493,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(DialogRegex),
-                CreateRegex(@"00:(0044|0839):(?<dialog>.+?)$")
+                CreateRegex(@"00:(0044|0839):(?<speaker>.+?):(?<dialog>.+?)$")
             },
             {
                 nameof(CombatStartRegex),
@@ -599,7 +599,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(DialogRegex),
-                CreateRegex(@"00:(0044|0839):(?<dialog>.+?)$")
+                CreateRegex(@"00:(0044|0839):(?<speaker>.+?):(?<dialog>.+?)$")
             },
             {
                 nameof(CombatStartRegex),
