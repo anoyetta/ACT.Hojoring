@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -10,13 +11,17 @@ namespace FFXIV.Framework.Common
         public static string FindSubDirectory(
             string subDirectoryName)
         {
-            var parentDirs = new string[]
+            var basePathes = new string[]
             {
-                Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+                Assembly.GetEntryAssembly()?.Location,
+                Assembly.GetExecutingAssembly()?.Location
             };
 
-            foreach (var parentDir in parentDirs)
+            var dirs = basePathes
+                .Where(x => !string.IsNullOrEmpty(x))
+                .Select(x => Path.GetDirectoryName(x));
+
+            foreach (var parentDir in dirs)
             {
                 var dir = Path.Combine(parentDir, subDirectoryName);
                 if (Directory.Exists(dir))

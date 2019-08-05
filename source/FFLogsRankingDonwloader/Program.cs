@@ -33,12 +33,13 @@ namespace FFLogsRankingDonwloader
             var fileName = args[1];
             var isOnlyHistogram = args.Length >= 3 ? bool.Parse(args[2]) : false;
             var targetZoneID = args.Length >= 4 ? int.Parse(args[3]) : 0;
+            var difficulty = args.Length >= 5 ? args[4] : string.Empty;
 
             StatisticsDatabase.Instance.APIKey = apiKey;
 
             if (!isOnlyHistogram)
             {
-                StatisticsDatabase.Instance.CreateAsync(fileName, targetZoneID).Wait();
+                StatisticsDatabase.Instance.CreateAsync(fileName, targetZoneID, difficulty).Wait();
                 Console.WriteLine($"[FFLogs] rankings downloaded.");
             }
 
