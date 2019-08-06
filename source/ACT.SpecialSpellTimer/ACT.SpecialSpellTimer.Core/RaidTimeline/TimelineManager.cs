@@ -223,6 +223,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     if (tl != null)
                     {
                         list.Add(tl);
+
+                        if (!TimelineSettings.Instance.TimelineFiles.Any(x => x.Key == file))
+                        {
+                            TimelineSettings.Instance.TimelineFiles.Add(new KeyValue<string, bool>()
+                            {
+                                Key = file,
+                                Value = true,
+                            });
+                        }
                     }
                 }
                 catch (Exception ex)

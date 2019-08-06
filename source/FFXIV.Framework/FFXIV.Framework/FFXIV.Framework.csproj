@@ -91,6 +91,7 @@
     <Compile Include="Common\EnvironmentMigrater.cs" />
     <Compile Include="Common\EqualityComparer.cs" />
     <Compile Include="Common\JobIconDictionary.cs" />
+    <Compile Include="Common\KeyValue.cs" />
     <Compile Include="Common\MasterFilePublisher.cs" />
     <Compile Include="Common\CommonSounds.cs" />
     <Compile Include="Common\WrappingStream.cs" />

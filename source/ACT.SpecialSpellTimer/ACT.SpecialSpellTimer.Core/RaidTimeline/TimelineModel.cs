@@ -174,6 +174,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         [XmlIgnore]
+        public bool IsEnabled
+        {
+            get => TimelineSettings.Instance.TimelineFiles
+                .FirstOrDefault(x => x.Key == this.SourceFile)?
+                .Value ?? true;
+            set
+            {
+                var settings = TimelineSettings.Instance.TimelineFiles
+                    .FirstOrDefault(x => x.Key == this.SourceFile);
+
+                if (settings != null &&
+                    settings.Value != value)
+                {
+                    settings.Value = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        [XmlIgnore]
         public bool IsExistsAuthor => !string.IsNullOrEmpty(this.Author);
 
         [XmlIgnore]

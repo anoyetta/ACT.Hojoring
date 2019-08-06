@@ -461,6 +461,20 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.ignoreLogTypes, value?.ToList());
         }
 
+        private List<KeyValue<string, bool>> timelineFiles = new List<KeyValue<string, bool>>(64);
+
+        [XmlArray("TimelineFiles")]
+        [XmlArrayItem("File")]
+        public List<KeyValue<string, bool>> TimelineFiles
+        {
+            get => this.timelineFiles;
+            set
+            {
+                this.timelineFiles.Clear();
+                this.timelineFiles.AddRange(value);
+            }
+        }
+
         #endregion Data
 
         #region Methods
