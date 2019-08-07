@@ -161,18 +161,7 @@ namespace FFXIV.Framework.Common
 
             if (!isStarted)
             {
-                ActivationManager.Instance.ActivationDeniedCallback += () =>
-                {
-                    AppLog.DefaultLogger.Fatal(ActivationDenyMessage);
-
-                    WPFHelper.Invoke(() =>
-                    {
-                        foreach (var callback in ActivationDeniedCallbackList)
-                        {
-                            callback.Invoke();
-                        }
-                    });
-                };
+                ActivationManager.Instance.ActivationDeniedCallback = OnActivationDenied;
             }
 
             isStarted = true;
@@ -185,6 +174,39 @@ namespace FFXIV.Framework.Common
             string name,
             string server,
             string guild)
-            => ActivationManager.Instance.TryActivation(name, server, guild);
+        {
+            if (ActivationManager.Instance.ActivationDeniedCallback == null)
+            {
+                ActivationManager.Instance.ActivationDeniedCallback = OnActivationDenied;
+            }
+            else
+            {
+                var info1 = typeof(EnvironmentHelper).GetMethod(
+                    nameof(OnActivationDenied),
+                    BindingFlags.NonPublic | BindingFlags.Static);
+
+                var info2 = ActivationManager.Instance.ActivationDeniedCallback.Method;
+
+                if (info1 != info2)
+                {
+                    ActivationManager.Instance.ActivationDeniedCallback = OnActivationDenied;
+                }
+            }
+
+            return ActivationManager.Instance.TryActivation(name, server, guild);
+        }
+
+        private static void OnActivationDenied()
+        {
+            AppLog.DefaultLogger.Fatal(ActivationDenyMessage);
+
+            WPFHelper.Invoke(() =>
+            {
+                foreach (var callback in ActivationDeniedCallbackList)
+                {
+                    callback.Invoke();
+                }
+            });
+        }
     }
 }

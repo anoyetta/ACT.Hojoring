@@ -67,7 +67,8 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         public async Task CreateAsync(
             string rankingFileName,
-            int targetZoneID = 0)
+            int targetZoneID = 0,
+            string difficulty = null)
         {
             if (string.IsNullOrEmpty(this.APIKey))
             {
@@ -78,7 +79,7 @@ namespace ACT.UltraScouter.Models.FFLogs
             {
                 await this.LoadZonesAsync();
                 await this.LoadClassesAsync();
-                await this.CreateRankingsAsync(rankingFileName, targetZoneID);
+                await this.CreateRankingsAsync(rankingFileName, targetZoneID, difficulty);
             }
             catch (Exception ex)
             {
@@ -143,7 +144,8 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         public async Task CreateRankingsAsync(
             string rankingFileName,
-            int targetZoneID = 0)
+            int targetZoneID = 0,
+            string difficulty = null)
         {
             this.InitializeRankingsDatabase(rankingFileName);
 
@@ -177,6 +179,12 @@ namespace ACT.UltraScouter.Models.FFLogs
                     var uri = $"rankings/encounter/{encounter.ID}";
                     var query = HttpUtility.ParseQueryString(string.Empty);
                     query["api_key"] = this.APIKey;
+
+                    if (!string.IsNullOrEmpty(difficulty))
+                    {
+                        query["difficulty"] = difficulty;
+                    }
+
                     query["page"] = page.ToString();
                     uri += $"?{query.ToString()}";
 
