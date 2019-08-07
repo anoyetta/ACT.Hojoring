@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Hjson;
 using Newtonsoft.Json;
 
 namespace ACT.Hojoring.Activator.Models
 {
-    internal class AccountList
+    public class AccountList
     {
         #region Lazy Singleton
 
@@ -31,7 +30,7 @@ namespace ACT.Hojoring.Activator.Models
             var data = default(Account[]);
 
             data = JsonConvert.DeserializeObject(
-                HjsonValue.Parse(json).ToString(),
+                json,
                 typeof(Account[]),
                 new JsonSerializerSettings()
                 {
@@ -76,6 +75,6 @@ namespace ACT.Hojoring.Activator.Models
                 new UTF8Encoding(false));
         }
 
-        internal Account[] CurrentList { get; set; }
+        internal Account[] CurrentList { get; private set; }
     }
 }

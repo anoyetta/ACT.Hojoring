@@ -28,6 +28,7 @@
   TextOptions.TextHintingMode="Animated"
   TextOptions.TextRenderingMode="ClearType"
   d:DesignHeight="600"
+  d:DesignWidth="1200"
   IsTabStop="False"
   Focusable="False"
   mc:Ignorable="d">
@@ -64,453 +65,493 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <Grid>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="Auto" MinWidth="650" />
-      <ColumnDefinition />
-    </Grid.ColumnDefinitions>
+  <TabControl>
+    <TabItem Header="Templates">
+      <!-- 左ペイン -->
+      <Border
+        Margin="3 3 0 3"
+        BorderThickness="2"
+        CornerRadius="2"
+        BorderBrush="Green">
 
-    <!-- 左ペイン -->
-    <Border
-      Grid.Column="0"
-      Margin="3 3 0 3"
-      BorderThickness="2"
-      CornerRadius="2"
-      BorderBrush="Green">
+        <Grid Margin="5">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
 
-      <Grid Margin="5">
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
-          <RowDefinition />
-          <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+          <StackPanel Grid.Row="0">
+            <CheckBox
+              Margin="0 10 0 0"
+              Content="{DynamicResource Timeline_Enable}"
+              IsChecked="{Binding Path=TimelineConfig.Enabled, Mode=TwoWay}"
+              FontWeight="Black"
+              HorizontalAlignment="Left"
+              Command="{Binding EnabledTimelineCommand, Mode=OneWay}"
+              CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}"
+              Focusable="False" />
 
-        <StackPanel Grid.Row="0">
-          <CheckBox Margin="0 10 0 0" Content="{DynamicResource Timeline_Enable}" IsChecked="{Binding Path=TimelineConfig.Enabled, Mode=TwoWay}" FontWeight="Black" HorizontalAlignment="Left" Command="{Binding EnabledTimelineCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
-
-          <StackPanel Margin="0 20 0 0">
-            <Label Content="{DynamicResource Timeline_Folder}" />
-            <TextBox Margin="0 5 10 0" BorderThickness="0" IsReadOnly="True" Text="{Binding Path=TimelineDirectory, Mode=OneWay}" FontSize="15" HorizontalAlignment="Left" MaxWidth="460" TextWrapping="WrapWithOverflow" />
-            <Grid Margin="0 5 0 0">
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="Auto" />
-              </Grid.ColumnDefinitions>
-              <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <Button Content="Open" Command="{Binding OpenTimelineFolderCommand, Mode=OneWay}" />
-                <Button Margin="10 0 0 0" Content="Reload" Command="{Binding ReloadTimelineFolderCommand, Mode=OneWay}" />
-              </StackPanel>
-              <Button
-                Grid.Column="1"
-                VerticalAlignment="Center"
-                FontSize="13"
-                Margin="0 0 5 0"
-                Padding="3"
-                Content="Get more samples"
-                Command="{Binding GetMoreSampleCommand, Mode=OneWay}" />
-            </Grid>
-          </StackPanel>
-        </StackPanel>
-
-        <ListView
-          x:Name="TimelineList"
-          Grid.Row="1"
-          Margin="0 15 0 15"
-          BorderThickness="0"
-          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-          ScrollViewer.VerticalScrollBarVisibility="Auto"
-          ItemsSource="{Binding Path=TimelineModels, Mode=OneWay}"
-          Focusable="False">
-
-          <ListView.ItemContainerStyle>
-            <Style TargetType="ListViewItem">
-              <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            </Style>
-          </ListView.ItemContainerStyle>
-
-          <ListView.ItemTemplate>
-            <DataTemplate>
-              <Grid Margin="0 5 3 5">
+            <StackPanel Margin="0 20 0 0">
+              <Label Content="{DynamicResource Timeline_Folder}" />
+              <TextBox Margin="0 5 10 0" BorderThickness="0" IsReadOnly="True" Text="{Binding Path=TimelineDirectory, Mode=OneWay}" FontSize="15" HorizontalAlignment="Left" MaxWidth="460" TextWrapping="WrapWithOverflow" />
+              <Grid Margin="0 5 0 0">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition />
                   <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-
-                <CheckBox
-                  Grid.Column="0"
-                  Margin="0 0 0 0"
-                  IsChecked="{Binding Path=IsActive, Mode=TwoWay}"
-                  Command="{Binding Path=ChangeActiveCommand, Mode=OneWay}"
-                  CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}"
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                  <Button Content="Open" Command="{Binding OpenTimelineFolderCommand, Mode=OneWay}" />
+                  <Button Margin="10 0 0 0" Content="Reload" Command="{Binding ReloadTimelineFolderCommand, Mode=OneWay}" />
+                </StackPanel>
+                <Button
+                  Grid.Column="1"
                   VerticalAlignment="Center"
-                  IsTabStop="False"
-                  Focusable="False">
-                  <CheckBox.Resources>
-                    <Style TargetType="ToolTip">
-                      <Setter Property="Background" Value="Transparent" />
-                      <Setter Property="BorderBrush" Value="Transparent" />
-                      <Setter Property="BorderThickness" Value="0" />
-                      <Setter Property="Padding" Value="0" />
-                    </Style>
-                  </CheckBox.Resources>
-                  <CheckBox.ToolTip>
-                    <Border
-                      CornerRadius="6"
-                      Margin="0"
-                      Padding="12 8"
-                      BorderThickness="0"
-                      Background="#fbfaf5">
-                      <TextBlock
-                        FontFamily="{DynamicResource UIFont}"
-                        FontSize="{DynamicResource UIFontSize}"
-                        Foreground="#2e2930"
-                        Text="{Binding DescriptionForDisplay, Mode=OneWay}" />
-                    </Border>
-                  </CheckBox.ToolTip>
-
-                  <StackPanel Margin="5 0 0 0" MaxWidth="400">
-                    <StackPanel.Resources>
-                      <SolidColorBrush x:Key="DetailsTextColor" Color="#383c3c" />
-                    </StackPanel.Resources>
-                    <StackPanel Orientation="Horizontal">
-                      <TextBlock Text="{Binding Path=Name, Mode=OneWay}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" MaxWidth="330" TextWrapping="WrapWithOverflow" />
-                      <TextBlock Margin="15 0 0 0" Text="{Binding Path=Revision, Mode=OneWay}" FontSize="14" VerticalAlignment="Center" />
-                    </StackPanel>
-
-                    <TextBlock Margin="10 5 0 0" Text="{Binding Path=Zone, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" />
-                    <TextBlock Margin="10 1 0 0" Text="{Binding Path=LocaleText, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" />
-                    <TextBlock Margin="10 1 0 3" Text="{Binding Path=SourceFileName, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" />
-                    <TextBlock Margin="10 1 0 0" Text="{Binding Path=AuthorForDisplay, Mode=OneWay}" FontSize="11" Foreground="{DynamicResource DetailsTextColor}" Visibility="{Binding Path=IsExistsAuthor, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" />
-                    <TextBlock Margin="10 1 0 0" Text="{Binding Path=LicenseForDisplay, Mode=OneWay}" FontSize="11" Foreground="{DynamicResource DetailsTextColor}" Visibility="{Binding Path=IsExistsLicense, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" />
-                  </StackPanel>
-                </CheckBox>
-
-                <Grid
-                  Grid.Column="1"
-                  VerticalAlignment="Bottom"
-                  Margin="0 0 0 0">
-
-                  <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition Height="Auto" />
-                  </Grid.RowDefinitions>
-
-                  <Label
-                    Grid.Row="0"
-                    Margin="0 0 0 15"
-                    Content="{Binding Path=Controller.StatusText, Mode=OneWay}"
-                    FontSize="16"
-                    FontStyle="Italic"
-                    FontWeight="Bold"
-                    Foreground="DarkOrchid" />
-
-                  <StackPanel Grid.Row="1" Orientation="Horizontal">
-                    <Button Padding="3 0 3 0" Content="Edit" FontSize="16" Command="{Binding EditCommand, Mode=OneWay}" />
-                    <Button Padding="3 0 3 0" Margin="10 0 0 0" Content="Reload" FontSize="16" Command="{Binding ReloadCommand, Mode=OneWay}" />
-                    <Button Padding="3 0 3 0" Margin="10 0 0 0" Content="debug" FontSize="13" Command="{Binding ShowCommand, Mode=OneWay}" ToolTip="{DynamicResource Timeline_ShowCompiledText}" Foreground="#FF17184b" VerticalAlignment="Center" />
-                  </StackPanel>
-                </Grid>
+                  FontSize="13"
+                  Margin="0 0 5 0"
+                  Padding="3"
+                  Content="Get more samples"
+                  Command="{Binding GetMoreSampleCommand, Mode=OneWay}" />
               </Grid>
-            </DataTemplate>
-          </ListView.ItemTemplate>
-        </ListView>
-
-        <StackPanel Grid.Row="2">
-          <Button
-            HorizontalAlignment="Left"
-            Padding="5 0 5 0"
-            Content="{Binding Path=StartButtonLabel, Mode=OneWay}"
-            Command="{Binding StartTimelineCommand, Mode=OneWay}"
-            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Mode=OneWay}"
-            FontWeight="Bold"
-            FontSize="18" />
-          <Button
-            HorizontalAlignment="Left"
-            Margin="0 10 0 0"
-            Padding="5 0 5 0"
-            Content="{DynamicResource Timeline_TestTimeline}"
-            Command="{Binding TestTimelineCommand, Mode=OneWay}" />
-        </StackPanel>
-      </Grid>
-    </Border>
-    <!-- 左ペイン end -->
-
-    <!-- 右ペイン -->
-    <Border
-      Grid.Column="1"
-      Margin="3 3 3 3"
-      BorderThickness="2"
-      CornerRadius="2"
-      BorderBrush="Gold">
-
-      <Grid Margin="5">
-        <TextBlock Grid.Row="0" Margin="0 10 0 0" Text="{DynamicResource Timeline_Visual}" FontWeight="Black" />
-
-        <StackPanel Margin="0 40 0 0" Orientation="Horizontal">
-          <StackPanel>
-            <CheckBox Margin="0 0 0 0" Content="{DynamicResource Timeline_OverlayVisible}" IsChecked="{Binding Path=TimelineConfig.OverlayVisible, Mode=TwoWay}" Command="{Binding ShowOverlayCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
-            <CheckBox Margin="0 5 0 0" Content="{DynamicResource Tree_Clickthrough}" IsChecked="{Binding Path=TimelineConfig.Clickthrough, Mode=TwoWay}" Command="{Binding ClickthroughCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
+            </StackPanel>
           </StackPanel>
 
-          <StackPanel Margin="50 0 0 0">
-            <CheckBox Margin="0 0 0 0" Content="{DynamicResource Timeline_ShowDummyTimeline}" IsChecked="{Binding Path=TimelineConfig.DesignMode, Mode=TwoWay}" Foreground="Green" FontWeight="Bold" Command="{Binding ShowDummyOverlayCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
-            <CheckBox Margin="0 5 0 0" Content="{DynamicResource Timeline_HideINoticeDummy}" IsChecked="{Binding Path=TimelineConfig.HideDesignINotice, Mode=TwoWay}" Foreground="Green" FontSize="15" Command="{Binding HideDummyOverlayCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
-          </StackPanel>
-        </StackPanel>
+          <ItemsControl
+            x:Name="TimelineList"
+            Grid.Row="1"
+            Margin="3 15 3 15"
+            BorderThickness="0"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            ItemsSource="{Binding Path=TimelineModels, Mode=OneWay}"
+            Focusable="False">
 
-        <TabControl Margin="0 98 0 0">
-          <TabItem Header="General" Padding="20 2 20 2">
-            <!-- 見た目の左側 -->
-            <ScrollViewer
-              Margin="10 10 0 0"
-              Padding="0 0 40 0"
-              VerticalScrollBarVisibility="Auto"
-              HorizontalScrollBarVisibility="Disabled"
-              Focusable="False">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
 
-              <StackPanel>
-                <StackPanel Orientation="Horizontal">
-                  <StackPanel Orientation="Vertical">
-                    <Label Margin="0 0 0 0" Content="{DynamicResource Timeline_Location}" />
-                    <StackPanel Orientation="Horizontal" Margin="0 5 0 0" HorizontalAlignment="Left">
-                      <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
-                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.Left, Mode=TwoWay}" Width="80" />
-                      <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
-                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.Top, Mode=TwoWay}" Width="80" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0 5 0 0" HorizontalAlignment="Left">
-                      <Label Margin="0 0 5 0" Content="W" VerticalAlignment="Center" />
-                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.Width, Mode=TwoWay}" Width="80" />
-                      <Label Margin="10 0 5 0" Content="H" VerticalAlignment="Center" />
-                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.Height, Mode=TwoWay}" Width="80" />
-                    </StackPanel>
-                  </StackPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Grid Width="420" HorizontalAlignment="Left" Margin="0 0 5 5">
+                  <Border>
+                    <Border.Style>
+                      <Style TargetType="Border">
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding IsEnabled, Mode=OneWay}" Value="True">
+                            <Setter Property="Background" Value="#bce2e8" />
+                          </DataTrigger>
+                          <DataTrigger Binding="{Binding IsEnabled, Mode=OneWay}" Value="False">
+                            <Setter Property="Background" Value="#afafb0" />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </Border.Style>
+                  </Border>
 
-                  <StackPanel Orientation="Vertical" Margin="45 0 0 0">
-                    <Label Margin="0 0 0 0" Content="{DynamicResource Timeline_LocationNotice}" />
-                    <StackPanel Orientation="Horizontal" Margin="0 5 0 0" HorizontalAlignment="Left">
-                      <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
-                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NoticeLeft, Mode=TwoWay}" Width="80" />
-                      <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
-                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NoticeTop, Mode=TwoWay}" Width="80" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0 5 0 0" HorizontalAlignment="Left">
-                      <Label Margin="0 0 5 0" Content="W" VerticalAlignment="Center" />
-                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NoticeWidth, Mode=TwoWay}" Width="80" />
-                      <Label Margin="10 0 5 0" Content="H" VerticalAlignment="Center" />
-                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NoticeHeight, Mode=TwoWay}" Width="80" />
-                    </StackPanel>
-                  </StackPanel>
-                </StackPanel>
+                  <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                <!-- 背景 -->
-                <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_OverlayBackground}" />
-                <TextBox Text="{Binding Path=TimelineConfig.OverlayBackgroundString, Mode=TwoWay}" Width="500" HorizontalAlignment="Left" VerticalContentAlignment="Center" Padding="3" ToolTip="画像ファイルを指定すると背景に画像を使用できます。パスはフルパスを指定してください。" />
+                    <CheckBox
+                      Grid.Column="0"
+                      Margin="0 0 0 0"
+                      IsChecked="{Binding Path=IsActive, Mode=TwoWay}"
+                      Command="{Binding Path=ChangeActiveCommand, Mode=OneWay}"
+                      CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}"
+                      VerticalAlignment="Center"
+                      IsTabStop="False"
+                      Focusable="False">
+                      <CheckBox.Resources>
+                        <Style TargetType="ToolTip">
+                          <Setter Property="Background" Value="Transparent" />
+                          <Setter Property="BorderBrush" Value="Transparent" />
+                          <Setter Property="BorderThickness" Value="0" />
+                          <Setter Property="Padding" Value="0" />
+                        </Style>
+                      </CheckBox.Resources>
 
-                <StackPanel Orientation="Horizontal">
-                  <StackPanel>
-                    <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_Opacity}" />
-                    <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.OverlayOpacity, Mode=TwoWay}" FormatString="N2" Increment="0.01" Width="80" HorizontalAlignment="Left" />
+                      <CheckBox.ToolTip>
+                        <Border
+                          CornerRadius="6"
+                          Margin="0"
+                          Padding="12 8"
+                          BorderThickness="0"
+                          Background="#fbfaf5">
+                          <TextBlock
+                            FontFamily="{DynamicResource UIFont}"
+                            FontSize="{DynamicResource UIFontSize}"
+                            Foreground="#2e2930"
+                            Text="{Binding DescriptionForDisplay, Mode=OneWay}" />
+                        </Border>
+                      </CheckBox.ToolTip>
 
-                    <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_OverlayScale}" />
-                    <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.OverlayScale, Mode=TwoWay}" FormatString="N2" Increment="0.01" Width="80" HorizontalAlignment="Left" />
+                      <StackPanel Margin="5 0 0 0" MaxWidth="400">
+                        <StackPanel.Resources>
+                          <SolidColorBrush x:Key="DetailsTextColor" Color="#383c3c" />
+                        </StackPanel.Resources>
+                        <StackPanel Orientation="Horizontal">
+                          <TextBlock Text="{Binding Path=Name, Mode=OneWay}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" MaxWidth="330" TextWrapping="WrapWithOverflow" />
+                          <TextBlock Margin="15 0 0 0" Text="{Binding Path=Revision, Mode=OneWay}" FontSize="14" VerticalAlignment="Center" />
+                        </StackPanel>
 
-                    <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_ShowActivitiesCount}" />
-                    <xctk:IntegerUpDown Value="{Binding Path=TimelineConfig.ShowActivitiesCount, Mode=TwoWay}" FormatString="N0" Increment="1" Width="80" HorizontalAlignment="Left" ValueChanged="TopActivityStyle_ValueChanged" />
-
-                    <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_NearestActivityScale}" />
-                    <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NearestActivityScale, Mode=TwoWay}" FormatString="N2" Increment="0.01" Width="80" HorizontalAlignment="Left" ValueChanged="TopActivityStyle_ValueChanged" />
-
-                    <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_NextActivityBrightness}" />
-                    <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NextActivityBrightness, Mode=TwoWay}" FormatString="N2" Increment="0.01" Width="80" HorizontalAlignment="Left" ValueChanged="TopActivityStyle_ValueChanged" />
-
-                    <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_ActivityMargin}" />
-                    <TextBox Text="{Binding Path=TimelineConfig.ActivityMarginString, Mode=TwoWay}" Width="120" HorizontalAlignment="Left" VerticalContentAlignment="Center" Padding="3" />
-                  </StackPanel>
-
-                  <StackPanel Margin="40 0 0 0">
-                    <!-- ヘッダ -->
-                    <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_Header}" FontWeight="Bold" />
-                    <StackPanel Margin="0 0 0 0">
-                      <CheckBox Margin="0 8 0 0" Content="{DynamicResource Timeline_ShowHeader}" IsChecked="{Binding Path=TimelineConfig.IndicatorVisible, Mode=TwoWay}" />
-
-                      <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_HeaderStyle}" />
-                      <ComboBox
-                        ItemsSource="{Binding Path=TimelineConfig.Styles, Mode=OneWay}"
-                        HorizontalAlignment="Left"
-                        Width="200"
-                        SelectedValuePath="Name"
-                        DisplayMemberPath="Name"
-                        SelectedValue="{Binding Path=TimelineConfig.IndicatorStyle, Mode=TwoWay}" />
-                    </StackPanel>
-                  </StackPanel>
-                </StackPanel>
-              </StackPanel>
-            </ScrollViewer>
-            <!-- 見た目の左側 end -->
-          </TabItem>
-
-          <TabItem Header="Styles" Padding="20 2 20 2">
-            <!-- 見た目の右側 -->
-            <Grid Margin="10 10 0 5">
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
-                <RowDefinition Height="Auto" />
-              </Grid.RowDefinitions>
-
-              <Label Grid.Row="0" Margin="0 0 0 0" Content="{DynamicResource Timeline_Styles}" VerticalAlignment="Top" />
-
-              <Grid Grid.Row="1" Margin="0 10 0 0">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto" />
-                  <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-
-                <!-- Styleリスト -->
-                <ListView
-                  x:Name="StyleListView"
-                  Grid.Column="0"
-                  MinWidth="250"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  ItemsSource="{Binding Path=TimelineConfig.Styles, Mode=OneWay}">
-
-                  <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                  </ListView.ItemContainerStyle>
-
-                  <ListView.ItemTemplate>
-                    <DataTemplate>
-                      <StackPanel Orientation="Horizontal" Margin="0 0 23 0">
-                        <TextBlock Text="✔" FontWeight="Bold" Visibility="{Binding Path=IsDefault, Mode=OneWay, Converter={StaticResource HiddenConverter}}" Foreground="DarkGreen" />
-                        <TextBlock Text="✔" FontWeight="Bold" Visibility="{Binding Path=IsDefaultNotice, Mode=OneWay, Converter={StaticResource HiddenConverter}}" Foreground="MediumBlue" />
-                        <TextBlock Margin="5 0 0 0" Text="{Binding Path=Name, Mode=OneWay}" />
+                        <TextBlock Margin="10 5 0 0" Text="{Binding Path=Zone, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" />
+                        <TextBlock Margin="10 1 0 0" Text="{Binding Path=LocaleText, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" />
+                        <TextBlock Margin="10 1 0 3" Text="{Binding Path=SourceFileName, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" />
+                        <TextBlock Margin="10 1 0 0" Text="{Binding Path=AuthorForDisplay, Mode=OneWay}" FontSize="11" Foreground="{DynamicResource DetailsTextColor}" Visibility="{Binding Path=IsExistsAuthor, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" />
+                        <TextBlock Margin="10 1 0 0" Text="{Binding Path=LicenseForDisplay, Mode=OneWay}" FontSize="11" Foreground="{DynamicResource DetailsTextColor}" Visibility="{Binding Path=IsExistsLicense, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" />
                       </StackPanel>
-                    </DataTemplate>
-                  </ListView.ItemTemplate>
-                </ListView>
-                <!-- Styleリスト end -->
+                    </CheckBox>
 
-                <!-- Style詳細 -->
-                <StackPanel
-                  Grid.Column="1"
-                  Margin="10 0 10 0"
-                  HorizontalAlignment="Left"
-                  MinWidth="350"
-                  DataContext="{Binding ElementName=StyleListView, Path=SelectedItem, Mode=OneWay}">
+                    <Grid
+                      Grid.Column="1"
+                      Margin="0 0 5 0">
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
 
-                  <Label Margin="0 0 0 0" Content="{DynamicResource Timeline_StyleName}" />
-                  <TextBox Text="{Binding Name, Mode=TwoWay}" />
+                      <CheckBox
+                        Grid.Row="0"
+                        Margin="0 3 0 0"
+                        FlowDirection="RightToLeft"
+                        HorizontalAlignment="Right"
+                        Content="disabled"
+                        Foreground="#FF17184b"
+                        FontSize="13"
+                        IsChecked="{Binding IsDisabled, Mode=TwoWay}"
+                        Focusable="False">
+                        <CheckBox.Resources>
+                          <Style TargetType="{x:Type Path}">
+                            <Setter Property="FlowDirection" Value="LeftToRight" />
+                          </Style>
+                        </CheckBox.Resources>
+                      </CheckBox>
 
-                  <CheckBox Margin="0 5 0 0" Content="Default" IsChecked="{Binding Path=IsDefault, Mode=TwoWay}" Command="{Binding ChangeDefaultCommand, Mode=OneWay}" CommandParameter="{Binding}" />
-                  <CheckBox Margin="0 5 0 0" Content="Default (Notice)" IsChecked="{Binding Path=IsDefaultNotice, Mode=TwoWay}" Command="{Binding ChangeDefaultVisualCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                      <Label
+                        Grid.Row="1"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Right"
+                        Margin="0 0 0 5"
+                        Content="{Binding Path=Controller.StatusText, Mode=OneWay}"
+                        FontSize="15"
+                        FontStyle="Italic"
+                        FontWeight="Bold"
+                        Foreground="DarkOrchid" />
 
-                  <!-- フォント -->
-                  <Label Margin="0 15 0 0" Content="{DynamicResource Common_Font}" FontWeight="Bold" />
-                  <StackPanel Margin="10 0 0 0">
-                    <TextBlock Margin="0 0 0 0" HorizontalAlignment="Left">
+                      <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <Button Padding="0 0 0 0" Content="Edit" FontSize="14" Command="{Binding EditCommand, Mode=OneWay}" />
+                        <Button Padding="0 0 0 0" Margin="8 0 0 0" Content="Reload" FontSize="14" Command="{Binding ReloadCommand, Mode=OneWay}" />
+                        <Button Padding="0 0 0 0" Margin="8 0 0 0" Content="debug" FontSize="13" Command="{Binding ShowCommand, Mode=OneWay}" ToolTip="{DynamicResource Timeline_ShowCompiledText}" Foreground="#FF17184b" VerticalAlignment="Center" />
+                      </StackPanel>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+
+          <StackPanel Grid.Row="2">
+            <Button
+              HorizontalAlignment="Left"
+              Padding="5 0 5 0"
+              Content="{Binding Path=StartButtonLabel, Mode=OneWay}"
+              Command="{Binding StartTimelineCommand, Mode=OneWay}"
+              CommandParameter="{Binding RelativeSource={RelativeSource Self}, Mode=OneWay}"
+              FontWeight="Bold"
+              FontSize="18" />
+            <Button
+              HorizontalAlignment="Left"
+              Margin="0 10 0 0"
+              Padding="5 0 5 0"
+              Content="{DynamicResource Timeline_TestTimeline}"
+              Command="{Binding TestTimelineCommand, Mode=OneWay}" />
+          </StackPanel>
+        </Grid>
+      </Border>
+      <!-- 左ペイン end -->
+    </TabItem>
+
+    <TabItem Header="Settings">
+      <!-- 右ペイン -->
+      <Border
+        Margin="3 3 3 3"
+        BorderThickness="2"
+        CornerRadius="2"
+        BorderBrush="Gold">
+
+        <Grid Margin="5">
+          <TextBlock Grid.Row="0" Margin="0 10 0 0" Text="{DynamicResource Timeline_Visual}" FontWeight="Black" />
+
+          <StackPanel Margin="0 40 0 0" Orientation="Horizontal">
+            <StackPanel>
+              <CheckBox Margin="0 0 0 0" Content="{DynamicResource Timeline_OverlayVisible}" IsChecked="{Binding Path=TimelineConfig.OverlayVisible, Mode=TwoWay}" Command="{Binding ShowOverlayCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
+              <CheckBox Margin="0 5 0 0" Content="{DynamicResource Tree_Clickthrough}" IsChecked="{Binding Path=TimelineConfig.Clickthrough, Mode=TwoWay}" Command="{Binding ClickthroughCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
+            </StackPanel>
+
+            <StackPanel Margin="50 0 0 0">
+              <CheckBox Margin="0 0 0 0" Content="{DynamicResource Timeline_ShowDummyTimeline}" IsChecked="{Binding Path=TimelineConfig.DesignMode, Mode=TwoWay}" Foreground="Green" FontWeight="Bold" Command="{Binding ShowDummyOverlayCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
+              <CheckBox Margin="0 5 0 0" Content="{DynamicResource Timeline_HideINoticeDummy}" IsChecked="{Binding Path=TimelineConfig.HideDesignINotice, Mode=TwoWay}" Foreground="Green" FontSize="15" Command="{Binding HideDummyOverlayCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}" />
+            </StackPanel>
+          </StackPanel>
+
+          <TabControl Margin="0 98 0 0">
+            <TabItem Header="General" Padding="20 2 20 2">
+              <!-- 見た目の左側 -->
+              <ScrollViewer
+                Margin="10 10 0 0"
+                Padding="0 0 40 0"
+                VerticalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Disabled"
+                Focusable="False">
+
+                <StackPanel>
+                  <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical">
+                      <Label Margin="0 0 0 0" Content="{DynamicResource Timeline_Location}" />
+                      <StackPanel Orientation="Horizontal" Margin="0 5 0 0" HorizontalAlignment="Left">
+                        <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
+                        <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.Left, Mode=TwoWay}" Width="80" />
+                        <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
+                        <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.Top, Mode=TwoWay}" Width="80" />
+                      </StackPanel>
+                      <StackPanel Orientation="Horizontal" Margin="0 5 0 0" HorizontalAlignment="Left">
+                        <Label Margin="0 0 5 0" Content="W" VerticalAlignment="Center" />
+                        <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.Width, Mode=TwoWay}" Width="80" />
+                        <Label Margin="10 0 5 0" Content="H" VerticalAlignment="Center" />
+                        <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.Height, Mode=TwoWay}" Width="80" />
+                      </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical" Margin="45 0 0 0">
+                      <Label Margin="0 0 0 0" Content="{DynamicResource Timeline_LocationNotice}" />
+                      <StackPanel Orientation="Horizontal" Margin="0 5 0 0" HorizontalAlignment="Left">
+                        <Label Margin="0 0 5 0" Content="X" VerticalAlignment="Center" />
+                        <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NoticeLeft, Mode=TwoWay}" Width="80" />
+                        <Label Margin="10 0 5 0" Content="Y" VerticalAlignment="Center" />
+                        <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NoticeTop, Mode=TwoWay}" Width="80" />
+                      </StackPanel>
+                      <StackPanel Orientation="Horizontal" Margin="0 5 0 0" HorizontalAlignment="Left">
+                        <Label Margin="0 0 5 0" Content="W" VerticalAlignment="Center" />
+                        <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NoticeWidth, Mode=TwoWay}" Width="80" />
+                        <Label Margin="10 0 5 0" Content="H" VerticalAlignment="Center" />
+                        <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NoticeHeight, Mode=TwoWay}" Width="80" />
+                      </StackPanel>
+                    </StackPanel>
+                  </StackPanel>
+
+                  <!-- 背景 -->
+                  <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_OverlayBackground}" />
+                  <TextBox Text="{Binding Path=TimelineConfig.OverlayBackgroundString, Mode=TwoWay}" Width="500" HorizontalAlignment="Left" VerticalContentAlignment="Center" Padding="3" ToolTip="画像ファイルを指定すると背景に画像を使用できます。パスはフルパスを指定してください。" />
+
+                  <StackPanel Orientation="Horizontal">
+                    <StackPanel>
+                      <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_Opacity}" />
+                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.OverlayOpacity, Mode=TwoWay}" FormatString="N2" Increment="0.01" Width="80" HorizontalAlignment="Left" />
+
+                      <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_OverlayScale}" />
+                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.OverlayScale, Mode=TwoWay}" FormatString="N2" Increment="0.01" Width="80" HorizontalAlignment="Left" />
+
+                      <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_ShowActivitiesCount}" />
+                      <xctk:IntegerUpDown Value="{Binding Path=TimelineConfig.ShowActivitiesCount, Mode=TwoWay}" FormatString="N0" Increment="1" Width="80" HorizontalAlignment="Left" ValueChanged="TopActivityStyle_ValueChanged" />
+
+                      <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_NearestActivityScale}" />
+                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NearestActivityScale, Mode=TwoWay}" FormatString="N2" Increment="0.01" Width="80" HorizontalAlignment="Left" ValueChanged="TopActivityStyle_ValueChanged" />
+
+                      <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_NextActivityBrightness}" />
+                      <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NextActivityBrightness, Mode=TwoWay}" FormatString="N2" Increment="0.01" Width="80" HorizontalAlignment="Left" ValueChanged="TopActivityStyle_ValueChanged" />
+
+                      <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_ActivityMargin}" />
+                      <TextBox Text="{Binding Path=TimelineConfig.ActivityMarginString, Mode=TwoWay}" Width="120" HorizontalAlignment="Left" VerticalContentAlignment="Center" Padding="3" />
+                    </StackPanel>
+
+                    <StackPanel Margin="40 0 0 0">
+                      <!-- ヘッダ -->
+                      <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_Header}" FontWeight="Bold" />
+                      <StackPanel Margin="0 0 0 0">
+                        <CheckBox Margin="0 8 0 0" Content="{DynamicResource Timeline_ShowHeader}" IsChecked="{Binding Path=TimelineConfig.IndicatorVisible, Mode=TwoWay}" />
+
+                        <Label Margin="0 15 0 0" Content="{DynamicResource Timeline_HeaderStyle}" />
+                        <ComboBox
+                          ItemsSource="{Binding Path=TimelineConfig.Styles, Mode=OneWay}"
+                          HorizontalAlignment="Left"
+                          Width="200"
+                          SelectedValuePath="Name"
+                          DisplayMemberPath="Name"
+                          SelectedValue="{Binding Path=TimelineConfig.IndicatorStyle, Mode=TwoWay}" />
+                      </StackPanel>
+                    </StackPanel>
+                  </StackPanel>
+                </StackPanel>
+              </ScrollViewer>
+              <!-- 見た目の左側 end -->
+            </TabItem>
+
+            <TabItem Header="Styles" Padding="20 2 20 2">
+              <!-- 見た目の右側 -->
+              <Grid Margin="10 10 0 5">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Margin="0 0 0 0" Content="{DynamicResource Timeline_Styles}" VerticalAlignment="Top" />
+
+                <Grid Grid.Row="1" Margin="0 10 0 0">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                  </Grid.ColumnDefinitions>
+
+                  <!-- Styleリスト -->
+                  <ListView
+                    x:Name="StyleListView"
+                    Grid.Column="0"
+                    MinWidth="250"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    ItemsSource="{Binding Path=TimelineConfig.Styles, Mode=OneWay}">
+
+                    <ListView.ItemContainerStyle>
+                      <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                      </Style>
+                    </ListView.ItemContainerStyle>
+
+                    <ListView.ItemTemplate>
+                      <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0 0 23 0">
+                          <TextBlock Text="✔" FontWeight="Bold" Visibility="{Binding Path=IsDefault, Mode=OneWay, Converter={StaticResource HiddenConverter}}" Foreground="DarkGreen" />
+                          <TextBlock Text="✔" FontWeight="Bold" Visibility="{Binding Path=IsDefaultNotice, Mode=OneWay, Converter={StaticResource HiddenConverter}}" Foreground="MediumBlue" />
+                          <TextBlock Margin="5 0 0 0" Text="{Binding Path=Name, Mode=OneWay}" />
+                        </StackPanel>
+                      </DataTemplate>
+                    </ListView.ItemTemplate>
+                  </ListView>
+                  <!-- Styleリスト end -->
+
+                  <!-- Style詳細 -->
+                  <StackPanel
+                    Grid.Column="1"
+                    Margin="10 0 10 0"
+                    HorizontalAlignment="Left"
+                    MinWidth="350"
+                    DataContext="{Binding ElementName=StyleListView, Path=SelectedItem, Mode=OneWay}">
+
+                    <Label Margin="0 0 0 0" Content="{DynamicResource Timeline_StyleName}" />
+                    <TextBox Text="{Binding Name, Mode=TwoWay}" />
+
+                    <CheckBox Margin="0 5 0 0" Content="Default" IsChecked="{Binding Path=IsDefault, Mode=TwoWay}" Command="{Binding ChangeDefaultCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+                    <CheckBox Margin="0 5 0 0" Content="Default (Notice)" IsChecked="{Binding Path=IsDefaultNotice, Mode=TwoWay}" Command="{Binding ChangeDefaultVisualCommand, Mode=OneWay}" CommandParameter="{Binding}" />
+
+                    <!-- フォント -->
+                    <Label Margin="0 15 0 0" Content="{DynamicResource Common_Font}" FontWeight="Bold" />
+                    <StackPanel Margin="10 0 0 0">
+                      <TextBlock Margin="0 0 0 0" HorizontalAlignment="Left">
                     <Hyperlink Command="{Binding ChangeFontCommand, Mode=OneWay}" CommandParameter="{Binding}">
                       <TextBlock Text="{Binding Path=Font.DisplayText, Mode=OneWay}" />
                     </Hyperlink>
                   </TextBlock>
 
-                    <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
+                      <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
                     <Hyperlink Command="{Binding ChangeFontColorCommand, Mode=OneWay}" CommandParameter="{Binding}">
                       <TextBlock Text="{DynamicResource Common_FillColor}" />
                     </Hyperlink>
                   </TextBlock>
 
-                    <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
+                      <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
                     <Hyperlink Command="{Binding ChangeFontOutlineColorCommand, Mode=OneWay}" CommandParameter="{Binding}">
                       <TextBlock Text="{DynamicResource Common_StrokeColor}" />
                     </Hyperlink>
                   </TextBlock>
-                  </StackPanel>
+                    </StackPanel>
 
-                  <!-- プログレスバー -->
-                  <Label Margin="0 20 0 0" Content="{DynamicResource Common_ProgressBar}" FontWeight="Bold" />
-                  <StackPanel Margin="10 0 0 0">
+                    <!-- プログレスバー -->
+                    <Label Margin="0 20 0 0" Content="{DynamicResource Common_ProgressBar}" FontWeight="Bold" />
+                    <StackPanel Margin="10 0 0 0">
 
-                    <TextBlock Margin="0 5 0 0" HorizontalAlignment="Left">
+                      <TextBlock Margin="0 5 0 0" HorizontalAlignment="Left">
                     <Hyperlink Command="{Binding ChangeBarColorCommand, Mode=OneWay}" CommandParameter="{Binding}">
                       <TextBlock Text="{DynamicResource Common_FillColor}" />
                     </Hyperlink>
                   </TextBlock>
 
-                    <StackPanel Margin="0 10 0 0" Orientation="Horizontal">
-                      <Label Content="H" Margin="0 0 5 0" />
-                      <xctk:DoubleUpDown Value="{Binding Path=BarHeight, Mode=TwoWay}" Width="80" HorizontalAlignment="Left" />
+                      <StackPanel Margin="0 10 0 0" Orientation="Horizontal">
+                        <Label Content="H" Margin="0 0 5 0" />
+                        <xctk:DoubleUpDown Value="{Binding Path=BarHeight, Mode=TwoWay}" Width="80" HorizontalAlignment="Left" />
+                      </StackPanel>
+
+                      <CheckBox Margin="0 10 0 0" Content="{DynamicResource Timeline_CircleStyle}" IsChecked="{Binding IsCircleStyle, Mode=TwoWay}" />
                     </StackPanel>
 
-                    <CheckBox Margin="0 10 0 0" Content="{DynamicResource Timeline_CircleStyle}" IsChecked="{Binding IsCircleStyle, Mode=TwoWay}" />
-                  </StackPanel>
+                    <!-- アイコン -->
+                    <Label Margin="0 20 0 0" Content="{DynamicResource Common_Icon}" FontWeight="Bold" />
+                    <StackPanel Margin="10 0 0 0">
+                      <StackPanel Margin="0 8 0 8" Orientation="Horizontal">
+                        <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="6">
+                          <Image Source="{Binding Path=IconFile, Mode=OneWay}" Height="72" Width="72" />
+                        </Border>
 
-                  <!-- アイコン -->
-                  <Label Margin="0 20 0 0" Content="{DynamicResource Common_Icon}" FontWeight="Bold" />
-                  <StackPanel Margin="10 0 0 0">
-                    <StackPanel Margin="0 8 0 8" Orientation="Horizontal">
-                      <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="6">
-                        <Image Source="{Binding Path=IconFile, Mode=OneWay}" Height="72" Width="72" />
-                      </Border>
-
-                      <StackPanel VerticalAlignment="Bottom">
-                        <TextBlock Margin="10 0 0 10" HorizontalAlignment="Left">
+                        <StackPanel VerticalAlignment="Bottom">
+                          <TextBlock Margin="10 0 0 10" HorizontalAlignment="Left">
                         <Hyperlink Command="{Binding SelectIconCommand, Mode=OneWay}" CommandParameter="{Binding}">
                           <TextBlock Text="{DynamicResource Common_SelectIcon}" />
                         </Hyperlink>
                       </TextBlock>
 
-                        <StackPanel Orientation="Horizontal">
-                          <TextBlock Margin="10 0 5 2" Text="Size" VerticalAlignment="Bottom" />
-                          <xctk:DoubleUpDown Value="{Binding Path=IconSize, Mode=TwoWay}" Increment="1" MinWidth="65" VerticalAlignment="Bottom" />
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="10 0 5 2" Text="Size" VerticalAlignment="Bottom" />
+                            <xctk:DoubleUpDown Value="{Binding Path=IconSize, Mode=TwoWay}" Increment="1" MinWidth="65" VerticalAlignment="Bottom" />
+                          </StackPanel>
                         </StackPanel>
                       </StackPanel>
                     </StackPanel>
+                    <!-- アイコン end -->
                   </StackPanel>
-                  <!-- アイコン end -->
-                </StackPanel>
-                <!-- Style詳細 end -->
+                  <!-- Style詳細 end -->
+                </Grid>
+
+                <DockPanel Grid.Row="2" Margin="0 5 0 0">
+                  <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                    <Button Content="Add" Padding="5 0 5 0" Command="{Binding Path=AddStyleCommand, Mode=OneWay}" />
+                    <Button Margin="5 0 0 0" Content="Delete" Padding="5 0 5 0" Command="{Binding Path=DeleteStyleCommand, Mode=OneWay}" />
+                  </StackPanel>
+                  <Button DockPanel.Dock="Right" Padding="5 0 5 0" Content="{DynamicResource Common_AdvancedSettings}" HorizontalAlignment="Right" VerticalContentAlignment="Center" FontSize="13" ToolTip="{DynamicResource Timeline_OpenResourcesDictionary}" Command="{Binding OpenResourcesFolderCommand}" />
+                </DockPanel>
               </Grid>
+              <!-- 見た目の右側 end -->
+            </TabItem>
 
-              <DockPanel Grid.Row="2" Margin="0 5 0 0">
-                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                  <Button Content="Add" Padding="5 0 5 0" Command="{Binding Path=AddStyleCommand, Mode=OneWay}" />
-                  <Button Margin="5 0 0 0" Content="Delete" Padding="5 0 5 0" Command="{Binding Path=DeleteStyleCommand, Mode=OneWay}" />
-                </StackPanel>
-                <Button DockPanel.Dock="Right" Padding="5 0 5 0" Content="{DynamicResource Common_AdvancedSettings}" HorizontalAlignment="Right" VerticalContentAlignment="Center" FontSize="13" ToolTip="{DynamicResource Timeline_OpenResourcesDictionary}" Command="{Binding OpenResourcesFolderCommand}" />
-              </DockPanel>
-            </Grid>
-            <!-- 見た目の右側 end -->
-          </TabItem>
+            <TabItem Header="Filters" Padding="20 2 20 2">
+              <!-- 見た目の左側 -->
+              <ScrollViewer
+                Margin="10 10 0 0"
+                Padding="0 0 40 0"
+                VerticalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Disabled"
+                Focusable="False">
 
-          <TabItem Header="Filters" Padding="20 2 20 2">
-            <!-- 見た目の左側 -->
-            <ScrollViewer
-              Margin="10 10 0 0"
-              Padding="0 0 40 0"
-              VerticalScrollBarVisibility="Auto"
-              HorizontalScrollBarVisibility="Disabled"
-              Focusable="False">
+                <StackPanel>
+                  <Label Content="{DynamicResource Timeline_IgnoreLogs}" FontWeight="Bold" />
 
-              <StackPanel>
-                <Label Content="{DynamicResource Timeline_IgnoreLogs}" FontWeight="Bold" />
+                  <ItemsControl
+                    Focusable="False"
+                    Margin="10 10 0 0"
+                    BorderThickness="0"
+                    ItemsSource="{Binding Path=TimelineConfig.IgnoreLogTypes, Mode=OneWay}">
 
-                <ItemsControl
-                  Focusable="False"
-                  Margin="10 10 0 0"
-                  BorderThickness="0"
-                  ItemsSource="{Binding Path=TimelineConfig.IgnoreLogTypes, Mode=OneWay}">
-
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <DockPanel HorizontalAlignment="Left" Margin="0 5 0 5" Width="400">
-                        <Label DockPanel.Dock="Left" VerticalAlignment="Center" Content="{Binding Code, Mode=OneWay}" />
-                        <Label DockPanel.Dock="Left" VerticalAlignment="Center" Content=":" />
-                        <Label DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5 0 0 0" Content="{Binding MessageType, Mode=OneWay}" />
-                        <CheckBox
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <DockPanel HorizontalAlignment="Left" Margin="0 5 0 5" Width="400">
+                          <Label DockPanel.Dock="Left" VerticalAlignment="Center" Content="{Binding Code, Mode=OneWay}" />
+                          <Label DockPanel.Dock="Left" VerticalAlignment="Center" Content=":" />
+                          <Label DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5 0 0 0" Content="{Binding MessageType, Mode=OneWay}" />
+                          <CheckBox
                           DockPanel.Dock="Right"
                           HorizontalAlignment="Right"
                           VerticalContentAlignment="Center"
@@ -518,54 +559,55 @@
                           Margin="10 0 0 0"
                           Content="ignore"
                           IsChecked="{Binding IsIgnore, Mode=TwoWay}" />
-                      </DockPanel>
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-              </StackPanel>
-            </ScrollViewer>
-            <!-- 見た目の左側 end -->
-          </TabItem>
+                        </DockPanel>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </StackPanel>
+              </ScrollViewer>
+              <!-- 見た目の左側 end -->
+            </TabItem>
 
-          <TabItem Header="Options" Padding="20 2 20 2">
-            <!-- 見た目の左側 -->
-            <ScrollViewer
-              Margin="10 10 0 0"
-              Padding="0 0 40 0"
-              VerticalScrollBarVisibility="Auto"
-              HorizontalScrollBarVisibility="Disabled"
-              Focusable="False">
-              <StackPanel>
-                <Label Margin="0 0 0 0" Content="{DynamicResource Timeline_NotifyInterval}" />
-                <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NotifyInterval, Mode=TwoWay}" FormatString="N0" Increment="1" Width="80" HorizontalAlignment="Left" Minimum="1" Maximum="500" />
-              </StackPanel>
-            </ScrollViewer>
-            <!-- 見た目の左側 end -->
-          </TabItem>
+            <TabItem Header="Options" Padding="20 2 20 2">
+              <!-- 見た目の左側 -->
+              <ScrollViewer
+                Margin="10 10 0 0"
+                Padding="0 0 40 0"
+                VerticalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Disabled"
+                Focusable="False">
+                <StackPanel>
+                  <Label Margin="0 0 0 0" Content="{DynamicResource Timeline_NotifyInterval}" />
+                  <xctk:DoubleUpDown Value="{Binding Path=TimelineConfig.NotifyInterval, Mode=TwoWay}" FormatString="N0" Increment="1" Width="80" HorizontalAlignment="Left" Minimum="1" Maximum="500" />
+                </StackPanel>
+              </ScrollViewer>
+              <!-- 見た目の左側 end -->
+            </TabItem>
 
-          <TabItem Header="Variables" Padding="20 2 20 2">
-            <ListView
-              Margin="0 5"
-              BorderThickness="0"
-              ItemsSource="{Binding Variables, Mode=OneWay}">
-              <ListView.View>
-                <GridView>
-                  <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Width="240">
-                    <GridViewColumnHeader Content="Variable" />
-                  </GridViewColumn>
-                  <GridViewColumn DisplayMemberBinding="{Binding Path=Value}" Width="150">
-                    <GridViewColumnHeader Content="Value" />
-                  </GridViewColumn>
-                  <GridViewColumn DisplayMemberBinding="{Binding Path=Zone}" Width="320">
-                    <GridViewColumnHeader Content="Scope" />
-                  </GridViewColumn>
-                </GridView>
-              </ListView.View>
-            </ListView>
-          </TabItem>
-        </TabControl>
-      </Grid>
-    </Border>
-    <!-- 右ペイン end -->
-  </Grid>
+            <TabItem Header="Variables" Padding="20 2 20 2">
+              <ListView
+                Margin="0 5"
+                BorderThickness="0"
+                ItemsSource="{Binding Variables, Mode=OneWay}">
+                <ListView.View>
+                  <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Width="240">
+                      <GridViewColumnHeader Content="Variable" />
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Value}" Width="150">
+                      <GridViewColumnHeader Content="Value" />
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Zone}" Width="320">
+                      <GridViewColumnHeader Content="Scope" />
+                    </GridViewColumn>
+                  </GridView>
+                </ListView.View>
+              </ListView>
+            </TabItem>
+          </TabControl>
+        </Grid>
+      </Border>
+      <!-- 右ペイン end -->
+    </TabItem>
+  </TabControl>
 </UserControl>

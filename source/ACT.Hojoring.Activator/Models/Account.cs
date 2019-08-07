@@ -68,7 +68,7 @@ namespace ACT.Hojoring.Activator.Models
 
             try
             {
-                var asm = Assembly.Load("ACT.Hojoring.Activator.Encoder");
+                var asm = Assembly.Load("ACT.Hojoring.Activator.Encoder, Version=1.0.0.0, Culture=neutral, PublicKeyToken=af33eb5282ed18a3");
                 var type = asm.GetType("ACT.Hojoring.Activator.Encoder.Crypto");
                 result = System.Activator.CreateInstance(type);
 

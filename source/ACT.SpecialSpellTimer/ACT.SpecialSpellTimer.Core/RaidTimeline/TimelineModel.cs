@@ -189,8 +189,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     settings.Value = value;
                     this.RaisePropertyChanged();
+                    this.RaisePropertyChanged(nameof(IsDisabled));
                 }
             }
+        }
+
+        [XmlIgnore]
+        public bool IsDisabled
+        {
+            get => !this.IsEnabled;
+            set => this.IsEnabled = !value;
         }
 
         [XmlIgnore]

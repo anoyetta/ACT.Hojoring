@@ -183,6 +183,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             get
             {
+                if (!this.Model.IsEnabled)
+                {
+                    return false;
+                }
+
                 if (Settings.Default.FFXIVLocale != this.Model.Locale)
                 {
                     return false;

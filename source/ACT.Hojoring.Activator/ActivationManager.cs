@@ -9,13 +9,13 @@ using ACT.Hojoring.Activator.Models;
 
 namespace ACT.Hojoring.Activator
 {
-    internal class ActivationManager
+    public class ActivationManager
     {
         #region Lazy Singleton
 
         private static readonly Lazy<ActivationManager> LazyInstance = new Lazy<ActivationManager>(() => new ActivationManager());
 
-        internal static ActivationManager Instance => LazyInstance.Value;
+        public static ActivationManager Instance => LazyInstance.Value;
 
         private ActivationManager()
         {
@@ -32,9 +32,9 @@ namespace ACT.Hojoring.Activator
             return timer;
         });
 
-        internal ActivationStatus CurrentStatus { get; set; } = ActivationStatus.Loading;
+        public ActivationStatus CurrentStatus { get; private set; } = ActivationStatus.Loading;
 
-        internal void Start()
+        public void Start()
         {
             lock (LockObject)
             {
@@ -68,9 +68,9 @@ namespace ACT.Hojoring.Activator
         private DateTime activationTimestamp = DateTime.Now;
         private string activationAccount = string.Empty;
 
-        internal Action ActivationDeniedCallback { get; set; }
+        public Action ActivationDeniedCallback { get; set; }
 
-        internal bool TryActivation(
+        public bool TryActivation(
             string name,
             string server,
             string guild)
@@ -102,7 +102,7 @@ namespace ACT.Hojoring.Activator
             }
         }
 
-        internal bool Activation(
+        public bool Activation(
             string name,
             string server,
             string guild)
@@ -177,7 +177,7 @@ namespace ACT.Hojoring.Activator
             = "https://gist.githubusercontent.com/anoyetta/bc658cb51552ea12ce1aaa2899004e8c/raw/accounts.json";
     }
 
-    internal enum ActivationStatus
+    public enum ActivationStatus
     {
         Loading,
         Error,
