@@ -82,6 +82,7 @@ namespace ACT.SpecialSpellTimer
         {
             var regex = spell.Regex;
             var notifyNeeded = false;
+            var matched = false;
 
             if (!spell.IsInstance)
             {
@@ -104,6 +105,7 @@ namespace ACT.SpecialSpellTimer
                         // キーワードが含まれるか？
                         if (logLine.Contains(keyword, StringComparison.OrdinalIgnoreCase))
                         {
+                            matched = true;
                             var targetSpell = spell;
 
                             // ヒットしたログを格納する
@@ -125,7 +127,13 @@ namespace ACT.SpecialSpellTimer
 
                             var now = DateTime.Now;
 
-                            targetSpell.CompleteScheduledTime = now.AddSeconds(targetSpell.RecastTime);
+                            // ホットバーからリキャスト時間の読込みを試みる
+                            if (!this.TryGetHotbarRecast(targetSpell, out double d))
+                            {
+                                d = targetSpell.RecastTime;
+                            }
+
+                            targetSpell.CompleteScheduledTime = now.AddSeconds(d);
                             targetSpell.MatchDateTime = now;
 
                             // マッチング計測終了
@@ -149,6 +157,7 @@ namespace ACT.SpecialSpellTimer
                         var match = regex.Match(logLine);
                         if (match.Success)
                         {
+                            matched = true;
 #if DEBUG
                             if (logLine.Contains("MARK"))
                             {
@@ -205,6 +214,14 @@ namespace ACT.SpecialSpellTimer
                             if (RegexExtensions.TryGetDuration(match, out double d))
                             {
                                 duration = d;
+                            }
+                            else
+                            {
+                                // ホットバーからリキャスト時間の読込みを試みる
+                                if (this.TryGetHotbarRecast(targetSpell, out double durationFromHotbar))
+                                {
+                                    duration = durationFromHotbar;
+                                }
                             }
 
                             targetSpell.CompleteScheduledTime = now.AddSeconds(duration);
@@ -341,6 +358,35 @@ namespace ACT.SpecialSpellTimer
             }
             // end if 延長マッチング
 
+            // ホットバー情報を更新する
+            if (!matched)
+            {
+                var now = DateTime.Now;
+
+                if (spell.CompleteScheduledTime > now)
+                {
+                    if (this.TryGetHotbarRecast(spell, out double d))
+                    {
+                        // ホットバー情報と0.6秒以上乖離したら補正する
+                        var newSchedule = now.AddSeconds(d);
+
+                        if (Math.Abs((newSchedule - spell.CompleteScheduledTime).TotalSeconds)
+                            >= 0.6d)
+                        {
+                            spell.CompleteScheduledTime = newSchedule;
+                            spell.BeforeDone = false;
+                            spell.UpdateDone = false;
+
+                            notifyNeeded = true;
+
+                            spell.StartOverSoundTimer();
+                            spell.StartBeforeSoundTimer();
+                            spell.StartTimeupSoundTimer();
+                        }
+                    }
+                }
+            }
+
             // ACT標準のSpellTimerに変更を通知する
             if (notifyNeeded)
             {
@@ -466,6 +512,36 @@ namespace ACT.SpecialSpellTimer
             {
                 TableCompiler.Instance.CompileSpells();
             }
+        }
+
+        private bool TryGetHotbarRecast(
+            Spell spell,
+            out double recastTime)
+        {
+            var result = false;
+            recastTime = 0;
+
+            if (spell.UseHotbarRecastTime &&
+                !string.IsNullOrEmpty(spell.HotbarName))
+            {
+                var actions = SharlayanHelper.Instance.Actions;
+                if (actions != null)
+                {
+                    foreach (var action in actions)
+                    {
+                        if (action != null &&
+                            action.Name.Equals(spell.HotbarName, StringComparison.OrdinalIgnoreCase) &&
+                            action.CoolDownPercent > 0)
+                        {
+                            recastTime = action.RemainingCost;
+                            result = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         #region Panel controller

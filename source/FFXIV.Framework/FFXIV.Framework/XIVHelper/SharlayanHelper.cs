@@ -274,6 +274,20 @@ namespace FFXIV.Framework.XIVHelper
 
         public DateTime ZoneChangedTimestamp { get; private set; } = DateTime.MinValue;
 
+        private static readonly object ActionLock = new object();
+        private readonly List<ActionItem> ActionList = new List<ActionItem>(128);
+
+        public List<ActionItem> Actions
+        {
+            get
+            {
+                lock (ActionLock)
+                {
+                    return ActionList.ToList();
+                }
+            }
+        }
+
         public bool IsScanning { get; set; } = false;
 
         private void ScanMemory()
@@ -353,6 +367,8 @@ namespace FFXIV.Framework.XIVHelper
                 {
                     this.GetPartyInfo();
                 }
+
+                this.GetActions();
             }
 
             if (this.IsSkips.All(x => x))
@@ -371,11 +387,14 @@ namespace FFXIV.Framework.XIVHelper
 
         public bool IsSkipParty { get; set; } = false;
 
+        public bool IsSkipActions { get; set; } = false;
+
         private bool[] IsSkips => new[]
         {
             this.IsSkipActor,
             this.IsSkipTarget,
             this.IsSkipParty,
+            this.IsSkipActions,
         };
 
         private void GetActorsSimple()
@@ -642,6 +661,51 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             return combatantList;
+        }
+
+        private void GetActions()
+        {
+            if (this.IsSkipActions)
+            {
+                clearActions();
+                return;
+            }
+
+            if (!Reader.CanGetActions())
+            {
+                clearActions();
+                return;
+            }
+
+            var result = Reader.GetActions();
+            if (result == null ||
+                result.ActionContainers == null ||
+                result.ActionContainers.Count < 1)
+            {
+                clearActions();
+                return;
+            }
+
+            lock (ActionLock)
+            {
+                this.ActionList.Clear();
+
+                foreach (var container in result.ActionContainers)
+                {
+                    this.ActionList.AddRange(container.ActionItems);
+                }
+            }
+
+            void clearActions()
+            {
+                if (this.ActionList.Count > 0)
+                {
+                    lock (ActionLock)
+                    {
+                        this.ActionList.Clear();
+                    }
+                }
+            }
         }
 
         public CombatantEx ToCombatant(
