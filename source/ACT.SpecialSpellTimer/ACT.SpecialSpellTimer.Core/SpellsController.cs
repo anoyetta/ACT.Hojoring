@@ -363,7 +363,7 @@ namespace ACT.SpecialSpellTimer
             {
                 var now = DateTime.Now;
 
-                if (spell.CompleteScheduledTime.AddSeconds(3) > now)
+                if (spell.CompleteScheduledTime.AddSeconds(2) > now)
                 {
                     if (this.TryGetHotbarRecast(spell, out double d))
                     {
@@ -373,6 +373,13 @@ namespace ACT.SpecialSpellTimer
                         if (Math.Abs((newSchedule - spell.CompleteScheduledTime).TotalSeconds)
                             >= 0.6d)
                         {
+                            if (spell.CompleteScheduledTime <= now)
+                            {
+                                spell.MatchDateTime = now;
+                                spell.OverDone = false;
+                                spell.TimeupDone = false;
+                            }
+
                             spell.CompleteScheduledTime = newSchedule;
                             spell.BeforeDone = false;
                             spell.UpdateDone = false;
