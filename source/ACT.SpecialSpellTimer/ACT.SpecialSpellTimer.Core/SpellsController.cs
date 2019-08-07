@@ -363,7 +363,7 @@ namespace ACT.SpecialSpellTimer
             {
                 var now = DateTime.Now;
 
-                if (spell.CompleteScheduledTime.AddSeconds(2) > now)
+                if (spell.CompleteScheduledTime.AddSeconds(3) > now)
                 {
                     if (this.TryGetHotbarRecast(spell, out double d))
                     {
