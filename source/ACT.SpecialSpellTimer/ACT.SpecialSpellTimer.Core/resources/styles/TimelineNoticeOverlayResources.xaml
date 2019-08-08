@@ -71,6 +71,11 @@
     -->
   </Style>
 
+  <!-- 通知用のパネル -->
+  <Style x:Key="NoticePanel" TargetType="DockPanel">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
   <!-- アイコン -->
   <Style x:Key="NoticeIcon" TargetType="Image">
     <Setter Property="DockPanel.Dock" Value="Left" />
