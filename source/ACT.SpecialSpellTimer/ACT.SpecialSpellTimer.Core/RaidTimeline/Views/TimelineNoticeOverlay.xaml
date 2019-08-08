@@ -43,6 +43,8 @@
 
     <!-- コンテンツ用グリッド -->
     <Grid Style="{DynamicResource NoticeContentsGrid}">
+      <Border Style="{DynamicResource NoticeBackgroundBorder}" />
+
       <ItemsControl
         Style="{DynamicResource NoticesControl}"
         ItemContainerStyle="{DynamicResource NoticeContainer}"

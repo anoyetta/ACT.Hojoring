@@ -46,6 +46,25 @@
     <Setter Property="Margin" Value="16" />
   </Style>
 
+  <!-- 通知の背景 -->
+  <Style x:Key="NoticeBackgroundBorder" TargetType="Border">
+    <Setter Property="Panel.ZIndex" Value="-1" />
+    <!--
+    <Setter Property="Background" Value="Black" />
+    <Setter Property="Opacity" Value="0.95" />
+    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="Effect">
+      <Setter.Value>
+        <DropShadowEffect
+          BlurRadius="0"
+          Direction="0"
+          ShadowDepth="0"
+          Color="Black" />
+      </Setter.Value>
+    </Setter>
+    -->
+  </Style>
+
   <!-- 通知ItemsControl -->
   <Style x:Key="NoticesControl" TargetType="ItemsControl">
     <Setter Property="Background" Value="Transparent" />
