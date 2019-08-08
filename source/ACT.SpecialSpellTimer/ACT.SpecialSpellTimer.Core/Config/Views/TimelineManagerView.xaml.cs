@@ -125,6 +125,18 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
         #region Commands 左側ペイン
 
+        private void TimelineModel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var model = (e.Source as dynamic).DataContext as TimelineModel;
+            if (model == null)
+            {
+                return;
+            }
+
+            model.IsActive = !model.IsActive;
+            model.ChangeActiveCommand.Execute(model.IsActive);
+        }
+
         private ICommand enabledTimelineCommand;
 
         public ICommand EnabledTimelineCommand =>

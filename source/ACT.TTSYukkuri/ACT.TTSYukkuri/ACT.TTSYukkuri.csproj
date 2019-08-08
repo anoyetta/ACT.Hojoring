@@ -23,8 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>x86</PlatformTarget>
-    <NoWarn>
-    </NoWarn>
+    <NoWarn>CS8002</NoWarn>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -37,9 +36,16 @@
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>x86</PlatformTarget>
     <LangVersion>preview</LangVersion>
+    <NoWarn>CS8002</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>ACT.Hojoring.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Hojoring.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Advanced Combat Tracker">
@@ -105,6 +111,7 @@
     <None Include="FodyWeavers.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Hojoring.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -394,6 +394,11 @@ namespace FFXIV.Framework.XIVHelper
 
         private void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
         {
+            if (!this.isActivate)
+            {
+                return;
+            }
+
             var line = logInfo.logLine;
 
             // 18文字未満のログは書式エラーになるため無視する
@@ -771,6 +776,8 @@ namespace FFXIV.Framework.XIVHelper
 
         private bool isFirst = true;
 
+        private volatile bool isActivate = true;
+
         public void RefreshCombatantList()
         {
             if (!this.IsAvailable)
@@ -809,7 +816,12 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             raiseFirstCombatants();
-            tryActivation();
+
+            this.isActivate = tryActivation();
+            if (!this.isActivate)
+            {
+                CombatantsManager.Instance.Clear();
+            }
 
             void raiseFirstCombatants()
             {
@@ -821,13 +833,17 @@ namespace FFXIV.Framework.XIVHelper
                 }
             }
 
-            void tryActivation()
+            bool tryActivation()
             {
+                var result = true;
+
                 var player = CombatantsManager.Instance.Player;
                 if (player != null)
                 {
-                    var result = EnvironmentHelper.TryActivation(player.Name, player.WorldName, string.Empty);
+                    result = EnvironmentHelper.TryActivation(player.Name, player.WorldName, string.Empty);
                 }
+
+                return result;
             }
         }
 

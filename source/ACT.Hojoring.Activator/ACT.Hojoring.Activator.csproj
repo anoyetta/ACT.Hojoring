@@ -37,7 +37,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>ACT.Hojoring.Activator.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Hojoring.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -63,7 +63,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ACT.Hojoring.Activator.pfx" />
+    <None Include="Hojoring.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

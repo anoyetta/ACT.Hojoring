@@ -13,6 +13,7 @@
   xmlns:system="clr-namespace:System;assembly=mscorlib"
   xmlns:vm="clr-namespace:ACT.SpecialSpellTimer.Config.ViewModels"
   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
   d:DataContext="{d:DesignInstance Type=local:TimelineManagerView}"
   DataContext="{Binding RelativeSource={RelativeSource Self}}"
   Background="White"
@@ -140,10 +141,11 @@
                 <DataTemplate>
                   <Grid
                     Width="420"
-                    Height="120"
+                    Height="130"
                     HorizontalAlignment="Left"
                     Margin="0 0 5 5">
-                    <Border>
+                    <Border
+                      MouseLeftButtonDown="TimelineModel_MouseLeftButtonDown">
                       <Border.Style>
                         <Style TargetType="Border">
                           <Style.Triggers>
@@ -162,7 +164,6 @@
                       <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
                       </Grid.ColumnDefinitions>
 
                       <Grid.Resources>
@@ -200,7 +201,7 @@
 
                       <Grid
                         Grid.Column="1"
-                        Margin="5 0 0 0"
+                        Margin="5 0 15 0"
                         MaxWidth="400">
                         <Grid.RowDefinitions>
                           <RowDefinition Height="Auto" />
@@ -213,68 +214,91 @@
 
                         <StackPanel
                           Grid.Row="0"
-                          Orientation="Horizontal">
-                          <TextBlock Text="{Binding Path=Name, Mode=OneWay}" FontWeight="Bold" FontSize="16" VerticalAlignment="Bottom" MaxWidth="330" TextWrapping="WrapWithOverflow" />
+                          Orientation="Horizontal"
+                          HorizontalAlignment="Left">
+                          <TextBlock
+                            Text="{Binding Path=Name, Mode=OneWay}"
+                            FontWeight="Bold"
+                            FontSize="16"
+                            VerticalAlignment="Bottom"
+                            MaxWidth="330"
+                            TextWrapping="WrapWithOverflow"
+                            MouseLeftButtonDown="TimelineModel_MouseLeftButtonDown" />
+
                           <TextBlock Margin="15 0 0 0" Text="{Binding Path=Revision, Mode=OneWay}" FontSize="14" VerticalAlignment="Bottom" />
                         </StackPanel>
 
                         <StackPanel
                           Grid.Row="1"
                           VerticalAlignment="Bottom"
+                          HorizontalAlignment="Left"
                           Margin="5 0 0 0"
                           MaxWidth="400"
-                          MaxHeight="85">
-                          <TextBlock Margin="10 5 0 0" Text="{Binding Path=Zone, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" />
-                          <TextBlock Margin="10 1 0 0" Text="{Binding Path=LocaleText, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" />
-                          <TextBlock Margin="10 1 0 3" Text="{Binding Path=SourceFileName, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" />
-                          <TextBlock Margin="10 1 0 0" Text="{Binding Path=AuthorForDisplay, Mode=OneWay}" FontSize="11" Foreground="{DynamicResource DetailsTextColor}" Visibility="{Binding Path=IsExistsAuthor, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" />
-                          <TextBlock Margin="10 1 0 0" Text="{Binding Path=LicenseForDisplay, Mode=OneWay}" FontSize="11" Foreground="{DynamicResource DetailsTextColor}" Visibility="{Binding Path=IsExistsLicense, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" />
+                          MaxHeight="100"
+                          MouseLeftButtonDown="TimelineModel_MouseLeftButtonDown">
+                          <TextBlock Margin="10 5 0 0" Text="{Binding Path=Zone, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" HorizontalAlignment="Left" />
+                          <TextBlock Margin="10 1 0 0" Text="{Binding Path=LocaleText, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" HorizontalAlignment="Left" />
+                          <TextBlock Margin="10 1 0 3" Text="{Binding Path=SourceFileName, Mode=OneWay}" FontSize="13" Foreground="{DynamicResource DetailsTextColor}" HorizontalAlignment="Left" />
+                          <TextBlock Margin="10 1 0 0" Text="{Binding Path=AuthorForDisplay, Mode=OneWay}" FontSize="11" Foreground="{DynamicResource DetailsTextColor}" Visibility="{Binding Path=IsExistsAuthor, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" HorizontalAlignment="Left" />
+                          <TextBlock Margin="10 1 0 0" Text="{Binding Path=LicenseForDisplay, Mode=OneWay}" FontSize="11" Foreground="{DynamicResource DetailsTextColor}" Visibility="{Binding Path=IsExistsLicense, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" HorizontalAlignment="Left" />
                         </StackPanel>
                       </Grid>
+                    </Grid>
 
-                      <Grid
-                        Grid.Column="2"
-                        Margin="0 0 5 0">
-                        <Grid.RowDefinitions>
-                          <RowDefinition Height="Auto" />
-                          <RowDefinition />
-                          <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                    <Grid
+                      HorizontalAlignment="Right"
+                      Margin="0 5 8 8">
+                      <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
 
-                        <CheckBox
-                          Grid.Row="0"
-                          Margin="0 3 0 0"
-                          FlowDirection="RightToLeft"
-                          HorizontalAlignment="Right"
-                          Content="disabled"
-                          Foreground="#FF17184b"
-                          FontSize="13"
-                          IsChecked="{Binding IsDisabled, Mode=TwoWay}"
-                          Focusable="False">
-                          <CheckBox.Resources>
-                            <Style TargetType="{x:Type Path}">
-                              <Setter Property="FlowDirection" Value="LeftToRight" />
+                      <Label
+                        Grid.Row="0"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Right"
+                        Margin="0 0 5 5"
+                        Content="{Binding Path=Controller.StatusText, Mode=OneWay}"
+                        FontSize="15"
+                        FontStyle="Italic"
+                        FontWeight="Bold"
+                        Foreground="DarkOrchid" />
+
+                      <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Padding="0" Command="{Binding EditCommand, Mode=OneWay}" ToolTip="Edit" Focusable="False">
+                          <iconPacks:FontAwesome Kind="EditRegular" />
+                        </Button>
+                        <Button Padding="0" Margin="8 0 0 0" Command="{Binding ReloadCommand, Mode=OneWay}" ToolTip="Reload" Focusable="False">
+                          <iconPacks:FontAwesome Kind="SyncSolid" />
+                        </Button>
+                        <Button Padding="0" Margin="8 0 0 0" Command="{Binding ShowCommand, Mode=OneWay}" ToolTip="{DynamicResource Timeline_ShowCompiledText}" Focusable="False">
+                          <iconPacks:Modern Kind="DebugStepInto" />
+                        </Button>
+
+                        <ToggleButton
+                          Focusable="False"
+                          Margin="8 0 0 0"
+                          BorderThickness="0"
+                          Background="Transparent"
+                          IsChecked="{Binding IsEnabled, Mode=TwoWay}">
+                          <ToggleButton.Style>
+                            <Style TargetType="ToggleButton">
+                              <Setter Property="Content">
+                                <Setter.Value>
+                                  <iconPacks:Material Kind="Power" />
+                                </Setter.Value>
+                              </Setter>
+                              <Setter Property="Foreground" Value="Green" />
+                              <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="False">
+                                  <Setter Property="Foreground" Value="#d3cbc6" />
+                                </Trigger>
+                              </Style.Triggers>
                             </Style>
-                          </CheckBox.Resources>
-                        </CheckBox>
-
-                        <Label
-                          Grid.Row="1"
-                          VerticalAlignment="Bottom"
-                          HorizontalAlignment="Right"
-                          Margin="0 0 0 5"
-                          Content="{Binding Path=Controller.StatusText, Mode=OneWay}"
-                          FontSize="15"
-                          FontStyle="Italic"
-                          FontWeight="Bold"
-                          Foreground="DarkOrchid" />
-
-                        <StackPanel Grid.Row="2" Orientation="Horizontal">
-                          <Button Padding="0 0 0 0" Content="Edit" FontSize="14" Command="{Binding EditCommand, Mode=OneWay}" />
-                          <Button Padding="0 0 0 0" Margin="8 0 0 0" Content="Reload" FontSize="14" Command="{Binding ReloadCommand, Mode=OneWay}" />
-                          <Button Padding="0 0 0 0" Margin="8 0 0 0" Content="debug" FontSize="13" Command="{Binding ShowCommand, Mode=OneWay}" ToolTip="{DynamicResource Timeline_ShowCompiledText}" Foreground="#FF17184b" VerticalAlignment="Center" />
-                        </StackPanel>
-                      </Grid>
+                          </ToggleButton.Style>
+                        </ToggleButton>
+                      </StackPanel>
                     </Grid>
                   </Grid>
                 </DataTemplate>
