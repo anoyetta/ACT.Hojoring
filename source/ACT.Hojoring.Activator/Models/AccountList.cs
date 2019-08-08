@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace ACT.Hojoring.Activator.Models
 {
-    public class AccountList
+    internal class AccountList
     {
         #region Lazy Singleton
 

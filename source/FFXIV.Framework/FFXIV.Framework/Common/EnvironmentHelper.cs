@@ -137,6 +137,24 @@ namespace FFXIV.Framework.Common
             return Assembly.GetEntryAssembly().GetName().Version;
         }
 
+        private static string GetPublicKeyToken(
+            Assembly assembly)
+        {
+            var bytes = assembly.GetName().GetPublicKeyToken();
+            if (bytes == null || bytes.Length == 0)
+            {
+                return "None";
+            }
+
+            var publicKeyToken = string.Empty;
+            for (int i = 0; i < bytes.GetLength(0); i++)
+            {
+                publicKeyToken += string.Format("{0:x2}", bytes[i]);
+            }
+
+            return publicKeyToken;
+        }
+
         public static string ToStringShort(
             this Version version)
         {
@@ -175,6 +193,11 @@ namespace FFXIV.Framework.Common
             string server,
             string guild)
         {
+            if (!IsValidActivationManager())
+            {
+                return false;
+            }
+
             if (ActivationManager.Instance.ActivationDeniedCallback == null)
             {
                 ActivationManager.Instance.ActivationDeniedCallback = OnActivationDenied;
@@ -207,6 +230,24 @@ namespace FFXIV.Framework.Common
                     callback.Invoke();
                 }
             });
+        }
+
+        private const string ActivatorPublicKeyToken = "a90fa5bb6d544c25";
+
+        private static bool IsValidActivationManager()
+        {
+            var asm = typeof(ActivationManager).Assembly;
+            if (asm == null)
+            {
+                return false;
+            }
+
+            var token = GetPublicKeyToken(asm);
+
+            return string.Equals(
+                token,
+                ActivatorPublicKeyToken,
+                StringComparison.OrdinalIgnoreCase);
         }
     }
 }

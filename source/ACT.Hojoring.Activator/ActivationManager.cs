@@ -122,6 +122,7 @@ namespace ACT.Hojoring.Activator
             {
                 if (!AccountList.Instance.CurrentList.Any())
                 {
+                    Logger.Instance.Write("error, account list is empty.");
                     return result;
                 }
 

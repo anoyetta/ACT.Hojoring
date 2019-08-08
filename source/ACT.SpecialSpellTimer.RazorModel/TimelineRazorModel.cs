@@ -48,9 +48,9 @@ namespace ACT.SpecialSpellTimer.RazorModel
 
         public string TimelineFile { get; private set; } = string.Empty;
 
-        internal string BaseDirectory { get; set; }
+        public string BaseDirectory { get; set; }
 
-        internal void UpdateCurrentTimelineFile(
+        public void UpdateCurrentTimelineFile(
             string currentTimelineFile)
             => this.TimelineFile = currentTimelineFile;
 
