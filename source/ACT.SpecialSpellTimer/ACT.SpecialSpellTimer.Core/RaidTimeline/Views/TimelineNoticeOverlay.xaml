@@ -49,7 +49,7 @@
         ItemsSource="{Binding Path=NoticeList, Mode=OneWay}">
         <ItemsControl.ItemTemplate>
           <DataTemplate DataType="{x:Type tl:TimelineVisualNoticeModel}">
-            <DockPanel>
+            <DockPanel Style="{DynamicResource NoticePanel}">
               <!-- アイコン -->
               <Image Style="{DynamicResource NoticeIcon}" />
 
