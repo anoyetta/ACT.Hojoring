@@ -43,7 +43,7 @@ namespace ACT.Hojoring.Activator
             timer.Elapsed += (_, __) =>
             {
                 RefreshAccountList();
-                timer.Interval = 60 * GetFuzzy();
+                timer.Interval = TimeSpan.FromMinutes(60 * GetFuzzy()).TotalMilliseconds;
             };
 
             return timer;
