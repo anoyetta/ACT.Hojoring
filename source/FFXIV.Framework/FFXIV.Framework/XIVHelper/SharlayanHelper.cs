@@ -275,7 +275,8 @@ namespace FFXIV.Framework.XIVHelper
         public DateTime ZoneChangedTimestamp { get; private set; } = DateTime.MinValue;
 
         private static readonly object ActionLock = new object();
-        private readonly List<ActionItem> ActionList = new List<ActionItem>(128);
+        private readonly List<ActionItem> actionList = new List<ActionItem>(128);
+        private readonly Dictionary<string, ActionItem> actionDictionary = new Dictionary<string, ActionItem>(128);
 
         public List<ActionItem> Actions
         {
@@ -283,7 +284,18 @@ namespace FFXIV.Framework.XIVHelper
             {
                 lock (ActionLock)
                 {
-                    return ActionList.ToList();
+                    return this.actionList.ToList();
+                }
+            }
+        }
+
+        public Dictionary<string, ActionItem> ActionDictionary
+        {
+            get
+            {
+                lock (ActionLock)
+                {
+                    return this.actionDictionary.Clone();
                 }
             }
         }
@@ -688,21 +700,27 @@ namespace FFXIV.Framework.XIVHelper
 
             lock (ActionLock)
             {
-                this.ActionList.Clear();
+                this.actionList.Clear();
 
                 foreach (var container in result.ActionContainers)
                 {
-                    this.ActionList.AddRange(container.ActionItems);
+                    this.actionList.AddRange(container.ActionItems);
+
+                    foreach (var action in container.ActionItems)
+                    {
+                        this.actionDictionary[action.Name] = action;
+                    }
                 }
             }
 
             void clearActions()
             {
-                if (this.ActionList.Count > 0)
+                if (this.actionList.Count > 0)
                 {
                     lock (ActionLock)
                     {
-                        this.ActionList.Clear();
+                        this.actionList.Clear();
+                        this.actionDictionary.Clear();
                     }
                 }
             }

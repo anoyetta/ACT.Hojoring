@@ -142,7 +142,7 @@ namespace ACT.Hojoring.Activator
                 return;
             }
 
-            var th = new Thread(() =>
+            Task.Run(() =>
             {
                 var isMatch = false;
                 var sw = Stopwatch.StartNew();
@@ -165,13 +165,7 @@ namespace ACT.Hojoring.Activator
 
                 Logger.Instance.Write(
                     $"n={name} s={server} g={guild} is {(!isMatch ? "allow" : "deny")}.");
-            })
-            {
-                Priority = ThreadPriority.Lowest,
-                IsBackground = true,
-            };
-
-            th.Start();
+            });
         }
 
         private static volatile string currentSalt;
