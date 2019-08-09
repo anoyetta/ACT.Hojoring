@@ -943,7 +943,7 @@ namespace ACT.SpecialSpellTimer.Models
                         priority = spell.DisplayNo;
                     }
 
-                    tts = $"{AdvancedNoticeConfig.SyncKeyword} {priority} {tts}";
+                    tts = $"{AdvancedNoticeConfig.SyncKeyword} {priority}:{tts}";
                 }
             }
 

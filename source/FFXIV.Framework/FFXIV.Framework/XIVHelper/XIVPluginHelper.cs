@@ -394,7 +394,7 @@ namespace FFXIV.Framework.XIVHelper
 
         private void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
         {
-            if (!this.isActivate)
+            if (!this.isActivationAllowed)
             {
                 return;
             }
@@ -681,6 +681,24 @@ namespace FFXIV.Framework.XIVHelper
 
         #endregion Refresh Active
 
+        #region Activator
+
+        private volatile bool isActivationAllowed = true;
+
+        private void TryActivation()
+        {
+            var player = CombatantsManager.Instance.Player;
+            if (player != null)
+            {
+                this.isActivationAllowed = EnvironmentHelper.TryActivation(
+                    player.Name,
+                    player.WorldName,
+                    string.Empty);
+            }
+        }
+
+        #endregion Activator
+
         #region Refresh Combatants
 
         #region Dummy Combatants
@@ -776,8 +794,6 @@ namespace FFXIV.Framework.XIVHelper
 
         private bool isFirst = true;
 
-        private volatile bool isActivate = true;
-
         public void RefreshCombatantList()
         {
             if (!this.IsAvailable)
@@ -786,8 +802,8 @@ namespace FFXIV.Framework.XIVHelper
                 if (IsDebug)
                 {
                     CombatantsManager.Instance.Refresh(DummyCombatants, IsDebug);
+                    this.TryActivation();
                     raiseFirstCombatants();
-                    tryActivation();
                 }
 #endif
 
@@ -817,8 +833,7 @@ namespace FFXIV.Framework.XIVHelper
 
             raiseFirstCombatants();
 
-            this.isActivate = tryActivation();
-            if (!this.isActivate)
+            if (!this.isActivationAllowed)
             {
                 CombatantsManager.Instance.Clear();
             }
@@ -831,19 +846,6 @@ namespace FFXIV.Framework.XIVHelper
                     this.isFirst = false;
                     this.OnPrimaryPlayerChanged?.Invoke();
                 }
-            }
-
-            bool tryActivation()
-            {
-                var result = true;
-
-                var player = CombatantsManager.Instance.Player;
-                if (player != null)
-                {
-                    result = EnvironmentHelper.TryActivation(player.Name, player.WorldName, string.Empty);
-                }
-
-                return result;
             }
         }
 
@@ -902,6 +904,9 @@ namespace FFXIV.Framework.XIVHelper
                     this.previousPlayerName = currentPlayer.Name;
                     this.RaisePrimaryPlayerChanged();
 
+                    // 再アクティベーション
+                    this.TryActivation();
+
                     // プレイヤーチェンジならば抜ける
                     return;
                 }
@@ -922,6 +927,9 @@ namespace FFXIV.Framework.XIVHelper
                 this.RaiseZoneChanged(
                     (uint)this.GetCurrentZoneID(),
                     currentZoneName);
+
+                // 再アクティベーション
+                this.TryActivation();
             }
 
             var partyIDs = party
@@ -1100,7 +1108,8 @@ namespace FFXIV.Framework.XIVHelper
 
         public CombatantEx GetBossInfo()
         {
-            if (!this.IsAvailable)
+            if (!this.IsAvailable ||
+                !this.isActivationAllowed)
             {
                 return null;
             }

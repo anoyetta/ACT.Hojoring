@@ -23,6 +23,7 @@ namespace ACT.Hojoring.Activator
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "anoyetta",
                 "ACT",
+                "logs",
                 "activator.log"));
 
         internal void Write(string message, Exception ex = null)

@@ -36,7 +36,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Hojoring.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -73,9 +74,6 @@
     <PackageReference Include="RazorEngine">
       <Version>3.10.0</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Hojoring.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
