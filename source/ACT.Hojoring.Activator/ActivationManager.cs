@@ -183,16 +183,37 @@ namespace ACT.Hojoring.Activator
                 var json = string.Empty;
                 var salt = default(string);
 
-                using (var client = new HttpClient(new WebRequestHandler()
+                for (int i = 0; i < 3; i++)
                 {
-                    CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore),
-                }))
-                {
-                    client.DefaultRequestHeaders.UserAgent.ParseAdd("Hojoring/1.0");
-                    client.Timeout = TimeSpan.FromSeconds(30);
+                    try
+                    {
+                        using (var client = new HttpClient(new WebRequestHandler()
+                        {
+                            CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore),
+                        }))
+                        {
+                            client.DefaultRequestHeaders.UserAgent.ParseAdd("Hojoring/1.0");
+                            client.Timeout = TimeSpan.FromSeconds(90);
 
-                    json = await client.GetStringAsync(AccountListUrl);
-                    salt = await client.GetStringAsync(AccountSaltUrl);
+                            json = await client.GetStringAsync(AccountListUrl);
+                            salt = await client.GetStringAsync(AccountSaltUrl);
+                        }
+
+                        break;
+                    }
+                    catch (TaskCanceledException ex)
+                    {
+                        if (i <= 1)
+                        {
+                            Logger.Instance.Write("download task canceled. retring download...");
+                        }
+                        else
+                        {
+                            Logger.Instance.Write("download task canceled.", ex.InnerException ?? ex);
+                            ActivationManager.Instance.CurrentStatus = ActivationStatus.Error;
+                            return;
+                        }
+                    }
                 }
 
                 lock (LockObject)
