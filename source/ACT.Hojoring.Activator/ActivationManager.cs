@@ -201,9 +201,18 @@ namespace ACT.Hojoring.Activator
 
                         break;
                     }
-                    catch (TaskCanceledException)
+                    catch (TaskCanceledException ex)
                     {
-                        Logger.Instance.Write("download task canceled. retring download...");
+                        if (i <= 1)
+                        {
+                            Logger.Instance.Write("download task canceled. retring download...");
+                        }
+                        else
+                        {
+                            Logger.Instance.Write("download task canceled.", ex.InnerException ?? ex);
+                            ActivationManager.Instance.CurrentStatus = ActivationStatus.Error;
+                            return;
+                        }
                     }
                 }
 
