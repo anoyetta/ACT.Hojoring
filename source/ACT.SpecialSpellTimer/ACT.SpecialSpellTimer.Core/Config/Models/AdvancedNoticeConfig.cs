@@ -83,9 +83,8 @@ namespace ACT.SpecialSpellTimer.Config.Models
 
         [XmlIgnore]
         private static readonly Regex SyncRegex = new Regex(
-            $@"{SyncKeyword} (?<priority>\d+?) (?<text>.*)",
-            RegexOptions.Compiled |
-            RegexOptions.Multiline);
+            $@"{SyncKeyword} (?<priority>\d+?):(?<text>.*)",
+            RegexOptions.Compiled);
 
         [XmlIgnore]
         private static readonly List<SyncTTS> SyncList = new List<SyncTTS>(16);
