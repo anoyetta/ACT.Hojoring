@@ -373,7 +373,7 @@ namespace ACT.SpecialSpellTimer
                         if (Math.Abs((newSchedule - spell.CompleteScheduledTime).TotalSeconds)
                             >= 0.6d)
                         {
-                            if (spell.CompleteScheduledTime <= now)
+                            if (spell.CompleteScheduledTime.AddSeconds(-1) <= now)
                             {
                                 spell.MatchDateTime = now;
                                 spell.OverDone = false;
@@ -531,18 +531,17 @@ namespace ACT.SpecialSpellTimer
             if (spell.UseHotbarRecastTime &&
                 !string.IsNullOrEmpty(spell.HotbarName))
             {
-                var actions = SharlayanHelper.Instance.Actions;
+                var actions = SharlayanHelper.Instance.ActionDictionary;
                 if (actions != null)
                 {
-                    foreach (var action in actions)
+                    if (actions.ContainsKey(spell.HotbarName))
                     {
-                        if (action != null &&
-                            action.Name.Equals(spell.HotbarName, StringComparison.OrdinalIgnoreCase) &&
-                            action.CoolDownPercent > 0)
+                        var action = actions[spell.HotbarName];
+
+                        if (action.RemainingCost > 0)
                         {
                             recastTime = action.RemainingCost;
                             result = true;
-                            break;
                         }
                     }
                 }

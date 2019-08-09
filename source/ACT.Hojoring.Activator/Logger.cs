@@ -37,16 +37,19 @@ namespace ACT.Hojoring.Activator
                 log += Environment.NewLine + ex.ToString();
             }
 
-            var dir = Path.GetDirectoryName(this.LazyLogFileName.Value);
-            if (!Directory.Exists(dir))
+            lock (this)
             {
-                Directory.CreateDirectory(dir);
-            }
+                var dir = Path.GetDirectoryName(this.LazyLogFileName.Value);
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
 
-            File.AppendAllText(
-                this.LazyLogFileName.Value,
-                log + Environment.NewLine,
-                new UTF8Encoding(false));
+                File.AppendAllText(
+                    this.LazyLogFileName.Value,
+                    log + Environment.NewLine,
+                    new UTF8Encoding(false));
+            }
         }
     }
 }
