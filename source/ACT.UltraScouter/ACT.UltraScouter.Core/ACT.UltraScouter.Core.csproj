@@ -449,6 +449,7 @@
     <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
       <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>
       <Name>FFXIV.Framework</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

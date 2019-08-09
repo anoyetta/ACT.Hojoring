@@ -5,13 +5,13 @@ using Newtonsoft.Json;
 
 namespace ACT.Hojoring.Activator.Models
 {
-    internal class AccountList
+    public class AccountList
     {
         #region Lazy Singleton
 
         private static readonly Lazy<AccountList> LazyAccountList = new Lazy<AccountList>(() => new AccountList());
 
-        internal static AccountList Instance => LazyAccountList.Value;
+        public static AccountList Instance => LazyAccountList.Value;
 
         private AccountList()
         {
@@ -43,7 +43,7 @@ namespace ACT.Hojoring.Activator.Models
             return data;
         }
 
-        internal void Save(
+        public void Save(
             string fileName,
             Account[] currentList = null)
         {

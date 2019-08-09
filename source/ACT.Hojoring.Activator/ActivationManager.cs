@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Cache;
@@ -19,16 +21,31 @@ namespace ACT.Hojoring.Activator
 
         private ActivationManager()
         {
+            Logger.Instance.Write("activator init.");
         }
 
         #endregion Lazy Singleton
 
         private static readonly object LockObject = new object();
 
+        private static readonly double[] FuzzyIntervals = new[]
+        {
+            0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0, 1.05, 1.1, 1.15, 1.2, 1.25
+        };
+
+        private static double GetFuzzy() => FuzzyIntervals.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+
         private readonly Lazy<System.Timers.Timer> LazyTimer = new Lazy<System.Timers.Timer>(() =>
         {
-            var timer = new System.Timers.Timer(TimeSpan.FromMinutes(60 * 3).TotalMilliseconds);
-            timer.Elapsed += (_, __) => RefreshAccountList();
+            var timer = new System.Timers.Timer(TimeSpan.FromMinutes(60 * GetFuzzy()).TotalMilliseconds);
+
+            timer.AutoReset = true;
+            timer.Elapsed += (_, __) =>
+            {
+                RefreshAccountList();
+                timer.Interval = 60 * GetFuzzy();
+            };
+
             return timer;
         });
 
@@ -47,8 +64,6 @@ namespace ACT.Hojoring.Activator
                 ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
                 ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls11;
                 ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-
-                Account.GetHash("fdsjakljglkjfdsuykyi0-9ir4ui90gfdsut8fdkj:");
 
                 Task.Run(() =>
                 {
@@ -79,10 +94,10 @@ namespace ACT.Hojoring.Activator
             var account = $"{name}-{server}-{guild}";
 
             if (this.activationAccount != account ||
-                (this.activationTimestamp - now).TotalMinutes > 60)
+                (this.activationTimestamp - now).TotalMinutes > (60 * GetFuzzy()))
             {
                 this.activationAccount = account;
-                this.Activation(name, server, guild);
+                this.EnqueueActivation(name, server, guild);
 
                 if (this.CurrentStatus != ActivationStatus.Loading)
                 {
@@ -102,7 +117,7 @@ namespace ACT.Hojoring.Activator
             }
         }
 
-        public bool Activation(
+        private void EnqueueActivation(
             string name,
             string server,
             string guild)
@@ -110,43 +125,63 @@ namespace ACT.Hojoring.Activator
             switch (this.CurrentStatus)
             {
                 case ActivationStatus.Loading:
-                    return true;
-
                 case ActivationStatus.Error:
-                    return false;
+                    return;
             }
 
-            var result = false;
-
+            var list = default(IEnumerable<Account>);
             lock (LockObject)
             {
-                if (!AccountList.Instance.CurrentList.Any())
-                {
-                    Logger.Instance.Write("error, account list is empty.");
-                    return result;
-                }
-
-                var isMatch = AccountList.Instance.CurrentList.Any(x => x.IsMatch(
-                    name,
-                    server,
-                    guild));
-
-                this.CurrentStatus = isMatch ? ActivationStatus.Deny : ActivationStatus.Allow;
-                result = !isMatch;
+                list = AccountList.Instance.CurrentList?.ToArray();
             }
 
-            var status = result ? "allow" : "deny";
-            Logger.Instance.Write(
-                $"n={name} s={server} g={guild} is {status}.");
+            if (list == null ||
+                !list.Any())
+            {
+                Logger.Instance.Write("error, account list is empty.");
+                return;
+            }
 
-            return result;
+            var th = new Thread(() =>
+            {
+                var isMatch = false;
+                var sw = Stopwatch.StartNew();
+
+                try
+                {
+                    foreach (var account in list)
+                    {
+                        isMatch = account.IsMatch(name, server, guild, currentSalt);
+                        Thread.Sleep(1);
+                    }
+                }
+                finally
+                {
+                    sw.Stop();
+                    Logger.Instance.Write($"account verified. count={list.Count()} duration={sw.Elapsed.TotalSeconds:F0}");
+                }
+
+                this.CurrentStatus = isMatch ? ActivationStatus.Deny : ActivationStatus.Allow;
+
+                Logger.Instance.Write(
+                    $"n={name} s={server} g={guild} is {(!isMatch ? "allow" : "deny")}.");
+            })
+            {
+                Priority = ThreadPriority.Lowest,
+                IsBackground = true,
+            };
+
+            th.Start();
         }
+
+        private static volatile string currentSalt;
 
         private static async void RefreshAccountList()
         {
             try
             {
                 var json = string.Empty;
+                var salt = default(string);
 
                 using (var client = new HttpClient(new WebRequestHandler()
                 {
@@ -157,11 +192,13 @@ namespace ACT.Hojoring.Activator
                     client.Timeout = TimeSpan.FromSeconds(30);
 
                     json = await client.GetStringAsync(AccountListUrl);
+                    salt = await client.GetStringAsync(AccountSaltUrl);
                 }
 
                 lock (LockObject)
                 {
                     AccountList.Instance.Load(json);
+                    currentSalt = salt;
                 }
 
                 ActivationManager.Instance.CurrentStatus = ActivationStatus.Allow;
@@ -176,6 +213,9 @@ namespace ACT.Hojoring.Activator
 
         private static readonly string AccountListUrl
             = "https://gist.githubusercontent.com/anoyetta/bc658cb51552ea12ce1aaa2899004e8c/raw/accounts.json";
+
+        private static readonly string AccountSaltUrl
+            = "https://gist.githubusercontent.com/anoyetta/bc658cb51552ea12ce1aaa2899004e8c/raw/accounts_salt.txt";
     }
 
     public enum ActivationStatus
