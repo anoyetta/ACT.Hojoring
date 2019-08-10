@@ -1,5 +1,6 @@
 using ACT.TTSYukkuri.Boyomichan;
 using ACT.TTSYukkuri.Config;
+using ACT.TTSYukkuri.GoogleCloudTextToSpeech;
 using ACT.TTSYukkuri.HOYA;
 using ACT.TTSYukkuri.OpenJTalk;
 using ACT.TTSYukkuri.Polly;
@@ -76,6 +77,10 @@ namespace ACT.TTSYukkuri
 
                             case TTSType.SAPI5:
                                 SpeechController.instance = new SAPI5SpeechController();
+                                break;
+
+                            case TTSType.GoogleCloudTextToSpeech:
+                                SpeechController.instance = new GoogleCloudTextToSpeechSpeechController();
                                 break;
 
                             case TTSType.Polly:

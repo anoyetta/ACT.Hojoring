@@ -96,6 +96,32 @@ For use for commercial purposes, a license to use the library is required.</syst
   <system:String x:Key="SAPI5_Rate">Rate</system:String>
   <system:String x:Key="SAPI5_Pitch">Pitch</system:String>
 
+  <system:String x:Key="GoogleCloudTextToSpeech_Language">Language</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_Name">Voice Name</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_VolumeGainDb">Volume [db]</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_Pitch">Pitch</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_SpeakingRate">Speed</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_SampleRateHertz">Sampling Rate [Hz]</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_SetRecommend">Set recommended values</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_Discription1">Google LLCが提供するCloud Text-to-Speechを使用します。</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_DiscriptionRegister">クイックスタート: クライアント ライブラリの使用</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_Discription2">に従い、サービスアカウントキーが含まれるJSONファイルをダウンロードし、環境変数を設定してください。</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_Discription3" xml:space="preserve">本ソフトウェアは、Google LLCの以下のライブラリを使用しており、その著作権は同社に帰属します。</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_GoogleApiCommonProtos">Google.Api.CommonProtos 1.7.0</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_GoogleApiGax">Google.Api.Gax 2.9.0</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_GoogleApiGaxGrpc">Google.Api.Gax.Grpc 2.9.0</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_GoogleApis">Google.Apis 1.40.2</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_GoogleApisAuth">Google.Apis.Auth 1.40.2</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_GoogleApisCore">Google.Apis.Core 1.40.2</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_GoogleCloudTextToSpeechV1">Google.Cloud.TextToSpeech.V1 1.0.0</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_GoogleProtobuf">Google.Protobuf 3.8.0</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_GrpcAuth">Grpc.Auth 1.22.0</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_GrpcCore">Grpc.Core 1.22.0</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_GrpcCoreApi">Grpc.Core.Api 1.22.0</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_Discription4" xml:space="preserve">これらのソフトウェアは、</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_ApacheLicense" xml:space="preserve">Apache License Version 2.0</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_Discription5" xml:space="preserve">の元で配布されています。</system:String>
+
   <system:String x:Key="Polly_Region">Region</system:String>
   <system:String x:Key="Polly_AccessKey">Access Key</system:String>
   <system:String x:Key="Polly_SecretKey">Secret Key</system:String>

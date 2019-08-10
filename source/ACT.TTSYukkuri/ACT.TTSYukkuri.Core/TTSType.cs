@@ -46,6 +46,11 @@ namespace ACT.TTSYukkuri
         public const string Polly = "Polly";
 
         /// <summary>
+        /// Google Cloud Text-to-Speech
+        /// </summary>
+        public const string GoogleCloudTextToSpeech = "Google Cloud Text-to-Speech";
+
+        /// <summary>
         /// コンボボックスコレクション
         /// </summary>
         public static ComboBoxItem[] ToComboBox = new ComboBoxItem[]
@@ -58,6 +63,7 @@ namespace ACT.TTSYukkuri
             new ComboBoxItem("CeVIO Creative Studio", TTSType.Sasara),
             new ComboBoxItem("VOICEROID", TTSType.VOICEROID),
             new ComboBoxItem("SAPI5", TTSType.SAPI5),
+            new ComboBoxItem("Google Cloud Text-to-Speech", TTSType.GoogleCloudTextToSpeech),
         };
     }
 

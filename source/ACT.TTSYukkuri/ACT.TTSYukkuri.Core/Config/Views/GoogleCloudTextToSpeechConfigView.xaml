@@ -1,0 +1,264 @@
+﻿<UserControl
+  x:Class="ACT.TTSYukkuri.Config.Views.GoogleCloudTextToSpeechConfigView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:vm="clr-namespace:ACT.TTSYukkuri.Config.ViewModels"
+  xmlns:resources="clr-namespace:ACT.TTSYukkuri.resources"
+  xmlns:yukkuri="clr-namespace:ACT.TTSYukkuri.Yukkuri"
+  xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
+  xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:local="clr-namespace:ACT.TTSYukkuri.Config.Views"
+  mc:Ignorable="d"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  Background="White"
+  FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
+  FontSize="17"
+  d:DesignWidth="600"
+  d:DataContext="{d:DesignInstance Type=vm:GoogleCloudTextToSpeechConfigViewModel, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
+      <fwcnv:BoolToCollapsedConverter x:Key="VisibilityConverter" />
+      <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../resources/strings/Strings.Yukkuri.ja-JP.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <ScrollViewer
+    HorizontalScrollBarVisibility="Disabled"
+    VerticalScrollBarVisibility="Auto">
+    <StackPanel Orientation="Vertical">
+      <Label Content="{DynamicResource GoogleCloudTextToSpeech_Language}" />
+      <ComboBox
+        HorizontalAlignment="Left"
+        MinWidth="350"
+        ItemsSource="{Binding LanguageCodeList, Mode=OneWay}"
+        DisplayMemberPath="Name"
+        SelectedValuePath="Value"
+        SelectedValue="{Binding Config.LanguageCode, Mode=TwoWay}">
+      </ComboBox>
+
+      <Label Content="{DynamicResource GoogleCloudTextToSpeech_Name}" />
+      <ComboBox
+        HorizontalAlignment="Left"
+        MinWidth="350"
+        ItemsSource="{Binding Config.VoiceList, Mode=TwoWay}"
+        DisplayMemberPath="Name"
+        SelectedValuePath="Value"
+        SelectedValue="{Binding Config.Name, Mode=TwoWay}">
+      </ComboBox>
+
+      <!-- Volume Gain Db -->
+      <Label
+        Margin="5 10 0 0"
+        MinWidth="100"
+        Padding="0"
+        Content="{DynamicResource GoogleCloudTextToSpeech_VolumeGainDb}" />
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=GainSlider, Path=Value, Mode=OneWay}"
+          ContentStringFormat="N2" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="GainSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="0.1"
+          LargeChange="0.1"
+          Minimum="-96.0" Maximum="16.0"
+          Width="250"
+          Value="{Binding Config.VolumeGainDb, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!-- Pitch -->
+      <Label
+        Margin="5 10 0 0"
+        MinWidth="100"
+        Padding="0"
+        Content="{DynamicResource GoogleCloudTextToSpeech_Pitch}" />
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=VolumeSlider, Path=Value, Mode=OneWay}"
+          ContentStringFormat="N2" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="VolumeSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="0.1"
+          LargeChange="0.1"
+          Minimum="-20.0" Maximum="20.00"
+          Width="250"
+          Value="{Binding Config.Pitch, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!-- Speaking Rate -->
+      <Label
+        Margin="5 10 0 0"
+        MinWidth="100"
+        Padding="0"
+        Content="{DynamicResource GoogleCloudTextToSpeech_SpeakingRate}" />
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=AllPassSlider, Path=Value, Mode=OneWay}"
+          ContentStringFormat="N2" />
+        <Slider
+          Margin="5 0 0 0"
+          x:Name="AllPassSlider"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          SmallChange="0.01"
+          LargeChange="0.01"
+          Minimum="0.25" Maximum="4.00"
+          Width="250"
+          Value="{Binding Config.SpeakingRate, Mode=TwoWay}" />
+      </StackPanel>
+
+      <!-- Sampling Rate Herz -->
+      <Label Content="{DynamicResource GoogleCloudTextToSpeech_SampleRateHertz}" />
+      <ComboBox
+        HorizontalAlignment="Left"
+        MinWidth="350"
+        ItemsSource="{Binding SampleRateHertzList, Mode=OneWay}"
+        DisplayMemberPath="Name"
+        SelectedValuePath="Value"
+        SelectedValue="{Binding Config.SampleRateHertz, Mode=TwoWay}">
+      </ComboBox>
+
+      <TextBlock Margin="5 15 0 0" HorizontalAlignment="Left">
+        <Hyperlink
+          Command="{Binding SetRecommendCommand, Mode=OneWay}">
+          <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_SetRecommend}" />
+        </Hyperlink>
+      </TextBlock>
+
+      <TextBlock
+        Margin="5,20,5,0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap">
+        <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_Discription1}" /><LineBreak />
+        <Hyperlink
+          NavigateUri="https://cloud.google.com/text-to-speech/docs/quickstart-client-libraries"
+          RequestNavigate="OnRequestNavigate"
+          ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=NavigateUri, Mode=OneWay}">
+          <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_DiscriptionRegister}" />
+        </Hyperlink>
+        <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_Discription2}" />
+      </TextBlock>
+
+      <TextBlock
+        Margin="5 20 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource GoogleCloudTextToSpeech_Discription3}" />
+
+      <TextBlock
+        Margin="5 10 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApiCommonProtos}" />
+      <TextBlock
+        Margin="5 10 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApiGax}" />
+      <TextBlock
+        Margin="5 10 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApiGaxGrpc}" />
+      <TextBlock
+        Margin="5 10 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApis}" />
+      <TextBlock
+        Margin="5 10 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApisAuth}" />
+      <TextBlock
+        Margin="5 10 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApisCore}" />
+      <TextBlock
+        Margin="5 10 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleCloudTextToSpeechV1}" />
+      <TextBlock
+        Margin="5 10 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleProtobuf}" />
+      <TextBlock
+        Margin="5 10 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource GoogleCloudTextToSpeech_GrpcAuth}" />
+      <TextBlock
+        Margin="5 10 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource GoogleCloudTextToSpeech_GrpcCore}" />
+      <TextBlock
+        Margin="5 10 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource GoogleCloudTextToSpeech_GrpcCoreApi}" />
+
+      <TextBlock
+        Margin="5,20,5,0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap">
+        <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_Discription4}" />
+        <Hyperlink
+          NavigateUri="https://www.nuget.org/packages/Google.Cloud.TextToSpeech.V1/1.0.0/License"
+          RequestNavigate="OnRequestNavigate"
+          ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=NavigateUri, Mode=OneWay}">
+          <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_ApacheLicense}" />
+        </Hyperlink>
+        <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_Discription5}" />
+      </TextBlock>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>
