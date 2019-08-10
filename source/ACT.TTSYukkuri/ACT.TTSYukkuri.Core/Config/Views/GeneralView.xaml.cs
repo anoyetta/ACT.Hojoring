@@ -154,6 +154,10 @@ namespace ACT.TTSYukkuri.Config.Views
                 case TTSType.SAPI5:
                     content = new SAPI5ConfigView();
                     break;
+
+                case TTSType.GoogleCloudTextToSpeech:
+                    content = new GoogleCloudTextToSpeechConfigView();
+                    break;
             }
 
             this.ContentGrid.Children.Clear();

@@ -87,6 +87,7 @@ namespace ACT.TTSYukkuri.Config
         private SasaraConfig sasaraSettings = new SasaraConfig();
         private VoiceroidConfig voiceroidSettings = new VoiceroidConfig();
         private SAPI5Configs sapi5Settings = new SAPI5Configs();
+        private GoogleCloudTextToSpeechConfig googleCloudTextToSpeechSettings = new GoogleCloudTextToSpeechConfig();
         private StatusAlertConfig statusAlertSettings = new StatusAlertConfig();
         private DiscordSettings discordSettings = new DiscordSettings();
 
@@ -372,6 +373,15 @@ namespace ACT.TTSYukkuri.Config
         {
             get => this.sapi5Settings;
             set => this.SetProperty(ref this.sapi5Settings, value);
+        }
+
+        /// <summary>
+        /// Google Cloud Text-To-Speechの設定
+        /// </summary>
+        public GoogleCloudTextToSpeechConfig GoogleCloudTextToSpeechSettings
+        {
+            get => this.googleCloudTextToSpeechSettings;
+            set => this.SetProperty(ref this.googleCloudTextToSpeechSettings, value);
         }
 
         /// <summary>
