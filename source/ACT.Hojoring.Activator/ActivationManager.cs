@@ -51,7 +51,10 @@ namespace ACT.Hojoring.Activator
 
         public ActivationStatus CurrentStatus { get; private set; } = ActivationStatus.Loading;
 
-        public void Start()
+        private Func<bool> isBusyCallback;
+
+        public void Start(
+            Func<bool> isBusyCallback = null)
         {
             lock (LockObject)
             {
@@ -64,6 +67,11 @@ namespace ACT.Hojoring.Activator
                 ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
                 ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls11;
                 ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+
+                if (isBusyCallback != null)
+                {
+                    this.isBusyCallback = isBusyCallback;
+                }
 
                 Task.Run(() =>
                 {
@@ -172,6 +180,11 @@ namespace ACT.Hojoring.Activator
 
         private static async void RefreshAccountList()
         {
+            if (Instance.isBusyCallback?.Invoke() ?? true)
+            {
+                return;
+            }
+
             try
             {
                 var json = string.Empty;

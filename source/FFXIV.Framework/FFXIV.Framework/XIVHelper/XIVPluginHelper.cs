@@ -687,13 +687,17 @@ namespace FFXIV.Framework.XIVHelper
 
         private void TryActivation()
         {
-            var player = CombatantsManager.Instance.Player;
-            if (player != null)
+            if (CombatantsManager.Instance.PartyCount < 4 &&
+                !this.InCombat)
             {
-                this.isActivationAllowed = EnvironmentHelper.TryActivation(
-                    player.Name,
-                    player.WorldName,
-                    string.Empty);
+                var player = CombatantsManager.Instance.Player;
+                if (player != null)
+                {
+                    this.isActivationAllowed = EnvironmentHelper.TryActivation(
+                        player.Name,
+                        player.WorldName,
+                        string.Empty);
+                }
             }
         }
 
