@@ -709,6 +709,7 @@ namespace FFXIV.Framework.XIVHelper
                     foreach (var action in container.ActionItems)
                     {
                         this.actionDictionary[action.Name] = action;
+                        Thread.Yield();
                     }
                 }
             }

@@ -5,6 +5,7 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using ACT.Hojoring.Activator;
+using FFXIV.Framework.XIVHelper;
 
 namespace FFXIV.Framework.Common
 {
@@ -185,7 +186,10 @@ namespace FFXIV.Framework.Common
             isStarted = true;
 
             ActivationDeniedCallbackList.Add(callback);
-            ActivationManager.Instance.Start();
+            ActivationManager.Instance.Start(
+                () =>
+                    CombatantsManager.Instance.PartyCount >= 4 ||
+                    XIVPluginHelper.Instance.InCombat);
         }
 
         internal static bool TryActivation(
