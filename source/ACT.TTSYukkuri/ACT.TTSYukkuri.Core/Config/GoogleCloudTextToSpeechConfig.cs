@@ -11,7 +11,7 @@ namespace ACT.TTSYukkuri.Config
     public class GoogleCloudTextToSpeechConfig :
         BindableBase
     {
-        private TextToSpeechClient client = TextToSpeechClient.Create();
+        private TextToSpeechClient client = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS") != null ? TextToSpeechClient.Create() : null;
 
         private string languageCode;
         private string name;
@@ -120,7 +120,12 @@ namespace ACT.TTSYukkuri.Config
 
         public GoogleCloudTextToSpeechVoice[] EnumerateVoice()
         {
-            return client
+            if (this.client == null)
+            {
+                return new GoogleCloudTextToSpeechVoice[0];
+            }
+
+            return this.client
                 .ListVoices(LanguageCode)
                 .Voices
                 .Select(x => new GoogleCloudTextToSpeechVoice { VoiceName = x.Name })
