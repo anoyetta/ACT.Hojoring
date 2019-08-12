@@ -18,6 +18,10 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
         /// </summary>
         public void Initialize()
         {
+            if (Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS") == null)
+            {
+                return;
+            }
             this.client = TextToSpeechClient.Create();
         }
 
