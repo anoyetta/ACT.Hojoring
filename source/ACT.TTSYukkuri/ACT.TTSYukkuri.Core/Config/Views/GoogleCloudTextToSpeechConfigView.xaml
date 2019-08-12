@@ -142,7 +142,7 @@
       <Label Content="{DynamicResource GoogleCloudTextToSpeech_SampleRateHertz}" />
       <ComboBox
         HorizontalAlignment="Left"
-        MinWidth="350"
+        Width="100"
         ItemsSource="{Binding SampleRateHertzList, Mode=OneWay}"
         DisplayMemberPath="Name"
         SelectedValuePath="Value"
@@ -157,7 +157,7 @@
       </TextBlock>
 
       <TextBlock
-        Margin="5,20,5,0"
+        Margin="5,15,5,0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap">
@@ -172,81 +172,81 @@
       </TextBlock>
 
       <TextBlock
-        Margin="5 20 5 0"
+        Margin="5 10 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap"
         Text="{DynamicResource GoogleCloudTextToSpeech_Discription3}" />
 
       <TextBlock
-        Margin="5 10 5 0"
+        Margin="5 5 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap"
         Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApiCommonProtos}" />
       <TextBlock
-        Margin="5 10 5 0"
+        Margin="5 0 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap"
         Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApiGax}" />
       <TextBlock
-        Margin="5 10 5 0"
+        Margin="5 0 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap"
         Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApiGaxGrpc}" />
       <TextBlock
-        Margin="5 10 5 0"
+        Margin="5 0 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap"
         Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApis}" />
       <TextBlock
-        Margin="5 10 5 0"
+        Margin="5 0 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap"
         Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApisAuth}" />
       <TextBlock
-        Margin="5 10 5 0"
+        Margin="5 0 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap"
         Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApisCore}" />
       <TextBlock
-        Margin="5 10 5 0"
+        Margin="5 0 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap"
         Text="{DynamicResource GoogleCloudTextToSpeech_GoogleCloudTextToSpeechV1}" />
       <TextBlock
-        Margin="5 10 5 0"
+        Margin="5 0 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap"
         Text="{DynamicResource GoogleCloudTextToSpeech_GoogleProtobuf}" />
       <TextBlock
-        Margin="5 10 5 0"
+        Margin="5 0 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap"
         Text="{DynamicResource GoogleCloudTextToSpeech_GrpcAuth}" />
       <TextBlock
-        Margin="5 10 5 0"
+        Margin="5 0 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap"
         Text="{DynamicResource GoogleCloudTextToSpeech_GrpcCore}" />
       <TextBlock
-        Margin="5 10 5 0"
+        Margin="5 0 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap"
         Text="{DynamicResource GoogleCloudTextToSpeech_GrpcCoreApi}" />
 
       <TextBlock
-        Margin="5,20,5,0"
+        Margin="5 5 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap">
