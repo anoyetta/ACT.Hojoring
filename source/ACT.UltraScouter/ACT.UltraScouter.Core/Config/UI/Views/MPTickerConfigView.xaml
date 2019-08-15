@@ -214,6 +214,18 @@
 
       <Label
         Margin="0 15 0 0"
+        Content="{DynamicResource MPTicker_Offset}" />
+      <xctk:DoubleUpDown
+        HorizontalAlignment="Left"
+        Value="{Binding MPTicker.Offset, Mode=TwoWay}"
+        Width="75"
+        FormatString="N1"
+        Minimum="0.0"
+        Maximum="3.0"
+        Increment="0.1" />
+
+      <Label
+        Margin="0 15 0 0"
         Content="{DynamicResource MPTicker_ResyncInterval}" />
       <StackPanel Orientation="Horizontal">
         <xctk:DoubleUpDown

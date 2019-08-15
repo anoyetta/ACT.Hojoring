@@ -60,18 +60,19 @@ namespace ACT.UltraScouter.ViewModels
             }
         }
 
-        private void BeginAnimation()
+        private async void BeginAnimation()
         {
+            await Task.Delay(TimeSpan.FromSeconds(Settings.Instance.MPTicker.Offset));
+
             this.IsVisibleSyncIndicator = true;
 
             (this.View as MPTickerView)?.BeginAnimation();
 
-            WPFHelper.BeginInvoke(async () =>
+            await Task.Run(async () =>
             {
                 await Task.Delay(1200);
-                this.IsVisibleSyncIndicator = false;
-            },
-            DispatcherPriority.Normal);
+                await WPFHelper.InvokeAsync(() => this.IsVisibleSyncIndicator = false);
+            });
         }
 
         public virtual Settings RootConfig => Settings.Instance;

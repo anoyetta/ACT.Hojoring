@@ -70,6 +70,17 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.isSyncMP, value);
         }
 
+        private double offset;
+
+        /// <summary>
+        /// 3s Tickのオフセット秒
+        /// </summary>
+        public double Offset
+        {
+            get => this.offset;
+            set => this.SetProperty(ref this.offset, value);
+        }
+
         private bool isUnlockMPSync;
 
         /// <summary>

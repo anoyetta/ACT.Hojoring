@@ -66,16 +66,15 @@
       <!-- Volume Gain Db -->
       <Label
         Margin="5 10 0 0"
-        MinWidth="100"
         Padding="0"
         Content="{DynamicResource GoogleCloudTextToSpeech_VolumeGainDb}" />
       <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
         <Label
           Margin="0 0 0 0"
-          MinWidth="60"
+          MinWidth="58"
           HorizontalContentAlignment="Right"
           Content="{Binding ElementName=GainSlider, Path=Value, Mode=OneWay}"
-          ContentStringFormat="N2" />
+          ContentStringFormat="N1" />
         <Slider
           Margin="5 0 0 0"
           x:Name="GainSlider"
@@ -83,7 +82,7 @@
           VerticalAlignment="Center"
           SmallChange="0.1"
           LargeChange="0.1"
-          Minimum="-96.0" Maximum="16.0"
+          Minimum="-10.0" Maximum="10.0"
           Width="250"
           Value="{Binding Config.VolumeGainDb, Mode=TwoWay}" />
       </StackPanel>
@@ -91,16 +90,15 @@
       <!-- Pitch -->
       <Label
         Margin="5 10 0 0"
-        MinWidth="100"
         Padding="0"
         Content="{DynamicResource GoogleCloudTextToSpeech_Pitch}" />
       <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
         <Label
           Margin="0 0 0 0"
-          MinWidth="60"
+          MinWidth="58"
           HorizontalContentAlignment="Right"
           Content="{Binding ElementName=VolumeSlider, Path=Value, Mode=OneWay}"
-          ContentStringFormat="N2" />
+          ContentStringFormat="N1" />
         <Slider
           Margin="5 0 0 0"
           x:Name="VolumeSlider"
@@ -116,13 +114,12 @@
       <!-- Speaking Rate -->
       <Label
         Margin="5 10 0 0"
-        MinWidth="100"
         Padding="0"
         Content="{DynamicResource GoogleCloudTextToSpeech_SpeakingRate}" />
       <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
         <Label
           Margin="0 0 0 0"
-          MinWidth="60"
+          MinWidth="58"
           HorizontalContentAlignment="Right"
           Content="{Binding ElementName=AllPassSlider, Path=Value, Mode=OneWay}"
           ContentStringFormat="N2" />
@@ -142,14 +139,14 @@
       <Label Content="{DynamicResource GoogleCloudTextToSpeech_SampleRateHertz}" />
       <ComboBox
         HorizontalAlignment="Left"
-        MinWidth="350"
+        Width="100"
         ItemsSource="{Binding SampleRateHertzList, Mode=OneWay}"
         DisplayMemberPath="Name"
         SelectedValuePath="Value"
         SelectedValue="{Binding Config.SampleRateHertz, Mode=TwoWay}">
       </ComboBox>
 
-      <TextBlock Margin="5 15 0 0" HorizontalAlignment="Left">
+      <TextBlock Margin="0 15 0 0" HorizontalAlignment="Left">
         <Hyperlink
           Command="{Binding SetRecommendCommand, Mode=OneWay}">
           <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_SetRecommend}" />
@@ -157,108 +154,24 @@
       </TextBlock>
 
       <TextBlock
-        Margin="5,20,5,0"
+        Margin="0 15 5 0"
         HorizontalAlignment="Left"
-        FontSize="14"
         TextWrapping="Wrap">
-        <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_Discription1}" /><LineBreak />
+        <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_Usage}" /><LineBreak />
         <Hyperlink
           NavigateUri="https://cloud.google.com/text-to-speech/docs/quickstart-client-libraries"
           RequestNavigate="OnRequestNavigate"
           ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=NavigateUri, Mode=OneWay}">
-          <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_DiscriptionRegister}" />
+          <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_QuickStart}" />
         </Hyperlink>
-        <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_Discription2}" />
       </TextBlock>
 
       <TextBlock
-        Margin="5 20 5 0"
+        Margin="0 15 5 0"
         HorizontalAlignment="Left"
         FontSize="14"
         TextWrapping="Wrap"
-        Text="{DynamicResource GoogleCloudTextToSpeech_Discription3}" />
-
-      <TextBlock
-        Margin="5 10 5 0"
-        HorizontalAlignment="Left"
-        FontSize="14"
-        TextWrapping="Wrap"
-        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApiCommonProtos}" />
-      <TextBlock
-        Margin="5 10 5 0"
-        HorizontalAlignment="Left"
-        FontSize="14"
-        TextWrapping="Wrap"
-        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApiGax}" />
-      <TextBlock
-        Margin="5 10 5 0"
-        HorizontalAlignment="Left"
-        FontSize="14"
-        TextWrapping="Wrap"
-        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApiGaxGrpc}" />
-      <TextBlock
-        Margin="5 10 5 0"
-        HorizontalAlignment="Left"
-        FontSize="14"
-        TextWrapping="Wrap"
-        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApis}" />
-      <TextBlock
-        Margin="5 10 5 0"
-        HorizontalAlignment="Left"
-        FontSize="14"
-        TextWrapping="Wrap"
-        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApisAuth}" />
-      <TextBlock
-        Margin="5 10 5 0"
-        HorizontalAlignment="Left"
-        FontSize="14"
-        TextWrapping="Wrap"
-        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleApisCore}" />
-      <TextBlock
-        Margin="5 10 5 0"
-        HorizontalAlignment="Left"
-        FontSize="14"
-        TextWrapping="Wrap"
-        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleCloudTextToSpeechV1}" />
-      <TextBlock
-        Margin="5 10 5 0"
-        HorizontalAlignment="Left"
-        FontSize="14"
-        TextWrapping="Wrap"
-        Text="{DynamicResource GoogleCloudTextToSpeech_GoogleProtobuf}" />
-      <TextBlock
-        Margin="5 10 5 0"
-        HorizontalAlignment="Left"
-        FontSize="14"
-        TextWrapping="Wrap"
-        Text="{DynamicResource GoogleCloudTextToSpeech_GrpcAuth}" />
-      <TextBlock
-        Margin="5 10 5 0"
-        HorizontalAlignment="Left"
-        FontSize="14"
-        TextWrapping="Wrap"
-        Text="{DynamicResource GoogleCloudTextToSpeech_GrpcCore}" />
-      <TextBlock
-        Margin="5 10 5 0"
-        HorizontalAlignment="Left"
-        FontSize="14"
-        TextWrapping="Wrap"
-        Text="{DynamicResource GoogleCloudTextToSpeech_GrpcCoreApi}" />
-
-      <TextBlock
-        Margin="5,20,5,0"
-        HorizontalAlignment="Left"
-        FontSize="14"
-        TextWrapping="Wrap">
-        <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_Discription4}" />
-        <Hyperlink
-          NavigateUri="https://www.nuget.org/packages/Google.Cloud.TextToSpeech.V1/1.0.0/License"
-          RequestNavigate="OnRequestNavigate"
-          ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=NavigateUri, Mode=OneWay}">
-          <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_ApacheLicense}" />
-        </Hyperlink>
-        <TextBlock Text="{DynamicResource GoogleCloudTextToSpeech_Discription5}" />
-      </TextBlock>
+        Text="{DynamicResource GoogleCloudTextToSpeech_Licence}" />
     </StackPanel>
   </ScrollViewer>
 </UserControl>
