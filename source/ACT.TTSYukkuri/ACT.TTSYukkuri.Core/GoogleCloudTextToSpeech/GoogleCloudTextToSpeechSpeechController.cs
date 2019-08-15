@@ -1,7 +1,9 @@
-﻿using ACT.TTSYukkuri.Config;
-using Google.Cloud.TextToSpeech.V1;
-using System;
+﻿using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using ACT.TTSYukkuri.Config;
+using Google.Cloud.TextToSpeech.V1;
 
 namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
 {
@@ -11,23 +13,15 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
     public class GoogleCloudTextToSpeechSpeechController :
         ISpeechController
     {
-        private TextToSpeechClient client;
-
         /// <summary>
         /// 初期化する
         /// </summary>
         public void Initialize()
         {
-            if (Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS") == null)
-            {
-                return;
-            }
-            this.client = TextToSpeechClient.Create();
         }
 
         public void Free()
         {
-            this.client = null;
         }
 
         /// <summary>
@@ -45,11 +39,17 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
                 return;
             }
 
+            var client = GoogleCloudTextToSpeechConfig.TTSClient;
+            if (client == null)
+            {
+                return;
+            }
+
             // 現在の条件をハッシュ化してWAVEファイル名を作る
             var wave = this.GetCacheFileName(
-                Settings.Default.TTS,
-                text.Replace(Environment.NewLine, "+"),
-                Settings.Default.GoogleCloudTextToSpeechSettings.ToString());
+                    Settings.Default.TTS,
+                    text.Replace(Environment.NewLine, "+"),
+                    Settings.Default.GoogleCloudTextToSpeechSettings.ToString());
 
             // Double-checked locking
             if (!File.Exists(wave))
@@ -98,6 +98,40 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
 
             // 再生する
             SoundPlayerWrapper.Play(wave, playDevice, isSync, volume);
+        }
+
+        public static void SetupLibrary()
+        {
+            if (string.IsNullOrEmpty(PluginCore.Instance?.PluginDirectory))
+            {
+                return;
+            }
+
+            var entryDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var libDirectory = new[]
+            {
+                Path.Combine(PluginCore.Instance.PluginDirectory, "bin", "lib"),
+                Path.Combine(PluginCore.Instance.PluginDirectory, "lib"),
+            }.FirstOrDefault(x => Directory.Exists(x));
+
+            var libs = new (string dst, string src)[]
+            {
+                (Path.Combine(entryDirectory, "grpc_csharp_ext.x64.dll"), Path.Combine(libDirectory, "grpc_csharp_ext.x64.dll")),
+                (Path.Combine(entryDirectory, "grpc_csharp_ext.x86.dll"), Path.Combine(libDirectory, "grpc_csharp_ext.x86.dll")),
+            };
+
+            foreach (var lib in libs)
+            {
+                if (!File.Exists(lib.src))
+                {
+                    continue;
+                }
+
+                if (!File.Exists(lib.dst))
+                {
+                    File.Move(lib.src, lib.dst);
+                }
+            }
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using Google.Cloud.TextToSpeech.V1;
-using Prism.Mvvm;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
-using ACT.TTSYukkuri.Config.ViewModels;
+using ACT.TTSYukkuri.GoogleCloudTextToSpeech;
+using Google.Cloud.TextToSpeech.V1;
+using Prism.Mvvm;
 
 namespace ACT.TTSYukkuri.Config
 {
@@ -11,7 +11,18 @@ namespace ACT.TTSYukkuri.Config
     public class GoogleCloudTextToSpeechConfig :
         BindableBase
     {
-        private TextToSpeechClient client = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS") != null ? TextToSpeechClient.Create() : null;
+        private static readonly Lazy<TextToSpeechClient> LazyClient = new Lazy<TextToSpeechClient>(() =>
+        {
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS")))
+            {
+                return null;
+            }
+
+            GoogleCloudTextToSpeechSpeechController.SetupLibrary();
+            return TextToSpeechClient.Create();
+        });
+
+        public static TextToSpeechClient TTSClient => LazyClient.Value;
 
         private string languageCode;
         private string name;
@@ -120,12 +131,12 @@ namespace ACT.TTSYukkuri.Config
 
         public GoogleCloudTextToSpeechVoice[] EnumerateVoice()
         {
-            if (this.client == null)
+            if (TTSClient == null)
             {
                 return new GoogleCloudTextToSpeechVoice[0];
             }
 
-            return this.client
+            return TTSClient
                 .ListVoices(LanguageCode)
                 .Voices
                 .Select(x => new GoogleCloudTextToSpeechVoice { VoiceName = x.Name })

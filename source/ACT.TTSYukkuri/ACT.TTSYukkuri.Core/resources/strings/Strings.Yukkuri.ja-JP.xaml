@@ -103,9 +103,8 @@
   <system:String x:Key="GoogleCloudTextToSpeech_SpeakingRate">スピード</system:String>
   <system:String x:Key="GoogleCloudTextToSpeech_SampleRateHertz">サンプリング周波数 [Hz]</system:String>
   <system:String x:Key="GoogleCloudTextToSpeech_SetRecommend">推奨値をセットする</system:String>
-  <system:String x:Key="GoogleCloudTextToSpeech_Discription1">Google LLCが提供するCloud Text-to-Speechを使用します。</system:String>
-  <system:String x:Key="GoogleCloudTextToSpeech_DiscriptionRegister">クイックスタート: クライアント ライブラリの使用</system:String>
-  <system:String x:Key="GoogleCloudTextToSpeech_Discription2">に従い、サービスアカウントキーが含まれるJSONファイルをダウンロードし、環境変数を設定してください。</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_Usage">使い方</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_QuickStart">クイックスタート: クライアント ライブラリの使用</system:String>
   <system:String x:Key="GoogleCloudTextToSpeech_Licence">Apache License 2.0 に基づき Google Cloud Libraries for .NET を使用しています。</system:String>
 
   <system:String x:Key="Polly_Region">リージョン</system:String>

@@ -99,6 +99,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>DEL /F $(TargetPath) &gt; nul
+DEL /F *grpc_csharp_ext.* &gt; nul
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -56,13 +56,13 @@ namespace ACT.TTSYukkuri
         public static ComboBoxItem[] ToComboBox = new ComboBoxItem[]
         {
             new ComboBoxItem("AquesTalk (ゆっくり)", TTSType.Yukkuri),
+            new ComboBoxItem("CeVIO Creative Studio", TTSType.Sasara),
             new ComboBoxItem("Open JTalk", TTSType.OpenJTalk),
+            new ComboBoxItem("VOICEROID", TTSType.VOICEROID),
+            new ComboBoxItem("棒読みちゃん(TCPインターフェース)", TTSType.Boyomichan),
+            new ComboBoxItem("SAPI5", TTSType.SAPI5),
             new ComboBoxItem("HOYA VoiceText Web API", TTSType.HOYA),
             new ComboBoxItem("Amazon Polly", TTSType.Polly),
-            new ComboBoxItem("棒読みちゃん(TCPインターフェース)", TTSType.Boyomichan),
-            new ComboBoxItem("CeVIO Creative Studio", TTSType.Sasara),
-            new ComboBoxItem("VOICEROID", TTSType.VOICEROID),
-            new ComboBoxItem("SAPI5", TTSType.SAPI5),
             new ComboBoxItem("Google Cloud Text-to-Speech", TTSType.GoogleCloudTextToSpeech),
         };
     }
