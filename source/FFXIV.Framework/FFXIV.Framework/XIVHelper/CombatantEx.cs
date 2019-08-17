@@ -73,9 +73,6 @@ namespace FFXIV.Framework.XIVHelper
             dst.NetworkBuffs.Clear();
             dst.NetworkBuffs.AddRange(src.NetworkBuffs);
 
-            dst.UnknownNetworkBuffs.Clear();
-            dst.UnknownNetworkBuffs.AddRange(src.UnknownNetworkBuffs);
-
             dst.SetName(src.Name);
             SetSkillName(dst);
         }
@@ -132,9 +129,6 @@ namespace FFXIV.Framework.XIVHelper
 
             dst.NetworkBuffs.Clear();
             dst.NetworkBuffs.AddRange(src.NetworkBuffs);
-
-            dst.UnknownNetworkBuffs.Clear();
-            dst.UnknownNetworkBuffs.AddRange(src.UnknownNetworkBuffs);
 
             dst.SetName(src.Name);
             dst.CastSkillName = src.CastSkillName;
@@ -665,11 +659,6 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         public List<NetworkBuff> NetworkBuffs
-        {
-            get;
-        } = new List<NetworkBuff>();
-
-        public List<NetworkBuff> UnknownNetworkBuffs
         {
             get;
         } = new List<NetworkBuff>();
