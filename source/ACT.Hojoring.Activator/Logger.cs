@@ -24,7 +24,7 @@ namespace ACT.Hojoring.Activator
                 "anoyetta",
                 "ACT",
                 "logs",
-                "activator.log"));
+                $"activator.{DateTime.Now:yyyy-MM-dd}.log"));
 
         internal void Write(string message, Exception ex = null)
         {

@@ -61,6 +61,8 @@ namespace ACT.SpecialSpellTimer
                         }
                     }
                 });
+
+                spells.AsParallel().ForAll(spell => this.UpdateHotbarRecast(spell));
             }
             finally
             {
@@ -82,7 +84,6 @@ namespace ACT.SpecialSpellTimer
         {
             var regex = spell.Regex;
             var notifyNeeded = false;
-            var matched = false;
 
             if (!spell.IsInstance)
             {
@@ -105,7 +106,6 @@ namespace ACT.SpecialSpellTimer
                         // キーワードが含まれるか？
                         if (logLine.Contains(keyword, StringComparison.OrdinalIgnoreCase))
                         {
-                            matched = true;
                             var targetSpell = spell;
 
                             // ヒットしたログを格納する
@@ -157,7 +157,6 @@ namespace ACT.SpecialSpellTimer
                         var match = regex.Match(logLine);
                         if (match.Success)
                         {
-                            matched = true;
 #if DEBUG
                             if (logLine.Contains("MARK"))
                             {
@@ -358,47 +357,58 @@ namespace ACT.SpecialSpellTimer
             }
             // end if 延長マッチング
 
-            // ホットバー情報を更新する
-            if (!matched)
-            {
-                var now = DateTime.Now;
-
-                if (spell.CompleteScheduledTime.AddSeconds(2) > now)
-                {
-                    if (this.TryGetHotbarRecast(spell, out double d))
-                    {
-                        // ホットバー情報と0.6秒以上乖離したら補正する
-                        var newSchedule = now.AddSeconds(d);
-
-                        if (Math.Abs((newSchedule - spell.CompleteScheduledTime).TotalSeconds)
-                            >= 0.6d)
-                        {
-                            if (spell.CompleteScheduledTime.AddSeconds(-1) <= now)
-                            {
-                                spell.MatchDateTime = now;
-                                spell.OverDone = false;
-                                spell.TimeupDone = false;
-                            }
-
-                            spell.CompleteScheduledTime = newSchedule;
-                            spell.BeforeDone = false;
-                            spell.UpdateDone = false;
-
-                            notifyNeeded = true;
-
-                            spell.StartOverSoundTimer();
-                            spell.StartBeforeSoundTimer();
-                            spell.StartTimeupSoundTimer();
-                        }
-                    }
-                }
-            }
-
             // ACT標準のSpellTimerに変更を通知する
             if (notifyNeeded)
             {
                 this.UpdateNormalSpellTimer(spell, false);
                 this.NotifyNormalSpellTimer(spell);
+            }
+        }
+
+        public void UpdateHotbarRecast(
+            Spell spell)
+        {
+            if (!spell.UseHotbarRecastTime ||
+                string.IsNullOrEmpty(spell.HotbarName))
+            {
+                return;
+            }
+
+            var now = DateTime.Now;
+
+            if ((now - spell.MatchDateTime).TotalSeconds <= 0.1)
+            {
+                return;
+            }
+
+            if (spell.CompleteScheduledTime.AddSeconds(2) > now)
+            {
+                if (!this.TryGetHotbarRecast(spell, out double d))
+                {
+                    return;
+                }
+
+                var newSchedule = now.AddSeconds(d);
+
+                // ホットバー情報と0.6秒以上乖離したら補正する
+                if (d > 1.0 &&
+                Math.Abs((newSchedule - spell.CompleteScheduledTime).TotalSeconds) >= 0.6d)
+                {
+                    if (spell.CompleteScheduledTime.AddSeconds(-1) <= now)
+                    {
+                        spell.MatchDateTime = now;
+                        spell.OverDone = false;
+                        spell.TimeupDone = false;
+                    }
+
+                    spell.CompleteScheduledTime = newSchedule;
+                    spell.BeforeDone = false;
+                    spell.UpdateDone = false;
+
+                    spell.StartOverSoundTimer();
+                    spell.StartBeforeSoundTimer();
+                    spell.StartTimeupSoundTimer();
+                }
             }
         }
 

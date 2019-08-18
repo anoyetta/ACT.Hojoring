@@ -675,6 +675,8 @@ namespace FFXIV.Framework.XIVHelper
             return combatantList;
         }
 
+        private DateTime lastActionsTimestamp = DateTime.MinValue;
+
         private void GetActions()
         {
             if (this.IsSkipActions)
@@ -682,6 +684,14 @@ namespace FFXIV.Framework.XIVHelper
                 clearActions();
                 return;
             }
+
+            var now = DateTime.Now;
+            if ((now - this.lastActionsTimestamp).TotalMilliseconds <= 300)
+            {
+                return;
+            }
+
+            this.lastActionsTimestamp = now;
 
             if (!Reader.CanGetActions())
             {
@@ -700,18 +710,17 @@ namespace FFXIV.Framework.XIVHelper
 
             lock (ActionLock)
             {
-                this.actionList.Clear();
-
                 foreach (var container in result.ActionContainers)
                 {
-                    this.actionList.AddRange(container.ActionItems);
-
                     foreach (var action in container.ActionItems)
                     {
                         this.actionDictionary[action.Name] = action;
                         Thread.Yield();
                     }
                 }
+
+                this.actionList.Clear();
+                this.actionList.AddRange(this.actionDictionary.Values);
             }
 
             void clearActions()
