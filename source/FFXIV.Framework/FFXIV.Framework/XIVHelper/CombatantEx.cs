@@ -70,12 +70,6 @@ namespace FFXIV.Framework.XIVHelper
             dst.Effects = src.Effects;
             dst.FlyingText = src.FlyingText;
 
-            dst.NetworkBuffs.Clear();
-            dst.NetworkBuffs.AddRange(src.NetworkBuffs);
-
-            dst.UnknownNetworkBuffs.Clear();
-            dst.UnknownNetworkBuffs.AddRange(src.UnknownNetworkBuffs);
-
             dst.SetName(src.Name);
             SetSkillName(dst);
         }
@@ -129,12 +123,6 @@ namespace FFXIV.Framework.XIVHelper
             dst.OutgoingAbility = src.OutgoingAbility;
             dst.Effects = src.Effects;
             dst.FlyingText = src.FlyingText;
-
-            dst.NetworkBuffs.Clear();
-            dst.NetworkBuffs.AddRange(src.NetworkBuffs);
-
-            dst.UnknownNetworkBuffs.Clear();
-            dst.UnknownNetworkBuffs.AddRange(src.UnknownNetworkBuffs);
 
             dst.SetName(src.Name);
             dst.CastSkillName = src.CastSkillName;
@@ -663,16 +651,6 @@ namespace FFXIV.Framework.XIVHelper
             get;
             set;
         }
-
-        public List<NetworkBuff> NetworkBuffs
-        {
-            get;
-        } = new List<NetworkBuff>();
-
-        public List<NetworkBuff> UnknownNetworkBuffs
-        {
-            get;
-        } = new List<NetworkBuff>();
 
         #endregion Original Combatant
 
