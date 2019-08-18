@@ -344,6 +344,11 @@ namespace ACT.SpecialSpellTimer
                         {
                             trigger.MatchTrigger(xivlog.LogLine);
                         }
+
+                        if (trigger is Spell spell)
+                        {
+                            SpellsController.Instance.UpdateHotbarRecast(spell);
+                        }
                     });
                 }
 
