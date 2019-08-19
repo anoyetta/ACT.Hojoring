@@ -119,6 +119,7 @@
     <Compile Include="Config\UI\ViewModels\MobListConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MPTickerConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MeConfigViewModel.cs" />
+    <Compile Include="Config\UI\ViewModels\TargetConfigViewModel.FFLogs.cs" />
     <Compile Include="Config\UI\ViewModels\TargetConfigViewModel.Enmity.cs" />
     <Compile Include="Config\UI\ViewModels\ToTConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\FTConfigViewModel.cs" />

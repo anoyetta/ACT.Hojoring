@@ -574,7 +574,8 @@ namespace ACT.UltraScouter.Models.FFLogs
                 var bests =
                     from x in parses
                     where
-                    filter?.Invoke(x) ?? true
+                    (filter?.Invoke(x) ?? true) &&
+                    x.Difficulty >= (int)Settings.Instance.FFLogs.Difficulty
                     orderby
                     x.EncounterID,
                     x.Percentile descending
