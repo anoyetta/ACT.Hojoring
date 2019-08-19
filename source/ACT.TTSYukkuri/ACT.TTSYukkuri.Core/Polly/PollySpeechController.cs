@@ -45,15 +45,12 @@ namespace ACT.TTSYukkuri.Polly
                 Settings.Default.PollySettings.ToString(),
                 true);
 
-            lock (this)
+            this.CreateWaveWrapper(wave, () =>
             {
-                if (!File.Exists(wave))
-                {
-                    this.CreateWave(
-                        text,
-                        wave);
-                }
-            }
+                this.CreateWave(
+                    text,
+                    wave);
+            });
 
             // 再生する
             SoundPlayerWrapper.Play(wave, playDevice, isSync, volume);

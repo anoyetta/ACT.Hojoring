@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using ACT.TTSYukkuri.Config;
@@ -67,31 +66,28 @@ namespace ACT.TTSYukkuri.Yukkuri
                 text.Replace(Environment.NewLine, "+"),
                 Settings.Default.YukkuriSettings.ToString());
 
-            lock (this)
+            this.CreateWaveWrapper(wave, () =>
             {
-                if (!File.Exists(wave))
+                // よみがなに変換する
+                var tts = text;
+
+                if (Settings.Default.YukkuriSettings.UseKanji2Koe)
                 {
-                    // よみがなに変換する
-                    var tts = text;
-
-                    if (Settings.Default.YukkuriSettings.UseKanji2Koe)
-                    {
-                        tts = this.ConvertToPhoneticByKanji2Koe(tts);
-                    }
-                    else
-                    {
-                        tts = this.ConvertToPhonetic(tts);
-                    }
-
-                    this.GetLogger()?.Trace($"Yukkuri speak={text}, phonetic={tts}");
-
-                    // WAVEを生成する
-                    AquesTalk.Instance.TextToWave(
-                        tts,
-                        wave,
-                        Settings.Default.YukkuriSettings.ToParameter());
+                    tts = this.ConvertToPhoneticByKanji2Koe(tts);
                 }
-            }
+                else
+                {
+                    tts = this.ConvertToPhonetic(tts);
+                }
+
+                this.GetLogger()?.Trace($"Yukkuri speak={text}, phonetic={tts}");
+
+                // WAVEを生成する
+                AquesTalk.Instance.TextToWave(
+                    tts,
+                    wave,
+                    Settings.Default.YukkuriSettings.ToParameter());
+            });
 
             // 再生する
             SoundPlayerWrapper.Play(wave, playDevice, isSync, volume);

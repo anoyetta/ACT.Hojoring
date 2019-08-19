@@ -41,21 +41,18 @@ namespace ACT.TTSYukkuri.HOYA
                 text.Replace(Environment.NewLine, "+"),
                 Settings.Default.HOYASettings.ToString());
 
-            lock (this)
+            this.CreateWaveWrapper(wave, () =>
             {
-                if (!File.Exists(wave))
+                if (string.IsNullOrWhiteSpace(
+                    Settings.Default.HOYASettings.APIKey))
                 {
-                    if (string.IsNullOrWhiteSpace(
-                        Settings.Default.HOYASettings.APIKey))
-                    {
-                        return;
-                    }
-
-                    this.CreateWave(
-                        text,
-                        wave);
+                    return;
                 }
-            }
+
+                this.CreateWave(
+                    text,
+                    wave);
+            });
 
             // 再生する
             SoundPlayerWrapper.Play(wave, playDevice, isSync, volume);

@@ -53,15 +53,12 @@ namespace ACT.TTSYukkuri.OpenJTalk
                 text.Replace(Environment.NewLine, "+"),
                 this.Config.ToString());
 
-            lock (this)
+            this.CreateWaveWrapper(wave, () =>
             {
-                if (!File.Exists(wave))
-                {
-                    this.CreateWave(
-                        text,
-                        wave);
-                }
-            }
+                this.CreateWave(
+                    text,
+                    wave);
+            });
 
             // 再生する
             SoundPlayerWrapper.Play(wave, playDevice, isSync, volume);

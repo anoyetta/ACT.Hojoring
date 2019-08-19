@@ -127,37 +127,34 @@ namespace ACT.TTSYukkuri.SAPI5
                 text,
                 this.Config.ToString());
 
-            lock (this)
+            this.CreateWaveWrapper(wave, () =>
             {
-                if (!File.Exists(wave))
+                using (var fs = new FileStream(wave, FileMode.Create))
+                using (var synth = new SpeechSynthesizer())
                 {
-                    using (var fs = new FileStream(wave, FileMode.Create))
-                    using (var synth = new SpeechSynthesizer())
+                    // VOICEを設定する
+                    var voice = this.GetSynthesizer(this.Config.VoiceID);
+                    if (voice == null)
                     {
-                        // VOICEを設定する
-                        var voice = this.GetSynthesizer(this.Config.VoiceID);
-                        if (voice == null)
-                        {
-                            return;
-                        }
-
-                        synth.SelectVoice(voice.VoiceInfo.Name);
-
-                        synth.Rate = this.Config.Rate;
-                        synth.Volume = this.Config.Volume;
-
-                        // Promptを生成する
-                        var pb = new PromptBuilder(voice.VoiceInfo.Culture);
-                        pb.StartVoice(voice.VoiceInfo);
-                        pb.AppendSsmlMarkup(
-                            $"<prosody pitch=\"{this.Config.Pitch.ToXML()}\">{text}</prosody>");
-                        pb.EndVoice();
-
-                        synth.SetOutputToWaveStream(fs);
-                        synth.Speak(pb);
+                        return;
                     }
+
+                    synth.SelectVoice(voice.VoiceInfo.Name);
+
+                    synth.Rate = this.Config.Rate;
+                    synth.Volume = this.Config.Volume;
+
+                    // Promptを生成する
+                    var pb = new PromptBuilder(voice.VoiceInfo.Culture);
+                    pb.StartVoice(voice.VoiceInfo);
+                    pb.AppendSsmlMarkup(
+                        $"<prosody pitch=\"{this.Config.Pitch.ToXML()}\">{text}</prosody>");
+                    pb.EndVoice();
+
+                    synth.SetOutputToWaveStream(fs);
+                    synth.Speak(pb);
                 }
-            }
+            });
 
             // 再生する
             SoundPlayerWrapper.Play(wave, playDevice, isSync, volume);
