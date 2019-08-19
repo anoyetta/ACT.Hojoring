@@ -338,6 +338,8 @@ namespace ACT.SpecialSpellTimer
             {
                 if (triggers.Count > 0)
                 {
+                    SpellsController.Instance.StoreHotbarInfo();
+
                     triggers.AsParallel().ForAll((trigger) =>
                     {
                         foreach (var xivlog in xivlogs)

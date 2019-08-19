@@ -101,6 +101,15 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.partition, value);
         }
 
+        private FFLogsDifficulty difficulty = FFLogsDifficulty.Savage;
+
+        [DataMember]
+        public FFLogsDifficulty Difficulty
+        {
+            get => this.difficulty;
+            set => this.SetProperty(ref this.difficulty, value);
+        }
+
         private double refreshInterval = 8.0d;
 
         [DataMember]

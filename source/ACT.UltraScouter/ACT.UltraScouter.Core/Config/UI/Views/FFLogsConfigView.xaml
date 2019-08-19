@@ -154,6 +154,15 @@
         SelectedValue="{Binding FFLogs.Partition, Mode=TwoWay}" />
 
       <Label
+        Margin="0 10 0 0"
+        Content="FFLogs Difficulty" />
+      <ComboBox
+        HorizontalAlignment="Left"
+        Width="120"
+        ItemsSource="{Binding FFLogsDifficulties, Mode=OneWay}"
+        SelectedItem="{Binding FFLogs.Difficulty, Mode=TwoWay}" />
+
+      <Label
         Margin="0 25 0 0"
         Content="FFLogs API Tester" />
       <StackPanel Margin="8 0 0 0">

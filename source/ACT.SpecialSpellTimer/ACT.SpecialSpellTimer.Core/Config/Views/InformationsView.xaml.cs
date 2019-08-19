@@ -4,9 +4,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.resources;
+using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 
 namespace ACT.SpecialSpellTimer.Config.Views
@@ -24,6 +26,34 @@ namespace ACT.SpecialSpellTimer.Config.Views
             this.InitializeComponent();
             this.SetLocale(Settings.Default.UILocale);
             this.LoadConfigViewResources();
+            this.hotbarInfoListSource.Source = this.HotbarInfoList;
+            this.hotbarInfoListSource.IsLiveSortingRequested = true;
+            this.hotbarInfoListSource.SortDescriptions.AddRange(new[]
+            {
+                new SortDescription()
+                {
+                    PropertyName = nameof(HotbarInfoContainer.Type),
+                    Direction = ListSortDirection.Descending,
+                },
+                new SortDescription()
+                {
+                    PropertyName = nameof(HotbarInfoContainer.DisplayOrder),
+                    Direction = ListSortDirection.Ascending,
+                },
+                new SortDescription()
+                {
+                    PropertyName = nameof(HotbarInfoContainer.Remain),
+                    Direction = ListSortDirection.Ascending,
+                },
+                new SortDescription()
+                {
+                    PropertyName = nameof(HotbarInfoContainer.ID),
+                    Direction = ListSortDirection.Ascending,
+                },
+            });
+
+            this.RaisePropertyChanged(nameof(this.HotbarInfoListView));
+
 
             this.timer.Interval = TimeSpan.FromSeconds(5);
             this.timer.Tick += (x, y) =>
@@ -32,6 +62,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 {
                     this.RefreshPlaceholderList();
                     this.RefreshTriggerList();
+                    this.RefreshHotbarInfo();
                 }
             };
 
@@ -55,6 +86,16 @@ namespace ACT.SpecialSpellTimer.Config.Views
             get;
             private set;
         } = new ObservableCollection<TriggerContainer>();
+
+        public ICollectionView HotbarInfoListView => this.hotbarInfoListSource?.View;
+
+        private CollectionViewSource hotbarInfoListSource = new CollectionViewSource();
+
+        private ObservableCollection<HotbarInfoContainer> HotbarInfoList
+        {
+            get;
+            set;
+        } = new ObservableCollection<HotbarInfoContainer>();
 
         public long ActiveTriggerCount { get; private set; } = 0;
 
@@ -187,6 +228,46 @@ namespace ACT.SpecialSpellTimer.Config.Views
             }
         }
 
+        private void RefreshHotbarInfo()
+        {
+            var newList = FFXIV.Framework.XIVHelper.SharlayanHelper.Instance.Actions;
+
+            if(newList.Any())
+            {
+                this.HotbarInfoList.Clear();
+            }
+
+            if (newList == null ||
+                !newList.Any())
+            {
+                if (this.HotbarInfoList.Any())
+                {
+                    this.HotbarInfoList.Clear();
+                }
+
+                return;
+            }
+
+            // 名前でグループ化する
+            var newSource = newList
+                .GroupBy(x => x.Name)
+                .Select(g => g.First());
+
+            // 更新する
+            newSource.Walk(x =>
+            {
+                var toUpdate = this.HotbarInfoList.FirstOrDefault(y => y.ID == x.ID);
+                toUpdate?.UpdateSourceInfo(x);
+            });
+
+            // 追加と削除を実施する
+            var toAdds = newSource.Where(x => !this.HotbarInfoList.Any(y => y.ID == x.ID)).ToArray();
+            var toRemoves = this.HotbarInfoList.Where(x => !newSource.Any(y => y.ID == x.ID)).ToArray();
+
+            this.HotbarInfoList.AddRange(toAdds.Select(x => new HotbarInfoContainer(x)));
+            toRemoves.Walk(x => this.HotbarInfoList.Remove(x));
+        }
+
         #region INotifyPropertyChanged
 
         [field: NonSerialized]
@@ -291,6 +372,41 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     }
                 }
             }
+        }
+
+        public class HotbarInfoContainer
+        {
+            public HotbarInfoContainer(
+                Sharlayan.Core.ActionItem source)
+                => this.UpdateSourceInfo(source);
+
+            public void UpdateSourceInfo(
+                Sharlayan.Core.ActionItem source)
+            {
+                this.ID = source.ID;
+                this.Name = source.Name;
+                this.Type = source.Type;
+
+                if (this.Remain != source.RemainingCost)
+                {
+                    this.Remain = source.RemainingCost;
+                    this.DisplayOrder = 0;
+                }
+                else
+                {
+                    this.DisplayOrder = 1;
+                }
+            }
+
+            public int ID { get; set; }
+
+            public string Name { get; set; }
+
+            public int Type { get; set; }
+
+            public int Remain { get; set; }
+
+            public int DisplayOrder { get; set; }
         }
     }
 }

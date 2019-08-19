@@ -28,4 +28,10 @@ namespace ACT.UltraScouter.Models.FFLogs
         [Display(Name = "Non-Standard (Echo)")]
         NonStandardEcho = 8,
     }
+
+    public enum FFLogsDifficulty
+    {
+        Normal = 100,
+        Savage = 101,
+    }
 }

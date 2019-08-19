@@ -13,6 +13,7 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.WPF.Views;
 using FFXIV.Framework.XIVHelper;
+using Sharlayan.Core;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -62,6 +63,7 @@ namespace ACT.SpecialSpellTimer
                     }
                 });
 
+                SpellsController.Instance.StoreHotbarInfo();
                 spells.AsParallel().ForAll(spell => this.UpdateHotbarRecast(spell));
             }
             finally
@@ -365,6 +367,14 @@ namespace ACT.SpecialSpellTimer
             }
         }
 
+        private Dictionary<string, ActionItem> hotbarInfoDictionary;
+
+        private Dictionary<string, ActionItem> GetHotbarInfo()
+            => this.hotbarInfoDictionary;
+
+        public void StoreHotbarInfo()
+            => this.hotbarInfoDictionary = SharlayanHelper.Instance.ActionDictionary;
+
         public void UpdateHotbarRecast(
             Spell spell)
         {
@@ -541,7 +551,7 @@ namespace ACT.SpecialSpellTimer
             if (spell.UseHotbarRecastTime &&
                 !string.IsNullOrEmpty(spell.HotbarName))
             {
-                var actions = SharlayanHelper.Instance.ActionDictionary;
+                var actions = this.GetHotbarInfo();
                 if (actions != null)
                 {
                     if (actions.ContainsKey(spell.HotbarName))
