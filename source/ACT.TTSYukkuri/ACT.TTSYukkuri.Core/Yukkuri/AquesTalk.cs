@@ -16,29 +16,16 @@ namespace ACT.TTSYukkuri.Yukkuri
 
         #endregion Singleton
 
-        private const string YukkuriName = "AquesTalk";
-        private const string YukkuriDriverLibName = "AquesTalkDriver";
-
         public static string YukkuriDirectory => new[]
         {
             Path.Combine(PluginCore.Instance.PluginDirectory, "bin", "Yukkuri"),
             Path.Combine(PluginCore.Instance.PluginDirectory, "Yukkuri"),
         }.FirstOrDefault(x => Directory.Exists(x));
 
-        private string YukkuriDllName => Path.Combine(
-            YukkuriDirectory,
-            $@"{YukkuriName}.dll");
-
-        private string YukkuriDriverDllName => Path.Combine(
-            YukkuriDirectory,
-            $@"{YukkuriDriverLibName}.dll");
-
         public static string UserDictionaryEditor => Path.Combine(
             YukkuriDirectory,
             $@"aq_dic\GenUserDic.exe");
 
-        private UnmanagedLibrary yukkuri;
-        private UnmanagedLibrary yukkuriDriver;
         private Synthe SyntheDelegate;
         private FreeWave FreeWaveDelegate;
 
@@ -51,65 +38,18 @@ namespace ACT.TTSYukkuri.Yukkuri
 
         public void Load()
         {
-            if (this.yukkuri == null)
-            {
-                if (!File.Exists(this.YukkuriDllName))
-                {
-                    throw new FileNotFoundException(
-                        $"{Path.GetFileName(this.YukkuriDllName)} が見つかりません。アプリケーションの配置を確認してください。",
-                        this.YukkuriDllName);
-                }
-
-                this.yukkuri = new UnmanagedLibrary(this.YukkuriDllName);
-            }
-
-            if (this.yukkuriDriver == null)
-            {
-                if (!File.Exists(this.YukkuriDriverDllName))
-                {
-                    throw new FileNotFoundException(
-                        $"{Path.GetFileName(this.YukkuriDriverDllName)} が見つかりません。アプリケーションの配置を確認してください。",
-                        this.YukkuriDriverDllName);
-                }
-
-                this.yukkuriDriver = new UnmanagedLibrary(this.YukkuriDriverDllName);
-            }
-
-            if (this.yukkuriDriver == null)
-            {
-                return;
-            }
-
-            if (this.SyntheDelegate == null)
-            {
-                this.SyntheDelegate =
-                    this.yukkuriDriver.GetUnmanagedFunction<Synthe>(nameof(Synthe));
-            }
-
-            if (this.FreeWaveDelegate == null)
-            {
-                this.FreeWaveDelegate =
-                    this.yukkuriDriver.GetUnmanagedFunction<FreeWave>(nameof(FreeWave));
-            }
+            this.SyntheDelegate ??= YukkuriDriver.Synthe;
+            this.FreeWaveDelegate ??= YukkuriDriver.FreeWave;
         }
 
         public bool IsLoadedAppKey { get; private set; } = true;
 
         public void Free()
         {
-            if (this.yukkuriDriver != null)
-            {
-                this.IsLoadedAppKey = false;
+            this.IsLoadedAppKey = false;
 
-                this.SyntheDelegate = null;
-                this.FreeWaveDelegate = null;
-
-                this.yukkuriDriver.Dispose();
-                this.yukkuriDriver = null;
-
-                this.yukkuri.Dispose();
-                this.yukkuri = null;
-            }
+            this.SyntheDelegate = null;
+            this.FreeWaveDelegate = null;
         }
 
         /// <summary>
@@ -175,5 +115,17 @@ namespace ACT.TTSYukkuri.Yukkuri
                 }
             }
         }
+    }
+
+    public static class YukkuriDriver
+    {
+        [DllImport("AquesTalkDriver.dll")]
+        public extern static IntPtr Synthe(
+            ref AQTK_VOICE voice,
+            [MarshalAs(UnmanagedType.LPArray)] byte[] text,
+            ref int waveSize);
+
+        [DllImport("AquesTalkDriver.dll")]
+        public extern static void FreeWave(IntPtr wave);
     }
 }

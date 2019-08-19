@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using FFXIV.Framework.Common;
 
 namespace ACT.TTSYukkuri.Yukkuri
 {
@@ -16,19 +15,12 @@ namespace ACT.TTSYukkuri.Yukkuri
 
         #endregion Singleton
 
-        private const string Kanji2KoeLibName = "AqKanji2Koe";
-
         private readonly Encoding ShiftJISEncoding = Encoding.GetEncoding("Shift_JIS");
-
-        private string Kanji2KoeDllName => Path.Combine(
-            AquesTalk.YukkuriDirectory,
-            $@"{Kanji2KoeLibName}.dll");
 
         private string Kanji2KoeDictionaryName => Path.Combine(
             AquesTalk.YukkuriDirectory,
             $@"aq_dic");
 
-        private UnmanagedLibrary kanji2KoeLib;
         private AqKanji2Koe_Create createDelegate;
         private AqKanji2Koe_Release releaseDelegate;
         private AqKanji2Koe_Convert convertDelegate;
@@ -45,66 +37,30 @@ namespace ACT.TTSYukkuri.Yukkuri
 
         public void Load()
         {
-            if (this.kanji2KoeLib == null)
-            {
-                this.kanji2KoeLib = new UnmanagedLibrary(this.Kanji2KoeDllName);
-            }
+            this.createDelegate ??= AqKanji2KoeDLL.AqKanji2Koe_Create;
+            this.releaseDelegate ??= AqKanji2KoeDLL.AqKanji2Koe_Release;
+            this.convertDelegate ??= AqKanji2KoeDLL.AqKanji2Koe_Convert;
+            this.convertWDelegate ??= AqKanji2KoeDLL.AqKanji2Koe_ConvertW;
 
-            if (this.kanji2KoeLib == null)
+            if (this.kanji2KoeHandle == IntPtr.Zero)
             {
-                return;
-            }
-
-            if (this.createDelegate == null)
-            {
-                this.createDelegate =
-                    this.kanji2KoeLib.GetUnmanagedFunction<AqKanji2Koe_Create>(nameof(AqKanji2Koe_Create));
-
                 // 言語処理モジュールのインスタンスを生成しそのハンドルを取得する
                 int err = 0;
                 this.kanji2KoeHandle = this.createDelegate.Invoke(
                     this.Kanji2KoeDictionaryName,
                     ref err);
             }
-
-            if (this.releaseDelegate == null)
-            {
-                this.releaseDelegate =
-                    this.kanji2KoeLib.GetUnmanagedFunction<AqKanji2Koe_Release>(nameof(AqKanji2Koe_Release));
-            }
-
-            if (this.convertDelegate == null)
-            {
-                this.convertDelegate =
-                    this.kanji2KoeLib.GetUnmanagedFunction<AqKanji2Koe_Convert>(nameof(AqKanji2Koe_Convert));
-            }
-
-            if (this.convertWDelegate == null)
-            {
-                this.convertWDelegate =
-                    this.kanji2KoeLib.GetUnmanagedFunction<AqKanji2Koe_ConvertW>(nameof(AqKanji2Koe_ConvertW));
-            }
         }
 
         public void Free()
         {
-            if (this.kanji2KoeLib != null)
-            {
-                // ハンドルを開放する
-                if (this.kanji2KoeHandle != IntPtr.Zero)
-                {
-                    this.releaseDelegate?.Invoke(this.kanji2KoeHandle);
-                    this.kanji2KoeHandle = IntPtr.Zero;
-                }
+            this.releaseDelegate?.Invoke(this.kanji2KoeHandle);
+            this.kanji2KoeHandle = IntPtr.Zero;
 
-                this.createDelegate = null;
-                this.releaseDelegate = null;
-                this.convertDelegate = null;
-                this.convertWDelegate = null;
-
-                this.kanji2KoeLib.Dispose();
-                this.kanji2KoeLib = null;
-            }
+            this.createDelegate = null;
+            this.releaseDelegate = null;
+            this.convertDelegate = null;
+            this.convertWDelegate = null;
         }
 
         /// <summary>
@@ -191,5 +147,20 @@ namespace ACT.TTSYukkuri.Yukkuri
 
             return phonetic;
         }
+    }
+
+    public static class AqKanji2KoeDLL
+    {
+        [DllImport("AqKanji2Koe.dll")]
+        public static extern IntPtr AqKanji2Koe_Create(string dic, ref int err);
+
+        [DllImport("AqKanji2Koe.dll")]
+        public static extern void AqKanji2Koe_Release(IntPtr handle);
+
+        [DllImport("AqKanji2Koe.dll")]
+        public static extern int AqKanji2Koe_Convert(IntPtr handle, string kanji, [MarshalAs(UnmanagedType.LPArray)] byte[] koe, int koeSize);
+
+        [DllImport("AqKanji2Koe.dll")]
+        public static extern int AqKanji2Koe_ConvertW(IntPtr handle, byte[] kanji, [MarshalAs(UnmanagedType.LPArray)] byte[] koe, int koeSize);
     }
 }
