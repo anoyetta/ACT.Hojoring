@@ -181,6 +181,9 @@ namespace FFXIV.Framework.Common
             if (!isStarted)
             {
                 ActivationManager.Instance.ActivationDeniedCallback = OnActivationDenied;
+
+                AppLog.DefaultLogger.Trace("Activator started.");
+                AppLog.DefaultLogger.Trace(typeof(ActivationManager).Assembly.ToString());
             }
 
             isStarted = true;
