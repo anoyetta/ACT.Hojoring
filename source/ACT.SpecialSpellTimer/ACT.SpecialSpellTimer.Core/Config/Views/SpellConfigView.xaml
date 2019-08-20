@@ -660,6 +660,7 @@
               <!-- プログレスバー -->
               <Label Margin="0 20 0 0" Content="{DynamicResource Common_ProgressBar}" FontSize="20" FontWeight="Bold" />
               <StackPanel Margin="10 0 0 0">
+                <CheckBox Margin="0 5 0 5" Content="Circle Style" IsChecked="{Binding Model.IsCircleStyle, Mode=TwoWay}" FontWeight="Bold" />
                 <CheckBox Margin="0 5 0 5" Content="{DynamicResource Common_IsReverseProgressBar}" IsChecked="{Binding Model.IsReverse, Mode=TwoWay}" />
 
                 <StackPanel Margin="0 8 0 8" Orientation="Horizontal">
@@ -722,10 +723,8 @@
                   </StackPanel>
                 </StackPanel>
 
-                <CheckBox Margin="0 0 0 0" Content="{DynamicResource Common_HideSpellName}" IsChecked="{Binding Model.HideSpellName, Mode=TwoWay}" />
-                <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_RecastTimeOverIcon}" IsChecked="{Binding Model.OverlapRecastTime, Mode=TwoWay}" />
+                <CheckBox Margin="0 0 0 0" Content="{DynamicResource Common_RecastTimeOverIcon}" IsChecked="{Binding Model.OverlapRecastTime, Mode=TwoWay}" Visibility="{Binding Model.IsStandardStyle, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
                 <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_ToDarkBetweenRecast}" IsChecked="{Binding Model.ReduceIconBrightness, Mode=TwoWay}" />
-                <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_IsCounterToCenter}" IsChecked="{Binding Model.IsCounterToCenter, Mode=TwoWay}" Visibility="{Binding Model.OverlapRecastTime, Mode=OneWay, Converter={StaticResource VisibilityNegativeConverter}}" />
 
                 <TextBlock Margin="0 10 0 0" HorizontalAlignment="Left">
                   <Hyperlink Command="{Binding GetIconsCommand, Mode=OneWay}">
@@ -737,9 +736,14 @@
               <!-- その他 -->
               <Label Margin="0 20 0 0" Content="{DynamicResource Common_Misc}" FontSize="20" FontWeight="Bold" />
               <StackPanel Margin="10 0 0 0">
-                <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_VisibleSpell}" IsChecked="{Binding Model.ProgressBarVisible, Mode=TwoWay}" ToolTip="{DynamicResource Common_VisibleSpellDiscription}" />
+                <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_HideSpellName}" IsChecked="{Binding Model.HideSpellName, Mode=TwoWay}" />
                 <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_HideCounter}" IsChecked="{Binding Model.HideCounter, Mode=TwoWay}" />
+                <DockPanel
+                  Visibility="{Binding Model.IsStandardStyle, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+                  <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_IsCounterToCenter}" IsChecked="{Binding Model.IsCounterToCenter, Mode=TwoWay}" Visibility="{Binding Model.OverlapRecastTime, Mode=OneWay, Converter={StaticResource VisibilityNegativeConverter}}" />
+                </DockPanel>
                 <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_DontHide}" IsChecked="{Binding Model.DontHide, Mode=TwoWay}" />
+                <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_VisibleSpell}" IsChecked="{Binding Model.ProgressBarVisible, Mode=TwoWay}" ToolTip="{DynamicResource Common_VisibleSpellDiscription}" />
               </StackPanel>
             </StackPanel>
           </Grid>

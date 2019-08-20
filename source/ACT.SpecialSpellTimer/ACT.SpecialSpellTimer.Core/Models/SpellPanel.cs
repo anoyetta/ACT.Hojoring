@@ -152,6 +152,8 @@ namespace ACT.SpecialSpellTimer.Models
                 if (this.SetProperty(ref this.horizontal, value))
                 {
                     this.RaisePropertyChanged(nameof(this.SpellOrientation));
+                    this.RaisePropertyChanged(nameof(this.MarginTickness));
+                    this.RaiseMarginChanged();
                 }
             }
         }
@@ -176,10 +178,38 @@ namespace ACT.SpecialSpellTimer.Models
         }
 
         [XmlIgnore]
-        public Thickness MarginTickness =>
-            !this.Horizontal ?
-            new Thickness(0, 0, 0, this.Margin) :
-            new Thickness(0, 0, this.Margin, 0);
+        public Thickness MarginTickness
+        {
+            get
+            {
+                var result = new Thickness();
+
+                if (!this.EnabledAdvancedLayout)
+                {
+                    result = !this.Horizontal ?
+                        new Thickness(0, 0, 0, this.Margin) :
+                        new Thickness(0, 0, this.Margin, 0);
+                }
+                else
+                {
+                    if (this.IsStackLayout)
+                    {
+                        switch (this.StackPanelOrientation)
+                        {
+                            case Orientation.Horizontal:
+                                result = new Thickness(0, 0, this.Margin, 0);
+                                break;
+
+                            case Orientation.Vertical:
+                                result = new Thickness(0, 0, 0, this.Margin);
+                                break;
+                        }
+                    }
+                }
+
+                return result;
+            }
+        }
 
         [XmlIgnore]
         public bool ToClose { get; set; } = false;
@@ -287,7 +317,14 @@ namespace ACT.SpecialSpellTimer.Models
         public bool IsStackLayout
         {
             get => this.isStackLayout;
-            set => this.SetProperty(ref this.isStackLayout, value);
+            set
+            {
+                if (this.SetProperty(ref this.isStackLayout, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.MarginTickness));
+                    this.RaiseMarginChanged();
+                }
+            }
         }
 
         private Orientation stackPanelOrientation = Orientation.Vertical;
@@ -295,7 +332,22 @@ namespace ACT.SpecialSpellTimer.Models
         public Orientation StackPanelOrientation
         {
             get => this.stackPanelOrientation;
-            set => this.SetProperty(ref this.stackPanelOrientation, value);
+            set
+            {
+                if (this.SetProperty(ref this.stackPanelOrientation, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.MarginTickness));
+                    this.RaiseMarginChanged();
+                }
+            }
+        }
+
+        private void RaiseMarginChanged()
+        {
+            foreach (var spell in this.Spells)
+            {
+                spell.RaiseSpellMarginChanged();
+            }
         }
 
         [XmlIgnore]

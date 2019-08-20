@@ -5,12 +5,17 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using ACT.Hojoring.Activator;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.WPF.Views;
 using FFXIV.Framework.XIVHelper;
 
 namespace FFXIV.Framework.Common
 {
     public static class EnvironmentHelper
     {
+        private static readonly object LockObject = new object();
+
         public static string Pwsh => LazyPwsh.Value;
 
         private static readonly Lazy<string> LazyPwsh = new Lazy<string>(() => GetPwsh());
@@ -166,6 +171,58 @@ namespace FFXIV.Framework.Common
                 version.Revision.ToString();
 
             return v;
+        }
+
+        private static volatile bool isCheckedLoadOrder = false;
+        private static volatile bool isLastValidPluginLoadOrder = false;
+
+        public static bool IsValidPluginLoadOrder()
+        {
+            lock (LockObject)
+            {
+                if (isCheckedLoadOrder)
+                {
+                    return isLastValidPluginLoadOrder;
+                }
+
+                var isExistsXIVPlugin = false;
+
+                foreach (var plugin in ActGlobals.oFormActMain.ActPlugins)
+                {
+                    if (plugin.pluginFile.Name.ContainsIgnoreCase("FFXIV_ACT_Plugin"))
+                    {
+                        isExistsXIVPlugin = true;
+                    }
+
+                    if (plugin.pluginFile.Name.ContainsIgnoreCase("ACT.SpecialSpellTimer") ||
+                        plugin.pluginFile.Name.ContainsIgnoreCase("ACT.TTSYukkuri") ||
+                        plugin.pluginFile.Name.ContainsIgnoreCase("ACT.UltraScouter"))
+                    {
+                        isLastValidPluginLoadOrder = isExistsXIVPlugin;
+                        break;
+                    }
+                }
+
+                isCheckedLoadOrder = true;
+            }
+
+            if (!isLastValidPluginLoadOrder)
+            {
+                WPFHelper.InvokeAsync(() =>
+                {
+                    ModernMessageBox.ShowDialog(
+                        "Plugin load order is wrong.\n" +
+                        "Please load FFXIV_ACT_Plugin before Hojoring.\n\n" +
+                        "ex.\n" +
+                        "1. FFXIV_ACT_Plugin\n" +
+                        "2. ACT.TTSYukkuri\n" +
+                        "3. ACT.SpecialSpellTimer\n" +
+                        "4. ACT.UltraScouter\n",
+                        "Plugin Load Error");
+                });
+            }
+
+            return isLastValidPluginLoadOrder;
         }
 
         private static volatile bool isStarted;

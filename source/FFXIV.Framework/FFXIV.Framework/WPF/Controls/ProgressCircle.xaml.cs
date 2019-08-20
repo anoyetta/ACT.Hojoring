@@ -338,6 +338,8 @@ namespace FFXIV.Framework.WPF.Controls
 
         #endregion BlurOpacity 依存関係プロパティ
 
+        public DropShadowEffect BlurEffect => this.ForeCircle.Effect as DropShadowEffect;
+
         /// <summary>
         /// 暗くする倍率
         /// </summary>

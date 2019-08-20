@@ -284,6 +284,8 @@ namespace ACT.TTSYukkuri
 
         private Label PluginStatusLabel;
 
+        private bool isLoaded = false;
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         public void InitPlugin(
             IActPluginV1 plugin,
@@ -303,6 +305,14 @@ namespace ACT.TTSYukkuri
 
                 try
                 {
+                    this.PluginStatusLabel = pluginStatusText;
+
+                    if (!EnvironmentHelper.IsValidPluginLoadOrder())
+                    {
+                        pluginStatusText.Text = "Plugin Initialize Error";
+                        return;
+                    }
+
                     EnvironmentHelper.GarbageLogs();
                     EnvironmentHelper.StartActivator(() =>
                     {
@@ -311,8 +321,6 @@ namespace ACT.TTSYukkuri
                     });
 
                     this.Logger.Trace("[YUKKURI] Start InitPlugin");
-
-                    this.PluginStatusLabel = pluginStatusText;
 
                     var pluginInfo = ActGlobals.oFormActMain.PluginGetSelfData(plugin);
                     if (pluginInfo != null)
@@ -411,6 +419,8 @@ namespace ACT.TTSYukkuri
                     CommonViewHelper.Instance.AddCommonView(
                        pluginScreenSpace.Parent as TabControl);
 
+                    this.isLoaded = true;
+
                     // アップデートを確認する
                     await Task.Run(() => this.Update());
                 }
@@ -433,6 +443,11 @@ namespace ACT.TTSYukkuri
 
         public void DeInitPlugin()
         {
+            if (!this.isLoaded)
+            {
+                return;
+            }
+
             try
             {
                 // TTSアクションを元に戻す

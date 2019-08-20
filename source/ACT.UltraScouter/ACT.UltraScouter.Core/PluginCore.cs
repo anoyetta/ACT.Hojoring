@@ -63,6 +63,11 @@ namespace ACT.UltraScouter
 
         public void EndPlugin()
         {
+            if (!this.isLoaded)
+            {
+                return;
+            }
+
             try
             {
                 EnvironmentHelper.GarbageLogs();
@@ -100,10 +105,14 @@ namespace ACT.UltraScouter
             }
         }
 
+        private bool isLoaded = false;
+
         public void StartPlugin(
             TabPage pluginScreenSpace,
             Label pluginStatusText)
         {
+            this.isLoaded = false;
+
             // タイトルをセットする
             pluginScreenSpace.Text = "ULTRA SCOUTER";
 
@@ -117,6 +126,16 @@ namespace ACT.UltraScouter
 
                 try
                 {
+                    this.PluginTabPage = pluginScreenSpace;
+                    this.PluginStatusLabel = pluginStatusText;
+
+                    if (!EnvironmentHelper.IsValidPluginLoadOrder())
+                    {
+                        pluginStatusText.Text = "Plugin Initialize Error";
+                        return;
+                    }
+
+                    EnvironmentHelper.GarbageLogs();
                     EnvironmentHelper.StartActivator(() =>
                     {
                         BaseView.Instance.SetActivationStatus(false);
@@ -124,9 +143,6 @@ namespace ACT.UltraScouter
                     });
 
                     this.Logger.Trace("[ULTRA SCOUTER] Start InitPlugin");
-
-                    this.PluginTabPage = pluginScreenSpace;
-                    this.PluginStatusLabel = pluginStatusText;
 
                     // .NET FrameworkとOSのバージョンを確認する
                     if (!UpdateChecker.IsAvailableDotNet() ||
@@ -175,12 +191,14 @@ namespace ACT.UltraScouter
                     CommonViewHelper.Instance.AddCommonView(
                        pluginScreenSpace.Parent as TabControl);
 
-                    // アップデートを確認する
-                    await Task.Run(() => this.Update());
+                    this.isLoaded = true;
 
                     // FFLogsの統計データベースをロードする
                     StatisticsDatabase.Instance.Logger = Logger;
                     await StatisticsDatabase.Instance.LoadAsync();
+
+                    // アップデートを確認する
+                    await Task.Run(() => this.Update());
                 }
                 catch (Exception ex)
                 {

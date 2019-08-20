@@ -94,6 +94,11 @@ namespace ACT.SpecialSpellTimer
         /// </summary>
         public void DeInitPluginCore()
         {
+            if (!this.isLoaded)
+            {
+                return;
+            }
+
             try
             {
                 // 付加情報オーバーレイを閉じる
@@ -134,6 +139,8 @@ namespace ACT.SpecialSpellTimer
             Logger.DeInit();
         }
 
+        private bool isLoaded = false;
+
         /// <summary>
         /// 初期化する
         /// </summary>
@@ -152,13 +159,19 @@ namespace ACT.SpecialSpellTimer
             WPFHelper.Start();
             WPFHelper.BeginInvoke(async () =>
             {
-                this.PluginStatusLabel = pluginStatusText;
-
                 AppLog.LoadConfiguration(AppLog.HojoringConfig);
                 this.AppLogger?.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
 
                 try
                 {
+                    this.PluginStatusLabel = pluginStatusText;
+
+                    if (!EnvironmentHelper.IsValidPluginLoadOrder())
+                    {
+                        pluginStatusText.Text = "Plugin Initialize Error";
+                        return;
+                    }
+
                     EnvironmentHelper.GarbageLogs();
                     EnvironmentHelper.StartActivator(() =>
                     {
@@ -239,6 +252,8 @@ namespace ACT.SpecialSpellTimer
                     // 共通ビューを追加する
                     CommonViewHelper.Instance.AddCommonView(
                        pluginScreenSpace.Parent as TabControl);
+
+                    this.isLoaded = true;
 
                     // アップデートを確認する
                     await Task.Run(() => this.Update());
