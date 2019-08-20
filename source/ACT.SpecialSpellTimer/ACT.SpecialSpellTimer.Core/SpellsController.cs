@@ -372,8 +372,14 @@ namespace ACT.SpecialSpellTimer
         private Dictionary<string, ActionItem> GetHotbarInfo()
             => this.hotbarInfoDictionary;
 
+        private static readonly double HotbarAdjustThreshold = 240d;
+        private static readonly double HotbarPollingRate = 2;
+
         public void StoreHotbarInfo()
-            => this.hotbarInfoDictionary = SharlayanHelper.Instance.ActionDictionary;
+        {
+            SharlayanHelper.Instance.ActionsPollingInterval = HotbarAdjustThreshold / HotbarPollingRate;
+            this.hotbarInfoDictionary = SharlayanHelper.Instance.ActionDictionary;
+        }
 
         public void UpdateHotbarRecast(
             Spell spell)
@@ -400,9 +406,9 @@ namespace ACT.SpecialSpellTimer
 
                 var newSchedule = now.AddSeconds(d);
 
-                // ホットバー情報と0.6秒以上乖離したら補正する
+                // ホットバー情報とnミリ秒以上乖離したら補正する
                 if (d > 1.0 &&
-                Math.Abs((newSchedule - spell.CompleteScheduledTime).TotalSeconds) >= 0.6d)
+                    Math.Abs((newSchedule - spell.CompleteScheduledTime).TotalMilliseconds) >= HotbarAdjustThreshold)
                 {
                     if (spell.CompleteScheduledTime.AddSeconds(-1) <= now)
                     {

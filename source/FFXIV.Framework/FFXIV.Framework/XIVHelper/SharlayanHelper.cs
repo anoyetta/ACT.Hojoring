@@ -677,6 +677,8 @@ namespace FFXIV.Framework.XIVHelper
 
         private DateTime lastActionsTimestamp = DateTime.MinValue;
 
+        public double ActionsPollingInterval { get; set; } = 100;
+
         private void GetActions()
         {
             if (this.IsSkipActions)
@@ -686,7 +688,7 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             var now = DateTime.Now;
-            if ((now - this.lastActionsTimestamp).TotalMilliseconds <= 300)
+            if ((now - this.lastActionsTimestamp).TotalMilliseconds <= this.ActionsPollingInterval)
             {
                 return;
             }
