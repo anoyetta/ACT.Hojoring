@@ -7,6 +7,7 @@ using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using Advanced_Combat_Tracker;
@@ -265,6 +266,7 @@ namespace FFXIV.Framework.Common
                     UpdateScriptUrl,
                     temp);
 
+                Thread.Sleep(10);
                 File.Copy(temp, script, true);
             }
 
