@@ -423,7 +423,7 @@ namespace ACT.SpecialSpellTimer
                     spell.CompleteScheduledTime = newSchedule;
                     spell.BeforeDone = false;
 
-                    if (gap > 1.0)
+                    if (gap > 1000)
                     {
                         spell.UpdateDone = false;
                     }
