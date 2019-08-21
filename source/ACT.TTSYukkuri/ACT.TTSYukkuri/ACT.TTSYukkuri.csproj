@@ -109,6 +109,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ACT.Hojoring.ico" />
+    <EmbeddedResource Include="Costura32\AquesTalkDriver.dll" />
+    <EmbeddedResource Include="Costura64\AquesTalkDriver.dll" />
+    <EmbeddedResource Include="Costura32\AquesTalk.dll" />
+    <EmbeddedResource Include="Costura64\AquesTalk.dll" />
+    <EmbeddedResource Include="Costura32\AqKanji2Koe.dll" />
+    <EmbeddedResource Include="Costura64\AqKanji2Koe.dll" />
     <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -122,5 +128,9 @@
 @del /q *.dylib &gt;nul
 @del /q grpc_csharp_ext.*.dll &gt;nul
 </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

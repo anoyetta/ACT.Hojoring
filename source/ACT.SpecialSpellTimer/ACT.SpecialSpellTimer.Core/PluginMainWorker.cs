@@ -45,6 +45,7 @@ namespace ACT.SpecialSpellTimer
 
         private System.Timers.Timer backgroudWorker;
         private ThreadWorker detectLogsWorker;
+        private ThreadWorker syncHotbarWorker;
         private volatile bool isOver;
         private DispatcherTimer refreshSpellOverlaysWorker;
         private DispatcherTimer refreshTickerOverlaysWorker;
@@ -97,6 +98,13 @@ namespace ACT.SpecialSpellTimer
                 0,
                 nameof(this.detectLogsWorker));
 
+            // ホットバー同期タイマを開始する
+            this.syncHotbarWorker = new ThreadWorker(
+                () => this.SyncHotbarCore(),
+                100,
+                nameof(this.syncHotbarWorker),
+                ThreadPriority.BelowNormal);
+
             // Backgroudスレッドを開始する
             this.backgroudWorker = new System.Timers.Timer();
             this.backgroudWorker.AutoReset = true;
@@ -107,6 +115,7 @@ namespace ACT.SpecialSpellTimer
             };
 
             this.detectLogsWorker.Run();
+            this.syncHotbarWorker.Run();
             this.backgroudWorker.Start();
         }
 
@@ -189,10 +198,12 @@ namespace ACT.SpecialSpellTimer
             this.refreshSpellOverlaysWorker?.Stop();
             this.refreshTickerOverlaysWorker?.Stop();
             this.detectLogsWorker?.Abort();
+            this.syncHotbarWorker?.Abort();
 
             this.refreshSpellOverlaysWorker = null;
             this.refreshTickerOverlaysWorker = null;
             this.detectLogsWorker = null;
+            this.syncHotbarWorker = null;
 
             this.backgroudWorker?.Stop();
             this.backgroudWorker?.Dispose();
@@ -346,11 +357,6 @@ namespace ACT.SpecialSpellTimer
                         {
                             trigger.MatchTrigger(xivlog.LogLine);
                         }
-
-                        if (trigger is Spell spell)
-                        {
-                            SpellsController.Instance.UpdateHotbarRecast(spell);
-                        }
                     });
                 }
 
@@ -376,6 +382,36 @@ namespace ACT.SpecialSpellTimer
             {
                 Thread.Sleep(TimeSpan.FromMilliseconds(Settings.Default.LogPollSleepInterval));
             }
+        }
+
+        private static readonly int SyncHotbarInterval = 100;
+        private static readonly int SyncHotbarIdelInterval = 5000;
+
+        private void SyncHotbarCore()
+        {
+            if (!this.InSimulation)
+            {
+                if (!Settings.Default.VisibleOverlayWithoutFFXIV)
+                {
+                    if (!this.existFFXIVProcess)
+                    {
+                        this.syncHotbarWorker.Interval = SyncHotbarIdelInterval;
+                        return;
+                    }
+                }
+            }
+
+            SpellsController.Instance.StoreHotbarInfo();
+
+            var exists = false;
+            var spells = TableCompiler.Instance.SpellList;
+            foreach (var spell in spells)
+            {
+                exists |= SpellsController.Instance.UpdateHotbarRecast(spell);
+                Thread.Yield();
+            }
+
+            this.syncHotbarWorker.Interval = exists ? SyncHotbarInterval : SyncHotbarIdelInterval;
         }
 
         private void RefreshSpellOverlaysCore()

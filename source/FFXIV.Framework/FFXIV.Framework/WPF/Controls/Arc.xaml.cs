@@ -448,7 +448,17 @@ namespace FFXIV.Framework.WPF.Controls
         public Arc()
         {
             this.InitializeComponent();
+
+            this.Geometory.Figures.Add(this.Figure);
+            this.Shape.Data = this.Geometory;
         }
+
+        private readonly PathGeometry Geometory = new PathGeometry();
+
+        private readonly PathFigure Figure = new PathFigure()
+        {
+            IsClosed = false
+        };
 
         /// <summary>
         /// 描画する
@@ -469,12 +479,12 @@ namespace FFXIV.Framework.WPF.Controls
                 end = this.StartAngle;
             }
 
-            var figure = new PathFigure();
-            figure.IsClosed = false;
-            figure.StartPoint = this.ComputeAngle(start);
+            this.Figure.Segments.Clear();
+            this.Figure.StartPoint = this.ComputeAngle(start);
+
             for (double i = start + 1; i < end; i++)
             {
-                figure.Segments.Add(new ArcSegment()
+                this.Figure.Segments.Add(new ArcSegment()
                 {
                     IsLargeArc = false,
                     RotationAngle = 0,
@@ -486,7 +496,7 @@ namespace FFXIV.Framework.WPF.Controls
 
             if (Math.Floor(this.EndAngle) < this.EndAngle)
             {
-                figure.Segments.Add(new ArcSegment()
+                this.Figure.Segments.Add(new ArcSegment()
                 {
                     IsLargeArc = false,
                     RotationAngle = 0,
@@ -495,10 +505,6 @@ namespace FFXIV.Framework.WPF.Controls
                     SweepDirection = SweepDirection.Clockwise,
                 });
             }
-
-            var geometory = new PathGeometry();
-            geometory.Figures.Add(figure);
-            this.Shape.Data = geometory;
         }
 
         /// <summary>
@@ -507,8 +513,8 @@ namespace FFXIV.Framework.WPF.Controls
         /// <param name="angle">角度</param>
         /// <returns>XY 座標</returns>
         private Point ComputeAngle(double angle)
-        {
-            return new Point(this.Radius + (this.Radius * Math.Cos(angle * Math.PI / 180)), this.Radius + (this.Radius * Math.Sin(angle * Math.PI / 180)));
-        }
+            => new Point(
+                this.Radius + (this.Radius * Math.Cos(angle * Math.PI / 180d)),
+                this.Radius + (this.Radius * Math.Sin(angle * Math.PI / 180d)));
     }
 }

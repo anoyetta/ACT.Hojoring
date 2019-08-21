@@ -37,6 +37,23 @@ namespace ACT.TTSYukkuri
 
         #endregion Logger
 
+        public static void CreateWaveWrapper(
+            this ISpeechController speechController,
+            string wave,
+            Action action)
+        {
+            if (!File.Exists(wave))
+            {
+                lock (speechController)
+                {
+                    if (!File.Exists(wave))
+                    {
+                        action?.Invoke();
+                    }
+                }
+            }
+        }
+
         public static string CacheDirectory => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"anoyetta\ACT\tts cache");

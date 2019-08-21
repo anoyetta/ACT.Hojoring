@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using ACT.TTSYukkuri.Config;
 using FFXIV.Framework.TTS.Common;
 
@@ -44,20 +43,17 @@ namespace ACT.TTSYukkuri.Sasara
                 text.Replace(Environment.NewLine, "+"),
                 Settings.Default.SasaraSettings.ToString());
 
-            lock (this)
+            this.CreateWaveWrapper(wave, () =>
             {
-                if (!File.Exists(wave))
-                {
-                    // 音声waveファイルを生成する
-                    Settings.Default.SasaraSettings.SetToRemote();
-                    RemoteTTSClient.Instance.TTSModel.TextToWave(
-                        TTSTypes.CeVIO,
-                        text,
-                        wave,
-                        0,
-                        Settings.Default.SasaraSettings.Gain);
-                }
-            }
+                // 音声waveファイルを生成する
+                Settings.Default.SasaraSettings.SetToRemote();
+                RemoteTTSClient.Instance.TTSModel.TextToWave(
+                    TTSTypes.CeVIO,
+                    text,
+                    wave,
+                    0,
+                    Settings.Default.SasaraSettings.Gain);
+            });
 
             // 再生する
             SoundPlayerWrapper.Play(wave, playDevice, isSync, volume);

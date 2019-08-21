@@ -33,8 +33,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.Hojoring.Updater", "ACT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.XIVLog", "ACT.XIVLog\ACT.XIVLog.csproj", "{D504E286-56EC-494F-82CD-FD71AEFEF606}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{43506950-2C3C-4A46-AAF0-FC1B7D8F90A4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFLogsRankingDonwloader", "FFLogsRankingDonwloader\FFLogsRankingDonwloader.csproj", "{CFC5E5E2-EFFE-4FC4-9EFD-79D15B1ABF45}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.Hojoring.Updater.Driver", "ACT.Hojoring.Updater.Driver\ACT.Hojoring.Updater.Driver.csproj", "{BE74A0EE-AFCC-4B0F-9ABA-698B5FEA871C}"
@@ -207,7 +205,7 @@ Global
 		{C1BC2D6E-E10D-4A7F-900B-5FD84F39BF0A} = {EC98C548-6268-4B67-BC45-88DCD9B63960}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {91001FDF-B748-4513-A399-35F7E9BD37F8}
 		        SolutionGuid = {2A11DDD1-7A46-4236-969A-3942CBE6A01A}
+		SolutionGuid = {91001FDF-B748-4513-A399-35F7E9BD37F8}
 	EndGlobalSection
 EndGlobal

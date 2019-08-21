@@ -62,9 +62,6 @@ namespace ACT.SpecialSpellTimer
                         }
                     }
                 });
-
-                SpellsController.Instance.StoreHotbarInfo();
-                spells.AsParallel().ForAll(spell => this.UpdateHotbarRecast(spell));
             }
             finally
             {
@@ -372,38 +369,50 @@ namespace ACT.SpecialSpellTimer
         private Dictionary<string, ActionItem> GetHotbarInfo()
             => this.hotbarInfoDictionary;
 
-        public void StoreHotbarInfo()
-            => this.hotbarInfoDictionary = SharlayanHelper.Instance.ActionDictionary;
+        private static readonly double HotbarAdjustThreshold = 400d;
+        private static readonly double HotbarPollingRate = 2;
 
-        public void UpdateHotbarRecast(
+        public void StoreHotbarInfo()
+        {
+            SharlayanHelper.Instance.ActionsPollingInterval = HotbarAdjustThreshold / HotbarPollingRate;
+            this.hotbarInfoDictionary = SharlayanHelper.Instance.ActionDictionary;
+        }
+
+        public bool UpdateHotbarRecast(
             Spell spell)
         {
+            var result = false;
+
             if (!spell.UseHotbarRecastTime ||
                 string.IsNullOrEmpty(spell.HotbarName))
             {
-                return;
+                return result;
             }
 
             var now = DateTime.Now;
 
             if ((now - spell.MatchDateTime).TotalSeconds <= 0.1)
             {
-                return;
+                return result;
             }
 
             if (spell.CompleteScheduledTime.AddSeconds(2) > now)
             {
                 if (!this.TryGetHotbarRecast(spell, out double d))
                 {
-                    return;
+                    return result;
                 }
 
+                now = DateTime.Now;
                 var newSchedule = now.AddSeconds(d);
 
-                // ホットバー情報と0.6秒以上乖離したら補正する
+                // ホットバー情報とnミリ秒以上乖離したら補正する
+                var gap = Math.Abs((newSchedule - spell.CompleteScheduledTime).TotalMilliseconds);
                 if (d > 1.0 &&
-                Math.Abs((newSchedule - spell.CompleteScheduledTime).TotalSeconds) >= 0.6d)
+                    gap >= HotbarAdjustThreshold)
                 {
+                    result = true;
+
                     if (spell.CompleteScheduledTime.AddSeconds(-1) <= now)
                     {
                         spell.MatchDateTime = now;
@@ -413,13 +422,19 @@ namespace ACT.SpecialSpellTimer
 
                     spell.CompleteScheduledTime = newSchedule;
                     spell.BeforeDone = false;
-                    spell.UpdateDone = false;
+
+                    if (gap > 1.0)
+                    {
+                        spell.UpdateDone = false;
+                    }
 
                     spell.StartOverSoundTimer();
                     spell.StartBeforeSoundTimer();
                     spell.StartTimeupSoundTimer();
                 }
             }
+
+            return result;
         }
 
         /// <summary>

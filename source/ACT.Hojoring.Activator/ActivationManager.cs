@@ -53,11 +53,20 @@ namespace ACT.Hojoring.Activator
 
         private Func<bool> isBusyCallback;
 
+        private bool isStarted = false;
+
         public void Start(
             Func<bool> isBusyCallback = null)
         {
             lock (LockObject)
             {
+                if (this.isStarted)
+                {
+                    return;
+                }
+
+                this.isStarted = true;
+
                 if (this.LazyTimer.Value.Enabled)
                 {
                     return;

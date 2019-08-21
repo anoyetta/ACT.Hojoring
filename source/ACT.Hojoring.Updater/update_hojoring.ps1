@@ -74,6 +74,15 @@ function Get-NewerVersion(
 $cd = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $cd
 
+# ACT本体と同じディレクトリに配置されている？
+$act = Join-Path $cd "Advanced Combat Tracker.exe"
+if (Test-Path $act) {
+    Write-Error ("-> ERROR! Cannot update. Hojoring instration directory is wrong. Hojoring and ACT are in same directory.")
+    Write-Error ("-> You can re-setup following this site.")
+    Write-Error ("-> https://www.anoyetta.com/entry/hojoring-setup")
+    Exit-Update 1
+}
+
 # 更新の除外リストを読み込む
 $ignoreFile = ".\config\update_hojoring_ignores.txt"
 $updateExclude = @()

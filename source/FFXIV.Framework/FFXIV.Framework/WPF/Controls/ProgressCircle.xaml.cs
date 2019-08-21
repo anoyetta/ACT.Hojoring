@@ -338,6 +338,8 @@ namespace FFXIV.Framework.WPF.Controls
 
         #endregion BlurOpacity 依存関係プロパティ
 
+        public DropShadowEffect BlurEffect => this.ForeCircle.Effect as DropShadowEffect;
+
         /// <summary>
         /// 暗くする倍率
         /// </summary>
@@ -435,7 +437,7 @@ namespace FFXIV.Framework.WPF.Controls
                 (360.1 * progress) - 90 :
                 (360.1 - (360.1 * progress)) - 90;
 
-            angle = Math.Round(angle, 2);
+            angle = Math.Round(angle, 3);
 
             // ForeCircleを描画する
             this.ForeCircle.StartAngle = -90;

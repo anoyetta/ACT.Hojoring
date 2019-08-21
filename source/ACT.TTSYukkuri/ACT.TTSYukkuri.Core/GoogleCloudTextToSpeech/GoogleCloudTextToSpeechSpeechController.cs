@@ -51,50 +51,43 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
                     text.Replace(Environment.NewLine, "+"),
                     Settings.Default.GoogleCloudTextToSpeechSettings.ToString());
 
-            // Double-checked locking
-            if (!File.Exists(wave))
+            this.CreateWaveWrapper(wave, () =>
             {
-                lock (this)
+                // 合成する音声のパラメーターを設定する
+                SynthesisInput input = new SynthesisInput
                 {
-                    if (!File.Exists(wave))
-                    {
-                        // 合成する音声のパラメーターを設定する
-                        SynthesisInput input = new SynthesisInput
-                        {
-                            Text = text
-                        };
+                    Text = text
+                };
 
-                        VoiceSelectionParams voice = new VoiceSelectionParams
-                        {
-                            LanguageCode = Settings.Default.GoogleCloudTextToSpeechSettings.LanguageCode,
-                            Name = Settings.Default.GoogleCloudTextToSpeechSettings.Name,
-                        };
+                VoiceSelectionParams voice = new VoiceSelectionParams
+                {
+                    LanguageCode = Settings.Default.GoogleCloudTextToSpeechSettings.LanguageCode,
+                    Name = Settings.Default.GoogleCloudTextToSpeechSettings.Name,
+                };
 
-                        AudioConfig config = new AudioConfig
-                        {
-                            AudioEncoding = AudioEncoding.Linear16,
-                            VolumeGainDb = Settings.Default.GoogleCloudTextToSpeechSettings.VolumeGainDb,
-                            Pitch = Settings.Default.GoogleCloudTextToSpeechSettings.Pitch,
-                            SpeakingRate = Settings.Default.GoogleCloudTextToSpeechSettings.SpeakingRate,
-                            SampleRateHertz = Settings.Default.GoogleCloudTextToSpeechSettings.SampleRateHertz,
-                        };
+                AudioConfig config = new AudioConfig
+                {
+                    AudioEncoding = AudioEncoding.Linear16,
+                    VolumeGainDb = Settings.Default.GoogleCloudTextToSpeechSettings.VolumeGainDb,
+                    Pitch = Settings.Default.GoogleCloudTextToSpeechSettings.Pitch,
+                    SpeakingRate = Settings.Default.GoogleCloudTextToSpeechSettings.SpeakingRate,
+                    SampleRateHertz = Settings.Default.GoogleCloudTextToSpeechSettings.SampleRateHertz,
+                };
 
-                        // 音声合成リクエストを送信する
-                        var response = client.SynthesizeSpeech(new SynthesizeSpeechRequest
-                        {
-                            Input = input,
-                            Voice = voice,
-                            AudioConfig = config
-                        });
+                // 音声合成リクエストを送信する
+                var response = client.SynthesizeSpeech(new SynthesizeSpeechRequest
+                {
+                    Input = input,
+                    Voice = voice,
+                    AudioConfig = config
+                });
 
-                        // 合成した音声をファイルに書き出す
-                        using (Stream output = File.Create(wave))
-                        {
-                            response.AudioContent.WriteTo(output);
-                        }
-                    }
+                // 合成した音声をファイルに書き出す
+                using (Stream output = File.Create(wave))
+                {
+                    response.AudioContent.WriteTo(output);
                 }
-            }
+            });
 
             // 再生する
             SoundPlayerWrapper.Play(wave, playDevice, isSync, volume);

@@ -74,36 +74,49 @@ namespace FFXIV.Framework.TTS.Server
                         this.DoSpeak,
                         SpeakDefaultInterval,
                         "Boyomi clone server speak task",
-                        ThreadPriority.Lowest);
+                        ThreadPriority.BelowNormal);
 
                     this.speakTask.Run();
 
                     this.IsRunning = true;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    this.Logger.Error(ex, $"Error, Boyomi TCP server on starting.");
+
                     this.server?.Stop();
                     this.server = null;
                 }
             }
         }
 
+        private volatile bool isStoping = false;
+
         public void Stop()
         {
-            lock (this)
+            try
             {
-                this.speakTask?.Abort();
-                this.speakTask = null;
+                this.isStoping = true;
 
-                this.server?.Stop();
-                Thread.Sleep(100);
-                this.server = null;
-
-                if (this.isRunning)
+                lock (this)
                 {
-                    this.IsRunning = false;
-                    this.Logger.Info($"Boyomi TCP server stoped.");
+                    this.speakTask?.Abort();
+                    this.speakTask = null;
+
+                    this.server?.Stop();
+                    Thread.Sleep(100);
+                    this.server = null;
+
+                    if (this.isRunning)
+                    {
+                        this.IsRunning = false;
+                        this.Logger.Info($"Boyomi TCP server stoped.");
+                    }
                 }
+            }
+            finally
+            {
+                this.isStoping = false;
             }
         }
 
@@ -111,7 +124,8 @@ namespace FFXIV.Framework.TTS.Server
         {
             lock (this)
             {
-                if (this.server == null)
+                if (this.server == null ||
+                    this.isStoping)
                 {
                     return;
                 }
@@ -122,7 +136,8 @@ namespace FFXIV.Framework.TTS.Server
                     {
                         lock (this)
                         {
-                            if (this.server == null)
+                            if (this.server == null ||
+                                this.isStoping)
                             {
                                 return;
                             }

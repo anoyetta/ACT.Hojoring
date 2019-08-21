@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config.Models;
@@ -85,6 +86,24 @@ namespace ACT.SpecialSpellTimer.Models
             this.timeupSoundTimer.Elapsed += this.TimeupSoundTimer_Elapsed;
         }
 
+        private bool isCircleStyle;
+
+        public bool IsCircleStyle
+        {
+            get => this.isCircleStyle;
+            set
+            {
+                if (this.SetProperty(ref this.isCircleStyle, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.IsStandardStyle));
+                    this.RaisePropertyChanged(nameof(this.DefaultSpellMargin));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public bool IsStandardStyle => !this.isCircleStyle;
+
         private double left, top;
 
         public double Left
@@ -135,6 +154,58 @@ namespace ACT.SpecialSpellTimer.Models
 
         [XmlIgnore]
         public SpellPanel Panel => SpellPanelTable.Instance.Table.FirstOrDefault(x => x.ID == this.PanelID);
+
+        private static readonly Thickness HorizontalDefaultMargin = new Thickness(0, 0, 10, 0);
+        private static readonly Thickness VerticalDefaultMarginStandard = new Thickness(0, 2, 0, 10);
+        private static readonly Thickness VerticalDefaultMarginCircle = new Thickness(0, 0, 0, 10);
+
+        [XmlIgnore]
+        public Thickness DefaultSpellMargin
+        {
+            get
+            {
+                var result = new Thickness();
+
+                var panel = this.Panel;
+                if (panel == null)
+                {
+                    return result;
+                }
+
+                if (!panel.EnabledAdvancedLayout)
+                {
+                    result = !panel.Horizontal ?
+                        getVerticalMargin() :
+                        HorizontalDefaultMargin;
+                }
+                else
+                {
+                    if (panel.IsStackLayout)
+                    {
+                        switch (panel.StackPanelOrientation)
+                        {
+                            case Orientation.Horizontal:
+                                result = HorizontalDefaultMargin;
+                                break;
+
+                            case Orientation.Vertical:
+                                result = getVerticalMargin();
+                                break;
+                        }
+                    }
+                }
+
+                return result;
+
+                // Standard スタイルでは互換性のため上のマージン2pxを残している
+                // Circle スタイルでは2pxのマージンを廃止したため使い分ける
+                Thickness getVerticalMargin()
+                    => this.IsCircleStyle ? VerticalDefaultMarginCircle : VerticalDefaultMarginStandard;
+            }
+        }
+
+        public void RaiseSpellMarginChanged()
+            => this.RaisePropertyChanged(nameof(this.DefaultSpellMargin));
 
         private string panelName = string.Empty;
 
