@@ -407,7 +407,8 @@ namespace ACT.SpecialSpellTimer
             var spells = TableCompiler.Instance.SpellList;
             foreach (var spell in spells)
             {
-                exists |= SpellsController.Instance.UpdateHotbarRecast(spell);
+                exists |= spell.UseHotbarRecastTime && !string.IsNullOrEmpty(spell.HotbarName);
+                SpellsController.Instance.UpdateHotbarRecast(spell);
                 Thread.Yield();
             }
 
