@@ -302,6 +302,8 @@ namespace FFXIV.Framework.XIVHelper
 
         public bool IsScanning { get; set; } = false;
 
+        private DateTime playerScanTimestamp = DateTime.MinValue;
+
         private void ScanMemory()
         {
             if (!MemoryHandler.Instance.IsAttached ||
@@ -340,6 +342,18 @@ namespace FFXIV.Framework.XIVHelper
                     this.NPCActorDictionary.Clear();
                     this.CombatantsDictionary.Clear();
                     this.NPCCombatantsDictionary.Clear();
+                }
+
+                if (!this.IsSkipPlayer &&
+                    this.IsSkipActor)
+                {
+                    if ((DateTime.Now - this.playerScanTimestamp).TotalMilliseconds > 500)
+                    {
+                        this.playerScanTimestamp = DateTime.Now;
+                        ReaderEx.GetActorSimple(
+                            isScanNPC: false,
+                            isPlayerOnly: true);
+                    }
                 }
 
                 if (this.IsSkipActor)
@@ -390,6 +404,8 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         public bool IsScanNPC { get; set; } = false;
+
+        public bool IsSkipPlayer { get; set; } = false;
 
         public bool IsSkipActor { get; set; } = false;
 
@@ -1035,7 +1051,8 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         public static List<ActorItem> GetActorSimple(
-            bool isScanNPC = false)
+            bool isScanNPC = false,
+            bool isPlayerOnly = false)
         {
             var result = new List<ActorItem>(256);
 
@@ -1121,6 +1138,12 @@ namespace FFXIV.Framework.XIVHelper
                     {
                         var targetInfoSource = MemoryHandler.Instance.GetByteArray(targetAddress, 128);
                         entry.TargetID = (int)BitConverter.TryToInt32(targetInfoSource, structures.ActorItem.ID);
+                    }
+
+                    if (isPlayerOnly)
+                    {
+                        result.Add(entry);
+                        break;
                     }
                 }
 
