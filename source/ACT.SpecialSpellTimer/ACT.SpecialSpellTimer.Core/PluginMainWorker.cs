@@ -101,7 +101,7 @@ namespace ACT.SpecialSpellTimer
             // ホットバー同期タイマを開始する
             this.syncHotbarWorker = new ThreadWorker(
                 () => this.SyncHotbarCore(),
-                100,
+                SyncHotbarInterval,
                 nameof(this.syncHotbarWorker),
                 ThreadPriority.BelowNormal);
 
