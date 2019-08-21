@@ -858,32 +858,35 @@ namespace FFXIV.Framework.XIVHelper
         {
             var result = false;
 
-#if true
-            var player = CombatantsManager.Instance.Player;
-            if (player != null)
+            if (SharlayanHelper.Instance.CurrentPlayer != null)
             {
-                result =
-                    player.CurrentHP != player.MaxHP ||
-                    player.CurrentMP != player.MaxMP;
+                result = SharlayanHelper.Instance.CurrentPlayer.InCombat;
             }
-
-            if (!result)
+            else
             {
-                if (party != null &&
-                    party.Any())
+                var player = CombatantsManager.Instance.Player;
+                if (player != null)
                 {
-                    result = (
-                        from x in party
-                        where
-                        x.CurrentHP != x.MaxHP ||
-                        x.CurrentMP != x.MaxMP
-                        select
-                        x).Any();
+                    result =
+                        player.CurrentHP != player.MaxHP ||
+                        player.CurrentMP != player.MaxMP;
+                }
+
+                if (!result)
+                {
+                    if (party != null &&
+                        party.Any())
+                    {
+                        result = (
+                            from x in party
+                            where
+                            x.CurrentHP != x.MaxHP ||
+                            x.CurrentMP != x.MaxMP
+                            select
+                            x).Any();
+                    }
                 }
             }
-#else
-            result = SharlayanHelper.Instance.CurrentPlayer?.InCombat ?? false;
-#endif
 
             this.InCombat = result;
         }
