@@ -448,17 +448,10 @@ namespace FFXIV.Framework.WPF.Controls
         public Arc()
         {
             this.InitializeComponent();
-
-            this.Geometory.Figures.Add(this.Figure);
             this.Shape.Data = this.Geometory;
         }
 
         private readonly PathGeometry Geometory = new PathGeometry();
-
-        private readonly PathFigure Figure = new PathFigure()
-        {
-            IsClosed = false
-        };
 
         /// <summary>
         /// 描画する
@@ -479,12 +472,12 @@ namespace FFXIV.Framework.WPF.Controls
                 end = this.StartAngle;
             }
 
-            this.Figure.Segments.Clear();
-            this.Figure.StartPoint = this.ComputeAngle(start);
+            var figure = new PathFigure();
+            figure.StartPoint = this.ComputeAngle(start);
 
             for (double i = start + 1; i < end; i++)
             {
-                this.Figure.Segments.Add(new ArcSegment()
+                figure.Segments.Add(new ArcSegment()
                 {
                     IsLargeArc = false,
                     RotationAngle = 0,
@@ -494,16 +487,23 @@ namespace FFXIV.Framework.WPF.Controls
                 });
             }
 
-            if (Math.Floor(this.EndAngle) < this.EndAngle)
+            if (Math.Floor(end) < end)
             {
-                this.Figure.Segments.Add(new ArcSegment()
+                figure.Segments.Add(new ArcSegment()
                 {
                     IsLargeArc = false,
                     RotationAngle = 0,
                     Size = new Size(this.Radius, this.Radius),
-                    Point = this.ComputeAngle(this.EndAngle),
+                    Point = this.ComputeAngle(end),
                     SweepDirection = SweepDirection.Clockwise,
                 });
+            }
+
+            this.Geometory.Figures.Add(figure);
+
+            if (this.Geometory.Figures.Count > 1)
+            {
+                this.Geometory.Figures.RemoveAt(0);
             }
         }
 
