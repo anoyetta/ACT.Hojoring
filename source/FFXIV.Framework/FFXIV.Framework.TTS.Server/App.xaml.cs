@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -200,13 +201,21 @@ namespace FFXIV.Framework.TTS.Server
             }
             */
 #if true
-            var processNames = new[]
+            var processNames = new List<string>
             {
                 "Advanced Combat Tracker",
                 "ACTx86",
-                "RINGS",
-                "FF14TextReader",
             };
+
+            if (Config.Instance.IsBoyomiServerAutoStart ||
+                BoyomiTcpServer.Instance.IsRunning)
+            {
+                processNames.AddRange(new[]
+                {
+                    "RINGS",
+                    "FF14TextReader",
+                });
+            }
 
             var count = processNames.Sum(x => System.Diagnostics.Process.GetProcessesByName(x).Length);
             if (count < 1)
