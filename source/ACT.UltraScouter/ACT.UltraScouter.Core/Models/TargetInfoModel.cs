@@ -146,7 +146,7 @@ namespace ACT.UltraScouter.Models
         private static readonly Lazy<Dictionary<AttackTypes, PackIconBase>> LazyAttackTypeIcons = new Lazy<Dictionary<AttackTypes, PackIconBase>>(() =>
             new Dictionary<AttackTypes, PackIconBase>()
             {
-                { AttackTypes.Unknown, new PackIconMaterial() { Kind = PackIconMaterialKind.Help } },
+                { AttackTypes.Unknown, new PackIconFontAwesome() { Kind = PackIconFontAwesomeKind.QuestionSolid } },
                 { AttackTypes.Slash, new PackIconMaterial() { Kind = PackIconMaterialKind.Sword } },
                 { AttackTypes.Pierce, new PackIconModern() { Kind = PackIconModernKind.Directions } },
                 { AttackTypes.Impact, new PackIconFontAwesome() { Kind = PackIconFontAwesomeKind.GavelSolid } },
