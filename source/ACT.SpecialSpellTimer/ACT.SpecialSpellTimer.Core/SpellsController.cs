@@ -369,8 +369,8 @@ namespace ACT.SpecialSpellTimer
         private Dictionary<string, ActionItem> GetHotbarInfo()
             => this.hotbarInfoDictionary;
 
-        private static readonly double HotbarAdjustThreshold = 400d;
-        private static readonly double HotbarPollingRate = 2;
+        private static readonly double HotbarAdjustThreshold = 1200d;
+        private static readonly double HotbarPollingRate = 4;
 
         public void StoreHotbarInfo()
         {
@@ -396,14 +396,13 @@ namespace ACT.SpecialSpellTimer
                 return result;
             }
 
-            if (spell.CompleteScheduledTime.AddSeconds(2) > now)
+            if (spell.CompleteScheduledTime.AddMilliseconds(HotbarAdjustThreshold * 2) >= now)
             {
                 if (!this.TryGetHotbarRecast(spell, out double d))
                 {
                     return result;
                 }
 
-                now = DateTime.Now;
                 var newSchedule = now.AddSeconds(d);
 
                 // ホットバー情報とnミリ秒以上乖離したら補正する
@@ -422,11 +421,7 @@ namespace ACT.SpecialSpellTimer
 
                     spell.CompleteScheduledTime = newSchedule;
                     spell.BeforeDone = false;
-
-                    if (gap > 1000)
-                    {
-                        spell.UpdateDone = false;
-                    }
+                    spell.UpdateDone = false;
 
                     spell.StartOverSoundTimer();
                     spell.StartBeforeSoundTimer();
