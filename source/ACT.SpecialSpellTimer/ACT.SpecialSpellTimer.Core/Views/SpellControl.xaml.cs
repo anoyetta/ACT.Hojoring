@@ -96,7 +96,7 @@ namespace ACT.SpecialSpellTimer.Views
             else
             {
                 this.RefreshCommon(
-                    this.CircleSpellTitle,
+                    this.GetSpellTitleTextBlock(),
                     this.CircleIcon,
                     this.CircleRecastTime);
             }
@@ -107,21 +107,26 @@ namespace ACT.SpecialSpellTimer.Views
             FantImage iconImage,
             LightOutlineTextBlock remainTimeTextBlock)
         {
+            var tb = default(LightOutlineTextBlock);
+
             // Titleを描画する
-            var tb = titleTextBlock;
-            var title =
-                string.IsNullOrWhiteSpace(this.Spell.SpellTitleReplaced) ?
-                this.Spell.SpellTitle :
-                this.Spell.SpellTitleReplaced;
-            title = string.IsNullOrWhiteSpace(title) ? "　" : title;
-            title = title.Replace(",", Environment.NewLine);
-            title = title.Replace("\\n", Environment.NewLine);
+            if (titleTextBlock != null)
+            {
+                tb = titleTextBlock;
+                var title =
+                    string.IsNullOrWhiteSpace(this.Spell.SpellTitleReplaced) ?
+                    this.Spell.SpellTitle :
+                    this.Spell.SpellTitleReplaced;
+                title = string.IsNullOrWhiteSpace(title) ? "　" : title;
+                title = title.Replace(",", Environment.NewLine);
+                title = title.Replace("\\n", Environment.NewLine);
 
-            tb.Text = title;
+                tb.Text = title;
 
-            tb.Visibility = this.Spell.HideSpellName ?
-                Visibility.Collapsed :
-                Visibility.Visible;
+                tb.Visibility = this.Spell.HideSpellName ?
+                    Visibility.Collapsed :
+                    Visibility.Visible;
+            }
 
             // 点滅を判定する
             if (!this.StartBlink())
@@ -242,26 +247,29 @@ namespace ACT.SpecialSpellTimer.Views
             }
 
             // Titleを描画する
-            var tb = titleTextBlock;
+            if (titleTextBlock != null)
+            {
+                var tb = titleTextBlock;
 
-            var title =
-                string.IsNullOrWhiteSpace(this.Spell.SpellTitleReplaced) ?
-                this.Spell.SpellTitle :
-                this.Spell.SpellTitleReplaced;
-            title = string.IsNullOrWhiteSpace(title) ? "　" : title;
-            title = title.Replace(",", Environment.NewLine);
-            title = title.Replace("\\n", Environment.NewLine);
+                var title =
+                    string.IsNullOrWhiteSpace(this.Spell.SpellTitleReplaced) ?
+                    this.Spell.SpellTitle :
+                    this.Spell.SpellTitleReplaced;
+                title = string.IsNullOrWhiteSpace(title) ? "　" : title;
+                title = title.Replace(",", Environment.NewLine);
+                title = title.Replace("\\n", Environment.NewLine);
 
-            tb.Text = title;
-            tb.Fill = this.FontBrush;
-            tb.Stroke = this.FontOutlineBrush;
-            tb.SetFontInfo(font);
-            tb.StrokeThickness = font.OutlineThickness;
-            tb.BlurRadius = font.BlurRadius;
+                tb.Text = title;
+                tb.Fill = this.FontBrush;
+                tb.Stroke = this.FontOutlineBrush;
+                tb.SetFontInfo(font);
+                tb.StrokeThickness = font.OutlineThickness;
+                tb.BlurRadius = font.BlurRadius;
 
-            tb.Visibility = this.Spell.HideSpellName ?
-                Visibility.Collapsed :
-                Visibility.Visible;
+                tb.Visibility = this.Spell.HideSpellName ?
+                    Visibility.Collapsed :
+                    Visibility.Visible;
+            }
         }
 
         private void UpdateStandardStyle()
@@ -317,18 +325,50 @@ namespace ACT.SpecialSpellTimer.Views
             this.Width = double.NaN;
 
             this.UpdateCommon(
-                this.CircleSpellTitle,
+                this.GetSpellTitleTextBlock(),
                 this.CircleIcon);
-
-            this.CircleRecastTime.Visibility = this.Spell.HideCounter ?
-                Visibility.Collapsed :
-                Visibility.Visible;
 
             this.CircleProgress.Fill = this.BarBrush;
             this.CircleProgress.Stroke = this.BarOutlineBrush;
             this.CircleProgress.Radius = this.Spell.BarWidth / 2;
             this.CircleProgress.Thickness = this.Spell.BarHeight;
             this.CircleProgress.IsCCW = true;
+        }
+
+        private LightOutlineTextBlock GetSpellTitleTextBlock()
+        {
+            var title = default(LightOutlineTextBlock);
+            if (this.Spell.HideSpellName)
+            {
+                this.CircleSpellTitle.Visibility = Visibility.Collapsed;
+                this.CircleAlterSpellTitle.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                switch (this.Spell.TitleVerticalAlignmentInCircle)
+                {
+                    case VerticalAlignment.Top:
+                        title = this.CircleAlterSpellTitle;
+                        this.CircleSpellTitle.Visibility = Visibility.Collapsed;
+                        Grid.SetRow(title, 0);
+                        title.Margin = new Thickness(0, 0, 0, 2);
+                        break;
+
+                    case VerticalAlignment.Bottom:
+                        title = this.CircleAlterSpellTitle;
+                        this.CircleSpellTitle.Visibility = Visibility.Collapsed;
+                        Grid.SetRow(title, 2);
+                        title.Margin = new Thickness(0, 2, 0, 0);
+                        break;
+
+                    default:
+                        title = this.CircleSpellTitle;
+                        this.CircleAlterSpellTitle.Visibility = Visibility.Collapsed;
+                        break;
+                }
+            }
+
+            return title;
         }
 
         private void UpdateBrushes()

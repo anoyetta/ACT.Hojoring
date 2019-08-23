@@ -41,53 +41,69 @@
     <Grid
       Visibility="{Binding IsCircleStyle, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
       Margin="{Binding DefaultSpellMargin, Mode=OneWay}">
-      <!-- icon -->
-      <ctrl:FantImage
-        x:Name="CircleIcon"
-        Panel.ZIndex="-10"
-        RenderOptions.BitmapScalingMode="Fant"
-        RenderOptions.ClearTypeHint="Enabled"
-        RenderOptions.EdgeMode="Unspecified" />
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
 
-      <!-- progress circle -->
-      <ctrl:ProgressCircle
-        x:Name="CircleProgress"
-        Canvas.ZIndex="-8"
+      <ctrl:LightOutlineTextBlock
+        Grid.Row="0"
+        x:Name="CircleAlterSpellTitle"
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
-        BlurRadius="{Binding BarBlurRadius, Mode=OneWay}" />
+        Fill="AliceBlue"
+        Stroke="Blue"
+        Text="Sample Spell" />
 
-      <!-- text grid -->
-      <Grid
-        Canvas.ZIndex="0"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center">
-        <Grid.RowDefinitions>
-          <RowDefinition />
-          <RowDefinition />
-        </Grid.RowDefinitions>
+      <Grid Grid.Row="1">
+        <!-- icon -->
+        <ctrl:FantImage
+          x:Name="CircleIcon"
+          Panel.ZIndex="-10"
+          RenderOptions.BitmapScalingMode="Fant"
+          RenderOptions.ClearTypeHint="Enabled"
+          RenderOptions.EdgeMode="Unspecified" />
 
-        <!-- title -->
-        <ctrl:LightOutlineTextBlock
-          Grid.Row="0"
-          x:Name="CircleSpellTitle"
+        <!-- progress circle -->
+        <ctrl:ProgressCircle
+          x:Name="CircleProgress"
+          Canvas.ZIndex="-8"
           HorizontalAlignment="Center"
           VerticalAlignment="Center"
-          Fill="AliceBlue"
-          Stroke="Blue"
-          Text="Sample Spell"
-          Visibility="{Binding HideSpellName, Mode=OneWay, Converter={StaticResource BoolToCollapsedNegativeConverter}}" />
+          BlurRadius="{Binding BarBlurRadius, Mode=OneWay}" />
 
-        <!-- time -->
-        <ctrl:LightOutlineTextBlock
-          Grid.Row="1"
-          x:Name="CircleRecastTime"
+        <!-- text grid -->
+        <Grid
+          Canvas.ZIndex="0"
           HorizontalAlignment="Center"
-          VerticalAlignment="Center"
-          Fill="AliceBlue"
-          Stroke="Blue"
-          Text="10.0"
-          Visibility="{Binding HideCounter, Mode=OneWay, Converter={StaticResource BoolToCollapsedNegativeConverter}}" />
+          VerticalAlignment="Center">
+          <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+          </Grid.RowDefinitions>
+
+          <!-- title -->
+          <ctrl:LightOutlineTextBlock
+            Grid.Row="0"
+            x:Name="CircleSpellTitle"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Fill="AliceBlue"
+            Stroke="Blue"
+            Text="Sample Spell" />
+
+          <!-- time -->
+          <ctrl:LightOutlineTextBlock
+            Grid.Row="1"
+            x:Name="CircleRecastTime"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Fill="AliceBlue"
+            Stroke="Blue"
+            Text="10.0"
+            Visibility="{Binding HideCounter, Mode=OneWay, Converter={StaticResource BoolToCollapsedNegativeConverter}}" />
+        </Grid>
       </Grid>
     </Grid>
     <!-- circle style end -->

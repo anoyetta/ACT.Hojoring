@@ -121,6 +121,7 @@
   <system:String x:Key="Spell_BlinkIcon">图标闪烁</system:String>
   <system:String x:Key="Spell_BlinkBar">进度条闪烁</system:String>
   <system:String x:Key="Spell_HideCounter">隐藏复唱时间</system:String>
+  <system:String x:Key="Spell_TitleVAlignment">Spell name vertical alignment</system:String>
   <system:String x:Key="Spell_NotResetAtWipeout">团灭后不重置</system:String>
   <system:String x:Key="Spell_NoticeOnMatch">触发时通知</system:String>
   <system:String x:Key="Spell_NoticeOnOver">触发后N秒提示</system:String>

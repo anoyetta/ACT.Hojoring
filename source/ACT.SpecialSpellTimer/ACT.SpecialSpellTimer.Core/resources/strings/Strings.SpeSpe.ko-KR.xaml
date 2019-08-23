@@ -121,6 +121,7 @@
   <system:String x:Key="Spell_BlinkIcon">아이콘 깜박이기</system:String>
   <system:String x:Key="Spell_BlinkBar">진행 바 깜박이기</system:String>
   <system:String x:Key="Spell_HideCounter">재사용 대기 시간 숨김</system:String>
+  <system:String x:Key="Spell_TitleVAlignment">Spell name vertical alignment</system:String>
   <system:String x:Key="Spell_NotResetAtWipeout">전멸 시 초기화하지 않음</system:String>
   <system:String x:Key="Spell_NoticeOnMatch">시작 시 알림</system:String>
   <system:String x:Key="Spell_NoticeOnOver">시작 시 n초 후 알림</system:String>

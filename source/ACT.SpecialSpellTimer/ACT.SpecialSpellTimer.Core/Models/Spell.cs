@@ -101,6 +101,14 @@ namespace ACT.SpecialSpellTimer.Models
             }
         }
 
+        private VerticalAlignment titleVerticalAlignmentInCircle = VerticalAlignment.Center;
+
+        public VerticalAlignment TitleVerticalAlignmentInCircle
+        {
+            get => this.titleVerticalAlignmentInCircle;
+            set => this.SetProperty(ref this.titleVerticalAlignmentInCircle, value);
+        }
+
         [XmlIgnore]
         public bool IsStandardStyle => !this.isCircleStyle;
 

@@ -736,6 +736,16 @@
               <!-- その他 -->
               <Label Margin="0 20 0 0" Content="{DynamicResource Common_Misc}" FontSize="20" FontWeight="Bold" />
               <StackPanel Margin="10 0 0 0">
+                <StackPanel
+                  Margin="0 5 0 0"
+                  Visibility="{Binding Model.IsCircleStyle, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+                  <TextBlock Text="{DynamicResource Spell_TitleVAlignment}" />
+                  <ComboBox
+                    HorizontalAlignment="Left"
+                    Width="110"
+                    ItemsSource="{Binding TitleVerticalAlignments, Mode=OneWay}"
+                    SelectedItem="{Binding Model.TitleVerticalAlignmentInCircle, Mode=TwoWay}" />
+                </StackPanel>
                 <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_HideSpellName}" IsChecked="{Binding Model.HideSpellName, Mode=TwoWay}" />
                 <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_HideCounter}" IsChecked="{Binding Model.HideCounter, Mode=TwoWay}" />
                 <DockPanel
