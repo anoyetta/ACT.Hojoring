@@ -8,7 +8,7 @@ $isUsePreRelease = $FALSE
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev12'
+'* rev13'
 '* (c) anoyetta, 2019'
 '***************************************************'
 '* Start Update Hojoring'
@@ -102,15 +102,18 @@ if ($args.Length -gt 0) {
 $processes = Get-Process
 foreach ($p in $processes) {
     if ($p.Name -eq "Advanced Combat Tracker") {
-        Stop-Process -InputObject $p
+        $p.CloseMainWindow()
         Start-Sleep -s 1
     }
 
     if ($p.Name -eq "FFXIV.Framework.TTS.Server") {
-        Stop-Process -InputObject $p
+        $p.CloseMainWindow()
         Start-Sleep -s 1
     }
 }
+
+# 5秒待つ
+Start-Sleep -s 5
 
 # プレリリースを使う？
 ''
@@ -128,19 +131,6 @@ if (!(Test-Path $updater)) {
 }
 
 ''
-'-> Backup Current Version'
-Remove-Directory ".\backup"
-Start-Sleep -Milliseconds 10
-$temp = (New-TemporaryDirectory).FullName
-Copy-Item .\ $temp -Recurse -Force
-Move-Item $temp ".\backup" -Force
-
-$updateDir = Join-Path $cd "update"
-if (Test-Path $updateDir) {
-    Remove-Directory $updateDir
-}
-
-''
 '-> Check Lastest Release'
 $info = Get-NewerVersion($isUsePreRelease)
 
@@ -154,11 +144,8 @@ if ([string]::IsNullOrEmpty($info.Version)) {
 Write-Host ("Available Lastest Version")
 Write-Host ("version : " + $info.Version)
 Write-Host ("tag     : " + $info.Tag)
-Start-Sleep -Milliseconds 1000
-
-# Release Notesを開く
-Start-Process $info.ReleasePageUrl
-Start-Sleep -Milliseconds 1000
+Write-Host ($info.Note)
+Write-Host ($info.ReleasePageUrl)
 
 do {
     ''
@@ -174,6 +161,21 @@ do {
         Exit-Update 0
     }
 } while ($TRUE)
+
+$updateDir = Join-Path $cd "update"
+if (Test-Path $updateDir) {
+    Remove-Directory $updateDir
+}
+
+''
+'-> Backup Current Version'
+if (Test-Path ".\backup") {
+	Remove-Directory ".\backup"
+}
+Start-Sleep -Milliseconds 10
+$temp = (New-TemporaryDirectory).FullName
+Copy-Item .\ $temp -Recurse -Force
+Move-Item $temp ".\backup" -Force
 
 ''
 '-> Download Lastest Version'
@@ -236,5 +238,10 @@ foreach ($src in $srcs) {
     }
 }
 '-> Updated'
+
+# Release Notesを開く
+Start-Sleep -Milliseconds 500
+Start-Process $info.ReleasePageUrl
+Start-Sleep -Milliseconds 500
 
 Exit-Update 0

@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
@@ -164,6 +165,8 @@ namespace FFXIV.Framework.TTS.Server
             }
         }
 
+        private static readonly Regex WhitespacesRegex = new Regex(@"\s{2,}", RegexOptions.Compiled);
+
         private void ProcessMessage(
             NetworkStream stream)
         {
@@ -245,14 +248,18 @@ namespace FFXIV.Framework.TTS.Server
                 // 99文字ずつで分割する
                 var texts = text.Trim().Split(99);
 
-                foreach (var tts in texts)
+                foreach (var t in texts)
                 {
+                    var tts = t.Trim();
+                    tts = tts.Replace("　", " ");
+                    tts = WhitespacesRegex.Replace(tts, " ");
+
                     this.SpeakQueue.Enqueue(new SpeakTask()
                     {
                         Speed = (uint)speed,
                         Volume = (uint)volume,
                         CastNo = type,
-                        Text = tts.Trim(),
+                        Text = tts,
                     });
                 }
             }
