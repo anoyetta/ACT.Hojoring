@@ -451,6 +451,17 @@ namespace ACT.SpecialSpellTimer.Models
         /// </summary>
         public double RecastTime { get; set; } = 0;
 
+        private double delayToShow = 0;
+
+        /// <summary>
+        /// 表示までのディレイ
+        /// </summary>
+        public double DelayToShow
+        {
+            get => this.delayToShow;
+            set => this.SetProperty(ref this.delayToShow, value);
+        }
+
         /// <summary>
         /// 延長する時間1
         /// </summary>
@@ -754,6 +765,14 @@ namespace ACT.SpecialSpellTimer.Models
         {
             get => this.dontHide;
             set => this.SetProperty(ref this.dontHide, value);
+        }
+
+        private bool isHideInNotCombat;
+
+        public bool IsHideInNotCombat
+        {
+            get => this.isHideInNotCombat;
+            set => this.SetProperty(ref this.isHideInNotCombat, value);
         }
 
         public bool ExtendBeyondOriginalRecastTime { get; set; }

@@ -107,6 +107,7 @@
   <system:String x:Key="Spell_TextToMatch">マッチングワード</system:String>
   <system:String x:Key="Spell_UserRegex">正規表現を使用する</system:String>
   <system:String x:Key="Spell_RecastTime">リキャスト時間</system:String>
+  <system:String x:Key="Spell_DelayToShow">ディレイ表示</system:String>
   <system:String x:Key="Spell_UseHotbrRecastTime">ホットバーからリキャスト時間を取得する</system:String>
   <system:String x:Key="Spell_HotbarItemName">ホットバーの登録名称</system:String>
   <system:String x:Key="Spell_TextToExtend">延長マッチングワード</system:String>
@@ -122,6 +123,7 @@
   <system:String x:Key="Spell_BlinkBar">バーをブリンクさせる</system:String>
   <system:String x:Key="Spell_HideCounter">リキャスト時間を表示しない</system:String>
   <system:String x:Key="Spell_TitleVAlignment">スペル名のアライメント</system:String>
+  <system:String x:Key="Spell_HideInNotCombat">非戦闘時は表示しない</system:String>
   <system:String x:Key="Spell_NotResetAtWipeout">全滅時にリセットしない</system:String>
   <system:String x:Key="Spell_NoticeOnMatch">マッチしたときの通知</system:String>
   <system:String x:Key="Spell_NoticeOnOver">マッチｎ秒後の通知</system:String>

@@ -12,6 +12,7 @@ using ACT.SpecialSpellTimer.Models;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.WPF.Controls;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer.Views
 {
@@ -86,6 +87,8 @@ namespace ACT.SpecialSpellTimer.Views
         /// </summary>
         public void Refresh()
         {
+            this.RefreshHide();
+
             if (this.Spell.IsStandardStyle)
             {
                 this.RefreshCommon(
@@ -100,6 +103,34 @@ namespace ACT.SpecialSpellTimer.Views
                     this.CircleIcon,
                     this.CircleRecastTime);
             }
+        }
+
+        private void RefreshHide()
+        {
+            if (this.Spell.IsDesignMode)
+            {
+                this.BaseGrid.Visibility = Visibility.Visible;
+                return;
+            }
+
+            var visibility =
+                !this.Spell.IsHideInNotCombat || XIVPluginHelper.Instance.InCombat ?
+                Visibility.Visible :
+                Visibility.Collapsed;
+
+            if (this.Spell.DelayToShow > 0)
+            {
+                if (visibility == Visibility.Visible)
+                {
+                    var e = DateTime.Now - this.Spell.MatchDateTime;
+                    if (e.TotalSeconds <= this.Spell.DelayToShow)
+                    {
+                        visibility = Visibility.Collapsed;
+                    }
+                }
+            }
+
+            this.BaseGrid.Visibility = visibility;
         }
 
         private void RefreshCommon(
@@ -193,6 +224,7 @@ namespace ACT.SpecialSpellTimer.Views
         /// </summary>
         public void Update()
         {
+            this.RefreshHide();
             this.UpdateBrushes();
 
             if (this.Spell.IsStandardStyle)

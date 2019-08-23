@@ -36,7 +36,8 @@
     </ContextMenu>
   </UserControl.ContextMenu>
 
-  <Grid>
+  <Grid
+    Name="BaseGrid">
     <!-- circle style start -->
     <Grid
       Visibility="{Binding IsCircleStyle, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"

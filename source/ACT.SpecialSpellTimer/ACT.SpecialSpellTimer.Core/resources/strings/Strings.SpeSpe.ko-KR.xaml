@@ -107,6 +107,7 @@
   <system:String x:Key="Spell_TextToMatch">매칭 키워드</system:String>
   <system:String x:Key="Spell_UserRegex">정규식 사용</system:String>
   <system:String x:Key="Spell_RecastTime">재사용 대기 시간</system:String>
+  <system:String x:Key="Spell_DelayToShow">Delay to show</system:String>
   <system:String x:Key="Spell_UseHotbrRecastTime">단축바에서 재사용 대기 시간 가져오기</system:String>
   <system:String x:Key="Spell_HotbarItemName">단축바에 등록된 기술명</system:String>
   <system:String x:Key="Spell_TextToExtend">연장 매칭 키워드</system:String>
@@ -122,6 +123,7 @@
   <system:String x:Key="Spell_BlinkBar">진행 바 깜박이기</system:String>
   <system:String x:Key="Spell_HideCounter">재사용 대기 시간 숨김</system:String>
   <system:String x:Key="Spell_TitleVAlignment">Spell name vertical alignment</system:String>
+  <system:String x:Key="Spell_HideInNotCombat">Hide in not combat</system:String>
   <system:String x:Key="Spell_NotResetAtWipeout">전멸 시 초기화하지 않음</system:String>
   <system:String x:Key="Spell_NoticeOnMatch">시작 시 알림</system:String>
   <system:String x:Key="Spell_NoticeOnOver">시작 시 n초 후 알림</system:String>

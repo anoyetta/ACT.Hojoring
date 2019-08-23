@@ -178,16 +178,25 @@
             <!-- Use Regex -->
             <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_UserRegex}" IsChecked="{Binding Model.RegexEnabled}" />
 
-            <!-- Recast Time -->
-            <StackPanel Orientation="Horizontal" Margin="0 15 0 0">
-              <Label Content="{DynamicResource Spell_RecastTime}" VerticalAlignment="Center" Margin="0 0 10 0" />
-              <xctk:DoubleUpDown Value="{Binding Model.RecastTime, Mode=TwoWay}" FormatString="F2" MinWidth="90" Increment="1" />
-              <Label Content="{DynamicResource Spell_Secounds}" VerticalAlignment="Center" Margin="5 0 0 0" />
+            <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+              <!-- Recast Time -->
+              <StackPanel Orientation="Horizontal">
+                <Label Content="{DynamicResource Spell_RecastTime}" VerticalAlignment="Center" Margin="0 0 5 0" />
+                <xctk:DoubleUpDown Value="{Binding Model.RecastTime, Mode=TwoWay}" FormatString="F2" MinWidth="90" Increment="1" />
+                <Label Content="{DynamicResource Spell_Secounds}" VerticalAlignment="Center" Margin="5 0 0 0" />
+              </StackPanel>
+
+              <!-- Delay to show -->
+              <StackPanel Orientation="Horizontal" Margin="20 0 0 0">
+                <Label Content="{DynamicResource Spell_DelayToShow}" VerticalAlignment="Center" Margin="0 0 5 0" />
+                <xctk:DoubleUpDown Value="{Binding Model.DelayToShow, Mode=TwoWay}" FormatString="F2" MinWidth="90" Increment="1" />
+                <Label Content="{DynamicResource Spell_Secounds}" VerticalAlignment="Center" Margin="5 0 0 0" />
+              </StackPanel>
             </StackPanel>
 
             <!-- Recast Time from HotbarInfo -->
             <StackPanel Visibility="{Binding FFXIVReader.IsAvailable, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
-              <CheckBox Content="{DynamicResource Spell_UseHotbrRecastTime}" IsChecked="{Binding Model.UseHotbarRecastTime, Mode=TwoWay}" Margin="0 15 0 0" />
+              <CheckBox Content="{DynamicResource Spell_UseHotbrRecastTime}" IsChecked="{Binding Model.UseHotbarRecastTime, Mode=TwoWay}" Margin="0 10 0 0" />
               <Label Content="{DynamicResource Spell_HotbarItemName}" VerticalAlignment="Center" Margin="0 5 0 0" HorizontalAlignment="Left" Visibility="{Binding Model.UseHotbarRecastTime, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
               <TextBox Text="{Binding Model.HotbarName, Mode=TwoWay}" Width="300" Margin="0 2 0 0" HorizontalAlignment="Left"  Visibility="{Binding Model.UseHotbarRecastTime, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
             </StackPanel>
@@ -753,6 +762,7 @@
                   <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_IsCounterToCenter}" IsChecked="{Binding Model.IsCounterToCenter, Mode=TwoWay}" Visibility="{Binding Model.OverlapRecastTime, Mode=OneWay, Converter={StaticResource VisibilityNegativeConverter}}" />
                 </DockPanel>
                 <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_DontHide}" IsChecked="{Binding Model.DontHide, Mode=TwoWay}" />
+                <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_HideInNotCombat}" IsChecked="{Binding Model.IsHideInNotCombat, Mode=TwoWay}" />
                 <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_VisibleSpell}" IsChecked="{Binding Model.ProgressBarVisible, Mode=TwoWay}" ToolTip="{DynamicResource Common_VisibleSpellDiscription}" />
               </StackPanel>
             </StackPanel>

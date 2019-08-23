@@ -107,6 +107,7 @@
   <system:String x:Key="Spell_TextToMatch">Keyword to show</system:String>
   <system:String x:Key="Spell_UserRegex">Use Regex</system:String>
   <system:String x:Key="Spell_RecastTime">Recast time</system:String>
+  <system:String x:Key="Spell_DelayToShow">Delay to show</system:String>
   <system:String x:Key="Spell_UseHotbrRecastTime">Use Hotbar Recast Time</system:String>
   <system:String x:Key="Spell_HotbarItemName">Name of Hotbar Item</system:String>
   <system:String x:Key="Spell_TextToExtend">Keyword to extend</system:String>
@@ -122,6 +123,7 @@
   <system:String x:Key="Spell_BlinkBar">Blink progress bar</system:String>
   <system:String x:Key="Spell_HideCounter">Hide recast time</system:String>
   <system:String x:Key="Spell_TitleVAlignment">Spell name vertical alignment</system:String>
+  <system:String x:Key="Spell_HideInNotCombat">Hide in not combat</system:String>
   <system:String x:Key="Spell_NotResetAtWipeout">Don't reset at Wipeout</system:String>
   <system:String x:Key="Spell_NoticeOnMatch">Notice when log matches</system:String>
   <system:String x:Key="Spell_NoticeOnOver">Notice when log matches, after N seconds</system:String>
