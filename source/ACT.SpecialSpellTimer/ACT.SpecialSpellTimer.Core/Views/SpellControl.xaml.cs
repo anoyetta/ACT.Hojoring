@@ -33,7 +33,10 @@ namespace ACT.SpecialSpellTimer.Views
             }
 
             this.InitializeComponent();
+            this.BaseGrid.Visibility = Visibility.Collapsed;
         }
+
+        public bool IsActive => this.BaseGrid.Visibility == Visibility.Visible;
 
         #region Colors
 
