@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -230,14 +231,30 @@ namespace FFXIV.Framework.TTS.Server.Models
             uint? toneScale = null,
             int? castNo = null)
         {
-            if (string.IsNullOrEmpty(textToSpeak))
+            var sw = new Stopwatch();
+
+            if (string.IsNullOrWhiteSpace(textToSpeak))
             {
                 return;
             }
 
-            while (this.isSpeaking)
+            try
             {
-                Thread.Sleep(25);
+                sw.Restart();
+
+                while (this.isSpeaking)
+                {
+                    if (sw.Elapsed.TotalSeconds >= 10d)
+                    {
+                        return;
+                    }
+
+                    Thread.Sleep(25);
+                }
+            }
+            finally
+            {
+                sw.Stop();
             }
 
             lock (this)
@@ -246,27 +263,42 @@ namespace FFXIV.Framework.TTS.Server.Models
 
                 if (speed.HasValue)
                 {
-                    this.cevioTalker.Speed = speed.Value;
+                    if (this.cevioTalker.Speed != speed.Value)
+                    {
+                        this.cevioTalker.Speed = speed.Value;
+                    }
                 }
 
                 if (volume.HasValue)
                 {
-                    this.cevioTalker.Volume = volume.Value;
+                    if (this.cevioTalker.Volume != volume.Value)
+                    {
+                        this.cevioTalker.Volume = volume.Value;
+                    }
                 }
 
                 if (tone.HasValue)
                 {
-                    this.cevioTalker.Tone = tone.Value;
+                    if (this.cevioTalker.Tone != tone.Value)
+                    {
+                        this.cevioTalker.Tone = tone.Value;
+                    }
                 }
 
                 if (alpha.HasValue)
                 {
-                    this.cevioTalker.Alpha = alpha.Value;
+                    if (this.cevioTalker.Alpha != alpha.Value)
+                    {
+                        this.cevioTalker.Alpha = alpha.Value;
+                    }
                 }
 
                 if (toneScale.HasValue)
                 {
-                    this.cevioTalker.ToneScale = toneScale.Value;
+                    if (this.cevioTalker.ToneScale != toneScale.Value)
+                    {
+                        this.cevioTalker.ToneScale = toneScale.Value;
+                    }
                 }
 
                 if (castNo.HasValue)
@@ -274,17 +306,43 @@ namespace FFXIV.Framework.TTS.Server.Models
                     var casts = Talker.AvailableCasts;
                     if (castNo.Value < casts.Length)
                     {
-                        this.cevioTalker.Cast = casts[castNo.Value];
+                        if (this.cevioTalker.Cast != casts[castNo.Value])
+                        {
+                            this.cevioTalker.Cast = casts[castNo.Value];
+                        }
                     }
                 }
 
-                var state = this.cevioTalker.Speak(textToSpeak);
-                while (!state.IsCompleted)
+                var duration = this.cevioTalker.GetTextDuration(textToSpeak);
+                if (duration <= 0d ||
+                    duration >= 20d)
                 {
-                    Thread.Sleep(150);
+                    return;
                 }
 
-                Thread.Sleep(100);
+                var state = this.cevioTalker.Speak(textToSpeak);
+
+                try
+                {
+                    sw.Restart();
+
+                    while (!state.IsCompleted)
+                    {
+                        if (sw.Elapsed.TotalSeconds >= 20d)
+                        {
+                            this.cevioTalker.Stop();
+                            break;
+                        }
+
+                        Thread.Sleep(100);
+                    }
+                }
+                finally
+                {
+                    sw.Stop();
+                }
+
+                Thread.Sleep(250);
             }
         }
     }

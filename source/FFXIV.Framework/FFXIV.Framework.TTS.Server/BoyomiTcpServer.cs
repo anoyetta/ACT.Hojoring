@@ -227,7 +227,7 @@ namespace FFXIV.Framework.TTS.Server
                     _ => string.Empty,
                 };
 
-                if (string.IsNullOrEmpty(text))
+                if (string.IsNullOrWhiteSpace(text))
                 {
                     return;
                 }
@@ -243,7 +243,7 @@ namespace FFXIV.Framework.TTS.Server
                 }
 
                 // 99文字ずつで分割する
-                var texts = text.Split(99);
+                var texts = text.Trim().Split(99);
 
                 foreach (var tts in texts)
                 {
