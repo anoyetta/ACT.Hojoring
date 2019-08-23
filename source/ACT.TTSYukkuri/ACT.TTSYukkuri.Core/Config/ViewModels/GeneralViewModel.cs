@@ -87,6 +87,8 @@ namespace ACT.TTSYukkuri.Config.ViewModels
                         {
                             File.Delete(file);
                         }
+
+                        BufferedWavePlayer.Instance?.ClearBuffers();
                     });
 
                     MessageBox.Show(
