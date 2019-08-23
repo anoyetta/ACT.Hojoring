@@ -251,6 +251,7 @@
   <system:String x:Key="Timeline_ThisIsOrigin">原始记录</system:String>
   <system:String x:Key="Timeline_ImportCombatLog">导入战斗记录</system:String>
 
+  <system:String x:Key="Timeline_Mute">Mute</system:String>
   <system:String x:Key="Timeline_Location">位置(时间轴)</system:String>
   <system:String x:Key="Timeline_LocationNotice">位置(提醒)</system:String>
   <system:String x:Key="Timeline_ShowDummyTimeline">显示界面以方便调整</system:String>

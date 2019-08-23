@@ -251,6 +251,7 @@
   <system:String x:Key="Timeline_ThisIsOrigin">This record is Origin</system:String>
   <system:String x:Key="Timeline_ImportCombatLog">Import CombatLog</system:String>
 
+  <system:String x:Key="Timeline_Mute">Mute</system:String>
   <system:String x:Key="Timeline_Location">Location - Timeline</system:String>
   <system:String x:Key="Timeline_LocationNotice">Location - Notice</system:String>
   <system:String x:Key="Timeline_ShowDummyTimeline">Show dummy overlay for Design</system:String>

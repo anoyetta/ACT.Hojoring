@@ -251,6 +251,7 @@
   <system:String x:Key="Timeline_ThisIsOrigin">이 기록을 기점으로 설정</system:String>
   <system:String x:Key="Timeline_ImportCombatLog">과거 전투 로그 불러오기</system:String>
 
+  <system:String x:Key="Timeline_Mute">Mute</system:String>
   <system:String x:Key="Timeline_Location">위치 (타임라인)</system:String>
   <system:String x:Key="Timeline_LocationNotice">위치 (알림)</system:String>
   <system:String x:Key="Timeline_ShowDummyTimeline">디자인 더미 표시</system:String>
