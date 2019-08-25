@@ -343,6 +343,12 @@ namespace ACT.TTSYukkuri.Discord.Models
         public void Play(
             string audioFile)
         {
+            if (!File.Exists(audioFile))
+            {
+                this.AppendLogLine($"Play Sound Error. File not found. {audioFile}");
+                return;
+            }
+
             this.playQueue.Enqueue(audioFile);
         }
 
