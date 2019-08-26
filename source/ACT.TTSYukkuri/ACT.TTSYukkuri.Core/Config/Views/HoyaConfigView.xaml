@@ -7,7 +7,7 @@
   xmlns:fwcmn="clr-namespace:FFXIV.Framework.Common;assembly=FFXIV.Framework"
   xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
   xmlns:global="clr-namespace:FFXIV.Framework.Globalization;assembly=FFXIV.Framework"
-  xmlns:hoya="clr-namespace:VoiceTextWebAPI.Client"
+  xmlns:hoya="clr-namespace:VoiceTextWebAPI.Client;assembly=VoiceTextWebAPI.Client"
   xmlns:local="clr-namespace:ACT.TTSYukkuri.Config.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:resources="clr-namespace:ACT.TTSYukkuri.resources"
