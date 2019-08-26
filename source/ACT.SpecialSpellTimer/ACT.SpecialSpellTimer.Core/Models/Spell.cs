@@ -973,8 +973,8 @@ namespace ACT.SpecialSpellTimer.Models
         /// </summary>
         public bool IsSequentialTTS { get; set; } = false;
 
-        public void Play(string tts, AdvancedNoticeConfig config)
-            => Spell.PlayCore(tts, this.IsSequentialTTS, config, this);
+        public void Play(string tts, AdvancedNoticeConfig config, bool forceSync = false)
+            => Spell.PlayCore(tts, this.IsSequentialTTS | forceSync, config, this);
 
         public static void PlayCore(
             string tts,
@@ -1001,51 +1001,28 @@ namespace ACT.SpecialSpellTimer.Models
                 isWave = true;
             }
 
-            void play(string source)
-            {
-                if (isWave)
-                {
-                    noticeConfig.PlayWave(source);
-                }
-                else
-                {
-                    noticeConfig.Speak(source);
-                }
-            }
-
             // waveサウンドはシンクロ再生しない
             if (isWave)
             {
-                play(tts);
+                noticeConfig.PlayWave(tts);
                 return;
             }
 
             // ゆっくりがいないならシンクロ再生はしない
-            if (!PlayBridge.Instance.IsAvailable)
+            if (!PlayBridge.Instance.IsAvailable ||
+                !isSync)
             {
-                play(tts);
+                noticeConfig.Speak(tts);
                 return;
             }
 
-            // シンクロ再生ならばシンクロコマンドを付与する
-            // /sync [優先順位] テキスト
-            // ex. /sync 9999 よしだーー
-            // 同期的に発声するが優先順位は最後になる
-            if (isSync)
+            var priority = int.MaxValue;
+            if (trigger is Spell spell)
             {
-                if (!tts.Contains(AdvancedNoticeConfig.SyncKeyword))
-                {
-                    var priority = 9999L;
-                    if (trigger is Spell spell)
-                    {
-                        priority = spell.DisplayNo;
-                    }
-
-                    tts = $"{AdvancedNoticeConfig.SyncKeyword} {priority}:{tts}";
-                }
+                priority = (int)spell.DisplayNo;
             }
 
-            play(tts);
+            noticeConfig.Speak(tts, true, priority);
         }
 
         #endregion Sequential TTS

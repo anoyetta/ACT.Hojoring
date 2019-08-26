@@ -77,7 +77,7 @@ namespace ACT.SpecialSpellTimer.Config.Models
 
         public void PlayWave(string wave) => PlayWaveCore(wave, this);
 
-        public void Speak(string tts) => SyncSpeak(tts, this);
+        public void Speak(string tts, bool sync = false, int priority = 0) => SyncSpeak(tts, this, sync, priority);
 
         public const string SyncKeyword = "/sync";
 
@@ -199,50 +199,27 @@ namespace ACT.SpecialSpellTimer.Config.Models
 
         private static void SyncSpeak(
             string tts,
-            AdvancedNoticeConfig config)
+            AdvancedNoticeConfig config,
+            bool sync = false,
+            int priority = 0)
         {
             if (string.IsNullOrEmpty(tts))
             {
                 return;
             }
 
-            // シンクロTTSじゃない？
-            if (!tts.Contains(SyncKeyword))
+            if (!sync)
             {
                 SpeakCore(tts, config);
-                return;
-            }
-
-            var match = SyncRegex.Match(tts);
-            if (!match.Success)
-            {
-                // シンクロTTSじゃない
-                SpeakCore(tts, config);
-                return;
-            }
-
-            var value = string.Empty;
-            value = match.Groups["priority"].Value;
-
-            double priority;
-            if (!double.TryParse(value, out priority))
-            {
-                SpeakCore(tts, config);
-                return;
-            }
-
-            var speakText = match.Groups["text"].Value;
-            if (string.IsNullOrEmpty(speakText))
-            {
                 return;
             }
 
             if (!PlayBridge.Instance.IsSyncAvailable)
             {
                 var period = Settings.Default.UILocale == Locales.JA ? "、" : ",";
-                if (speakText.EndsWith(period))
+                if (tts.EndsWith(period))
                 {
-                    speakText += period;
+                    tts += period;
                 }
             }
 
@@ -250,7 +227,7 @@ namespace ACT.SpecialSpellTimer.Config.Models
             {
                 var interval = Settings.Default.WaitingTimeToSyncTTS / 4d;
 
-                SyncList.Add(new SyncTTS(SyncList.Count, priority, speakText, config));
+                SyncList.Add(new SyncTTS(SyncList.Count, priority, tts, config));
                 SyncListTimestamp = DateTime.Now;
                 SyncListCount = SyncList.Count;
 
