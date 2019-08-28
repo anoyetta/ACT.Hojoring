@@ -88,6 +88,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.name, value);
         }
 
+        private string inherits;
+
+        [XmlAttribute(AttributeName = "inherits")]
+        public string Inherits
+        {
+            get => this.inherits;
+            set => this.SetProperty(ref this.inherits, value);
+        }
+
         private bool? enabled = null;
 
         [XmlIgnore]
@@ -121,13 +130,25 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public void Walk(
             Action<TimelineBase> action)
+            => this.Walk(x =>
+            {
+                action.Invoke(x);
+                return false;
+            });
+
+        public void Walk(
+            Func<TimelineBase, bool> action)
         {
             if (action == null)
             {
                 return;
             }
 
-            action.Invoke(this);
+            var isBreak = action.Invoke(this);
+            if (isBreak)
+            {
+                return;
+            }
 
             if (this.Children != null)
             {

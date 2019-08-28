@@ -82,7 +82,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var defaults = this.Defaults.Union(SuperDefaultValues)
                 .Where(x => (x.Enabled ?? true));
 
-            this.Walk((element) => setDefaultValuesToElement(element));
+            this.Walk((element) =>
+            {
+                inheritsElement(element);
+                setDefaultValuesToElement(element);
+                return false;
+            });
 
             void setDefaultValuesToElement(TimelineBase element)
             {
@@ -132,6 +137,53 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 catch (Exception ex)
                 {
                     Logger.Write("[TL] Load default values error.", ex);
+                }
+            }
+
+            void inheritsElement(TimelineBase element)
+            {
+                if (string.IsNullOrEmpty(element.Inherits))
+                {
+                    return;
+                }
+
+                var super = default(TimelineBase);
+                this.Walk(x =>
+                {
+                    if (x.Enabled.GetValueOrDefault() &&
+                        x.TimelineType == element.TimelineType &&
+                        string.Equals(x.Name, element.Name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        super = x;
+                        return true;
+                    }
+
+                    return false;
+                });
+
+                if (super == null)
+                {
+                    return;
+                }
+
+                var properties = super.GetType().GetProperties(
+                    BindingFlags.Instance |
+                    BindingFlags.Public |
+                    BindingFlags.NonPublic);
+
+                foreach (var pi in properties)
+                {
+                    var superValue = pi.GetValue(super);
+                    if (superValue == null)
+                    {
+                        continue;
+                    }
+
+                    var targetValue = pi.GetValue(element);
+                    if (targetValue == null)
+                    {
+                        pi.SetValue(element, superValue);
+                    }
                 }
             }
         }
