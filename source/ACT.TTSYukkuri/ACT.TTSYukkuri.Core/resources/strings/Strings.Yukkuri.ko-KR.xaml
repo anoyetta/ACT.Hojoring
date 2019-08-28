@@ -116,6 +116,7 @@
   <system:String x:Key="SA_TTSFormat">경고 텍스트</system:String>
   <system:String x:Key="SA_AlertTarget">감지 대상</system:String>
   <system:String x:Key="SA_Device">알림 재생 장치</system:String>
+  <system:String x:Key="SA_PlayPalette">Voice config to Notify</system:String>
 
   <system:String x:Key="SA_Discription" xml:space="preserve">
 ※경고 텍스트 참조

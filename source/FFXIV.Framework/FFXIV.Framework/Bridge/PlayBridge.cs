@@ -2,6 +2,14 @@ using System;
 
 namespace FFXIV.Framework.Bridge
 {
+    public enum VoicePalettes : int
+    {
+        Default = 0,
+        Ext1 = 1,
+        Ext2 = 2,
+        Ext3 = 3,
+    }
+
     public class PlayBridge
     {
         #region Singleton
@@ -19,6 +27,7 @@ namespace FFXIV.Framework.Bridge
 
         public delegate void PlayDevice(
             string message,
+            VoicePalettes voicePalette,
             bool isSync = false,
             float? volume = null);
 
@@ -49,48 +58,63 @@ namespace FFXIV.Framework.Bridge
         #region Play Both
 
         public void Play(string message) =>
-            this.PlayBothDelegate?.Invoke(message, false, null);
+            this.PlayBothDelegate?.Invoke(message, 0, false, null);
 
         public void Play(string message, bool isSync) =>
-            this.PlayBothDelegate?.Invoke(message, isSync, null);
+            this.PlayBothDelegate?.Invoke(message, 0, isSync, null);
 
         public void Play(string message, float? volume) =>
-            this.PlayBothDelegate?.Invoke(message, false, volume);
+            this.PlayBothDelegate?.Invoke(message, 0, false, volume);
 
         public void Play(string message, bool isSync, float? volume) =>
-            this.PlayBothDelegate?.Invoke(message, isSync, volume);
+            this.PlayBothDelegate?.Invoke(message, 0, isSync, volume);
+
+        public void Play(string message, VoicePalettes voicePalette, bool isSync, float? volume) =>
+            this.PlayBothDelegate?.Invoke(message, voicePalette, isSync, volume);
 
         #endregion Play Both
 
         #region Play Main
 
         public void PlayMain(string message) =>
-            this.PlayMainDeviceDelegate?.Invoke(message, false, null);
+            this.PlayMainDeviceDelegate?.Invoke(message, 0, false, null);
 
         public void PlayMain(string message, bool isSync) =>
-            this.PlayMainDeviceDelegate?.Invoke(message, isSync, null);
+            this.PlayMainDeviceDelegate?.Invoke(message, 0, isSync, null);
+
+        public void PlayMain(string message, VoicePalettes voicePalette, bool isSync) =>
+            this.PlayMainDeviceDelegate?.Invoke(message, voicePalette, isSync, null);
 
         public void PlayMain(string message, float? volume) =>
-            this.PlayMainDeviceDelegate?.Invoke(message, false, volume);
+            this.PlayMainDeviceDelegate?.Invoke(message, 0, false, volume);
 
         public void PlayMain(string message, bool isSync, float? volume) =>
-            this.PlayMainDeviceDelegate?.Invoke(message, isSync, volume);
+            this.PlayMainDeviceDelegate?.Invoke(message, 0, isSync, volume);
+
+        public void PlayMain(string message, VoicePalettes voicePalette, bool isSync, float? volume) =>
+            this.PlayMainDeviceDelegate?.Invoke(message, voicePalette, isSync, volume);
 
         #endregion Play Main
 
         #region Play Sub
 
         public void PlaySub(string message) =>
-            this.PlaySubDeviceDelegate?.Invoke(message, false, null);
+            this.PlaySubDeviceDelegate?.Invoke(message, 0, false, null);
 
         public void PlaySub(string message, bool isSync) =>
-            this.PlaySubDeviceDelegate?.Invoke(message, isSync, null);
+            this.PlaySubDeviceDelegate?.Invoke(message, 0, isSync, null);
+
+        public void PlaySub(string message, VoicePalettes voicePalette, bool isSync) =>
+            this.PlaySubDeviceDelegate?.Invoke(message, voicePalette, isSync, null);
 
         public void PlaySub(string message, float? volume) =>
-            this.PlaySubDeviceDelegate?.Invoke(message, false, volume);
+            this.PlaySubDeviceDelegate?.Invoke(message, 0, false, volume);
 
         public void PlaySub(string message, bool isSync, float? volume) =>
-            this.PlaySubDeviceDelegate?.Invoke(message, isSync, volume);
+            this.PlaySubDeviceDelegate?.Invoke(message, 0, isSync, volume);
+
+        public void PlaySub(string message, VoicePalettes voicePalette, bool isSync, float? volume) =>
+            this.PlaySubDeviceDelegate?.Invoke(message, voicePalette, isSync, volume);
 
         #endregion Play Sub
     }

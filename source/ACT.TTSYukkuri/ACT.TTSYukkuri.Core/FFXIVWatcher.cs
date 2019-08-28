@@ -3,6 +3,7 @@ using System.Threading;
 using ACT.TTSYukkuri.Config;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
+using FFXIV.Framework.Bridge;
 using NLog;
 
 namespace ACT.TTSYukkuri
@@ -11,7 +12,7 @@ namespace ACT.TTSYukkuri
     /// スピークdelegate
     /// </summary>
     /// <param name="textToSpeak"></param>
-    public delegate void Speak(string textToSpeak, PlayDevices playDevice = PlayDevices.Both, bool isSync = false, float? volume = null);
+    public delegate void Speak(string textToSpeak, PlayDevices playDevice = PlayDevices.Both, VoicePalettes play = VoicePalettes.Default, bool isSync = false, float? volume = null);
 
     /// <summary>
     /// FF14を監視する
@@ -98,7 +99,18 @@ namespace ACT.TTSYukkuri
             string textToSpeak,
             PlayDevices device = PlayDevices.Both,
             bool isSync = false) =>
-            this.SpeakDelegate?.Invoke(textToSpeak, device, isSync);
+            Speak(textToSpeak, device, VoicePalettes.Default, isSync);
+
+        /// <summary>
+        /// スピーク
+        /// </summary>
+        /// <param name="textToSpeak">喋る文字列</param>
+        public void Speak(
+            string textToSpeak,
+            PlayDevices device = PlayDevices.Both,
+            VoicePalettes voicePalette = VoicePalettes.Default,
+            bool isSync = false) =>
+            this.SpeakDelegate?.Invoke(textToSpeak, device, voicePalette, isSync);
 
         public void Start()
         {

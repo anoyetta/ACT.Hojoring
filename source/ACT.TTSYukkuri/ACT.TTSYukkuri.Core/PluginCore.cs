@@ -169,6 +169,14 @@ namespace ACT.TTSYukkuri
             PlayDevices playDevice = PlayDevices.Both,
             bool isSync = false,
             float? volume = null)
+            => Speak(message, playDevice, VoicePalettes.Default, isSync, volume);
+
+        public void Speak(
+            string message,
+            PlayDevices playDevice = PlayDevices.Both,
+            VoicePalettes voicePalette = VoicePalettes.Default,
+            bool isSync = false,
+            float? volume = null)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
@@ -182,7 +190,7 @@ namespace ACT.TTSYukkuri
             {
                 if (!isSync)
                 {
-                    Task.Run(() => this.SpeakTTS(message, playDevice, isSync, volume));
+                    Task.Run(() => this.SpeakTTS(message, playDevice, voicePalette, isSync, volume));
                 }
                 else
                 {
@@ -190,7 +198,7 @@ namespace ACT.TTSYukkuri
                     {
                         lock (TTSBlocker)
                         {
-                            this.SpeakTTS(message, playDevice, isSync, volume);
+                            this.SpeakTTS(message, playDevice, voicePalette, isSync, volume);
                         }
                     });
                 }
@@ -228,6 +236,15 @@ namespace ACT.TTSYukkuri
             PlayDevices playDevice = PlayDevices.Both,
             bool isSync = false,
             float? volume = null)
+            => SpeakTTS(textToSpeak, playDevice, VoicePalettes.Default, isSync, volume);
+
+
+        private void SpeakTTS(
+            string textToSpeak,
+            PlayDevices playDevice = PlayDevices.Both,
+            VoicePalettes voicePalette = VoicePalettes.Default,
+            bool isSync = false,
+            float? volume = null)
         {
             const string waitCommand = "/wait";
 
@@ -236,7 +253,7 @@ namespace ACT.TTSYukkuri
                 // waitなし？
                 if (!textToSpeak.StartsWith(waitCommand))
                 {
-                    SpeechController.Default.Speak(textToSpeak, playDevice, isSync, volume);
+                    SpeechController.Default.Speak(textToSpeak, playDevice, voicePalette, isSync, volume);
                 }
                 else
                 {
@@ -246,7 +263,7 @@ namespace ACT.TTSYukkuri
                     if (values.Length < 2)
                     {
                         // 普通に読上げて終わる
-                        SpeechController.Default.Speak(textToSpeak, playDevice, isSync, volume);
+                        SpeechController.Default.Speak(textToSpeak, playDevice, voicePalette, isSync, volume);
                         return;
                     }
 
@@ -259,7 +276,7 @@ namespace ACT.TTSYukkuri
                     if (!int.TryParse(delayAsText, out delay))
                     {
                         // 普通に読上げて終わる
-                        SpeechController.Default.Speak(textToSpeak, playDevice, isSync, volume);
+                        SpeechController.Default.Speak(textToSpeak, playDevice, voicePalette, isSync, volume);
                         return;
                     }
 
@@ -399,9 +416,9 @@ namespace ACT.TTSYukkuri
                     });
 
                     // Bridgeにメソッドを登録する
-                    PlayBridge.Instance.SetBothDelegate((message, isSync, volume) => this.Speak(message, PlayDevices.Both, isSync, volume));
-                    PlayBridge.Instance.SetMainDeviceDelegate((message, isSync, volume) => this.Speak(message, PlayDevices.Main, isSync, volume));
-                    PlayBridge.Instance.SetSubDeviceDelegate((message, isSync, volume) => this.Speak(message, PlayDevices.Sub, isSync, volume));
+                    PlayBridge.Instance.SetBothDelegate((message, voicePalette, isSync, volume) => this.Speak(message, PlayDevices.Both, voicePalette, isSync, volume));
+                    PlayBridge.Instance.SetMainDeviceDelegate((message, voicePalette, isSync, volume) => this.Speak(message, PlayDevices.Main, voicePalette, isSync, volume));
+                    PlayBridge.Instance.SetSubDeviceDelegate((message, voicePalette, isSync, volume) => this.Speak(message, PlayDevices.Sub, voicePalette, isSync, volume));
                     PlayBridge.Instance.SetSyncStatusDelegate(() => Settings.Default.Player == WavePlayerTypes.WASAPIBuffered);
 
                     // テキストコマンドの購読を登録する

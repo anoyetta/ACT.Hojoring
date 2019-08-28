@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using ACT.TTSYukkuri.Config;
+using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri.Boyomichan
 {
@@ -81,6 +82,22 @@ namespace ACT.TTSYukkuri.Boyomichan
         public void Speak(
             string text,
             PlayDevices playDevice = PlayDevices.Both,
+            bool isSync = false,
+            float? volume = null)
+            => Speak(text, playDevice, VoicePalettes.Default, isSync, volume);
+
+        /// <summary>
+        /// テキストを読み上げる
+        /// </summary>
+        /// <param name="text">読み上げるテキスト</param>
+        /// <param name="isSync">使用しない</param>
+        /// <param name="playDevice">使用しない</param>
+        /// <param name="voicePalette">使用しない</param>
+        /// <param name="volume">使用しない</param>
+        public void Speak(
+            string text,
+            PlayDevices playDevice = PlayDevices.Both,
+            VoicePalettes voicePalette = VoicePalettes.Default,
             bool isSync = false,
             float? volume = null)
         {

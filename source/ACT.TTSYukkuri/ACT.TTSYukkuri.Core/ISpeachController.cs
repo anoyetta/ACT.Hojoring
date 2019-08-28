@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Bridge;
+
 using NLog;
 
 namespace ACT.TTSYukkuri
@@ -27,6 +29,12 @@ namespace ACT.TTSYukkuri
         /// </summary>
         /// <param name="text">読上げるテキスト</param>
         void Speak(string text, PlayDevices playDevice = PlayDevices.Both, bool isSync = false, float? volume = null);
+
+        /// <summary>
+        /// TTSに話してもらう
+        /// </summary>
+        /// <param name="text">読上げるテキスト</param>
+        void Speak(string text, PlayDevices playDevice = PlayDevices.Both, VoicePalettes voicePalette = VoicePalettes.Default, bool isSync = false, float? volume = null);
     }
 
     public static class SpeechControllerExtentions
@@ -67,6 +75,16 @@ namespace ACT.TTSYukkuri
             string text,
             int delay,
             PlayDevices playDevice = PlayDevices.Both,
+            bool isSync = false,
+            float? volume = null)
+            => SpeakWithDelay(speechController, text, delay, playDevice, VoicePalettes.Default, isSync, volume);
+
+        public static void SpeakWithDelay(
+            this ISpeechController speechController,
+            string text,
+            int delay,
+            PlayDevices playDevice = PlayDevices.Both,
+            VoicePalettes voicePalette = VoicePalettes.Default,
             bool isSync = false,
             float? volume = null)
         {

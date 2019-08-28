@@ -2,12 +2,45 @@ using System.Collections.Generic;
 using System.Speech.Synthesis;
 using ACT.TTSYukkuri.SAPI5;
 using Prism.Mvvm;
+using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri.Config.ViewModels
 {
     public class SAPI5ConfigViewModel : BindableBase
     {
-        public SAPI5Configs Config => Settings.Default.SAPI5Settings;
+        VoicePalettes VoicePalette { get; set; }
+
+        public SAPI5ConfigViewModel(VoicePalettes voicePalette = VoicePalettes.Default)
+        {
+            this.VoicePalette = voicePalette;
+        }
+
+        public SAPI5Configs Config
+        {
+            get
+            {
+                SAPI5Configs config;
+                switch (VoicePalette)
+                {
+                    case VoicePalettes.Default:
+                        config = Settings.Default.SAPI5Settings;
+                        break;
+                    case VoicePalettes.Ext1:
+                        config = Settings.Default.SAPI5SettingsExt1;
+                        break;
+                    case VoicePalettes.Ext2:
+                        config = Settings.Default.SAPI5SettingsExt2;
+                        break;
+                    case VoicePalettes.Ext3:
+                        config = Settings.Default.SAPI5SettingsExt3;
+                        break;
+                    default:
+                        config = Settings.Default.SAPI5Settings;
+                        break;
+                }
+                return config;
+            }
+        }
 
         public IReadOnlyList<InstalledVoice> Voices => SAPI5SpeechController.Synthesizers;
 

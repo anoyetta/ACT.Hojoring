@@ -7,6 +7,7 @@ using ACT.TTSYukkuri.Config;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using RucheHome.Voiceroid;
+using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri.Voiceroid
 {
@@ -150,6 +151,18 @@ namespace ACT.TTSYukkuri.Voiceroid
         public async void Speak(
             string text,
             PlayDevices playDevice = PlayDevices.Both,
+            bool isSync = false,
+            float? volume = null)
+            => await Task.Run(() => Speak(text, playDevice, VoicePalettes.Default, isSync, volume));
+
+        /// <summary>
+        /// テキストを読み上げる
+        /// </summary>
+        /// <param name="text">読み上げるテキスト</param>
+        public async void Speak(
+            string text,
+            PlayDevices playDevice = PlayDevices.Both,
+            VoicePalettes voicePalette = VoicePalettes.Default,
             bool isSync = false,
             float? volume = null)
         {

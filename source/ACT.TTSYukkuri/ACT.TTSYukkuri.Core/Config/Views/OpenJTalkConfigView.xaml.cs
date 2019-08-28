@@ -2,6 +2,7 @@ using System.Windows.Controls;
 using ACT.TTSYukkuri.Config.ViewModels;
 using ACT.TTSYukkuri.resources;
 using FFXIV.Framework.Globalization;
+using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri.Config.Views
 {
@@ -10,10 +11,10 @@ namespace ACT.TTSYukkuri.Config.Views
     /// </summary>
     public partial class OpenJTalkConfigView : UserControl, ILocalizable
     {
-        public OpenJTalkConfigView()
+        public OpenJTalkConfigView(VoicePalettes voicePalette = VoicePalettes.Default)
         {
             this.InitializeComponent();
-            this.DataContext = new OpenJTalkConfigViewModel();
+            this.DataContext = new OpenJTalkConfigViewModel(voicePalette);
 
             this.SetLocale(Settings.Default.UILocale);
         }
