@@ -8,6 +8,7 @@ using ACT.TTSYukkuri.SAPI5;
 using ACT.TTSYukkuri.Sasara;
 using ACT.TTSYukkuri.Voiceroid;
 using ACT.TTSYukkuri.Yukkuri;
+using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri
 {
@@ -131,6 +132,18 @@ namespace ACT.TTSYukkuri
             PlayDevices playDevice = PlayDevices.Both,
             bool isSync = false,
             float? volume = null)
-            => SpeechController.instance.Speak(text, playDevice, isSync, volume);
+            => SpeechController.instance.Speak(text, playDevice, VoicePalettes.Default, isSync, volume);
+
+        /// <summary>
+        /// TTSに話してもらう
+        /// </summary>
+        /// <param name="text">読上げるテキスト</param>
+        public void Speak(
+            string text,
+            PlayDevices playDevice = PlayDevices.Both,
+            VoicePalettes voicePalette = VoicePalettes.Default,
+            bool isSync = false,
+            float? volume = null)
+            => SpeechController.instance.Speak(text, playDevice, voicePalette, isSync, volume);
     }
 }

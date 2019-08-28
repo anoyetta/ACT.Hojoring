@@ -134,6 +134,7 @@
   <system:String x:Key="Spell_NoticeOnBeforeThisScounds">秒前通知</system:String>
   <system:String x:Key="Spell_UseSequencialTTS">按顺序播放TTS (禁止同时播放)</system:String>
   <system:String x:Key="Spell_TestSequencialTTS">测试顺序播放</system:String>
+  <system:String x:Key="Spell_PlayPalette">Voice config to Notify</system:String>
 
   <system:String x:Key="Ticker_Name">字幕名</system:String>
   <system:String x:Key="Ticker_Message">要显示的内容</system:String>

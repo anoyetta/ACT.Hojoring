@@ -2,6 +2,7 @@ using System.Windows.Controls;
 using ACT.TTSYukkuri.Config.ViewModels;
 using ACT.TTSYukkuri.resources;
 using FFXIV.Framework.Globalization;
+using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri.Config.Views
 {
@@ -12,10 +13,10 @@ namespace ACT.TTSYukkuri.Config.Views
         UserControl,
         ILocalizable
     {
-        public SAPI5ConfigView()
+        public SAPI5ConfigView(VoicePalettes voicePalette = VoicePalettes.Default)
         {
             this.InitializeComponent();
-            this.DataContext = new SAPI5ConfigViewModel();
+            this.DataContext = new SAPI5ConfigViewModel(voicePalette);
 
             this.SetLocale(Settings.Default.UILocale);
         }

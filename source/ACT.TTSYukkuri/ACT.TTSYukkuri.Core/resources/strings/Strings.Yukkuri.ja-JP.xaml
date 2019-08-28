@@ -116,6 +116,7 @@
   <system:String x:Key="SA_TTSFormat">通知するテキスト</system:String>
   <system:String x:Key="SA_AlertTarget">監視する対象</system:String>
   <system:String x:Key="SA_Device">通知するデバイス</system:String>
+  <system:String x:Key="SA_PlayPalette">使用する音声設定</system:String>
 
   <system:String x:Key="SA_Discription" xml:space="preserve">
 ※通知するテキストの凡例

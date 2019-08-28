@@ -95,19 +95,19 @@ namespace ACT.TTSYukkuri.Config.Views
                         return;
                     }
 
-                    content = new YukkuriConfigView();
+                    content = new YukkuriConfigTabView();
                     break;
 
                 case TTSType.HOYA:
-                    content = new HoyaConfigView();
+                    content = new HoyaConfigTabView();
                     break;
 
                 case TTSType.Polly:
-                    content = new PollyConfigView();
+                    content = new PollyConfigTabView();
                     break;
 
                 case TTSType.OpenJTalk:
-                    content = new OpenJTalkConfigView();
+                    content = new OpenJTalkConfigTabView();
                     break;
 
                 case TTSType.Sasara:
@@ -152,11 +152,11 @@ namespace ACT.TTSYukkuri.Config.Views
                     break;
 
                 case TTSType.SAPI5:
-                    content = new SAPI5ConfigView();
+                    content = new SAPI5ConfigTabView();
                     break;
 
                 case TTSType.GoogleCloudTextToSpeech:
-                    content = new GoogleCloudTextToSpeechConfigView();
+                    content = new GoogleCloudTextToSpeechConfigTabView();
                     break;
             }
 

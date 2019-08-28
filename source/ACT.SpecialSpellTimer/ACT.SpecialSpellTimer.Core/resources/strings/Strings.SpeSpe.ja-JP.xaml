@@ -134,6 +134,7 @@
   <system:String x:Key="Spell_NoticeOnBeforeThisScounds">秒前に通知する</system:String>
   <system:String x:Key="Spell_UseSequencialTTS">TTSをシンクロ再生する（同時に再生しない）</system:String>
   <system:String x:Key="Spell_TestSequencialTTS">シンクロTTSをテストする</system:String>
+  <system:String x:Key="Spell_PlayPalette">使用する音声設定</system:String>
 
   <system:String x:Key="Ticker_Name">テロップの名前</system:String>
   <system:String x:Key="Ticker_Message">テロップに表示するメッセージ</system:String>

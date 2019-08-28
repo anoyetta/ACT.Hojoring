@@ -123,14 +123,29 @@
     <Compile Include="Config\Views\GeneralView.xaml.cs">
       <DependentUpon>GeneralView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Config\Views\GoogleCloudTextToSpeechConfigTabView.xaml.cs">
+      <DependentUpon>GoogleCloudTextToSpeechConfigTabView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Config\Views\GoogleCloudTextToSpeechConfigView.xaml.cs">
       <DependentUpon>GoogleCloudTextToSpeechConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\HoyaConfigTabView.xaml.cs">
+      <DependentUpon>HoyaConfigTabView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Config\Views\HoyaConfigView.xaml.cs">
       <DependentUpon>HoyaConfigView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Config\Views\OpenJTalkConfigTabView.xaml.cs">
+      <DependentUpon>OpenJTalkConfigTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\PollyConfigTabView.xaml.cs">
+      <DependentUpon>PollyConfigTabView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Config\Views\PollyConfigView.xaml.cs">
       <DependentUpon>PollyConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\SAPI5ConfigTabView.xaml.cs">
+      <DependentUpon>SAPI5ConfigTabView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Config\Views\SAPI5ConfigView.xaml.cs">
       <DependentUpon>SAPI5ConfigView.xaml</DependentUpon>
@@ -146,6 +161,9 @@
     </Compile>
     <Compile Include="Config\Views\VoiceroidConfigView.xaml.cs">
       <DependentUpon>VoiceroidConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\YukkuriConfigTabView.xaml.cs">
+      <DependentUpon>YukkuriConfigTabView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Config\Views\YukkuriConfigView.xaml.cs">
       <DependentUpon>YukkuriConfigView.xaml</DependentUpon>
@@ -328,7 +346,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Config\Views\GoogleCloudTextToSpeechConfigTabView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Config\Views\GoogleCloudTextToSpeechConfigView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\HoyaConfigTabView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -336,7 +362,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Config\Views\OpenJTalkConfigTabView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\PollyConfigTabView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Config\Views\PollyConfigView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\SAPI5ConfigTabView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -357,6 +395,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Config\Views\VoiceroidConfigView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\YukkuriConfigTabView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
