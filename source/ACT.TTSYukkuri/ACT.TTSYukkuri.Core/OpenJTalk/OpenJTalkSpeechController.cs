@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using ACT.TTSYukkuri.Config;
 using NAudio.Wave;
+using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri.OpenJTalk
 {
@@ -36,6 +37,18 @@ namespace ACT.TTSYukkuri.OpenJTalk
         public void Speak(
             string text,
             PlayDevices playDevice = PlayDevices.Both,
+            bool isSync = false,
+            float? volume = null)
+            => Speak(text, playDevice, VoicePalettes.Default, isSync, volume);
+
+        /// <summary>
+        /// テキストを読み上げる
+        /// </summary>
+        /// <param name="text">読み上げるテキスト</param>
+        public void Speak(
+            string text,
+            PlayDevices playDevice = PlayDevices.Both,
+            VoicePalettes voicePalette = VoicePalettes.Default,
             bool isSync = false,
             float? volume = null)
         {

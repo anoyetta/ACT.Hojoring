@@ -137,6 +137,7 @@
   <system:String x:Key="Spell_NoticeOnBeforeThisScounds">seconds, Before notify</system:String>
   <system:String x:Key="Spell_UseSequencialTTS">Speak TTS synchronously (Disable simultaneous speak)</system:String>
   <system:String x:Key="Spell_TestSequencialTTS">Test Sync. TTS</system:String>
+  <system:String x:Key="Spell_PlayPalette">Voice config to Notify</system:String>
 
   <system:String x:Key="Ticker_Name">Ticker name</system:String>
   <system:String x:Key="Ticker_Message">Message to display on ticker</system:String>

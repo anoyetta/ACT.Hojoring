@@ -3,6 +3,7 @@ using System.IO;
 using ACT.TTSYukkuri.Config;
 using FFXIV.Framework.Common;
 using VoiceTextWebAPI.Client;
+using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri.HOYA
 {
@@ -29,17 +30,46 @@ namespace ACT.TTSYukkuri.HOYA
             PlayDevices playDevice = PlayDevices.Both,
             bool isSync = false,
             float? volume = null)
+            => Speak(text, playDevice, VoicePalettes.Default, isSync, volume);
+
+        /// <summary>
+        /// テキストを読み上げる
+        /// </summary>
+        /// <param name="text">読み上げるテキスト</param>
+        public void Speak(
+            string text,
+            PlayDevices playDevice = PlayDevices.Both,
+            VoicePalettes voicePalette = VoicePalettes.Default,
+            bool isSync = false,
+            float? volume = null)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
                 return;
             }
 
+            HOYAConfig config;
+            switch (voicePalette)
+            {
+                case VoicePalettes.Default:
+                    config = Settings.Default.HOYASettings;
+                    break;
+                case VoicePalettes.Ext1:
+                    config = Settings.Default.HOYASettingsExt1;
+                    break;
+                case VoicePalettes.Ext2:
+                    config = Settings.Default.HOYASettingsExt2;
+                    break;
+                default:
+                    config = Settings.Default.HOYASettings;
+                    break;
+            }
+
             // 現在の条件をハッシュ化してWAVEファイル名を作る
             var wave = this.GetCacheFileName(
                 Settings.Default.TTS,
                 text.Replace(Environment.NewLine, "+"),
-                Settings.Default.HOYASettings.ToString());
+                config.ToString());
 
             this.CreateWaveWrapper(wave, () =>
             {
@@ -51,6 +81,7 @@ namespace ACT.TTSYukkuri.HOYA
 
                 this.CreateWave(
                     text,
+                    config,
                     wave);
             });
 
@@ -67,17 +98,18 @@ namespace ACT.TTSYukkuri.HOYA
         /// WAVEファイルのパス</param>
         private void CreateWave(
             string textToSpeak,
+            HOYAConfig config,
             string wave)
         {
             var client = new VoiceTextClient()
             {
-                APIKey = Settings.Default.HOYASettings.APIKey,
-                Speaker = Settings.Default.HOYASettings.Speaker,
-                Emotion = Settings.Default.HOYASettings.Emotion,
-                EmotionLevel = Settings.Default.HOYASettings.EmotionLevel,
-                Volume = Settings.Default.HOYASettings.Volume,
-                Speed = Settings.Default.HOYASettings.Speed,
-                Pitch = Settings.Default.HOYASettings.Pitch,
+                APIKey = config.APIKey,
+                Speaker = config.Speaker,
+                Emotion = config.Emotion,
+                EmotionLevel = config.EmotionLevel,
+                Volume = config.Volume,
+                Speed = config.Speed,
+                Pitch = config.Pitch,
                 Format = Format.WAV,
             };
 

@@ -5,6 +5,7 @@ using System.Windows.Navigation;
 using ACT.TTSYukkuri.Config.ViewModels;
 using ACT.TTSYukkuri.resources;
 using FFXIV.Framework.Globalization;
+using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri.Config.Views
 {
@@ -13,10 +14,10 @@ namespace ACT.TTSYukkuri.Config.Views
     /// </summary>
     public partial class YukkuriConfigView : UserControl, ILocalizable
     {
-        public YukkuriConfigView()
+        public YukkuriConfigView(VoicePalettes voicePalette = VoicePalettes.Default)
         {
             this.InitializeComponent();
-            this.DataContext = new YukkuriConfigViewModel();
+            this.DataContext = new YukkuriConfigViewModel(voicePalette);
 
             this.SetLocale(Settings.Default.UILocale);
         }

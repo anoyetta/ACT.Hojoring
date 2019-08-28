@@ -605,6 +605,10 @@
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToMainPlaybackDevice}" IsChecked="{Binding Model.MatchAdvancedConfig.ToMainDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToSubPlaybackDevice}" IsChecked="{Binding Model.MatchAdvancedConfig.ToSubDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToDicordTextChannel}" IsChecked="{Binding Model.MatchAdvancedConfig.ToDicordTextChat, Mode=TwoWay}" />
+                      <StackPanel Margin="0 5 0 0" Orientation="Horizontal">
+                        <Label Margin="0 2 5 0" Content="{DynamicResource Spell_PlayPalette}" />
+                        <ComboBox Width="80" ItemsSource="{Binding Model.MatchAdvancedConfig.Palettes, Mode=OneWay}" SelectedItem="{Binding Model.MatchAdvancedConfig.Palette, Mode=TwoWay}" />
+                      </StackPanel>
                     </StackPanel>
                   </StackPanel>
                 </StackPanel>
@@ -638,6 +642,10 @@
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToMainPlaybackDevice}" IsChecked="{Binding Model.DelayAdvancedConfig.ToMainDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToSubPlaybackDevice}" IsChecked="{Binding Model.DelayAdvancedConfig.ToSubDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToDicordTextChannel}" IsChecked="{Binding Model.DelayAdvancedConfig.ToDicordTextChat, Mode=TwoWay}" />
+                      <StackPanel Margin="0 5 0 0" Orientation="Horizontal">
+                        <Label Margin="0 2 5 0" Content="{DynamicResource Spell_PlayPalette}" />
+                        <ComboBox Width="80" ItemsSource="{Binding Model.DelayAdvancedConfig.Palettes, Mode=OneWay}" SelectedItem="{Binding Model.DelayAdvancedConfig.Palette, Mode=TwoWay}" />
+                      </StackPanel>
                     </StackPanel>
                   </StackPanel>
                 </StackPanel>

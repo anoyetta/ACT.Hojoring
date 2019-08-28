@@ -137,6 +137,7 @@
   <system:String x:Key="Spell_NoticeOnBeforeThisScounds">초 전에 알림</system:String>
   <system:String x:Key="Spell_UseSequencialTTS">TTS 싱크로 재생 (동시에 재생되지 않음)</system:String>
   <system:String x:Key="Spell_TestSequencialTTS">싱크로 TTS 테스트</system:String>
+  <system:String x:Key="Spell_PlayPalette">Voice config to Notify</system:String>
 
   <system:String x:Key="Ticker_Name">티커 이름</system:String>
   <system:String x:Key="Ticker_Message">티커에 표시되는 문자</system:String>

@@ -5,6 +5,7 @@ using System.Windows.Navigation;
 using ACT.TTSYukkuri.Config.ViewModels;
 using ACT.TTSYukkuri.resources;
 using FFXIV.Framework.Globalization;
+using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri.Config.Views
 {
@@ -13,10 +14,10 @@ namespace ACT.TTSYukkuri.Config.Views
     /// </summary>
     public partial class GoogleCloudTextToSpeechConfigView : UserControl, ILocalizable
     {
-        public GoogleCloudTextToSpeechConfigView()
+        public GoogleCloudTextToSpeechConfigView(VoicePalettes voicePalette = VoicePalettes.Default)
         {
             this.InitializeComponent();
-            this.DataContext = new GoogleCloudTextToSpeechConfigViewModel();
+            this.DataContext = new GoogleCloudTextToSpeechConfigViewModel(voicePalette);
 
             this.SetLocale(Settings.Default.UILocale);
         }

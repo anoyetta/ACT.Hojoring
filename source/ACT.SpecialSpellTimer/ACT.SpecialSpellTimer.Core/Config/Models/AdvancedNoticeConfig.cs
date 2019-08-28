@@ -75,6 +75,11 @@ namespace ACT.SpecialSpellTimer.Config.Models
             set => this.SetProperty(ref this.toDicordTextChat, value);
         }
 
+        [XmlIgnore]
+        public IEnumerable<VoicePalettes> Palettes => (IEnumerable<VoicePalettes>)Enum.GetValues(typeof(VoicePalettes));
+
+        public VoicePalettes Palette { get; set; } = VoicePalettes.Default;
+
         public void PlayWave(string wave) => PlayWaveCore(wave, this);
 
         public void Speak(string tts, bool sync = false, int priority = 0) => SyncSpeak(tts, this, sync, priority);
@@ -146,12 +151,12 @@ namespace ACT.SpecialSpellTimer.Config.Models
 
             if (config.ToMainDevice)
             {
-                PlayBridge.Instance.PlayMain(wave, isSync);
+                PlayBridge.Instance.PlayMain(wave, config.Palette, isSync);
             }
 
             if (config.ToSubDevice)
             {
-                PlayBridge.Instance.PlaySub(wave, isSync);
+                PlayBridge.Instance.PlaySub(wave, config.Palette, isSync);
             }
         }
 
@@ -183,12 +188,12 @@ namespace ACT.SpecialSpellTimer.Config.Models
 
             if (config.ToMainDevice)
             {
-                PlayBridge.Instance.PlayMain(tts, isSync);
+                PlayBridge.Instance.PlayMain(tts, config.Palette, isSync);
             }
 
             if (config.ToSubDevice)
             {
-                PlayBridge.Instance.PlaySub(tts, isSync);
+                PlayBridge.Instance.PlaySub(tts, config.Palette, isSync);
             }
 
             if (config.ToDicordTextChat)

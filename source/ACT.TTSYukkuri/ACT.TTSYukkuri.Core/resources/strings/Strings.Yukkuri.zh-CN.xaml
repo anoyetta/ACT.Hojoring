@@ -116,6 +116,7 @@ For use for commercial purposes, a license to use the library is required.</syst
   <system:String x:Key="SA_TTSFormat">警报内容</system:String>
   <system:String x:Key="SA_AlertTarget">警报目标</system:String>
   <system:String x:Key="SA_Device">通过设备</system:String>
+  <system:String x:Key="SA_PlayPalette">Voice config to Notify</system:String>
 
   <system:String x:Key="SA_Discription" xml:space="preserve">
 * 警报内容样例
