@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Xml.Serialization;
 using Prism.Mvvm;
@@ -114,6 +116,30 @@ namespace ACT.UltraScouter.Config
 
         public void ExecuteRefreshViewCommand()
             => this.RefreshViewDelegate?.Invoke();
+
+        private static readonly ObservableCollection<JobAvailablity> DefaultTargetJobs = new ObservableCollection<JobAvailablity>(Settings.DefaultMPOverlayTargetJobs);
+
+        private ObservableCollection<JobAvailablity> targetJobs = new ObservableCollection<JobAvailablity>();
+
+        public ObservableCollection<JobAvailablity> TargetJobs
+        {
+            get => this.targetJobs;
+            set => this.SetProperty(ref this.targetJobs, value);
+        }
+
+        public void InitTargetJobs()
+        {
+            var toAdd = DefaultTargetJobs
+                .Where(x => !this.targetJobs.Any(y => x.Job == y.Job))
+                .ToArray();
+
+            if (toAdd.Length > 0)
+            {
+                var newEntries = this.targetJobs.Concat(toAdd).ToArray();
+                this.targetJobs.Clear();
+                this.targetJobs.AddRange(newEntries.OrderBy(x => x.Job));
+            }
+        }
     }
 
     public enum StatusStyles

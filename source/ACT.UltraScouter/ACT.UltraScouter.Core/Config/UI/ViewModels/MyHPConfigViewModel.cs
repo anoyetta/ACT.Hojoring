@@ -28,6 +28,8 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
         public virtual MyStatus Config => Settings.Instance.MyHP;
 
+        public virtual bool IsMPConfig => false;
+
         public IEnumerable<StatusStyles> Styles => Enum.GetValues(typeof(StatusStyles))
             .Cast<StatusStyles>();
 

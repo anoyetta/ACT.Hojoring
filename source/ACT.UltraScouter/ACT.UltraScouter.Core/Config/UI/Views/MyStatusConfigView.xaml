@@ -48,56 +48,58 @@
   </Page.Resources>
 
   <ScrollViewer>
-    <StackPanel Margin="20" Orientation="Horizontal">
-      <!-- L panel -->
-      <StackPanel>
-        <CheckBox
+    <StackPanel Margin="20">
+      <!-- L+R panel -->
+      <StackPanel Orientation="Horizontal">
+        <!-- L panel -->
+        <StackPanel>
+          <CheckBox
           Margin="0 0 0 0"
           Content="{DynamicResource Common_Visible}"
           IsChecked="{Binding Config.Visible, Mode=TwoWay}" />
-        <CheckBox
+          <CheckBox
           Margin="0 5 0 0"
           Content="{DynamicResource MyStatus_VisibleText}"
           IsChecked="{Binding Config.VisibleText, Mode=TwoWay}" />
-        <CheckBox
+          <CheckBox
           Margin="0 5 0 0"
           Content="{DynamicResource MyStatus_VisibleBar}"
           IsChecked="{Binding Config.VisibleBar, Mode=TwoWay}" />
-        <CheckBox
+          <CheckBox
           Margin="0 5 0 0"
           Content="{DynamicResource Enmity_HideInNotCombat}"
           IsChecked="{Binding Config.HideInNotCombat, Mode=TwoWay}" />
-        <CheckBox
+          <CheckBox
           Margin="0 5 0 0"
           Content="{DynamicResource Common_TestMode}"
           IsChecked="{Binding Config.IsDesignMode, Mode=TwoWay}" />
 
-        <StackPanel Orientation="Horizontal" Margin="0 15 0 0">
-          <StackPanel>
-            <Label
+          <StackPanel Orientation="Horizontal" Margin="0 15 0 0">
+            <StackPanel>
+              <Label
               Content="{DynamicResource Common_Layout}" />
-            <StackPanel Orientation="Horizontal">
-              <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
-              <xctk:DoubleUpDown Value="{Binding Config.Location.X, Mode=TwoWay}" Width="75" Increment="1" />
-              <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
-              <xctk:DoubleUpDown Value="{Binding Config.Location.Y, Mode=TwoWay}" Width="75" Increment="1" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
-              <TextBlock Margin="6 0 5 0" Text="W" VerticalAlignment="Center" />
-              <xctk:DoubleUpDown Value="{Binding Config.Size.W, Mode=TwoWay}" Width="75" Increment="1" />
-              <TextBlock Margin="10 0 5 0" Text="H" VerticalAlignment="Center" />
-              <xctk:DoubleUpDown Value="{Binding Config.Size.H, Mode=TwoWay}" Width="75" Increment="1" />
-            </StackPanel>
-            <CheckBox
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
+                <xctk:DoubleUpDown Value="{Binding Config.Location.X, Mode=TwoWay}" Width="75" Increment="1" />
+                <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
+                <xctk:DoubleUpDown Value="{Binding Config.Location.Y, Mode=TwoWay}" Width="75" Increment="1" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
+                <TextBlock Margin="6 0 5 0" Text="W" VerticalAlignment="Center" />
+                <xctk:DoubleUpDown Value="{Binding Config.Size.W, Mode=TwoWay}" Width="75" Increment="1" />
+                <TextBlock Margin="10 0 5 0" Text="H" VerticalAlignment="Center" />
+                <xctk:DoubleUpDown Value="{Binding Config.Size.H, Mode=TwoWay}" Width="75" Increment="1" />
+              </StackPanel>
+              <CheckBox
               Margin="0 5 0 0"
               Content="Lock"
               IsChecked="{Binding Config.IsLock, Mode=TwoWay}" />
-          </StackPanel>
+            </StackPanel>
 
-          <StackPanel Margin="30 0 0 0">
-            <Label
+            <StackPanel Margin="30 0 0 0">
+              <Label
               Content="{DynamicResource Common_Scale}" />
-            <xctk:DoubleUpDown
+              <xctk:DoubleUpDown
               HorizontalAlignment="Left"
               Value="{Binding Config.Scale, Mode=TwoWay}"
               Width="80"
@@ -105,124 +107,124 @@
               Maximum="6.00"
               Increment="0.01"
               FormatString="N2" />
+            </StackPanel>
           </StackPanel>
-        </StackPanel>
 
-        <Label
+          <Label
           Margin="0 15 0 0"
           Content="Style" />
-        <ComboBox
+          <ComboBox
           HorizontalAlignment="Left"
           Width="140"
           ItemsSource="{Binding Styles, Mode=OneWay}"
           SelectedItem="{Binding Config.BarStyle, Mode=TwoWay}" />
 
-        <Label
+          <Label
           Margin="0 15 0 0"
           Content="{DynamicResource MyStatus_ObjectLayout}" />
-        <StackPanel Margin="0 0 0 0" Orientation="Horizontal">
-          <!-- Text -->
-          <StackPanel>
-            <Label Content="{DynamicResource Common_Text}" />
+          <StackPanel Margin="0 0 0 0" Orientation="Horizontal">
+            <!-- Text -->
+            <StackPanel>
+              <Label Content="{DynamicResource Common_Text}" />
 
-            <!-- Text X/Y -->
-            <StackPanel Orientation="Horizontal">
-              <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
-              <xctk:DoubleUpDown Value="{Binding Config.TextLocation.X, Mode=TwoWay}" Width="75" Increment="1" />
-              <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
-              <xctk:DoubleUpDown Value="{Binding Config.TextLocation.Y, Mode=TwoWay}" Width="75" Increment="1" />
-            </StackPanel>
+              <!-- Text X/Y -->
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
+                <xctk:DoubleUpDown Value="{Binding Config.TextLocation.X, Mode=TwoWay}" Width="75" Increment="1" />
+                <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
+                <xctk:DoubleUpDown Value="{Binding Config.TextLocation.Y, Mode=TwoWay}" Width="75" Increment="1" />
+              </StackPanel>
 
-            <!-- Text Alignment -->
-            <Label Content="{DynamicResource MyStatus_HorizontalAlignment}" Margin="0 3 0 0" />
-            <ComboBox
+              <!-- Text Alignment -->
+              <Label Content="{DynamicResource MyStatus_HorizontalAlignment}" Margin="0 3 0 0" />
+              <ComboBox
               HorizontalAlignment="Left"
               ItemsSource="{Binding HorizontalAlignments, Mode=OneWay}"
               SelectedItem="{Binding Config.TextHorizontalAlignment, Mode=TwoWay}"
               Width="120" />
-          </StackPanel>
-
-          <!-- Bar -->
-          <StackPanel Margin="30 0 0 0">
-            <Label Content="{DynamicResource Common_Bar}" />
-
-            <!-- Bar X/Y -->
-            <StackPanel Orientation="Horizontal">
-              <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
-              <xctk:DoubleUpDown Value="{Binding Config.BarLocation.X, Mode=TwoWay}" Width="75" Increment="1" />
-              <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
-              <xctk:DoubleUpDown Value="{Binding Config.BarLocation.Y, Mode=TwoWay}" Width="75" Increment="1" />
             </StackPanel>
 
-            <!-- Bar W/H -->
-            <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
-              <TextBlock Margin="6 0 5 0" Text="{Binding BarSize1, Mode=OneWay}" VerticalAlignment="Center" />
-              <xctk:DoubleUpDown Value="{Binding Config.ProgressBar.Width, Mode=TwoWay}" Width="75" Increment="1" />
-              <TextBlock Margin="10 0 5 0" Text="{Binding BarSize2, Mode=OneWay}" VerticalAlignment="Center" />
-              <xctk:DoubleUpDown Value="{Binding Config.ProgressBar.Height, Mode=TwoWay}" Width="75" Increment="1" />
+            <!-- Bar -->
+            <StackPanel Margin="30 0 0 0">
+              <Label Content="{DynamicResource Common_Bar}" />
+
+              <!-- Bar X/Y -->
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
+                <xctk:DoubleUpDown Value="{Binding Config.BarLocation.X, Mode=TwoWay}" Width="75" Increment="1" />
+                <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
+                <xctk:DoubleUpDown Value="{Binding Config.BarLocation.Y, Mode=TwoWay}" Width="75" Increment="1" />
+              </StackPanel>
+
+              <!-- Bar W/H -->
+              <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
+                <TextBlock Margin="6 0 5 0" Text="{Binding BarSize1, Mode=OneWay}" VerticalAlignment="Center" />
+                <xctk:DoubleUpDown Value="{Binding Config.ProgressBar.Width, Mode=TwoWay}" Width="75" Increment="1" />
+                <TextBlock Margin="10 0 5 0" Text="{Binding BarSize2, Mode=OneWay}" VerticalAlignment="Center" />
+                <xctk:DoubleUpDown Value="{Binding Config.ProgressBar.Height, Mode=TwoWay}" Width="75" Increment="1" />
+              </StackPanel>
             </StackPanel>
           </StackPanel>
         </StackPanel>
-      </StackPanel>
-      <!-- L panel end -->
+        <!-- L panel end -->
 
-      <!-- R panel -->
-      <StackPanel Margin="40 0 0 0">
-        <!-- Color ranges -->
-        <Label Content="{DynamicResource MyStatus_ColorRange}" Margin="0 0 0 0" Padding="3 0 3 3" />
-        <ListView
+        <!-- R panel -->
+        <StackPanel Margin="40 0 0 0">
+          <!-- Color ranges -->
+          <Label Content="{DynamicResource MyStatus_ColorRange}" Margin="0 0 0 0" Padding="3 0 3 3" />
+          <ListView
           Margin="0 0 0 0"
           ItemsSource="{Binding Config.ProgressBar.ColorRange, Mode=OneWay}"
           BorderThickness="0"
           HorizontalAlignment="Left">
-          <ListView.ItemTemplate>
-            <DataTemplate>
-              <StackPanel Orientation="Horizontal">
-                <xctk:DoubleUpDown Margin="0 0 0 0" Width="62" Value="{Binding Min, Mode=TwoWay}" Increment="1" />
-                <TextBlock Margin="3 0 3 0" Text="-" />
-                <xctk:DoubleUpDown Margin="5 0 0 0" Width="62" Value="{Binding Max, Mode=TwoWay}" Increment="1" />
+            <ListView.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                  <xctk:DoubleUpDown Margin="0 0 0 0" Width="62" Value="{Binding Min, Mode=TwoWay}" Increment="1" />
+                  <TextBlock Margin="3 0 3 0" Text="-" />
+                  <xctk:DoubleUpDown Margin="5 0 0 0" Width="62" Value="{Binding Max, Mode=TwoWay}" Increment="1" />
 
-                <Border
+                  <Border
                   Margin="10 0 0 0"
                   Padding="20 2 20 2"
                   Background="{Binding Color, Converter={StaticResource ColorToBrushConverter}}">
-                  <TextBlock>
+                    <TextBlock>
                     <Hyperlink
                       Command="{Binding ChangeColorCommand, Mode=OneWay}"
                       CommandParameter="{Binding}">
                       <TextBlock Text="{DynamicResource Common_Change}" Foreground="White" FontSize="15" />
                     </Hyperlink>
                   </TextBlock>
-                </Border>
+                  </Border>
 
-                <TextBlock Margin="10,0,0,0">
+                  <TextBlock Margin="10,0,0,0">
                   <Hyperlink
                     Command="{Binding DeleteColorCommand, Mode=OneWay}"
                     CommandParameter="{Binding ID, Mode=OneWay}">
                     <TextBlock Text="{DynamicResource Common_Delete}" />
                   </Hyperlink>
                 </TextBlock>
-              </StackPanel>
-            </DataTemplate>
-          </ListView.ItemTemplate>
-        </ListView>
+                </StackPanel>
+              </DataTemplate>
+            </ListView.ItemTemplate>
+          </ListView>
 
-        <TextBlock Margin="8 0 0 0">
+          <TextBlock Margin="8 0 0 0">
         <Hyperlink Command="{Binding BarAddCommand, Mode=OneWay}">
           <TextBlock Text="{DynamicResource Common_Add}" />
         </Hyperlink>
       </TextBlock>
 
-        <Label
+          <Label
           Margin="0 15 0 0"
           Content="{DynamicResource Common_StrokeColor}" />
-        <Border
+          <Border
           Margin="5 0 0 0"
           HorizontalAlignment="Left"
           Width="100"
           Height="30"
           Background="{Binding Config.ProgressBar.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}">
-          <TextBlock
+            <TextBlock
             VerticalAlignment="Center"
             HorizontalAlignment="Center">
           <Hyperlink
@@ -231,16 +233,16 @@
             <TextBlock Text="{DynamicResource Common_Change}" Foreground="White" FontSize="15" />
           </Hyperlink>
         </TextBlock>
-        </Border>
+          </Border>
 
-        <CheckBox
+          <CheckBox
           Margin="0 5 0 0"
           Content="{DynamicResource HP_LinkBarStrokeColorToBarColor}"
           IsChecked="{Binding Config.ProgressBar.LinkOutlineColor, Mode=TwoWay}"
           Command="{Binding RefreshViewCommand, Mode=OneWay}" />
 
-        <Label Content="{DynamicResource Common_Font}" Margin="0 20 0 0" />
-        <TextBlock Margin="7,0,0,0" FontWeight="Bold">
+          <Label Content="{DynamicResource Common_Font}" Margin="0 20 0 0" />
+          <TextBlock Margin="7,0,0,0" FontWeight="Bold">
           <Hyperlink
             Command="{Binding DisplayTextFontCommand}"
             CommandParameter="{Binding Config.DisplayText.Font, Mode=OneWay}">
@@ -248,7 +250,7 @@
           </Hyperlink>
         </TextBlock>
 
-        <TextBlock Margin="7,8,0,0" FontWeight="Bold">
+          <TextBlock Margin="7,8,0,0" FontWeight="Bold">
           <Hyperlink
             Command="{Binding DisplayTextColorCommand, Mode=OneWay}"
             CommandParameter="{Binding Config.DisplayText.Color, Mode=OneWay}">
@@ -256,7 +258,7 @@
           </Hyperlink>
         </TextBlock>
 
-        <TextBlock Margin="7,0,0,0" FontWeight="Bold">
+          <TextBlock Margin="7,0,0,0" FontWeight="Bold">
           <Hyperlink
             Command="{Binding DisplayTextOutlineColorCommand, Mode=OneWay}"
             CommandParameter="{Binding Config.DisplayText.OutlineColor, Mode=OneWay}">
@@ -264,20 +266,50 @@
           </Hyperlink>
         </TextBlock>
 
-        <CheckBox
+          <CheckBox
           Margin="0 15 0 0"
           Content="{DynamicResource HP_LinkTextFillColorToBarColor}"
           IsChecked="{Binding Config.LinkFontColorToBarColor, Mode=TwoWay}"
           Command="{Binding RefreshViewCommand, Mode=OneWay}" />
 
-        <CheckBox
+          <CheckBox
           Margin="0 5 0 0"
           Content="{DynamicResource HP_LinkTextStrokeColorToBarColor}"
           IsChecked="{Binding Config.LinkFontOutlineColorToBarColor, Mode=TwoWay}"
           Command="{Binding RefreshViewCommand, Mode=OneWay}" />
+        </StackPanel>
+        <!-- R panel end -->
       </StackPanel>
-      <!-- R panel end -->
+      <!-- L+R panel end -->
+
+      <StackPanel
+        Visibility="{Binding IsMPConfig, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+        <Label
+          Margin="0 15 0 0"
+          Content="{DynamicResource MPTicker_TargetJobs}" />
+        <ListView
+          ItemsSource="{Binding Config.TargetJobs}"
+          ScrollViewer.VerticalScrollBarVisibility="Disabled"
+          BorderThickness="0"
+          Height="250">
+          <ListView.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel Orientation="Vertical" />
+            </ItemsPanelTemplate>
+          </ListView.ItemsPanel>
+          <ListView.ItemTemplate>
+            <DataTemplate>
+              <CheckBox
+                Margin="0 5 25 5"
+                Content="{Binding JobName, Mode=OneWay}"
+                IsChecked="{Binding Available, Mode=TwoWay}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center" />
+            </DataTemplate>
+          </ListView.ItemTemplate>
+        </ListView>
+      </StackPanel>
     </StackPanel>
-    <!-- General panel end -->
+    <!-- base panel end -->
   </ScrollViewer>
 </Page>

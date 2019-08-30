@@ -162,13 +162,15 @@ namespace ACT.UltraScouter.Workers
                 return;
             }
 
+            var model = MyStatusModel.Instance;
+            model.UpdateAvailablityMPView(targetInfo);
+
             if (!this.MyHPView.ViewModel.OverlayVisible &&
                 !this.MyMPView.ViewModel.OverlayVisible)
             {
                 return;
             }
 
-            var model = MyStatusModel.Instance;
             model.Update(targetInfo);
         }
 

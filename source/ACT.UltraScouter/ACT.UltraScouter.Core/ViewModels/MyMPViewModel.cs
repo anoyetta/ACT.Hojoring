@@ -20,6 +20,8 @@ namespace ACT.UltraScouter.ViewModels
 
         protected override string ValuePropertyName => nameof(this.Model.CurrentMP);
 
+        public override bool OverlayVisible => base.OverlayVisible && (this.Model?.IsAvailableMPView ?? true);
+
         public override double Progress => this.Model.CurrentMPRate;
     }
 }
