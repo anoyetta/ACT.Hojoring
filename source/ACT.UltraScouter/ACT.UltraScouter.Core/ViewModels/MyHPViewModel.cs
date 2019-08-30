@@ -73,7 +73,7 @@ namespace ACT.UltraScouter.ViewModels
 
         public virtual MyStatusModel Model { get; protected set; }
 
-        public bool OverlayVisible
+        public virtual bool OverlayVisible
         {
             get
             {
