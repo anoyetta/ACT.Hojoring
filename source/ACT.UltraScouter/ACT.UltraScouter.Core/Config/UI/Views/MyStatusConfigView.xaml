@@ -279,6 +279,7 @@
           Command="{Binding RefreshViewCommand, Mode=OneWay}" />
         </StackPanel>
         <!-- R panel end -->
+<<<<<<< HEAD
       </StackPanel>
       <!-- L+R panel end -->
 
@@ -309,6 +310,35 @@
           </ListView.ItemTemplate>
         </ListView>
       </StackPanel>
+=======
+      </StackPanel>
+      <!-- L+R panel end -->
+
+      <Label
+        Margin="0 15 0 0"
+        Content="{DynamicResource MPTicker_TargetJobs}" />
+      <ListView
+        ItemsSource="{Binding Config.TargetJobs}"
+        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+        BorderThickness="0"
+        Height="250">
+        <ListView.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel Orientation="Vertical" />
+          </ItemsPanelTemplate>
+        </ListView.ItemsPanel>
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <CheckBox
+              Margin="0 5 25 5"
+              Content="{Binding JobName, Mode=OneWay}"
+              IsChecked="{Binding Available, Mode=TwoWay}"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Center" />
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+>>>>>>> work
     </StackPanel>
     <!-- base panel end -->
   </ScrollViewer>

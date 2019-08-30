@@ -23,6 +23,7 @@
   Background="White"
   FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
   FontSize="17"
+  Margin="5"
   d:DesignWidth="600"
   d:DataContext="{d:DesignInstance Type=vm:OpenJTalkConfigViewModel, IsDesignTimeCreatable=True}"
   DataContext="{Binding RelativeSource={RelativeSource Self}}">
