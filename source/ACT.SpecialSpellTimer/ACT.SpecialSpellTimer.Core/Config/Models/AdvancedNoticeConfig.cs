@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Sound;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using Prism.Mvvm;
 
@@ -28,10 +29,15 @@ namespace ACT.SpecialSpellTimer.Config.Models
 
         private static System.Timers.Timer timer = new System.Timers.Timer(5 * 1000);
 
-        public static bool AvailableTTSYukkuri { get; private set; } = false;
+        public static bool AvailableTTSYukkuri { get; private set; } = WPFHelper.IsDesignMode;
 
         static AdvancedNoticeConfig()
         {
+            if (WPFHelper.IsDesignMode)
+            {
+                return;
+            }
+
             timer.Elapsed += (x, y) =>
                 AvailableTTSYukkuri = PlayBridge.Instance.IsAvailable;
 
