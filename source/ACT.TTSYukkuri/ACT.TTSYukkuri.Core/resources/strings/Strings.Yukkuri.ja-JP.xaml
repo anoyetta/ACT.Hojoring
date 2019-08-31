@@ -86,7 +86,8 @@
 
   <system:String x:Key="Boyomi_Server">棒読みちゃんホスト名</system:String>
   <system:String x:Key="Boyomi_Port">棒読みちゃんポート番号</system:String>
-  <system:String x:Key="Boyomi_PortDefault">*default 50001</system:String>
+  <system:String x:Key="Boyomi_PortDefault">*default 50080</system:String>
+  <system:String x:Key="Boyomi_Interrupt">TTSを割込ませる</system:String>
 
   <system:String x:Key="Voiceroid_ExitVoiceroid">ACTの終了時にVOICEROIDも終了させる</system:String>
   <system:String x:Key="Voiceroid_DirectSpeak">WAVEを生成せずに直接発声する</system:String>

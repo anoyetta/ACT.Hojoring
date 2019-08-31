@@ -330,6 +330,14 @@ namespace ACT.TTSYukkuri.Config
             set => this.SetProperty(ref this.boyomiPort, value);
         }
 
+        private bool isBoyomiInterruptNotication;
+
+        public bool IsBoyomiInterruptNotication
+        {
+            get => this.isBoyomiInterruptNotication;
+            set => this.SetProperty(ref this.isBoyomiInterruptNotication, value);
+        }
+
         /// <summary>
         /// AquesTalk(ゆっくり)の設定
         /// </summary>
@@ -338,16 +346,19 @@ namespace ACT.TTSYukkuri.Config
             get => this.yukkuriSettings;
             set => this.SetProperty(ref this.yukkuriSettings, value);
         }
+
         public YukkuriConfig YukkuriSettingsExt1
         {
             get => this.yukkuriSettingsExt1;
             set => this.SetProperty(ref this.yukkuriSettingsExt1, value);
         }
+
         public YukkuriConfig YukkuriSettingsExt2
         {
             get => this.yukkuriSettingsExt2;
             set => this.SetProperty(ref this.yukkuriSettingsExt2, value);
         }
+
         public YukkuriConfig YukkuriSettingsExt3
         {
             get => this.yukkuriSettingsExt3;
@@ -362,22 +373,24 @@ namespace ACT.TTSYukkuri.Config
             get => this.hoyaSettings;
             set => this.SetProperty(ref this.hoyaSettings, value);
         }
+
         public HOYAConfig HOYASettingsExt1
         {
             get => this.hoyaSettingsExt1;
             set => this.SetProperty(ref this.hoyaSettingsExt1, value);
         }
+
         public HOYAConfig HOYASettingsExt2
         {
             get => this.hoyaSettingsExt2;
             set => this.SetProperty(ref this.hoyaSettingsExt2, value);
         }
+
         public HOYAConfig HOYASettingsExt3
         {
             get => this.hoyaSettingsExt3;
             set => this.SetProperty(ref this.hoyaSettingsExt3, value);
         }
-
 
         /// <summary>
         /// Amazon Polly VoiceTextWebAPI 設定
@@ -387,16 +400,19 @@ namespace ACT.TTSYukkuri.Config
             get => this.pollySettings;
             set => this.SetProperty(ref this.pollySettings, value);
         }
+
         public PollyConfigs PollySettingsExt1
         {
             get => this.pollySettingsExt1;
             set => this.SetProperty(ref this.pollySettingsExt1, value);
         }
+
         public PollyConfigs PollySettingsExt2
         {
             get => this.pollySettingsExt2;
             set => this.SetProperty(ref this.pollySettingsExt2, value);
         }
+
         public PollyConfigs PollySettingsExt3
         {
             get => this.pollySettingsExt3;
@@ -411,16 +427,19 @@ namespace ACT.TTSYukkuri.Config
             get => this.openJTalkSettings;
             set => this.SetProperty(ref this.openJTalkSettings, value);
         }
+
         public OpenJTalkConfig OpenJTalkSettingsExt1
         {
             get => this.openJTalkSettingsExt1;
             set => this.SetProperty(ref this.openJTalkSettingsExt1, value);
         }
+
         public OpenJTalkConfig OpenJTalkSettingsExt2
         {
             get => this.openJTalkSettingsExt2;
             set => this.SetProperty(ref this.openJTalkSettingsExt2, value);
         }
+
         public OpenJTalkConfig OpenJTalkSettingsExt3
         {
             get => this.openJTalkSettingsExt3;
@@ -453,16 +472,19 @@ namespace ACT.TTSYukkuri.Config
             get => this.sapi5Settings;
             set => this.SetProperty(ref this.sapi5Settings, value);
         }
+
         public SAPI5Configs SAPI5SettingsExt1
         {
             get => this.sapi5SettingsExt1;
             set => this.SetProperty(ref this.sapi5SettingsExt1, value);
         }
+
         public SAPI5Configs SAPI5SettingsExt2
         {
             get => this.sapi5SettingsExt2;
             set => this.SetProperty(ref this.sapi5SettingsExt2, value);
         }
+
         public SAPI5Configs SAPI5SettingsExt3
         {
             get => this.sapi5SettingsExt3;
@@ -477,22 +499,24 @@ namespace ACT.TTSYukkuri.Config
             get => this.googleCloudTextToSpeechSettings;
             set => this.SetProperty(ref this.googleCloudTextToSpeechSettings, value);
         }
+
         public GoogleCloudTextToSpeechConfig GoogleCloudTextToSpeechSettingsExt1
         {
             get => this.googleCloudTextToSpeechSettingsExt1;
             set => this.SetProperty(ref this.googleCloudTextToSpeechSettingsExt1, value);
         }
+
         public GoogleCloudTextToSpeechConfig GoogleCloudTextToSpeechSettingsExt2
         {
             get => this.googleCloudTextToSpeechSettingsExt2;
             set => this.SetProperty(ref this.googleCloudTextToSpeechSettingsExt2, value);
         }
+
         public GoogleCloudTextToSpeechConfig GoogleCloudTextToSpeechSettingsExt3
         {
             get => this.googleCloudTextToSpeechSettingsExt3;
             set => this.SetProperty(ref this.googleCloudTextToSpeechSettingsExt3, value);
         }
-
 
         /// <summary>
         /// オプション設定
@@ -553,8 +577,17 @@ namespace ACT.TTSYukkuri.Config
                         }
                     }
 
-                    // ステータスアラートの対象を初期化する
-                    activeConfig?.StatusAlertSettings?.SetDefaultAlertTargets();
+                    if (activeConfig != null)
+                    {
+                        // ステータスアラートの対象を初期化する
+                        activeConfig.StatusAlertSettings?.SetDefaultAlertTargets();
+
+                        // 棒読みちゃんのサーバーアドレスを置き換える
+                        if (activeConfig.BoyomiServer.StartsWith("127.0.0."))
+                        {
+                            activeConfig.BoyomiServer = "localhost";
+                        }
+                    }
                 }
                 finally
                 {

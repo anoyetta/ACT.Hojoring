@@ -1,5 +1,5 @@
-﻿using FFXIV.Framework.Bridge;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
+using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri.Config.Views
 {
@@ -10,11 +10,11 @@ namespace ACT.TTSYukkuri.Config.Views
     {
         public GoogleCloudTextToSpeechConfigTabView()
         {
-            InitializeComponent();
-            TabDefault.Content = new GoogleCloudTextToSpeechConfigView(VoicePalettes.Default);
-            TabExt1.Content = new GoogleCloudTextToSpeechConfigView(VoicePalettes.Ext1);
-            TabExt2.Content = new GoogleCloudTextToSpeechConfigView(VoicePalettes.Ext2);
-            TabExt3.Content = new GoogleCloudTextToSpeechConfigView(VoicePalettes.Ext3);
+            this.InitializeComponent();
+            this.TabDefault.Content = new GoogleCloudTextToSpeechConfigView(VoicePalettes.Default);
+            this.TabExt1.Content = new GoogleCloudTextToSpeechConfigView(VoicePalettes.Ext1);
+            this.TabExt2.Content = new GoogleCloudTextToSpeechConfigView(VoicePalettes.Ext2);
+            this.TabExt3.Content = new GoogleCloudTextToSpeechConfigView(VoicePalettes.Ext3);
         }
     }
 }
