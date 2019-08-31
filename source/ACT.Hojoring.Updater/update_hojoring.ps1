@@ -8,7 +8,7 @@ $isUsePreRelease = $FALSE
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev13'
+'* rev14'
 '* (c) anoyetta, 2019'
 '***************************************************'
 '* Start Update Hojoring'
@@ -99,21 +99,32 @@ if ($args.Length -gt 0) {
 }
 
 # Processを殺す
+$actPath = $null
 $processes = Get-Process
 foreach ($p in $processes) {
     if ($p.Name -eq "Advanced Combat Tracker") {
-        $p.CloseMainWindow()
-        Start-Sleep -s 1
+        $actPath = $p.Path
+        if ($p.CloseMainWindow()) {
+            $p.WaitForExit(10) | Out-Null
+            if (!$p.Exited) {
+                $p.Kill()
+            }
+        } else {
+            $p.Kill()
+        }
     }
 
     if ($p.Name -eq "FFXIV.Framework.TTS.Server") {
-        $p.CloseMainWindow()
-        Start-Sleep -s 1
+        if ($p.CloseMainWindow()) {
+            $p.WaitForExit(10) | Out-Null
+            if (!$p.Exited) {
+                $p.Kill()
+            }
+        } else {
+            $p.Kill()
+        }
     }
 }
-
-# 5秒待つ
-Start-Sleep -s 5
 
 # プレリリースを使う？
 ''
@@ -149,7 +160,7 @@ Write-Host ($info.ReleasePageUrl)
 
 do {
     ''
-    $in = Read-Host "Are you sure to update? [Y] or [n]"
+    $in = Read-Host "Are you sure to update? [y] or [n]"
     $in = $in.ToUpper()
 
     if ($in -eq "Y") {
@@ -243,5 +254,10 @@ foreach ($src in $srcs) {
 Start-Sleep -Milliseconds 500
 Start-Process $info.ReleasePageUrl
 Start-Sleep -Milliseconds 500
+
+# Update開始時にACTを起動していた場合、ACTを開始する
+if (![string]::IsNullOrEmpty($actPath)) {
+    Start-Process $actPath -Verb runas
+}
 
 Exit-Update 0
