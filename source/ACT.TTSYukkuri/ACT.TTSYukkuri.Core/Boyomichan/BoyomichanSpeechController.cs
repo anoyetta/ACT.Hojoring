@@ -225,6 +225,7 @@ namespace ACT.TTSYukkuri.Boyomichan
                 }
 
                 this.isError = true;
+                clearQueue();
                 return;
             }
 
@@ -237,6 +238,7 @@ namespace ACT.TTSYukkuri.Boyomichan
                 }
 
                 this.isError = true;
+                clearQueue();
                 return;
             }
 
@@ -248,17 +250,35 @@ namespace ACT.TTSYukkuri.Boyomichan
             var client = this.LazyRESTClient.Value;
             var baseUri = $"http://{server}:{port}/";
 
-            if (Settings.Default.IsBoyomiInterruptNotication)
+            try
             {
-                await client.GetAsync($"{baseUri}clear");
-                await client.GetAsync($"{baseUri}skip");
-                await Task.Delay(0);
+                if (Settings.Default.IsBoyomiInterruptNotication)
+                {
+                    await client.GetAsync($"{baseUri}clear");
+                    await client.GetAsync($"{baseUri}skip");
+                    await Task.Delay(0);
+                }
+
+                while (this.Queue.TryDequeue(out string text))
+                {
+                    await client.GetAsync($"{baseUri}talk?text={Uri.EscapeUriString(text)}");
+                    await Task.Delay(CommandInterval);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (!this.isError)
+                {
+                    this.GetLogger().Error(ex, "Boyomi REST client error.");
+                }
+
+                this.isError = true;
+                clearQueue();
             }
 
-            while (this.Queue.TryDequeue(out string text))
+            void clearQueue()
             {
-                await client.GetAsync($"{baseUri}talk?text={Uri.EscapeUriString(text)}");
-                await Task.Delay(CommandInterval);
+                while (this.Queue.TryDequeue(out string t)) ;
             }
         }
     }
