@@ -71,7 +71,19 @@ namespace ACT.XIVLog
         public string LogfileName =>
             Path.Combine(
                 Config.Instance.OutputDirectory,
-                $"XIVLog.{DateTime.Now.ToString("yyyy-MM-dd")}.csv");
+                $"XIVLog.{DateTime.Now.ToString("yyMMdd")}.{this.GetZoneNameForFile()}.take{this.wipeoutCounter:000}.csv");
+
+        private static readonly char[] InvalidChars = Path.GetInvalidFileNameChars();
+
+        private string GetZoneNameForFile()
+        {
+            if (string.IsNullOrEmpty(this.currentZoneName))
+            {
+                return "UNKNOWN_ZONE";
+            }
+
+            return string.Concat(this.currentZoneName.Select(c => InvalidChars.Contains(c) ? '_' : c));
+        }
 
         private volatile string currentLogfileName = string.Empty;
         private volatile string currentZoneName = string.Empty;
@@ -82,6 +94,7 @@ namespace ACT.XIVLog
         private StringBuilder writeBuffer = new StringBuilder(5120);
         private DateTime lastFlushTimestamp = DateTime.MinValue;
         private volatile bool isForceFlush = false;
+        private int wipeoutCounter = 1;
 
         private void InitTask()
         {
@@ -151,6 +164,14 @@ namespace ACT.XIVLog
                     if (this.currentZoneName != xivlog.ZoneName)
                     {
                         this.currentZoneName = xivlog.ZoneName;
+                        this.wipeoutCounter = 1;
+                        isNeedsFlush = true;
+                    }
+
+                    if (xivlog.Log.Contains("wipeout") ||
+                        xivlog.Log.Contains("の攻略を終了した。"))
+                    {
+                        this.wipeoutCounter++;
                         isNeedsFlush = true;
                     }
 
