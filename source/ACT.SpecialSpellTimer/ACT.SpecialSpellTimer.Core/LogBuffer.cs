@@ -282,8 +282,14 @@ namespace ACT.SpecialSpellTimer
         /// </summary>
         public static readonly string[] IgnoreDetailLogKeywords = new[]
         {
+            LogMessageType.CombatantHP.ToKeyword(),
             LogMessageType.NetworkAbility.ToKeyword(),
-            LogMessageType.NetworkAOEAbility.ToKeyword()
+            LogMessageType.NetworkAOEAbility.ToKeyword(),
+            LogMessageType.NetworkCancelAbility.ToKeyword(),
+            LogMessageType.NetworkDoT.ToKeyword(),
+            LogMessageType.NetworkEffectResult.ToKeyword(),
+            LogMessageType.NetworkStatusList.ToKeyword(),
+            LogMessageType.NetworkUpdateHp.ToKeyword(),
         };
 
         public bool IsEmpty => this.XIVLogQueue.IsEmpty;

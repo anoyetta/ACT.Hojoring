@@ -82,9 +82,10 @@
       <TreeViewItem Header="{DynamicResource Common_General}" TabIndex="1" x:Name="StartingTab" />
       <TreeViewItem Header="{DynamicResource Options_Visual}" TabIndex="2" />
       <TreeViewItem Header="{DynamicResource Options_Trigger}" TabIndex="3" />
-      <TreeViewItem Header="{DynamicResource Options_Log}" TabIndex="4" />
-      <TreeViewItem Header="{DynamicResource Options_TTSDictionary}" TabIndex="5" />
-      <TreeViewItem Header="{DynamicResource Common_Misc}" TabIndex="6" />
+      <TreeViewItem Header="{DynamicResource Options_LogFilter}" TabIndex="4" />
+      <TreeViewItem Header="{DynamicResource Options_Log}" TabIndex="5" />
+      <TreeViewItem Header="{DynamicResource Options_TTSDictionary}" TabIndex="6" />
+      <TreeViewItem Header="{DynamicResource Common_Misc}" TabIndex="7" />
     </TreeView>
 
     <!-- コンテンツ領域 -->
@@ -98,6 +99,7 @@
           <local:OptionsGeneralView x:Name="GeneralView" Visibility="Collapsed" />
           <local:OptionsVisualView x:Name="VisualView" Visibility="Collapsed" />
           <local:OptionsTriggerView x:Name="TriggerView" Visibility="Collapsed" />
+          <local:OptionsLogFilterView x:Name="LogFilterView" Visibility="Collapsed" />
           <local:OptionsLogView x:Name="LogView" Visibility="Collapsed" />
           <local:OptionsTTSDictionaryView x:Name="TTSDictionaryView" Visibility="Collapsed" />
           <local:OptionsMiscView x:Name="MiscView" Visibility="Collapsed" />

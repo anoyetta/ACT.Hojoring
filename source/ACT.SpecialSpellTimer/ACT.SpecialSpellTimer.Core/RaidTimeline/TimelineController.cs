@@ -852,8 +852,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var prelog = new string[3];
             var prelogIndex = 0;
 
-            var ignores = TimelineSettings.Instance.IgnoreLogTypes.Where(x => x.IsIgnore);
-
             while (XIVLogQueue.TryDequeue(out XIVLog xivlog))
             {
                 var logLine = xivlog.LogLine;
@@ -874,12 +872,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 // [TL]キーワードが含まれていればスキップする
                 if (logLine.Contains(TLSymbol))
-                {
-                    continue;
-                }
-
-                // 無効キーワードが含まれていればスキップする
-                if (ignores.Any(x => logLine.Contains(x.Keyword)))
                 {
                     continue;
                 }

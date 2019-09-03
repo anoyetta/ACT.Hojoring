@@ -13,8 +13,6 @@ using System.Windows.Threading;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config;
 using FFXIV.Framework.Common;
-using FFXIV.Framework.XIVHelper;
-using FFXIV_ACT_Plugin.Logfile;
 using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -415,51 +413,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public TimelineStyle DefaultNoticeStyle =>
             this.Styles.FirstOrDefault(x => x.IsDefaultNotice) ?? this.DefaultStyle;
-
-        private List<IgnoreLogType> ignoreLogTypes = new List<IgnoreLogType>()
-        {
-            new IgnoreLogType()
-            {
-                MessageType = LogMessageType.NetworkAbility,
-                IsIgnore = false
-            },
-            new IgnoreLogType()
-            {
-                MessageType = LogMessageType.NetworkAOEAbility,
-                IsIgnore = false
-            },
-            new IgnoreLogType()
-            {
-                MessageType = LogMessageType.NetworkCancelAbility,
-                IsIgnore = true
-            },
-            new IgnoreLogType()
-            {
-                MessageType = LogMessageType.NetworkDoT,
-                IsIgnore = true
-            },
-            new IgnoreLogType()
-            {
-                MessageType = LogMessageType.NetworkDeath,
-                IsIgnore = true
-            },
-            new IgnoreLogType()
-            {
-                MessageType = LogMessageType.CombatantHP,
-                IsIgnore = false
-            },
-        };
-
-        [XmlArray("IgnoreLogs")]
-        [XmlArrayItem("IgnoreLog")]
-        public IgnoreLogType[] IgnoreLogTypes
-        {
-            get => this.ignoreLogTypes?
-                .Where(x => x != null)?
-                .ToArray() ?? new IgnoreLogType[0];
-
-            set => this.SetProperty(ref this.ignoreLogTypes, value?.ToList());
-        }
 
         private List<KeyValue<string, bool>> timelineFiles = new List<KeyValue<string, bool>>(64);
 

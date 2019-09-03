@@ -158,6 +158,7 @@
 
   <system:String x:Key="Options_Visual">显示</system:String>
   <system:String x:Key="Options_Trigger">触发器</system:String>
+  <system:String x:Key="Options_LogFilter">Log Filter</system:String>
   <system:String x:Key="Options_Log">日志</system:String>
   <system:String x:Key="Options_TTSDictionary">TTS字典</system:String>
 
@@ -195,7 +196,7 @@
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">补全未知技能</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">忽略伤害和治疗日志</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">忽略15:或 16:开头日志</system:String>
-  <system:String x:Key="Options_EnabledAutoIgnore">Auto filter the 15: or 16: logs when there are many people</system:String>
+  <system:String x:Key="Options_EnabledAutoIgnore">Auto filter detail logs when there are many people</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">检测 FC:开头数据 (不推荐)</system:String>
   <system:String x:Key="Options_ReadyText">正向计时器完成时显示文字 (默认: "Ready")</system:String>
   <system:String x:Key="Options_OverText">反向计时器完成时显示文字 (默认: "Over")</system:String>

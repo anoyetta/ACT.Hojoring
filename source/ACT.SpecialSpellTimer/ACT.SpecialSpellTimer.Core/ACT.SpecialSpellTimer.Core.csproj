@@ -85,8 +85,12 @@
   <ItemGroup>
     <Compile Include="ChatLogWorker.cs" />
     <Compile Include="Config\Models\PartyComposiotionSelector.cs" />
+    <Compile Include="Config\Settings.Defaults.cs" />
     <Compile Include="Config\Views\CalendarView.xaml.cs">
       <DependentUpon>CalendarView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\Views\OptionsLogFilterView.xaml.cs">
+      <DependentUpon>OptionsLogFilterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Config\Views\TimelineAnalyzerView.xaml.cs">
       <DependentUpon>TimelineAnalyzerView.xaml</DependentUpon>
@@ -1164,6 +1168,10 @@
     <Page Include="Config\Views\OptionsMiscView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Config\Views\OptionsLogFilterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Config\Views\OptionsTriggerView.xaml">
       <SubType>Designer</SubType>
