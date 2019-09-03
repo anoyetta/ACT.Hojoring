@@ -146,8 +146,10 @@ namespace FFXIV.Framework
                     {
                         LogMessageType.CombatantHP => true,
                         LogMessageType.NetworkDoT => true,
-                        LogMessageType.NetworkDeath => true,
                         LogMessageType.NetworkCancelAbility => true,
+                        LogMessageType.NetworkEffectResult => true,
+                        LogMessageType.NetworkStatusList => true,
+                        LogMessageType.NetworkUpdateHp => true,
                         LogMessageType.Settings => true,
                         LogMessageType.Process => true,
                         LogMessageType.Debug => true,
