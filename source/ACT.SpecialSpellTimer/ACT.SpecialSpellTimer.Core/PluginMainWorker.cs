@@ -616,10 +616,10 @@ namespace ACT.SpecialSpellTimer
                     x.CurrentHP <= 0 &&
                     x.MaxHP > 0))
             {
-                // リセットするのは15秒に1回にする
+                // リセットするのは10秒に1回にする
                 // 暗転中もずっとリセットし続けてしまうので
                 var now = DateTime.Now;
-                if ((now - this.lastWipeOutDateTime).TotalSeconds >= 15.0)
+                if ((now - this.lastWipeOutDateTime).TotalSeconds >= 10.0)
                 {
                     this.lastWipeOutDateTime = now;
 
