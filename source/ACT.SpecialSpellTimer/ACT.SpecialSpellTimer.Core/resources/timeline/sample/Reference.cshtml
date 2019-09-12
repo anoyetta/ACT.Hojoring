@@ -5,7 +5,7 @@
 
 変更履歴はファイル末尾に。
 -->
-@{ var rev = "rev29"; }
+@{ var rev = "rev30"; }
 
 <!-- ●●この辺は Razor構文（非常に高度な機能）の説明なので読み飛ばして良い●● ↓ここから -->
 @{
@@ -461,6 +461,25 @@
     このトリガにマッチしたときに指定されたパスを起動する。
     実行時の作業フォルダは timeline フォルダとなる。
 
+    URIを記載した場合はREST APIとみなしてAPIをコールする。
+    ex. "https://localhost:1334/place"
+      上記URIをGETで呼び出す
+
+    ex. "GET https://localhost:1334/place/1"
+      上記URIをGETで呼び出す
+
+    ex. "POST https://localhost:1334/place"
+      上記URIをPOSTで呼び出す
+
+    ex. "PUT https://localhost:1334/place/1"
+      上記URIをPUTで呼び出す
+
+    ex. "DELETE https://localhost:1334/place/1"
+      上記URIをDELETEで呼び出す
+
+    URIにはプレースホルダを使用できる。プレースホルダは実際の値に置換されURIエンコードされる。
+    POST, PUTメソッドのときのペイロードは trigger タグの配下に<json></json>タグで定義する。
+
   args :
     string, 任意項目, 既定値null
     exec で指示されたアプリケーションに渡されるコマンドライン引数を指定する。
@@ -884,6 +903,9 @@
 
 <!--
 変更履歴
+
+2019-09-13 rev30
+  * trigger からREST APIを呼び出せるようにした
 
 2019-08-28 rev29
   * 共通属性として他の要素の属性を継承する inherits 属性を追加した
