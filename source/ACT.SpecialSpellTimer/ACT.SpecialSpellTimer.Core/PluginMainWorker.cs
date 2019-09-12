@@ -593,11 +593,6 @@ namespace ACT.SpecialSpellTimer
                 {
                     return;
                 }
-
-                if (party.Any(x => x.IsNPC()))
-                {
-                    return;
-                }
             }
 
             if (player != null)
