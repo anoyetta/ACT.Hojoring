@@ -28,6 +28,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.Trigger, "SyncCount", 0),
             NewDefault(TimelineElementTypes.Trigger, "SyncInterval", 0),
             NewDefault(TimelineElementTypes.Trigger, "NoticeDevice", NoticeDevices.Both),
+            NewDefault(TimelineElementTypes.Trigger, "NoticeOffset", 0),
             NewDefault(TimelineElementTypes.Trigger, "NoticeSync", false),
             NewDefault(TimelineElementTypes.Trigger, "IsExecuteHidden", false),
 

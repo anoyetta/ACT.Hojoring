@@ -331,6 +331,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.NoticeDevice = Enum.TryParse<NoticeDevices>(value, out var v) ? v : (NoticeDevices?)null;
         }
 
+        private double? noticeOffset = null;
+
+        [XmlIgnore]
+        public double? NoticeOffset
+        {
+            get => this.noticeOffset;
+            set => this.SetProperty(ref this.noticeOffset, value);
+        }
+
+        [XmlAttribute(AttributeName = "notice-o")]
+        public string NoticeOffsetXML
+        {
+            get => this.NoticeOffset?.ToString();
+            set => this.NoticeOffset = double.TryParse(value, out var v) ? v : (double?)null;
+        }
+
         private float? noticeVolume = null;
 
         [XmlIgnore]

@@ -270,7 +270,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 tri.NoticeSync.Value;
 
             RaiseLog(log);
-            NotifySoundAsync(notice, tri.NoticeDevice.GetValueOrDefault(), isSync, tri.NoticeVolume);
+            NotifySoundAsync(notice, tri.NoticeDevice.GetValueOrDefault(), isSync, tri.NoticeVolume, tri.NoticeOffset);
 
             var vnotices = tri.VisualNoticeStatements
                 .Where(x => x.Enabled.GetValueOrDefault());
@@ -384,12 +384,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NoticeDevices device,
             bool isSync = false,
             float? volume = null,
-            double delay = 0)
+            double? delay = null)
             => Task.Run(async () =>
             {
-                if (delay > 0)
+                if (delay.HasValue &&
+                    delay.Value > 0)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(delay));
+                    await Task.Delay(TimeSpan.FromSeconds(delay.Value));
                 }
 
                 NotifySound(notice, device, isSync, volume);
