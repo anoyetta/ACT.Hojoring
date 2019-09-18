@@ -45,7 +45,6 @@ namespace FFXIV.Framework.TTS.Server
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             this.Startup += this.App_Startup;
-            this.Exit += this.App_Exit;
             this.DispatcherUnhandledException += this.App_DispatcherUnhandledException;
 
             // configをロードする
@@ -106,9 +105,6 @@ namespace FFXIV.Framework.TTS.Server
                 Application.Current.Shutdown();
             }
         }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private void App_Exit(object sender, ExitEventArgs e) => this.CloseApp();
 
         public void CloseApp()
         {
