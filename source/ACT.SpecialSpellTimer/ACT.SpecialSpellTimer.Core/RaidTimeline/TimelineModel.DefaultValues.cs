@@ -42,6 +42,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.VisualNotice, "Text", TimelineVisualNoticeModel.ParentTextPlaceholder),
             NewDefault(TimelineElementTypes.VisualNotice, "Duration", 3d),
             NewDefault(TimelineElementTypes.VisualNotice, "DurationVisible", true),
+            NewDefault(TimelineElementTypes.VisualNotice, "Delay", 0d),
             NewDefault(TimelineElementTypes.VisualNotice, "StackVisible", false),
             NewDefault(TimelineElementTypes.VisualNotice, "Order", 0),
             NewDefault(TimelineElementTypes.VisualNotice, "IsJobIcon", false),
@@ -49,6 +50,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // ImageNotice
             NewDefault(TimelineElementTypes.ImageNotice, "Enabled", true),
             NewDefault(TimelineElementTypes.ImageNotice, "Duration", 5d),
+            NewDefault(TimelineElementTypes.ImageNotice, "Delay", 0d),
             NewDefault(TimelineElementTypes.ImageNotice, "Scale", 1.0d),
             NewDefault(TimelineElementTypes.ImageNotice, "Left", -1d),
             NewDefault(TimelineElementTypes.ImageNotice, "Top", -1d),

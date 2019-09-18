@@ -176,53 +176,65 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var placeholders = TimelineManager.Instance.GetPlaceholders();
 
-            WPFHelper.BeginInvoke(() =>
+            foreach (var v in vnotices)
             {
-                foreach (var v in vnotices)
+                // ソート用にログ番号を格納する
+                // 優先順位は最後尾とする
+                v.LogSeq = long.MaxValue;
+                v.Timestamp = DateTime.Now;
+
+                switch (v.Text)
                 {
-                    // ソート用にログ番号を格納する
-                    // 優先順位は最後尾とする
-                    v.LogSeq = long.MaxValue;
-                    v.Timestamp = DateTime.Now;
+                    case TimelineVisualNoticeModel.ParentTextPlaceholder:
+                        v.TextToDisplay = act.TextReplaced;
+                        break;
 
-                    switch (v.Text)
-                    {
-                        case TimelineVisualNoticeModel.ParentTextPlaceholder:
-                            v.TextToDisplay = act.TextReplaced;
-                            break;
+                    case TimelineVisualNoticeModel.ParentNoticePlaceholder:
+                        v.TextToDisplay = act.NoticeReplaced;
+                        break;
 
-                        case TimelineVisualNoticeModel.ParentNoticePlaceholder:
-                            v.TextToDisplay = act.NoticeReplaced;
-                            break;
-
-                        default:
-                            v.TextToDisplay = v.Text;
-                            break;
-                    }
-
-                    if (string.IsNullOrEmpty(v.TextToDisplay))
-                    {
-                        continue;
-                    }
-
-                    // PC名をルールに従って置換する
-                    v.TextToDisplay = XIVPluginHelper.Instance.ReplacePartyMemberName(
-                        v.TextToDisplay,
-                        Settings.Default.PCNameInitialOnDisplayStyle);
-
-                    TimelineNoticeOverlay.NoticeView?.AddNotice(v);
-
-                    v.SetSyncToHide(placeholders);
-                    v.AddSyncToHide();
+                    default:
+                        v.TextToDisplay = v.Text;
+                        break;
                 }
 
-                foreach (var i in inotices)
+                if (string.IsNullOrEmpty(v.TextToDisplay))
                 {
+                    continue;
+                }
+
+                // PC名をルールに従って置換する
+                v.TextToDisplay = XIVPluginHelper.Instance.ReplacePartyMemberName(
+                    v.TextToDisplay,
+                    Settings.Default.PCNameInitialOnDisplayStyle);
+
+                WPFHelper.BeginInvoke(async () =>
+                {
+                    if (v.Delay > 0)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(v.Delay ?? 0));
+                    }
+
+                    TimelineNoticeOverlay.NoticeView?.AddNotice(v);
+                    v.SetSyncToHide(placeholders);
+                    v.AddSyncToHide();
+                });
+            }
+
+            foreach (var i in inotices)
+            {
+                WPFHelper.BeginInvoke(async () =>
+                {
+                    if (i.Delay > 0)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(i.Delay ?? 0));
+                    }
+
                     i.StartNotice();
                     i.SetSyncToHide(placeholders);
                     i.AddSyncToHide();
-                }
-            });
+                });
+            }
         }
 
         private void NotifyTrigger(
@@ -274,52 +286,64 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var placeholders = TimelineManager.Instance.GetPlaceholders();
 
-            WPFHelper.BeginInvoke(() =>
+            foreach (var v in vnotices)
             {
-                foreach (var v in vnotices)
+                // ヒットしたログのシーケンスを格納する
+                // ソート用
+                v.LogSeq = tri.LogSeq;
+
+                switch (v.Text)
                 {
-                    // ヒットしたログのシーケンスを格納する
-                    // ソート用
-                    v.LogSeq = tri.LogSeq;
+                    case TimelineVisualNoticeModel.ParentTextPlaceholder:
+                        v.TextToDisplay = tri.TextReplaced;
+                        break;
 
-                    switch (v.Text)
-                    {
-                        case TimelineVisualNoticeModel.ParentTextPlaceholder:
-                            v.TextToDisplay = tri.TextReplaced;
-                            break;
+                    case TimelineVisualNoticeModel.ParentNoticePlaceholder:
+                        v.TextToDisplay = tri.NoticeReplaced;
+                        break;
 
-                        case TimelineVisualNoticeModel.ParentNoticePlaceholder:
-                            v.TextToDisplay = tri.NoticeReplaced;
-                            break;
-
-                        default:
-                            v.TextToDisplay = v.Text;
-                            break;
-                    }
-
-                    if (string.IsNullOrEmpty(v.TextToDisplay))
-                    {
-                        continue;
-                    }
-
-                    // PC名をルールに従って置換する
-                    v.TextToDisplay = XIVPluginHelper.Instance.ReplacePartyMemberName(
-                        v.TextToDisplay,
-                        Settings.Default.PCNameInitialOnDisplayStyle);
-
-                    TimelineNoticeOverlay.NoticeView?.AddNotice(v);
-
-                    v.SetSyncToHide(placeholders);
-                    v.AddSyncToHide();
+                    default:
+                        v.TextToDisplay = v.Text;
+                        break;
                 }
 
-                foreach (var i in inotices)
+                if (string.IsNullOrEmpty(v.TextToDisplay))
                 {
+                    continue;
+                }
+
+                // PC名をルールに従って置換する
+                v.TextToDisplay = XIVPluginHelper.Instance.ReplacePartyMemberName(
+                    v.TextToDisplay,
+                    Settings.Default.PCNameInitialOnDisplayStyle);
+
+                WPFHelper.BeginInvoke(async () =>
+                {
+                    if (v.Delay > 0)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(v.Delay ?? 0));
+                    }
+
+                    TimelineNoticeOverlay.NoticeView?.AddNotice(v);
+                    v.SetSyncToHide(placeholders);
+                    v.AddSyncToHide();
+                });
+            }
+
+            foreach (var i in inotices)
+            {
+                WPFHelper.BeginInvoke(async () =>
+                {
+                    if (i.Delay > 0)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(i.Delay ?? 0));
+                    }
+
                     i.StartNotice();
                     i.SetSyncToHide(placeholders);
                     i.AddSyncToHide();
-                }
-            });
+                });
+            }
         }
 
         private static string lastRaisedLog = string.Empty;
@@ -359,8 +383,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             string notice,
             NoticeDevices device,
             bool isSync = false,
-            float? volume = null)
-            => Task.Run(() => NotifySound(notice, device, isSync, volume));
+            float? volume = null,
+            double delay = 0)
+            => Task.Run(async () =>
+            {
+                if (delay > 0)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(delay));
+                }
+
+                NotifySound(notice, device, isSync, volume);
+            });
 
         private static void NotifySound(
             string notice,
