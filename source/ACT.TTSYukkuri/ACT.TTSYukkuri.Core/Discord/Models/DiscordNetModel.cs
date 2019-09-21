@@ -331,7 +331,7 @@ namespace ACT.TTSYukkuri.Discord.Models
                 this.audioClient = null;
             }
 
-            this.AppendLogLine($"Leaved Voice Channel");
+            this.AppendLogLine($"Left Voice Channel");
             this.IsJoinedVoiceChannel = false;
         }
 
