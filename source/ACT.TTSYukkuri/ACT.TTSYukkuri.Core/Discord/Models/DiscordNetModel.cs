@@ -331,7 +331,7 @@ namespace ACT.TTSYukkuri.Discord.Models
                 this.audioClient = null;
             }
 
-            this.AppendLogLine($"Leaved Voice Channel");
+            this.AppendLogLine($"Left Voice Channel");
             this.IsJoinedVoiceChannel = false;
         }
 
@@ -363,7 +363,8 @@ namespace ACT.TTSYukkuri.Discord.Models
                 {
                     this.audioOutStream = this.audioClient.CreatePCMStream(
                         AudioApplication.Voice,
-                        128 * 1024);
+                        128 * 1024,
+                        200);
                 }
 
                 try
