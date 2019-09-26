@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -11,6 +12,7 @@ using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config.Models;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
+using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.Models
 {
@@ -29,7 +31,48 @@ namespace ACT.SpecialSpellTimer.Models
 
         string PartyCompositionFilter { get; set; }
 
+        ExpressionFilter[] ExpressionFilters { get; }
+
         string ZoneFilter { get; set; }
+    }
+
+    [Serializable]
+    public class ExpressionFilter : BindableBase
+    {
+        public ExpressionFilter()
+        {
+            this.PropertyChanged += (_, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(this.Target):
+                    case nameof(this.Pattern):
+                        this.RaisePropertyChanged(nameof(this.IsAvailable));
+                        break;
+                }
+            };
+        }
+
+        private string target;
+
+        [XmlAttribute(AttributeName = "target")]
+        public string Target
+        {
+            get => this.target;
+            set => this.SetProperty(ref this.target, value);
+        }
+
+        private string pattern;
+
+        [XmlAttribute(AttributeName = "regex")]
+        public string Pattern
+        {
+            get => this.pattern;
+            set => this.SetProperty(ref this.pattern, value);
+        }
+
+        [XmlIgnore]
+        public bool IsAvailable => !string.IsNullOrEmpty(this.Target) && !string.IsNullOrEmpty(this.Pattern);
     }
 
     public static class TriggerExtensions
@@ -69,6 +112,7 @@ namespace ACT.SpecialSpellTimer.Models
             var enabledByPartyJob = false;
             var enabledByZone = false;
             var enabledByPartyComposition = false;
+            var enabledByExpression = false;
 
             // ジョブフィルタをかける
             if (string.IsNullOrEmpty(trigger.JobFilter))
@@ -140,7 +184,31 @@ namespace ACT.SpecialSpellTimer.Models
                 }
             }
 
-            return enabledByJob && enabledByZone && enabledByPartyJob && enabledByPartyComposition;
+            // 式によるフィルタをかける
+            if (!trigger.ExpressionFilters.Any(x => x.IsAvailable))
+            {
+                enabledByPartyComposition = true;
+            }
+            else
+            {
+                var filters = trigger.ExpressionFilters
+                    .Where(x => x.IsAvailable)
+                    .ToArray();
+
+                foreach (var f in filters)
+                {
+                    var target = TableCompiler.Instance.GetMatchingKeyword(null, f.Target);
+                    var pattern = TableCompiler.Instance.GetMatchingKeyword(null, f.Pattern);
+
+                    if (Regex.IsMatch(target, pattern))
+                    {
+                        enabledByPartyComposition = true;
+                        break;
+                    }
+                }
+            }
+
+            return enabledByJob && enabledByZone && enabledByPartyJob && enabledByPartyComposition && enabledByExpression;
         }
 
         /// <summary>

@@ -72,6 +72,9 @@
   <system:String x:Key="Trigger_PartyJobFilter">队伍职业过滤</system:String>
   <system:String x:Key="Trigger_PartyCompositionFilter">Party Composition Filter</system:String>
   <system:String x:Key="Trigger_ZoneFilter">区域过滤</system:String>
+  <system:String x:Key="Trigger_ExpressionFilter">Expression Filter</system:String>
+  <system:String x:Key="Trigger_ExpressionFilterExample" xml:space="preserve">ex. Target:&lt;HEALER1&gt;, Regex:&lt;me&gt; ...
+This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Trigger_Preconditions">前提条件</system:String>
   <system:String x:Key="Trigger_ClearFilter">清除过滤</system:String>
   <system:String x:Key="Trigger_ForMustStartRunningSpell">⚪必须在触发中的技能</system:String>

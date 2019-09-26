@@ -72,6 +72,9 @@
   <system:String x:Key="Trigger_PartyJobFilter">파티 직업 필터</system:String>
   <system:String x:Key="Trigger_PartyCompositionFilter">파티 규모 필터</system:String>
   <system:String x:Key="Trigger_ZoneFilter">지역 필터</system:String>
+  <system:String x:Key="Trigger_ExpressionFilter">Expression Filter</system:String>
+  <system:String x:Key="Trigger_ExpressionFilterExample" xml:space="preserve">ex. Target:&lt;HEALER1&gt;, Regex:&lt;me&gt; ...
+This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Trigger_Preconditions">전제 조건</system:String>
   <system:String x:Key="Trigger_ClearFilter">필터 재설정</system:String>
   <system:String x:Key="Trigger_ForMustStartRunningSpell">⚪ 스펠이 실행 중일 때</system:String>

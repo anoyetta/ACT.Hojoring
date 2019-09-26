@@ -72,6 +72,9 @@
   <system:String x:Key="Trigger_PartyJobFilter">パーティメンバのジョブによるフィルタ</system:String>
   <system:String x:Key="Trigger_PartyCompositionFilter">パーティ構成によるフィルタ</system:String>
   <system:String x:Key="Trigger_ZoneFilter">現在のゾーンによるフィルタ</system:String>
+  <system:String x:Key="Trigger_ExpressionFilter">正規表現の条件式によるフィルタ</system:String>
+  <system:String x:Key="Trigger_ExpressionFilterExample" xml:space="preserve">例）Target:&lt;HEALER1&gt;, Regex:&lt;me&gt; と設定した場合…
+HEALER1 に me（自分）が含まれる場合にこのトリガが有効になる</system:String>
   <system:String x:Key="Trigger_Preconditions">前提条件</system:String>
   <system:String x:Key="Trigger_ClearFilter">フィルタを解除する</system:String>
   <system:String x:Key="Trigger_ForMustStartRunningSpell">⚪ 稼働を前提とするスペル</system:String>
