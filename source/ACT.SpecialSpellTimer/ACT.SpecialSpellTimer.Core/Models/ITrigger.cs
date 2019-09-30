@@ -187,7 +187,7 @@ namespace ACT.SpecialSpellTimer.Models
             // 式によるフィルタをかける
             if (!trigger.ExpressionFilters.Any(x => x.IsAvailable))
             {
-                enabledByPartyComposition = true;
+                enabledByExpression = true;
             }
             else
             {
@@ -202,7 +202,7 @@ namespace ACT.SpecialSpellTimer.Models
 
                     if (Regex.IsMatch(target, pattern))
                     {
-                        enabledByPartyComposition = true;
+                        enabledByExpression = true;
                         break;
                     }
                 }
