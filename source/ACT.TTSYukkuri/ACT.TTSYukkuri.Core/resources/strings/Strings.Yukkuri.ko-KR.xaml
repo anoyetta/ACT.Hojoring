@@ -86,7 +86,8 @@
 
   <system:String x:Key="Boyomi_Server">"보요미짱" 호스트명</system:String>
   <system:String x:Key="Boyomi_Port">"보요미짱" 포트 번호</system:String>
-  <system:String x:Key="Boyomi_PortDefault">*기본값: 50001</system:String>
+  <system:String x:Key="Boyomi_PortDefault">*기본값: 50080</system:String>
+  <system:String x:Key="Boyomi_Interrupt">Interrupt notification</system:String>
 
   <system:String x:Key="Voiceroid_ExitVoiceroid">ACT 종료 시 VOICEROID 종료</system:String>
   <system:String x:Key="Voiceroid_DirectSpeak">WAVE를 생성하지 않고 직접 재생</system:String>

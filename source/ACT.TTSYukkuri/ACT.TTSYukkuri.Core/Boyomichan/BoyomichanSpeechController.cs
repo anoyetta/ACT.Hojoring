@@ -1,8 +1,11 @@
 using System;
-using System.IO;
-using System.Net.Sockets;
-using System.Text;
+using System.Collections.Concurrent;
+using System.Net;
+using System.Net.Cache;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Timers;
 using ACT.TTSYukkuri.Config;
 using FFXIV.Framework.Bridge;
 
@@ -19,54 +22,74 @@ namespace ACT.TTSYukkuri.Boyomichan
         /// <summary>
         /// 棒読みちゃんサーバ
         /// </summary>
-        public const string BoyomichanServer = "127.0.0.1";
+        public static readonly string BoyomichanServer = "localhost";
 
         /// <summary>
         /// 棒読みちゃんサーバのポート
         /// </summary>
-        public const int BoyomichanServicePort = 50001;
+        public static readonly int BoyomichanServicePort = 50080;
+
+        /// <summary>
+        /// 棒読みちゃんの後続キューを破棄させる
+        /// </summary>
+        public static readonly short BoyomiCommandCancel = 0x0040;
+
+        /// <summary>
+        /// 棒読みちゃんの現在の読み上げを中断させる
+        /// </summary>
+        public static readonly short BoyomiCommandInterrupt = 0x0030;
 
         /// <summary>
         /// 棒読みちゃんへのCommand 0:メッセージ読上げ
         /// </summary>
-        private const short BoyomiCommand = 0x0001;
+        public static readonly short BoyomiCommand = 0x0001;
 
         /// <summary>
         /// 棒読みちゃんの早さ -1:棒読みちゃんの画面上の設定に従う
         /// </summary>
-        private const short BoyomiSpeed = -1;
+        public static readonly short BoyomiSpeed = -1;
 
         /// <summary>
         /// 棒読みちゃんへのテキストのエンコード 0:UTF-8
         /// </summary>
-        private const byte BoyomiTextEncoding = 0;
+        public static readonly byte BoyomiTextEncoding = 0;
 
         /// <summary>
         /// 棒読みちゃんの音程 -1:棒読みちゃんの画面上の設定に従う
         /// </summary>
-        private const short BoyomiTone = -1;
+        public static readonly short BoyomiTone = -1;
 
         /// <summary>
         /// 棒読みちゃんの声質 0:棒読みちゃんの画面上の設定に従う
         /// </summary>
-        private const short BoyomiVoice = 0;
+        public static readonly short BoyomiVoice = 0;
 
         /// <summary>
         /// 棒読みちゃんの音量 -1:棒読みちゃんの画面上の設定に従う
         /// </summary>
-        private const short BoyomiVolume = -1;
+        public static readonly short BoyomiVolume = -1;
 
         #endregion Constants
+
+        private static BoyomichanSpeechController current;
+
+        public BoyomichanSpeechController()
+        {
+            current = this;
+        }
 
         /// <summary>
         /// 初期化する
         /// </summary>
         public void Initialize()
         {
+            this.LazySpeakQueueSubscriber.Value.Start();
         }
 
         public void Free()
         {
+            this.LazySpeakQueueSubscriber.Value.Stop();
+            current = null;
         }
 
         private string lastText;
@@ -101,46 +124,9 @@ namespace ACT.TTSYukkuri.Boyomichan
             bool isSync = false,
             float? volume = null)
         {
-            Task.Run(() =>
+            if (string.IsNullOrWhiteSpace(text))
             {
-                try
-                {
-                    lock (this)
-                    {
-                        this.SpeakCore(text);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    this.GetLogger().Error(ex, "棒読みちゃんの読上げで例外が発生しました。");
-                }
-            });
-        }
-
-        /// <summary>
-        /// テキストを読み上げる
-        /// </summary>
-        /// <param name="text">読み上げるテキスト</param>
-        private void SpeakCore(
-            string text)
-        {
-            var server = Settings.Default.BoyomiServer;
-            var port = Settings.Default.BoyomiPort;
-
-            if (string.IsNullOrEmpty(server))
-            {
-                this.GetLogger().Error("Server name is Empty.");
-            }
-
-            if (port > 65535 ||
-                port < 1)
-            {
-                this.GetLogger().Error("Port number is Invalid.");
-            }
-
-            if (server.ToLower() == "localhost")
-            {
-                server = "127.0.0.1";
+                return;
             }
 
             if (this.lastText == text &&
@@ -153,22 +139,146 @@ namespace ACT.TTSYukkuri.Boyomichan
             this.lastText = text;
             this.lastTextTimestamp = DateTime.Now;
 
-            using (var tcp = new TcpClient(server, port))
-            using (var ns = tcp.GetStream())
-            using (var bw = new BinaryWriter(ns))
+            this.Queue.Enqueue(text.Trim());
+        }
+
+        private readonly ConcurrentQueue<string> Queue = new ConcurrentQueue<string>();
+
+        private static volatile bool semaphore = false;
+
+        private readonly Lazy<System.Timers.Timer> LazySpeakQueueSubscriber = new Lazy<System.Timers.Timer>(() =>
+        {
+            var timer = new System.Timers.Timer()
             {
-                var messageAsBytes = Encoding.UTF8.GetBytes(text);
+                Interval = CommandInterval,
+                AutoReset = true,
+            };
 
-                bw.Write(BoyomiCommand);
-                bw.Write(BoyomiSpeed);
-                bw.Write(BoyomiTone);
-                bw.Write(BoyomiVolume);
-                bw.Write(BoyomiVoice);
-                bw.Write(BoyomiTextEncoding);
-                bw.Write(messageAsBytes.Length);
-                bw.Write(messageAsBytes);
+            timer.Elapsed += Timer_Elapsed;
+            return timer;
+        });
 
-                bw.Flush();
+        private readonly Lazy<HttpClient> LazyRESTClient = new Lazy<HttpClient>(() =>
+        {
+            ServicePointManager.DefaultConnectionLimit = 32;
+            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls11;
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+
+            var client = new HttpClient(new WebRequestHandler()
+            {
+                CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore),
+            });
+
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Hojoring/1.0");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+            client.Timeout = TimeSpan.FromSeconds(10);
+
+            return client;
+        });
+
+        private static void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                if (semaphore)
+                {
+                    return;
+                }
+
+                semaphore = true;
+                current?.SpeakCore();
+            }
+            catch (Exception ex)
+            {
+                current?.GetLogger().Error(ex, "Exception occurred sending to Boyomi a TTS queue.");
+            }
+            finally
+            {
+                semaphore = false;
+            }
+        }
+
+        private static readonly int CommandInterval = 40;
+        private volatile bool isError = false;
+
+        /// <summary>
+        /// テキストを読み上げる
+        /// </summary>
+        private async void SpeakCore()
+        {
+            if (this.Queue.IsEmpty)
+            {
+                return;
+            }
+
+            var server = Settings.Default.BoyomiServer;
+            var port = Settings.Default.BoyomiPort;
+
+            if (string.IsNullOrEmpty(server))
+            {
+                if (!this.isError)
+                {
+                    this.GetLogger().Error("Boyomi server name is empty.");
+                }
+
+                this.isError = true;
+                clearQueue();
+                return;
+            }
+
+            if (port > 65535 ||
+                port < 1)
+            {
+                if (!this.isError)
+                {
+                    this.GetLogger().Error("Boyomi port number is invalid.");
+                }
+
+                this.isError = true;
+                clearQueue();
+                return;
+            }
+
+            if (server.StartsWith("127.0.0."))
+            {
+                server = "localhost";
+            }
+
+            var client = this.LazyRESTClient.Value;
+            var baseUri = $"http://{server}:{port}/";
+
+            try
+            {
+                if (Settings.Default.IsBoyomiInterruptNotication)
+                {
+                    await client.GetAsync($"{baseUri}clear");
+                    await client.GetAsync($"{baseUri}skip");
+                    await Task.Delay(0);
+                }
+
+                while (this.Queue.TryDequeue(out string text))
+                {
+                    await client.GetAsync($"{baseUri}talk?text={Uri.EscapeUriString(text)}");
+                    await Task.Delay(CommandInterval);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (!this.isError)
+                {
+                    this.GetLogger().Error(ex, "Boyomi REST client error.");
+                }
+
+                this.isError = true;
+                clearQueue();
+            }
+
+            void clearQueue()
+            {
+                while (this.Queue.TryDequeue(out string t)) ;
             }
         }
     }

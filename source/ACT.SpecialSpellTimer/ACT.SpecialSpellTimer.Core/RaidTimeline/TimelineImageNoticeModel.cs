@@ -149,6 +149,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #endregion Duration
 
+        #region Delay
+
+        private double? delay = null;
+
+        [XmlIgnore]
+        public double? Delay
+        {
+            get => this.delay;
+            set => this.SetProperty(ref this.delay, value);
+        }
+
+        [XmlAttribute(AttributeName = "delay")]
+        public string DelayXML
+        {
+            get => this.Delay?.ToString();
+            set => this.Delay = double.TryParse(value, out var v) ? v : (double?)null;
+        }
+
+        #endregion Delay
+
         #region sync-to-hide
 
         private static readonly List<TimelineImageNoticeModel> syncToHideList = new List<TimelineImageNoticeModel>();

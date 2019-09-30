@@ -340,8 +340,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public bool InSimulation { get; set; } = false;
 
+        private IEnumerable<PlaceholderContainer> currentPlaceholders;
+
         public IEnumerable<PlaceholderContainer> GetPlaceholders() =>
-            TableCompiler.Instance.GetPlaceholders(this.InSimulation, true);
+            this.currentPlaceholders ??= TableCompiler.Instance.GetPlaceholders(this.InSimulation, true);
+
+        public void ClearCurrentPlaceholders()
+            => this.currentPlaceholders = null;
 
         public string ReplacePlaceholder(
             string keyword,
@@ -378,6 +383,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var defaultNoticeStyle = TimelineSettings.Instance.DefaultNoticeStyle;
 
             // <HOGE>を[HOGE]に置き換えたプレースホルダリストを生成する
+            this.ClearCurrentPlaceholders();
             var placeholders = this.GetPlaceholders();
 
             // 初期化する

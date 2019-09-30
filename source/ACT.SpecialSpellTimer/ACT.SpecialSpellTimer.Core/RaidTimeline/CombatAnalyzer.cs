@@ -345,7 +345,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var preLog = new string[3];
             var preLogIndex = 0;
-            var ignores = TimelineSettings.Instance.IgnoreLogTypes.Where(x => x.IsIgnore);
 
             var logs = new List<LogLineEventArgs>(this.logInfoQueue.Count);
 
@@ -363,12 +362,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 if (preLogIndex >= 3)
                 {
                     preLogIndex = 0;
-                }
-
-                // 無効なログ？
-                if (ignores.Any(x => log.logLine.Contains(x.Keyword)))
-                {
-                    continue;
                 }
 
                 logs.Add(log);
@@ -1226,7 +1219,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 var preLog = new string[3];
                 var preLogIndex = 0;
-                var ignores = TimelineSettings.Instance.IgnoreLogTypes.Where(x => x.IsIgnore);
 
                 using (var reader = new StreamReader(
                     new FileStream(
@@ -1283,7 +1275,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         // 無効なログ？
                         // ログ種別だけのゴミ？, 不要なログキーワード？, TLシンボルあり？, ダメージ系ログ？
                         if (log.Length <= 3 ||
-                            ignores.Any(x => log.Contains(x.Keyword)) ||
                             log.Contains(TimelineController.TLSymbol) ||
                             XIVPluginHelper.IsDamageLog(log))
                         {

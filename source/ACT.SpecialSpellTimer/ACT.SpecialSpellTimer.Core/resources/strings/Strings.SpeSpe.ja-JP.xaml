@@ -72,6 +72,9 @@
   <system:String x:Key="Trigger_PartyJobFilter">パーティメンバのジョブによるフィルタ</system:String>
   <system:String x:Key="Trigger_PartyCompositionFilter">パーティ構成によるフィルタ</system:String>
   <system:String x:Key="Trigger_ZoneFilter">現在のゾーンによるフィルタ</system:String>
+  <system:String x:Key="Trigger_ExpressionFilter">正規表現の条件式によるフィルタ</system:String>
+  <system:String x:Key="Trigger_ExpressionFilterExample" xml:space="preserve">例）Target:&lt;HEALER1&gt;, Regex:&lt;me&gt; と設定した場合…
+HEALER1 に me（自分）が含まれる場合にこのトリガが有効になる</system:String>
   <system:String x:Key="Trigger_Preconditions">前提条件</system:String>
   <system:String x:Key="Trigger_ClearFilter">フィルタを解除する</system:String>
   <system:String x:Key="Trigger_ForMustStartRunningSpell">⚪ 稼働を前提とするスペル</system:String>
@@ -158,6 +161,7 @@
 
   <system:String x:Key="Options_Visual">見た目</system:String>
   <system:String x:Key="Options_Trigger">トリガー</system:String>
+  <system:String x:Key="Options_LogFilter">ログフィルタ</system:String>
   <system:String x:Key="Options_Log">ログ</system:String>
   <system:String x:Key="Options_TTSDictionary">TTS辞書</system:String>
 
@@ -195,7 +199,7 @@
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">UNKNOWNスキルを補完する</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">ダメージ・回復に関するログをカットする</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">"15:", "16:" から始まる詳細なログをカットする</system:String>
-  <system:String x:Key="Options_EnabledAutoIgnore">周囲のPCが多いとき自動的に"15:", "16:"から始まるログをカットする</system:String>
+  <system:String x:Key="Options_EnabledAutoIgnore">周囲のPCが多いとき自動的に詳細なログをカットする</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">"FC:" から始まるパケットダンプも解析対象にする（非推奨：高負荷）</system:String>
   <system:String x:Key="Options_ReadyText">正方向のスペルのカウント完了時のテキスト（既定値：Ready）</system:String>
   <system:String x:Key="Options_OverText">逆方向のスペルのカウント完了時のテキスト（既定値：Over）</system:String>

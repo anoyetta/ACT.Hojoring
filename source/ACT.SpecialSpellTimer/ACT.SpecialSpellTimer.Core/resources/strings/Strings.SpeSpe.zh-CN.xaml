@@ -72,6 +72,9 @@
   <system:String x:Key="Trigger_PartyJobFilter">队伍职业过滤</system:String>
   <system:String x:Key="Trigger_PartyCompositionFilter">Party Composition Filter</system:String>
   <system:String x:Key="Trigger_ZoneFilter">区域过滤</system:String>
+  <system:String x:Key="Trigger_ExpressionFilter">Expression Filter</system:String>
+  <system:String x:Key="Trigger_ExpressionFilterExample" xml:space="preserve">ex. Target:&lt;HEALER1&gt;, Regex:&lt;me&gt; ...
+This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Trigger_Preconditions">前提条件</system:String>
   <system:String x:Key="Trigger_ClearFilter">清除过滤</system:String>
   <system:String x:Key="Trigger_ForMustStartRunningSpell">⚪必须在触发中的技能</system:String>
@@ -158,6 +161,7 @@
 
   <system:String x:Key="Options_Visual">显示</system:String>
   <system:String x:Key="Options_Trigger">触发器</system:String>
+  <system:String x:Key="Options_LogFilter">Log Filter</system:String>
   <system:String x:Key="Options_Log">日志</system:String>
   <system:String x:Key="Options_TTSDictionary">TTS字典</system:String>
 
@@ -195,7 +199,7 @@
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">补全未知技能</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">忽略伤害和治疗日志</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">忽略15:或 16:开头日志</system:String>
-  <system:String x:Key="Options_EnabledAutoIgnore">Auto filter the 15: or 16: logs when there are many people</system:String>
+  <system:String x:Key="Options_EnabledAutoIgnore">Auto filter detail logs when there are many people</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">检测 FC:开头数据 (不推荐)</system:String>
   <system:String x:Key="Options_ReadyText">正向计时器完成时显示文字 (默认: "Ready")</system:String>
   <system:String x:Key="Options_OverText">反向计时器完成时显示文字 (默认: "Over")</system:String>

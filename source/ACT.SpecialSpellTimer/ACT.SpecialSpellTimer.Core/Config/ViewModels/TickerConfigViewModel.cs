@@ -42,6 +42,7 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
                         // ジョブ・ゾーン・前提条件のセレクタを初期化する
                         this.SetJobSelectors();
                         this.SetPartyCompositionSelectors();
+                        this.SetExpressionFilter();
                         this.SetZoneSelectors();
                         PreconditionSelectors.Instance.SetModel(this.model);
 
@@ -62,6 +63,7 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
 
                     this.RaisePropertyChanged(nameof(this.IsJobFiltered));
                     this.RaisePropertyChanged(nameof(this.IsPartyCompositionFiltered));
+                    this.RaisePropertyChanged(nameof(this.IsExpressionFiltered));
                     this.RaisePropertyChanged(nameof(this.IsZoneFiltered));
                     this.RaisePropertyChanged(nameof(this.PreconditionSelectors));
                     this.RaisePropertyChanged(nameof(this.Model.MatchAdvancedConfig));
@@ -226,7 +228,7 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
                         .ToArray());
 
                 this.RaisePropertyChanged(nameof(this.IsPartyCompositionFiltered));
-                Task.Run(() => TableCompiler.Instance.CompileSpells());
+                Task.Run(() => TableCompiler.Instance.CompileTickers());
             }
         }
 
@@ -245,7 +247,7 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
 
                     this.Model.PartyCompositionFilter = string.Empty;
                     this.RaisePropertyChanged(nameof(this.IsPartyCompositionFiltered));
-                    Task.Run(() => TableCompiler.Instance.CompileSpells());
+                    Task.Run(() => TableCompiler.Instance.CompileTickers());
                 }
                 finally
                 {
@@ -254,6 +256,24 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
             }));
 
         #endregion Party Composition Filter
+
+        #region Expression Filter
+
+        public bool IsExpressionFiltered => this.Model?.ExpressionFilters.Any(x => x.IsAvailable) ?? false;
+
+        private void SetExpressionFilter()
+        {
+            foreach (var f in this.Model.ExpressionFilters)
+            {
+                f.PropertyChanged += (_, e) =>
+                {
+                    this.RaisePropertyChanged(nameof(this.IsExpressionFiltered));
+                    Task.Run(() => TableCompiler.Instance.CompileTickers());
+                };
+            }
+        }
+
+        #endregion Expression Filter
 
         #region Zone filter
 

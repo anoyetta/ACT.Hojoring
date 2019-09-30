@@ -81,7 +81,7 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.offset, value);
         }
 
-        private bool isUnlockMPSync;
+        private bool isUnlockMPSync = true;
 
         /// <summary>
         /// MPへの同期のロックが解除されているか？
@@ -110,7 +110,11 @@ namespace ACT.UltraScouter.Config
 
             WPFHelper.InvokeAsync(() =>
             {
+#if false
                 this.IsUnlockMPSync = exists;
+#else
+                this.IsUnlockMPSync = true;
+#endif
             });
         }
 

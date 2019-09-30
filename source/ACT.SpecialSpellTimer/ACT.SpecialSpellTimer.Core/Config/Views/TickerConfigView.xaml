@@ -336,6 +336,59 @@
             </Expander>
             <!-- Zoneフィルタ end -->
 
+            <!-- Expressionフィルタ start -->
+            <Expander Margin="0 10 0 0" Expanded="FilterExpander_Expanded">
+              <Expander.Header>
+                <StackPanel Orientation="Horizontal">
+                  <Label Content="{DynamicResource Trigger_ExpressionFilter}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+                  <Label Margin="20 0 0 0" Content="filtered!" FontSize="14" VerticalAlignment="Center" VerticalContentAlignment="Center" Foreground="Crimson" FontStyle="Italic" FontWeight="Black" Visibility="{Binding IsExpressionFiltered, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+                </StackPanel>
+              </Expander.Header>
+              <Grid
+                Margin="10 10 0 0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="24" />
+                  <RowDefinition Height="33" />
+                  <RowDefinition Height="33" />
+                  <RowDefinition Height="33" />
+                  <RowDefinition Height="33" />
+                  <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="1" Margin="2 0 0 0" Content="Target" />
+                <Label Grid.Row="0" Grid.Column="2" Margin="7 0 0 0" Content="Regex" />
+
+                <Label Grid.Row="1" Grid.Column="0" Content="1" VerticalAlignment="Center" Margin="0 0 5 0" />
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Model.ExpressionFilters[0].Target, Mode=TwoWay}" Width="320" />
+                <TextBox Grid.Row="1" Grid.Column="2" Margin="5 0 0 0" Text="{Binding Model.ExpressionFilters[0].Pattern, Mode=TwoWay}" Width="320" />
+
+                <Label Grid.Row="2" Grid.Column="0" Content="2" VerticalAlignment="Center" Margin="0 0 5 0" />
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Model.ExpressionFilters[1].Target, Mode=TwoWay}" Width="320" />
+                <TextBox Grid.Row="2" Grid.Column="2" Margin="5 0 0 0" Text="{Binding Model.ExpressionFilters[1].Pattern, Mode=TwoWay}" Width="320" />
+
+                <Label Grid.Row="3" Grid.Column="0" Content="3" VerticalAlignment="Center" Margin="0 0 5 0" />
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Model.ExpressionFilters[2].Target, Mode=TwoWay}" Width="320" />
+                <TextBox Grid.Row="3" Grid.Column="2" Margin="5 0 0 0" Text="{Binding Model.ExpressionFilters[2].Pattern, Mode=TwoWay}" Width="320" />
+
+                <Label Grid.Row="4" Grid.Column="0" Content="4" VerticalAlignment="Center" Margin="0 0 5 0" />
+                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Model.ExpressionFilters[3].Target, Mode=TwoWay}" Width="320" />
+                <TextBox Grid.Row="4" Grid.Column="2" Margin="5 0 0 0" Text="{Binding Model.ExpressionFilters[3].Pattern, Mode=TwoWay}" Width="320" />
+
+                <TextBlock
+                  Grid.Row="5"
+                  Grid.ColumnSpan="3"
+                  Margin="15 5 0 0"
+                  FontSize="14"
+                  Text="{DynamicResource Trigger_ExpressionFilterExample}" />
+              </Grid>
+            </Expander>
+            <!-- Expressionフィルタ end -->
+
             <!-- Preconditionフィルタ start -->
             <Expander Margin="0 10 0 0" Expanded="FilterExpander_Expanded">
               <Expander.Header>
@@ -606,8 +659,8 @@
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToSubPlaybackDevice}" IsChecked="{Binding Model.MatchAdvancedConfig.ToSubDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToDicordTextChannel}" IsChecked="{Binding Model.MatchAdvancedConfig.ToDicordTextChat, Mode=TwoWay}" />
                       <StackPanel Margin="0 5 0 0" Orientation="Horizontal">
-                        <Label Margin="0 2 5 0" Content="{DynamicResource Spell_PlayPalette}" />
-                        <ComboBox Width="80" ItemsSource="{Binding Model.MatchAdvancedConfig.Palettes, Mode=OneWay}" SelectedItem="{Binding Model.MatchAdvancedConfig.Palette, Mode=TwoWay}" />
+                        <Label VerticalAlignment="Center" Margin="0 0 5 0" Content="{DynamicResource Spell_PlayPalette}" />
+                        <ComboBox Width="100" ItemsSource="{Binding Model.MatchAdvancedConfig.Palettes, Mode=OneWay}" SelectedItem="{Binding Model.MatchAdvancedConfig.Palette, Mode=TwoWay}" />
                       </StackPanel>
                     </StackPanel>
                   </StackPanel>
@@ -643,8 +696,8 @@
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToSubPlaybackDevice}" IsChecked="{Binding Model.DelayAdvancedConfig.ToSubDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToDicordTextChannel}" IsChecked="{Binding Model.DelayAdvancedConfig.ToDicordTextChat, Mode=TwoWay}" />
                       <StackPanel Margin="0 5 0 0" Orientation="Horizontal">
-                        <Label Margin="0 2 5 0" Content="{DynamicResource Spell_PlayPalette}" />
-                        <ComboBox Width="80" ItemsSource="{Binding Model.DelayAdvancedConfig.Palettes, Mode=OneWay}" SelectedItem="{Binding Model.DelayAdvancedConfig.Palette, Mode=TwoWay}" />
+                        <Label VerticalAlignment="Center" Margin="0 0 5 0" Content="{DynamicResource Spell_PlayPalette}" />
+                        <ComboBox Width="100" ItemsSource="{Binding Model.DelayAdvancedConfig.Palettes, Mode=OneWay}" SelectedItem="{Binding Model.DelayAdvancedConfig.Palette, Mode=TwoWay}" />
                       </StackPanel>
                     </StackPanel>
                   </StackPanel>

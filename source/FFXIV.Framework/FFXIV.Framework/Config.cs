@@ -1,13 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
+using FFXIV_ACT_Plugin.Logfile;
 using Prism.Mvvm;
 
 namespace FFXIV.Framework
@@ -74,6 +77,13 @@ namespace FFXIV.Framework
                 }
             }
 
+            foreach (var item in instance.globalLogFilters)
+            {
+                item.FormatTextDelegate = (t, _) => FormatLogMessageType(t);
+            }
+
+            instance.globalLogFilterDictionary = instance.globalLogFilters.ToDictionary(x => x.Key);
+
             return instance;
         }
 
@@ -122,6 +132,41 @@ namespace FFXIV.Framework
         private const int WasapiLatencyDefault = 200;
         private const int WasapiMultiplePlaybackCountDefault = 4;
         private const double WasapiLoopBufferDurationDefault = 20;
+
+        private static ObservableKeyValue<LogMessageType, bool>[] GetDefaultGlobalLogFilter()
+        {
+            var filters = new List<ObservableKeyValue<LogMessageType, bool>>();
+
+            foreach (LogMessageType type in Enum.GetValues(typeof(LogMessageType)))
+            {
+                filters.Add(new ObservableKeyValue<LogMessageType, bool>(type, false)
+                {
+                    FormatTextDelegate = (t, _) => FormatLogMessageType(t),
+                    Value = type switch
+                    {
+                        LogMessageType.CombatantHP => true,
+                        LogMessageType.NetworkDoT => true,
+                        LogMessageType.NetworkCancelAbility => true,
+                        LogMessageType.NetworkEffectResult => true,
+                        LogMessageType.NetworkStatusList => true,
+                        LogMessageType.NetworkUpdateHp => true,
+                        LogMessageType.Settings => true,
+                        LogMessageType.Process => true,
+                        LogMessageType.Debug => true,
+                        LogMessageType.PacketDump => true,
+                        LogMessageType.Version => true,
+                        LogMessageType.Error => true,
+                        LogMessageType.Timer => true,
+                        _ => false,
+                    }
+                });
+            }
+
+            return filters.ToArray();
+        }
+
+        private static string FormatLogMessageType(LogMessageType t)
+            => $"0x{((int)t):X2}:{t}";
 
         #endregion Default Values
 
@@ -214,5 +259,21 @@ namespace FFXIV.Framework
                 }
             }
         }
+
+        private Dictionary<LogMessageType, ObservableKeyValue<LogMessageType, bool>> globalLogFilterDictionary;
+        private ObservableKeyValue<LogMessageType, bool>[] globalLogFilters = GetDefaultGlobalLogFilter();
+
+        [XmlArrayItem("Filter")]
+        public ObservableKeyValue<LogMessageType, bool>[] GlobalLogFilters
+        {
+            get => this.globalLogFilters;
+            set => this.SetProperty(ref this.globalLogFilters, value);
+        }
+
+        public bool IsFilterdLog(
+            LogMessageType type)
+            => this.globalLogFilterDictionary.ContainsKey(type) ?
+            this.globalLogFilterDictionary[type].Value :
+            false;
     }
 }

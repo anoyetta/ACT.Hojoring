@@ -582,47 +582,6 @@
               <!-- 見た目の右側 end -->
             </TabItem>
 
-            <TabItem Header="Filters" Padding="20 2 20 2">
-              <!-- 見た目の左側 -->
-              <ScrollViewer
-                Margin="10 10 0 0"
-                Padding="0 0 40 0"
-                VerticalScrollBarVisibility="Auto"
-                HorizontalScrollBarVisibility="Disabled"
-                Focusable="False">
-
-                <StackPanel>
-                  <Label Content="{DynamicResource Timeline_IgnoreLogs}" FontWeight="Bold" />
-
-                  <ItemsControl
-                    Focusable="False"
-                    Margin="10 10 0 0"
-                    BorderThickness="0"
-                    ItemsSource="{Binding Path=TimelineConfig.IgnoreLogTypes, Mode=OneWay}">
-
-                    <ItemsControl.ItemTemplate>
-                      <DataTemplate>
-                        <DockPanel HorizontalAlignment="Left" Margin="0 5 0 5" Width="400">
-                          <Label DockPanel.Dock="Left" VerticalAlignment="Center" Content="{Binding Code, Mode=OneWay}" />
-                          <Label DockPanel.Dock="Left" VerticalAlignment="Center" Content=":" />
-                          <Label DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5 0 0 0" Content="{Binding MessageType, Mode=OneWay}" />
-                          <CheckBox
-                          DockPanel.Dock="Right"
-                          HorizontalAlignment="Right"
-                          VerticalContentAlignment="Center"
-                          VerticalAlignment="Center"
-                          Margin="10 0 0 0"
-                          Content="ignore"
-                          IsChecked="{Binding IsIgnore, Mode=TwoWay}" />
-                        </DockPanel>
-                      </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                  </ItemsControl>
-                </StackPanel>
-              </ScrollViewer>
-              <!-- 見た目の左側 end -->
-            </TabItem>
-
             <TabItem Header="Options" Padding="20 2 20 2">
               <!-- 見た目の左側 -->
               <ScrollViewer

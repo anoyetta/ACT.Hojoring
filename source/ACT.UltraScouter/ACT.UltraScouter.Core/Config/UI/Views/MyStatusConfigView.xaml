@@ -282,30 +282,33 @@
       </StackPanel>
       <!-- L+R panel end -->
 
-      <Label
-        Margin="0 15 0 0"
-        Content="{DynamicResource MPTicker_TargetJobs}" />
-      <ListView
-        ItemsSource="{Binding Config.TargetJobs}"
-        ScrollViewer.VerticalScrollBarVisibility="Disabled"
-        BorderThickness="0"
-        Height="250">
-        <ListView.ItemsPanel>
-          <ItemsPanelTemplate>
-            <WrapPanel Orientation="Vertical" />
-          </ItemsPanelTemplate>
-        </ListView.ItemsPanel>
-        <ListView.ItemTemplate>
-          <DataTemplate>
-            <CheckBox
-              Margin="0 5 25 5"
-              Content="{Binding JobName, Mode=OneWay}"
-              IsChecked="{Binding Available, Mode=TwoWay}"
-              HorizontalAlignment="Left"
-              VerticalAlignment="Center" />
-          </DataTemplate>
-        </ListView.ItemTemplate>
-      </ListView>
+      <StackPanel
+        Visibility="{Binding IsMPConfig, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+        <Label
+          Margin="0 15 0 0"
+          Content="{DynamicResource MPTicker_TargetJobs}" />
+        <ListView
+          ItemsSource="{Binding Config.TargetJobs}"
+          ScrollViewer.VerticalScrollBarVisibility="Disabled"
+          BorderThickness="0"
+          Height="250">
+          <ListView.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel Orientation="Vertical" />
+            </ItemsPanelTemplate>
+          </ListView.ItemsPanel>
+          <ListView.ItemTemplate>
+            <DataTemplate>
+              <CheckBox
+                Margin="0 5 25 5"
+                Content="{Binding JobName, Mode=OneWay}"
+                IsChecked="{Binding Available, Mode=TwoWay}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center" />
+            </DataTemplate>
+          </ListView.ItemTemplate>
+        </ListView>
+      </StackPanel>
     </StackPanel>
     <!-- base panel end -->
   </ScrollViewer>

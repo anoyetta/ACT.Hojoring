@@ -72,6 +72,9 @@
   <system:String x:Key="Trigger_PartyJobFilter">Party Job Filter</system:String>
   <system:String x:Key="Trigger_PartyCompositionFilter">Party Composition Filter</system:String>
   <system:String x:Key="Trigger_ZoneFilter">Zone filter</system:String>
+  <system:String x:Key="Trigger_ExpressionFilter">Expression Filter</system:String>
+  <system:String x:Key="Trigger_ExpressionFilterExample" xml:space="preserve">ex. Target:&lt;HEALER1&gt;, Regex:&lt;me&gt; ...
+This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Trigger_Preconditions">Precondition</system:String>
   <system:String x:Key="Trigger_ClearFilter">Clear filter</system:String>
   <system:String x:Key="Trigger_ForMustStartRunningSpell">⚪ Must running spells</system:String>
@@ -158,6 +161,7 @@
 
   <system:String x:Key="Options_Visual">Visual</system:String>
   <system:String x:Key="Options_Trigger">Triggers</system:String>
+  <system:String x:Key="Options_LogFilter">Log Filter</system:String>
   <system:String x:Key="Options_Log">Log</system:String>
   <system:String x:Key="Options_TTSDictionary">TTS Dictionary</system:String>
 
@@ -195,7 +199,7 @@
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">To complement unknown skill</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">Ignore Damage and Heal log</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">Ignore 15: or 16: Detail log</system:String>
-  <system:String x:Key="Options_EnabledAutoIgnore">Auto filter the 15: or 16: logs when there are many people</system:String>
+  <system:String x:Key="Options_EnabledAutoIgnore">Auto filter detail logs when there are many people</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">Detect FC:Packet dump (not recommend)</system:String>
   <system:String x:Key="Options_ReadyText">Text to display at the completion of the forward direction timer (default: "Ready")</system:String>
   <system:String x:Key="Options_OverText">Text to display at the completion of the back direction timer (default: "Over")</system:String>

@@ -38,6 +38,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 this.GeneralView,
                 this.VisualView,
                 this.TriggerView,
+                this.LogFilterView,
                 this.LogView,
                 this.TTSDictionaryView,
                 this.MiscView

@@ -1,5 +1,5 @@
 <UserControl
-  x:Class="ACT.SpecialSpellTimer.Config.Views.OptionsTriggerView"
+  x:Class="ACT.SpecialSpellTimer.Config.Views.OptionsLogFilterView"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -14,7 +14,7 @@
   xmlns:vm="clr-namespace:ACT.SpecialSpellTimer.Config.ViewModels"
   xmlns:fa="http://schemas.fontawesome.io/icons/"
   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-  d:DataContext="{d:DesignInstance Type=local:OptionsTriggerView}"
+  d:DataContext="{d:DesignInstance Type=local:OptionsLogFilterView}"
   DataContext="{Binding RelativeSource={RelativeSource Self}}"
   d:DesignWidth="1000"
   Background="White"
@@ -70,31 +70,44 @@
   </UserControl.Resources>
 
   <StackPanel>
-    <Label Margin="0 15 0 0" Content="{DynamicResource Options_TimeToHide}" />
-    <xctk:DoubleUpDown Value="{Binding Config.TimeOfHideSpell, Mode=TwoWay}" MinWidth="60" FormatString="F0" />
+    <ItemsControl
+      Margin="5 10 0 0"
+      Height="500"
+      Grid.IsSharedSizeScope="True"
+      Focusable="False"
+      IsTabStop="False"
+      ItemsSource="{Binding FrameworkConfig.GlobalLogFilters, Mode=OneWay}">
 
-    <Label Margin="0 15 0 0" Content="{DynamicResource Options_WaitingTimeToSyncTTS}" />
-    <xctk:DoubleUpDown Value="{Binding Config.WaitingTimeToSyncTTS, Mode=TwoWay}" MinWidth="75" FormatString="F0" Maximum="1000" Minimum="20" />
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <WrapPanel Orientation="Vertical" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
 
-    <CheckBox Margin="0 20 0 0" Content="{DynamicResource Options_EnabledPartyPlaceholder}" IsChecked="{Binding Config.EnabledPartyMemberPlaceholder, Mode=TwoWay}" />
-    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledNotifyDefaultSpellTimer}" IsChecked="{Binding Config.EnabledNotifyNormalSpellTimer, Mode=TwoWay}" />
-    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledSimplyRegex}" IsChecked="{Binding Config.SimpleRegex, Mode=TwoWay}" />
-    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledRemoveTooltipSymbol}" IsChecked="{Binding Config.RemoveTooltipSymbols, Mode=TwoWay}" />
-    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledRemoveWorldName}" IsChecked="{Binding Config.RemoveWorldName, Mode=TwoWay}" />
-    <!--
-    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledCompleteUnknownSkill}" IsChecked="{Binding Config.ToComplementUnknownSkill, Mode=TwoWay}" />
-    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledIgnoreDamageLogs}" IsChecked="{Binding Config.IgnoreDamageLogs, Mode=TwoWay}" />
-    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledIgnoreDetailLogs}" IsChecked="{Binding Config.IgnoreDetailLogs, Mode=TwoWay}" />
-    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledDetectPacketDump}" IsChecked="{Binding Config.DetectPacketDump, Mode=TwoWay}" />
-    -->
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Grid Margin="0 0 80 0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition SharedSizeGroup="A" Width="Auto" />
+              <ColumnDefinition SharedSizeGroup="B" Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-    <Label Margin="0 20 0 0" Content="{DynamicResource Options_ReadyText}" />
-    <TextBox Text="{Binding Config.ReadyText, Mode=TwoWay}" Width="200" HorizontalAlignment="Left" />
+            <Label
+              Grid.Column="0"
+              VerticalAlignment="Center"
+              Margin="0 0 30 3"
+              Content="{Binding Text, Mode=OneWay}" />
 
-    <Label Margin="0 20 0 0" Content="{DynamicResource Options_OverText}" />
-    <TextBox Text="{Binding Config.OverText, Mode=TwoWay}" Width="200" HorizontalAlignment="Left" />
+            <CheckBox
+              Grid.Column="1"
+              VerticalAlignment="Center"
+              Content="ignore"
+              IsChecked="{Binding Value}" />
+          </Grid>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
 
-    <CheckBox Margin="0 25 0 0" Content="{DynamicResource Options_ResetOnWipeout}" IsChecked="{Binding Config.ResetOnWipeOut, Mode=TwoWay}" />
-    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_ResetNotifyToACT}" IsChecked="{Binding Config.WipeoutNotifyToACT, Mode=TwoWay}" Visibility="{Binding Config.ResetOnWipeOut, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" />
+    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledAutoIgnore}" IsChecked="{Binding Config.IsAutoIgnoreLogs, Mode=TwoWay}" />
   </StackPanel>
 </UserControl>

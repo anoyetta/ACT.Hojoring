@@ -46,6 +46,7 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
                         this.SetJobSelectors();
                         this.SetPartyJobSelectors();
                         this.SetPartyCompositionSelectors();
+                        this.SetExpressionFilter();
                         this.SetZoneSelectors();
                         PreconditionSelectors.Instance.SetModel(this.model);
 
@@ -67,6 +68,7 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
                     this.RaisePropertyChanged(nameof(this.IsJobFiltered));
                     this.RaisePropertyChanged(nameof(this.IsPartyJobFiltered));
                     this.RaisePropertyChanged(nameof(this.IsPartyCompositionFiltered));
+                    this.RaisePropertyChanged(nameof(this.IsExpressionFiltered));
                     this.RaisePropertyChanged(nameof(this.IsZoneFiltered));
                     this.RaisePropertyChanged(nameof(this.PreconditionSelectors));
                     this.RaisePropertyChanged(nameof(this.Model.MatchAdvancedConfig));
@@ -372,6 +374,24 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
             }));
 
         #endregion Party Composition Filter
+
+        #region Expression Filter
+
+        public bool IsExpressionFiltered => this.Model?.ExpressionFilters.Any(x => x.IsAvailable) ?? false;
+
+        private void SetExpressionFilter()
+        {
+            foreach (var f in this.Model.ExpressionFilters)
+            {
+                f.PropertyChanged += (_, e) =>
+                {
+                    this.RaisePropertyChanged(nameof(this.IsExpressionFiltered));
+                    Task.Run(() => TableCompiler.Instance.CompileSpells());
+                };
+            }
+        }
+
+        #endregion Expression Filter
 
         #region Zone filter
 

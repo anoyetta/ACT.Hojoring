@@ -117,23 +117,27 @@ namespace ACT.UltraScouter.Config
         public void ExecuteRefreshViewCommand()
             => this.RefreshViewDelegate?.Invoke();
 
-        private static readonly ObservableCollection<JobAvailablity> DefaultTargetJobs = Settings.DefaultMPOverlayTargetJobs;
+        private static readonly ObservableCollection<JobAvailablity> DefaultTargetJobs = new ObservableCollection<JobAvailablity>(Settings.DefaultMPOverlayTargetJobs);
 
-        private ObservableCollection<JobAvailablity> targetJobs = DefaultTargetJobs;
+        private ObservableCollection<JobAvailablity> targetJobs = new ObservableCollection<JobAvailablity>();
 
         public ObservableCollection<JobAvailablity> TargetJobs
         {
             get => this.targetJobs;
-            set
+            set => this.SetProperty(ref this.targetJobs, value);
+        }
+
+        public void InitTargetJobs()
+        {
+            var toAdd = DefaultTargetJobs
+                .Where(x => !this.targetJobs.Any(y => x.Job == y.Job))
+                .ToArray();
+
+            if (toAdd.Length > 0)
             {
-                foreach (var entry in value)
-                {
-                    var current = this.targetJobs.FirstOrDefault(x => x.Job == entry.Job);
-                    if (current != null)
-                    {
-                        current.Available = entry.Available;
-                    }
-                }
+                var newEntries = this.targetJobs.Concat(toAdd).ToArray();
+                this.targetJobs.Clear();
+                this.targetJobs.AddRange(newEntries.OrderBy(x => x.Job));
             }
         }
     }

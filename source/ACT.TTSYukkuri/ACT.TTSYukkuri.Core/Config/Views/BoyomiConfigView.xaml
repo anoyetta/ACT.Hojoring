@@ -23,6 +23,7 @@
   Background="White"
   FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
   FontSize="17"
+  Margin="5"
   d:DesignWidth="600"
   d:DataContext="{d:DesignInstance Type=vm:BoyomiConfigViewModel, IsDesignTimeCreatable=True}"
   DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -58,5 +59,11 @@
       FontSize="14"
       Text="{DynamicResource Boyomi_PortDefault}" />
     </StackPanel>
+
+    <CheckBox
+      Margin="0 15 0 0"
+      VerticalContentAlignment="Center"
+      Content="{DynamicResource Boyomi_Interrupt}"
+      IsChecked="{Binding Config.IsBoyomiInterruptNotication, Mode=TwoWay}" />
   </StackPanel>
 </UserControl>
