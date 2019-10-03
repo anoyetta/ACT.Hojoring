@@ -19,7 +19,7 @@ namespace ACT.SpecialSpellTimer
         /// コマンド解析用の正規表現
         /// </summary>
         private readonly static Regex regexCommand = new Regex(
-            @".*/spespe (?<command>refresh|changeenabled|set|clear|on|off|pos) ?(?<target>spells|telops|me|pt|pet|placeholder|$) ?(?<windowname>"".*""|all)? ?(?<value>.*)",
+            @".*/spespe (?<command>refresh|changeenabled|set|clear|on|off|pos) ?(?<target>all|spells|telops|me|pt|pet|placeholder|$) ?(?<windowname>"".*""|all)? ?(?<value>.*)",
             RegexOptions.Compiled |
             RegexOptions.IgnoreCase);
 
@@ -104,6 +104,16 @@ namespace ACT.SpecialSpellTimer
                 case "refresh":
                     switch (target)
                     {
+                        case "all":
+                            TableCompiler.Instance.RefreshCombatants();
+                            TableCompiler.Instance.RefreshPlayerPlacceholder();
+                            TableCompiler.Instance.RefreshPartyPlaceholders();
+                            TableCompiler.Instance.RefreshPetPlaceholder();
+                            TableCompiler.Instance.RecompileSpells();
+                            TableCompiler.Instance.RecompileTickers();
+                            r = true;
+                            break;
+
                         case "spells":
                             SpellsController.Instance.ClosePanels();
                             r = true;
