@@ -755,7 +755,7 @@ namespace ACT.SpecialSpellTimer.Models
         }
 #endif
 
-        private void RefreshCombatants()
+        public void RefreshCombatants()
         {
             var player = default(CombatantEx);
             var party = default(IEnumerable<CombatantEx>);
