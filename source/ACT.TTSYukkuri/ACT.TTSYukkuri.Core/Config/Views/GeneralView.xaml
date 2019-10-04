@@ -156,12 +156,19 @@
           CornerRadius="2"
           Padding="8">
           <StackPanel Orientation="Vertical">
-            <Label Content="{DynamicResource General_Test}" />
-            <StackPanel Orientation="Horizontal">
+            <Label Content="{DynamicResource General_Test}" Padding="0 2" />
+            <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
+              <ComboBox
+                Margin="0 0 5 0"
+                HorizontalAlignment="Left"
+                Width="100"
+                ItemsSource="{Binding Palettes, Mode=OneWay}"
+                SelectedItem="{Binding TestPlayPalette, Mode=TwoWay}" />
               <TextBox
                 x:Name="TestTextBox"
-                Width="540"
+                Width="430"
                 VerticalContentAlignment="Center"
+                HorizontalAlignment="Left"
                 Text="{DynamicResource General_TestTTS}" />
               <Border
                 BorderBrush="DarkGray"
@@ -327,7 +334,7 @@
         BorderThickness="2"
         BorderBrush="CornflowerBlue"
         CornerRadius="2"
-        Padding="8">
+        Padding="2">
         <Grid x:Name="ContentGrid" />
       </Border>
     </DockPanel>

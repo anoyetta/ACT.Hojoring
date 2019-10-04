@@ -59,7 +59,7 @@ namespace ACT.TTSYukkuri
             new ComboBoxItem("CeVIO Creative Studio", TTSType.Sasara),
             new ComboBoxItem("Open JTalk", TTSType.OpenJTalk),
             new ComboBoxItem("VOICEROID", TTSType.VOICEROID),
-            new ComboBoxItem("棒読みちゃん(TCPインターフェース)", TTSType.Boyomichan),
+            new ComboBoxItem("棒読みちゃん(RESTインターフェース)", TTSType.Boyomichan),
             new ComboBoxItem("SAPI5", TTSType.SAPI5),
             new ComboBoxItem("HOYA VoiceText Web API", TTSType.HOYA),
             new ComboBoxItem("Amazon Polly", TTSType.Polly),

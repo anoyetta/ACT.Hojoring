@@ -475,29 +475,35 @@ namespace FFXIV.Framework.WPF.Controls
             var figure = new PathFigure();
             figure.StartPoint = this.ComputeAngle(start);
 
-            for (double i = start + 1; i < end; i++)
+            var size = new Size(this.Radius, this.Radius);
+
+            var diff = end - start;
+            if (diff < 0)
             {
-                figure.Segments.Add(new ArcSegment()
-                {
-                    IsLargeArc = false,
-                    RotationAngle = 0,
-                    Size = new Size(this.Radius, this.Radius),
-                    Point = this.ComputeAngle(i),
-                    SweepDirection = SweepDirection.Clockwise,
-                });
+                diff += 360;
             }
 
-            if (Math.Floor(end) < end)
+            // 4分割で描画する
+            var step = diff / 4d;
+            var degree = start;
+
+            do
             {
+                degree += step;
+                if (degree > end)
+                {
+                    degree = end;
+                }
+
                 figure.Segments.Add(new ArcSegment()
                 {
+                    Point = this.ComputeAngle(degree),
+                    Size = size,
                     IsLargeArc = false,
                     RotationAngle = 0,
-                    Size = new Size(this.Radius, this.Radius),
-                    Point = this.ComputeAngle(end),
                     SweepDirection = SweepDirection.Clockwise,
                 });
-            }
+            } while (degree < end);
 
             this.Geometory.Figures.Add(figure);
 

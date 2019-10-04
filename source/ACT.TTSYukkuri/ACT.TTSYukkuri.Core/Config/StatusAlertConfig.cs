@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml.Serialization;
 using Prism.Mvvm;
+using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri.Config
 {
@@ -275,8 +276,55 @@ namespace ACT.TTSYukkuri.Config
             set => this.SetProperty(ref this.noticeDeviceForGP, value);
         }
 
+        private VoicePalettes noticeVoicePaletteForHP = FFXIV.Framework.Bridge.VoicePalettes.Default;
+
+        /// <summary>
+        /// HPの通知用設定
+        /// </summary>
+        public VoicePalettes NoticeVoicePaletteForHP
+        {
+            get => this.noticeVoicePaletteForHP;
+            set => this.SetProperty(ref this.noticeVoicePaletteForHP, value);
+        }
+
+        private VoicePalettes noticeVoicePaletteForMP = FFXIV.Framework.Bridge.VoicePalettes.Default;
+
+        /// <summary>
+        /// MPの通知用設定
+        /// </summary>
+        public VoicePalettes NoticeVoicePaletteForMP
+        {
+            get => this.noticeVoicePaletteForMP;
+            set => this.SetProperty(ref this.noticeVoicePaletteForMP, value);
+        }
+
+        private VoicePalettes noticeVoicePaletteForTP = FFXIV.Framework.Bridge.VoicePalettes.Default;
+
+        /// <summary>
+        /// TPの通知用設定
+        /// </summary>
+        public VoicePalettes NoticeVoicePaletteForTP
+        {
+            get => this.noticeVoicePaletteForTP;
+            set => this.SetProperty(ref this.noticeVoicePaletteForTP, value);
+        }
+
+        private VoicePalettes noticeVoicePaletteForGP = FFXIV.Framework.Bridge.VoicePalettes.Default;
+
+        /// <summary>
+        /// GPの通知用設定
+        /// </summary>
+        public VoicePalettes NoticeVoicePaletteForGP
+        {
+            get => this.noticeVoicePaletteForGP;
+            set => this.SetProperty(ref this.noticeVoicePaletteForGP, value);
+        }
+
         [XmlIgnore]
         public IEnumerable<PlayDevices> Devices => (IEnumerable<PlayDevices>)Enum.GetValues(typeof(PlayDevices));
+
+        [XmlIgnore]
+        public IEnumerable<VoicePalettes> Palettes => (IEnumerable<VoicePalettes>)Enum.GetValues(typeof(VoicePalettes));
 
         /// <summary>
         /// アラート対象に初期値をセットする

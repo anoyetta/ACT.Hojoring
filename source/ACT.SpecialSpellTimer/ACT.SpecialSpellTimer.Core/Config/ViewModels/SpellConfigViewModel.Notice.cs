@@ -118,10 +118,10 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
 
                 await Task.Delay(3 * 1000);
 
-                this.Model.Play("/sync 4 1番目に登録したシンク4通知です", config);
-                this.Model.Play("/sync 3 2番目に登録したシンク3通知です", config);
-                this.Model.Play("/sync 2 3番目に登録したシンク2通知です", config);
-                this.Model.Play("/sync 1 4番目に登録したシンク1通知です", config);
+                this.Model.Play("1番目に登録した通知です", config, true);
+                this.Model.Play("2番目に登録した通知です", config, true);
+                this.Model.Play("3番目に登録した通知です", config, true);
+                this.Model.Play("4番目に登録した通知です", config, true);
             }));
     }
 }

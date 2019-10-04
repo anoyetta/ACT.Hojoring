@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -26,6 +28,10 @@ namespace ACT.TTSYukkuri.Config.ViewModels
 
         public ComboBoxItem[] TTSTypes => TTSType.ToComboBox;
 
+        public IEnumerable<VoicePalettes> Palettes => (IEnumerable<VoicePalettes>)Enum.GetValues(typeof(VoicePalettes));
+
+        public VoicePalettes TestPlayPalette { get; set; } = VoicePalettes.Default;
+
         public dynamic[] Players =>
             WavePlayerTypes.WASAPI.GetAvailablePlayers()
             .Select(x => new
@@ -44,7 +50,7 @@ namespace ACT.TTSYukkuri.Config.ViewModels
                     return;
                 }
 
-                PlayBridge.Instance.Play(tts, false, Settings.Default.WaveVolume / 100f);
+                PlayBridge.Instance.Play(tts, TestPlayPalette, false, Settings.Default.WaveVolume / 100f);
             }));
 
         private ICommand openCacheFolderCommand;
@@ -87,6 +93,8 @@ namespace ACT.TTSYukkuri.Config.ViewModels
                         {
                             File.Delete(file);
                         }
+
+                        BufferedWavePlayer.Instance?.ClearBuffers();
                     });
 
                     MessageBox.Show(

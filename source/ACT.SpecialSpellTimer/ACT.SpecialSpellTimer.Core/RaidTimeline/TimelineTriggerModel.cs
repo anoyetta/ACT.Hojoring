@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Cache;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -327,6 +331,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.NoticeDevice = Enum.TryParse<NoticeDevices>(value, out var v) ? v : (NoticeDevices?)null;
         }
 
+        private double? noticeOffset = null;
+
+        [XmlIgnore]
+        public double? NoticeOffset
+        {
+            get => this.noticeOffset;
+            set => this.SetProperty(ref this.noticeOffset, value);
+        }
+
+        [XmlAttribute(AttributeName = "notice-o")]
+        public string NoticeOffsetXML
+        {
+            get => this.NoticeOffset?.ToString();
+            set => this.NoticeOffset = double.TryParse(value, out var v) ? v : (double?)null;
+        }
+
         private float? noticeVolume = null;
 
         [XmlIgnore]
@@ -384,6 +404,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             get => this.arguments;
             set => this.SetProperty(ref this.arguments, value);
+        }
+
+        private string json = null;
+
+        [XmlElement(ElementName = "json")]
+        public string Json
+        {
+            get => this.json;
+            set => this.SetProperty(ref this.json, value);
         }
 
         private bool? isExecuteHidden = null;
@@ -479,68 +508,178 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var path = this.ExecuteFileName;
 
-            Task.Run(() =>
+            Task.Run(async () =>
             {
-                try
+                if (!await this.CallRestAsync(path))
                 {
-                    var ps = new ProcessStartInfo()
-                    {
-                        WorkingDirectory = TimelineManager.Instance.TimelineDirectory,
-                    };
-
-                    var isHidden = this.IsExecuteHidden ?? false;
-                    var ext = Path.GetExtension(path).ToLower();
-
-                    switch (ext)
-                    {
-                        case ".ps1":
-                            ps.FileName = EnvironmentHelper.Pwsh;
-                            ps.Arguments = $@"-File ""{path}"" {this.Arguments}";
-                            ps.UseShellExecute = false;
-
-                            if (isHidden)
-                            {
-                                ps.WindowStyle = ProcessWindowStyle.Hidden;
-                                ps.CreateNoWindow = true;
-                            }
-                            break;
-
-                        case ".bat":
-                            ps.FileName = Environment.GetEnvironmentVariable("ComSpec");
-                            ps.Arguments = $@"/C ""{path}"" {this.Arguments}";
-                            ps.UseShellExecute = false;
-
-                            if (isHidden)
-                            {
-                                ps.WindowStyle = ProcessWindowStyle.Hidden;
-                                ps.CreateNoWindow = true;
-                            }
-                            break;
-
-                        default:
-                            ps.FileName = path;
-                            ps.Arguments = this.Arguments;
-                            ps.UseShellExecute = true;
-
-                            if (isHidden)
-                            {
-                                ps.WindowStyle = ProcessWindowStyle.Hidden;
-                            }
-                            break;
-                    }
-
-                    Process.Start(ps);
-
-                    TimelineController.RaiseLog(
-                        $"[TL] trigger executed. exec={this.ExecuteFileName}, args={this.Arguments}");
-                }
-                catch (Exception ex)
-                {
-                    AppLog.DefaultLogger.Error(
-                        ex,
-                        $"[TL] Error at execute external tool. exec={this.ExecuteFileName}, args={this.Arguments}");
+                    this.StartTool(path);
                 }
             });
+        }
+
+        private void StartTool(
+            string file)
+        {
+            try
+            {
+                var ps = new ProcessStartInfo()
+                {
+                    WorkingDirectory = TimelineManager.Instance.TimelineDirectory,
+                };
+
+                var isHidden = this.IsExecuteHidden ?? false;
+                var ext = Path.GetExtension(file).ToLower();
+
+                switch (ext)
+                {
+                    case ".ps1":
+                        ps.FileName = EnvironmentHelper.Pwsh;
+                        ps.Arguments = $@"-File ""{file}"" {this.Arguments}";
+                        ps.UseShellExecute = false;
+
+                        if (isHidden)
+                        {
+                            ps.WindowStyle = ProcessWindowStyle.Hidden;
+                            ps.CreateNoWindow = true;
+                        }
+                        break;
+
+                    case ".bat":
+                        ps.FileName = Environment.GetEnvironmentVariable("ComSpec");
+                        ps.Arguments = $@"/C ""{file}"" {this.Arguments}";
+                        ps.UseShellExecute = false;
+
+                        if (isHidden)
+                        {
+                            ps.WindowStyle = ProcessWindowStyle.Hidden;
+                            ps.CreateNoWindow = true;
+                        }
+                        break;
+
+                    default:
+                        ps.FileName = file;
+                        ps.Arguments = this.Arguments;
+                        ps.UseShellExecute = true;
+
+                        if (isHidden)
+                        {
+                            ps.WindowStyle = ProcessWindowStyle.Hidden;
+                        }
+                        break;
+                }
+
+                Process.Start(ps);
+
+                TimelineController.RaiseLog(
+                    $"[TL] trigger executed. exec={this.ExecuteFileName}, args={this.Arguments}");
+            }
+            catch (Exception ex)
+            {
+                AppLog.DefaultLogger.Error(
+                    ex,
+                    $"[TL] Error at execute external tool. exec={this.ExecuteFileName}, args={this.Arguments}");
+            }
+        }
+
+        private static readonly Regex UriRegex = new Regex(
+            @"(?<method>GET|POST|PUT|DELETE)?\s*(?<uri>https?://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#\[\]]+)$",
+            RegexOptions.Compiled |
+            RegexOptions.IgnoreCase);
+
+        private static readonly Lazy<HttpClient> LazyRESTClient = new Lazy<HttpClient>(() =>
+        {
+            ServicePointManager.DefaultConnectionLimit = 32;
+            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls11;
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+
+            var client = new HttpClient(new WebRequestHandler()
+            {
+                CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore),
+            });
+
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Hojoring/1.0");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+            client.Timeout = TimeSpan.FromSeconds(10);
+
+            return client;
+        });
+
+        private async Task<bool> CallRestAsync(
+            string endpoint)
+        {
+            var uri = string.Empty;
+            var method = string.Empty;
+
+            try
+            {
+                var match = UriRegex.Match(endpoint);
+
+                if (!match.Success)
+                {
+                    return false;
+                }
+
+                uri = match.Groups["uri"]?.Value;
+                method = match.Groups["method"]?.Value;
+                var json = this.Json;
+
+                if (string.IsNullOrEmpty(method))
+                {
+                    method = "GET";
+                }
+
+                if (string.IsNullOrEmpty(json))
+                {
+                    json = "{}";
+                }
+
+                var placeholders = TimelineManager.Instance.GetPlaceholders();
+                foreach (var p in placeholders)
+                {
+                    uri = uri.Replace(
+                        p.Placeholder,
+                        Uri.EscapeUriString(p.ReplaceString));
+
+                    json = json.Replace(
+                        p.Placeholder,
+                        p.ReplaceString);
+                }
+
+                var client = LazyRESTClient.Value;
+                var response = method.ToUpper() switch
+                {
+                    "GET" => await client.GetAsync(uri),
+                    "POST" => await client.PostAsJsonAsync(uri, json),
+                    "PUT" => await client.PutAsJsonAsync(uri, json),
+                    "DELETE" => await client.DeleteAsync(uri),
+                    _ => await client.GetAsync(uri),
+                };
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TimelineController.RaiseLog(
+                        $"[TL] trigger call REST API. {uri} {method}");
+                }
+                else
+                {
+                    TimelineController.RaiseLog(
+                        $"[TL] Error at call REST API. {uri} {method} status={(int)response.StatusCode}:{response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                TimelineController.RaiseLog(
+                    $"[TL] Error at call REST API. {uri} {method} message={ex.Message}");
+
+                AppLog.DefaultLogger.Error(
+                    ex,
+                    $"[TL] Error at call REST API. {uri} {method}");
+            }
+
+            return true;
         }
 
         public TimelineTriggerModel Clone()

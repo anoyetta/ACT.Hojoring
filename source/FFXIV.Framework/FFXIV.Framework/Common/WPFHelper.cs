@@ -2,6 +2,8 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Threading;
 using FFXIV.Framework.WPF.Views;
 using NLog;
@@ -49,6 +51,9 @@ namespace FFXIV.Framework.Common
 
                     // UnhandledException のイベントハンドラを設定する
                     Application.Current.DispatcherUnhandledException += OnDispatcherUnhandledException;
+
+                    // WPFにおけるハードウェアアクセラレータを無効にする
+                    RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
                 }
             }
         }

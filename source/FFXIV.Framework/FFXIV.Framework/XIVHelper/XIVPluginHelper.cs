@@ -445,12 +445,17 @@ namespace FFXIV.Framework.XIVHelper
             var type = (LogMessageType)Enum.ToObject(typeof(LogMessageType), messagetype);
             switch (type)
             {
-                case LogMessageType.NetworkDoT:
-                    return;
-
                 case LogMessageType.LogLine:
                     // ダメージ系をカットする
                     if (DamageLogPattern.IsMatch(parsedLog))
+                    {
+                        return;
+                    }
+
+                    break;
+
+                default:
+                    if (Config.Instance.IsFilterdLog(type))
                     {
                         return;
                     }

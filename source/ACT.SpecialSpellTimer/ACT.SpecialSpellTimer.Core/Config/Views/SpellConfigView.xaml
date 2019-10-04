@@ -178,16 +178,25 @@
             <!-- Use Regex -->
             <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_UserRegex}" IsChecked="{Binding Model.RegexEnabled}" />
 
-            <!-- Recast Time -->
-            <StackPanel Orientation="Horizontal" Margin="0 15 0 0">
-              <Label Content="{DynamicResource Spell_RecastTime}" VerticalAlignment="Center" Margin="0 0 10 0" />
-              <xctk:DoubleUpDown Value="{Binding Model.RecastTime, Mode=TwoWay}" FormatString="F2" MinWidth="90" Increment="1" />
-              <Label Content="{DynamicResource Spell_Secounds}" VerticalAlignment="Center" Margin="5 0 0 0" />
+            <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+              <!-- Recast Time -->
+              <StackPanel Orientation="Horizontal">
+                <Label Content="{DynamicResource Spell_RecastTime}" VerticalAlignment="Center" Margin="0 0 5 0" />
+                <xctk:DoubleUpDown Value="{Binding Model.RecastTime, Mode=TwoWay}" FormatString="F2" MinWidth="90" Increment="1" />
+                <Label Content="{DynamicResource Spell_Secounds}" VerticalAlignment="Center" Margin="5 0 0 0" />
+              </StackPanel>
+
+              <!-- Delay to show -->
+              <StackPanel Orientation="Horizontal" Margin="20 0 0 0">
+                <Label Content="{DynamicResource Spell_DelayToShow}" VerticalAlignment="Center" Margin="0 0 5 0" />
+                <xctk:DoubleUpDown Value="{Binding Model.DelayToShow, Mode=TwoWay}" FormatString="F2" MinWidth="90" Increment="1" />
+                <Label Content="{DynamicResource Spell_Secounds}" VerticalAlignment="Center" Margin="5 0 0 0" />
+              </StackPanel>
             </StackPanel>
 
             <!-- Recast Time from HotbarInfo -->
             <StackPanel Visibility="{Binding FFXIVReader.IsAvailable, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
-              <CheckBox Content="{DynamicResource Spell_UseHotbrRecastTime}" IsChecked="{Binding Model.UseHotbarRecastTime, Mode=TwoWay}" Margin="0 15 0 0" />
+              <CheckBox Content="{DynamicResource Spell_UseHotbrRecastTime}" IsChecked="{Binding Model.UseHotbarRecastTime, Mode=TwoWay}" Margin="0 10 0 0" />
               <Label Content="{DynamicResource Spell_HotbarItemName}" VerticalAlignment="Center" Margin="0 5 0 0" HorizontalAlignment="Left" Visibility="{Binding Model.UseHotbarRecastTime, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
               <TextBox Text="{Binding Model.HotbarName, Mode=TwoWay}" Width="300" Margin="0 2 0 0" HorizontalAlignment="Left"  Visibility="{Binding Model.UseHotbarRecastTime, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
             </StackPanel>
@@ -388,6 +397,59 @@
               </Grid>
             </Expander>
             <!--Party Compositionフィルタ end -->
+
+            <!-- Expressionフィルタ start -->
+            <Expander Margin="0 10 0 0" Expanded="FilterExpander_Expanded">
+              <Expander.Header>
+                <StackPanel Orientation="Horizontal">
+                  <Label Content="{DynamicResource Trigger_ExpressionFilter}" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+                  <Label Margin="20 0 0 0" Content="filtered!" FontSize="14" VerticalAlignment="Center" VerticalContentAlignment="Center" Foreground="Crimson" FontStyle="Italic" FontWeight="Black" Visibility="{Binding IsExpressionFiltered, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+                </StackPanel>
+              </Expander.Header>
+              <Grid
+                Margin="10 10 0 0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="24" />
+                  <RowDefinition Height="33" />
+                  <RowDefinition Height="33" />
+                  <RowDefinition Height="33" />
+                  <RowDefinition Height="33" />
+                  <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="1" Margin="2 0 0 0" Content="Target" />
+                <Label Grid.Row="0" Grid.Column="2" Margin="7 0 0 0" Content="Regex" />
+
+                <Label Grid.Row="1" Grid.Column="0" Content="1" VerticalAlignment="Center" Margin="0 0 5 0" />
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Model.ExpressionFilters[0].Target, Mode=TwoWay}" Width="320" />
+                <TextBox Grid.Row="1" Grid.Column="2" Margin="5 0 0 0" Text="{Binding Model.ExpressionFilters[0].Pattern, Mode=TwoWay}" Width="320" />
+
+                <Label Grid.Row="2" Grid.Column="0" Content="2" VerticalAlignment="Center" Margin="0 0 5 0" />
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Model.ExpressionFilters[1].Target, Mode=TwoWay}" Width="320" />
+                <TextBox Grid.Row="2" Grid.Column="2" Margin="5 0 0 0" Text="{Binding Model.ExpressionFilters[1].Pattern, Mode=TwoWay}" Width="320" />
+
+                <Label Grid.Row="3" Grid.Column="0" Content="3" VerticalAlignment="Center" Margin="0 0 5 0" />
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Model.ExpressionFilters[2].Target, Mode=TwoWay}" Width="320" />
+                <TextBox Grid.Row="3" Grid.Column="2" Margin="5 0 0 0" Text="{Binding Model.ExpressionFilters[2].Pattern, Mode=TwoWay}" Width="320" />
+
+                <Label Grid.Row="4" Grid.Column="0" Content="4" VerticalAlignment="Center" Margin="0 0 5 0" />
+                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Model.ExpressionFilters[3].Target, Mode=TwoWay}" Width="320" />
+                <TextBox Grid.Row="4" Grid.Column="2" Margin="5 0 0 0" Text="{Binding Model.ExpressionFilters[3].Pattern, Mode=TwoWay}" Width="320" />
+
+                <TextBlock
+                  Grid.Row="5"
+                  Grid.ColumnSpan="3"
+                  Margin="15 5 0 0"
+                  FontSize="14"
+                  Text="{DynamicResource Trigger_ExpressionFilterExample}" />
+              </Grid>
+            </Expander>
+            <!-- Expressionフィルタ end -->
 
             <!-- Zoneフィルタ start -->
             <Expander Margin="0 10 0 0" Expanded="FilterExpander_Expanded">
@@ -736,6 +798,16 @@
               <!-- その他 -->
               <Label Margin="0 20 0 0" Content="{DynamicResource Common_Misc}" FontSize="20" FontWeight="Bold" />
               <StackPanel Margin="10 0 0 0">
+                <StackPanel
+                  Margin="0 5 0 0"
+                  Visibility="{Binding Model.IsCircleStyle, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+                  <TextBlock Text="{DynamicResource Spell_TitleVAlignment}" />
+                  <ComboBox
+                    HorizontalAlignment="Left"
+                    Width="110"
+                    ItemsSource="{Binding TitleVerticalAlignments, Mode=OneWay}"
+                    SelectedItem="{Binding Model.TitleVerticalAlignmentInCircle, Mode=TwoWay}" />
+                </StackPanel>
                 <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_HideSpellName}" IsChecked="{Binding Model.HideSpellName, Mode=TwoWay}" />
                 <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_HideCounter}" IsChecked="{Binding Model.HideCounter, Mode=TwoWay}" />
                 <DockPanel
@@ -743,6 +815,7 @@
                   <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_IsCounterToCenter}" IsChecked="{Binding Model.IsCounterToCenter, Mode=TwoWay}" Visibility="{Binding Model.OverlapRecastTime, Mode=OneWay, Converter={StaticResource VisibilityNegativeConverter}}" />
                 </DockPanel>
                 <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_DontHide}" IsChecked="{Binding Model.DontHide, Mode=TwoWay}" />
+                <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_HideInNotCombat}" IsChecked="{Binding Model.IsHideInNotCombat, Mode=TwoWay}" />
                 <CheckBox Margin="0 5 0 0" Content="{DynamicResource Common_VisibleSpell}" IsChecked="{Binding Model.ProgressBarVisible, Mode=TwoWay}" ToolTip="{DynamicResource Common_VisibleSpellDiscription}" />
               </StackPanel>
             </StackPanel>
@@ -794,6 +867,10 @@
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToMainPlaybackDevice}" IsChecked="{Binding Model.MatchAdvancedConfig.ToMainDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToSubPlaybackDevice}" IsChecked="{Binding Model.MatchAdvancedConfig.ToSubDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToDicordTextChannel}" IsChecked="{Binding Model.MatchAdvancedConfig.ToDicordTextChat, Mode=TwoWay}" />
+                      <StackPanel Margin="0 5 0 0" Orientation="Horizontal">
+                        <Label VerticalAlignment="Center" Margin="0 2 5 0" Content="{DynamicResource Spell_PlayPalette}" />
+                        <ComboBox Width="100" ItemsSource="{Binding Model.MatchAdvancedConfig.Palettes, Mode=OneWay}" SelectedItem="{Binding Model.MatchAdvancedConfig.Palette, Mode=TwoWay}" />
+                      </StackPanel>
                     </StackPanel>
                   </StackPanel>
                 </StackPanel>
@@ -831,6 +908,10 @@
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToMainPlaybackDevice}" IsChecked="{Binding Model.OverAdvancedConfig.ToMainDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToSubPlaybackDevice}" IsChecked="{Binding Model.OverAdvancedConfig.ToSubDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToDicordTextChannel}" IsChecked="{Binding Model.OverAdvancedConfig.ToDicordTextChat, Mode=TwoWay}" />
+                      <StackPanel Margin="0 5 0 0" Orientation="Horizontal">
+                        <Label VerticalAlignment="Center" Margin="0 0 5 0" Content="{DynamicResource Spell_PlayPalette}" />
+                        <ComboBox Width="100" ItemsSource="{Binding Model.OverAdvancedConfig.Palettes, Mode=OneWay}" SelectedItem="{Binding Model.OverAdvancedConfig.Palette, Mode=TwoWay}" />
+                      </StackPanel>
                     </StackPanel>
                   </StackPanel>
                 </StackPanel>
@@ -868,6 +949,10 @@
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToMainPlaybackDevice}" IsChecked="{Binding Model.BeforeAdvancedConfig.ToMainDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToSubPlaybackDevice}" IsChecked="{Binding Model.BeforeAdvancedConfig.ToSubDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToDicordTextChannel}" IsChecked="{Binding Model.BeforeAdvancedConfig.ToDicordTextChat, Mode=TwoWay}" />
+                      <StackPanel Margin="0 5 0 0" Orientation="Horizontal">
+                        <Label VerticalAlignment="Center" Margin="0 0 5 0" Content="{DynamicResource Spell_PlayPalette}" />
+                        <ComboBox Width="100" ItemsSource="{Binding Model.BeforeAdvancedConfig.Palettes, Mode=OneWay}" SelectedItem="{Binding Model.BeforeAdvancedConfig.Palette, Mode=TwoWay}" />
+                      </StackPanel>
                     </StackPanel>
                   </StackPanel>
                 </StackPanel>
@@ -901,6 +986,10 @@
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToMainPlaybackDevice}" IsChecked="{Binding Model.TimeupAdvancedConfig.ToMainDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToSubPlaybackDevice}" IsChecked="{Binding Model.TimeupAdvancedConfig.ToSubDevice, Mode=TwoWay}" />
                       <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ToDicordTextChannel}" IsChecked="{Binding Model.TimeupAdvancedConfig.ToDicordTextChat, Mode=TwoWay}" />
+                      <StackPanel Margin="0 5 0 0" Orientation="Horizontal">
+                        <Label VerticalAlignment="Center" Margin="0 0 5 0" Content="{DynamicResource Spell_PlayPalette}" />
+                        <ComboBox Width="100" ItemsSource="{Binding Model.TimeupAdvancedConfig.Palettes, Mode=OneWay}" SelectedItem="{Binding Model.TimeupAdvancedConfig.Palette, Mode=TwoWay}" />
+                      </StackPanel>
                     </StackPanel>
                   </StackPanel>
                 </StackPanel>

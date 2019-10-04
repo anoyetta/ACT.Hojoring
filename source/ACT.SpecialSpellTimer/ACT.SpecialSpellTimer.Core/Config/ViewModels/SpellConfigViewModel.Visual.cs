@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -137,6 +139,10 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
                 }));
 
         #endregion Change Colors
+
+        public IEnumerable<VerticalAlignment> TitleVerticalAlignments => Enum.GetValues(typeof(VerticalAlignment))
+            .Cast<VerticalAlignment>()
+            .Where(x => x != VerticalAlignment.Stretch);
 
         private ICommand selectIconCommand;
 

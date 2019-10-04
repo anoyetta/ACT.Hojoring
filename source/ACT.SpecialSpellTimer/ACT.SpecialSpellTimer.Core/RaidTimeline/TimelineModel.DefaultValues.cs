@@ -28,6 +28,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.Trigger, "SyncCount", 0),
             NewDefault(TimelineElementTypes.Trigger, "SyncInterval", 0),
             NewDefault(TimelineElementTypes.Trigger, "NoticeDevice", NoticeDevices.Both),
+            NewDefault(TimelineElementTypes.Trigger, "NoticeOffset", 0),
             NewDefault(TimelineElementTypes.Trigger, "NoticeSync", false),
             NewDefault(TimelineElementTypes.Trigger, "IsExecuteHidden", false),
 
@@ -42,6 +43,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.VisualNotice, "Text", TimelineVisualNoticeModel.ParentTextPlaceholder),
             NewDefault(TimelineElementTypes.VisualNotice, "Duration", 3d),
             NewDefault(TimelineElementTypes.VisualNotice, "DurationVisible", true),
+            NewDefault(TimelineElementTypes.VisualNotice, "Delay", 0d),
             NewDefault(TimelineElementTypes.VisualNotice, "StackVisible", false),
             NewDefault(TimelineElementTypes.VisualNotice, "Order", 0),
             NewDefault(TimelineElementTypes.VisualNotice, "IsJobIcon", false),
@@ -49,6 +51,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // ImageNotice
             NewDefault(TimelineElementTypes.ImageNotice, "Enabled", true),
             NewDefault(TimelineElementTypes.ImageNotice, "Duration", 5d),
+            NewDefault(TimelineElementTypes.ImageNotice, "Delay", 0d),
             NewDefault(TimelineElementTypes.ImageNotice, "Scale", 1.0d),
             NewDefault(TimelineElementTypes.ImageNotice, "Left", -1d),
             NewDefault(TimelineElementTypes.ImageNotice, "Top", -1d),
@@ -82,7 +85,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var defaults = this.Defaults.Union(SuperDefaultValues)
                 .Where(x => (x.Enabled ?? true));
 
-            this.Walk((element) => setDefaultValuesToElement(element));
+            this.Walk((element) =>
+            {
+                inheritsElement(element);
+                setDefaultValuesToElement(element);
+                return false;
+            });
 
             void setDefaultValuesToElement(TimelineBase element)
             {
@@ -132,6 +140,53 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 catch (Exception ex)
                 {
                     Logger.Write("[TL] Load default values error.", ex);
+                }
+            }
+
+            void inheritsElement(TimelineBase element)
+            {
+                if (string.IsNullOrEmpty(element.Inherits))
+                {
+                    return;
+                }
+
+                var super = default(TimelineBase);
+                this.Walk(x =>
+                {
+                    if (x.Enabled.GetValueOrDefault() &&
+                        x.TimelineType == element.TimelineType &&
+                        string.Equals(x.Name, element.Name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        super = x;
+                        return true;
+                    }
+
+                    return false;
+                });
+
+                if (super == null)
+                {
+                    return;
+                }
+
+                var properties = super.GetType().GetProperties(
+                    BindingFlags.Instance |
+                    BindingFlags.Public |
+                    BindingFlags.NonPublic);
+
+                foreach (var pi in properties)
+                {
+                    var superValue = pi.GetValue(super);
+                    if (superValue == null)
+                    {
+                        continue;
+                    }
+
+                    var targetValue = pi.GetValue(element);
+                    if (targetValue == null)
+                    {
+                        pi.SetValue(element, superValue);
+                    }
                 }
             }
         }

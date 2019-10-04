@@ -5,12 +5,46 @@ using ACT.TTSYukkuri.SAPI5;
 using Amazon;
 using Amazon.Polly;
 using Prism.Mvvm;
+using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri.Config.ViewModels
 {
+
     public class PollyConfigViewModel : BindableBase
     {
-        public PollyConfigs Config => Settings.Default.PollySettings;
+        VoicePalettes VoicePalette { get; set; }
+
+        public PollyConfigViewModel(VoicePalettes voicePalette = VoicePalettes.Default)
+        {
+            this.VoicePalette = voicePalette;
+        }
+
+        public PollyConfigs Config
+        {
+            get
+            {
+                PollyConfigs config;
+                switch (VoicePalette)
+                {
+                    case VoicePalettes.Default:
+                        config = Settings.Default.PollySettings;
+                        break;
+                    case VoicePalettes.Ext1:
+                        config = Settings.Default.PollySettingsExt1;
+                        break;
+                    case VoicePalettes.Ext2:
+                        config = Settings.Default.PollySettingsExt2;
+                        break;
+                    case VoicePalettes.Ext3:
+                        config = Settings.Default.PollySettingsExt3;
+                        break;
+                    default:
+                        config = Settings.Default.PollySettings;
+                        break;
+                }
+                return config;
+            }
+        }
 
         public IEnumerable<dynamic> Regions =>
             RegionEndpoint.EnumerableAllRegions

@@ -418,6 +418,22 @@ namespace ACT.SpecialSpellTimer.Models
 
         public Guid[] TimersMustStoppingForStart { get; set; } = new Guid[0];
 
+        private ExpressionFilter[] expressionFilters = new ExpressionFilter[]
+        {
+            new ExpressionFilter(),
+            new ExpressionFilter(),
+            new ExpressionFilter(),
+            new ExpressionFilter(),
+        };
+
+        [XmlArray("ExpressionFilter")]
+        [XmlArrayItem("expression")]
+        public ExpressionFilter[] ExpressionFilters
+        {
+            get => this.expressionFilters;
+            set => this.SetProperty(ref this.expressionFilters, value);
+        }
+
         #endregion Filters & Conditions
 
         #region Sequential TTS
@@ -427,8 +443,8 @@ namespace ACT.SpecialSpellTimer.Models
         /// </summary>
         public bool IsSequentialTTS { get; set; } = false;
 
-        public void Play(string tts, AdvancedNoticeConfig config)
-            => Spell.PlayCore(tts, this.IsSequentialTTS, config, this);
+        public void Play(string tts, AdvancedNoticeConfig config, bool forceSync = false)
+            => Spell.PlayCore(tts, this.IsSequentialTTS | forceSync, config, this);
 
         #endregion Sequential TTS
 

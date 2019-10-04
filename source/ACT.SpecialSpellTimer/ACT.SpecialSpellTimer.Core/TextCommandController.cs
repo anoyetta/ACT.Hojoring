@@ -153,6 +153,9 @@ namespace ACT.SpecialSpellTimer
                                     windowname.Trim().ToLower() == "all")
                                 {
                                     spell.Enabled = value;
+                                    TableCompiler.Instance.RecompileSpells();
+
+                                    r = true;
                                 }
                             }
 
@@ -165,6 +168,9 @@ namespace ACT.SpecialSpellTimer
                                     windowname.Trim().ToLower() == "all")
                                 {
                                     telop.Enabled = value;
+                                    TableCompiler.Instance.RecompileTickers();
+
+                                    r = true;
                                 }
                             }
 

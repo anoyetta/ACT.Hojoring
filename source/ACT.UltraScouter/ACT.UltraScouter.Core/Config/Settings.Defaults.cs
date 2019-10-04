@@ -647,6 +647,7 @@ namespace ACT.UltraScouter.Config
                     LinkOutlineColor = true,
                     OutlineColor = DefaultColorStroke,
                 },
+                TargetJobs = DefaultMPOverlayTargetJobs,
             }},
 
             { nameof(Settings.MPTicker), new MPTicker()
@@ -777,12 +778,14 @@ namespace ACT.UltraScouter.Config
             get
             {
                 var jobs = new List<JobAvailablity>();
-                foreach (var job in Jobs.SortedList.Where(x =>
-                    x.Role == Roles.Tank ||
-                    x.Role == Roles.Healer ||
-                    x.Role == Roles.MeleeDPS ||
-                    x.Role == Roles.RangeDPS ||
-                    x.Role == Roles.MagicDPS))
+                foreach (var job in Jobs.SortedList
+                    .Where(x => x.IsPopular)
+                    .Where(x =>
+                        x.Role == Roles.Tank ||
+                        x.Role == Roles.Healer ||
+                        x.Role == Roles.MeleeDPS ||
+                        x.Role == Roles.RangeDPS ||
+                        x.Role == Roles.MagicDPS))
                 {
                     var entry = new JobAvailablity()
                     {
@@ -790,6 +793,32 @@ namespace ACT.UltraScouter.Config
                         Available =
                             job.ID == JobIDs.THM ||
                             job.ID == JobIDs.BLM,
+                    };
+
+                    jobs.Add(entry);
+                }
+
+                return new ObservableCollection<JobAvailablity>(jobs);
+            }
+        }
+
+        internal static ObservableCollection<JobAvailablity> DefaultMPOverlayTargetJobs
+        {
+            get
+            {
+                var jobs = new List<JobAvailablity>();
+                foreach (var job in Jobs.SortedList
+                    .Where(x => x.IsPopular)
+                    .Where(x =>
+                        x.Role == Roles.Tank ||
+                        x.Role == Roles.Healer ||
+                        x.Role == Roles.MeleeDPS ||
+                        x.Role == Roles.RangeDPS ||
+                        x.Role == Roles.MagicDPS))
+                {
+                    var entry = new JobAvailablity()
+                    {
+                        Job = job.ID,
                     };
 
                     jobs.Add(entry);

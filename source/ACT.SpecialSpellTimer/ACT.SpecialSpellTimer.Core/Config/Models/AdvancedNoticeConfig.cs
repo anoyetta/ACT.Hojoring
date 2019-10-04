@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Sound;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using Prism.Mvvm;
 
@@ -28,10 +29,15 @@ namespace ACT.SpecialSpellTimer.Config.Models
 
         private static System.Timers.Timer timer = new System.Timers.Timer(5 * 1000);
 
-        public static bool AvailableTTSYukkuri { get; private set; } = false;
+        public static bool AvailableTTSYukkuri { get; private set; } = WPFHelper.IsDesignMode;
 
         static AdvancedNoticeConfig()
         {
+            if (WPFHelper.IsDesignMode)
+            {
+                return;
+            }
+
             timer.Elapsed += (x, y) =>
                 AvailableTTSYukkuri = PlayBridge.Instance.IsAvailable;
 
@@ -75,9 +81,14 @@ namespace ACT.SpecialSpellTimer.Config.Models
             set => this.SetProperty(ref this.toDicordTextChat, value);
         }
 
+        [XmlIgnore]
+        public IEnumerable<VoicePalettes> Palettes => (IEnumerable<VoicePalettes>)Enum.GetValues(typeof(VoicePalettes));
+
+        public VoicePalettes Palette { get; set; } = VoicePalettes.Default;
+
         public void PlayWave(string wave) => PlayWaveCore(wave, this);
 
-        public void Speak(string tts) => SyncSpeak(tts, this);
+        public void Speak(string tts, bool sync = false, int priority = 0) => SyncSpeak(tts, this, sync, priority);
 
         public const string SyncKeyword = "/sync";
 
@@ -146,12 +157,12 @@ namespace ACT.SpecialSpellTimer.Config.Models
 
             if (config.ToMainDevice)
             {
-                PlayBridge.Instance.PlayMain(wave, isSync);
+                PlayBridge.Instance.PlayMain(wave, config.Palette, isSync);
             }
 
             if (config.ToSubDevice)
             {
-                PlayBridge.Instance.PlaySub(wave, isSync);
+                PlayBridge.Instance.PlaySub(wave, config.Palette, isSync);
             }
         }
 
@@ -183,12 +194,12 @@ namespace ACT.SpecialSpellTimer.Config.Models
 
             if (config.ToMainDevice)
             {
-                PlayBridge.Instance.PlayMain(tts, isSync);
+                PlayBridge.Instance.PlayMain(tts, config.Palette, isSync);
             }
 
             if (config.ToSubDevice)
             {
-                PlayBridge.Instance.PlaySub(tts, isSync);
+                PlayBridge.Instance.PlaySub(tts, config.Palette, isSync);
             }
 
             if (config.ToDicordTextChat)
@@ -199,50 +210,27 @@ namespace ACT.SpecialSpellTimer.Config.Models
 
         private static void SyncSpeak(
             string tts,
-            AdvancedNoticeConfig config)
+            AdvancedNoticeConfig config,
+            bool sync = false,
+            int priority = 0)
         {
             if (string.IsNullOrEmpty(tts))
             {
                 return;
             }
 
-            // シンクロTTSじゃない？
-            if (!tts.Contains(SyncKeyword))
+            if (!sync)
             {
                 SpeakCore(tts, config);
-                return;
-            }
-
-            var match = SyncRegex.Match(tts);
-            if (!match.Success)
-            {
-                // シンクロTTSじゃない
-                SpeakCore(tts, config);
-                return;
-            }
-
-            var value = string.Empty;
-            value = match.Groups["priority"].Value;
-
-            double priority;
-            if (!double.TryParse(value, out priority))
-            {
-                SpeakCore(tts, config);
-                return;
-            }
-
-            var speakText = match.Groups["text"].Value;
-            if (string.IsNullOrEmpty(speakText))
-            {
                 return;
             }
 
             if (!PlayBridge.Instance.IsSyncAvailable)
             {
                 var period = Settings.Default.UILocale == Locales.JA ? "、" : ",";
-                if (speakText.EndsWith(period))
+                if (tts.EndsWith(period))
                 {
-                    speakText += period;
+                    tts += period;
                 }
             }
 
@@ -250,7 +238,7 @@ namespace ACT.SpecialSpellTimer.Config.Models
             {
                 var interval = Settings.Default.WaitingTimeToSyncTTS / 4d;
 
-                SyncList.Add(new SyncTTS(SyncList.Count, priority, speakText, config));
+                SyncList.Add(new SyncTTS(SyncList.Count, priority, tts, config));
                 SyncListTimestamp = DateTime.Now;
                 SyncListCount = SyncList.Count;
 

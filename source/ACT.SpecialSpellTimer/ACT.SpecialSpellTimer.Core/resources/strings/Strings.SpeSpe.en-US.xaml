@@ -72,6 +72,9 @@
   <system:String x:Key="Trigger_PartyJobFilter">Party Job Filter</system:String>
   <system:String x:Key="Trigger_PartyCompositionFilter">Party Composition Filter</system:String>
   <system:String x:Key="Trigger_ZoneFilter">Zone filter</system:String>
+  <system:String x:Key="Trigger_ExpressionFilter">Expression Filter</system:String>
+  <system:String x:Key="Trigger_ExpressionFilterExample" xml:space="preserve">ex. Target:&lt;HEALER1&gt;, Regex:&lt;me&gt; ...
+This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Trigger_Preconditions">Precondition</system:String>
   <system:String x:Key="Trigger_ClearFilter">Clear filter</system:String>
   <system:String x:Key="Trigger_ForMustStartRunningSpell">⚪ Must running spells</system:String>
@@ -107,6 +110,7 @@
   <system:String x:Key="Spell_TextToMatch">Keyword to show</system:String>
   <system:String x:Key="Spell_UserRegex">Use Regex</system:String>
   <system:String x:Key="Spell_RecastTime">Recast time</system:String>
+  <system:String x:Key="Spell_DelayToShow">Delay to show</system:String>
   <system:String x:Key="Spell_UseHotbrRecastTime">Use Hotbar Recast Time</system:String>
   <system:String x:Key="Spell_HotbarItemName">Name of Hotbar Item</system:String>
   <system:String x:Key="Spell_TextToExtend">Keyword to extend</system:String>
@@ -121,6 +125,8 @@
   <system:String x:Key="Spell_BlinkIcon">Blink icon</system:String>
   <system:String x:Key="Spell_BlinkBar">Blink progress bar</system:String>
   <system:String x:Key="Spell_HideCounter">Hide recast time</system:String>
+  <system:String x:Key="Spell_TitleVAlignment">Spell name vertical alignment</system:String>
+  <system:String x:Key="Spell_HideInNotCombat">Hide in not combat</system:String>
   <system:String x:Key="Spell_NotResetAtWipeout">Don't reset at Wipeout</system:String>
   <system:String x:Key="Spell_NoticeOnMatch">Notice when log matches</system:String>
   <system:String x:Key="Spell_NoticeOnOver">Notice when log matches, after N seconds</system:String>
@@ -134,6 +140,7 @@
   <system:String x:Key="Spell_NoticeOnBeforeThisScounds">seconds, Before notify</system:String>
   <system:String x:Key="Spell_UseSequencialTTS">Speak TTS synchronously (Disable simultaneous speak)</system:String>
   <system:String x:Key="Spell_TestSequencialTTS">Test Sync. TTS</system:String>
+  <system:String x:Key="Spell_PlayPalette">Voice config to Notify</system:String>
 
   <system:String x:Key="Ticker_Name">Ticker name</system:String>
   <system:String x:Key="Ticker_Message">Message to display on ticker</system:String>
@@ -154,6 +161,7 @@
 
   <system:String x:Key="Options_Visual">Visual</system:String>
   <system:String x:Key="Options_Trigger">Triggers</system:String>
+  <system:String x:Key="Options_LogFilter">Log Filter</system:String>
   <system:String x:Key="Options_Log">Log</system:String>
   <system:String x:Key="Options_TTSDictionary">TTS Dictionary</system:String>
 
@@ -191,7 +199,7 @@
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">To complement unknown skill</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">Ignore Damage and Heal log</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">Ignore 15: or 16: Detail log</system:String>
-  <system:String x:Key="Options_EnabledAutoIgnore">Auto filter the 15: or 16: logs when there are many people</system:String>
+  <system:String x:Key="Options_EnabledAutoIgnore">Auto filter detail logs when there are many people</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">Detect FC:Packet dump (not recommend)</system:String>
   <system:String x:Key="Options_ReadyText">Text to display at the completion of the forward direction timer (default: "Ready")</system:String>
   <system:String x:Key="Options_OverText">Text to display at the completion of the back direction timer (default: "Over")</system:String>
@@ -248,6 +256,7 @@
   <system:String x:Key="Timeline_ThisIsOrigin">This record is Origin</system:String>
   <system:String x:Key="Timeline_ImportCombatLog">Import CombatLog</system:String>
 
+  <system:String x:Key="Timeline_Mute">Mute</system:String>
   <system:String x:Key="Timeline_Location">Location - Timeline</system:String>
   <system:String x:Key="Timeline_LocationNotice">Location - Notice</system:String>
   <system:String x:Key="Timeline_ShowDummyTimeline">Show dummy overlay for Design</system:String>

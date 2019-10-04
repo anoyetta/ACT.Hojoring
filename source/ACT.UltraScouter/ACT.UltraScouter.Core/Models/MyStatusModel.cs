@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ACT.UltraScouter.Config;
 using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
@@ -31,6 +32,8 @@ namespace ACT.UltraScouter.Models
 
         public uint MaxMP => 10000;
 
+        public bool IsAvailableMPView { get; private set; }
+
         public void Update(
             CombatantEx me)
         {
@@ -52,10 +55,13 @@ namespace ACT.UltraScouter.Models
                 isHPChanged = true;
             }
 
-            if (this.CurrentMP != me.CurrentMP)
+            if (this.IsAvailableMPView)
             {
-                this.CurrentMP = me.CurrentMP;
-                isMPChanged = true;
+                if (this.CurrentMP != me.CurrentMP)
+                {
+                    this.CurrentMP = me.CurrentMP;
+                    isMPChanged = true;
+                }
             }
 
             if (isHPChanged)
@@ -67,6 +73,25 @@ namespace ACT.UltraScouter.Models
             {
                 this.RaisePropertyChanged(nameof(this.CurrentMP));
             }
+        }
+
+        public void UpdateAvailablityMPView(
+            CombatantEx me)
+        {
+            var result = false;
+
+            if (!Settings.Instance.MyMP.TargetJobs.Any(x => x.Available))
+            {
+                result = true;
+            }
+            else
+            {
+                result = Settings.Instance.MyMP.TargetJobs
+                    .FirstOrDefault(x => x.Job == me.JobID)?
+                    .Available ?? false;
+            }
+
+            this.IsAvailableMPView = result;
         }
 
         private static readonly uint DummyMaxHP = 112233;

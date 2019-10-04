@@ -72,6 +72,9 @@
   <system:String x:Key="Trigger_PartyJobFilter">파티 직업 필터</system:String>
   <system:String x:Key="Trigger_PartyCompositionFilter">파티 규모 필터</system:String>
   <system:String x:Key="Trigger_ZoneFilter">지역 필터</system:String>
+  <system:String x:Key="Trigger_ExpressionFilter">Expression Filter</system:String>
+  <system:String x:Key="Trigger_ExpressionFilterExample" xml:space="preserve">ex. Target:&lt;HEALER1&gt;, Regex:&lt;me&gt; ...
+This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Trigger_Preconditions">전제 조건</system:String>
   <system:String x:Key="Trigger_ClearFilter">필터 재설정</system:String>
   <system:String x:Key="Trigger_ForMustStartRunningSpell">⚪ 스펠이 실행 중일 때</system:String>
@@ -107,6 +110,7 @@
   <system:String x:Key="Spell_TextToMatch">매칭 키워드</system:String>
   <system:String x:Key="Spell_UserRegex">정규식 사용</system:String>
   <system:String x:Key="Spell_RecastTime">재사용 대기 시간</system:String>
+  <system:String x:Key="Spell_DelayToShow">Delay to show</system:String>
   <system:String x:Key="Spell_UseHotbrRecastTime">단축바에서 재사용 대기 시간 가져오기</system:String>
   <system:String x:Key="Spell_HotbarItemName">단축바에 등록된 기술명</system:String>
   <system:String x:Key="Spell_TextToExtend">연장 매칭 키워드</system:String>
@@ -121,6 +125,8 @@
   <system:String x:Key="Spell_BlinkIcon">아이콘 깜박이기</system:String>
   <system:String x:Key="Spell_BlinkBar">진행 바 깜박이기</system:String>
   <system:String x:Key="Spell_HideCounter">재사용 대기 시간 숨김</system:String>
+  <system:String x:Key="Spell_TitleVAlignment">Spell name vertical alignment</system:String>
+  <system:String x:Key="Spell_HideInNotCombat">Hide in not combat</system:String>
   <system:String x:Key="Spell_NotResetAtWipeout">전멸 시 초기화하지 않음</system:String>
   <system:String x:Key="Spell_NoticeOnMatch">시작 시 알림</system:String>
   <system:String x:Key="Spell_NoticeOnOver">시작 시 n초 후 알림</system:String>
@@ -134,6 +140,7 @@
   <system:String x:Key="Spell_NoticeOnBeforeThisScounds">초 전에 알림</system:String>
   <system:String x:Key="Spell_UseSequencialTTS">TTS 싱크로 재생 (동시에 재생되지 않음)</system:String>
   <system:String x:Key="Spell_TestSequencialTTS">싱크로 TTS 테스트</system:String>
+  <system:String x:Key="Spell_PlayPalette">Voice config to Notify</system:String>
 
   <system:String x:Key="Ticker_Name">티커 이름</system:String>
   <system:String x:Key="Ticker_Message">티커에 표시되는 문자</system:String>
@@ -154,6 +161,7 @@
 
   <system:String x:Key="Options_Visual">외형</system:String>
   <system:String x:Key="Options_Trigger">트리거</system:String>
+  <system:String x:Key="Options_LogFilter">Log Filter</system:String>
   <system:String x:Key="Options_Log">로그</system:String>
   <system:String x:Key="Options_TTSDictionary">TTS사전</system:String>
 
@@ -191,7 +199,7 @@
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">UNKNOWN 기술 보완</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">타격/회복에 관한 로그 무시</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">"15:", "16:"으로 시작하는 세부 로그 무시</system:String>
-  <system:String x:Key="Options_EnabledAutoIgnore">주위에 플레이어 캐릭터가 많을 경우 자동으로 "15:", "16:"으로 시작하는 로그 무시</system:String>
+  <system:String x:Key="Options_EnabledAutoIgnore">Auto filter detail logs when there are many people</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">"FC:"로 시작하는 패킷 덤프도 분석 대상으로 설정 (비추천)</system:String>
   <system:String x:Key="Options_ReadyText">정방향 스펠 타이머 완료 시 텍스트 (기본값: Ready)</system:String>
   <system:String x:Key="Options_OverText">역방향 스펠 타이머 완료 시 텍스트 (기본값: Over)</system:String>
@@ -248,6 +256,7 @@
   <system:String x:Key="Timeline_ThisIsOrigin">이 기록을 기점으로 설정</system:String>
   <system:String x:Key="Timeline_ImportCombatLog">과거 전투 로그 불러오기</system:String>
 
+  <system:String x:Key="Timeline_Mute">Mute</system:String>
   <system:String x:Key="Timeline_Location">위치 (타임라인)</system:String>
   <system:String x:Key="Timeline_LocationNotice">위치 (알림)</system:String>
   <system:String x:Key="Timeline_ShowDummyTimeline">디자인 더미 표시</system:String>

@@ -34,7 +34,7 @@ namespace FFXIV.Framework.TTS.Server
 
         private DispatcherTimer shutdownTimer = new DispatcherTimer(DispatcherPriority.ContextIdle)
         {
-            Interval = TimeSpan.FromSeconds(10),
+            Interval = TimeSpan.FromSeconds(IsDebug ? 3 : 10),
         };
 
         public App()
@@ -45,7 +45,6 @@ namespace FFXIV.Framework.TTS.Server
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             this.Startup += this.App_Startup;
-            this.Exit += this.App_Exit;
             this.DispatcherUnhandledException += this.App_DispatcherUnhandledException;
 
             // configをロードする
@@ -106,9 +105,6 @@ namespace FFXIV.Framework.TTS.Server
                 Application.Current.Shutdown();
             }
         }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private void App_Exit(object sender, ExitEventArgs e) => this.CloseApp();
 
         public void CloseApp()
         {
@@ -194,13 +190,6 @@ namespace FFXIV.Framework.TTS.Server
 
         private void ShutdownTimerOnTick(object sender, EventArgs e)
         {
-            /*
-            if (Config.Instance.IsBoyomiServerAutoStart)
-            {
-                return;
-            }
-            */
-#if true
             var processNames = new List<string>
             {
                 "Advanced Combat Tracker",
@@ -220,18 +209,21 @@ namespace FFXIV.Framework.TTS.Server
             var count = processNames.Sum(x => System.Diagnostics.Process.GetProcessesByName(x).Length);
             if (count < 1)
             {
-                if (!IsDebug)
+                this.Logger.Trace("ACT not found. shutdown server.");
+
+#if false
+                if (IsDebug)
                 {
-                    this.Logger.Trace("ACT not found. shutdown server.");
-
-                    this.shutdownTimer.Stop();
-                    this.CloseApp();
-
-                    Thread.Sleep(1000);
-                    this.Shutdown();
+                    return;
                 }
-            }
 #endif
+
+                this.shutdownTimer.Stop();
+                this.CloseApp();
+
+                Thread.Sleep(1000);
+                this.Shutdown();
+            }
         }
     }
 }

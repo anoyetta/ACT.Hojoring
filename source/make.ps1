@@ -12,6 +12,10 @@ function EndMake() {
 }
 
 $msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe"
+if (Test-Path "C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin\MSBuild.exe") {
+    $msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin\MSBuild.exe"
+}
+
 $startdir = Get-Location
 $7z = Get-Item .\tools\7za.exe
 $sln = Get-Item *.sln

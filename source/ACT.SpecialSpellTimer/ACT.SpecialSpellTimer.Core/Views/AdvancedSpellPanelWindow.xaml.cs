@@ -224,16 +224,21 @@ namespace ACT.SpecialSpellTimer.Views
             }
 
             // 表示を更新する
-            this.RefreshRender();
-
-            if (this.activeSpells.Any())
+            if (this.RefreshRender())
             {
-                if (this.ShowOverlay())
+                if (this.activeSpells.Any())
                 {
-                    this.Topmost = true;
-                    this.SubscribeZOrderCorrector();
-                    this.EnsureTopMost();
+                    if (this.ShowOverlay())
+                    {
+                        this.Topmost = true;
+                        this.SubscribeZOrderCorrector();
+                        this.EnsureTopMost();
+                    }
                 }
+            }
+            else
+            {
+                this.HideOverlay();
             }
         }
 
@@ -262,7 +267,7 @@ namespace ACT.SpecialSpellTimer.Views
             }
         }
 
-        public void RefreshRender()
+        private bool RefreshRender()
         {
             var controls = default(SpellControl[]);
 
@@ -274,6 +279,7 @@ namespace ACT.SpecialSpellTimer.Views
                 controls = this.spellControls.ToArray();
             }
 
+            var isActive = false;
             foreach (var control in controls)
             {
                 var spell = control.Spell;
@@ -328,10 +334,13 @@ namespace ACT.SpecialSpellTimer.Views
                 }
 
                 control.Refresh();
+                isActive |= control.IsActive;
 
                 // 最初は非表示（Opacity=0）にしているので表示する
                 control.Opacity = 1.0;
             }
+
+            return isActive;
         }
 
         #region Drag & Drop

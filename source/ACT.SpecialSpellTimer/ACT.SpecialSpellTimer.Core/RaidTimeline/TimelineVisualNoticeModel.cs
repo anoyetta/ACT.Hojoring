@@ -105,6 +105,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.DurationVisible = bool.TryParse(value, out var v) ? v : (bool?)null;
         }
 
+        private double? delay = null;
+
+        [XmlIgnore]
+        public double? Delay
+        {
+            get => this.delay;
+            set => this.SetProperty(ref this.delay, value);
+        }
+
+        [XmlAttribute(AttributeName = "delay")]
+        public string DelayXML
+        {
+            get => this.Delay?.ToString();
+            set => this.Delay = double.TryParse(value, out var v) ? v : (double?)null;
+        }
+
         private int stack = 0;
 
         [XmlIgnore]
