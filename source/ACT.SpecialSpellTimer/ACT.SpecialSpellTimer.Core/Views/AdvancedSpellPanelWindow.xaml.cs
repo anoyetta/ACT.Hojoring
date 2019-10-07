@@ -40,6 +40,9 @@ namespace ACT.SpecialSpellTimer.Views
         ISpellPanelWindow,
         INotifyPropertyChanged
     {
+        private Point _originalPoint;
+        private bool _isRestorePosition = false;
+
         public static ISpellPanelWindow GetWindow(
             SpellPanel panel)
         {
@@ -64,12 +67,21 @@ namespace ACT.SpecialSpellTimer.Views
             this.Panel = panel;
             this.Panel.PanelWindow = this;
 
+            this._originalPoint = new Point(panel.Left, panel.Top);
+
             this.InitializeComponent();
             this.ToNonActive();
             this.Opacity = 0;
 
             this.Loaded += (x, y) => this.SubscribeZOrderCorrector();
-            this.MouseLeftButtonDown += (x, y) => this.DragMove();
+
+            this.MouseLeftButtonDown += (x, y) =>
+            {
+                if (!this.Panel.Locked)
+                {
+                    this.DragMove();
+                }
+            };
 
             for (int r = 0; r < this.GuidRulerGrid.RowDefinitions.Count; r++)
             {
@@ -96,6 +108,23 @@ namespace ACT.SpecialSpellTimer.Views
                     this.Panel.PanelWindow = null;
                     this.Panel = null;
                 }
+            };
+
+            this.LocationChanged += (sender, args) =>
+            {
+                if (this._isRestorePosition)
+                {
+                    return;
+                }
+
+                if (this.Panel.Locked)
+                {
+                    this._isRestorePosition = true;
+                    this.Top = this._originalPoint.Y;
+                    this.Left = this._originalPoint.X;
+                }
+
+                this._isRestorePosition = false;
             };
 
             this.ActiveSpellViewSource = new CollectionViewSource()
