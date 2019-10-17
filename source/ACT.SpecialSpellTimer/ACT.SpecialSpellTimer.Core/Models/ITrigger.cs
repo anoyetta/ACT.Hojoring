@@ -185,14 +185,14 @@ namespace ACT.SpecialSpellTimer.Models
             }
 
             // 式によるフィルタをかける
-            if (!trigger.ExpressionFilters.Any(x => x.IsAvailable))
+            if (!trigger.ExpressionFilters.Any(x => x?.IsAvailable ?? false))
             {
                 enabledByExpression = true;
             }
             else
             {
                 var filters = trigger.ExpressionFilters
-                    .Where(x => x.IsAvailable)
+                    .Where(x => x?.IsAvailable ?? false)
                     .ToArray();
 
                 foreach (var f in filters)
