@@ -32,15 +32,20 @@ namespace ACT.UltraScouter.Workers
         {
             lock (LogLocker)
             {
+                if (instance == null)
+                {
+                    return;
+                }
+
                 if (instance.logStream != null)
                 {
                     instance.logStream.Flush();
                     instance.logStream.Close();
                     instance.logStream = null;
                 }
-            }
 
-            instance = null;
+                instance = null;
+            }
         }
 
         private EnmityInfoWorker()

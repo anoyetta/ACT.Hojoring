@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -321,43 +320,10 @@ namespace ACT.SpecialSpellTimer
         {
             if (this.SwitchVisibleButton != null)
             {
-                ActGlobals.oFormActMain.Controls.Remove(this.SwitchVisibleButton);
+                ActGlobals.oFormActMain.CornerControlRemove(this.SwitchVisibleButton);
 
                 this.SwitchVisibleButton.Dispose();
                 this.SwitchVisibleButton = null;
-            }
-        }
-
-        private async void ReplaceButton()
-        {
-            if (this.SwitchVisibleButton != null &&
-                !this.SwitchVisibleButton.IsDisposed &&
-                this.SwitchVisibleButton.IsHandleCreated)
-            {
-                var leftButton = (
-                    from Control x in ActGlobals.oFormActMain.Controls
-                    where
-                    !x.Equals(this.SwitchVisibleButton) &&
-                    (
-                        x is Button ||
-                        x is CheckBox
-                    )
-                    orderby
-                    x.Left
-                    select
-                    x).FirstOrDefault();
-
-                var location = leftButton != null ?
-                    new Point(leftButton.Left - this.SwitchVisibleButton.Width - 1, 0) :
-                    new Point(ActGlobals.oFormActMain.Width - 533, 0);
-
-                await WPFHelper.InvokeAsync(() =>
-                {
-                    if (this.SwitchVisibleButton != null)
-                    {
-                        this.SwitchVisibleButton.Location = location;
-                    }
-                });
             }
         }
 
@@ -374,8 +340,6 @@ namespace ACT.SpecialSpellTimer
                 Appearance = Appearance.Button,
                 FlatStyle = FlatStyle.Flat,
                 UseVisualStyleBackColor = true,
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(ActGlobals.oFormActMain.Width - 533, 0),
                 AutoSize = true,
             };
 
@@ -390,22 +354,8 @@ namespace ACT.SpecialSpellTimer
                 Application.DoEvents();
             };
 
+            ActGlobals.oFormActMain.CornerControlAdd(this.SwitchVisibleButton);
             this.ChangeButtonColor();
-
-            ActGlobals.oFormActMain.Resize += (s, e) => this.ReplaceButton();
-            ActGlobals.oFormActMain.Controls.Add(this.SwitchVisibleButton);
-            ActGlobals.oFormActMain.Controls.SetChildIndex(this.SwitchVisibleButton, 1);
-
-            Task.Run(async () =>
-            {
-                this.ReplaceButton();
-
-                for (int i = 0; i < 10; i++)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(3));
-                    this.ReplaceButton();
-                }
-            });
         }
 
         private void SwitchOverlay(
