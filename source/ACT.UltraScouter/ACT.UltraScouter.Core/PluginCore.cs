@@ -84,7 +84,6 @@ namespace ACT.UltraScouter
                 Settings.Instance.Save();
                 FFXIV.Framework.Config.Save();
                 FFXIV.Framework.Config.Free();
-                Thread.Sleep(50);
 
                 // 参照を開放する
                 WavePlayer.Free();
