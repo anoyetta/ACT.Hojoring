@@ -9,6 +9,7 @@ namespace FFXIV.Framework.XIVHelper
         private int idonDB = 0;
         private bool isAddedByUser = false;
         private string name = string.Empty;
+        private int rank;
 
         public int ID
         {
@@ -36,57 +37,82 @@ namespace FFXIV.Framework.XIVHelper
 
         public int Rank
         {
-            get
-            {
-                var rank = 255;
-
-                // レイド
-                if (this.IDonDB >= 30000 && this.IDonDB < 40000)
-                {
-                    rank = 119;
-
-                    if (this.Name.Contains("絶") ||
-                        this.Name.Contains("Ultimate") ||
-                        this.Name.Contains("fatal"))
-                    {
-                        rank = 109;
-                    }
-
-                    if (this.Name.Contains("零式") ||
-                        this.Name.Contains("Savage") ||
-                        this.Name.Contains("sadique") ||
-                        this.Name.Contains("episch"))
-                    {
-                        rank = 110;
-                    }
-                }
-
-                // 討滅戦
-                if (this.IDonDB >= 20000 && this.IDonDB < 30000)
-                {
-                    rank = 129;
-                }
-
-                // PvP
-                if (this.IDonDB >= 40000 && this.IDonDB < 55000)
-                {
-                    rank = 139;
-                }
-
-                // misc
-                if (rank == 255)
-                {
-                    if (this.Name.Contains("Hard") ||
-                        this.Name.Contains("brutal"))
-                    {
-                        rank = 210;
-                    }
-                }
-
-                return rank;
-            }
+            get => this.rank;
+            set => this.SetProperty(ref this.rank, value);
         }
 
         public override string ToString() => this.Name;
+
+        public static int ToRank(
+            int intendedUse,
+            string name)
+        {
+            var rank = 0;
+
+            // レイド
+            if (intendedUse == (int)TerritoryIntendedUse.Raid8)
+            {
+                if (name.Contains("絶") ||
+                    name.Contains("Ultimate") ||
+                    name.Contains("fatal"))
+                {
+                    rank = 10;
+                }
+                else
+                {
+                    if (name.Contains("零式") ||
+                        name.Contains("Savage") ||
+                        name.Contains("sadique") ||
+                        name.Contains("episch"))
+                    {
+                        rank = 11;
+                    }
+                    else
+                    {
+                        rank = 12;
+                    }
+                }
+            }
+
+            // 討滅戦
+            if (intendedUse == (int)TerritoryIntendedUse.Trial)
+            {
+                rank = 20;
+            }
+
+            // 24人レイド
+            if (intendedUse == (int)TerritoryIntendedUse.Raid24)
+            {
+                rank = 50;
+            }
+
+            // ディープダンジョン
+            if (intendedUse == (int)TerritoryIntendedUse.DeepDungeon)
+            {
+                rank = 60;
+            }
+
+            // PvP
+            if (intendedUse == (int)TerritoryIntendedUse.PvP1 ||
+                intendedUse == (int)TerritoryIntendedUse.PvP2 ||
+                intendedUse == (int)TerritoryIntendedUse.PvP3)
+            {
+                rank = 90;
+            }
+
+            return rank;
+        }
+    }
+
+    public enum TerritoryIntendedUse
+    {
+        Dungeon = 3,
+        Raid24 = 8,
+        Raid8 = 17,
+        Trial = 10,
+        PvP1 = 18,
+        PvP2 = 39,
+        PvP3 = 42,
+        DeepDungeon = 31,
     }
 }

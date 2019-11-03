@@ -435,6 +435,8 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
         public IReadOnlyList<Zone> ZoneList => (
             from x in XIVPluginHelper.Instance?.ZoneList
+            where
+            x.Rank > 0
             orderby
             x.IsAddedByUser ? 0 : 1,
             x.Rank,

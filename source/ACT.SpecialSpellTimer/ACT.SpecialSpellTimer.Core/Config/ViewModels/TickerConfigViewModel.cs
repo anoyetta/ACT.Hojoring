@@ -292,6 +292,8 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
 
                 foreach (var zone in
                     from x in XIVPluginHelper.Instance?.ZoneList
+                    where
+                    x.Rank > 0
                     orderby
                     x.IsAddedByUser ? 0 : 1,
                     x.Rank,

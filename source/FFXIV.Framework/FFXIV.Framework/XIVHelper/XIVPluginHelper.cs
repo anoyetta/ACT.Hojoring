@@ -152,7 +152,10 @@ namespace FFXIV.Framework.XIVHelper
                     {
                         this.LoadSkillList();
                         this.LoadZoneList();
+                        /*
+                        ゾーンの追加を廃止する
                         this.LoadZoneListFromTerritory();
+                        */
                         this.LoadWorldList();
 
                         this.MergeSkillList();
@@ -1537,49 +1540,32 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            if (!XIVApi.Instance.AreaList.Any() ||
-                !XIVApi.Instance.TerritoryList.Any())
+            if (!XIVApi.Instance.TerritoryList.Any())
             {
                 return;
             }
 
-            var transDictionary = XIVApi.Instance.AreaList
-                .GroupBy(x => normalize(x.NameEn))
-                .ToDictionary(
-                    x => x.Key,
-                    x => x.First());
+            var territoryDictionary = XIVApi.Instance.TerritoryList
+                .ToDictionary(x => x.ID);
 
             foreach (var zone in this.ZoneList)
             {
-                var key = normalize(zone.Name);
-
-                if (transDictionary.ContainsKey(key))
+                if (territoryDictionary.ContainsKey(zone.ID))
                 {
-                    var area = transDictionary[key];
-                    zone.Name = area.Name;
-                    zone.IDonDB = area.ID;
+                    var t = territoryDictionary[zone.ID];
+
+                    if (XIVApi.Instance.FFXIVLocale != Locales.EN)
+                    {
+                        zone.Name = $"{zone.Name} ({t.Name})";
+                    }
+
+                    zone.IDonDB = t.IntendedUse;
+                    zone.Rank = Zone.ToRank(t.IntendedUse, zone.Name);
                 }
             }
 
             AppLogger.Trace($"zone list translated.");
             this.isZoneListTranslated = true;
-
-            string normalize(string text)
-            {
-                text = text.Replace(" ", string.Empty);
-                text = text.Replace(".", string.Empty);
-                text = text.Replace("/", string.Empty);
-                text = text.Replace("-", string.Empty);
-                text = text.Replace("(", string.Empty);
-                text = text.Replace(")", string.Empty);
-                text = text.Replace("[", string.Empty);
-                text = text.Replace("]", string.Empty);
-                text = text.Replace("_", string.Empty);
-                text = text.Replace(":", string.Empty);
-                text = text.Replace(";", string.Empty);
-
-                return text.ToLower();
-            }
         }
 
         private volatile bool isMergedSkillList = false;
