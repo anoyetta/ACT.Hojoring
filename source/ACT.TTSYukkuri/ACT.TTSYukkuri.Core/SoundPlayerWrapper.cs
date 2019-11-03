@@ -200,7 +200,7 @@ namespace ACT.TTSYukkuri
             {
                 if (!isNow)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(60));
+                    await Task.Delay(TimeSpan.FromSeconds(120));
                 }
                 else
                 {

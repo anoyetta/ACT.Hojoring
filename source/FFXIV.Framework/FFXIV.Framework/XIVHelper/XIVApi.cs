@@ -130,7 +130,7 @@ namespace FFXIV.Framework.XIVHelper
                 Task.Run(() => this.LoadBuff()));
         }
 
-        private static readonly int AddtionalTerritoryStartID = 813;
+        private static readonly int AddtionalTerritoryStartID = 0;
 
         private void LoadTerritory()
         {
@@ -187,9 +187,10 @@ namespace FFXIV.Framework.XIVHelper
                         continue;
                     }
 
-                    int id;
-                    if (!int.TryParse(fields[0], out id) ||
-                        string.IsNullOrEmpty(fields[6]))
+                    if (!int.TryParse(fields[0], out int id) ||
+                        string.IsNullOrEmpty(fields[6]) ||
+                        !int.TryParse(fields[10], out int indented) ||
+                        !int.TryParse(fields[11], out int order))
                     {
                         continue;
                     }
@@ -202,7 +203,9 @@ namespace FFXIV.Framework.XIVHelper
                     var entry = new Area()
                     {
                         ID = id,
-                        Name = fields[6]
+                        Name = fields[6],
+                        IntendedUse = indented,
+                        Order = order,
                     };
 
                     list.Add(entry);
@@ -263,6 +266,13 @@ namespace FFXIV.Framework.XIVHelper
 
                         this.areaList.Add(entry);
                     }
+
+                    this.areaList.Add(new Area()
+                    {
+                        ID = 0,
+                        NameEn = "dummy",
+                        Name = "dummy",
+                    });
                 }
             }
 
@@ -317,6 +327,13 @@ namespace FFXIV.Framework.XIVHelper
 
                         this.areaENList[entry.ID] = entry;
                     }
+
+                    this.areaList.Add(new Area()
+                    {
+                        ID = 0,
+                        NameEn = "dummy",
+                        Name = "dummy",
+                    });
                 }
             }
 
@@ -536,6 +553,8 @@ namespace FFXIV.Framework.XIVHelper
             public int ID { get; set; }
             public string Name { get; set; }
             public string NameEn { get; set; }
+            public int Order { get; set; }
+            public int IntendedUse { get; set; }
         }
 
         public class Placename
