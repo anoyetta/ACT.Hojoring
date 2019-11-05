@@ -151,6 +151,10 @@
     <Compile Include="Extensions\RegexExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TimeSpanExtensions.cs" />
+    <Compile Include="resources\ResourcesDownloader.cs" />
+    <Compile Include="resources\ResourcesDownloaderView.xaml.cs">
+      <DependentUpon>ResourcesDownloaderView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WPF\CommonViewHelper.cs" />
     <Compile Include="WPF\Views\CommonView.xaml.cs">
       <DependentUpon>CommonView.xaml</DependentUpon>
@@ -287,6 +291,10 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Page Include="resources\ResourcesDownloaderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WPF\Controls\Arc.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -363,6 +371,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.AspNet.WebApi.Client.ja">
       <Version>5.2.7</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Net.Http">
+      <Version>2.2.29</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.PowerShell.5.ReferenceAssemblies">
       <Version>1.1.0</Version>

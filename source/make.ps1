@@ -101,6 +101,11 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Move-Item lib .\bin\
     Move-Item tools .\bin\
 
+    '●Google Drive に配置するリソースを削除する'
+    Remove-Item bin\openJTalk\dic\sys.dic
+    Remove-Item bin\openJTalk\voice\*
+    Remove-Item bin\yukkuri\aq_dic\aqdic.bin
+
     '●配布ファイルをアーカイブする'
     $archive = "ACT.Hojoring-" + $versionShort
     $archiveZip = $archive + ".zip"
