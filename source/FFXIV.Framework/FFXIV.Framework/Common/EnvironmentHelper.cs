@@ -16,6 +16,12 @@ namespace FFXIV.Framework.Common
     {
         private static readonly object LockObject = new object();
 
+#if DEBUG
+        public static bool IsDebug => true;
+#else
+        public static bool IsDebug => false;
+#endif
+
         public static string Pwsh => LazyPwsh.Value;
 
         private static readonly Lazy<string> LazyPwsh = new Lazy<string>(() => GetPwsh());

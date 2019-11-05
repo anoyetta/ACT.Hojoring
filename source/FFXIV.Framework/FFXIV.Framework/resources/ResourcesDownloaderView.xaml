@@ -1,0 +1,28 @@
+﻿<Window
+  x:Class="FFXIV.Framework.resources.ResourcesDownloaderView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="clr-namespace:FFXIV.Framework.resources"
+  mc:Ignorable="d"
+  AllowsTransparency="True"
+  WindowStyle="None"
+  ShowInTaskbar="False"
+  Background="White"
+  WindowStartupLocation="CenterScreen"
+  Title="Hojoring Resources Downloader"
+  Height="100" Width="420"
+  DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneWay}">
+  <Grid>
+    <TextBlock Margin="3">Hojoring Downloader</TextBlock>
+
+    <StackPanel
+      HorizontalAlignment="Left"
+      VerticalAlignment="Bottom"
+      Margin="20 0 0 23">
+      <TextBlock FontStyle="Italic">Downloading...</TextBlock>
+      <TextBlock Margin="0 2 0 0" Text="{Binding CurrentResources, Mode=OneWay}" />
+    </StackPanel>
+  </Grid>
+</Window>
