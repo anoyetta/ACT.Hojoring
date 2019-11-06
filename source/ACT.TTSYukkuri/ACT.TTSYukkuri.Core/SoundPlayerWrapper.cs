@@ -199,7 +199,7 @@ namespace ACT.TTSYukkuri
             WPFHelper.BeginInvoke(() =>
             {
             },
-            DispatcherPriority.SystemIdle).Task.ContinueWith(async (_) =>
+            DispatcherPriority.SystemIdle).Task.ContinueWith((_) => Task.Run(async () =>
             {
                 if (!isNow)
                 {
@@ -246,7 +246,7 @@ namespace ACT.TTSYukkuri
                         Logger.Info("Load TTS caches, done.");
                     }
                 }
-            });
+            }));
         }
     }
 }
