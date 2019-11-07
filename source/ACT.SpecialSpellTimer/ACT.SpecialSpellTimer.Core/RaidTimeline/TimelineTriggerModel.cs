@@ -499,6 +499,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
+        private static readonly string WaitKeyword = "/wait";
+
+        private static readonly Regex WaitCommandRegex = new Regex(
+            @"{WaitKeyword}\s+(?<duration>[\d\.]+)\s+(?<cmd>.+)$",
+            RegexOptions.Compiled);
+
         public void Execute()
         {
             if (string.IsNullOrEmpty(this.ExecuteFileName))
@@ -508,8 +514,36 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var path = this.ExecuteFileName;
 
+            var duration = 0d;
+            if (path.Contains(WaitKeyword))
+            {
+                var match = WaitCommandRegex.Match(path);
+                if (match.Success)
+                {
+                    var durationText = match.Groups["duration"].Value;
+                    var cmd = match.Groups["cmd"].Value;
+
+                    if (!double.TryParse(durationText, out duration))
+                    {
+                        duration = 0;
+                    }
+
+                    if (string.IsNullOrEmpty(cmd))
+                    {
+                        return;
+                    }
+
+                    path = cmd.Trim();
+                }
+            }
+
             Task.Run(async () =>
             {
+                if (duration > 0d)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(duration));
+                }
+
                 if (!await this.CallRestAsync(path))
                 {
                     this.StartTool(path);
