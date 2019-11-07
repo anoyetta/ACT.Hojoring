@@ -184,6 +184,8 @@ namespace ACT.TTSYukkuri
                 isSync);
         }
 
+        private static readonly Random Random = new Random((int)DateTime.Now.Ticks);
+
         public static void LoadTTSCache(
             bool isNow = false)
         {
@@ -195,12 +197,13 @@ namespace ACT.TTSYukkuri
             var volume = Settings.Default.WaveVolume / 100f;
 
             WPFHelper.BeginInvoke(() =>
-            { },
-            DispatcherPriority.ContextIdle).Task.ContinueWith(async (_) =>
+            {
+            },
+            DispatcherPriority.SystemIdle).Task.ContinueWith((_) => Task.Run(async () =>
             {
                 if (!isNow)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(120));
+                    await Task.Delay(TimeSpan.FromSeconds(Random.Next(60, 90)));
                 }
                 else
                 {
@@ -243,7 +246,7 @@ namespace ACT.TTSYukkuri
                         Logger.Info("Load TTS caches, done.");
                     }
                 }
-            });
+            }));
         }
     }
 }
