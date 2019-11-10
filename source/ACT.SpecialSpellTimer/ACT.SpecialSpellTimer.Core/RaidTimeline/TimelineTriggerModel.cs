@@ -502,7 +502,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static readonly string WaitKeyword = "/wait";
 
         private static readonly Regex WaitCommandRegex = new Regex(
-            @"{WaitKeyword}\s+(?<duration>[\d\.]+)\s+(?<cmd>.+)$",
+            @$"{WaitKeyword}\s+(?<duration>[\d\.]+)\s+(?<cmd>.+)$",
             RegexOptions.Compiled);
 
         public void Execute()
