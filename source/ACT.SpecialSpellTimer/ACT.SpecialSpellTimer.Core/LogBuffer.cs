@@ -469,6 +469,18 @@ namespace ACT.SpecialSpellTimer
             }
         }
 
+        private static readonly string[] EndDummyTrialLogs = new[]
+        {
+            "木人討滅戦を達成した！",
+            "木人討滅戦に失敗した……",
+            "Your trial is a success!",
+            "You have failed in your trial...",
+            "Vous avez réussi votre entraînement !",
+            "Vous avez failli à votre entraînement...",
+            "Du hast das Trainingsziel erreicht!",
+            "Du hast das Trainingsziel nicht erreicht ...",
+        };
+
         private bool IsDefeated(string logLine)
         {
             var result = false;
@@ -495,6 +507,12 @@ namespace ACT.SpecialSpellTimer
                 {
                     break;
                 }
+            }
+
+            // 木人討滅戦が終わった？
+            if (EndDummyTrialLogs.Any(x => logLine.Contains(x)))
+            {
+                result = true;
             }
 
             return result;
