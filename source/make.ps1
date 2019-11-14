@@ -105,7 +105,6 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Remove-Item bin\openJTalk\dic\sys.dic
     Remove-Item bin\openJTalk\voice\*
     Remove-Item bin\yukkuri\aq_dic\aqdic.bin
-    Remove-Item bin\lib\*
 
     '●配布ファイルをアーカイブする'
     $archive = "ACT.Hojoring-" + $versionShort
