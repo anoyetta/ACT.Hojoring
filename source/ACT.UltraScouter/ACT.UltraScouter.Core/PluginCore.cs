@@ -70,8 +70,14 @@ namespace ACT.UltraScouter
 
             try
             {
-                EnvironmentHelper.GarbageLogs();
                 this.Logger.Trace("start DeInitPlugin");
+
+                // 設定ファイルを保存する
+                Settings.Instance.Save();
+                FFXIV.Framework.Config.Save();
+                FFXIV.Framework.Config.Free();
+
+                EnvironmentHelper.GarbageLogs();
 
                 // ターゲット情報ワーカを終了する
                 MainWorker.Instance.End();
@@ -79,12 +85,6 @@ namespace ACT.UltraScouter
                 // FFXIVプラグインへのアクセスを終了する
                 XIVPluginHelper.Instance.End();
                 XIVPluginHelper.Free();
-
-                // 設定ファイルを保存する
-                Settings.Instance.Save();
-                FFXIV.Framework.Config.Save();
-                FFXIV.Framework.Config.Free();
-                Thread.Sleep(50);
 
                 // 参照を開放する
                 WavePlayer.Free();

@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{F9A5BAFF-4C35-4F15-BDD6-81CB8EC6977D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{EC98C548-6268-4B67-BC45-88DCD9B63960}"
+	ProjectSection(SolutionItems) = preProject
+		ResourcesDownloader.cs = ResourcesDownloader.cs
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFXIV.Framework", "FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj", "{22EBF8A4-EED1-4CD1-99EB-99665163A315}"
 EndProject
@@ -205,7 +208,7 @@ Global
 		{C1BC2D6E-E10D-4A7F-900B-5FD84F39BF0A} = {EC98C548-6268-4B67-BC45-88DCD9B63960}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		        SolutionGuid = {2A11DDD1-7A46-4236-969A-3942CBE6A01A}
 		SolutionGuid = {91001FDF-B748-4513-A399-35F7E9BD37F8}
+		        SolutionGuid = {2A11DDD1-7A46-4236-969A-3942CBE6A01A}
 	EndGlobalSection
 EndGlobal

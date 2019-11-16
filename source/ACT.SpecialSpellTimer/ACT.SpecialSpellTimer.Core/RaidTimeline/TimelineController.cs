@@ -95,6 +95,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (Locker)
             {
+                TimelineOverlay.CloseTimeline();
+                TimelineNoticeOverlay.CloseNotice();
+                TimelineImageNoticeModel.Collect();
+
                 isDetectLogWorking = false;
                 LogWorker.Join(100);
                 if (LogWorker.IsAlive)

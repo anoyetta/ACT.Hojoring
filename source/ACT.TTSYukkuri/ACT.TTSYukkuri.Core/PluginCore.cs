@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
@@ -16,6 +15,7 @@ using ACT.TTSYukkuri.Voiceroid;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.resources;
 using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
 using NLog;
@@ -238,7 +238,6 @@ namespace ACT.TTSYukkuri
             float? volume = null)
             => SpeakTTS(textToSpeak, playDevice, VoicePalettes.Default, isSync, volume);
 
-
         private void SpeakTTS(
             string textToSpeak,
             PlayDevices playDevice = PlayDevices.Both,
@@ -353,8 +352,13 @@ namespace ACT.TTSYukkuri
                         return;
                     }
 
+                    // 外部リソースをダウンロードする
+                    if (!ResourcesDownloader.Instance.IsReady())
+                    {
+                        await ResourcesDownloader.Instance.DownloadAsync();
+                    }
+
                     // 設定ファイルを読み込む
-                    // TP廃止につき無効化する
                     Settings.Default.Load();
                     Settings.Default.StatusAlertSettings.EnabledTPAlert = false;
 
@@ -467,6 +471,11 @@ namespace ACT.TTSYukkuri
 
             try
             {
+                // 設定を保存する
+                Settings.Default.Save();
+                FFXIV.Framework.Config.Save();
+                FFXIV.Framework.Config.Free();
+
                 // TTSアクションを元に戻す
                 this.StopReplaceTTSMethodTimer();
                 this.RestoreTTSMethod();
@@ -515,12 +524,6 @@ namespace ACT.TTSYukkuri
                         }
                     }
                 }
-
-                // 設定を保存する
-                Settings.Default.Save();
-                FFXIV.Framework.Config.Save();
-                FFXIV.Framework.Config.Free();
-                Thread.Sleep(50);
 
                 this.PluginStatusLabel.Text = "Plugin Exited";
             }

@@ -496,8 +496,8 @@ namespace FFXIV.Framework.WPF.ViewModels
             using (var p = new Process())
             {
                 var here = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                p.StartInfo.FileName = "cmd.exe";
-                p.StartInfo.Arguments = $@"/c ""tree ""{here}"" /F > ""{pluginDirectory}\tree.txt""";
+                p.StartInfo.FileName = "powershell.exe";
+                p.StartInfo.Arguments = $@"-nologo -command ""Get-ChildItem '{here}' -Recurse | Out-File -Encoding utf8 '{temp}\file_list_Hojoring.txt'";
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.CreateNoWindow = true;
                 p.Start();
@@ -508,8 +508,19 @@ namespace FFXIV.Framework.WPF.ViewModels
             using (var p = new Process())
             {
                 var here = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                p.StartInfo.FileName = "cmd.exe";
-                p.StartInfo.Arguments = $@"/c ""tree ""{here}"" /F > ""{actDest}\tree.txt""";
+                p.StartInfo.FileName = "powershell.exe";
+                p.StartInfo.Arguments = $@"-nologo -command ""Get-ChildItem '{here}' -Recurse | Out-File -Encoding utf8 '{temp}\file_list_ACT.txt'";
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.CreateNoWindow = true;
+                p.Start();
+                p.WaitForExit();
+            }
+
+            // APPDATAのツリーを保存する
+            using (var p = new Process())
+            {
+                p.StartInfo.FileName = "powershell.exe";
+                p.StartInfo.Arguments = $@"-nologo -command ""Get-ChildItem '{anySrc}' -Recurse | Out-File -Encoding utf8 '{temp}\file_list_APPDATA.txt'";
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.CreateNoWindow = true;
                 p.Start();

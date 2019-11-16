@@ -100,6 +100,13 @@ namespace ACT.SpecialSpellTimer
 
             try
             {
+                // 設定ファイルを保存する
+                TimelineSettings.Save();
+                Settings.Default.Save();
+                Settings.Default.DeInit();
+                FFXIV.Framework.Config.Save();
+                FFXIV.Framework.Config.Free();
+
                 // 付加情報オーバーレイを閉じる
                 LPSView.CloseLPS();
                 POSView.ClosePOS();
@@ -110,14 +117,6 @@ namespace ACT.SpecialSpellTimer
 
                 this.RemoveSwitchVisibleButton();
                 this.PluginStatusLabel.Text = "Plugin Exited";
-
-                // 設定ファイルを保存する
-                TimelineSettings.Save();
-                Settings.Default.Save();
-                Settings.Default.DeInit();
-                FFXIV.Framework.Config.Save();
-                FFXIV.Framework.Config.Free();
-                Thread.Sleep(50);
 
                 Logger.Write("Plugin Exited.");
             }
