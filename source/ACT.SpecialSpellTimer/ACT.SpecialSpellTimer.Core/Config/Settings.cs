@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Interop;
-using System.Xml;
-using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config.Models;
 using ACT.SpecialSpellTimer.Config.Views;
 using ACT.SpecialSpellTimer.Views;
@@ -17,6 +8,15 @@ using FFXIV.Framework.Globalization;
 using FFXIV.Framework.WPF.Views;
 using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Interop;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace ACT.SpecialSpellTimer.Config
 {
@@ -626,6 +626,14 @@ namespace ACT.SpecialSpellTimer.Config
         {
             get => this.combatLogSaveDirectory;
             set => this.SetProperty(ref this.combatLogSaveDirectory, value);
+        }
+
+        private string toAnalyzeLogDirectory = string.Empty;
+
+        public string ToAnalyzeLogDirectory
+        {
+            get => this.toAnalyzeLogDirectory;
+            set => this.SetProperty(ref this.toAnalyzeLogDirectory, value);
         }
 
         #endregion Data - Timeline

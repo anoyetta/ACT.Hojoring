@@ -1,3 +1,13 @@
+using ACT.SpecialSpellTimer.Config;
+using ACT.SpecialSpellTimer.Utility;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.Globalization;
+using FFXIV.Framework.XIVHelper;
+using Microsoft.VisualBasic.FileIO;
+using NPOI.SS.UserModel;
+using Sharlayan.Core.Enums;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,16 +19,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using ACT.SpecialSpellTimer.Config;
-using ACT.SpecialSpellTimer.Utility;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.Globalization;
-using FFXIV.Framework.XIVHelper;
-using Microsoft.VisualBasic.FileIO;
-using NPOI.SS.UserModel;
-using Sharlayan.Core.Enums;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -1548,10 +1548,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         {
                             a.Notice = $"次は、{log.Skill}。";
                         }
-                        else
-                        {
-                            continue;
-                        }
 
                         break;
 
@@ -1574,11 +1570,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                         if (timeline.Activities.Any(x =>
                             x.Time == a.Time &&
-                            x.Text == a.Text))
+                            x.Text == a.Text &&
+                            x.SyncKeyword == a.SyncKeyword))
                         {
                             continue;
                         }
 
+                        a.SyncKeyword = $"^{a.SyncKeyword}";
                         break;
 
                     case LogTypes.NetworkAbility:
@@ -1587,13 +1585,18 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                         if (timeline.Activities.Any(x =>
                             x.Time == a.Time &&
-                            x.Text == a.Text))
+                            x.Text == a.Text &&
+                            x.SyncKeyword == a.SyncKeyword))
                         {
                             continue;
                         }
 
                         break;
                 }
+
+                a.SyncKeyword = a.SyncKeyword
+                    .Replace("<id8>", "[id8]")
+                    .Replace("<id4>", "[id4]");
 
                 timeline.Add(a);
             }
