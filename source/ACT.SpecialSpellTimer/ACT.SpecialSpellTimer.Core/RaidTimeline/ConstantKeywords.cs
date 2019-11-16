@@ -1,8 +1,8 @@
+using ACT.SpecialSpellTimer.Config;
+using FFXIV.Framework.Globalization;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
-using ACT.SpecialSpellTimer.Config;
-using FFXIV.Framework.Globalization;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -288,7 +288,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(EffectRegex),
-                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.+?) for (?<duration>[0-9\.]*?) Seconds.$")
+                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.*?) for (?<duration>[0-9\.]*?) Seconds.$")
             },
             {
                 nameof(MarkerRegex),
@@ -400,7 +400,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(EffectRegex),
-                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.+?) for (?<duration>[0-9\.]*?) Seconds.$")
+                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.*?) for (?<duration>[0-9\.]*?) Seconds.$")
             },
             {
                 nameof(MarkerRegex),
@@ -505,7 +505,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(EffectRegex),
-                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.+?) for (?<duration>[0-9\.]*?) Seconds.$")
+                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.*?) for (?<duration>[0-9\.]*?) Seconds.$")
             },
             {
                 nameof(MarkerRegex),
@@ -611,7 +611,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(EffectRegex),
-                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.+?) for (?<duration>[0-9\.]*?) Seconds.$")
+                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.*?) for (?<duration>[0-9\.]*?) Seconds.$")
             },
             {
                 nameof(MarkerRegex),

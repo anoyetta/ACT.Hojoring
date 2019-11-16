@@ -1,3 +1,11 @@
+using ACT.SpecialSpellTimer.RaidTimeline;
+using ACT.SpecialSpellTimer.resources;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.Globalization;
+using FFXIV.Framework.WPF.Views;
+using Prism.Commands;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -12,14 +20,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using ACT.SpecialSpellTimer.RaidTimeline;
-using ACT.SpecialSpellTimer.resources;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.Globalization;
-using FFXIV.Framework.WPF.Views;
-using Prism.Commands;
 
 namespace ACT.SpecialSpellTimer.Config.Views
 {
@@ -240,7 +240,10 @@ namespace ACT.SpecialSpellTimer.Config.Views
             {
                 if (string.IsNullOrEmpty(this.openFileDialog.InitialDirectory))
                 {
-                    this.openFileDialog.InitialDirectory = Settings.Default.CombatLogSaveDirectory;
+                    this.openFileDialog.InitialDirectory = !string.IsNullOrEmpty(Settings.Default.ToAnalyzeLogDirectory) ?
+                        Settings.Default.ToAnalyzeLogDirectory :
+                        Settings.Default.CombatLogSaveDirectory;
+
                     this.openFileDialog.FileName = string.Empty;
                 }
 
@@ -262,6 +265,8 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
                     return;
                 }
+
+                Settings.Default.ToAnalyzeLogDirectory = Path.GetDirectoryName(file);
 
                 var isCSV = Path.GetExtension(file).ContainsIgnoreCase("csv");
 
