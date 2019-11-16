@@ -1,0 +1,143 @@
+<Window
+  x:Class="ACT.UltraScouter.Views.EnemyHPView"
+  Title="EnemyHPView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="clr-namespace:ACT.UltraScouter.Views"
+  xmlns:cnv="clr-namespace:ACT.UltraScouter.Views.Converters"
+  xmlns:vm="clr-namespace:ACT.UltraScouter.ViewModels"
+  xmlns:ctrl="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  mc:Ignorable="d"
+  AllowsTransparency="True"
+  Background="#01000000"
+  WindowStyle="None"
+  ShowInTaskbar="False"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="Fant"
+  RenderOptions.EdgeMode="Unspecified"
+  Left="{Binding Config.Location.X, Mode=TwoWay}"
+  Top="{Binding Config.Location.Y, Mode=TwoWay}"
+  Width="{Binding Config.Size.W, Mode=TwoWay}"
+  Height="{Binding Config.Size.H, Mode=TwoWay}"
+  ResizeMode="{Binding ResizeMode, Mode=OneWay}"
+  d:DataContext="{d:DesignInstance Type=vm:EnemyHPViewModel, IsDesignTimeCreatable=True}">
+
+  <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+    <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+    <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />
+    <fwcnv:MultipleConverter x:Key="MultipleConverter" />
+
+    <Style x:Key="ValueText" TargetType="ctrl:LightOutlineTextBlock">
+      <Setter Property="Fill" Value="{Binding Config.DisplayText.Color, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+      <Setter Property="Stroke" Value="{Binding Config.DisplayText.OutlineColor, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" />
+      <Setter Property="StrokeThickness" Value="{Binding Config.DisplayText.Font.OutlineThickness, Mode=OneWay}" />
+      <Setter Property="FontFamily" Value="{Binding Config.DisplayText.Font.FontFamily, Mode=OneWay}" />
+      <Setter Property="FontSize" Value="{Binding Config.DisplayText.Font.Size, Mode=OneWay}" />
+      <Setter Property="FontStretch" Value="{Binding Config.DisplayText.Font.Stretch, Mode=OneWay}" />
+      <Setter Property="FontWeight" Value="{Binding Config.DisplayText.Font.Weight, Mode=OneWay}" />
+      <Setter Property="FontStyle" Value="{Binding Config.DisplayText.Font.Style, Mode=OneWay}" />
+      <Setter Property="BlurRadius" Value="{Binding Config.DisplayText.Font.BlurRadius, Mode=OneWay}" />
+      <Setter Property="BlurOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+      <Setter Property="StrokeOpacity" Value="{Binding Config.DisplayText.OutlineColor.ScA, Mode=OneWay}" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="TextWrapping" Value="NoWrap" />
+    </Style>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.LayoutTransform>
+      <ScaleTransform
+        ScaleX="{Binding Config.Scale, Mode=OneWay}"
+        ScaleY="{Binding Config.Scale, Mode=OneWay}" />
+    </Grid.LayoutTransform>
+
+    <!-- Background -->
+    <Border
+      Panel.ZIndex="-1"
+      CornerRadius="6"
+      Background="{Binding Config.Background, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}"
+      Visibility="{Binding Model.IsExists, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+
+    <!-- Enemy List -->
+    <ItemsControl
+      Margin="6"
+      Focusable="False"
+      IsTabStop="False"
+      ItemsSource="{Binding Model.EnemyHPListView, Mode=OneWay}">
+
+      <ItemsControl.ItemContainerStyle>
+        <Style TargetType="ContentPresenter">
+          <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+      </ItemsControl.ItemContainerStyle>
+
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Grid Margin="0 0 0 8">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+              </Grid.ColumnDefinitions>
+
+              <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+              </Grid.RowDefinitions>
+
+              <!-- Name -->
+              <ctrl:LightOutlineTextBlock
+                Grid.Row="0"
+                Style="{DynamicResource ValueText}"
+                Text="{Binding Name, Mode=OneWay}" />
+
+              <StackPanel
+                Grid.Row="1"
+                Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Margin="0 0 8 0">
+
+                <!-- Delta HP -->
+                <ctrl:LightOutlineTextBlock
+                  Style="{DynamicResource ValueText}"
+                  Text="{Binding DeltaHPRate, Mode=OneWay, StringFormat=Δ{0:P1}}"
+                  Visibility="{Binding IsExistsDelta, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+
+                <!-- HP -->
+                <ctrl:LightOutlineTextBlock
+                  Style="{DynamicResource ValueText}"
+                  Text="{Binding CurrentHP, Mode=OneWay, StringFormat={}   {0:N0}}" />
+
+                <!-- HP Rate -->
+                <ctrl:LightOutlineTextBlock
+                  Style="{DynamicResource ValueText}"
+                  Text="{Binding CurrentHPRate, Mode=OneWay, StringFormat={} ({0:P1})}" />
+              </StackPanel>
+
+              <ctrl:RichProgressBar
+                Panel.ZIndex="-1"
+                Grid.Row="1"
+                Height="{Binding Config.ProgressBar.Height, Mode=OneWay}"
+                Fill="{Binding HPColor, Mode=OneWay}"
+                Stroke="{Binding HPColor, Mode=OneWay}"
+                Progress="{Binding CurrentHPRate, Mode=OneWay}"
+                IsStrokeBackground="False" />
+            </Grid>
+          </Grid>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </Grid>
+</Window>

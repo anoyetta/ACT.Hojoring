@@ -753,6 +753,40 @@ namespace ACT.UltraScouter.Config
 
             #endregion MobList
 
+            #region Enemy
+
+            { nameof(Settings.EnemyHP), new EnemyHP()
+            {
+                Visible = false,
+                Location = new Location() { X = 0, Y = 0 },
+                Size = new BindableSize() { W = 400, H = 300 },
+                Scale = 1.0,
+                HideInNotCombat = true,
+                Background = new Color() { A = 128, R = 0, G = 0, B = 0},
+                DisplayText = new DisplayText()
+                {
+                    Font = DefaultFont,
+                    Color = DefaultColorFill,
+                    OutlineColor = Colors.Navy,
+                },
+                ProgressBar = new ProgressBar()
+                {
+                    Height = 3,
+                    ColorRange = new ObservableCollection<ProgressBarColorRange>()
+                    {
+                        new ProgressBarColorRange() { Min = 0, Max = 10, Color = Colors.Red },
+                        new ProgressBarColorRange() { Min = 10, Max = 20, Color = Colors.OrangeRed },
+                        new ProgressBarColorRange() { Min = 20, Max = 50, Color = Colors.DarkOrange },
+                        new ProgressBarColorRange() { Min = 50, Max = 75, Color = Colors.LightSeaGreen },
+                        new ProgressBarColorRange() { Min = 75, Max = 100, Color = Colors.RoyalBlue },
+                    },
+                    LinkOutlineColor = true,
+                    OutlineColor = DefaultColorStroke,
+                },
+            }},
+
+            #endregion Enemy
+
             #region TacticalRadar
 
             { nameof(Settings.TacticalRadar), new TacticalRadar()

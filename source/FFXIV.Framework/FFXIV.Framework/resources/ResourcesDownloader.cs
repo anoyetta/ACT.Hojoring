@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,6 +10,12 @@ namespace FFXIV.Framework.resources
 {
     public class ResourcesDownloader
     {
+#if DEBUG
+        private readonly bool IsDebugSkip = true;
+#else
+        private readonly bool IsDebugSkip = false;
+#endif
+
         #region Lazy Singleton
 
         private static Lazy<ResourcesDownloader> LazyInstance = new Lazy<ResourcesDownloader>(() => new ResourcesDownloader());
@@ -48,6 +54,11 @@ namespace FFXIV.Framework.resources
 
         public async Task DownloadAsync()
         {
+            if (this.IsDebugSkip)
+            {
+                return;
+            }
+
             if (this.IsReady())
             {
                 return;
