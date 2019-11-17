@@ -89,6 +89,9 @@ namespace ACT.UltraScouter.Models
                 return;
             }
 
+            var player = CombatantsManager.Instance.Player;
+
+            var previousEnemyListCount = this.enemyHPList.Count;
             var topHP = (uint)0;
 
             foreach (var c in combatants.OrderByDescending(x => x.CurrentHP))
@@ -108,6 +111,7 @@ namespace ACT.UltraScouter.Models
                 }
 
                 entry.ID = c.ID;
+                entry.IsCurrentTarget = c.ID == player?.TargetID;
                 entry.Name = c.Name;
                 entry.MaxHP = c.MaxHP;
                 entry.CurrentHP = c.CurrentHP;
@@ -123,6 +127,11 @@ namespace ACT.UltraScouter.Models
             {
                 this.enemyHPList.Remove(item);
             }
+
+            if (previousEnemyListCount != this.enemyHPList.Count)
+            {
+                this.RaisePropertyChanged(nameof(this.IsExists));
+            }
         }
 
         private void UpdateDesignMode()
@@ -131,6 +140,7 @@ namespace ACT.UltraScouter.Models
             {
                 this.enemyHPList.Clear();
                 this.enemyHPList.AddRange(DesignModeEnemyList);
+                this.RaisePropertyChanged(nameof(this.IsExists));
             }
 
             this.isDesignMode = true;
@@ -150,6 +160,7 @@ namespace ACT.UltraScouter.Models
             new EnemyHPModel()
             {
                 ID = 1,
+                IsCurrentTarget = true,
                 Name = "リビングリキッド",
                 MaxHP = 12889320,
             },

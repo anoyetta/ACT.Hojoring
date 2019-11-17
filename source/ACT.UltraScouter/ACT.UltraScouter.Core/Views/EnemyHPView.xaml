@@ -51,7 +51,8 @@
     </Style>
   </Window.Resources>
 
-  <Grid>
+  <Grid
+    Visibility="{Binding Model.IsExists, Mode=OneWay, Converter={StaticResource HiddenConverter}}">
     <Grid.LayoutTransform>
       <ScaleTransform
         ScaleX="{Binding Config.Scale, Mode=OneWay}"
@@ -60,14 +61,13 @@
 
     <!-- Background -->
     <Border
-      Panel.ZIndex="-1"
+      Panel.ZIndex="-10"
       CornerRadius="6"
-      Background="{Binding Config.Background, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}"
-      Visibility="{Binding Model.IsExists, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+      Background="{Binding Config.Background, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}" />
 
     <!-- Enemy List -->
     <ItemsControl
-      Margin="6"
+      Margin="3"
       Focusable="False"
       IsTabStop="False"
       ItemsSource="{Binding Model.EnemyHPListView, Mode=OneWay}">
@@ -87,7 +87,20 @@
       <ItemsControl.ItemTemplate>
         <DataTemplate>
           <Grid Margin="0 0 0 8">
-            <Grid>
+            <Border
+              Panel.ZIndex="-1"
+              BorderBrush="{Binding BorderBrush, Mode=OneWay}"
+              BorderThickness="1"
+              CornerRadius="3">
+              <Border.Effect>
+                <DropShadowEffect
+                  Color="{Binding BorderBrush.Color, Mode=OneWay}"
+                  Direction="0"
+                  ShadowDepth="0"
+                  BlurRadius="4" />
+              </Border.Effect>
+            </Border>
+            <Grid Margin="5">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition />
               </Grid.ColumnDefinitions>

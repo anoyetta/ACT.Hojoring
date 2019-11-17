@@ -79,6 +79,9 @@ namespace ACT.UltraScouter.Config
         public Action RefreshViewDelegate { get; set; }
 
         public void ExecuteRefreshViewCommand()
-            => this.RefreshViewDelegate?.Invoke();
+        {
+            this.RaisePropertyChanged(nameof(this.Background));
+            this.RefreshViewDelegate?.Invoke();
+        }
     }
 }
