@@ -198,6 +198,14 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
                     Child = new ObservableCollection<TreeSource>()
                     {
+                        new TreeSource("Enemy List")
+                        {
+                            Content = new EnemyHPConfigView()
+                            {
+                                DataContext = new EnemyHPConfigViewModel()
+                            }
+                        },
+
                         new TreeSource("Combatants")
                         {
                             Content = new CombatantsView()

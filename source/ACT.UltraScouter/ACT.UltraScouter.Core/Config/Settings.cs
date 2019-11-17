@@ -1,3 +1,6 @@
+using ACT.UltraScouter.Common;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Globalization;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,9 +13,6 @@ using System.Threading;
 using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Serialization;
-using ACT.UltraScouter.Common;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Globalization;
 
 namespace ACT.UltraScouter.Config
 {
@@ -632,6 +632,16 @@ namespace ACT.UltraScouter.Config
         public bool BossVSToTHideBoss { get => this.bossVSToTHideBoss; set => this.SetProperty(ref this.bossVSToTHideBoss, value); }
 
         #endregion BOSS
+
+        #region Enemy
+
+        /// <summary>
+        /// 敵のHPリスト
+        /// </summary>
+        [DataMember(Order = 141)]
+        public EnemyHP EnemyHP { get; set; }
+
+        #endregion Enemy
 
         #region Me
 

@@ -20,7 +20,8 @@ namespace ACT.UltraScouter.Workers
         Me,
         MobList,
         Enmity,
-        TacticalRadar
+        TacticalRadar,
+        EnemyList
     }
 
     public class MainWorker
@@ -93,6 +94,7 @@ namespace ACT.UltraScouter.Workers
             EnmityInfoWorker.Initialize();
             MobListWorker.Initialize();
             TacticalRadarWorker.Initialize();
+            EnemyListWorker.Initialize();
 
             TargetInfoWorker.Instance.Start();
             FTInfoWorker.Instance.Start();
@@ -102,6 +104,7 @@ namespace ACT.UltraScouter.Workers
             EnmityInfoWorker.Instance.Start();
             MobListWorker.Instance.Start();
             TacticalRadarWorker.Instance.Start();
+            EnemyListWorker.Instance.Start();
 
             // メモリスキャンタスクを開始する
             this.RestartScanMemoryWorker();
@@ -129,6 +132,7 @@ namespace ACT.UltraScouter.Workers
             EnmityInfoWorker.Instance?.End();
             MobListWorker.Instance?.End();
             TacticalRadarWorker.Instance?.End();
+            EnemyListWorker.Instance?.End();
 
             TargetInfoWorker.Free();
             FTInfoWorker.Free();
@@ -138,6 +142,7 @@ namespace ACT.UltraScouter.Workers
             EnmityInfoWorker.Free();
             MobListWorker.Free();
             TacticalRadarWorker.Free();
+            EnemyListWorker.Free();
 
             // 参照を開放する
             this.scanMemoryWorker = null;
@@ -275,6 +280,7 @@ namespace ACT.UltraScouter.Workers
                 EnmityInfoWorker.Instance.RefreshViewsQueue = true;
                 MobListWorker.Instance.RefreshViewsQueue = true;
                 TacticalRadarWorker.Instance.RefreshViewsQueue = true;
+                EnemyListWorker.Instance.RefreshViewsQueue = true;
             }
         }
 
@@ -293,7 +299,8 @@ namespace ACT.UltraScouter.Workers
                 MeInfoWorker.Instance == null ||
                 EnmityInfoWorker.Instance == null ||
                 MobListWorker.Instance == null ||
-                TacticalRadarWorker.Instance == null)
+                TacticalRadarWorker.Instance == null ||
+                EnemyListWorker.Instance == null)
             {
                 return list;
             }
@@ -309,6 +316,7 @@ namespace ACT.UltraScouter.Workers
                     list.AddRange(EnmityInfoWorker.Instance.ViewList.Select(x => x.ViewModel));
                     list.AddRange(MobListWorker.Instance.ViewList.Select(x => x.ViewModel));
                     list.AddRange(TacticalRadarWorker.Instance.ViewList.Select(x => x.ViewModel));
+                    list.AddRange(EnemyListWorker.Instance.ViewList.Select(x => x.ViewModel));
                     break;
 
                 case ViewCategories.Target:
@@ -341,6 +349,10 @@ namespace ACT.UltraScouter.Workers
 
                 case ViewCategories.TacticalRadar:
                     list.AddRange(TacticalRadarWorker.Instance.ViewList.Select(x => x.ViewModel));
+                    break;
+
+                case ViewCategories.EnemyList:
+                    list.AddRange(EnemyListWorker.Instance.ViewList.Select(x => x.ViewModel));
                     break;
             }
 
