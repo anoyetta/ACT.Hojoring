@@ -17,6 +17,22 @@ namespace ACT.UltraScouter.Models
             set => this.SetProperty(ref this.id, value);
         }
 
+        private bool isCurrentTarget;
+
+        public bool IsCurrentTarget
+        {
+            get => this.isCurrentTarget;
+            set
+            {
+                if (this.SetProperty(ref this.isCurrentTarget, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.BorderBrush));
+                }
+            }
+        }
+
+        public SolidColorBrush BorderBrush => this.isCurrentTarget ? Brushes.WhiteSmoke : Brushes.Transparent;
+
         private double distance;
 
         public double Distance
