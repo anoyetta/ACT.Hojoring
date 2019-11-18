@@ -41,8 +41,17 @@
 
   <Border
     CornerRadius="8"
+    Margin="1"
     Background="{Binding Config.Background, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}"
     Visibility="{Binding Model.IsExistsEnmityList, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+    <Border.Effect>
+      <DropShadowEffect
+        Opacity="{Binding Config.BackgroundOpacity, Mode=OneWay}"
+        Color="{Binding Config.Background, Mode=OneWay}"
+        Direction="0"
+        ShadowDepth="0"
+        BlurRadius="1" />
+    </Border.Effect>
 
     <Border.LayoutTransform>
       <ScaleTransform
