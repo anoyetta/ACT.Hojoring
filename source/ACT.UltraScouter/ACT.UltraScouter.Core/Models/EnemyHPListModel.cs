@@ -49,7 +49,7 @@ namespace ACT.UltraScouter.Models
 
             src.SortDescriptions.Add(new SortDescription(
                 nameof(EnemyHPModel.ID),
-                ListSortDirection.Descending));
+                ListSortDirection.Ascending));
 
             this.enemyHPViewSource = src;
         }
