@@ -47,7 +47,9 @@ namespace ACT.UltraScouter.Models
                 IsLiveSortingRequested = true,
             };
 
-            src.SortDescriptions.Add(new SortDescription(nameof(EnemyHPModel.CurrentHPRate), ListSortDirection.Descending));
+            src.SortDescriptions.Add(new SortDescription(
+                nameof(EnemyHPModel.ID),
+                ListSortDirection.Descending));
 
             this.enemyHPViewSource = src;
         }
@@ -92,9 +94,8 @@ namespace ACT.UltraScouter.Models
             var player = CombatantsManager.Instance.Player;
 
             var previousEnemyListCount = this.enemyHPList.Count;
-            var topHP = (uint)0;
 
-            foreach (var c in combatants.OrderByDescending(x => x.CurrentHP))
+            foreach (var c in combatants)
             {
                 var entry = this.enemyHPList
                     .FirstOrDefault(x => x.ID == c.ID);
@@ -105,18 +106,35 @@ namespace ACT.UltraScouter.Models
                     this.enemyHPList.Add(entry);
                 }
 
-                if (topHP <= 0)
-                {
-                    topHP = c.CurrentHP;
-                }
-
                 entry.ID = c.ID;
                 entry.IsCurrentTarget = c.ID == player?.TargetID;
                 entry.Name = c.Name;
                 entry.MaxHP = c.MaxHP;
                 entry.CurrentHP = c.CurrentHP;
-                entry.DeltaHP = topHP - c.CurrentHP;
                 entry.Distance = c.HorizontalDistanceByPlayer;
+
+                var diffTarget = (
+                    from x in combatants
+                    where
+                    x.MaxHP == c.MaxHP &&
+                    x.ID != c.ID
+                    orderby
+                    Math.Abs(x.CurrentHP - c.CurrentHP) descending
+                    select
+                    x).FirstOrDefault();
+
+                if (diffTarget != null)
+                {
+                    entry.DeltaHP = diffTarget.CurrentHP - c.CurrentHP;
+                    entry.DeltaHPRate = diffTarget.CurrentHPRate - c.CurrentHPRate;
+                    entry.IsExistsDelta = true;
+                }
+                else
+                {
+                    entry.DeltaHP = 0;
+                    entry.DeltaHPRate = 0;
+                    entry.IsExistsDelta = false;
+                }
             }
 
             var toRemove = this.enemyHPList

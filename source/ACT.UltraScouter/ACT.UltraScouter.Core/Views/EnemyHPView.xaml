@@ -61,9 +61,19 @@
 
     <!-- Background -->
     <Border
+      Margin="1"
       Panel.ZIndex="-10"
       CornerRadius="6"
-      Background="{Binding Config.Background, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}" />
+      Background="{Binding Config.Background, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}">
+      <Border.Effect>
+        <DropShadowEffect
+          Opacity="{Binding Config.BackgroundOpacity, Mode=OneWay}"
+          Color="{Binding Config.Background, Mode=OneWay}"
+          Direction="0"
+          ShadowDepth="0"
+          BlurRadius="1" />
+      </Border.Effect>
+    </Border>
 
     <!-- Enemy List -->
     <ItemsControl
