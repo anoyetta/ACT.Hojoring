@@ -87,19 +87,24 @@ namespace ACT.UltraScouter.Models
         public uint DeltaHP
         {
             get => this.deltaHP;
-            set
-            {
-                if (this.SetProperty(ref this.deltaHP, value))
-                {
-                    this.RaisePropertyChanged(nameof(IsExistsDelta));
-                    this.RaisePropertyChanged(nameof(DeltaHPRate));
-                }
-            }
+            set => this.SetProperty(ref this.deltaHP, value);
         }
 
-        public bool IsExistsDelta => this.deltaHP != 0;
+        private double deltaHPRate;
 
-        public double DeltaHPRate => this.CurrentHP != 0 ? ((double)this.DeltaHP / (double)(this.CurrentHP + this.DeltaHP)) : 0;
+        public double DeltaHPRate
+        {
+            get => this.deltaHPRate;
+            set => this.SetProperty(ref this.deltaHPRate, value);
+        }
+
+        private bool isExistsDelta;
+
+        public bool IsExistsDelta
+        {
+            get => this.isExistsDelta;
+            set => this.SetProperty(ref this.isExistsDelta, value);
+        }
 
         public SolidColorBrush HPColor => GetBrush(Settings.Instance.EnemyHP.ProgressBar.AvailableColor(this.CurrentHPRate * 100));
 
