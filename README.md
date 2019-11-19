@@ -52,10 +52,11 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
 **基本的に [Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki) を見てください。**
 
 #### おすすめ設定とか教えて
-下記の Google Drive 共有フォルダで各種リソースのサンプルを提供しています。  
-**[ACT共有フォルダ](https://drive.google.com/drive/folders/1nPBuqd8z3jzk0RDOx6NqK6NYUoy08_k-?usp=sharing)**  
-**[ACT共有フォルダの使い方](https://drive.google.com/open?id=1dl4dMoBONNz-NRZLCqU7YbkmkEpLKAllN92U-SCwY3M)** **[必読]**  
-**[スペスペたいむ共有レポジトリ](https://github.com/anoyetta/spespetime)**
+下記でサンプルなどを共有しています。   
+* **[ACT共有フォルダ](https://drive.google.com/drive/folders/1nPBuqd8z3jzk0RDOx6NqK6NYUoy08_k-?usp=sharing)**  
+[ACT共有フォルダの使い方](https://drive.google.com/open?id=1dl4dMoBONNz-NRZLCqU7YbkmkEpLKAllN92U-SCwY3M) **[必読]**  
+
+* **[スペスペたいむ共有レポジトリ](https://github.com/anoyetta/spespetime)**
 
 ##### Hojoring の設定ファイルあれこれ
 1. 格納場所  
