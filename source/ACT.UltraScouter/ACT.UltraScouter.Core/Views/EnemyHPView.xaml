@@ -8,8 +8,10 @@
   xmlns:local="clr-namespace:ACT.UltraScouter.Views"
   xmlns:cnv="clr-namespace:ACT.UltraScouter.Views.Converters"
   xmlns:vm="clr-namespace:ACT.UltraScouter.ViewModels"
+  xmlns:model="clr-namespace:ACT.UltraScouter.Models"
   xmlns:ctrl="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
   xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
   mc:Ignorable="d"
   AllowsTransparency="True"
   Background="#01000000"
@@ -133,10 +135,82 @@
                 Margin="0 0 8 0">
 
                 <!-- Delta HP -->
-                <ctrl:LightOutlineTextBlock
-                  Style="{DynamicResource ValueText}"
-                  Text="{Binding DeltaHPRate, Mode=OneWay, StringFormat=Δ{0:P1}}"
-                  Visibility="{Binding IsExistsDelta, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+                <StackPanel
+                  Orientation="Horizontal"
+                  Visibility="{Binding IsExistsDelta, Mode=OneWay, Converter={StaticResource HiddenConverter}}">
+
+                  <!-- Delta Sign -->
+                  <Grid
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    RenderTransformOrigin="0.5 0.5">
+                    <Grid.RenderTransform>
+                      <ScaleTransform ScaleX="0.7" ScaleY="0.7" />
+                    </Grid.RenderTransform>
+
+                    <Border
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Center"
+                      Background="White"
+                      CornerRadius="1">
+                      <Border.Effect>
+                        <DropShadowEffect
+                          Color="White"
+                          Direction="0"
+                          ShadowDepth="0"
+                          BlurRadius="4"
+                          Opacity="0.8" />
+                      </Border.Effect>
+
+                      <Grid>
+                        <TextBlock Foreground="#E83929">
+                          <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding DeltaHPSign}" Value="{x:Static model:DeltaHPSign.Positive}">
+                                  <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DeltaHPSign}" Value="{x:Static model:DeltaHPSign.Negative}">
+                                  <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DeltaHPSign}" Value="{x:Static model:DeltaHPSign.Zero}">
+                                  <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBlock.Style>
+
+                          <iconPacks:Material Kind="PlusBox" />
+                        </TextBlock>
+
+                        <TextBlock Foreground="#0095D9">
+                          <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding DeltaHPSign}" Value="{x:Static model:DeltaHPSign.Positive}">
+                                  <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DeltaHPSign}" Value="{x:Static model:DeltaHPSign.Negative}">
+                                  <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DeltaHPSign}" Value="{x:Static model:DeltaHPSign.Zero}">
+                                  <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBlock.Style>
+
+                          <iconPacks:Material Kind="MinusBox" />
+                        </TextBlock>
+                      </Grid>
+                    </Border>
+                  </Grid>
+                  <!-- Delta Sign end -->
+
+                  <ctrl:LightOutlineTextBlock
+                    Style="{DynamicResource ValueText}"
+                    Text="{Binding DeltaHPRateAbs, Mode=OneWay, StringFormat={} {0:P1}}" />
+                </StackPanel>
 
                 <!-- HP -->
                 <ctrl:LightOutlineTextBlock

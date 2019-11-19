@@ -125,8 +125,8 @@ namespace ACT.UltraScouter.Models
 
                 if (diffTarget != null)
                 {
-                    entry.DeltaHP = diffTarget.CurrentHP - c.CurrentHP;
-                    entry.DeltaHPRate = diffTarget.CurrentHPRate - c.CurrentHPRate;
+                    entry.DeltaHP = c.CurrentHP - diffTarget.CurrentHP;
+                    entry.DeltaHPRate = c.CurrentHPRate - diffTarget.CurrentHPRate;
                     entry.IsExistsDelta = true;
                 }
                 else
@@ -169,8 +169,19 @@ namespace ACT.UltraScouter.Models
             var rate = (double)(60 - DateTime.Now.Second) / 60d;
 
             liquid.CurrentHP = (uint)(liquid.MaxHP * rate);
-            hand.CurrentHP = (uint)(hand.MaxHP * rate);
-            hand.DeltaHP = liquid.CurrentHP - hand.CurrentHP;
+            hand.CurrentHP = (uint)(hand.MaxHP * (rate * 0.9d));
+
+            var self = liquid;
+            var diff = hand;
+            liquid.DeltaHP = self.CurrentHP - diff.CurrentHP;
+            liquid.DeltaHPRate = self.CurrentHPRate - diff.CurrentHPRate;
+            liquid.IsExistsDelta = true;
+
+            self = hand;
+            diff = liquid;
+            hand.DeltaHP = self.CurrentHP - diff.CurrentHP;
+            hand.DeltaHPRate = self.CurrentHPRate - diff.CurrentHPRate;
+            hand.IsExistsDelta = true;
         }
 
         private static readonly EnemyHPModel[] DesignModeEnemyList = new[]
@@ -186,7 +197,8 @@ namespace ACT.UltraScouter.Models
             {
                 ID = 2,
                 Name = "リキッドハンド",
-                MaxHP = (uint)(12889320 * 0.8),
+                MaxHP = 12889320,
+                CurrentHP = (uint)(12889320 * 0.9),
             }
         };
     }
