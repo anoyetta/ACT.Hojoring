@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Windows.Media;
 using ACT.UltraScouter.Config;
@@ -95,8 +96,24 @@ namespace ACT.UltraScouter.Models
         public double DeltaHPRate
         {
             get => this.deltaHPRate;
-            set => this.SetProperty(ref this.deltaHPRate, value);
+            set
+            {
+                if (this.SetProperty(ref this.deltaHPRate, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.DeltaHPRateAbs));
+                    this.RaisePropertyChanged(nameof(this.DeltaHPSign));
+                }
+            }
         }
+
+        public double DeltaHPRateAbs => Math.Abs(this.deltaHPRate);
+
+        public DeltaHPSign DeltaHPSign => this.deltaHPRate switch
+        {
+            var x when x > 0 => DeltaHPSign.Positive,
+            var x when x < 0 => DeltaHPSign.Negative,
+            _ => DeltaHPSign.Zero,
+        };
 
         private bool isExistsDelta;
 
@@ -127,5 +144,12 @@ namespace ACT.UltraScouter.Models
                 return brush;
             }
         }
+    }
+
+    public enum DeltaHPSign
+    {
+        Zero,
+        Positive,
+        Negative,
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Drawing;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
@@ -235,8 +234,12 @@ namespace ACT.SpecialSpellTimer
                     });
 
                     // 本体を開始する
-                    PluginMainWorker.Instance.Begin();
-                    TimelineController.Init();
+                    await Task.Run(() => WPFHelper.BeginInvoke(() =>
+                    {
+                        PluginMainWorker.Instance.Begin();
+                        TimelineController.Init();
+                    },
+                    DispatcherPriority.ApplicationIdle));
 
                     // 付加情報オーバーレイを表示する
                     LPSView.ShowLPS();
