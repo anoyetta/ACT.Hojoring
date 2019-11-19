@@ -42,7 +42,7 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
     * ACT.UltraScouter.dll
     * ACT.TTSYukkuri.dll
 
-詳細な手順は **[anoyetta の開発記録 - ACTおよび補助輪のインストール手順（完全版）](https://www.anoyetta.com/entry/2019/04/08/132603)** を読んでください。
+詳細な手順は **[anoyetta の開発記録 - ACTおよび補助輪のインストール手順（完全版）](https://www.anoyetta.com/entry/hojoring-setup)** を読んでください。
 
 ### 動作環境
 * [Windows 10](https://www.microsoft.com/software-download/windows10) 以降（Windows 7/8/8.1 では原則的に動作しません）
