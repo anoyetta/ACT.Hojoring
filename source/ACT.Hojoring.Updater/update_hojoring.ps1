@@ -105,7 +105,7 @@ foreach ($p in $processes) {
     if ($p.Name -eq "Advanced Combat Tracker") {
         $actPath = $p.Path
         if ($p.CloseMainWindow()) {
-            $p.WaitForExit(10) | Out-Null
+            $p.WaitForExit(10 * 1000) | Out-Null
             if (!$p.Exited) {
                 $p.Kill()
             }
@@ -116,7 +116,7 @@ foreach ($p in $processes) {
 
     if ($p.Name -eq "FFXIV.Framework.TTS.Server") {
         if ($p.CloseMainWindow()) {
-            $p.WaitForExit(10) | Out-Null
+            $p.WaitForExit(10 * 1000) | Out-Null
             if (!$p.Exited) {
                 $p.Kill()
             }
