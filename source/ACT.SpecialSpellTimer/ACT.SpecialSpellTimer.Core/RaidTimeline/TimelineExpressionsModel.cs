@@ -191,7 +191,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
                 else
                 {
-                    variable.Value = set.Value;
+                    var value = set.Value;
+
+                    switch (this.Parent)
+                    {
+                        case TimelineActivityModel a:
+                            if (a.SyncMatch?.Success ?? false)
+                            {
+                                value = a.SyncMatch.Result(value.ToString());
+                            }
+                            break;
+
+                        case TimelineTriggerModel t:
+                            if (t.SyncMatch?.Success ?? false)
+                            {
+                                value = t.SyncMatch.Result(value.ToString());
+                            }
+                            break;
+                    }
+
+                    variable.Value = value;
                 }
 
                 // カウンタを更新する
