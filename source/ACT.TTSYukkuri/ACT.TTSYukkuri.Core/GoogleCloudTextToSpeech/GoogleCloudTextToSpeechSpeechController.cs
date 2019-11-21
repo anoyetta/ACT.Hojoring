@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using ACT.TTSYukkuri.Config;
-using Google.Cloud.TextToSpeech.V1;
 using FFXIV.Framework.Bridge;
+using Google.Cloud.TextToSpeech.V1;
 
 namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
 {
@@ -135,7 +135,7 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
 
                 if (!File.Exists(lib.dst))
                 {
-                    File.Move(lib.src, lib.dst);
+                    File.Copy(lib.src, lib.dst, true);
                 }
             }
         }

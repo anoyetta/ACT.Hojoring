@@ -11,7 +11,7 @@ namespace FFXIV.Framework.resources
     public class ResourcesDownloader
     {
 #if DEBUG
-        private readonly bool IsDebugSkip = true;
+        private readonly bool IsDebugSkip = false;
 #else
         private readonly bool IsDebugSkip = false;
 #endif
@@ -46,6 +46,10 @@ namespace FFXIV.Framework.resources
             (Local : @"bin\openJTalk\voice\type-G.htsvoice", Uri : "https://drive.google.com/uc?id=1CQgynTdOOkPxiNbdsHTn4aAwS66ObeOR"),
             (Local : @"bin\openJTalk\voice\type-T.htsvoice", Uri : "https://drive.google.com/uc?id=1EyxeLxMwlg4I87HywnAA9JGEXssb-GYV"),
             (Local : @"bin\yukkuri\aq_dic\aqdic.bin", Uri : "https://drive.google.com/uc?id=1LSiXo-C88QhFVW0Wc9aRNWQm_Pz6I2qr"),
+            (Local : @"bin\lib\grpc_csharp_ext.x64.dll", Uri : "https://drive.google.com/uc?id=1-qVlIokg-XocmLTQPWmr4KSjz3Yc45Am"),
+            (Local : @"bin\lib\grpc_csharp_ext.x86.dll", Uri : "https://drive.google.com/uc?id=1PQjQtDiSA0K0qAQTg0Q3gpbY6GFGUUch"),
+            (Local : @"bin\lib\libopus.dll", Uri : "https://drive.google.com/uc?id=1mNx5YnoNwz_sktXv891TYbBZi6f4XNMh"),
+            (Local : @"bin\lib\libsodium.dll", Uri : "https://drive.google.com/uc?id=16GRv_xOIl1opXnC8gL1MHssBUQiVUX2i"),
         };
 
         public bool IsReady() => EnvironmentHelper.IsDebug ?

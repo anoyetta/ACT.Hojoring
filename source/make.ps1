@@ -105,6 +105,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Remove-Item bin\openJTalk\dic\sys.dic
     Remove-Item bin\openJTalk\voice\*
     Remove-Item bin\yukkuri\aq_dic\aqdic.bin
+    Remove-Item bin\lib\*.dll
 
     '●配布ファイルをアーカイブする'
     $archive = "ACT.Hojoring-" + $versionShort
@@ -114,7 +115,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     if (Test-Path $archiveZip) {
         Remove-Item $archiveZip -Force
     }
-  
+
     if (Test-Path $archive7z) {
         Remove-Item $archive7z -Force
     }

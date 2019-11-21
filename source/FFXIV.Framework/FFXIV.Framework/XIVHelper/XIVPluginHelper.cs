@@ -148,6 +148,13 @@ namespace FFXIV.Framework.XIVHelper
                 {
                     this.Attach();
 
+                    if (this.plugin == null ||
+                        this.DataRepository == null ||
+                        this.DataSubscription == null)
+                    {
+                        return;
+                    }
+
                     lock (ResourcesLock)
                     {
                         this.LoadSkillList();

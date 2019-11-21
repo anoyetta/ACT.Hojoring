@@ -592,22 +592,12 @@ namespace ACT.TTSYukkuri.Discord.Models
 
             if (!File.Exists(opus))
             {
-                var src = Path.Combine(entryDirectory, "libopus.dll");
+                var src = Path.Combine(libDirectory, "libopus.dll");
 
                 if (File.Exists(src))
                 {
                     this.AppendLogLine("Install Opus.");
-                    File.Move(src, opus);
-                }
-                else
-                {
-                    src = Path.Combine(libDirectory, "libopus.dll");
-
-                    if (File.Exists(src))
-                    {
-                        this.AppendLogLine("Install Opus.");
-                        File.Move(src, opus);
-                    }
+                    File.Copy(src, opus, true);
                 }
             }
 
@@ -618,7 +608,7 @@ namespace ACT.TTSYukkuri.Discord.Models
                 if (File.Exists(src))
                 {
                     this.AppendLogLine("Install Sodium.");
-                    File.Move(src, sodium);
+                    File.Copy(src, sodium, true);
                 }
             }
         }
