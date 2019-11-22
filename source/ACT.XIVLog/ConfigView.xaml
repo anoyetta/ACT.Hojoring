@@ -30,26 +30,62 @@
       <Setter Property="HorizontalAlignment" Value="Left" />
       <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
+
+    <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
   </UserControl.Resources>
 
   <Grid Margin="12">
     <StackPanel>
-      <Label Content="Output Directory" />
-      <TextBox HorizontalAlignment="Left" Width="700" Text="{Binding Path=Config.OutputDirectory, Mode=TwoWay}" />
-      <Label Content="{Binding Path=Plugin.LogfileNameWithoutParent, Mode=OneWay}" Height="30" VerticalContentAlignment="Center" />
-      <StackPanel Orientation="Horizontal">
-        <Button BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Open Log" Command="{Binding OpenLogCommand, Mode=OneWay}" />
-        <Button Margin="25 0 0 0" BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Open Directory" Command="{Binding OpenLogDirectoryCommand, Mode=OneWay}" />
+      <Label Content="Text Log" FontWeight="Bold" />
+      <StackPanel Margin="10 0 0 0">
+        <Label Content="Output Directory" />
+        <TextBox HorizontalAlignment="Left" Width="700" Text="{Binding Path=Config.OutputDirectory, Mode=TwoWay}" />
+        <Label Content="{Binding Path=Plugin.LogfileNameWithoutParent, Mode=OneWay}" Height="30" VerticalContentAlignment="Center" />
+        <StackPanel Orientation="Horizontal">
+          <Button BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Open Log" Command="{Binding OpenLogCommand, Mode=OneWay}" />
+          <Button Margin="25 0 0 0" BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Open Directory" Command="{Binding OpenLogDirectoryCommand, Mode=OneWay}" />
+        </StackPanel>
+        <CheckBox Margin="0 10 0 0" Content="Replace PC name to Job name" IsChecked="{Binding Path=Config.IsReplacePCName, Mode=TwoWay}" />
       </StackPanel>
-      <CheckBox Margin="0 10 0 0" Content="Replace PC name to Job name" IsChecked="{Binding Path=Config.IsReplacePCName, Mode=TwoWay}" />
 
-      <TextBlock Margin="5 25 0 0">
-        * Informations<LineBreak />
+      <Label Margin="0 20 0 0" Content="Video" FontWeight="Bold" />
+      <StackPanel Margin="10 0 0 0">
+        <CheckBox Margin="0 8 0 0" Content="Recording video every wipeout." IsChecked="{Binding Path=Config.IsEnabledRecording, Mode=TwoWay}" />
+
+        <Border
+          Margin="0 10 0 3"
+          Background="Red"
+          CornerRadius="6"
+          HorizontalAlignment="Left"
+          Width="60"
+          Visibility="{Binding Config.IsRecording, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+          <Label Content="REC" Padding="0" Height="22" VerticalContentAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontWeight="Bold" />
+        </Border>
+        <Label
+          Padding="0"
+          Content="{Binding Config.CurrentVideoFileName, Mode=OneWay}"
+          Visibility="{Binding Config.IsRecording, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+      </StackPanel>
+
+      <Label Margin="0 20 0 0" Content="Informations" FontWeight="Bold" />
+      <TextBlock Margin="10 0 0 0">
         <TextBlock Margin="10 5 0 0">
           - Command<LineBreak />
           <StackPanel Margin="10 5 0 0" Orientation="Horizontal">
             <TextBlock>/xivlog open</TextBlock>
             <TextBlock Margin="25 0 0 0">: Open log file command.</TextBlock>
+          </StackPanel>
+
+          <LineBreak />
+          <StackPanel Margin="10 1 0 0" Orientation="Horizontal">
+            <TextBlock>/xivlog rec</TextBlock>
+            <TextBlock Margin="34 0 0 0">: Start video recording.</TextBlock>
+          </StackPanel>
+
+          <LineBreak />
+          <StackPanel Margin="10 1 0 0" Orientation="Horizontal">
+            <TextBlock>/xivlog stop</TextBlock>
+            <TextBlock Margin="25 0 0 0">: Stop video recording.</TextBlock>
           </StackPanel>
         </TextBlock>
         <LineBreak />

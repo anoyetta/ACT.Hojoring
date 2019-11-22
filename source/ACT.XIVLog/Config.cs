@@ -159,5 +159,41 @@ namespace ACT.XIVLog
             get => this.isReplacePCName;
             set => this.SetProperty(ref this.isReplacePCName, value);
         }
+
+        private bool isEnabledRecording;
+
+        [DefaultValue(false)]
+        public bool IsEnabledRecording
+        {
+            get => this.isEnabledRecording;
+            set => this.SetProperty(ref this.isEnabledRecording, value);
+        }
+
+        private string currentVideoFileName;
+
+        [XmlIgnore]
+        public string CurrentVideoFileName
+        {
+            get => this.currentVideoFileName;
+            set
+            {
+                if (this.SetProperty(ref this.currentVideoFileName, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.VideoFolderName));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public string VideoFolderName => Path.GetDirectoryName(this.currentVideoFileName);
+
+        private bool isRecording;
+
+        [XmlIgnore]
+        public bool IsRecording
+        {
+            get => this.isRecording;
+            set => this.SetProperty(ref this.isRecording, value);
+        }
     }
 }
