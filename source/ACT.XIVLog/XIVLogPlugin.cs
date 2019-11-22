@@ -116,8 +116,6 @@ namespace ACT.XIVLog
             ActGlobals.oFormActMain.OnLogLineRead -= this.OnLogLineRead;
             ActGlobals.oFormActMain.OnLogLineRead += this.OnLogLineRead;
 
-            VideoCapture.Instance.Init();
-
             void doWork()
             {
                 var isNeedsFlush = false;

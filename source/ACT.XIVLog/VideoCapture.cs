@@ -23,12 +23,17 @@ namespace ACT.XIVLog
 
         #endregion Lazy Instance
 
-        public async void Init()
+        private MediaCapture mediaCapture;
+
+        private async Task<MediaCapture> GetMediaCaptureAsync() => this.mediaCapture ??= await this.InitMediaCaptureAsync();
+
+        private async Task<MediaCapture> InitMediaCaptureAsync()
         {
-            await this.MediaCapture.InitializeAsync();
+            var mediaCapture = new MediaCapture();
+            await mediaCapture.InitializeAsync();
+            return mediaCapture;
         }
 
-        private readonly MediaCapture MediaCapture = new MediaCapture();
         private LowLagMediaRecording mediaRecording;
 
         private static readonly Regex ContentStartLogRegex = new Regex(
@@ -131,7 +136,9 @@ namespace ACT.XIVLog
                 $"{DateTime.Now:yyyy-MM-dd HH-mm} {contentName} take{tryCount}.mp4",
                 CreationCollisionOption.ReplaceExisting);
 
-            this.mediaRecording = await this.MediaCapture.PrepareLowLagRecordToStorageFileAsync(
+            var capture = await this.GetMediaCaptureAsync();
+
+            this.mediaRecording = await capture.PrepareLowLagRecordToStorageFileAsync(
                 MediaEncodingProfile.CreateMp4(VideoEncodingQuality.Auto),
                 file);
 
