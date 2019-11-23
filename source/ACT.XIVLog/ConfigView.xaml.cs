@@ -82,11 +82,15 @@ namespace ACT.XIVLog
 
         private void StartRecordingTextBox_KeyDown(object sender, KeyEventArgs e)
         {
+            var shortcut = this.Config.StartRecordingShortcut;
+            shortcut.Key = e.Key;
             e.Handled = true;
         }
 
         private void StopRecordingTextBox_KeyDown(object sender, KeyEventArgs e)
         {
+            var shortcut = this.Config.StopRecordingShortcut;
+            shortcut.Key = e.Key;
             e.Handled = true;
         }
     }

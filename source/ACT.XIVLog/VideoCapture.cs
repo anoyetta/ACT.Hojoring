@@ -120,12 +120,23 @@ namespace ACT.XIVLog
 
             WPFHelper.InvokeAsync(() =>
             {
-                Config.Instance.IsRecording = true;
+                lock (this)
+                {
+                    Config.Instance.IsRecording = true;
+                }
             });
         }
 
         public void FinishRecording()
         {
+            lock (this)
+            {
+                if (!Config.Instance.IsRecording)
+                {
+                    return;
+                }
+            }
+
             this.Input.Keyboard.ModifiedKeyStroke(
                 Config.Instance.StopRecordingShortcut.GetModifiers(),
                 Config.Instance.StopRecordingShortcut.GetKeys());
@@ -174,7 +185,10 @@ namespace ACT.XIVLog
 
             WPFHelper.InvokeAsync(() =>
             {
-                Config.Instance.IsRecording = false;
+                lock (this)
+                {
+                    Config.Instance.IsRecording = false;
+                }
             });
         }
     }

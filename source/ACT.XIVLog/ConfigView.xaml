@@ -58,13 +58,21 @@
 
         <StackPanel Margin="0 8 0 0" Orientation="Horizontal">
           <Label Width="190" Content="Start Recording Key" />
-          <TextBox x:Name="StartRecordingTextBox" Margin="5 0 0 0" Width="100" />
+          <CheckBox IsChecked="{Binding Config.StartRecordingShortcut.IsWin, Mode=TwoWay}" Content="Win" Margin="0 0 5 0" />
+          <CheckBox IsChecked="{Binding Config.StartRecordingShortcut.IsControl, Mode=TwoWay}" Content="Ctrl" Margin="0 0 5 0" />
+          <CheckBox IsChecked="{Binding Config.StartRecordingShortcut.IsShift, Mode=TwoWay}" Content="Shift" Margin="0 0 5 0" />
+          <CheckBox IsChecked="{Binding Config.StartRecordingShortcut.IsAlt, Mode=TwoWay}" Content="Alt" Margin="0 0 5 0" />
+          <TextBox x:Name="StartRecordingTextBox" Margin="5 0 0 0" Width="50" />
           <Label Margin="5 0 0 0" Content="{Binding Config.StartRecordingShortcut.Text, Mode=OneWay}" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal">
           <Label Width="190" Content="Stop Recording Key" />
-          <TextBox x:Name="StopRecordingTextBox" Margin="5 0 0 0" Width="100" />
+          <CheckBox IsChecked="{Binding Config.StopRecordingShortcut.IsWin, Mode=TwoWay}" Content="Win" Margin="0 0 5 0" />
+          <CheckBox IsChecked="{Binding Config.StopRecordingShortcut.IsControl, Mode=TwoWay}" Content="Ctrl" Margin="0 0 5 0" />
+          <CheckBox IsChecked="{Binding Config.StopRecordingShortcut.IsShift, Mode=TwoWay}" Content="Shift" Margin="0 0 5 0" />
+          <CheckBox IsChecked="{Binding Config.StopRecordingShortcut.IsAlt, Mode=TwoWay}" Content="Alt" Margin="0 0 5 0" />
+          <TextBox x:Name="StopRecordingTextBox" Margin="5 0 0 0" Width="50" />
           <Label Margin="5 0 0 0" Content="{Binding Config.StopRecordingShortcut.Text, Mode=OneWay}" />
         </StackPanel>
 

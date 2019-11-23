@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows.Input;
 using System.Xml.Serialization;
 using Prism.Mvvm;
 using WindowsInput.Native;
@@ -228,7 +228,7 @@ namespace ACT.XIVLog
         {
             IsWin = true,
             IsAlt = true,
-            Key = Keys.LWin,
+            Key = Key.R,
         };
 
         public KeyShortcut StartRecordingShortcut
@@ -241,7 +241,7 @@ namespace ACT.XIVLog
         {
             IsWin = true,
             IsAlt = true,
-            Key = Keys.LWin,
+            Key = Key.R,
         };
 
         public KeyShortcut StopRecordingShortcut
@@ -266,7 +266,19 @@ namespace ACT.XIVLog
     {
         public KeyShortcut()
         {
-            this.PropertyChanged += (_, __) => this.RaisePropertyChanged(nameof(this.Text));
+            this.PropertyChanged += (_, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(this.IsControl):
+                    case nameof(this.IsShift):
+                    case nameof(this.IsAlt):
+                    case nameof(this.IsWin):
+                    case nameof(this.Key):
+                        this.RaisePropertyChanged(nameof(this.Text));
+                        break;
+                }
+            };
         }
 
         private bool isControl;
@@ -305,10 +317,10 @@ namespace ACT.XIVLog
             set => this.SetProperty(ref this.isWin, value);
         }
 
-        private Keys key;
+        private Key key;
 
         [XmlAttribute(AttributeName = "Key")]
-        public Keys Key
+        public Key Key
         {
             get => this.key;
             set => this.SetProperty(ref this.key, value);
@@ -359,7 +371,7 @@ namespace ACT.XIVLog
 
         public static VirtualKeyCode[] GetKeys(this KeyShortcut shortcut) => new[] { ToVK(shortcut.Key) };
 
-        private static VirtualKeyCode ToVK(Keys key)
+        private static VirtualKeyCode ToVK(Key key)
             => (VirtualKeyCode)Enum.ToObject(typeof(VirtualKeyCode), (int)key);
     }
 }
