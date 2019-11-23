@@ -13,6 +13,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
@@ -126,6 +127,10 @@ namespace FFXIV.Framework.XIVHelper
             double pollingInteval,
             Locales ffxivLocale = Locales.JA)
         {
+            await WPFHelper.InvokeAsync(
+                async () => await Task.Delay(TimeSpan.FromMilliseconds(10)),
+                DispatcherPriority.ApplicationIdle);
+
             lock (this)
             {
                 if (this.isStarted)
