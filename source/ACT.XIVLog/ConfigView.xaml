@@ -52,6 +52,14 @@
       <Label Margin="0 20 0 0" Content="Video" FontWeight="Bold" />
       <StackPanel Margin="10 0 0 0">
         <CheckBox Margin="0 8 0 0" Content="Recording video every wipeout." IsChecked="{Binding Path=Config.IsEnabledRecording, Mode=TwoWay}" />
+        <StackPanel
+          Orientation="Horizontal"
+          Margin="20 8 0 0"
+          Visibility="{Binding Config.IsEnabledRecording, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+          <TextBlock Text="Last Try" />
+          <xctk:IntegerUpDown Margin="6 0 0 0" Width="70" Value="{Binding Config.VideoTryCount, Mode=TwoWay}" Minimum="0" />
+        </StackPanel>
+
         <CheckBox Margin="0 5 0 0" Content="Show title card." IsChecked="{Binding Path=Config.IsShowTitleCard, Mode=TwoWay}" />
         <StackPanel
           Margin="20 8 0 0"
@@ -79,7 +87,7 @@
           <CheckBox IsChecked="{Binding Config.StartRecordingShortcut.IsShift, Mode=TwoWay}" Content="Shift" Margin="0 0 5 0" />
           <CheckBox IsChecked="{Binding Config.StartRecordingShortcut.IsAlt, Mode=TwoWay}" Content="Alt" Margin="0 0 5 0" />
           <TextBox x:Name="StartRecordingTextBox" Margin="5 0 0 0" Width="50" />
-          <Label Margin="5 0 0 0" Content="{Binding Config.StartRecordingShortcut.Text, Mode=OneWay}" />
+          <Label Margin="5 0 0 0" Content="{Binding Config.StartRecordingShortcut.Text, Mode=OneWay}" Foreground="Gray" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal">
@@ -89,7 +97,7 @@
           <CheckBox IsChecked="{Binding Config.StopRecordingShortcut.IsShift, Mode=TwoWay}" Content="Shift" Margin="0 0 5 0" />
           <CheckBox IsChecked="{Binding Config.StopRecordingShortcut.IsAlt, Mode=TwoWay}" Content="Alt" Margin="0 0 5 0" />
           <TextBox x:Name="StopRecordingTextBox" Margin="5 0 0 0" Width="50" />
-          <Label Margin="5 0 0 0" Content="{Binding Config.StopRecordingShortcut.Text, Mode=OneWay}" />
+          <Label Margin="5 0 0 0" Content="{Binding Config.StopRecordingShortcut.Text, Mode=OneWay}" Foreground="Gray" />
         </StackPanel>
 
         <Border

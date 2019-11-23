@@ -53,7 +53,7 @@ namespace ACT.XIVLog
             if (match.Success)
             {
                 this.contentName = match.Groups["content"]?.Value;
-                this.tryCount = 0;
+                this.TryCount = 0;
                 return;
             }
 
@@ -62,7 +62,7 @@ namespace ACT.XIVLog
             {
                 this.FinishRecording();
                 this.contentName = string.Empty;
-                this.tryCount = 0;
+                this.TryCount = 0;
                 return;
             }
 
@@ -97,12 +97,17 @@ namespace ACT.XIVLog
 
         private DateTime startTime;
         private string contentName = string.Empty;
-        private int tryCount = 0;
         private int deathCount = 0;
+
+        private int TryCount
+        {
+            get => Config.Instance.VideoTryCount;
+            set => WPFHelper.Invoke(() => Config.Instance.VideoTryCount = value);
+        }
 
         public void StartRecording()
         {
-            this.tryCount++;
+            this.TryCount++;
             this.startTime = DateTime.Now;
 
             if (Config.Instance.IsEnabledRecording)
@@ -130,7 +135,7 @@ namespace ACT.XIVLog
 
                 TitleCardView.Show(
                     contentName,
-                    this.tryCount,
+                    this.TryCount,
                     this.startTime);
             });
         }
@@ -160,9 +165,14 @@ namespace ACT.XIVLog
                 {
                     var now = DateTime.Now;
 
+                    var prefix = Config.Instance.VideFilePrefix.Trim();
+                    prefix = string.IsNullOrEmpty(prefix) ?
+                        string.Empty :
+                        $"{prefix} ";
+
                     var f = this.deathCount > 1 ?
-                        $"{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.tryCount:00} death{this.deathCount - 1}.mp4" :
-                        $"{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.tryCount:00}.mp4";
+                        $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} death{this.deathCount - 1}.mp4" :
+                        $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00}.mp4";
 
                     await Task.Delay(TimeSpan.FromSeconds(8));
 

@@ -266,6 +266,14 @@ namespace ACT.XIVLog
             set => this.SetProperty(ref this.stopRecordingShortcut, value);
         }
 
+        private string videFilePrefix = "FINAL FANTASY XIV";
+
+        public string VideFilePrefix
+        {
+            get => this.videFilePrefix;
+            set => this.SetProperty(ref this.videFilePrefix, value);
+        }
+
         private bool isRecording;
 
         [XmlIgnore]
@@ -273,6 +281,15 @@ namespace ACT.XIVLog
         {
             get => this.isRecording;
             set => this.SetProperty(ref this.isRecording, value);
+        }
+
+        private int videoTryCount;
+
+        [XmlIgnore]
+        public int VideoTryCount
+        {
+            get => this.videoTryCount;
+            set => this.SetProperty(ref this.videoTryCount, value);
         }
     }
 
