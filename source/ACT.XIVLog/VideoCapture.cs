@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using FFXIV.Framework.Common;
-using Windows.Media.Capture;
-using Windows.Media.MediaProperties;
-using Windows.Storage;
+using WindowsInput;
 
 namespace ACT.XIVLog
 {
@@ -23,18 +22,7 @@ namespace ACT.XIVLog
 
         #endregion Lazy Instance
 
-        private MediaCapture mediaCapture;
-
-        private async Task<MediaCapture> GetMediaCaptureAsync() => this.mediaCapture ??= await this.InitMediaCaptureAsync();
-
-        private async Task<MediaCapture> InitMediaCaptureAsync()
-        {
-            var mediaCapture = new MediaCapture();
-            await mediaCapture.InitializeAsync();
-            return mediaCapture;
-        }
-
-        private LowLagMediaRecording mediaRecording;
+        private readonly InputSimulator Input = new InputSimulator();
 
         private static readonly Regex ContentStartLogRegex = new Regex(
             "^00:0839:「(?<content>.+)」の攻略を開始した。",
@@ -111,11 +99,12 @@ namespace ACT.XIVLog
             }
         }
 
+        private DateTime startTime;
         private string contentName = string.Empty;
         private int tryCount = 0;
         private int deathCount = 0;
 
-        public async void StartRecording()
+        public void StartRecording()
         {
             if (!Config.Instance.IsEnabledRecording)
             {
@@ -123,61 +112,69 @@ namespace ACT.XIVLog
             }
 
             this.tryCount++;
+            this.startTime = DateTime.Now;
 
-            var myVideos = await StorageLibrary.GetLibraryAsync(
-                KnownLibraryId.Videos);
+            this.Input.Keyboard.ModifiedKeyStroke(
+                Config.Instance.StartRecordingShortcut.GetModifiers(),
+                Config.Instance.StartRecordingShortcut.GetKeys());
 
-            if (string.IsNullOrEmpty(contentName))
-            {
-                contentName = "UNKNOWN";
-            }
-
-            var file = await myVideos.SaveFolder.CreateFileAsync(
-                $"{DateTime.Now:yyyy-MM-dd HH-mm} {contentName} take{tryCount}.mp4",
-                CreationCollisionOption.ReplaceExisting);
-
-            var capture = await this.GetMediaCaptureAsync();
-
-            this.mediaRecording = await capture.PrepareLowLagRecordToStorageFileAsync(
-                MediaEncodingProfile.CreateMp4(VideoEncodingQuality.Auto),
-                file);
-
-            await this.mediaRecording.StartAsync();
-
-            await WPFHelper.InvokeAsync(() =>
+            WPFHelper.InvokeAsync(() =>
             {
                 Config.Instance.IsRecording = true;
-                Config.Instance.CurrentVideoFileName = file.Name;
             });
         }
 
-        public async void FinishRecording()
+        public void FinishRecording()
         {
-            if (this.mediaRecording == null)
+            this.Input.Keyboard.ModifiedKeyStroke(
+                Config.Instance.StopRecordingShortcut.GetModifiers(),
+                Config.Instance.StopRecordingShortcut.GetKeys());
+
+            var contentName = !string.IsNullOrEmpty(this.contentName) ?
+                this.contentName :
+                "UNKNOWN";
+
+            if (!string.IsNullOrEmpty(Config.Instance.VideoSaveDictory) &&
+                Directory.Exists(Config.Instance.VideoSaveDictory))
             {
-                return;
+                Task.Run(async () =>
+                {
+                    var f = this.deathCount > 1 ?
+                        Path.Combine(
+                            Path.GetDirectoryName(Config.Instance.VideoSaveDictory),
+                            $"{this.startTime:YYYY-MM-dd HH-mm} {contentName} try{this.tryCount:00} death{this.deathCount - 1}.mp4") :
+                        Path.Combine(
+                            Path.GetDirectoryName(Config.Instance.VideoSaveDictory),
+                            $"{this.startTime:YYYY-MM-dd HH-mm} {contentName} try{this.tryCount:00}.mp4");
+
+                    if (!File.Exists(f))
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(8));
+
+                        var files = Directory.GetFiles(
+                            Config.Instance.VideoSaveDictory,
+                            "*.mp4");
+
+                        var original = files
+                            .OrderByDescending(x => File.GetCreationTime(x))
+                            .FirstOrDefault();
+
+                        if (!string.IsNullOrEmpty(original))
+                        {
+                            if (File.GetCreationTime(original) >= DateTime.Now.AddSeconds(-10))
+                            {
+                                File.Move(
+                                    original,
+                                    f);
+                            }
+                        }
+                    }
+                });
             }
 
-            await this.mediaRecording.FinishAsync();
-            this.mediaRecording = null;
-
-            if (this.deathCount > 1)
-            {
-                await Task.Delay(10);
-
-                var f = Path.Combine(
-                    Path.GetDirectoryName(Config.Instance.CurrentVideoFileName),
-                    $"{Path.GetFileNameWithoutExtension(Config.Instance.CurrentVideoFileName)} death{this.deathCount - 1}.mp4");
-
-                File.Move(
-                    Config.Instance.CurrentVideoFileName,
-                    f);
-            }
-
-            await WPFHelper.InvokeAsync(() =>
+            WPFHelper.InvokeAsync(() =>
             {
                 Config.Instance.IsRecording = false;
-                Config.Instance.CurrentVideoFileName = string.Empty;
             });
         }
     }

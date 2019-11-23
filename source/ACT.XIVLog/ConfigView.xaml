@@ -38,7 +38,7 @@
     <StackPanel>
       <Label Content="Text Log" FontWeight="Bold" />
       <StackPanel Margin="10 0 0 0">
-        <Label Content="Output Directory" />
+        <Label Content="Output directory" />
         <TextBox HorizontalAlignment="Left" Width="700" Text="{Binding Path=Config.OutputDirectory, Mode=TwoWay}" />
         <Label Content="{Binding Path=Plugin.LogfileNameWithoutParent, Mode=OneWay}" Height="30" VerticalContentAlignment="Center" />
         <StackPanel Orientation="Horizontal">
@@ -51,6 +51,22 @@
       <Label Margin="0 20 0 0" Content="Video" FontWeight="Bold" />
       <StackPanel Margin="10 0 0 0">
         <CheckBox Margin="0 8 0 0" Content="Recording video every wipeout." IsChecked="{Binding Path=Config.IsEnabledRecording, Mode=TwoWay}" />
+        <CheckBox Margin="0 5 0 0" Content="Show title card." IsChecked="{Binding Path=Config.IsShowTitleCard, Mode=TwoWay}" />
+
+        <Label Margin="0 8 0 0" Content="Video save directory" />
+        <TextBox HorizontalAlignment="Left" Width="700" Text="{Binding Path=Config.VideoSaveDictory, Mode=TwoWay}" />
+
+        <StackPanel Margin="0 8 0 0" Orientation="Horizontal">
+          <Label Width="190" Content="Start Recording Key" />
+          <TextBox x:Name="StartRecordingTextBox" Margin="5 0 0 0" Width="100" />
+          <Label Margin="5 0 0 0" Content="{Binding Config.StartRecordingShortcut.Text, Mode=OneWay}" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+          <Label Width="190" Content="Stop Recording Key" />
+          <TextBox x:Name="StopRecordingTextBox" Margin="5 0 0 0" Width="100" />
+          <Label Margin="5 0 0 0" Content="{Binding Config.StopRecordingShortcut.Text, Mode=OneWay}" />
+        </StackPanel>
 
         <Border
           Margin="0 10 0 3"
@@ -61,10 +77,6 @@
           Visibility="{Binding Config.IsRecording, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
           <Label Content="REC" Padding="0" Height="22" VerticalContentAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontWeight="Bold" />
         </Border>
-        <Label
-          Padding="0"
-          Content="{Binding Config.CurrentVideoFileName, Mode=OneWay}"
-          Visibility="{Binding Config.IsRecording, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
       </StackPanel>
 
       <Label Margin="0 20 0 0" Content="Informations" FontWeight="Bold" />

@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.Serialization;
 using Prism.Mvvm;
+using WindowsInput.Native;
 
 namespace ACT.XIVLog
 {
@@ -169,23 +173,82 @@ namespace ACT.XIVLog
             set => this.SetProperty(ref this.isEnabledRecording, value);
         }
 
-        private string currentVideoFileName;
+        private bool isShowTitleCard;
 
-        [XmlIgnore]
-        public string CurrentVideoFileName
+        [DefaultValue(false)]
+        public bool IsShowTitleCard
         {
-            get => this.currentVideoFileName;
-            set
-            {
-                if (this.SetProperty(ref this.currentVideoFileName, value))
-                {
-                    this.RaisePropertyChanged(nameof(this.VideoFolderName));
-                }
-            }
+            get => this.isShowTitleCard;
+            set => this.SetProperty(ref this.isShowTitleCard, value);
         }
 
+        private double titleCardLeft;
+
+        public double TitleCardLeft
+        {
+            get => this.titleCardLeft;
+            set => this.SetProperty(ref this.titleCardLeft, value);
+        }
+
+        private double titleCardTop;
+
+        public double TitleCardTop
+        {
+            get => this.titleCardTop;
+            set => this.SetProperty(ref this.titleCardTop, value);
+        }
+
+        private double scale = 1.0d;
+
+        public double Scale
+        {
+            get => this.scale;
+            set => this.SetProperty(ref this.scale, value);
+        }
+
+        private bool isPreviewTitleCard;
+
         [XmlIgnore]
-        public string VideoFolderName => Path.GetDirectoryName(this.currentVideoFileName);
+        public bool IsPreviewTitleCard
+        {
+            get => this.isPreviewTitleCard;
+            set => this.SetProperty(ref this.isPreviewTitleCard, value);
+        }
+
+        private string videoSaveDictory;
+
+        [DefaultValue("")]
+        public string VideoSaveDictory
+        {
+            get => this.videoSaveDictory;
+            set => this.SetProperty(ref this.videoSaveDictory, value);
+        }
+
+        private KeyShortcut startRecordingShortcut = new KeyShortcut()
+        {
+            IsWin = true,
+            IsAlt = true,
+            Key = Keys.LWin,
+        };
+
+        public KeyShortcut StartRecordingShortcut
+        {
+            get => this.startRecordingShortcut;
+            set => this.SetProperty(ref this.startRecordingShortcut, value);
+        }
+
+        private KeyShortcut stopRecordingShortcut = new KeyShortcut()
+        {
+            IsWin = true,
+            IsAlt = true,
+            Key = Keys.LWin,
+        };
+
+        public KeyShortcut StopRecordingShortcut
+        {
+            get => this.stopRecordingShortcut;
+            set => this.SetProperty(ref this.stopRecordingShortcut, value);
+        }
 
         private bool isRecording;
 
@@ -195,5 +258,108 @@ namespace ACT.XIVLog
             get => this.isRecording;
             set => this.SetProperty(ref this.isRecording, value);
         }
+    }
+
+    [Serializable]
+    public class KeyShortcut :
+        BindableBase
+    {
+        public KeyShortcut()
+        {
+            this.PropertyChanged += (_, __) => this.RaisePropertyChanged(nameof(this.Text));
+        }
+
+        private bool isControl;
+
+        [XmlAttribute(AttributeName = "Control")]
+        public bool IsControl
+        {
+            get => this.isControl;
+            set => this.SetProperty(ref this.isControl, value);
+        }
+
+        private bool isShift;
+
+        [XmlAttribute(AttributeName = "Shift")]
+        public bool IsShift
+        {
+            get => this.isShift;
+            set => this.SetProperty(ref this.isShift, value);
+        }
+
+        private bool isAlt;
+
+        [XmlAttribute(AttributeName = "Alt")]
+        public bool IsAlt
+        {
+            get => this.isAlt;
+            set => this.SetProperty(ref this.isAlt, value);
+        }
+
+        private bool isWin;
+
+        [XmlAttribute(AttributeName = "Win")]
+        public bool IsWin
+        {
+            get => this.isWin;
+            set => this.SetProperty(ref this.isWin, value);
+        }
+
+        private Keys key;
+
+        [XmlAttribute(AttributeName = "Key")]
+        public Keys Key
+        {
+            get => this.key;
+            set => this.SetProperty(ref this.key, value);
+        }
+
+        [XmlIgnore]
+        public string Text => string.Join("+", new[]
+        {
+            this.IsWin ? "Win" : string.Empty,
+            this.IsControl ? "Ctrl" : string.Empty,
+            this.IsShift ? "Shift" : string.Empty,
+            this.IsAlt ? "Alt" : string.Empty,
+            this.Key.ToString().Replace("VK_", string.Empty)
+        }
+        .Where(x => !string.IsNullOrEmpty(x))
+        .ToArray());
+    }
+
+    public static class KeyShortcutExtensions
+    {
+        public static VirtualKeyCode[] GetModifiers(
+            this KeyShortcut shortcut)
+        {
+            var keys = new List<VirtualKeyCode>();
+
+            if (shortcut.IsWin)
+            {
+                keys.Add(VirtualKeyCode.LWIN);
+            }
+
+            if (shortcut.IsControl)
+            {
+                keys.Add(VirtualKeyCode.CONTROL);
+            }
+
+            if (shortcut.IsShift)
+            {
+                keys.Add(VirtualKeyCode.SHIFT);
+            }
+
+            if (shortcut.IsAlt)
+            {
+                keys.Add(VirtualKeyCode.MENU);
+            }
+
+            return keys.ToArray();
+        }
+
+        public static VirtualKeyCode[] GetKeys(this KeyShortcut shortcut) => new[] { ToVK(shortcut.Key) };
+
+        private static VirtualKeyCode ToVK(Keys key)
+            => (VirtualKeyCode)Enum.ToObject(typeof(VirtualKeyCode), (int)key);
     }
 }

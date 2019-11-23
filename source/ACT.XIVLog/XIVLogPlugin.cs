@@ -29,7 +29,11 @@ namespace ACT.XIVLog
 
         public static XIVLogPlugin Instance => instance;
 
-        public XIVLogPlugin() => instance = this;
+        public XIVLogPlugin()
+        {
+            instance = this;
+            CosturaUtility.Initialize();
+        }
 
         #endregion Singleton
 

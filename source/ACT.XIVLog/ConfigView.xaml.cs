@@ -17,6 +17,9 @@ namespace ACT.XIVLog
         public ConfigView()
         {
             this.InitializeComponent();
+
+            this.StartRecordingTextBox.KeyDown += this.StartRecordingTextBox_KeyDown;
+            this.StopRecordingTextBox.KeyDown += this.StopRecordingTextBox_KeyDown;
         }
 
         public Config Config => Config.Instance;
@@ -63,5 +66,28 @@ namespace ACT.XIVLog
                     Process.Start(directory);
                 }
             })));
+
+        private ICommand oepnVideoDirectoryCommand;
+
+        public ICommand OepnVideoDirectoryCommand =>
+            this.oepnVideoDirectoryCommand ?? (this.oepnVideoDirectoryCommand = new DelegateCommand(async () => await Task.Run(() =>
+            {
+                var directory = Path.GetDirectoryName(this.Config.VideoSaveDictory);
+
+                if (Directory.Exists(directory))
+                {
+                    Process.Start(directory);
+                }
+            })));
+
+        private void StartRecordingTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void StopRecordingTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }
