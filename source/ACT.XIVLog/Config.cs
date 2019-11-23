@@ -388,6 +388,6 @@ namespace ACT.XIVLog
         public static VirtualKeyCode[] GetKeys(this KeyShortcut shortcut) => new[] { ToVK(shortcut.Key) };
 
         private static VirtualKeyCode ToVK(Key key)
-            => (VirtualKeyCode)Enum.ToObject(typeof(VirtualKeyCode), (int)key);
+            => (VirtualKeyCode)Enum.ToObject(typeof(VirtualKeyCode), KeyInterop.VirtualKeyFromKey(key));
     }
 }

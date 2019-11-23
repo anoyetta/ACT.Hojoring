@@ -129,7 +129,7 @@ namespace ACT.XIVLog
                     ActGlobals.oFormActMain.CurrentZone;
 
                 TitleCardView.Show(
-                    this.contentName,
+                    contentName,
                     this.tryCount,
                     this.startTime);
             });
@@ -158,34 +158,34 @@ namespace ACT.XIVLog
             {
                 Task.Run(async () =>
                 {
+                    var now = DateTime.Now;
+
                     var f = this.deathCount > 1 ?
-                        Path.Combine(
-                            Path.GetDirectoryName(Config.Instance.VideoSaveDictory),
-                            $"{this.startTime:YYYY-MM-dd HH-mm} {contentName} try{this.tryCount:00} death{this.deathCount - 1}.mp4") :
-                        Path.Combine(
-                            Path.GetDirectoryName(Config.Instance.VideoSaveDictory),
-                            $"{this.startTime:YYYY-MM-dd HH-mm} {contentName} try{this.tryCount:00}.mp4");
+                        $"{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.tryCount:00} death{this.deathCount - 1}.mp4" :
+                        $"{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.tryCount:00}.mp4";
 
-                    if (!File.Exists(f))
+                    await Task.Delay(TimeSpan.FromSeconds(8));
+
+                    var files = Directory.GetFiles(
+                        Config.Instance.VideoSaveDictory,
+                        "*.mp4");
+
+                    var original = files
+                        .OrderByDescending(x => File.GetLastWriteTime(x))
+                        .FirstOrDefault();
+
+                    if (!string.IsNullOrEmpty(original))
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(8));
-
-                        var files = Directory.GetFiles(
-                            Config.Instance.VideoSaveDictory,
-                            "*.mp4");
-
-                        var original = files
-                            .OrderByDescending(x => File.GetCreationTime(x))
-                            .FirstOrDefault();
-
-                        if (!string.IsNullOrEmpty(original))
+                        var timestamp = File.GetLastWriteTime(original);
+                        if (timestamp >= now.AddSeconds(-10))
                         {
-                            if (File.GetCreationTime(original) >= DateTime.Now.AddSeconds(-10))
-                            {
-                                File.Move(
-                                    original,
-                                    f);
-                            }
+                            var dest = Path.Combine(
+                                Path.GetDirectoryName(original),
+                                f);
+
+                            File.Move(
+                                original,
+                                dest);
                         }
                     }
                 });

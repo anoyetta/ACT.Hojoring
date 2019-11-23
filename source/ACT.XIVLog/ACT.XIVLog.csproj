@@ -73,29 +73,6 @@
       <DependentUpon>TitleCardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="VideoCapture.cs" />
-    <Compile Include="WindowsInput\IInputDeviceStateAdaptor.cs" />
-    <Compile Include="WindowsInput\IInputMessageDispatcher.cs" />
-    <Compile Include="WindowsInput\IInputSimulator.cs" />
-    <Compile Include="WindowsInput\IKeyboardSimulator.cs" />
-    <Compile Include="WindowsInput\IMouseSimulator.cs" />
-    <Compile Include="WindowsInput\InputBuilder.cs" />
-    <Compile Include="WindowsInput\InputSimulator.cs" />
-    <Compile Include="WindowsInput\KeyboardSimulator.cs" />
-    <Compile Include="WindowsInput\MouseButton.cs" />
-    <Compile Include="WindowsInput\MouseSimulator.cs" />
-    <Compile Include="WindowsInput\Native\HARDWAREINPUT.cs" />
-    <Compile Include="WindowsInput\Native\INPUT.cs" />
-    <Compile Include="WindowsInput\Native\InputType.cs" />
-    <Compile Include="WindowsInput\Native\KEYBDINPUT.cs" />
-    <Compile Include="WindowsInput\Native\KeyboardFlag.cs" />
-    <Compile Include="WindowsInput\Native\MouseFlag.cs" />
-    <Compile Include="WindowsInput\Native\MOUSEINPUT.cs" />
-    <Compile Include="WindowsInput\Native\MOUSEKEYBDHARDWAREINPUT.cs" />
-    <Compile Include="WindowsInput\Native\NativeMethods.cs" />
-    <Compile Include="WindowsInput\Native\VirtualKeyCode.cs" />
-    <Compile Include="WindowsInput\Native\XButton.cs" />
-    <Compile Include="WindowsInput\WindowsInputDeviceStateAdaptor.cs" />
-    <Compile Include="WindowsInput\WindowsInputMessageDispatcher.cs" />
     <Compile Include="XIVLogPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -121,6 +98,9 @@
     </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit">
       <Version>3.6.0</Version>
+    </PackageReference>
+    <PackageReference Include="InputSimulator">
+      <Version>1.0.4</Version>
     </PackageReference>
     <PackageReference Include="NLog.Config">
       <Version>4.5.11</Version>

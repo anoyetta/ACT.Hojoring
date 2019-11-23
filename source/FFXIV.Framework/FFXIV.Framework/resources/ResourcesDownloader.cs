@@ -11,7 +11,7 @@ namespace FFXIV.Framework.resources
     public class ResourcesDownloader
     {
 #if DEBUG
-        private readonly bool IsDebugSkip = false;
+        private readonly bool IsDebugSkip = true;
 #else
         private readonly bool IsDebugSkip = false;
 #endif
