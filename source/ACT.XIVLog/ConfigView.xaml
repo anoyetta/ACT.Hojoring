@@ -4,6 +4,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   xmlns:local="clr-namespace:ACT.XIVLog"
   mc:Ignorable="d"
   Background="White"
@@ -52,6 +53,21 @@
       <StackPanel Margin="10 0 0 0">
         <CheckBox Margin="0 8 0 0" Content="Recording video every wipeout." IsChecked="{Binding Path=Config.IsEnabledRecording, Mode=TwoWay}" />
         <CheckBox Margin="0 5 0 0" Content="Show title card." IsChecked="{Binding Path=Config.IsShowTitleCard, Mode=TwoWay}" />
+        <StackPanel
+          Margin="20 8 0 0"
+          Visibility="{Binding Config.IsShowTitleCard, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
+            <xctk:DoubleUpDown Value="{Binding Config.TitleCardLeft, Mode=TwoWay}" Width="75" Increment="1" />
+            <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
+            <xctk:DoubleUpDown Value="{Binding Config.TitleCardTop, Mode=TwoWay}" Width="75" Increment="1" />
+
+            <TextBlock Margin="20 0 5 0" Text="Scale" VerticalAlignment="Center" />
+            <xctk:DoubleUpDown Value="{Binding Config.Scale, Mode=TwoWay}" Width="78" Increment="0.01" FormatString="N2" Maximum="10" Minimum="0.01" />
+
+            <CheckBox Margin="20 0 0 0" Content="Preview" IsChecked="{Binding Config.IsPreviewTitleCard, Mode=TwoWay}" />
+          </StackPanel>
+        </StackPanel>
 
         <Label Margin="0 8 0 0" Content="Video save directory" />
         <TextBox HorizontalAlignment="Left" Width="700" Text="{Binding Path=Config.VideoSaveDictory, Mode=TwoWay}" />

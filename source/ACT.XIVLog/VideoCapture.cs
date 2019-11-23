@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using WindowsInput;
 
@@ -41,11 +42,6 @@ namespace ACT.XIVLog
         public void DetectCapture(
             XIVLog xivlog)
         {
-            if (!Config.Instance.IsEnabledRecording)
-            {
-                return;
-            }
-
             if (!xivlog.Log.StartsWith("00:") &&
                 !xivlog.Log.StartsWith("02:") &&
                 !xivlog.Log.StartsWith("19:"))
@@ -106,24 +102,36 @@ namespace ACT.XIVLog
 
         public void StartRecording()
         {
-            if (!Config.Instance.IsEnabledRecording)
-            {
-                return;
-            }
-
             this.tryCount++;
             this.startTime = DateTime.Now;
 
-            this.Input.Keyboard.ModifiedKeyStroke(
-                Config.Instance.StartRecordingShortcut.GetModifiers(),
-                Config.Instance.StartRecordingShortcut.GetKeys());
-
-            WPFHelper.InvokeAsync(() =>
+            if (Config.Instance.IsEnabledRecording)
             {
-                lock (this)
+                this.Input.Keyboard.ModifiedKeyStroke(
+                    Config.Instance.StartRecordingShortcut.GetModifiers(),
+                    Config.Instance.StartRecordingShortcut.GetKeys());
+            }
+
+            WPFHelper.InvokeAsync(async () =>
+            {
+                if (Config.Instance.IsEnabledRecording)
                 {
-                    Config.Instance.IsRecording = true;
+                    lock (this)
+                    {
+                        Config.Instance.IsRecording = true;
+                    }
                 }
+
+                await Task.Delay(TimeSpan.FromSeconds(5));
+
+                var contentName = !string.IsNullOrEmpty(this.contentName) ?
+                    this.contentName :
+                    ActGlobals.oFormActMain.CurrentZone;
+
+                TitleCardView.Show(
+                    this.contentName,
+                    this.tryCount,
+                    this.startTime);
             });
         }
 
@@ -143,7 +151,7 @@ namespace ACT.XIVLog
 
             var contentName = !string.IsNullOrEmpty(this.contentName) ?
                 this.contentName :
-                "UNKNOWN";
+                ActGlobals.oFormActMain.CurrentZone;
 
             if (!string.IsNullOrEmpty(Config.Instance.VideoSaveDictory) &&
                 Directory.Exists(Config.Instance.VideoSaveDictory))

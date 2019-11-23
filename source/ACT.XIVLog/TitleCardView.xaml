@@ -1,0 +1,77 @@
+<Window
+  x:Class="ACT.XIVLog.TitleCardView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+  xmlns:local="clr-namespace:ACT.XIVLog"
+  mc:Ignorable="d"
+  Title="Title Card"
+  AllowsTransparency="True"
+  ShowInTaskbar="False"
+  SizeToContent="WidthAndHeight"
+  TextOptions.TextFormattingMode="Ideal"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="Fant"
+  RenderOptions.EdgeMode="Unspecified"
+  WindowStyle="None"
+  Background="Transparent"
+  Topmost="True"
+  Left="{Binding Path=Config.TitleCardLeft, Mode=TwoWay}"
+  Top="{Binding Path=Config.TitleCardTop, Mode=TwoWay}"
+  d:DataContext="{d:DesignInstance Type=local:TitleCardView, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneWay}">
+
+  <Grid Margin="8" Width="900">
+    <Grid.LayoutTransform>
+      <ScaleTransform
+        ScaleX="{Binding Config.Scale, Mode=OneWay}"
+        ScaleY="{Binding Config.Scale, Mode=OneWay}" />
+    </Grid.LayoutTransform>
+
+    <Border
+      Background="#f8f4e6"
+      CornerRadius="6"
+      Opacity="0.8">
+      <Border.Effect>
+        <DropShadowEffect
+          Color="#f8f4e6"
+          RenderingBias="Quality"
+          ShadowDepth="0"
+          Direction="0"
+          BlurRadius="8" />
+      </Border.Effect>
+    </Border>
+
+    <Grid Margin="0 50">
+      <StackPanel
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
+        <TextBlock
+          Text="{Binding VideoTitle, Mode=OneWay}"
+          TextTrimming="CharacterEllipsis"
+          Foreground="#16160e"
+          FontSize="40"
+          FontWeight="Bold"
+          FontFamily="Yu Mincho, Arial" />
+
+        <TextBlock
+          HorizontalAlignment="Center"
+          Text="{Binding TryCount, Mode=OneWay, StringFormat=Try {0}}"
+          Foreground="#16160e"
+          FontSize="30"
+          FontFamily="Century Gothic" />
+
+        <TextBlock
+          HorizontalAlignment="Center"
+          Text="{Binding RecordingTime, Mode=OneWay, StringFormat={}{0:HH:mm  MMM. d, yyyy}}"
+          Foreground="#16160e"
+          FontSize="23"
+          FontFamily="Century Gothic" />
+      </StackPanel>
+    </Grid>
+  </Grid>
+</Window>

@@ -206,13 +206,29 @@ namespace ACT.XIVLog
             set => this.SetProperty(ref this.scale, value);
         }
 
+        private TitleCardView titleCardPreview;
         private bool isPreviewTitleCard;
 
         [XmlIgnore]
         public bool IsPreviewTitleCard
         {
             get => this.isPreviewTitleCard;
-            set => this.SetProperty(ref this.isPreviewTitleCard, value);
+            set
+            {
+                if (this.SetProperty(ref this.isPreviewTitleCard, value))
+                {
+                    if (this.isPreviewTitleCard)
+                    {
+                        this.titleCardPreview?.Close();
+                        this.titleCardPreview = new TitleCardView();
+                        this.titleCardPreview.Show();
+                    }
+                    else
+                    {
+                        this.titleCardPreview?.Close();
+                    }
+                }
+            }
         }
 
         private string videoSaveDictory;
