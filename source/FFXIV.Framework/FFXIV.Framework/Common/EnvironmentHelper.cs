@@ -4,7 +4,6 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using ACT.Hojoring.Activator;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Extensions;
@@ -232,12 +231,36 @@ namespace FFXIV.Framework.Common
             return isLastValidPluginLoadOrder;
         }
 
+        private static readonly object WaitLocker = new object();
+        private static volatile int waitCounter;
+
+        public static async void WaitInitActDone()
+        {
+            var delay = 0;
+
+            lock (WaitLocker)
+            {
+                waitCounter++;
+                delay = 200 * waitCounter;
+            }
+
+            await Task.Run(async () =>
+            {
+                while (!ActGlobals.oFormActMain.InitActDone)
+                {
+                    await Task.Delay(300);
+                }
+
+                await Task.Delay(delay);
+            });
+        }
+
         private static volatile bool isStarted;
         public static readonly string ActivationDenyMessage = "Hojoring is not allowed for you.";
 
         private static readonly List<Action> ActivationDeniedCallbackList = new List<Action>();
 
-        public static async void StartActivator(
+        public static void StartActivator(
             Action callback)
         {
             SetTLSProtocol();
@@ -251,10 +274,6 @@ namespace FFXIV.Framework.Common
             }
 
             isStarted = true;
-
-            await WPFHelper.InvokeAsync(
-                async () => await Task.Delay(TimeSpan.FromMilliseconds(10)),
-                DispatcherPriority.ContextIdle);
 
             ActivationDeniedCallbackList.Add(callback);
             ActivationManager.Instance.Start(

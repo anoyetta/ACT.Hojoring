@@ -233,13 +233,11 @@ namespace ACT.SpecialSpellTimer
                         Font = pluginScreenSpace.Font,
                     });
 
+                    EnvironmentHelper.WaitInitActDone();
+
                     // 本体を開始する
-                    await Task.Run(() => WPFHelper.BeginInvoke(() =>
-                    {
-                        PluginMainWorker.Instance.Begin();
-                        TimelineController.Init();
-                    },
-                    DispatcherPriority.ContextIdle));
+                    PluginMainWorker.Instance.Begin();
+                    TimelineController.Init();
 
                     // 付加情報オーバーレイを表示する
                     LPSView.ShowLPS();
