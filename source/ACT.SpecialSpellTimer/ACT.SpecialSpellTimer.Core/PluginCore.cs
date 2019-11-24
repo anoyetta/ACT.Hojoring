@@ -239,7 +239,7 @@ namespace ACT.SpecialSpellTimer
                         PluginMainWorker.Instance.Begin();
                         TimelineController.Init();
                     },
-                    DispatcherPriority.ApplicationIdle));
+                    DispatcherPriority.ContextIdle));
 
                     // 付加情報オーバーレイを表示する
                     LPSView.ShowLPS();

@@ -129,7 +129,7 @@ namespace FFXIV.Framework.XIVHelper
         {
             await WPFHelper.InvokeAsync(
                 async () => await Task.Delay(TimeSpan.FromMilliseconds(10)),
-                DispatcherPriority.ApplicationIdle);
+                DispatcherPriority.ContextIdle);
 
             lock (this)
             {

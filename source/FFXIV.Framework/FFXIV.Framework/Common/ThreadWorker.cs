@@ -100,7 +100,7 @@ namespace FFXIV.Framework.Common
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(10));
             },
-            DispatcherPriority.ApplicationIdle);
+            DispatcherPriority.ContextIdle);
 
             this.isAbort = false;
 

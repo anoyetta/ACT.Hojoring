@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using ACT.Hojoring.Activator;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Extensions;
@@ -236,7 +237,7 @@ namespace FFXIV.Framework.Common
 
         private static readonly List<Action> ActivationDeniedCallbackList = new List<Action>();
 
-        public static void StartActivator(
+        public static async void StartActivator(
             Action callback)
         {
             SetTLSProtocol();
@@ -250,6 +251,10 @@ namespace FFXIV.Framework.Common
             }
 
             isStarted = true;
+
+            await WPFHelper.InvokeAsync(
+                async () => await Task.Delay(TimeSpan.FromMilliseconds(10)),
+                DispatcherPriority.ContextIdle);
 
             ActivationDeniedCallbackList.Add(callback);
             ActivationManager.Instance.Start(

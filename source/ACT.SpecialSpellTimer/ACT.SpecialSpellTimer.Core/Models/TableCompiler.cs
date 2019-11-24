@@ -48,7 +48,7 @@ namespace ACT.SpecialSpellTimer.Models
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(10));
             },
-            DispatcherPriority.ApplicationIdle);
+            DispatcherPriority.ContextIdle);
 
             this.CompileSpells();
             this.CompileTickers();
