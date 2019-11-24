@@ -76,6 +76,7 @@ namespace ACT.XIVLog
             }
 
             if (xivlog.Log.Contains("wipeout") ||
+                xivlog.Log.EndsWith("戦闘開始カウントがキャンセルされました。") ||
                 xivlog.Log.Contains("/xivlog stop"))
             {
                 this.FinishRecording();
@@ -108,6 +109,14 @@ namespace ACT.XIVLog
 
         public void StartRecording()
         {
+            lock (this)
+            {
+                if (Config.Instance.IsRecording)
+                {
+                    return;
+                }
+            }
+
             this.TryCount++;
             this.startTime = DateTime.Now;
 
