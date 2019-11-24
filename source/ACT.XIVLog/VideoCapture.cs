@@ -67,6 +67,7 @@ namespace ACT.XIVLog
             }
 
             if (xivlog.Log.StartsWith("00:0139:戦闘開始まで") ||
+                xivlog.Log.StartsWith("00:00b9:戦闘開始まで") ||
                 xivlog.Log.Contains("/xivlog rec"))
             {
                 this.deathCount = 0;
