@@ -11,7 +11,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
-using System.Windows.Threading;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
@@ -42,7 +41,7 @@ namespace ACT.XIVLog
 
         private Label pluginLabel;
 
-        public async void InitPlugin(
+        public void InitPlugin(
             TabPage pluginScreenSpace,
             Label pluginStatusText)
         {
@@ -57,11 +56,7 @@ namespace ACT.XIVLog
                 Dock = DockStyle.Fill,
             });
 
-            await WPFHelper.InvokeAsync(async () =>
-            {
-                await Task.Delay(TimeSpan.FromMilliseconds(10));
-            },
-            DispatcherPriority.ContextIdle);
+            EnvironmentHelper.WaitInitActDone();
 
             this.InitTask();
             this.pluginLabel.Text = "Plugin Started";

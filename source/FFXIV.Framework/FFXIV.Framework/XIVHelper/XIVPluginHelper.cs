@@ -13,7 +13,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
@@ -127,10 +126,6 @@ namespace FFXIV.Framework.XIVHelper
             double pollingInteval,
             Locales ffxivLocale = Locales.JA)
         {
-            await WPFHelper.InvokeAsync(
-                async () => await Task.Delay(TimeSpan.FromMilliseconds(10)),
-                DispatcherPriority.ContextIdle);
-
             lock (this)
             {
                 if (this.isStarted)
@@ -294,7 +289,8 @@ namespace FFXIV.Framework.XIVHelper
             lock (this)
             {
                 if (this.plugin != null ||
-                    ActGlobals.oFormActMain == null)
+                    ActGlobals.oFormActMain == null ||
+                    !ActGlobals.oFormActMain.InitActDone)
                 {
                     return;
                 }
@@ -302,8 +298,7 @@ namespace FFXIV.Framework.XIVHelper
                 var ffxivPlugin = (
                     from x in ActGlobals.oFormActMain.ActPlugins
                     where
-                    x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper()) &&
-                    x.lblPluginStatus.Text.ToUpper().Contains("FFXIV Plugin Started.".ToUpper())
+                    x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper())
                     select
                     x.pluginObj).FirstOrDefault();
 
