@@ -29,7 +29,11 @@ namespace ACT.XIVLog
 
         public static XIVLogPlugin Instance => instance;
 
-        public XIVLogPlugin() => instance = this;
+        public XIVLogPlugin()
+        {
+            instance = this;
+            CosturaUtility.Initialize();
+        }
 
         #endregion Singleton
 
@@ -232,7 +236,9 @@ namespace ACT.XIVLog
             bool isImport,
             LogLineEventArgs logInfo)
         {
-            if (string.IsNullOrEmpty(Config.Instance.OutputDirectory))
+            if (string.IsNullOrEmpty(Config.Instance.OutputDirectory) &&
+                !Config.Instance.IsEnabledRecording &&
+                !Config.Instance.IsShowTitleCard)
             {
                 return;
             }

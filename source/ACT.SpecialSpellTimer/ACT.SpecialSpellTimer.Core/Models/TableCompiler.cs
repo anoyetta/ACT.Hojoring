@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Config.Models;
 using ACT.SpecialSpellTimer.RaidTimeline;
@@ -41,8 +42,14 @@ namespace ACT.SpecialSpellTimer.Models
 
         #region Begin / End
 
-        public void Begin()
+        public async void Begin()
         {
+            await WPFHelper.InvokeAsync(async () =>
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(10));
+            },
+            DispatcherPriority.ApplicationIdle);
+
             this.CompileSpells();
             this.CompileTickers();
 

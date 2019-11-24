@@ -4,6 +4,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   xmlns:local="clr-namespace:ACT.XIVLog"
   mc:Ignorable="d"
   Background="White"
@@ -38,7 +39,7 @@
     <StackPanel>
       <Label Content="Text Log" FontWeight="Bold" />
       <StackPanel Margin="10 0 0 0">
-        <Label Content="Output Directory" />
+        <Label Content="Output directory" />
         <TextBox HorizontalAlignment="Left" Width="700" Text="{Binding Path=Config.OutputDirectory, Mode=TwoWay}" />
         <Label Content="{Binding Path=Plugin.LogfileNameWithoutParent, Mode=OneWay}" Height="30" VerticalContentAlignment="Center" />
         <StackPanel Orientation="Horizontal">
@@ -51,6 +52,53 @@
       <Label Margin="0 20 0 0" Content="Video" FontWeight="Bold" />
       <StackPanel Margin="10 0 0 0">
         <CheckBox Margin="0 8 0 0" Content="Recording video every wipeout." IsChecked="{Binding Path=Config.IsEnabledRecording, Mode=TwoWay}" />
+        <StackPanel
+          Orientation="Horizontal"
+          Margin="20 8 0 0"
+          Visibility="{Binding Config.IsEnabledRecording, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+          <TextBlock Text="Last Try" />
+          <xctk:IntegerUpDown Margin="6 0 0 0" Width="70" Value="{Binding Config.VideoTryCount, Mode=TwoWay}" Minimum="0" />
+        </StackPanel>
+
+        <CheckBox Margin="0 5 0 0" Content="Show title card." IsChecked="{Binding Path=Config.IsShowTitleCard, Mode=TwoWay}" />
+        <StackPanel
+          Margin="20 8 0 0"
+          Visibility="{Binding Config.IsShowTitleCard, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Margin="6 0 5 0" Text="X" VerticalAlignment="Center" />
+            <xctk:DoubleUpDown Value="{Binding Config.TitleCardLeft, Mode=TwoWay}" Width="75" Increment="1" />
+            <TextBlock Margin="10 0 5 0" Text="Y" VerticalAlignment="Center" />
+            <xctk:DoubleUpDown Value="{Binding Config.TitleCardTop, Mode=TwoWay}" Width="75" Increment="1" />
+
+            <TextBlock Margin="20 0 5 0" Text="Scale" VerticalAlignment="Center" />
+            <xctk:DoubleUpDown Value="{Binding Config.Scale, Mode=TwoWay}" Width="78" Increment="0.01" FormatString="N2" Maximum="10" Minimum="0.01" />
+
+            <CheckBox Margin="20 0 0 0" Content="Preview" IsChecked="{Binding Config.IsPreviewTitleCard, Mode=TwoWay}" />
+          </StackPanel>
+        </StackPanel>
+
+        <Label Margin="0 8 0 0" Content="Video save directory" />
+        <TextBox HorizontalAlignment="Left" Width="700" Text="{Binding Path=Config.VideoSaveDictory, Mode=TwoWay}" />
+
+        <StackPanel Margin="0 8 0 0" Orientation="Horizontal">
+          <Label Width="190" Content="Start Recording Key" />
+          <CheckBox IsChecked="{Binding Config.StartRecordingShortcut.IsWin, Mode=TwoWay}" Content="Win" Margin="0 0 5 0" />
+          <CheckBox IsChecked="{Binding Config.StartRecordingShortcut.IsControl, Mode=TwoWay}" Content="Ctrl" Margin="0 0 5 0" />
+          <CheckBox IsChecked="{Binding Config.StartRecordingShortcut.IsShift, Mode=TwoWay}" Content="Shift" Margin="0 0 5 0" />
+          <CheckBox IsChecked="{Binding Config.StartRecordingShortcut.IsAlt, Mode=TwoWay}" Content="Alt" Margin="0 0 5 0" />
+          <TextBox x:Name="StartRecordingTextBox" Margin="5 0 0 0" Width="50" />
+          <Label Margin="5 0 0 0" Content="{Binding Config.StartRecordingShortcut.Text, Mode=OneWay}" Foreground="Gray" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+          <Label Width="190" Content="Stop Recording Key" />
+          <CheckBox IsChecked="{Binding Config.StopRecordingShortcut.IsWin, Mode=TwoWay}" Content="Win" Margin="0 0 5 0" />
+          <CheckBox IsChecked="{Binding Config.StopRecordingShortcut.IsControl, Mode=TwoWay}" Content="Ctrl" Margin="0 0 5 0" />
+          <CheckBox IsChecked="{Binding Config.StopRecordingShortcut.IsShift, Mode=TwoWay}" Content="Shift" Margin="0 0 5 0" />
+          <CheckBox IsChecked="{Binding Config.StopRecordingShortcut.IsAlt, Mode=TwoWay}" Content="Alt" Margin="0 0 5 0" />
+          <TextBox x:Name="StopRecordingTextBox" Margin="5 0 0 0" Width="50" />
+          <Label Margin="5 0 0 0" Content="{Binding Config.StopRecordingShortcut.Text, Mode=OneWay}" Foreground="Gray" />
+        </StackPanel>
 
         <Border
           Margin="0 10 0 3"
@@ -61,10 +109,6 @@
           Visibility="{Binding Config.IsRecording, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
           <Label Content="REC" Padding="0" Height="22" VerticalContentAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontWeight="Bold" />
         </Border>
-        <Label
-          Padding="0"
-          Content="{Binding Config.CurrentVideoFileName, Mode=OneWay}"
-          Visibility="{Binding Config.IsRecording, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
       </StackPanel>
 
       <Label Margin="0 20 0 0" Content="Informations" FontWeight="Bold" />

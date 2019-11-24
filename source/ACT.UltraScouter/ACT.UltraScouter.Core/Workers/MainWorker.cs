@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.ViewModels.Bases;
@@ -83,8 +84,12 @@ namespace ACT.UltraScouter.Workers
         public UpdateOverlayDataDelegate UpdateOverlayDataMethod;
         public UpdateOverlayDataDelegate UpdateSubOverlayDataMethod;
 
-        public void Start()
+        public async void Start()
         {
+            await WPFHelper.InvokeAsync(
+                async () => await Task.Delay(TimeSpan.FromMilliseconds(10)),
+                DispatcherPriority.ApplicationIdle);
+
             // 子ワーカを初期化する
             TargetInfoWorker.Initialize();
             FTInfoWorker.Initialize();

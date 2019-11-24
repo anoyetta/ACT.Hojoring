@@ -1,5 +1,7 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 using NLog;
 
 namespace FFXIV.Framework.Common
@@ -92,8 +94,14 @@ namespace FFXIV.Framework.Common
             return result;
         }
 
-        public void Run()
+        public async void Run()
         {
+            await WPFHelper.InvokeAsync(async () =>
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(10));
+            },
+            DispatcherPriority.ApplicationIdle);
+
             this.isAbort = false;
 
             this.thread = new Thread(this.DoWorkLoop);
