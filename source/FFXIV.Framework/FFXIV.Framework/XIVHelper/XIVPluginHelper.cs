@@ -94,7 +94,7 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
-        public Locales LanguageID => (int)this.DataRepository.GetSelectedLanguageID() switch
+        public Locales LanguageID => (int)(this.DataRepository?.GetSelectedLanguageID() ?? 0) switch
         {
             1 => Locales.EN,
             2 => Locales.FR,
