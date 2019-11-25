@@ -17,8 +17,7 @@
   RenderOptions.EdgeMode="Unspecified"
   TextOptions.TextFormattingMode="Display"
   TextOptions.TextHintingMode="Animated"
-  TextOptions.TextRenderingMode="ClearType"
-  d:DesignWidth="800" d:DesignHeight="600">
+  TextOptions.TextRenderingMode="ClearType">
 
   <UserControl.Resources>
     <Style TargetType="TextBox">
@@ -36,11 +35,16 @@
   </UserControl.Resources>
 
   <Grid Margin="12">
-    <StackPanel>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="Auto" />
+    </Grid.ColumnDefinitions>
+
+    <StackPanel Grid.Column="0">
       <Label Content="Text Log" FontWeight="Bold" />
       <StackPanel Margin="10 0 0 0">
         <Label Content="Output directory" />
-        <TextBox HorizontalAlignment="Left" Width="700" Text="{Binding Path=Config.OutputDirectory, Mode=TwoWay}" />
+        <TextBox HorizontalAlignment="Left" Width="600" Text="{Binding Path=Config.OutputDirectory, Mode=TwoWay}" />
         <Label Content="{Binding Path=Plugin.LogfileNameWithoutParent, Mode=OneWay}" Height="30" VerticalContentAlignment="Center" />
         <StackPanel Orientation="Horizontal">
           <Button BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Open Log" Command="{Binding OpenLogCommand, Mode=OneWay}" />
@@ -80,7 +84,7 @@
         <StackPanel
           IsEnabled="{Binding Config.IsEnabledRecording, Mode=OneWay}">
           <Label Margin="0 8 0 0" Content="Video save directory" />
-          <TextBox HorizontalAlignment="Left" Width="700" Text="{Binding Path=Config.VideoSaveDictory, Mode=TwoWay}" />
+          <TextBox HorizontalAlignment="Left" Width="600" Text="{Binding Path=Config.VideoSaveDictory, Mode=TwoWay}" />
 
           <StackPanel Margin="0 8 0 0" Orientation="Horizontal" IsEnabled="{Binding Config.NotUseObsRpc, Mode=OneWay}">
             <Label Width="190" Content="Start Recording Key" />
@@ -132,8 +136,11 @@
           </Border>
         </StackPanel>
       </StackPanel>
+    </StackPanel>
 
-      <Label Margin="0 20 0 0" Content="Informations" FontWeight="Bold" />
+    <StackPanel Grid.Column="1" Margin="20 0 0 0">
+      <Label Margin="0 0 0 0" Content="Informations" FontWeight="Bold" />
+
       <TextBlock Margin="10 0 0 0">
         <TextBlock Margin="10 5 0 0">
           - Command<LineBreak />
@@ -163,10 +170,10 @@
           </StackPanel>
         </TextBlock>
         <LineBreak />
-      </TextBlock>
+        </TextBlock>
+      </StackPanel>
 
       <!-- Version Info -->
-      <Label Margin="0 20 0 0" Content="{Binding VersionInfo, Mode=OneWay}" />
-    </StackPanel>
+      <Label Margin="0 0 0 0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="{Binding VersionInfo, Mode=OneWay}" />
   </Grid>
 </UserControl>
