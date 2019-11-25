@@ -72,15 +72,15 @@
 
             <TextBlock Margin="20 0 5 0" Text="Scale" VerticalAlignment="Center" />
             <xctk:DoubleUpDown Value="{Binding Config.Scale, Mode=TwoWay}" Width="78" Increment="0.01" FormatString="N2" Maximum="10" Minimum="0.01" />
-
-            <CheckBox Margin="20 0 0 0" Content="Preview" IsChecked="{Binding Config.IsPreviewTitleCard, Mode=TwoWay}" />
           </StackPanel>
+          <CheckBox Margin="0 8 0 0" Content="Always show" IsChecked="{Binding Config.IsAlwaysShow, Mode=TwoWay}" />
+          <CheckBox Margin="0 3 0 0" Content="Preview" IsChecked="{Binding Config.IsPreviewTitleCard, Mode=TwoWay}" />
         </StackPanel>
 
         <Label Margin="0 8 0 0" Content="Video save directory" />
         <TextBox HorizontalAlignment="Left" Width="700" Text="{Binding Path=Config.VideoSaveDictory, Mode=TwoWay}" />
 
-        <StackPanel Margin="0 8 0 0" Orientation="Horizontal">
+        <StackPanel Margin="0 8 0 0" Orientation="Horizontal" IsEnabled="{Binding Config.NotUseObsRpc, Mode=OneWay}">
           <Label Width="190" Content="Start Recording Key" />
           <CheckBox IsChecked="{Binding Config.StartRecordingShortcut.IsWin, Mode=TwoWay}" Content="Win" Margin="0 0 5 0" />
           <CheckBox IsChecked="{Binding Config.StartRecordingShortcut.IsControl, Mode=TwoWay}" Content="Ctrl" Margin="0 0 5 0" />
@@ -90,7 +90,7 @@
           <Label Margin="5 0 0 0" Content="{Binding Config.StartRecordingShortcut.Text, Mode=OneWay}" Foreground="Gray" />
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal" IsEnabled="{Binding Config.NotUseObsRpc, Mode=OneWay}">
           <Label Width="190" Content="Stop Recording Key" />
           <CheckBox IsChecked="{Binding Config.StopRecordingShortcut.IsWin, Mode=TwoWay}" Content="Win" Margin="0 0 5 0" />
           <CheckBox IsChecked="{Binding Config.StopRecordingShortcut.IsControl, Mode=TwoWay}" Content="Ctrl" Margin="0 0 5 0" />
@@ -98,6 +98,25 @@
           <CheckBox IsChecked="{Binding Config.StopRecordingShortcut.IsAlt, Mode=TwoWay}" Content="Alt" Margin="0 0 5 0" />
           <TextBox x:Name="StopRecordingTextBox" Margin="5 0 0 0" Width="50" />
           <Label Margin="5 0 0 0" Content="{Binding Config.StopRecordingShortcut.Text, Mode=OneWay}" Foreground="Gray" />
+        </StackPanel>
+
+        <CheckBox Margin="0 8 0 0" Content="Use SLOBS-RPC" IsChecked="{Binding Config.UseObsRpc, Mode=TwoWay}" />
+
+        <StackPanel Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Left">
+          <Button
+            Content="REC"
+            BorderThickness="0"
+            Background="Transparent"
+            Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"
+            Command="{Binding StartRecordingCommand, Mode=OneWay}" />
+
+          <Button
+            Margin="10 0 0 0"
+            Content="STOP"
+            BorderThickness="0"
+            Background="Transparent"
+            Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"
+            Command="{Binding StopRecordingCommand, Mode=OneWay}" />
         </StackPanel>
 
         <Border

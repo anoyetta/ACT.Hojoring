@@ -135,6 +135,11 @@ namespace FFXIV.Framework.XIVHelper
         private void DetectFFXIVProcess()
         {
             var ffxiv = XIVPluginHelper.Instance.Process;
+            if (ffxiv == null)
+            {
+                return;
+            }
+
             var ffxivLanguage = XIVPluginHelper.Instance.LanguageID switch
             {
                 Locales.EN => "English",
@@ -143,11 +148,6 @@ namespace FFXIV.Framework.XIVHelper
                 Locales.DE => "German",
                 _ => "English",
             };
-
-            if (ffxiv == null)
-            {
-                return;
-            }
 
             lock (this)
             {

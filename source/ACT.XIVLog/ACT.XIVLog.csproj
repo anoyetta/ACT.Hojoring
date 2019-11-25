@@ -65,6 +65,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyResolver.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ConfigView.xaml.cs">
       <DependentUpon>ConfigView.xaml</DependentUpon>
@@ -110,6 +111,9 @@
     </PackageReference>
     <PackageReference Include="Sharlayan">
       <Version>5.0.5</Version>
+    </PackageReference>
+    <PackageReference Include="SLOBSharp">
+      <Version>1.1.4</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

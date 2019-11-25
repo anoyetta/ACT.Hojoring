@@ -7,7 +7,7 @@
   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   xmlns:local="clr-namespace:ACT.XIVLog"
   mc:Ignorable="d"
-  Title="Title Card"
+  Title="XIVLog - Title"
   AllowsTransparency="True"
   ShowInTaskbar="False"
   SizeToContent="WidthAndHeight"
@@ -25,6 +25,10 @@
   d:DataContext="{d:DesignInstance Type=local:TitleCardView, IsDesignTimeCreatable=True}"
   DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneWay}">
 
+  <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+  </Window.Resources>
+
   <Grid Margin="8" Width="900">
     <Grid.LayoutTransform>
       <ScaleTransform
@@ -32,7 +36,15 @@
         ScaleY="{Binding Config.Scale, Mode=OneWay}" />
     </Grid.LayoutTransform>
 
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
     <Border
+      Panel.ZIndex="-10"
+      Grid.Row="0"
+      Grid.RowSpan="2"
       Background="#f8f4e6"
       CornerRadius="6"
       Opacity="0.8">
@@ -46,7 +58,11 @@
       </Border.Effect>
     </Border>
 
-    <Grid Margin="0 50">
+    <!-- Normarl Mode -->
+    <Grid
+      Grid.Row="0"
+      Margin="0 50"
+      Visibility="{Binding Config.IsNotAlwaysShow, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
       <StackPanel
         HorizontalAlignment="Center"
         VerticalAlignment="Center">
@@ -70,6 +86,47 @@
           Text="{Binding RecordingTime, Mode=OneWay, StringFormat={}{0:HH:mm  MMM. d, yyyy}}"
           Foreground="#16160e"
           FontSize="23"
+          FontFamily="Century Gothic" />
+      </StackPanel>
+    </Grid>
+
+    <!-- Compact Mode -->
+    <Grid
+      Grid.Row="1"
+      Margin="0 10 0 15"
+      Visibility="{Binding Config.IsAlwaysShow, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+      <StackPanel
+        Margin="30 0"
+        VerticalAlignment="Center">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+
+          <TextBlock
+            Grid.Column="0"
+            MaxWidth="700"
+            Text="{Binding VideoTitle, Mode=OneWay}"
+            TextTrimming="CharacterEllipsis"
+            Foreground="#16160e"
+            FontSize="40"
+            FontWeight="Bold"
+            FontFamily="Yu Mincho, Arial" />
+
+          <TextBlock
+            Grid.Column="1"
+            VerticalAlignment="Center"
+            Text="{Binding TryCount, Mode=OneWay, StringFormat={}  Try {0}}"
+            Foreground="#16160e"
+            FontSize="40"
+            FontFamily="Century Gothic" />
+        </Grid>
+
+        <TextBlock
+          Text="{Binding RecordingTime, Mode=OneWay, StringFormat={}{0:HH:mm  MMM. d, yyyy}}"
+          Foreground="#16160e"
+          FontSize="30"
           FontFamily="Century Gothic" />
       </StackPanel>
     </Grid>

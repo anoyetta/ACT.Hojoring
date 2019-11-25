@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
 <UserControl
   x:Class="ACT.TTSYukkuri.Config.Views.BoyomiConfigView"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -50,14 +51,24 @@
     <Label Content="{DynamicResource Boyomi_Port}" Margin="0 10 0 0" />
     <StackPanel Orientation="Horizontal">
       <TextBox
-      Text="{Binding Config.BoyomiPort, Mode=TwoWay}"
-      HorizontalAlignment="Left"
-      TextAlignment="Right"
-      Width="60" />
+        Text="{Binding Config.BoyomiPort, Mode=TwoWay}"
+        HorizontalAlignment="Left"
+        TextAlignment="Right"
+        Width="60" />
       <TextBlock
-      Margin="10 5 0 0"
-      FontSize="14"
-      Text="{DynamicResource Boyomi_PortDefault}" />
+        VerticalAlignment="Center"
+        Margin="10 0 0 0"
+        FontSize="14"
+        Text="{DynamicResource Boyomi_PortDefault}" />
+
+      <Button
+        Margin="12 0 0 0"
+        FontSize="14"
+        Content="Default"
+        BorderThickness="0"
+        Background="Transparent"
+        Foreground="Blue"
+        Command="{Binding SetDefaultPortCommand, Mode=OneWay}" />
     </StackPanel>
 
     <CheckBox
@@ -65,5 +76,13 @@
       VerticalContentAlignment="Center"
       Content="{DynamicResource Boyomi_Interrupt}"
       IsChecked="{Binding Config.IsBoyomiInterruptNotication, Mode=TwoWay}" />
+
+    <TextBlock Margin="0 10 0 0" FontSize="14" xml:space="preserve">
+* 注意
+ 棒読みちゃんのHTTPサーバインターフェースに接続します。
+ <Hyperlink NavigateUri="https://chi.usamimi.info/Program/Application/BouyomiChan/" RequestNavigate="Hyperlink_RequestNavigate">公式サイト</Hyperlink> で配布されている最新β版の棒読みちゃんを使用してください。
+ また旧バージョンで使用していた Socket インターフェスからは使用するポート番号が変わっています。
+ 上記の Default ボタンをクリックしてポート番号を 50080 に変更してから使用してください。
+    </TextBlock>
   </StackPanel>
 </UserControl>

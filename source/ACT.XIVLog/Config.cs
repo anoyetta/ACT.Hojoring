@@ -206,6 +206,23 @@ namespace ACT.XIVLog
             set => this.SetProperty(ref this.scale, value);
         }
 
+        private bool isAlwaysShow;
+
+        public bool IsAlwaysShow
+        {
+            get => this.isAlwaysShow;
+            set
+            {
+                if (this.SetProperty(ref this.isAlwaysShow, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.IsNotAlwaysShow));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public bool IsNotAlwaysShow => !this.IsAlwaysShow;
+
         private TitleCardView titleCardPreview;
         private bool isPreviewTitleCard;
 
@@ -266,6 +283,23 @@ namespace ACT.XIVLog
             set => this.SetProperty(ref this.stopRecordingShortcut, value);
         }
 
+        private bool useObsRpc;
+
+        public bool UseObsRpc
+        {
+            get => this.useObsRpc;
+            set
+            {
+                if (this.SetProperty(ref this.useObsRpc, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.NotUseObsRpc));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public bool NotUseObsRpc => !this.UseObsRpc;
+
         private string videFilePrefix = "FINAL FANTASY XIV";
 
         public string VideFilePrefix
@@ -285,11 +319,26 @@ namespace ACT.XIVLog
 
         private int videoTryCount;
 
-        [XmlIgnore]
         public int VideoTryCount
         {
             get => this.videoTryCount;
             set => this.SetProperty(ref this.videoTryCount, value);
+        }
+
+        private DateTime tryCountTimestamp;
+
+        public DateTime TryCountTimestamp
+        {
+            get => this.tryCountTimestamp;
+            set => this.SetProperty(ref this.tryCountTimestamp, value);
+        }
+
+        private string tryCountContentName;
+
+        public string TryCountContentName
+        {
+            get => this.tryCountContentName;
+            set => this.SetProperty(ref this.tryCountContentName, value);
         }
     }
 

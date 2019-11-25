@@ -29,10 +29,12 @@ namespace ACT.XIVLog
 
         public static XIVLogPlugin Instance => instance;
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public XIVLogPlugin()
         {
             instance = this;
             CosturaUtility.Initialize();
+            AssemblyResolver.Instance.Initialize(this);
         }
 
         #endregion Singleton
@@ -111,6 +113,7 @@ namespace ACT.XIVLog
         private int wipeoutCounter = 1;
         private int fileNo = 1;
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private void InitTask()
         {
             this.dumpLogTask = ThreadWorker.Run(
@@ -213,6 +216,7 @@ namespace ACT.XIVLog
             }
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private void EndTask()
         {
             ActGlobals.oFormActMain.OnLogLineRead -= this.OnLogLineRead;
@@ -234,6 +238,7 @@ namespace ACT.XIVLog
             }
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private void OnLogLineRead(
             bool isImport,
             LogLineEventArgs logInfo)

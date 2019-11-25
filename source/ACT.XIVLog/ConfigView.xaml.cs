@@ -93,5 +93,21 @@ namespace ACT.XIVLog
             shortcut.Key = e.Key;
             e.Handled = true;
         }
+
+        private DelegateCommand startRecordingCommand;
+
+        public DelegateCommand StartRecordingCommand =>
+            this.startRecordingCommand ?? (this.startRecordingCommand = new DelegateCommand(this.ExecuteStartRecordingCommand));
+
+        private void ExecuteStartRecordingCommand()
+            => VideoCapture.Instance.StartRecording();
+
+        private DelegateCommand stopRecordingCommand;
+
+        public DelegateCommand StopRecordingCommand =>
+            this.stopRecordingCommand ?? (this.stopRecordingCommand = new DelegateCommand(this.ExecuteStopRecordingCommand));
+
+        private void ExecuteStopRecordingCommand()
+            => VideoCapture.Instance.FinishRecording();
     }
 }

@@ -22,7 +22,7 @@ namespace ACT.TTSYukkuri.Boyomichan
         /// <summary>
         /// 棒読みちゃんサーバ
         /// </summary>
-        public static readonly string BoyomichanServer = "localhost";
+        public static readonly string BoyomichanServer = "127.0.0.1";
 
         /// <summary>
         /// 棒読みちゃんサーバのポート

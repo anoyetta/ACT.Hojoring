@@ -16,25 +16,42 @@ namespace ACT.XIVLog
         IOverlay,
         INotifyPropertyChanged
     {
-        public static void Show(
+        private static TitleCardView window;
+
+        public static void ShowTitleCard(
             string title,
             int tryCount,
             DateTime recordingTime)
         {
-            var window = new TitleCardView()
+            if (window == null)
             {
-                VideoTitle = title,
-                TryCount = tryCount,
-                RecordingTime = recordingTime
-            };
+                window = new TitleCardView();
+            }
+
+            window.VideoTitle = title;
+            window.TryCount = tryCount;
+            window.RecordingTime = recordingTime;
 
             window.Show();
 
-            WPFHelper.BeginInvoke(async () =>
+            if (!window.Config.IsAlwaysShow)
             {
-                await Task.Delay(TimeSpan.FromSeconds(2.7));
+                WPFHelper.BeginInvoke(async () =>
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(2.7));
+                    window.Close();
+                    window = null;
+                });
+            }
+        }
+
+        public static void CloseTitleCard()
+        {
+            if (window != null)
+            {
                 window.Close();
-            });
+                window = null;
+            }
         }
 
         public TitleCardView()

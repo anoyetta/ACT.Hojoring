@@ -1,10 +1,13 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
+using SLOBSharp.Client;
+using SLOBSharp.Client.Requests;
 using WindowsInput;
 
 namespace ACT.XIVLog
@@ -49,20 +52,32 @@ namespace ACT.XIVLog
                 return;
             }
 
+            // 攻略を開始した
             var match = ContentStartLogRegex.Match(xivlog.Log);
             if (match.Success)
             {
                 this.contentName = match.Groups["content"]?.Value;
-                this.TryCount = 0;
+
+                var contentName = !string.IsNullOrEmpty(this.contentName) ?
+                    this.contentName :
+                    ActGlobals.oFormActMain.CurrentZone;
+
+                if (Config.Instance.TryCountContentName != contentName ||
+                    (DateTime.Now - Config.Instance.TryCountTimestamp) >= TimeSpan.FromHours(3))
+                {
+                    this.TryCount = 0;
+                }
+
                 return;
             }
 
+            // 攻略を終了した
             match = ContentEndLogRegex.Match(xivlog.Log);
             if (match.Success)
             {
                 this.FinishRecording();
                 this.contentName = string.Empty;
-                this.TryCount = 0;
+                WPFHelper.Invoke(() => TitleCardView.CloseTitleCard());
                 return;
             }
 
@@ -83,6 +98,7 @@ namespace ACT.XIVLog
                 return;
             }
 
+            // Player change
             match = PlayerChangedLogRegex.Match(xivlog.Log);
             if (match.Success)
             {
@@ -90,6 +106,7 @@ namespace ACT.XIVLog
                 return;
             }
 
+            // Player defeated
             if (xivlog.Log.StartsWith(this.defeatedLog))
             {
                 this.deathCount++;
@@ -104,7 +121,17 @@ namespace ACT.XIVLog
         private int TryCount
         {
             get => Config.Instance.VideoTryCount;
-            set => WPFHelper.Invoke(() => Config.Instance.VideoTryCount = value);
+            set => WPFHelper.Invoke(() =>
+            {
+                Config.Instance.VideoTryCount = value;
+                Config.Instance.TryCountTimestamp = DateTime.Now;
+
+                var contentName = !string.IsNullOrEmpty(this.contentName) ?
+                    this.contentName :
+                    ActGlobals.oFormActMain.CurrentZone;
+
+                Config.Instance.TryCountContentName = contentName;
+            });
         }
 
         public void StartRecording()
@@ -122,9 +149,16 @@ namespace ACT.XIVLog
 
             if (Config.Instance.IsEnabledRecording)
             {
-                this.Input.Keyboard.ModifiedKeyStroke(
-                    Config.Instance.StartRecordingShortcut.GetModifiers(),
-                    Config.Instance.StartRecordingShortcut.GetKeys());
+                if (!Config.Instance.UseObsRpc)
+                {
+                    this.Input.Keyboard.ModifiedKeyStroke(
+                        Config.Instance.StartRecordingShortcut.GetModifiers(),
+                        Config.Instance.StartRecordingShortcut.GetKeys());
+                }
+                else
+                {
+                    this.SendToggleRecording();
+                }
             }
 
             WPFHelper.InvokeAsync(async () =>
@@ -143,7 +177,7 @@ namespace ACT.XIVLog
                     this.contentName :
                     ActGlobals.oFormActMain.CurrentZone;
 
-                TitleCardView.Show(
+                TitleCardView.ShowTitleCard(
                     contentName,
                     this.TryCount,
                     this.startTime);
@@ -160,9 +194,21 @@ namespace ACT.XIVLog
                 }
             }
 
-            this.Input.Keyboard.ModifiedKeyStroke(
-                Config.Instance.StopRecordingShortcut.GetModifiers(),
-                Config.Instance.StopRecordingShortcut.GetKeys());
+            if (!Config.Instance.IsEnabledRecording)
+            {
+                return;
+            }
+
+            if (!Config.Instance.UseObsRpc)
+            {
+                this.Input.Keyboard.ModifiedKeyStroke(
+                    Config.Instance.StopRecordingShortcut.GetModifiers(),
+                    Config.Instance.StopRecordingShortcut.GetKeys());
+            }
+            else
+            {
+                this.SendToggleRecording();
+            }
 
             var contentName = !string.IsNullOrEmpty(this.contentName) ?
                 this.contentName :
@@ -218,6 +264,24 @@ namespace ACT.XIVLog
                     Config.Instance.IsRecording = false;
                 }
             });
+        }
+
+        private readonly Lazy<object> LazySLOBSClient = new Lazy<object>(() => new SlobsPipeClient("slobs"));
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private async void SendToggleRecording()
+        {
+            var client = this.LazySLOBSClient.Value as SlobsPipeClient;
+
+            var req = SlobsRequestBuilder
+                .NewRequest()
+                .SetMethod("toggleRecording")
+                .SetResource("StreamingService")
+                .BuildRequest();
+
+            await client
+                .ExecuteRequestAsync(req)
+                .ConfigureAwait(false);
         }
     }
 }
