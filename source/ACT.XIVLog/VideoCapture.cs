@@ -227,14 +227,14 @@ namespace ACT.XIVLog
                         $"{prefix} ";
 
                     var f = this.deathCount > 1 ?
-                        $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} death{this.deathCount - 1}.mp4" :
-                        $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00}.mp4";
+                        $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} death{this.deathCount - 1}.ext" :
+                        $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00}.ext";
 
                     await Task.Delay(TimeSpan.FromSeconds(8));
 
                     var files = Directory.GetFiles(
                         Config.Instance.VideoSaveDictory,
-                        "*.mp4");
+                        "*.*");
 
                     var original = files
                         .OrderByDescending(x => File.GetLastWriteTime(x))
@@ -245,6 +245,9 @@ namespace ACT.XIVLog
                         var timestamp = File.GetLastWriteTime(original);
                         if (timestamp >= now.AddSeconds(-10))
                         {
+                            var ext = Path.GetExtension(original);
+                            f = f.Replace(".ext", ext);
+
                             var dest = Path.Combine(
                                 Path.GetDirectoryName(original),
                                 f);
