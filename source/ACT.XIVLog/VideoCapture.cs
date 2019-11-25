@@ -90,8 +90,14 @@ namespace ACT.XIVLog
                 return;
             }
 
-            if (xivlog.Log.Contains("wipeout") ||
-                xivlog.Log.EndsWith("戦闘開始カウントがキャンセルされました。") ||
+            var isCancel = xivlog.Log.EndsWith("戦闘開始カウントがキャンセルされました。");
+            if (isCancel)
+            {
+                this.TryCount--;
+            }
+
+            if (isCancel ||
+                xivlog.Log.Contains("wipeout") ||
                 xivlog.Log.Contains("/xivlog stop"))
             {
                 this.FinishRecording();
