@@ -72,6 +72,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public bool IsExpressionAvailable =>
             this.ExpressionsStatements.Any(x => x.Enabled.GetValueOrDefault());
 
+        public bool PredicateExpressions()
+        {
+            var expressions = this.ExpressionsStatements.FirstOrDefault(x =>
+                x.Enabled.GetValueOrDefault());
+
+            if (expressions == null)
+            {
+                return true;
+            }
+
+            lock (TimelineExpressionsModel.ExpressionLocker)
+            {
+                return expressions.Predicate();
+            }
+        }
+
         public void SetExpressions()
         {
             var expressions = this.ExpressionsStatements.FirstOrDefault(x =>
