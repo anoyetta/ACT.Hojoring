@@ -1810,14 +1810,30 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (toDoneTop != null)
             {
-                foreach (var act in this.ActivityLine
-                    .Where(x =>
-                        !x.IsDone &&
-                        x.Seq <= toDoneTop.Seq))
-                {
-                    act.IsDone = true;
-                    act.SetExpressions();
-                }
+                await Task.WhenAll(
+                    Task.Run(() =>
+                    {
+                        foreach (var act in this.ActivityLine
+                            .Where(x =>
+                                !x.IsDone &&
+                                x.Seq <= toDoneTop.Seq))
+                        {
+                            act.IsDone = true;
+
+                            if (act.PredicateExpressions())
+                            {
+                                act.SetExpressions();
+                            }
+                        }
+                    }),
+                    Task.Run(() =>
+                    {
+                        foreach (var act in this.ActivityLine
+                            .Where(x => x.Seq > toDoneTop.Seq))
+                        {
+                            act.IsDone = act.PredicateExpressions();
+                        }
+                    }));
             }
 
             // Activeなアクティビティを決める
