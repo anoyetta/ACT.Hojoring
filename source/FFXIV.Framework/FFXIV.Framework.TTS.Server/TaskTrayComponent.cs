@@ -34,6 +34,11 @@ namespace FFXIV.Framework.TTS.Server
             this.InitializeComponent();
         }
 
+        public void HideNotifyIcon()
+        {
+            this.NotifyIcon.Visible = false;
+        }
+
         private void ExitMenuItem_Click(object sender, EventArgs e)
         {
             (App.Current as App)?.CloseApp();
