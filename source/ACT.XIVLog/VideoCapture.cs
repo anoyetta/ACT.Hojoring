@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -6,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
+using NLog;
 using SLOBSharp.Client;
 using SLOBSharp.Client.Requests;
 using WindowsInput;
@@ -25,6 +27,12 @@ namespace ACT.XIVLog
         }
 
         #endregion Lazy Instance
+
+        #region Logger
+
+        private Logger Logger => AppLog.DefaultLogger;
+
+        #endregion Logger
 
         private readonly InputSimulator Input = new InputSimulator();
 
@@ -280,6 +288,13 @@ namespace ACT.XIVLog
         [MethodImpl(MethodImplOptions.NoInlining)]
         private async void SendToggleRecording()
         {
+            var p = Process.GetProcessesByName("Streamlabs OBS");
+            if (p == null)
+            {
+                this.Logger.Info("Tried to record, but Streamlabs OBS is not found.");
+                return;
+            }
+
             var client = this.LazySLOBSClient.Value as SlobsPipeClient;
 
             var req = SlobsRequestBuilder
