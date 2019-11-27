@@ -93,6 +93,13 @@ namespace FFXIV.Framework.TTS.Server
                     // サーバを終了する
                     RemoteTTSServer.Instance.Close();
                     BoyomiTcpServer.Instance.Stop();
+
+                    if (this.taskTrayComponet != null)
+                    {
+                        this.taskTrayComponet.HideNotifyIcon();
+                        this.taskTrayComponet.Dispose();
+                        this.taskTrayComponet = null;
+                    }
                 }
                 catch (Exception)
                 {
@@ -118,11 +125,10 @@ namespace FFXIV.Framework.TTS.Server
 
                 if (this.taskTrayComponet != null)
                 {
+                    this.taskTrayComponet.HideNotifyIcon();
                     this.taskTrayComponet.Dispose();
                     this.taskTrayComponet = null;
                 }
-
-                Config.Instance.Save();
             }
             catch (Exception ex)
             {
@@ -134,6 +140,7 @@ namespace FFXIV.Framework.TTS.Server
             {
                 AssemblyResolver.Free();
                 this.Logger.Trace("end.");
+                LogManager.Flush();
             }
         }
 
