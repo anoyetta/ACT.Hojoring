@@ -120,6 +120,7 @@ foreach ($p in $processes) {
     }
 }
 
+Start-Sleep -Milliseconds 200
 $processes = Get-Process
 foreach ($p in $processes) {
     if ($p.Name -eq "Advanced Combat Tracker") {
