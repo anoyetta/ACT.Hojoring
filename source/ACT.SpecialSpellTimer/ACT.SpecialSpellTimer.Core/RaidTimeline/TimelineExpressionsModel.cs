@@ -112,7 +112,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     Variables.Remove(item.Key);
                     TimelineController.RaiseLog(
-                        $"{TimelineController.TLSymbol} clear VAR[\"{item.Key}\"]");
+                        $"{TimelineController.TLSymbol} clear VAR['{item.Key}']");
                 }
 
                 if (targets.Length > 0)
@@ -197,6 +197,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         variable.Value = b;
                     }
+                    else if (double.TryParse(value.ToString(), out double d))
+                    {
+                        variable.Value = d;
+                    }
                     else
                     {
                         switch (this.Parent)
@@ -229,8 +233,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 // フラグの状況を把握するためにログを出力する
                 TimelineController.RaiseLog(
                     string.IsNullOrEmpty(set.Count) ?
-                    $"{TimelineController.TLSymbol} set VAR[\"{set.Name}\"] = {variable.Value}" :
-                    $"{TimelineController.TLSymbol} set VAR[\"{set.Name}\"] = {variable.Counter}");
+                    $"{TimelineController.TLSymbol} set VAR['{set.Name}'] = {variable.Value}" :
+                    $"{TimelineController.TLSymbol} set VAR['{set.Name}'] = {variable.Counter}");
             }
 
             OnVariableChanged?.Invoke(new EventArgs());
@@ -283,6 +287,27 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             return totalResult;
         }
+
+        /// <summary>
+        /// テキストに含まれるプレースホルダを変数値に置き換える
+        /// </summary>
+        /// <param name="text">
+        /// インプットテキスト</param>
+        /// <returns>
+        /// 置換後のテキスト</returns>
+        public static string ReplaceText(
+            string text)
+        {
+            foreach (var item in Variables)
+            {
+                if (DateTime.Now <= item.Value.Expiration)
+                {
+                    text = item.Value.Replace(text);
+                }
+            }
+
+            return text;
+        }
     }
 
     [XmlType(TypeName = "set")]
@@ -313,15 +338,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             get => this.Value?.ToString();
             set
             {
-                if (bool.TryParse(value, out bool b))
+                if (value == null)
                 {
-                    this.Value = b;
+                    this.Value = false;
                     return;
                 }
 
-                if (int.TryParse(value, out int i))
+                if (bool.TryParse(value, out bool b))
                 {
-                    this.Value = i;
+                    this.Value = b;
                     return;
                 }
 
@@ -331,7 +356,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return;
                 }
 
-                this.Value = value;
+                this.Value = TimelineExpressionsModel.ReplaceText(value.ToString());
             }
         }
 
@@ -434,15 +459,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             get => this.Value?.ToString();
             set
             {
-                if (bool.TryParse(value, out bool b))
+                if (value == null)
                 {
-                    this.Value = b;
+                    this.Value = false;
                     return;
                 }
 
-                if (int.TryParse(value, out int i))
+                if (bool.TryParse(value, out bool b))
                 {
-                    this.Value = i;
+                    this.Value = b;
                     return;
                 }
 
@@ -452,13 +477,41 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return;
                 }
 
-                this.Value = value;
+                this.Value = TimelineExpressionsModel.ReplaceText(value.ToString());
             }
         }
 
         public bool EqualsValue(
-            object predicateValue)
-            => ObjectComparer.Equals(predicateValue, this.Value);
+            object currentValue)
+        {
+            var result = false;
+
+            var currentText = currentValue?.ToString() ?? string.Empty;
+            var preText = this.Value?.ToString() ?? string.Empty;
+
+            if (double.TryParse(preText, out double d2))
+            {
+                if (double.TryParse(currentText, out double d1))
+                {
+                    result = d1 == d2;
+                    return result;
+                }
+            }
+
+            if (bool.TryParse(preText, out bool b2))
+            {
+                if (bool.TryParse(currentText, out bool b1))
+                {
+                    result = b1 == b2;
+                    return result;
+                }
+            }
+
+            currentText = TimelineExpressionsModel.ReplaceText(currentText);
+
+            result = string.Equals(currentText, preText, StringComparison.OrdinalIgnoreCase);
+            return result;
+        }
 
         private int? count = null;
 
