@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -107,16 +108,23 @@ namespace FFXIV.Framework.XIVHelper
         {
             lock (this)
             {
-                if (this.ffxivSubscriber != null)
+                try
                 {
-                    this.ffxivSubscriber.Abort();
-                    this.ffxivSubscriber = null;
-                }
+                    if (this.ffxivSubscriber != null)
+                    {
+                        this.ffxivSubscriber.Abort();
+                        this.ffxivSubscriber = null;
+                    }
 
-                if (this.memorySubscriber != null)
+                    if (this.memorySubscriber != null)
+                    {
+                        this.memorySubscriber.Abort();
+                        this.memorySubscriber = null;
+                    }
+                }
+                finally
                 {
-                    this.memorySubscriber.Abort();
-                    this.memorySubscriber = null;
+                    ClearLocalCaches();
                 }
             }
         }
@@ -131,6 +139,28 @@ namespace FFXIV.Framework.XIVHelper
 
         private Process currentFFXIVProcess;
         private string currentFFXIVLanguage;
+
+        private static readonly string[] LocalCacheFiles = new[]
+        {
+            "actions.json",
+            "signatures-x64.json",
+            "statuses.json",
+            "structures-x64.json",
+            "zones.json"
+        };
+
+        private static void ClearLocalCaches()
+        {
+            var dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            foreach (var f in LocalCacheFiles)
+            {
+                var file = Path.Combine(dir, f);
+                if (File.Exists(file))
+                {
+                    File.Delete(file);
+                }
+            }
+        }
 
         private void DetectFFXIVProcess()
         {
@@ -173,7 +203,7 @@ namespace FFXIV.Framework.XIVHelper
                     MemoryHandler.Instance.SetProcess(
                         model,
                         gameLanguage: ffxivLanguage,
-                        useLocalCache: false);
+                        useLocalCache: true);
 
                     ReaderEx.SetProcessModel(model);
 
