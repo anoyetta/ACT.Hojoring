@@ -304,6 +304,7 @@ namespace FFXIV.Framework.XIVHelper
 
                 if (ffxivPlugin != null)
                 {
+                    Thread.Sleep(500);
                     this.plugin = ffxivPlugin;
                     this.DataRepository = this.plugin.DataRepository;
                     this.DataSubscription = this.plugin.DataSubscription;
