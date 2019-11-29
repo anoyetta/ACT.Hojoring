@@ -191,10 +191,13 @@ namespace ACT.XIVLog
                     this.contentName :
                     ActGlobals.oFormActMain.CurrentZone;
 
-                TitleCardView.ShowTitleCard(
-                    contentName,
-                    this.TryCount,
-                    this.startTime);
+                if (Config.Instance.IsShowTitleCard)
+                {
+                    TitleCardView.ShowTitleCard(
+                        contentName,
+                        this.TryCount,
+                        this.startTime);
+                }
             });
         }
 
