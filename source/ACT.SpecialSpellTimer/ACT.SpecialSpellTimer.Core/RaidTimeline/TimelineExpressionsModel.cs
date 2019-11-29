@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.RazorModel;
 
@@ -191,37 +192,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
                 else
                 {
-                    var value = set.Value;
-
-                    if (bool.TryParse(value.ToString(), out bool b))
+                    var matched = this.Parent switch
                     {
-                        variable.Value = b;
-                    }
-                    else if (double.TryParse(value.ToString(), out double d))
-                    {
-                        variable.Value = d;
-                    }
-                    else
-                    {
-                        switch (this.Parent)
-                        {
-                            case TimelineActivityModel a:
-                                if (a.SyncMatch?.Success ?? false)
-                                {
-                                    value = a.SyncMatch.Result(value.ToString());
-                                }
-                                break;
+                        TimelineActivityModel a => a.SyncMatch,
+                        TimelineTriggerModel t => t.SyncMatch,
+                        _ => null,
+                    };
 
-                            case TimelineTriggerModel t:
-                                if (t.SyncMatch?.Success ?? false)
-                                {
-                                    value = t.SyncMatch.Result(value.ToString());
-                                }
-                                break;
-                        }
-
-                        variable.Value = value;
-                    }
+                    variable.Value = ObjectComparer.ConvertToValue(set.Value, matched);
                 }
 
                 // カウンタを更新する
@@ -271,13 +249,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         current = variable.Value;
                     }
 
-                    if (pre.Value is bool &&
-                        current == null)
-                    {
-                        current = false;
-                    }
-
-                    totalResult &= pre.EqualsValue(current);
+                    totalResult &= ObjectComparer.PredicateValue(current, pre.Value);
                 }
                 else
                 {
@@ -336,28 +308,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public string ValueXML
         {
             get => this.Value?.ToString();
-            set
-            {
-                if (value == null)
-                {
-                    this.Value = false;
-                    return;
-                }
-
-                if (bool.TryParse(value, out bool b))
-                {
-                    this.Value = b;
-                    return;
-                }
-
-                if (double.TryParse(value, out double d))
-                {
-                    this.Value = d;
-                    return;
-                }
-
-                this.Value = TimelineExpressionsModel.ReplaceText(value.ToString());
-            }
+            set => this.Value = ObjectComparer.ConvertToValue(value);
         }
 
         private bool? isToggle = null;
@@ -395,8 +346,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return result;
             }
 
-            int i;
-            if (!int.TryParse(this.Count, out i))
+            if (!int.TryParse(this.Count, out int i))
             {
                 return result;
             }
@@ -457,60 +407,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public string ValueXML
         {
             get => this.Value?.ToString();
-            set
-            {
-                if (value == null)
-                {
-                    this.Value = false;
-                    return;
-                }
-
-                if (bool.TryParse(value, out bool b))
-                {
-                    this.Value = b;
-                    return;
-                }
-
-                if (double.TryParse(value, out double d))
-                {
-                    this.Value = d;
-                    return;
-                }
-
-                this.Value = TimelineExpressionsModel.ReplaceText(value.ToString());
-            }
-        }
-
-        public bool EqualsValue(
-            object currentValue)
-        {
-            var result = false;
-
-            var currentText = currentValue?.ToString() ?? string.Empty;
-            var preText = this.Value?.ToString() ?? string.Empty;
-
-            if (double.TryParse(preText, out double d2))
-            {
-                if (double.TryParse(currentText, out double d1))
-                {
-                    result = d1 == d2;
-                    return result;
-                }
-            }
-
-            if (bool.TryParse(preText, out bool b2))
-            {
-                if (bool.TryParse(currentText, out bool b1))
-                {
-                    result = b1 == b2;
-                    return result;
-                }
-            }
-
-            currentText = TimelineExpressionsModel.ReplaceText(currentText);
-
-            result = string.Equals(currentText, preText, StringComparison.OrdinalIgnoreCase);
-            return result;
+            set => this.Value = ObjectComparer.ConvertToValue(value);
         }
 
         private int? count = null;
@@ -532,6 +429,77 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
     public static class ObjectComparer
     {
+        public static object ConvertToValue(
+            object o,
+            Match matched = null)
+        {
+            if (o == null)
+            {
+                return false;
+            }
+
+            var t = o.ToString();
+
+            // 変数を置換する
+            t = TimelineExpressionsModel.ReplaceText(t);
+
+            // 正規表現を置換する
+            if (matched != null &&
+                matched.Success)
+            {
+                t = matched.Result(t);
+            }
+
+            if (bool.TryParse(t, out bool b))
+            {
+                return b;
+            }
+
+            if (double.TryParse(t, out double d))
+            {
+                return d;
+            }
+
+            return t;
+        }
+
+        public static bool PredicateValue(
+            object inspectionValue,
+            object expectedValue,
+            Match matched = null)
+        {
+            var t1 = inspectionValue?.ToString() ?? false.ToString();
+            var t2 = expectedValue?.ToString() ?? false.ToString();
+
+            // 変数を置換する
+            t2 = TimelineExpressionsModel.ReplaceText(t2);
+
+            // 正規表現を置換する
+            if (matched != null &&
+                matched.Success)
+            {
+                t2 = matched.Result(t2);
+            }
+
+            if (double.TryParse(t2, out double d2))
+            {
+                if (!double.TryParse(t1, out double d1))
+                {
+                    d1 = 0;
+                }
+
+                return d1 == d2;
+            }
+
+            if (bool.TryParse(t2, out bool b2))
+            {
+                bool.TryParse(t1, out bool b1);
+                return b1 == b2;
+            }
+
+            return string.Equals(t1, t2, StringComparison.OrdinalIgnoreCase);
+        }
+
         public new static bool Equals(
             object x,
             object y)
