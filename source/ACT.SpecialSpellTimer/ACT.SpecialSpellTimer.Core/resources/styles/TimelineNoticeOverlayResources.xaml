@@ -9,6 +9,7 @@
 
   <!-- 最も外側のグリッド -->
   <Style x:Key="NoticeBaseGrid" TargetType="Grid">
+    <Setter Property="Visibility" Value="{Binding IsExistsNotice, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
     <Setter Property="Opacity" Value="{Binding Path=Config.OverlayOpacity, Mode=OneWay}" />
     <Setter Property="LayoutTransform">
       <Setter.Value>
