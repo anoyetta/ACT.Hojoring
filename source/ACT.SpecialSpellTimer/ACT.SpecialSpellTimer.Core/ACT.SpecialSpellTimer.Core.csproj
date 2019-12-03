@@ -205,6 +205,7 @@
     <Compile Include="RaidTimeline\TimelineDefaultModel.cs" />
     <Compile Include="RaidTimeline\TimelineController.cs" />
     <Compile Include="RaidTimeline\ConstantKeywords.cs" />
+    <Compile Include="RaidTimeline\TimelineExpressionsModel.Table.cs" />
     <Compile Include="RaidTimeline\TimelineExpressionsModel.Global.cs" />
     <Compile Include="RaidTimeline\TimelineLoadModel.cs" />
     <Compile Include="RaidTimeline\TimelineManager.cs" />

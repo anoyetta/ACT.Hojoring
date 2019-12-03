@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.RazorModel;
+using FFXIV.Framework.Extensions;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -49,10 +50,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        [XmlElement(ElementName = "table")]
+        public TimelineExpressionsTableModel[] TableStatements
+        {
+            get => this.Statements
+                .Where(x => x.TimelineType == TimelineElementTypes.ExpressionsTable)
+                .Cast<TimelineExpressionsTableModel>()
+                .ToArray();
+
+            set => this.AddRange(value);
+        }
+
         public void Add(TimelineBase timeline)
         {
             if (timeline.TimelineType == TimelineElementTypes.ExpressionsSet ||
-                timeline.TimelineType == TimelineElementTypes.ExpressionsPredicate)
+                timeline.TimelineType == TimelineElementTypes.ExpressionsPredicate ||
+                timeline.TimelineType == TimelineElementTypes.ExpressionsTable)
             {
                 timeline.Parent = this;
                 this.statements.Add(timeline);
@@ -78,10 +91,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public static event VariableChangedHandler OnVariableChanged;
 
+        public delegate void TableChangedHandler(EventArgs args);
+
+        public static event TableChangedHandler OnTableChanged;
+
         /// <summary>
         /// フラグ格納領域
         /// </summary>
         private static readonly Dictionary<string, TimelineVariable> Variables = new Dictionary<string, TimelineVariable>(128);
+
+        /// <summary>
+        /// テーブル格納領域
+        /// </summary>
+        private static readonly Dictionary<string, TimelineTable> Tables = new Dictionary<string, TimelineTable>(16);
 
         /// <summary>
         /// 変数領域のクローンを取得する
@@ -93,6 +115,31 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             lock (ExpressionLocker)
             {
                 return new Dictionary<string, TimelineVariable>(Variables);
+            }
+        }
+
+        /// <summary>
+        /// テーブルを取得する
+        /// </summary>
+        /// <param name="name">テーブル名</param>
+        /// <returns>
+        /// テーブル</returns>
+        public static TimelineTable GetTable(string name)
+        {
+            lock (ExpressionLocker)
+            {
+                if (Tables.ContainsKey(name))
+                {
+                    return Tables[name];
+                }
+                else
+                {
+                    var table = new TimelineTable();
+                    Tables[name] = table;
+                    OnTableChanged?.Invoke(new EventArgs());
+
+                    return table;
+                }
             }
         }
 
@@ -120,6 +167,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     OnVariableChanged?.Invoke(new EventArgs());
                 }
+
+                if (Tables.Count > 0)
+                {
+                    Tables.Clear();
+                    TimelineController.RaiseLog(
+                        $"{TimelineController.TLSymbol} clear Tables.");
+
+                    OnTableChanged?.Invoke(new EventArgs());
+                }
             }
         }
 
@@ -141,6 +197,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                     OnVariableChanged?.Invoke(new EventArgs());
                 }
+
+                if (Tables.Count > 0)
+                {
+                    Tables.Clear();
+                    TimelineController.RaiseLog(
+                        $"{TimelineController.TLSymbol} clear Tables.");
+
+                    OnTableChanged?.Invoke(new EventArgs());
+                }
             }
         }
 
@@ -154,7 +219,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     x.Enabled.GetValueOrDefault() &&
                     !string.IsNullOrEmpty(x.Name));
 
-            if (!sets.Any())
+            var tables = this.TableStatements
+                .Where(x =>
+                    x.Enabled.GetValueOrDefault() &&
+                    !string.IsNullOrEmpty(x.Name));
+
+            if (!sets.Any() &&
+                !tables.Any())
             {
                 return;
             }
@@ -216,6 +287,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             OnVariableChanged?.Invoke(new EventArgs());
+
+            // table を処理する
+            var result = false;
+            foreach (var table in tables)
+            {
+                table.ParseJson();
+                result |= table.Execute();
+            }
+
+            if (result)
+            {
+                OnTableChanged?.Invoke(new EventArgs());
+            }
         }
 
         /// <summary>
@@ -237,27 +321,55 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var totalResult = true;
             foreach (var pre in states)
             {
-                var variable = Variables.ContainsKey(pre.Name) ?
-                    Variables[pre.Name] :
-                    TimelineVariable.EmptyVariable;
+                var result = false;
 
-                if (!pre.Count.HasValue)
+                if (pre.Name.ContainsIgnoreCase("TABLE"))
                 {
-                    object current = null;
-                    if (DateTime.Now <= variable.Expiration)
-                    {
-                        current = variable.Value;
-                    }
-
-                    totalResult &= ObjectComparer.PredicateValue(current, pre.Value);
+                    result = this.PredicateTable(pre);
                 }
                 else
                 {
-                    totalResult &= (pre.Count.GetValueOrDefault() == variable.Counter);
+                    result = this.PredicateValue(pre);
                 }
+
+                totalResult &= result;
             }
 
             return totalResult;
+        }
+
+        private bool PredicateValue(
+            TimelineExpressionsPredicateModel pre)
+        {
+            var result = false;
+
+            var variable = Variables.ContainsKey(pre.Name) ?
+                Variables[pre.Name] :
+                TimelineVariable.EmptyVariable;
+
+            if (!pre.Count.HasValue)
+            {
+                object current = null;
+                if (DateTime.Now <= variable.Expiration)
+                {
+                    current = variable.Value;
+                }
+
+                result = ObjectComparer.PredicateValue(current, pre.Value);
+            }
+            else
+            {
+                result = (pre.Count.GetValueOrDefault() == variable.Counter);
+            }
+
+            return result;
+        }
+
+        private bool PredicateTable(
+            TimelineExpressionsPredicateModel pre)
+        {
+            var result = false;
+            return result;
         }
 
         /// <summary>
