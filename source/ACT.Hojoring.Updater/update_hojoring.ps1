@@ -105,10 +105,7 @@ foreach ($p in $processes) {
     if ($p.Name -eq "Advanced Combat Tracker") {
         $actPath = $p.Path
         if ($p.CloseMainWindow()) {
-            $p.WaitForExit(10) | Out-Null
-            if (!$p.Exited) {
-                $p.Kill()
-            }
+            $p.WaitForExit(15 * 1000) | Out-Null
         } else {
             $p.Kill()
         }
@@ -116,13 +113,24 @@ foreach ($p in $processes) {
 
     if ($p.Name -eq "FFXIV.Framework.TTS.Server") {
         if ($p.CloseMainWindow()) {
-            $p.WaitForExit(10) | Out-Null
-            if (!$p.Exited) {
-                $p.Kill()
-            }
+            $p.WaitForExit(15 * 1000) | Out-Null
         } else {
             $p.Kill()
         }
+    }
+}
+
+Start-Sleep -Milliseconds 200
+$processes = Get-Process
+foreach ($p in $processes) {
+    if ($p.Name -eq "Advanced Combat Tracker") {
+        Write-Error ("-> ERROR! ACT is still running.")
+        Exit-Update 1
+    }
+
+    if ($p.Name -eq "FFXIV.Framework.TTS.Server") {
+        Write-Error ("-> ERROR! TTSServer is still running.")
+        Exit-Update 1
     }
 }
 

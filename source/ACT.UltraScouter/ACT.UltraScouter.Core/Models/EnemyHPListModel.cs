@@ -47,7 +47,9 @@ namespace ACT.UltraScouter.Models
                 IsLiveSortingRequested = true,
             };
 
-            src.SortDescriptions.Add(new SortDescription(nameof(EnemyHPModel.CurrentHPRate), ListSortDirection.Descending));
+            src.SortDescriptions.Add(new SortDescription(
+                nameof(EnemyHPModel.ID),
+                ListSortDirection.Ascending));
 
             this.enemyHPViewSource = src;
         }
@@ -89,9 +91,11 @@ namespace ACT.UltraScouter.Models
                 return;
             }
 
-            var topHP = (uint)0;
+            var player = CombatantsManager.Instance.Player;
 
-            foreach (var c in combatants.OrderByDescending(x => x.CurrentHP))
+            var previousEnemyListCount = this.enemyHPList.Count;
+
+            foreach (var c in combatants)
             {
                 var entry = this.enemyHPList
                     .FirstOrDefault(x => x.ID == c.ID);
@@ -102,17 +106,35 @@ namespace ACT.UltraScouter.Models
                     this.enemyHPList.Add(entry);
                 }
 
-                if (topHP <= 0)
-                {
-                    topHP = c.CurrentHP;
-                }
-
                 entry.ID = c.ID;
+                entry.IsCurrentTarget = c.ID == player?.TargetID;
                 entry.Name = c.Name;
                 entry.MaxHP = c.MaxHP;
                 entry.CurrentHP = c.CurrentHP;
-                entry.DeltaHP = topHP - c.CurrentHP;
                 entry.Distance = c.HorizontalDistanceByPlayer;
+
+                var diffTarget = (
+                    from x in combatants
+                    where
+                    x.MaxHP == c.MaxHP &&
+                    x.ID != c.ID
+                    orderby
+                    Math.Abs(x.CurrentHP - c.CurrentHP) descending
+                    select
+                    x).FirstOrDefault();
+
+                if (diffTarget != null)
+                {
+                    entry.DeltaHP = c.CurrentHP - diffTarget.CurrentHP;
+                    entry.DeltaHPRate = c.CurrentHPRate - diffTarget.CurrentHPRate;
+                    entry.IsExistsDelta = true;
+                }
+                else
+                {
+                    entry.DeltaHP = 0;
+                    entry.DeltaHPRate = 0;
+                    entry.IsExistsDelta = false;
+                }
             }
 
             var toRemove = this.enemyHPList
@@ -123,6 +145,11 @@ namespace ACT.UltraScouter.Models
             {
                 this.enemyHPList.Remove(item);
             }
+
+            if (previousEnemyListCount != this.enemyHPList.Count)
+            {
+                this.RaisePropertyChanged(nameof(this.IsExists));
+            }
         }
 
         private void UpdateDesignMode()
@@ -131,6 +158,7 @@ namespace ACT.UltraScouter.Models
             {
                 this.enemyHPList.Clear();
                 this.enemyHPList.AddRange(DesignModeEnemyList);
+                this.RaisePropertyChanged(nameof(this.IsExists));
             }
 
             this.isDesignMode = true;
@@ -141,8 +169,19 @@ namespace ACT.UltraScouter.Models
             var rate = (double)(60 - DateTime.Now.Second) / 60d;
 
             liquid.CurrentHP = (uint)(liquid.MaxHP * rate);
-            hand.CurrentHP = (uint)(hand.MaxHP * rate);
-            hand.DeltaHP = liquid.CurrentHP - hand.CurrentHP;
+            hand.CurrentHP = (uint)(hand.MaxHP * (rate * 0.9d));
+
+            var self = liquid;
+            var diff = hand;
+            liquid.DeltaHP = self.CurrentHP - diff.CurrentHP;
+            liquid.DeltaHPRate = self.CurrentHPRate - diff.CurrentHPRate;
+            liquid.IsExistsDelta = true;
+
+            self = hand;
+            diff = liquid;
+            hand.DeltaHP = self.CurrentHP - diff.CurrentHP;
+            hand.DeltaHPRate = self.CurrentHPRate - diff.CurrentHPRate;
+            hand.IsExistsDelta = true;
         }
 
         private static readonly EnemyHPModel[] DesignModeEnemyList = new[]
@@ -150,6 +189,7 @@ namespace ACT.UltraScouter.Models
             new EnemyHPModel()
             {
                 ID = 1,
+                IsCurrentTarget = true,
                 Name = "リビングリキッド",
                 MaxHP = 12889320,
             },
@@ -157,7 +197,8 @@ namespace ACT.UltraScouter.Models
             {
                 ID = 2,
                 Name = "リキッドハンド",
-                MaxHP = (uint)(12889320 * 0.8),
+                MaxHP = 12889320,
+                CurrentHP = (uint)(12889320 * 0.9),
             }
         };
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Windows.Media;
 using ACT.UltraScouter.Config;
@@ -16,6 +17,22 @@ namespace ACT.UltraScouter.Models
             get => this.id;
             set => this.SetProperty(ref this.id, value);
         }
+
+        private bool isCurrentTarget;
+
+        public bool IsCurrentTarget
+        {
+            get => this.isCurrentTarget;
+            set
+            {
+                if (this.SetProperty(ref this.isCurrentTarget, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.BorderBrush));
+                }
+            }
+        }
+
+        public SolidColorBrush BorderBrush => this.isCurrentTarget ? Brushes.WhiteSmoke : Brushes.Transparent;
 
         private double distance;
 
@@ -71,19 +88,40 @@ namespace ACT.UltraScouter.Models
         public uint DeltaHP
         {
             get => this.deltaHP;
+            set => this.SetProperty(ref this.deltaHP, value);
+        }
+
+        private double deltaHPRate;
+
+        public double DeltaHPRate
+        {
+            get => this.deltaHPRate;
             set
             {
-                if (this.SetProperty(ref this.deltaHP, value))
+                if (this.SetProperty(ref this.deltaHPRate, value))
                 {
-                    this.RaisePropertyChanged(nameof(IsExistsDelta));
-                    this.RaisePropertyChanged(nameof(DeltaHPRate));
+                    this.RaisePropertyChanged(nameof(this.DeltaHPRateAbs));
+                    this.RaisePropertyChanged(nameof(this.DeltaHPSign));
                 }
             }
         }
 
-        public bool IsExistsDelta => this.deltaHP != 0;
+        public double DeltaHPRateAbs => Math.Abs(this.deltaHPRate);
 
-        public double DeltaHPRate => this.CurrentHP != 0 ? ((double)this.DeltaHP / (double)(this.CurrentHP + this.DeltaHP)) : 0;
+        public DeltaHPSign DeltaHPSign => this.deltaHPRate switch
+        {
+            var x when x > 0 => DeltaHPSign.Positive,
+            var x when x < 0 => DeltaHPSign.Negative,
+            _ => DeltaHPSign.Zero,
+        };
+
+        private bool isExistsDelta;
+
+        public bool IsExistsDelta
+        {
+            get => this.isExistsDelta;
+            set => this.SetProperty(ref this.isExistsDelta, value);
+        }
 
         public SolidColorBrush HPColor => GetBrush(Settings.Instance.EnemyHP.ProgressBar.AvailableColor(this.CurrentHPRate * 100));
 
@@ -106,5 +144,12 @@ namespace ACT.UltraScouter.Models
                 return brush;
             }
         }
+    }
+
+    public enum DeltaHPSign
+    {
+        Zero,
+        Positive,
+        Negative,
     }
 }

@@ -37,7 +37,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     if (SetVariable(name, value))
                     {
                         TimelineController.RaiseLog(
-                            $"{TimelineController.TLSymbol} set ENV[\"{name}\"] = {value}");
+                            $"{TimelineController.TLSymbol} set VAR['{name}'] = {value}");
                     }
                 }
             }
@@ -60,7 +60,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (SetVariable(name, value))
             {
                 TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} set ENV[\"{name}\"] = {value}");
+                    $"{TimelineController.TLSymbol} set VAR['{name}'] = {value}");
             }
         }
 
@@ -81,7 +81,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (SetVariable(name, value))
             {
                 TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} set ENV[\"{name}\"] = {value}");
+                    $"{TimelineController.TLSymbol} set VAR['{name}'] = {value}");
             }
         }
 
@@ -107,9 +107,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 SetVariable(ZoneName, zoneName);
                 TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} set ENV[\"{ZoneID}\"] = {zoneID}");
+                    $"{TimelineController.TLSymbol} set VAR['{ZoneID}'] = {zoneID}");
                 TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} set ENV[\"{ZoneName}\"] = {zoneName}");
+                    $"{TimelineController.TLSymbol} set VAR['{ZoneName}'] = {zoneName}");
             }
         }
 

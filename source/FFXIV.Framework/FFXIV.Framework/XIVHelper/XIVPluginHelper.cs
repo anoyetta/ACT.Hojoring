@@ -94,7 +94,7 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
-        public Locales LanguageID => (int)this.DataRepository.GetSelectedLanguageID() switch
+        public Locales LanguageID => (int)(this.DataRepository?.GetSelectedLanguageID() ?? 0) switch
         {
             1 => Locales.EN,
             2 => Locales.FR,
@@ -147,6 +147,13 @@ namespace FFXIV.Framework.XIVHelper
                 try
                 {
                     this.Attach();
+
+                    if (this.plugin == null ||
+                        this.DataRepository == null ||
+                        this.DataSubscription == null)
+                    {
+                        return;
+                    }
 
                     lock (ResourcesLock)
                     {
@@ -282,7 +289,8 @@ namespace FFXIV.Framework.XIVHelper
             lock (this)
             {
                 if (this.plugin != null ||
-                    ActGlobals.oFormActMain == null)
+                    ActGlobals.oFormActMain == null ||
+                    !ActGlobals.oFormActMain.InitActDone)
                 {
                     return;
                 }
@@ -290,13 +298,13 @@ namespace FFXIV.Framework.XIVHelper
                 var ffxivPlugin = (
                     from x in ActGlobals.oFormActMain.ActPlugins
                     where
-                    x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper()) &&
-                    x.lblPluginStatus.Text.ToUpper().Contains("FFXIV Plugin Started.".ToUpper())
+                    x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper())
                     select
                     x.pluginObj).FirstOrDefault();
 
                 if (ffxivPlugin != null)
                 {
+                    Thread.Sleep(500);
                     this.plugin = ffxivPlugin;
                     this.DataRepository = this.plugin.DataRepository;
                     this.DataSubscription = this.plugin.DataSubscription;

@@ -29,7 +29,13 @@ namespace ACT.XIVLog
 
         public static XIVLogPlugin Instance => instance;
 
-        public XIVLogPlugin() => instance = this;
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public XIVLogPlugin()
+        {
+            instance = this;
+            CosturaUtility.Initialize();
+            AssemblyResolver.Instance.Initialize(this);
+        }
 
         #endregion Singleton
 
@@ -51,6 +57,8 @@ namespace ACT.XIVLog
                 Child = new ConfigView(),
                 Dock = DockStyle.Fill,
             });
+
+            EnvironmentHelper.WaitInitActDone();
 
             this.InitTask();
             this.pluginLabel.Text = "Plugin Started";
@@ -105,6 +113,7 @@ namespace ACT.XIVLog
         private int wipeoutCounter = 1;
         private int fileNo = 1;
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private void InitTask()
         {
             this.dumpLogTask = ThreadWorker.Run(
@@ -207,9 +216,12 @@ namespace ACT.XIVLog
             }
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private void EndTask()
         {
             ActGlobals.oFormActMain.OnLogLineRead -= this.OnLogLineRead;
+
+            VideoCapture.Instance.FinishRecording();
 
             if (dumpLogTask != null)
             {
@@ -226,11 +238,14 @@ namespace ACT.XIVLog
             }
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private void OnLogLineRead(
             bool isImport,
             LogLineEventArgs logInfo)
         {
-            if (string.IsNullOrEmpty(Config.Instance.OutputDirectory))
+            if (string.IsNullOrEmpty(Config.Instance.OutputDirectory) &&
+                !Config.Instance.IsEnabledRecording &&
+                !Config.Instance.IsShowTitleCard)
             {
                 return;
             }
@@ -246,6 +261,7 @@ namespace ACT.XIVLog
             if (!isImport)
             {
                 this.OpenXIVLogAsync(logInfo.logLine);
+                VideoCapture.Instance.DetectCapture(xivlog);
             }
         }
 

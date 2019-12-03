@@ -1762,6 +1762,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 from x in currentActivityLine
                 where
                 !x.IsNotified &&
+                x.PredicateExpressions() &&
                 x.Time + TimeSpan.FromSeconds(x.NoticeOffset.Value) <= this.CurrentTime
                 select
                 x;
@@ -1810,14 +1811,21 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (toDoneTop != null)
             {
-                foreach (var act in this.ActivityLine
-                    .Where(x =>
-                        !x.IsDone &&
-                        x.Seq <= toDoneTop.Seq))
+                await Task.Run(() =>
                 {
-                    act.IsDone = true;
-                    act.SetExpressions();
-                }
+                    foreach (var act in this.ActivityLine
+                        .Where(x =>
+                            !x.IsDone &&
+                            x.Seq <= toDoneTop.Seq))
+                    {
+                        act.IsDone = true;
+
+                        if (act.PredicateExpressions())
+                        {
+                            act.SetExpressions();
+                        }
+                    }
+                });
             }
 
             // Activeなアクティビティを決める
@@ -1826,6 +1834,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 where
                 !x.IsActive &&
                 !x.IsDone &&
+                x.PredicateExpressions() &&
                 x.Time <= this.CurrentTime
                 orderby
                 x.Seq descending
@@ -1862,7 +1871,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 where
                 x.Enabled.GetValueOrDefault() &&
                 !string.IsNullOrEmpty(x.Text) &&
-                x.IsVisible
+                x.IsVisible &&
+                x.PredicateExpressions()
                 select
                 x).ToArray());
 
@@ -1900,6 +1910,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 if (count < TimelineSettings.Instance.ShowActivitiesCount &&
                     !x.IsDone &&
+                    x.PredicateExpressions() &&
                     x.Time <= maxTime)
                 {
                     x.RefreshProgress();

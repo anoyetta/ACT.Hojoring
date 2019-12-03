@@ -42,11 +42,7 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
     * ACT.UltraScouter.dll
     * ACT.TTSYukkuri.dll
 
-詳細な手順は **[anoyetta の開発記録 - ACTおよび補助輪のインストール手順（完全版）](https://www.anoyetta.com/entry/2019/04/08/132603)** を読んでください。
-
-### FFXIV_MemoryReader
-補助輪はTamanegiMageさんが開発した [FFXIV_MemoryReader](https://github.com/TamanegiMage/FFXIV_MemoryReader) を利用しています。  
-FFXIV_MemoryReader は FFXIV_ACT_Plugin が取得していない情報を FFXIV から取得します。これによってスペル、ウルスカの方角関係の機能などを拡張しています。
+詳細な手順は **[anoyetta の開発記録 - ACTおよび補助輪のインストール手順（完全版）](https://www.anoyetta.com/entry/hojoring-setup)** を読んでください。
 
 ### 動作環境
 * [Windows 10](https://www.microsoft.com/software-download/windows10) 以降（Windows 7/8/8.1 では原則的に動作しません）
@@ -56,9 +52,11 @@ FFXIV_MemoryReader は FFXIV_ACT_Plugin が取得していない情報を FFXIV 
 **基本的に [Wiki](https://github.com/anoyetta/ACT.Hojoring/wiki) を見てください。**
 
 #### おすすめ設定とか教えて
-下記の Google Drive 共有フォルダで各種リソースのサンプルを提供しています。  
-**[Google Drive > anoyetta > ACT](https://drive.google.com/drive/folders/1nPBuqd8z3jzk0RDOx6NqK6NYUoy08_k-?usp=sharing)**  
-**[ACTの共有リソースの使い方](https://drive.google.com/open?id=1dl4dMoBONNz-NRZLCqU7YbkmkEpLKAllN92U-SCwY3M)** **[必読]**  
+下記でサンプルなどを共有しています。   
+* **[ACT共有フォルダ](https://drive.google.com/drive/folders/1nPBuqd8z3jzk0RDOx6NqK6NYUoy08_k-?usp=sharing)**  
+[ACT共有フォルダの使い方](https://drive.google.com/open?id=1dl4dMoBONNz-NRZLCqU7YbkmkEpLKAllN92U-SCwY3M) **[必読]**  
+
+* **[スペスペたいむ共有レポジトリ](https://github.com/anoyetta/spespetime)**
 
 ##### Hojoring の設定ファイルあれこれ
 1. 格納場所  

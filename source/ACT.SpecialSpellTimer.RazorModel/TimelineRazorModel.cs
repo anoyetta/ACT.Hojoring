@@ -292,6 +292,12 @@ namespace ACT.SpecialSpellTimer.RazorModel
             set => this.SetProperty(ref this.zone, value);
         }
 
+        public string ToPlaceholder() => $"VAR['{this.Name}']";
+
+        public string Replace(string text) => this.Value != null ?
+            text.Replace(this.ToPlaceholder(), this.Value.ToString()) :
+            text;
+
         public override string ToString() =>
             $"{this.Name}={this.Value}, counter={this.Counter}";
     }

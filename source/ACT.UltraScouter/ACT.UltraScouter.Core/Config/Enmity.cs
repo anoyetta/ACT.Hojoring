@@ -197,8 +197,17 @@ namespace ACT.UltraScouter.Config
         public Color Background
         {
             get => this.background;
-            set => this.SetProperty(ref this.background, value);
+            set
+            {
+                if (this.SetProperty(ref this.background, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.BackgroundOpacity));
+                }
+            }
         }
+
+        [XmlIgnore]
+        public double BackgroundOpacity => (double)this.background.A / 255d;
 
         private bool isDisplayDifference;
 

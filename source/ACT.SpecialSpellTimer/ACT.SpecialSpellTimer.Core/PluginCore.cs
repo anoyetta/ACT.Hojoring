@@ -2,7 +2,6 @@ using System;
 using System.Drawing;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
@@ -233,6 +232,8 @@ namespace ACT.SpecialSpellTimer
                         Dock = DockStyle.Fill,
                         Font = pluginScreenSpace.Font,
                     });
+
+                    EnvironmentHelper.WaitInitActDone();
 
                     // 本体を開始する
                     PluginMainWorker.Instance.Begin();

@@ -2,6 +2,7 @@
   <Costura
     IncludeDebugSymbols="false">
     <ExcludeAssemblies>
+      Advanced Combat Tracker
       ACT.Hojoring.Common
       ACT.SpecialSpellTimer.RazorModel
       FFXIV.Framework

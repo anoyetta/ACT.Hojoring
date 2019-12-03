@@ -65,11 +65,21 @@ namespace ACT.UltraScouter.Config
         private Color background = Colors.Transparent;
 #endif
 
+        [DataMember]
         public Color Background
         {
             get => this.background;
-            set => this.SetProperty(ref this.background, value);
+            set
+            {
+                if (this.SetProperty(ref this.background, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.BackgroundOpacity));
+                }
+            }
         }
+
+        [XmlIgnore]
+        public double BackgroundOpacity => (double)this.background.A / 255d;
 
         public DisplayText DisplayText { get; set; } = new DisplayText();
 
@@ -79,6 +89,9 @@ namespace ACT.UltraScouter.Config
         public Action RefreshViewDelegate { get; set; }
 
         public void ExecuteRefreshViewCommand()
-            => this.RefreshViewDelegate?.Invoke();
+        {
+            this.RaisePropertyChanged(nameof(this.Background));
+            this.RefreshViewDelegate?.Invoke();
+        }
     }
 }

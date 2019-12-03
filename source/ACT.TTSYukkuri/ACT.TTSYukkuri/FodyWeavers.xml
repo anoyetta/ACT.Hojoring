@@ -6,6 +6,7 @@
       AquesTalkDriver
     </PreloadOrder>
     <ExcludeAssemblies>
+      Advanced Combat Tracker
       ACT.Hojoring.Common
       ACT.SpecialSpellTimer.RazorModel
       FFXIV.Framework

@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.TTS.Server.ViewModels;
@@ -31,7 +32,12 @@ namespace FFXIV.Framework.TTS.Server.Views
             this.InitializeComponent();
             this.ViewModel.View = this;
             this.StateChanged += this.MainView_StateChanged;
-            this.Closed += (_, __) => BoyomiTcpServer.Instance.Stop();
+            this.Closed += async (_, __) =>
+            {
+                (App.Current as App).CloseApp();
+                await Task.Delay(200);
+                App.Current.Shutdown();
+            };
         }
 
         public MainSimpleViewModel ViewModel => (MainSimpleViewModel)this.DataContext;

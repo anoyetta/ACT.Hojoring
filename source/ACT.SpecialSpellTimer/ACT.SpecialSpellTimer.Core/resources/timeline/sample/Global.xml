@@ -4,7 +4,7 @@
   <rev>rev1</rev>
   <description>
     ゾーンに依存せず常に使用するトリガを定義する。
-    スペルやテロップで定義しても同等の機能が得られるがスペスペたいむの通知オーバーレイでまとめて運用した人向け。
+    スペルやテロップで定義しても同等の機能が得られるがスペスペたいむの通知オーバーレイでまとめて運用したい人向け。
   </description>
   <author>anoyetta with Hojoring Forum</author>
   <zone>{GLOBAL}</zone>

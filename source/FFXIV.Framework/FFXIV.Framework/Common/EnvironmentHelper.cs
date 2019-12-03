@@ -231,6 +231,30 @@ namespace FFXIV.Framework.Common
             return isLastValidPluginLoadOrder;
         }
 
+        private static readonly object WaitLocker = new object();
+        private static volatile int waitCounter;
+
+        public static async void WaitInitActDone()
+        {
+            var delay = 0;
+
+            lock (WaitLocker)
+            {
+                waitCounter++;
+                delay = 200 * waitCounter;
+            }
+
+            await Task.Run(async () =>
+            {
+                while (!ActGlobals.oFormActMain.InitActDone)
+                {
+                    await Task.Delay(300);
+                }
+
+                await Task.Delay(delay);
+            });
+        }
+
         private static volatile bool isStarted;
         public static readonly string ActivationDenyMessage = "Hojoring is not allowed for you.";
 

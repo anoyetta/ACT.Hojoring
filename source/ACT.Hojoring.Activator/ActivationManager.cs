@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ACT.Hojoring.Activator.Models;
+using Advanced_Combat_Tracker;
 
 namespace ACT.Hojoring.Activator
 {
@@ -42,6 +43,11 @@ namespace ACT.Hojoring.Activator
             timer.AutoReset = true;
             timer.Elapsed += (_, __) =>
             {
+                if (!ActGlobals.oFormActMain.InitActDone)
+                {
+                    return;
+                }
+
                 RefreshAccountList();
                 timer.Interval = TimeSpan.FromMinutes(60 * GetFuzzy()).TotalMilliseconds;
             };
@@ -82,14 +88,19 @@ namespace ACT.Hojoring.Activator
                     this.isBusyCallback = isBusyCallback;
                 }
 
-                Task.Run(() =>
+                Task.Run(async () =>
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(10));
-
                     if (this.LazyTimer.Value.Enabled)
                     {
                         return;
                     }
+
+                    while (!ActGlobals.oFormActMain.InitActDone)
+                    {
+                        await Task.Delay(300);
+                    }
+
+                    await Task.Delay(TimeSpan.FromMinutes(1));
 
                     this.LazyTimer.Value.Start();
                     RefreshAccountList();

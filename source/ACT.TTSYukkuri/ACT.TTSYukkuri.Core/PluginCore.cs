@@ -376,6 +376,8 @@ namespace ACT.TTSYukkuri
                     WPFHelper.Start();
                     UpdateChecker.ShowSplash();
 
+                    EnvironmentHelper.WaitInitActDone();
+
                     await Task.Run(() =>
                     {
                         // TTSサーバを開始する
