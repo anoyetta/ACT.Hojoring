@@ -618,6 +618,23 @@
                 </ListView.View>
               </ListView>
             </TabItem>
+
+            <TabItem Header="Tables" Padding="20 2 20 2">
+              <ScrollViewer
+                Margin="5"
+                Focusable="False"
+                IsTabStop="False"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto">
+                <TextBox
+                  BorderThickness="0"
+                  IsReadOnly="True"
+                  AcceptsReturn="True"
+                  Focusable="False"
+                  IsTabStop="False"
+                  Text="{Binding TableDumpText, Mode=OneWay}" />
+              </ScrollViewer>
+            </TabItem>
           </TabControl>
         </Grid>
       </Border>

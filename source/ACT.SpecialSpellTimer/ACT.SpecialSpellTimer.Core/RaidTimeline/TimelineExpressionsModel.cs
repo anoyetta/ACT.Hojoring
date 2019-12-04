@@ -89,10 +89,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public delegate void VariableChangedHandler(EventArgs args);
 
-        public static event VariableChangedHandler OnVariableChanged;
-
         public delegate void TableChangedHandler(EventArgs args);
 
+        [field: NonSerialized]
+        public static event VariableChangedHandler OnVariableChanged;
+
+        [field: NonSerialized]
         public static event TableChangedHandler OnTableChanged;
 
         /// <summary>
@@ -134,12 +136,30 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
                 else
                 {
-                    var table = new TimelineTable();
+                    var table = new TimelineTable()
+                    {
+                        Name = name
+                    };
+
                     Tables[name] = table;
                     OnTableChanged?.Invoke(new EventArgs());
 
                     return table;
                 }
+            }
+        }
+
+        /// <summary>
+        /// テーブルを取得する
+        /// </summary>
+        /// <param name="name">テーブル名</param>
+        /// <returns>
+        /// テーブル</returns>
+        public static IReadOnlyList<TimelineTable> GetTables()
+        {
+            lock (ExpressionLocker)
+            {
+                return Tables.Values.ToList();
             }
         }
 
@@ -221,8 +241,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var tables = this.TableStatements
                 .Where(x =>
-                    x.Enabled.GetValueOrDefault() &&
-                    !string.IsNullOrEmpty(x.Name));
+                    x.Enabled.GetValueOrDefault());
 
             if (!sets.Any() &&
                 !tables.Any())
@@ -293,7 +312,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             foreach (var table in tables)
             {
                 table.ParseJson();
-                result |= table.Execute();
+                result |= table.Execute(
+                    (x) => TimelineController.RaiseLog($"{TimelineController.TLSymbol} {x}"));
             }
 
             if (result)
@@ -323,7 +343,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 var result = false;
 
-                if (pre.Name.ContainsIgnoreCase("TABLE"))
+                if (TableDMLKeywords.Any(x => pre.Name.ContainsIgnoreCase(x)))
                 {
                     result = this.PredicateTable(pre);
                 }
@@ -342,6 +362,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             TimelineExpressionsPredicateModel pre)
         {
             var result = false;
+            var log = string.Empty;
 
             var variable = Variables.ContainsKey(pre.Name) ?
                 Variables[pre.Name] :
@@ -356,19 +377,119 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 result = ObjectComparer.PredicateValue(current, pre.Value);
+                log = $"predicate '{pre.Name}':{current} equal {pre.Value} -> {result}";
             }
             else
             {
                 result = (pre.Count.GetValueOrDefault() == variable.Counter);
+                log = $"predicate '{pre.Name}':{variable.Counter} equal {pre.Count} -> {result}";
             }
+
+            TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
 
             return result;
         }
 
+        /// <summary>
+        /// テーブル変数の参照書式
+        /// </summary>
+        /// <example>
+        /// TABLE['table_name'][index]['column_name']
+        /// </example>
+        private static readonly Regex TableVarRegex = new Regex(
+            @$"{TableVarKeyword}\['(?<TableName>.+)'\]\[(?<Index>\d+)\]\['(?<ColName>.+)'\]",
+            RegexOptions.Compiled |
+            RegexOptions.IgnoreCase);
+
+        /// <summary>
+        /// COUNT関数書式
+        /// </summary>
+        /// <example>
+        /// COUNT('table_name')
+        /// </example>
+        private static readonly Regex CountTableRegex = new Regex(
+            @$"{CountFunctionKeyword}\('(?<TableName>.+)'\)",
+            RegexOptions.Compiled |
+            RegexOptions.IgnoreCase);
+
+        private static readonly string TableVarKeyword = "TABLE";
+        private static readonly string CountFunctionKeyword = "COUNT";
+
+        private static readonly string[] TableDMLKeywords = new[]
+        {
+            TableVarKeyword,
+            CountFunctionKeyword,
+        };
+
+        /// <summary>
+        /// テーブル関連の値を取得する
+        /// </summary>
+        /// <param name="keyword">キーワード</param>
+        /// <returns>取得した値</returns>
+        public static object GetTableValue(
+            string keyword)
+        {
+            object value = null;
+
+            if (!TableDMLKeywords.Any(x => keyword.ContainsIgnoreCase(x)))
+            {
+                return value;
+            }
+
+            // フィールドの参照？
+            var match = TableVarRegex.Match(keyword);
+            if (match.Success)
+            {
+                var tableName = match.Groups["TableName"].Value;
+                var indexText = match.Groups["Index"].Value;
+                var colName = match.Groups["ColName"].Value;
+
+                if (int.TryParse(indexText, out int index))
+                {
+                    var table = TimelineExpressionsModel.GetTable(tableName);
+                    if (table.Rows.Count > index)
+                    {
+                        var row = table.Rows[index];
+                        if (row.Col.ContainsKey(colName))
+                        {
+                            value = row.Col[colName].Value;
+                        }
+                    }
+                }
+
+                return value;
+            }
+
+            // COUNT関数？
+            match = CountTableRegex.Match(keyword);
+            if (match.Success)
+            {
+                var tableName = match.Groups["TableName"].Value;
+                var table = TimelineExpressionsModel.GetTable(tableName);
+                value = table.Rows.Count;
+
+                return value;
+            }
+
+            return value;
+        }
+
+        /// <summary>
+        /// テーブル変数と評価する
+        /// </summary>
+        /// <param name="pre">predicateオブジェクト</param>
+        /// <returns>評価結果</returns>
         private bool PredicateTable(
             TimelineExpressionsPredicateModel pre)
         {
-            var result = false;
+            var log = string.Empty;
+
+            var current = GetTableValue(pre.Name) ?? false;
+            var result = ObjectComparer.PredicateValue(current, pre.Value);
+
+            log = $"predicate {pre.Name}:{current} equal {pre.Value} -> {result}";
+            TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
+
             return result;
         }
 

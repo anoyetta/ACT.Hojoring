@@ -125,7 +125,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             col.Val,
                             col.IsKey);
 
-                        logs.Add($"{col.Name} : '{col.Val}'");
+                        logs.Add($"{col.Name}:'{col.Val}'");
 
                         if (col.IsKey)
                         {
@@ -135,7 +135,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                     table.Add(row);
 
-                    var colLog = string.Join(",", logs.ToArray());
+                    var colLog = string.Join(", ", logs.ToArray());
                     raiseLog?.Invoke($"Merge row into TABLE['{model.Table}'] cols ({colLog}) {keyLog}");
                 }
 
