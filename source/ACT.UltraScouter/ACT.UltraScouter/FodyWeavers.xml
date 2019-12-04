@@ -8,6 +8,8 @@
       FFXIV.Framework
       FFXIV.Framework.TTS.Server*
       RazorEngine
+      FFXIV_ACT_Plugin
+      FFXIV_ACT_Plugin.*
     </ExcludeAssemblies>
     <Unmanaged32Assemblies>
       SQLite.Interop

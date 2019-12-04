@@ -8,6 +8,8 @@
       FFXIV.Framework.TTS.Server*
       RazorEngine
       SLOBSharp
+      FFXIV_ACT_Plugin
+      FFXIV_ACT_Plugin.*
     </ExcludeAssemblies>
   </Costura>
 </Weavers>
