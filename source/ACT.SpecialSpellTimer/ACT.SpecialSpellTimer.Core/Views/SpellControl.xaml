@@ -196,6 +196,7 @@
 
         <ctrl:LightOutlineTextBlock
           x:Name="SpellTitleTextBlock"
+          TextTrimming="CharacterEllipsis"
           Padding="2 0 0 0"
           HorizontalAlignment="Left"
           VerticalAlignment="Top"
@@ -214,7 +215,7 @@
         Grid.Column="2"
         HorizontalAlignment="{Binding CounterAlignment, Mode=OneWay}"
         VerticalAlignment="Bottom"
-        Stretch="Uniform"
+        Stretch="None"
         StretchDirection="DownOnly">
 
         <ctrl:LightOutlineTextBlock
