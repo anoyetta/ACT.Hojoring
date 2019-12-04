@@ -194,7 +194,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         break;
 
                     default:
-                        v.TextToDisplay = v.Text;
+                        v.TextToDisplay = act.SyncMatch != null && act.SyncMatch.Success ?
+                            act.SyncMatch.Result(v.Text) :
+                            v.Text;
                         break;
                 }
 
@@ -303,7 +305,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         break;
 
                     default:
-                        v.TextToDisplay = v.Text;
+                        v.TextToDisplay = tri.SyncMatch != null && tri.SyncMatch.Success ?
+                            tri.SyncMatch.Result(v.Text) :
+                            v.Text;
                         break;
                 }
 
