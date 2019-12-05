@@ -67,17 +67,17 @@
           RenderOptions.EdgeMode="Unspecified" />
 
         <!-- progress circle -->
-        <ctrl:ProgressCircle
+        <ctrl:ProgressCircle
           x:Name="CircleProgress"
-          Canvas.ZIndex="-8"
-          HorizontalAlignment="Center"
-          VerticalAlignment="Center"
-          BlurRadius="{Binding BarBlurRadius, Mode=OneWay}" />
-
-        <!-- text grid -->
-        <Grid
-          Canvas.ZIndex="0"
-          HorizontalAlignment="Center"
+          Canvas.ZIndex="-8"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          BlurRadius="{Binding BarBlurRadius, Mode=OneWay}" />
+
+        <!-- text grid -->
+        <Grid
+          Canvas.ZIndex="0"
+          HorizontalAlignment="Center"
           VerticalAlignment="Center">
           <Grid.RowDefinitions>
             <RowDefinition />
@@ -104,7 +104,7 @@
             Stroke="Blue"
             Text="10.0"
             Visibility="{Binding HideCounter, Mode=OneWay, Converter={StaticResource BoolToCollapsedNegativeConverter}}" />
-        </Grid>
+        </Grid>
       </Grid>
     </Grid>
     <!-- circle style end -->
@@ -202,18 +202,6 @@
         TextWrapping="Wrap"
         TextTrimming="CharacterEllipsis" />
 
-        <ctrl:LightOutlineTextBlock
-          x:Name="SpellTitleTextBlock"
-          TextTrimming="CharacterEllipsis"
-          Padding="2 0 0 0"
-          HorizontalAlignment="Left"
-          VerticalAlignment="Top"
-          Fill="AliceBlue"
-          Stroke="Blue"
-          Text="Sample Spell"
-          TextWrapping="Wrap" />
-      </DockPanel>
-
       <Viewbox
         Grid.Row="0"
         Grid.Column="2"
@@ -274,4 +262,4 @@
     </Grid>
     <!-- standard style end -->
   </Grid>
-</UserControl>
+</UserControl>
