@@ -480,36 +480,53 @@ namespace ACT.SpecialSpellTimer.Config.Views
             set => this.SetProperty(ref this.tableDumpText, value);
         }
 
+        private volatile bool isRefreshing = false;
+
         private async void RefreshTables()
         {
-            var sb = new StringBuilder();
-
-            await Task.Run(() =>
+            if (this.isRefreshing)
             {
-                var tables = TimelineExpressionsModel.GetTables();
+                return;
+            }
 
-                foreach (var table in tables)
+            this.isRefreshing = true;
+
+            try
+            {
+                var sb = new StringBuilder();
+
+                await Task.Run(() =>
                 {
-                    sb.AppendLine($"table:\"{table.Name}\"");
+                    var tables = TimelineExpressionsModel.GetTables();
 
-                    foreach (var row in table.Rows)
+                    foreach (var table in tables)
                     {
-                        var cols = row.Col.Values.OrderBy(x => x.IsKey ? 0 : 1);
+                        sb.AppendLine($"table:\"{table.Name}\"");
 
-                        var colsText = new List<string>();
-                        foreach (var col in cols)
+                        var rows = table.Rows;
+                        foreach (var row in rows)
                         {
-                            colsText.Add($"{col.Name}:\"{col.Value}\"");
+                            var cols = row.Cols.Values.OrderBy(x => x.IsKey ? 0 : 1);
+
+                            var colsText = new List<string>();
+                            foreach (var col in cols)
+                            {
+                                colsText.Add($"{col.Name}:\"{col.Value}\"");
+                            }
+
+                            sb.AppendLine(string.Join(", ", colsText.ToArray()));
                         }
 
-                        sb.AppendLine(string.Join(", ", colsText.ToArray()));
+                        sb.AppendLine();
                     }
+                });
 
-                    sb.AppendLine();
-                }
-            });
-
-            await WPFHelper.InvokeAsync(() => this.TableDumpText = sb.ToString());
+                await WPFHelper.InvokeAsync(() => this.TableDumpText = sb.ToString());
+            }
+            finally
+            {
+                this.isRefreshing = false;
+            }
         }
 
         #endregion Commands 右側ペイン

@@ -108,6 +108,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static readonly Dictionary<string, TimelineTable> Tables = new Dictionary<string, TimelineTable>(16);
 
         /// <summary>
+        /// テーブルが存在するか？
+        /// </summary>
+        public static bool IsExistsTables
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// 変数領域のクローンを取得する
         /// </summary>
         /// <returns>
@@ -132,6 +141,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 if (Tables.ContainsKey(name))
                 {
+                    IsExistsTables = true;
                     return Tables[name];
                 }
                 else
@@ -142,6 +152,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     };
 
                     Tables[name] = table;
+                    IsExistsTables = true;
                     OnTableChanged?.Invoke(new EventArgs());
 
                     return table;
@@ -159,7 +170,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (ExpressionLocker)
             {
-                return Tables.Values.ToList();
+                var tables = Tables.Values.ToList();
+                IsExistsTables = tables.Count > 0;
+                return tables;
             }
         }
 
@@ -191,6 +204,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 if (Tables.Count > 0)
                 {
                     Tables.Clear();
+                    IsExistsTables = false;
                     TimelineController.RaiseLog(
                         $"{TimelineController.TLSymbol} clear Tables.");
 
@@ -221,6 +235,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 if (Tables.Count > 0)
                 {
                     Tables.Clear();
+                    IsExistsTables = false;
                     TimelineController.RaiseLog(
                         $"{TimelineController.TLSymbol} clear Tables.");
 
@@ -450,9 +465,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     if (table.Rows.Count > index)
                     {
                         var row = table.Rows[index];
-                        if (row.Col.ContainsKey(colName))
+                        if (row.Cols.ContainsKey(colName))
                         {
-                            value = row.Col[colName].Value;
+                            value = row.Cols[colName].Value;
                         }
                     }
                 }
@@ -503,11 +518,36 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public static string ReplaceText(
             string text)
         {
+            if (text == null)
+            {
+                text = string.Empty;
+            }
+
             foreach (var item in Variables)
             {
-                if (DateTime.Now <= item.Value.Expiration)
+                var variable = item.Value;
+
+                if (DateTime.Now <= variable.Expiration)
                 {
-                    text = item.Value.Replace(text);
+                    text = variable.Replace(text);
+                }
+            }
+
+            if (IsExistsTables)
+            {
+                var tables = GetTables();
+
+                foreach (var table in tables)
+                {
+                    foreach (var ph in table.GetPlaceholders())
+                    {
+                        var valueText = ph.Value?.ToString();
+
+                        if (!string.IsNullOrEmpty(valueText))
+                        {
+                            text = text.Replace(ph.Placeholder, valueText);
+                        }
+                    }
                 }
             }
 
