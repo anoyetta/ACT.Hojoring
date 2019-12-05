@@ -518,11 +518,18 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public static string ReplaceText(
             string text)
         {
+            if (text == null)
+            {
+                text = string.Empty;
+            }
+
             foreach (var item in Variables)
             {
-                if (DateTime.Now <= item.Value.Expiration)
+                var variable = item.Value;
+
+                if (DateTime.Now <= variable.Expiration)
                 {
-                    text = item.Value.Replace(text);
+                    text = variable.Replace(text);
                 }
             }
 

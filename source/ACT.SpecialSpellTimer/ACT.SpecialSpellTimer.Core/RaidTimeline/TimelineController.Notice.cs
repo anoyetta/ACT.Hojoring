@@ -135,7 +135,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 $"{TLSymbol} Notice from TL. " +
                 $"name={act.Name}, text={act.TextReplaced}, notice={act.NoticeReplaced}, offset={offset.TotalSeconds:N1}";
 
-            var notice = act.NoticeReplaced;
+            var notice = act.NoticeReplaced ?? string.Empty;
             notice = TimelineExpressionsModel.ReplaceText(notice);
 
             if (string.Equals(notice, "auto", StringComparison.OrdinalIgnoreCase))
@@ -258,7 +258,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 $"{TLSymbol} Notice from TL. " +
                 $"name={tri.Name}, text={tri.TextReplaced}, notice={tri.NoticeReplaced}";
 
-            var notice = tri.NoticeReplaced;
+            var notice = tri.NoticeReplaced ?? string.Empty;
             notice = TimelineExpressionsModel.ReplaceText(notice);
 
             if (string.Equals(notice, "auto", StringComparison.OrdinalIgnoreCase))
