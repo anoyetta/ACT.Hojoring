@@ -45,7 +45,7 @@ namespace ACT.XIVLog
             RegexOptions.Compiled);
 
         private static readonly Regex ContentEndLogRegex = new Regex(
-            "^00:0839:「.+」の攻略を終了した。",
+            "^00:0839:.+を終了した。$",
             RegexOptions.Compiled);
 
         private static readonly Regex PlayerChangedLogRegex = new Regex(
