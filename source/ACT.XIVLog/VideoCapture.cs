@@ -295,7 +295,8 @@ namespace ACT.XIVLog
         private async void SendToggleRecording()
         {
             var p = Process.GetProcessesByName("Streamlabs OBS");
-            if (p == null)
+            if (p == null ||
+                p.Length < 1)
             {
                 this.Logger.Info("Tried to record, but Streamlabs OBS is not found.");
                 return;
