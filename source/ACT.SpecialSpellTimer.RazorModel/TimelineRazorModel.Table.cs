@@ -50,9 +50,9 @@ namespace ACT.SpecialSpellTimer.RazorModel
                         continue;
                     }
 
-                    foreach (var col in row.Col.Values)
+                    foreach (var col in row.Cols.Values)
                     {
-                        var currentCol = current.Col[col.Name];
+                        var currentCol = current.Cols[col.Name];
                         currentCol.Value = col.Value;
                         currentCol.IsKey = col.IsKey;
                     }
@@ -73,6 +73,36 @@ namespace ACT.SpecialSpellTimer.RazorModel
                 this.rows.RemoveAll(x => object.Equals(x.KeyValue, keyValue));
             }
         }
+
+        /// <summary>
+        /// 当該テーブル含まれる値のプレースホルダを生成する
+        /// </summary>
+        /// <returns>
+        /// プレースホルダのリスト</returns>
+        /// <example>
+        /// TABLE['table_name'][index]['column_name']
+        /// COUNT('table_name')
+        /// </example>
+        public IEnumerable<(string Placeholder, object Value)> GetPlaceholders()
+        {
+            var rows = this.Rows;
+
+            // COUNT
+            yield return ($"COUNT('{this.Name}')", rows.Count);
+
+            var i = 0;
+            foreach (var row in rows)
+            {
+                var cols = row.Cols.Values;
+                foreach (var col in cols)
+                {
+                    // TABLE Value
+                    yield return ($"TABLE['{this.Name}'][{i}]['{col.Name}']", col.Value);
+                }
+
+                i++;
+            }
+        }
     }
 
     public class TimelineRow :
@@ -84,11 +114,21 @@ namespace ACT.SpecialSpellTimer.RazorModel
             this.columns[name].Value :
             null;
 
-        public Dictionary<string, TimelineColumn> Col => this.columns;
+        public Dictionary<string, TimelineColumn> Cols => this.columns;
 
         public object KeyValue => this.columns
             .FirstOrDefault(x => x.Value.IsKey)
+            .Value?
             .Value;
+
+        public override string ToString() =>
+            "{ " +
+            string.Join(
+                ", ",
+                this.Cols
+                    .OrderBy(x => x.Value.IsKey ? 0 : 1)
+                    .Select(x => x.ToString())) +
+            " }";
     }
 
     public class TimelineColumn :
@@ -131,5 +171,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
             get => this.isKey;
             set => this.SetProperty(ref this.isKey, value);
         }
+
+        public override string ToString() => $"\"{this.name}\":\"{this.value?.ToString()}\"";
     }
 }

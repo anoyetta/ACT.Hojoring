@@ -136,6 +136,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 $"name={act.Name}, text={act.TextReplaced}, notice={act.NoticeReplaced}, offset={offset.TotalSeconds:N1}";
 
             var notice = act.NoticeReplaced;
+            notice = TimelineExpressionsModel.ReplaceText(notice);
+
             if (string.Equals(notice, "auto", StringComparison.OrdinalIgnoreCase))
             {
                 notice = !string.IsNullOrEmpty(act.TextReplaced) ?
@@ -144,8 +146,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (offset.TotalSeconds <= -1.0)
                 {
-                    var ofsetText = (offset.TotalSeconds * -1).ToString("N0");
-                    notice += $" まで、あと{ofsetText}秒";
+                    var offsetText = (offset.TotalSeconds * -1).ToString("N0");
+                    notice += $" まで、あと{offsetText}秒";
                 }
 
                 if (!string.IsNullOrEmpty(notice))
@@ -205,6 +207,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     continue;
                 }
 
+                v.TextToDisplay = TimelineExpressionsModel.ReplaceText(v.TextToDisplay);
+
                 // PC名をルールに従って置換する
                 v.TextToDisplay = XIVPluginHelper.Instance.ReplacePartyMemberName(
                     v.TextToDisplay,
@@ -255,6 +259,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 $"name={tri.Name}, text={tri.TextReplaced}, notice={tri.NoticeReplaced}";
 
             var notice = tri.NoticeReplaced;
+            notice = TimelineExpressionsModel.ReplaceText(notice);
+
             if (string.Equals(notice, "auto", StringComparison.OrdinalIgnoreCase))
             {
                 notice = !string.IsNullOrEmpty(tri.Text) ?
@@ -315,6 +321,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     continue;
                 }
+
+                v.TextToDisplay = TimelineExpressionsModel.ReplaceText(v.TextToDisplay);
 
                 // PC名をルールに従って置換する
                 v.TextToDisplay = XIVPluginHelper.Instance.ReplacePartyMemberName(
