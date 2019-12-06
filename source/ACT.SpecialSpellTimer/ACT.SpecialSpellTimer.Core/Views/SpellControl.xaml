@@ -190,10 +190,11 @@
       </DockPanel>
 
       <ctrl:LightOutlineTextBlock
+        x:Name="SpellTitleTextBlock"
         Grid.Row="0"
         Grid.Column="1"
-        x:Name="SpellTitleTextBlock"
         Padding="2 0 0 0"
+        Margin="0 0 5 0"
         HorizontalAlignment="Left"
         VerticalAlignment="Bottom"
         Fill="AliceBlue"
@@ -219,7 +220,7 @@
           RenderOptions.BitmapScalingMode="Fant"
           RenderOptions.ClearTypeHint="Enabled"
           RenderOptions.EdgeMode="Unspecified"
-          Margin="0,0,3,0"
+          Margin="0 0 3 0"
           HorizontalAlignment="{Binding CounterAlignment, Mode=OneWay}"
           VerticalAlignment="Top"
           Fill="AliceBlue"
