@@ -359,6 +359,14 @@ namespace ACT.XIVLog
             get => this.tryCountContentName;
             set => this.SetProperty(ref this.tryCountContentName, value);
         }
+
+        private int tryCountResetInterval = 5;
+
+        public int TryCountResetInterval
+        {
+            get => this.tryCountResetInterval;
+            set => this.SetProperty(ref this.tryCountResetInterval, value);
+        }
     }
 
     [Serializable]

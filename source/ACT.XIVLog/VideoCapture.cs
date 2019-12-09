@@ -75,7 +75,8 @@ namespace ACT.XIVLog
                     ActGlobals.oFormActMain.CurrentZone;
 
                 if (Config.Instance.TryCountContentName != contentName ||
-                    (DateTime.Now - Config.Instance.TryCountTimestamp) >= TimeSpan.FromHours(3))
+                    (DateTime.Now - Config.Instance.TryCountTimestamp) >=
+                    TimeSpan.FromHours(Config.Instance.TryCountResetInterval))
                 {
                     this.TryCount = 0;
                 }
