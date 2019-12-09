@@ -1231,9 +1231,6 @@
     <Content Include="resources\timeline\wallpaper\fflike.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\timeline\sample\Reference.cshtml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Resource Include="resources\icon\Rampart.png" />
     <Content Include="resources\icon\_blank.png" />
   </ItemGroup>
