@@ -24,10 +24,29 @@ namespace ACT.XIVLog
         public static Config Instance =>
             instance ?? (instance = (Load() ?? new Config()));
 
+        private volatile bool isAutoSaving;
+
         private Config()
         {
-            this.PropertyChanged +=
-                async (x, y) => await Task.Run(() => Save());
+            this.PropertyChanged += async (_, __) =>
+            {
+                if (this.isAutoSaving)
+                {
+                    return;
+                }
+
+                this.isAutoSaving = true;
+
+                try
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(3));
+                    await Task.Run(() => Save());
+                }
+                finally
+                {
+                    this.isAutoSaving = false;
+                }
+            };
         }
 
         #endregion Singleton
@@ -339,6 +358,14 @@ namespace ACT.XIVLog
         {
             get => this.tryCountContentName;
             set => this.SetProperty(ref this.tryCountContentName, value);
+        }
+
+        private int tryCountResetInterval = 5;
+
+        public int TryCountResetInterval
+        {
+            get => this.tryCountResetInterval;
+            set => this.SetProperty(ref this.tryCountResetInterval, value);
         }
     }
 

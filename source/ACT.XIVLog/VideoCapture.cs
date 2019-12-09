@@ -45,7 +45,7 @@ namespace ACT.XIVLog
             RegexOptions.Compiled);
 
         private static readonly Regex ContentEndLogRegex = new Regex(
-            "^00:0839:「.+」の攻略を終了した。",
+            "^00:0839:.+を終了した。$",
             RegexOptions.Compiled);
 
         private static readonly Regex PlayerChangedLogRegex = new Regex(
@@ -75,7 +75,8 @@ namespace ACT.XIVLog
                     ActGlobals.oFormActMain.CurrentZone;
 
                 if (Config.Instance.TryCountContentName != contentName ||
-                    (DateTime.Now - Config.Instance.TryCountTimestamp) >= TimeSpan.FromHours(3))
+                    (DateTime.Now - Config.Instance.TryCountTimestamp) >=
+                    TimeSpan.FromHours(Config.Instance.TryCountResetInterval))
                 {
                     this.TryCount = 0;
                 }
@@ -295,7 +296,8 @@ namespace ACT.XIVLog
         private async void SendToggleRecording()
         {
             var p = Process.GetProcessesByName("Streamlabs OBS");
-            if (p == null)
+            if (p == null ||
+                p.Length < 1)
             {
                 this.Logger.Info("Tried to record, but Streamlabs OBS is not found.");
                 return;

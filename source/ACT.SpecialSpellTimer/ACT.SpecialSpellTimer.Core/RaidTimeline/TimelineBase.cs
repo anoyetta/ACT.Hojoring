@@ -30,6 +30,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         Expressions,
         ExpressionsSet,
         ExpressionsPredicate,
+        ExpressionsTable,
         Import,
     }
 
@@ -52,6 +53,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 "expresions",
                 "set",
                 "predicate",
+                "table",
                 "import",
             }[(int)t];
 

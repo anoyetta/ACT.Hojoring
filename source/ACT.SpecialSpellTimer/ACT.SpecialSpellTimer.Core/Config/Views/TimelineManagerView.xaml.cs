@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -94,10 +96,12 @@ namespace ACT.SpecialSpellTimer.Config.Views
             this.timer.Start();
 
             TimelineExpressionsModel.OnVariableChanged += _ => this.RefreshVariables();
+            TimelineExpressionsModel.OnTableChanged += _ => this.RefreshTables();
 
             this.Loaded += (_, __) =>
             {
                 this.RefreshVariables();
+                this.RefreshTables();
             };
         }
 
@@ -466,6 +470,63 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 this.Variables.Clear();
                 this.Variables.AddRange(variables);
             });
+        }
+
+        private string tableDumpText;
+
+        public string TableDumpText
+        {
+            get => this.tableDumpText;
+            set => this.SetProperty(ref this.tableDumpText, value);
+        }
+
+        private volatile bool isRefreshing = false;
+
+        private async void RefreshTables()
+        {
+            if (this.isRefreshing)
+            {
+                return;
+            }
+
+            this.isRefreshing = true;
+
+            try
+            {
+                var sb = new StringBuilder();
+
+                await Task.Run(() =>
+                {
+                    var tables = TimelineExpressionsModel.GetTables();
+
+                    foreach (var table in tables)
+                    {
+                        sb.AppendLine($"table:\"{table.Name}\"");
+
+                        var rows = table.Rows;
+                        foreach (var row in rows)
+                        {
+                            var cols = row.Cols.Values.OrderBy(x => x.IsKey ? 0 : 1);
+
+                            var colsText = new List<string>();
+                            foreach (var col in cols)
+                            {
+                                colsText.Add($"{col.Name}:\"{col.Value}\"");
+                            }
+
+                            sb.AppendLine(string.Join(", ", colsText.ToArray()));
+                        }
+
+                        sb.AppendLine();
+                    }
+                });
+
+                await WPFHelper.InvokeAsync(() => this.TableDumpText = sb.ToString());
+            }
+            finally
+            {
+                this.isRefreshing = false;
+            }
         }
 
         #endregion Commands 右側ペイン

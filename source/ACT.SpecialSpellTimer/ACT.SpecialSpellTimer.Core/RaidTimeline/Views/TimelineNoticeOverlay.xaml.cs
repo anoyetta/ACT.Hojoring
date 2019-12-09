@@ -219,7 +219,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
 
         public ICollectionView NoticeList => this.noticesSource?.View;
 
-        public bool IsExistsNotice => !this.NoticeList.IsEmpty;
+        public bool IsExistsNotice => !this.NoticeList?.IsEmpty ?? false;
 
         public TimelineSettings Config => TimelineSettings.Instance;
 

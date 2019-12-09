@@ -43,12 +43,14 @@ namespace ACT.XIVLog
 
         private Label pluginLabel;
 
-        public void InitPlugin(
+        public async void InitPlugin(
             TabPage pluginScreenSpace,
             Label pluginStatusText)
         {
             pluginScreenSpace.Text = "XIVLog";
             this.pluginLabel = pluginStatusText;
+
+            // 設定ファイルをロードする
             var i = Config.Instance;
 
             // 設定Panelを追加する
@@ -62,12 +64,15 @@ namespace ACT.XIVLog
 
             this.InitTask();
             this.pluginLabel.Text = "Plugin Started";
+
+            // 設定ファイルをバックアップする
+            await EnvironmentHelper.BackupFilesAsync(
+                Config.FileName);
         }
 
         public void DeInitPlugin()
         {
             this.EndTask();
-            Config.Save();
             this.pluginLabel.Text = "Plugin Exited";
             GC.Collect();
         }

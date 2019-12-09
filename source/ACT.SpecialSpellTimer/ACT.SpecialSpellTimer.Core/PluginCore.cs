@@ -214,13 +214,14 @@ namespace ACT.SpecialSpellTimer
                     TickerTable.Instance.Load();
                     TagTable.Instance.Load();
 
-                    await Task.Run(() =>
-                    {
-                        SpellPanelTable.Instance.Backup();
-                        SpellTable.Instance.Backup();
-                        TickerTable.Instance.Backup();
-                        TagTable.Instance.Backup();
-                    });
+                    // 設定ファイルをバックアップする
+                    await EnvironmentHelper.BackupFilesAsync(
+                        Settings.Default.FileName,
+                        SpellPanelTable.Instance.DefaultFile,
+                        SpellTable.Instance.DefaultFile,
+                        TickerTable.Instance.DefaultFile,
+                        TagTable.Instance.DefaultFile,
+                        FFXIV.Framework.Config.FileName);
 
                     TTSDictionary.Instance.Load();
 
