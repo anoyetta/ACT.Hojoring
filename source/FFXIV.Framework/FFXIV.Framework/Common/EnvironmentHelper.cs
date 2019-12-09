@@ -22,6 +22,8 @@ namespace FFXIV.Framework.Common
         public static bool IsDebug => false;
 #endif
 
+        private static readonly int BackupDays = 7;
+
         public static async Task BackupFilesAsync(
             params string[] files)
         {
@@ -32,35 +34,38 @@ namespace FFXIV.Framework.Common
 
             await Task.Run(() =>
             {
-                foreach (var file in files)
+                lock (LockObject)
                 {
-                    if (File.Exists(file))
+                    foreach (var file in files)
                     {
-                        continue;
-                    }
-
-                    var backupFile = Path.Combine(
-                        Path.Combine(Path.GetDirectoryName(file), "backup"),
-                        Path.GetFileNameWithoutExtension(file) + "." + DateTime.Now.ToString("yyyy-MM-dd") + ".bak");
-
-                    if (!Directory.Exists(Path.GetDirectoryName(backupFile)))
-                    {
-                        Directory.CreateDirectory(Path.GetDirectoryName(backupFile));
-                    }
-
-                    File.Copy(
-                        file,
-                        backupFile,
-                        true);
-
-                    // 古いバックアップを消す
-                    foreach (var bak in
-                        Directory.GetFiles(Path.GetDirectoryName(backupFile), "*.bak"))
-                    {
-                        var timeStamp = File.GetCreationTime(bak);
-                        if ((DateTime.Now - timeStamp).TotalDays >= 3.0d)
+                        if (!File.Exists(file))
                         {
-                            File.Delete(bak);
+                            continue;
+                        }
+
+                        var backupFile = Path.Combine(
+                            Path.Combine(Path.GetDirectoryName(file), "backup"),
+                            Path.GetFileName(file) + "." + DateTime.Now.ToString("yyyy-MM-dd") + ".bak");
+
+                        if (!Directory.Exists(Path.GetDirectoryName(backupFile)))
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(backupFile));
+                        }
+
+                        File.Copy(
+                            file,
+                            backupFile,
+                            true);
+
+                        // 古いバックアップを消す
+                        foreach (var bak in
+                            Directory.GetFiles(Path.GetDirectoryName(backupFile), "*.bak"))
+                        {
+                            var timeStamp = File.GetCreationTime(bak);
+                            if ((DateTime.Now - timeStamp).TotalDays > BackupDays)
+                            {
+                                File.Delete(bak);
+                            }
                         }
                     }
                 }

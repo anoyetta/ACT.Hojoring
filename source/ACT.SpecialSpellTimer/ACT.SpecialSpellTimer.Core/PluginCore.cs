@@ -220,7 +220,8 @@ namespace ACT.SpecialSpellTimer
                         SpellPanelTable.Instance.DefaultFile,
                         SpellTable.Instance.DefaultFile,
                         TickerTable.Instance.DefaultFile,
-                        TagTable.Instance.DefaultFile);
+                        TagTable.Instance.DefaultFile,
+                        FFXIV.Framework.Config.FileName);
 
                     TTSDictionary.Instance.Load();
 
