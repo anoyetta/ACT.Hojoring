@@ -22,6 +22,51 @@ namespace FFXIV.Framework.Common
         public static bool IsDebug => false;
 #endif
 
+        public static async Task BackupFilesAsync(
+            params string[] files)
+        {
+            if (files == null)
+            {
+                return;
+            }
+
+            await Task.Run(() =>
+            {
+                foreach (var file in files)
+                {
+                    if (File.Exists(file))
+                    {
+                        continue;
+                    }
+
+                    var backupFile = Path.Combine(
+                        Path.Combine(Path.GetDirectoryName(file), "backup"),
+                        Path.GetFileNameWithoutExtension(file) + "." + DateTime.Now.ToString("yyyy-MM-dd") + ".bak");
+
+                    if (!Directory.Exists(Path.GetDirectoryName(backupFile)))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(backupFile));
+                    }
+
+                    File.Copy(
+                        file,
+                        backupFile,
+                        true);
+
+                    // 古いバックアップを消す
+                    foreach (var bak in
+                        Directory.GetFiles(Path.GetDirectoryName(backupFile), "*.bak"))
+                    {
+                        var timeStamp = File.GetCreationTime(bak);
+                        if ((DateTime.Now - timeStamp).TotalDays >= 3.0d)
+                        {
+                            File.Delete(bak);
+                        }
+                    }
+                }
+            });
+        }
+
         public static string Pwsh => LazyPwsh.Value;
 
         private static readonly Lazy<string> LazyPwsh = new Lazy<string>(() => GetPwsh());

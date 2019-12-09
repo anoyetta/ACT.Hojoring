@@ -362,6 +362,10 @@ namespace ACT.TTSYukkuri
                     Settings.Default.Load();
                     Settings.Default.StatusAlertSettings.EnabledTPAlert = false;
 
+                    // 設定ファイルをバックアップする
+                    await EnvironmentHelper.BackupFilesAsync(
+                        Settings.FilePath);
+
                     // 漢字変換を初期化する
                     KanjiTranslator.Default.Initialize();
 
