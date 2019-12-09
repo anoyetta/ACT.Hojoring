@@ -1,6 +1,6 @@
 # REFERENCE of SPESPETIME
 
-**rev33** &copy; anoyetta, 2018-2019
+**rev33** &copy;anoyetta, 2018-2019
 
 
 
