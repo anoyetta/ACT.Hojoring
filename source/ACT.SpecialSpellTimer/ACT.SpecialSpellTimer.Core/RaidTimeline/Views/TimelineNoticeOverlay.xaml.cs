@@ -219,6 +219,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
 
         public ICollectionView NoticeList => this.noticesSource?.View;
 
+        public bool IsExistsNotice => !this.NoticeList.IsEmpty;
+
         public TimelineSettings Config => TimelineSettings.Instance;
 
         private void SetupNoticesSource()
@@ -256,7 +258,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
                 }
             });
 
+            this.noticeList.CollectionChanged += (_, __) => this.RaisePropertyChanged(nameof(this.IsExistsNotice));
+
             this.RaisePropertyChanged(nameof(this.NoticeList));
+            this.RaisePropertyChanged(nameof(this.IsExistsNotice));
         }
 
         public void RefreshNotices()

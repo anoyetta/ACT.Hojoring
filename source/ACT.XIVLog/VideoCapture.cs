@@ -36,6 +36,10 @@ namespace ACT.XIVLog
 
         private readonly InputSimulator Input = new InputSimulator();
 
+        private static readonly Regex StartCountdownRegex = new Regex(
+            @"^00:...9:戦闘開始まで.+）$",
+            RegexOptions.Compiled);
+
         private static readonly Regex ContentStartLogRegex = new Regex(
             "^00:0839:「(?<content>.+)」の攻略を開始した。",
             RegexOptions.Compiled);
@@ -89,8 +93,7 @@ namespace ACT.XIVLog
                 return;
             }
 
-            if (xivlog.Log.StartsWith("00:0139:戦闘開始まで") ||
-                xivlog.Log.StartsWith("00:00b9:戦闘開始まで") ||
+            if (StartCountdownRegex.IsMatch(xivlog.Log) ||
                 xivlog.Log.Contains("/xivlog rec"))
             {
                 this.deathCount = 0;
