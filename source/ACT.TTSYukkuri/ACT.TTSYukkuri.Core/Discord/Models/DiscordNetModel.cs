@@ -298,11 +298,11 @@ namespace ACT.TTSYukkuri.Discord.Models
 
         public async void LeaveVoiceChannel()
         {
+            this.playWorkerRunning = false;
+            await Task.Delay(TimeSpan.FromSeconds(0.1));
+
             lock (this)
             {
-                this.playWorkerRunning = false;
-                Thread.Sleep(TimeSpan.FromSeconds(0.1));
-
                 if (this.playWorker != null)
                 {
                     this.playWorker.Join(TimeSpan.FromSeconds(0.5));

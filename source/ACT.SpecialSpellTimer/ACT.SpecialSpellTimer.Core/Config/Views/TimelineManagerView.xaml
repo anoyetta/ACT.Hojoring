@@ -597,31 +597,50 @@
               </ScrollViewer>
               <!-- 見た目の左側 end -->
             </TabItem>
-
-            <TabItem Header="Variables" Padding="20 2 20 2">
-              <ListView
-                Margin="0 5"
-                BorderThickness="0"
-                ItemsSource="{Binding Variables, Mode=OneWay}">
-                <ListView.View>
-                  <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Width="240">
-                      <GridViewColumnHeader Content="Variable" />
-                    </GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Value}" Width="150">
-                      <GridViewColumnHeader Content="Value" />
-                    </GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Zone}" Width="320">
-                      <GridViewColumnHeader Content="Scope" />
-                    </GridViewColumn>
-                  </GridView>
-                </ListView.View>
-              </ListView>
-            </TabItem>
           </TabControl>
         </Grid>
       </Border>
       <!-- 右ペイン end -->
+    </TabItem>
+
+    <TabItem Header="Variables">
+      <ListView
+        Margin="0 5"
+        BorderThickness="0"
+        ItemsSource="{Binding Variables, Mode=OneWay}"
+        Focusable="False"
+        IsTabStop="False">
+        <ListView.View>
+          <GridView>
+            <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Width="240">
+              <GridViewColumnHeader Content="Variable" />
+            </GridViewColumn>
+            <GridViewColumn DisplayMemberBinding="{Binding Path=Value}" Width="150">
+              <GridViewColumnHeader Content="Value" />
+            </GridViewColumn>
+            <GridViewColumn DisplayMemberBinding="{Binding Path=Zone}" Width="320">
+              <GridViewColumnHeader Content="Scope" />
+            </GridViewColumn>
+          </GridView>
+        </ListView.View>
+      </ListView>
+    </TabItem>
+
+    <TabItem Header="Tables">
+      <ScrollViewer
+        Margin="5"
+        Focusable="False"
+        IsTabStop="False"
+        HorizontalScrollBarVisibility="Auto"
+        VerticalScrollBarVisibility="Auto">
+        <TextBox
+          BorderThickness="0"
+          IsReadOnly="True"
+          AcceptsReturn="True"
+          Focusable="False"
+          IsTabStop="False"
+          Text="{Binding TableDumpText, Mode=OneWay}" />
+      </ScrollViewer>
     </TabItem>
   </TabControl>
 </UserControl>

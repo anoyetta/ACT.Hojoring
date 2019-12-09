@@ -104,42 +104,6 @@ namespace ACT.SpecialSpellTimer.Models
         }
 
         /// <summary>
-        /// テーブルファイルをバックアップする
-        /// </summary>
-        public void Backup()
-        {
-            var file = this.DefaultFile;
-
-            if (File.Exists(file))
-            {
-                var backupFile = Path.Combine(
-                    Path.Combine(Path.GetDirectoryName(file), "backup"),
-                    Path.GetFileNameWithoutExtension(file) + "." + DateTime.Now.ToString("yyyy-MM-dd") + ".bak");
-
-                if (!Directory.Exists(Path.GetDirectoryName(backupFile)))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(backupFile));
-                }
-
-                File.Copy(
-                    file,
-                    backupFile,
-                    true);
-
-                // 古いバックアップを消す
-                foreach (var bak in
-                    Directory.GetFiles(Path.GetDirectoryName(backupFile), "*.bak"))
-                {
-                    var timeStamp = File.GetCreationTime(bak);
-                    if ((DateTime.Now - timeStamp).TotalDays >= 3.0d)
-                    {
-                        File.Delete(bak);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// スペルの描画済みフラグをクリアする
         /// </summary>
         public void ClearUpdateFlags()

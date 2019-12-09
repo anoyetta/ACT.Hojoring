@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.RazorModel;
+using FFXIV.Framework.Extensions;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -49,10 +50,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        [XmlElement(ElementName = "table")]
+        public TimelineExpressionsTableModel[] TableStatements
+        {
+            get => this.Statements
+                .Where(x => x.TimelineType == TimelineElementTypes.ExpressionsTable)
+                .Cast<TimelineExpressionsTableModel>()
+                .ToArray();
+
+            set => this.AddRange(value);
+        }
+
         public void Add(TimelineBase timeline)
         {
             if (timeline.TimelineType == TimelineElementTypes.ExpressionsSet ||
-                timeline.TimelineType == TimelineElementTypes.ExpressionsPredicate)
+                timeline.TimelineType == TimelineElementTypes.ExpressionsPredicate ||
+                timeline.TimelineType == TimelineElementTypes.ExpressionsTable)
             {
                 timeline.Parent = this;
                 this.statements.Add(timeline);
@@ -76,12 +89,32 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public delegate void VariableChangedHandler(EventArgs args);
 
+        public delegate void TableChangedHandler(EventArgs args);
+
+        [field: NonSerialized]
         public static event VariableChangedHandler OnVariableChanged;
+
+        [field: NonSerialized]
+        public static event TableChangedHandler OnTableChanged;
 
         /// <summary>
         /// フラグ格納領域
         /// </summary>
         private static readonly Dictionary<string, TimelineVariable> Variables = new Dictionary<string, TimelineVariable>(128);
+
+        /// <summary>
+        /// テーブル格納領域
+        /// </summary>
+        private static readonly Dictionary<string, TimelineTable> Tables = new Dictionary<string, TimelineTable>(16);
+
+        /// <summary>
+        /// テーブルが存在するか？
+        /// </summary>
+        public static bool IsExistsTables
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// 変数領域のクローンを取得する
@@ -93,6 +126,53 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             lock (ExpressionLocker)
             {
                 return new Dictionary<string, TimelineVariable>(Variables);
+            }
+        }
+
+        /// <summary>
+        /// テーブルを取得する
+        /// </summary>
+        /// <param name="name">テーブル名</param>
+        /// <returns>
+        /// テーブル</returns>
+        public static TimelineTable GetTable(string name)
+        {
+            lock (ExpressionLocker)
+            {
+                if (Tables.ContainsKey(name))
+                {
+                    IsExistsTables = true;
+                    return Tables[name];
+                }
+                else
+                {
+                    var table = new TimelineTable()
+                    {
+                        Name = name
+                    };
+
+                    Tables[name] = table;
+                    IsExistsTables = true;
+                    OnTableChanged?.Invoke(new EventArgs());
+
+                    return table;
+                }
+            }
+        }
+
+        /// <summary>
+        /// テーブルを取得する
+        /// </summary>
+        /// <param name="name">テーブル名</param>
+        /// <returns>
+        /// テーブル</returns>
+        public static IReadOnlyList<TimelineTable> GetTables()
+        {
+            lock (ExpressionLocker)
+            {
+                var tables = Tables.Values.ToList();
+                IsExistsTables = tables.Count > 0;
+                return tables;
             }
         }
 
@@ -120,6 +200,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     OnVariableChanged?.Invoke(new EventArgs());
                 }
+
+                if (Tables.Count > 0)
+                {
+                    Tables.Clear();
+                    IsExistsTables = false;
+                    TimelineController.RaiseLog(
+                        $"{TimelineController.TLSymbol} clear Tables.");
+
+                    OnTableChanged?.Invoke(new EventArgs());
+                }
             }
         }
 
@@ -141,6 +231,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                     OnVariableChanged?.Invoke(new EventArgs());
                 }
+
+                if (Tables.Count > 0)
+                {
+                    Tables.Clear();
+                    IsExistsTables = false;
+                    TimelineController.RaiseLog(
+                        $"{TimelineController.TLSymbol} clear Tables.");
+
+                    OnTableChanged?.Invoke(new EventArgs());
+                }
             }
         }
 
@@ -154,7 +254,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     x.Enabled.GetValueOrDefault() &&
                     !string.IsNullOrEmpty(x.Name));
 
-            if (!sets.Any())
+            var tables = this.TableStatements
+                .Where(x =>
+                    x.Enabled.GetValueOrDefault());
+
+            if (!sets.Any() &&
+                !tables.Any())
             {
                 return;
             }
@@ -216,6 +321,20 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             OnVariableChanged?.Invoke(new EventArgs());
+
+            // table を処理する
+            var result = false;
+            foreach (var table in tables)
+            {
+                table.ParseJson();
+                result |= table.Execute(
+                    (x) => TimelineController.RaiseLog($"{TimelineController.TLSymbol} {x}"));
+            }
+
+            if (result)
+            {
+                OnTableChanged?.Invoke(new EventArgs());
+            }
         }
 
         /// <summary>
@@ -237,27 +356,156 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var totalResult = true;
             foreach (var pre in states)
             {
-                var variable = Variables.ContainsKey(pre.Name) ?
-                    Variables[pre.Name] :
-                    TimelineVariable.EmptyVariable;
+                var result = false;
 
-                if (!pre.Count.HasValue)
+                if (TableDMLKeywords.Any(x => pre.Name.ContainsIgnoreCase(x)))
                 {
-                    object current = null;
-                    if (DateTime.Now <= variable.Expiration)
-                    {
-                        current = variable.Value;
-                    }
-
-                    totalResult &= ObjectComparer.PredicateValue(current, pre.Value);
+                    result = this.PredicateTable(pre);
                 }
                 else
                 {
-                    totalResult &= (pre.Count.GetValueOrDefault() == variable.Counter);
+                    result = this.PredicateValue(pre);
                 }
+
+                totalResult &= result;
             }
 
             return totalResult;
+        }
+
+        private bool PredicateValue(
+            TimelineExpressionsPredicateModel pre)
+        {
+            var result = false;
+            var log = string.Empty;
+
+            var variable = Variables.ContainsKey(pre.Name) ?
+                Variables[pre.Name] :
+                TimelineVariable.EmptyVariable;
+
+            if (!pre.Count.HasValue)
+            {
+                object current = null;
+                if (DateTime.Now <= variable.Expiration)
+                {
+                    current = variable.Value;
+                }
+
+                result = ObjectComparer.PredicateValue(current, pre.Value);
+                log = $"predicate '{pre.Name}':{current} equal {pre.Value} -> {result}";
+            }
+            else
+            {
+                result = (pre.Count.GetValueOrDefault() == variable.Counter);
+                log = $"predicate '{pre.Name}':{variable.Counter} equal {pre.Count} -> {result}";
+            }
+
+            TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
+
+            return result;
+        }
+
+        /// <summary>
+        /// テーブル変数の参照書式
+        /// </summary>
+        /// <example>
+        /// TABLE['table_name'][index]['column_name']
+        /// </example>
+        private static readonly Regex TableVarRegex = new Regex(
+            @$"{TableVarKeyword}\['(?<TableName>.+)'\]\[(?<Index>\d+)\]\['(?<ColName>.+)'\]",
+            RegexOptions.Compiled |
+            RegexOptions.IgnoreCase);
+
+        /// <summary>
+        /// COUNT関数書式
+        /// </summary>
+        /// <example>
+        /// COUNT('table_name')
+        /// </example>
+        private static readonly Regex CountTableRegex = new Regex(
+            @$"{CountFunctionKeyword}\('(?<TableName>.+)'\)",
+            RegexOptions.Compiled |
+            RegexOptions.IgnoreCase);
+
+        private static readonly string TableVarKeyword = "TABLE";
+        private static readonly string CountFunctionKeyword = "COUNT";
+
+        private static readonly string[] TableDMLKeywords = new[]
+        {
+            TableVarKeyword,
+            CountFunctionKeyword,
+        };
+
+        /// <summary>
+        /// テーブル関連の値を取得する
+        /// </summary>
+        /// <param name="keyword">キーワード</param>
+        /// <returns>取得した値</returns>
+        public static object GetTableValue(
+            string keyword)
+        {
+            object value = null;
+
+            if (!TableDMLKeywords.Any(x => keyword.ContainsIgnoreCase(x)))
+            {
+                return value;
+            }
+
+            // フィールドの参照？
+            var match = TableVarRegex.Match(keyword);
+            if (match.Success)
+            {
+                var tableName = match.Groups["TableName"].Value;
+                var indexText = match.Groups["Index"].Value;
+                var colName = match.Groups["ColName"].Value;
+
+                if (int.TryParse(indexText, out int index))
+                {
+                    var table = TimelineExpressionsModel.GetTable(tableName);
+                    if (table.Rows.Count > index)
+                    {
+                        var row = table.Rows[index];
+                        if (row.Cols.ContainsKey(colName))
+                        {
+                            value = row.Cols[colName].Value;
+                        }
+                    }
+                }
+
+                return value;
+            }
+
+            // COUNT関数？
+            match = CountTableRegex.Match(keyword);
+            if (match.Success)
+            {
+                var tableName = match.Groups["TableName"].Value;
+                var table = TimelineExpressionsModel.GetTable(tableName);
+                value = table.Rows.Count;
+
+                return value;
+            }
+
+            return value;
+        }
+
+        /// <summary>
+        /// テーブル変数と評価する
+        /// </summary>
+        /// <param name="pre">predicateオブジェクト</param>
+        /// <returns>評価結果</returns>
+        private bool PredicateTable(
+            TimelineExpressionsPredicateModel pre)
+        {
+            var log = string.Empty;
+
+            var current = GetTableValue(pre.Name) ?? false;
+            var result = ObjectComparer.PredicateValue(current, pre.Value);
+
+            log = $"predicate {pre.Name}:{current} equal {pre.Value} -> {result}";
+            TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
+
+            return result;
         }
 
         /// <summary>
@@ -270,11 +518,36 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public static string ReplaceText(
             string text)
         {
+            if (text == null)
+            {
+                text = string.Empty;
+            }
+
             foreach (var item in Variables)
             {
-                if (DateTime.Now <= item.Value.Expiration)
+                var variable = item.Value;
+
+                if (DateTime.Now <= variable.Expiration)
                 {
-                    text = item.Value.Replace(text);
+                    text = variable.Replace(text);
+                }
+            }
+
+            if (IsExistsTables)
+            {
+                var tables = GetTables();
+
+                foreach (var table in tables)
+                {
+                    foreach (var ph in table.GetPlaceholders())
+                    {
+                        var valueText = ph.Value?.ToString();
+
+                        if (!string.IsNullOrEmpty(valueText))
+                        {
+                            text = text.Replace(ph.Placeholder, valueText);
+                        }
+                    }
                 }
             }
 

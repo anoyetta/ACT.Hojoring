@@ -118,8 +118,8 @@
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
         <ColumnDefinition />
+        <ColumnDefinition Width="Auto" />
       </Grid.ColumnDefinitions>
 
       <Canvas
@@ -179,7 +179,9 @@
         Grid.Column="0"
         Grid.Row="0"
         Panel.ZIndex="-1"
-        Background="Black">
+        Background="Black"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
         <ctrl:FantImage
           x:Name="SpellIconImage"
           RenderOptions.BitmapScalingMode="Fant"
@@ -187,34 +189,30 @@
           RenderOptions.EdgeMode="Unspecified" />
       </DockPanel>
 
-      <DockPanel
+      <ctrl:LightOutlineTextBlock
+        x:Name="SpellTitleTextBlock"
         Grid.Row="0"
         Grid.Column="1"
+        Padding="2 0 0 0"
+        Margin="0 0 5 0"
         HorizontalAlignment="Left"
         VerticalAlignment="Bottom"
-        Visibility="{Binding ElementName=SpellTitleTextBlock, Path=Visibility, Mode=OneWay}">
-
-        <ctrl:LightOutlineTextBlock
-          x:Name="SpellTitleTextBlock"
-          Padding="2 0 0 0"
-          HorizontalAlignment="Left"
-          VerticalAlignment="Top"
-          Fill="AliceBlue"
-          Stroke="Blue"
-          Text="Sample Spell"
-          TextWrapping="Wrap" />
-      </DockPanel>
+        Fill="AliceBlue"
+        Stroke="Blue"
+        Text="Sample Spell"
+        TextWrapping="Wrap"
+        TextTrimming="CharacterEllipsis" />
 
       <Viewbox
+        Grid.Row="0"
+        Grid.Column="2"
         x:Name="RecastTimePanel"
         RenderOptions.BitmapScalingMode="Fant"
         RenderOptions.ClearTypeHint="Enabled"
         RenderOptions.EdgeMode="Unspecified"
-        Grid.Row="0"
-        Grid.Column="2"
         HorizontalAlignment="{Binding CounterAlignment, Mode=OneWay}"
         VerticalAlignment="Bottom"
-        Stretch="Uniform"
+        Stretch="None"
         StretchDirection="DownOnly">
 
         <ctrl:LightOutlineTextBlock
@@ -222,7 +220,7 @@
           RenderOptions.BitmapScalingMode="Fant"
           RenderOptions.ClearTypeHint="Enabled"
           RenderOptions.EdgeMode="Unspecified"
-          Margin="0,0,3,0"
+          Margin="0 0 3 0"
           HorizontalAlignment="{Binding CounterAlignment, Mode=OneWay}"
           VerticalAlignment="Top"
           Fill="AliceBlue"
