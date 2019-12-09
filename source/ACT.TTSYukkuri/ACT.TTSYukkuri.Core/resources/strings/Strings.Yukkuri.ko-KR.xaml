@@ -87,7 +87,7 @@
   <system:String x:Key="Boyomi_Server">"보요미짱" 호스트명</system:String>
   <system:String x:Key="Boyomi_Port">"보요미짱" 포트 번호</system:String>
   <system:String x:Key="Boyomi_PortDefault">*기본값: 50080</system:String>
-  <system:String x:Key="Boyomi_Interrupt">Interrupt notification</system:String>
+  <system:String x:Key="Boyomi_Interrupt">TTS 인터럽트</system:String>
 
   <system:String x:Key="Voiceroid_ExitVoiceroid">ACT 종료 시 VOICEROID 종료</system:String>
   <system:String x:Key="Voiceroid_DirectSpeak">WAVE를 생성하지 않고 직접 재생</system:String>
@@ -97,15 +97,15 @@
   <system:String x:Key="SAPI5_Rate">비율</system:String>
   <system:String x:Key="SAPI5_Pitch">피치</system:String>
 
-  <system:String x:Key="GoogleCloudTextToSpeech_Language">Language</system:String>
-  <system:String x:Key="GoogleCloudTextToSpeech_Name">Voice</system:String>
-  <system:String x:Key="GoogleCloudTextToSpeech_VolumeGainDb">Volume [db]</system:String>
-  <system:String x:Key="GoogleCloudTextToSpeech_Pitch">Pitch</system:String>
-  <system:String x:Key="GoogleCloudTextToSpeech_SpeakingRate">Speed</system:String>
-  <system:String x:Key="GoogleCloudTextToSpeech_SampleRateHertz">Sampling rate [Hz]</system:String>
-  <system:String x:Key="GoogleCloudTextToSpeech_SetRecommend">Recommend settings</system:String>
-  <system:String x:Key="GoogleCloudTextToSpeech_Usage">Usage</system:String>
-  <system:String x:Key="GoogleCloudTextToSpeech_QuickStart">Quickstart: Using the client libraries</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_Language">언어</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_Name">음성</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_VolumeGainDb">볼륨 [db]</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_Pitch">피치</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_SpeakingRate">속도</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_SampleRateHertz">샘플링 레이트 [Hz]</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_SetRecommend">권장 설정</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_Usage">사용법</system:String>
+  <system:String x:Key="GoogleCloudTextToSpeech_QuickStart">빠른 시작: 클라이언트 라이브러리 사용</system:String>
   <system:String x:Key="GoogleCloudTextToSpeech_Licence">Google Cloud Libraries for .NET - Apache License 2.0</system:String>
 
   <system:String x:Key="Polly_Region">지역</system:String>
@@ -117,7 +117,7 @@
   <system:String x:Key="SA_TTSFormat">경고 텍스트</system:String>
   <system:String x:Key="SA_AlertTarget">감지 대상</system:String>
   <system:String x:Key="SA_Device">알림 재생 장치</system:String>
-  <system:String x:Key="SA_PlayPalette">Voice config to Notify</system:String>
+  <system:String x:Key="SA_PlayPalette">사용할 음성 설정</system:String>
 
   <system:String x:Key="SA_Discription" xml:space="preserve">
 ※경고 텍스트 참조

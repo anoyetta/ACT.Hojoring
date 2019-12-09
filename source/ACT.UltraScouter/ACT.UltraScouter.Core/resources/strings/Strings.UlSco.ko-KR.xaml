@@ -24,8 +24,8 @@
 
   <system:String x:Key="Common_Visible">표시</system:String>
   <system:String x:Key="Common_Location">위치</system:String>
-  <system:String x:Key="Common_Layout">Layout</system:String>
-  <system:String x:Key="Common_Style">Style</system:String>
+  <system:String x:Key="Common_Layout">레이아웃</system:String>
+  <system:String x:Key="Common_Style">스타일</system:String>
   <system:String x:Key="Common_Alignment">정렬</system:String>
   <system:String x:Key="Common_BarWidth">바의 폭</system:String>
   <system:String x:Key="Common_BarSize">바 크기</system:String>
@@ -34,9 +34,9 @@
   <system:String x:Key="Common_Font">폰트</system:String>
   <system:String x:Key="Common_FillColor">글자색</system:String>
   <system:String x:Key="Common_StrokeColor">윤곽선색</system:String>
-  <system:String x:Key="Common_Text">Text</system:String>
-  <system:String x:Key="Common_Bar">Bar</system:String>
-  <system:String x:Key="Common_RefreshDisplay">Refresh</system:String>
+  <system:String x:Key="Common_Text">텍스트</system:String>
+  <system:String x:Key="Common_Bar">바</system:String>
+  <system:String x:Key="Common_RefreshDisplay">새로고침</system:String>
   <system:String x:Key="Common_Add">추가</system:String>
   <system:String x:Key="Common_Change">변경</system:String>
   <system:String x:Key="Common_Delete">삭제</system:String>
@@ -60,7 +60,7 @@
   <system:String x:Key="Action_VisibleRemainOfCasting">남은 캐스팅 시간 표시</system:String>
   <system:String x:Key="Action_VisibleRemainAsInteger">정수로 표시</system:String>
   <system:String x:Key="Action_VisibleRateOfCasting">캐스팅 진행율 표시</system:String>
-  <system:String x:Key="Action_VisibleType">Visible attack type</system:String>
+  <system:String x:Key="Action_VisibleType">공격 타입 표시</system:String>
   <system:String x:Key="Action_DummyActionName">더미 기술 이름</system:String>
   <system:String x:Key="Action_CastingBar">캐스팅 바</system:String>
   <system:String x:Key="Action_CastingBarStrokeColor">캐스팅 바 윤곽선색</system:String>
@@ -77,18 +77,18 @@
   <system:String x:Key="BOSS_BossVSFTHideBoss">인식한 BOSS와 Focus Target이 같은 대상이라면 BOSS 숨김</system:String>
   <system:String x:Key="BOSS_BossVSToTHideBoss">인식한 BOSS와 Target of Target이 같은 대상이라면 BOSS 숨김</system:String>
 
-  <system:String x:Key="MyStatus_VisibleText">Visible value</system:String>
-  <system:String x:Key="MyStatus_VisibleBar">Visible bar</system:String>
-  <system:String x:Key="MyStatus_ObjectLayout">Object layout</system:String>
-  <system:String x:Key="MyStatus_HorizontalAlignment">Horizontal alignment</system:String>
-  <system:String x:Key="MyStatus_ColorRange">Color ranges (%)</system:String>
+  <system:String x:Key="MyStatus_VisibleText">텍스트 표시</system:String>
+  <system:String x:Key="MyStatus_VisibleBar">바 표시</system:String>
+  <system:String x:Key="MyStatus_ObjectLayout">오브젝트 레이아웃</system:String>
+  <system:String x:Key="MyStatus_HorizontalAlignment">수평 정렬</system:String>
+  <system:String x:Key="MyStatus_ColorRange">색상 범위 (%)</system:String>
 
   <system:String x:Key="MPTicker_VisibleCounter">카운터 표시</system:String>
-  <system:String x:Key="MPTicker_SyncHoT">Sync to HoT</system:String>
-  <system:String x:Key="MPTicker_SyncDoT">Sync to DoT</system:String>
-  <system:String x:Key="MPTicker_Offset">Offset (sec)</system:String>
-  <system:String x:Key="MPTicker_SyncMP">Sync to MP</system:String>
-  <system:String x:Key="MPTicker_ResyncInterval">Resync interval (sec)</system:String>
+  <system:String x:Key="MPTicker_SyncHoT">HoT에 동기화</system:String>
+  <system:String x:Key="MPTicker_SyncDoT">DoT에 동기화</system:String>
+  <system:String x:Key="MPTicker_Offset">오프셋 (sec)</system:String>
+  <system:String x:Key="MPTicker_SyncMP">MP에 동기화</system:String>
+  <system:String x:Key="MPTicker_ResyncInterval">재동기 간격 (sec)</system:String>
   <system:String x:Key="MPTicker_Bar">바</system:String>
   <system:String x:Key="MPTicker_BarStrokeColor">바 윤곽선색</system:String>
   <system:String x:Key="MPTicker_LinkBarStrokeColorToBarColor">바의 윤곽선색을 바 색상과 같게</system:String>
