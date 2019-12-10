@@ -86,13 +86,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
+            this.isLoading = true;
+
             WPFHelper.InvokeAsync(async () =>
             {
                 try
                 {
-                    this.isLoading = true;
-
-                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    await Task.Delay(TimeSpan.FromSeconds(3));
                     this.LoadCurrentTimeline();
                 }
                 finally
@@ -124,7 +124,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 foreach (var tl in toReloads)
                 {
                     tl.Reload();
-                    Thread.Yield();
+                    WPFHelper.DelayTask();
                 }
 
                 // すでにコントローラがロードされていたらアンロードする
@@ -132,7 +132,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     tl.Controller.Unload();
                     tl.IsActive = false;
-                    Thread.Yield();
+                    WPFHelper.DelayTask();
                 }
 
                 // 現在のゾーンで有効なタイムラインを取得する
@@ -151,13 +151,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     if (!newTimeline.IsGlobalZone)
                     {
                         newTimeline.Reload();
-                        Thread.Yield();
+                        WPFHelper.DelayTask();
                     }
 
                     // コントローラをロードする
                     newTimeline.Controller.Load();
                     newTimeline.IsActive = true;
-                    Thread.Yield();
+                    WPFHelper.DelayTask();
 
                     this.AppLogger.Trace($"[TL] Timeline auto loaded. active_timeline={newTimeline.TimelineName}.");
                 }
@@ -165,6 +165,23 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 // グローバルトリガを初期化する
                 TimelineManager.Instance.InitGlobalTriggers();
             }
+        }
+
+        public async void ReloadGlobalTriggers()
+        {
+            var timelines = TimelineManager.Instance.TimelineModels.ToArray();
+
+            // グローバルトリガとリファンレスファイルをリロードする
+            var toReloads = timelines.Where(x =>
+                x.IsGlobalZone);
+            foreach (var tl in toReloads)
+            {
+                tl.Reload();
+                await Task.Delay(0);
+            }
+
+            // グローバルトリガを初期化する
+            TimelineManager.Instance.InitGlobalTriggers();
         }
 
         public async void LoadTimelineModels()
@@ -207,7 +224,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
             }
 
-            await Task.Delay(10);
+            await Task.Delay(5);
 
             // RazorEngine にわたすモデルを更新する
             TimelineModel.RefreshRazorModel();
@@ -246,7 +263,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         ex);
                 }
 
-                await Task.Delay(10);
+                await Task.Delay(5);
             }
 
             // グローバルトリガをロードする
@@ -256,7 +273,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             foreach (var tl in globals)
             {
                 this.LoadGlobalTriggers(tl);
-                await Task.Delay(10);
+                await Task.Delay(5);
             }
 
             await WPFHelper.InvokeAsync(() =>

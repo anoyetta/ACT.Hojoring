@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -131,5 +132,7 @@ namespace FFXIV.Framework.Common
             {
             }
         }
+
+        public async static void DelayTask(int msec = 0) => await Task.Delay(msec);
     }
 }
