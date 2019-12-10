@@ -121,6 +121,7 @@ HEALER1 に me（自分）が含まれる場合にこのトリガが有効にな
   <system:String x:Key="Spell_UpperLimitOfRecastTime">リキャスト時間の最大値</system:String>
   <system:String x:Key="Spell_WarningTime">秒未満のとき警告色に変える</system:String>
   <system:String x:Key="Spell_WarningTimeChangeFontColor">フォントを警告色に変える</system:String>
+  <system:String x:Key="Spell_ChangeColorWhenContainsMe">自分が含まれるときスペル名を警告色に変える</system:String>
   <system:String x:Key="Spell_BlinkTime">秒未満のときブリンクさせる</system:String>
   <system:String x:Key="Spell_BlinkIcon">アイコンをブリンクさせる</system:String>
   <system:String x:Key="Spell_BlinkBar">バーをブリンクさせる</system:String>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using FFXIV_ACT_Plugin.Common.Models;
 using Prism.Mvvm;
 using PropertyChanged;
@@ -302,6 +303,28 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             return name;
+        }
+
+        public bool ContainsName(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(this.Name) ||
+                string.IsNullOrEmpty(this.NameFI) ||
+                string.IsNullOrEmpty(this.NameIF) ||
+                string.IsNullOrEmpty(this.NameII))
+            {
+                return false;
+            }
+
+            return
+                text.ContainsIgnoreCase(this.Name) ||
+                text.ContainsIgnoreCase(this.NameFI) ||
+                text.ContainsIgnoreCase(this.NameIF) ||
+                text.ContainsIgnoreCase(this.NameII);
         }
 
         public string Names { get; set; } = string.Empty;

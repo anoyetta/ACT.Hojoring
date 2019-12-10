@@ -155,6 +155,26 @@ namespace ACT.SpecialSpellTimer.Views
                 title = title.Replace(",", Environment.NewLine);
                 title = title.Replace("\\n", Environment.NewLine);
 
+                var fill = this.FontBrush;
+                var stroke = this.FontOutlineBrush;
+
+                if (this.Spell.ChangeFontColorWhenContainsMe)
+                {
+                    var player = CombatantsManager.Instance.Player;
+                    if (player != null)
+                    {
+                        if (player.ContainsName(title) ||
+                            player.ContainsName(this.Spell.MatchedLog))
+                        {
+                            fill = this.WarningFontBrush;
+                            stroke = this.WarningFontOutlineBrush;
+                        }
+                    }
+                }
+
+                if (tb.Fill != fill) tb.Fill = fill;
+                if (tb.Stroke != stroke) tb.Stroke = stroke;
+
                 tb.Text = title;
 
                 tb.Visibility = this.Spell.HideSpellName ?
@@ -210,11 +230,13 @@ namespace ACT.SpecialSpellTimer.Views
                 var fill = this.FontBrush;
                 var stroke = this.FontOutlineBrush;
 
-                if (this.Spell.ChangeFontColorsWhenWarning &&
-                    this.RecastTime < this.Spell.WarningTime)
+                if (this.Spell.ChangeFontColorsWhenWarning)
                 {
-                    fill = this.WarningFontBrush;
-                    stroke = this.WarningFontOutlineBrush;
+                    if (this.RecastTime < this.Spell.WarningTime)
+                    {
+                        fill = this.WarningFontBrush;
+                        stroke = this.WarningFontOutlineBrush;
+                    }
                 }
 
                 if (tb.Fill != fill) tb.Fill = fill;

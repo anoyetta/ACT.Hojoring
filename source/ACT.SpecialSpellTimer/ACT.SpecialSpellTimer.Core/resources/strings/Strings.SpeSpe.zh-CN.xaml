@@ -121,6 +121,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Spell_UpperLimitOfRecastTime">延长时间上限</system:String>
   <system:String x:Key="Spell_WarningTime">秒时改为警告颜色.</system:String>
   <system:String x:Key="Spell_WarningTimeChangeFontColor">字体颜色改为警告色</system:String>
+  <system:String x:Key="Spell_ChangeColorWhenContainsMe">Change spell name to warning color when contains me</system:String>
   <system:String x:Key="Spell_BlinkTime">秒时开始闪烁.</system:String>
   <system:String x:Key="Spell_BlinkIcon">图标闪烁</system:String>
   <system:String x:Key="Spell_BlinkBar">进度条闪烁</system:String>
