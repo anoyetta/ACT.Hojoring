@@ -620,7 +620,7 @@ namespace ACT.SpecialSpellTimer
 
                     Task.Run(() =>
                     {
-                        Thread.Sleep(TimeSpan.FromSeconds(3));
+                        Thread.Sleep(TimeSpan.FromSeconds(1));
 
                         // ACT本体に戦闘終了を通知する
                         if (Settings.Default.WipeoutNotifyToACT)
@@ -636,7 +636,7 @@ namespace ACT.SpecialSpellTimer
                         // wipeoutログを発生させる
                         Task.Run(() =>
                         {
-                            Thread.Sleep(TimeSpan.FromSeconds(1.5));
+                            Thread.Sleep(200);
                             LogParser.RaiseLog(now, ConstantKeywords.Wipeout);
                         });
                     });
