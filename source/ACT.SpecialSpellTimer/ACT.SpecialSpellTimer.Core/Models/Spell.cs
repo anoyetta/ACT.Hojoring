@@ -716,6 +716,14 @@ namespace ACT.SpecialSpellTimer.Models
 
         public string WarningFontOutlineColor { get; set; } = Colors.Red.ToLegacy().ToHTML();
 
+        private bool changeFontColorWhenContainsMe;
+
+        public bool ChangeFontColorWhenContainsMe
+        {
+            get => this.changeFontColorWhenContainsMe;
+            set => this.SetProperty(ref this.changeFontColorWhenContainsMe, value);
+        }
+
         private int barWidth;
 
         public int BarWidth
