@@ -196,7 +196,7 @@
         Padding="2 0 0 0"
         Margin="0 0 5 0"
         HorizontalAlignment="Left"
-        VerticalAlignment="Bottom"
+        VerticalAlignment="Center"
         Fill="AliceBlue"
         Stroke="Blue"
         Text="Sample Spell"
@@ -211,7 +211,7 @@
         RenderOptions.ClearTypeHint="Enabled"
         RenderOptions.EdgeMode="Unspecified"
         HorizontalAlignment="{Binding CounterAlignment, Mode=OneWay}"
-        VerticalAlignment="Bottom"
+        VerticalAlignment="Center"
         Stretch="None"
         StretchDirection="DownOnly">
 
