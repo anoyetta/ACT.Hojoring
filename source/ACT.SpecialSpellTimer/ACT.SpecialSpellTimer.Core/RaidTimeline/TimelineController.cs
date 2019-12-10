@@ -341,6 +341,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             this.ClearActivity();
 
             // 初期化する
+            TimelineManager.Instance.ReloadGlobalTriggers();
             TimelineManager.Instance.InitElements(this.Model);
 
             var acts = new List<TimelineActivityModel>();
