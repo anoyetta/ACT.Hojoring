@@ -116,6 +116,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 string.IsNullOrEmpty(act.Text) &&
                 string.IsNullOrEmpty(act.Notice))
             {
+                act.IsNotified = true;
                 return;
             }
 
