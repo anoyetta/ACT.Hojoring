@@ -812,6 +812,7 @@ namespace ACT.SpecialSpellTimer.Models
                 {
                     this.RaisePropertyChanged(nameof(this.CounterAlignment));
                     this.RaisePropertyChanged(nameof(this.SpellTitleColumnWidth));
+                    this.RaisePropertyChanged(nameof(this.CounterColumnWidth));
                 }
             }
         }
