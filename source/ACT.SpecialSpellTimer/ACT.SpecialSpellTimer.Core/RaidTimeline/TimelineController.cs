@@ -1763,7 +1763,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 from x in currentActivityLine
                 where
                 !x.IsNotified &&
-                x.PredicateExpressions() &&
                 x.Time + TimeSpan.FromSeconds(x.NoticeOffset.Value) <= this.CurrentTime
                 select
                 x;
@@ -1772,6 +1771,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 var now = DateTime.Now;
                 foreach (var act in toNotify)
                 {
+                    if (!act.PredicateExpressions())
+                    {
+                        act.IsNotified = true;
+                        continue;
+                    }
+
                     var vnotices = act.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
                     foreach (var vnotice in vnotices)
                     {
@@ -1835,8 +1840,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 where
                 !x.IsActive &&
                 !x.IsDone &&
-                x.PredicateExpressions() &&
-                x.Time <= this.CurrentTime
+                x.Time <= this.CurrentTime &&
+                x.PredicateExpressions()
                 orderby
                 x.Seq descending
                 select
