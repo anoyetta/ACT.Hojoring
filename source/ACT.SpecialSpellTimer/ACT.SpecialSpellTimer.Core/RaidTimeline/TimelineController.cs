@@ -1771,9 +1771,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 var now = DateTime.Now;
                 foreach (var act in toNotify)
                 {
+                    act.IsNotified = true;
+
                     if (!act.PredicateExpressions())
                     {
-                        act.IsNotified = true;
                         continue;
                     }
 
