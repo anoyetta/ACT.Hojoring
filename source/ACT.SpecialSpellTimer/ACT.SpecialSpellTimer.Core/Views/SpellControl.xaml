@@ -111,6 +111,7 @@
 
     <!-- standard style start -->
     <Grid
+      HorizontalAlignment="Left"
       Visibility="{Binding IsStandardStyle, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
       <Grid.RowDefinitions>
         <RowDefinition />
@@ -118,8 +119,8 @@
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto" />
-        <ColumnDefinition />
-        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="{Binding SpellTitleColumnWidth, Mode=OneWay}" />
+        <ColumnDefinition Width="{Binding CounterColumnWidth, Mode=OneWay}" />
       </Grid.ColumnDefinitions>
 
       <Canvas
