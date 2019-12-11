@@ -442,10 +442,23 @@ namespace ACT.SpecialSpellTimer
                 if (!Settings.Default.VisibleOverlayWithoutFFXIV &&
                     !this.existFFXIVProcess)
                 {
+                    var toShow = spells.Where(x =>
+                    {
+                        if (x.IsDesignMode || x.IsTest)
+                        {
+                            return true;
+                        }
+
+                        if (x.Panel?.SortOrder == SpellOrders.Fixed)
+                        {
+                            return true;
+                        }
+
+                        return false;
+                    });
+
                     // 一時表示スペルがない？
-                    if (!spells.Any(x =>
-                        x.IsDesignMode ||
-                        x.IsTest))
+                    if (!toShow.Any())
                     {
                         SpellsController.Instance.ClosePanels();
                         return;
@@ -454,10 +467,7 @@ namespace ACT.SpecialSpellTimer
                     if (!isHideOverlay)
                     {
                         // 一時表示スペルだけ表示する
-                        SpellsController.Instance.RefreshSpellOverlays(
-                            spells.Where(x =>
-                                x.IsDesignMode ||
-                                x.IsTest).ToList());
+                        SpellsController.Instance.RefreshSpellOverlays(toShow.ToList());
                         return;
                     }
                 }
