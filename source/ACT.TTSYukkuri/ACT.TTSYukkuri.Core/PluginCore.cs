@@ -15,6 +15,7 @@ using ACT.TTSYukkuri.Voiceroid;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using FFXIV.Framework.resources;
 using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
@@ -238,6 +239,21 @@ namespace ACT.TTSYukkuri
             float? volume = null)
             => SpeakTTS(textToSpeak, playDevice, VoicePalettes.Default, isSync, volume);
 
+        /// <summary>
+        /// /wait付きTTS
+        /// </summary>
+        /// <remarks>
+        /// /wait [duration] [tts]
+        /// </remarks>
+        /// <example>
+        /// /wait 5.5 こんにちは
+        /// コマンドの発行から5.5秒後に「こんにちは」という
+        /// </example>
+        private static readonly Regex WaitCommandRegex = new Regex(
+            @"/wait\s+(?<due>[\d\.]+)[,\s]+(?<tts>.+)$",
+            RegexOptions.Compiled |
+            RegexOptions.IgnoreCase);
+
         private void SpeakTTS(
             string textToSpeak,
             PlayDevices playDevice = PlayDevices.Both,
@@ -245,48 +261,43 @@ namespace ACT.TTSYukkuri
             bool isSync = false,
             float? volume = null)
         {
-            const string waitCommand = "/wait";
-
             try
             {
-                // waitなし？
-                if (!textToSpeak.StartsWith(waitCommand))
+                if (!textToSpeak.ContainsIgnoreCase("/wait"))
                 {
                     SpeechController.Default.Speak(textToSpeak, playDevice, voicePalette, isSync, volume);
+                    return;
                 }
-                else
+
+                var match = WaitCommandRegex.Match(textToSpeak);
+                if (!match.Success)
                 {
-                    var values = textToSpeak.Split(',');
-
-                    // 分割できない？
-                    if (values.Length < 2)
-                    {
-                        // 普通に読上げて終わる
-                        SpeechController.Default.Speak(textToSpeak, playDevice, voicePalette, isSync, volume);
-                        return;
-                    }
-
-                    var command = values[0].Trim();
-                    var message = values[1].Trim();
-
-                    // 秒数を取り出す
-                    var delayAsText = command.Replace(waitCommand, string.Empty);
-                    int delay = 0;
-                    if (!int.TryParse(delayAsText, out delay))
-                    {
-                        // 普通に読上げて終わる
-                        SpeechController.Default.Speak(textToSpeak, playDevice, voicePalette, isSync, volume);
-                        return;
-                    }
-
-                    // ディレイをかけて読上げる
-                    SpeechController.Default.SpeakWithDelay(
-                        message,
-                        delay,
-                        playDevice,
-                        isSync,
-                        volume);
+                    SpeechController.Default.Speak(textToSpeak, playDevice, voicePalette, isSync, volume);
+                    return;
                 }
+
+                var delayAsText = match.Groups["due"].Value;
+                var message = match.Groups["tts"].Value?.Trim();
+
+                if (!double.TryParse(delayAsText, out double delay))
+                {
+                    // 普通に読上げて終わる
+                    SpeechController.Default.Speak(textToSpeak, playDevice, voicePalette, isSync, volume);
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(message))
+                {
+                    return;
+                }
+
+                // ディレイをかけて読上げる
+                SpeechController.Default.SpeakWithDelay(
+                    message,
+                    delay,
+                    playDevice,
+                    isSync,
+                    volume);
             }
             catch (Exception ex)
             {

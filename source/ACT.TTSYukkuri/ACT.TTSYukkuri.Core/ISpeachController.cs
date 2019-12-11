@@ -2,9 +2,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using FFXIV.Framework.Common;
 using FFXIV.Framework.Bridge;
-
+using FFXIV.Framework.Common;
 using NLog;
 
 namespace ACT.TTSYukkuri
@@ -73,7 +72,7 @@ namespace ACT.TTSYukkuri
         public static void SpeakWithDelay(
             this ISpeechController speechController,
             string text,
-            int delay,
+            double delay,
             PlayDevices playDevice = PlayDevices.Both,
             bool isSync = false,
             float? volume = null)
@@ -82,13 +81,13 @@ namespace ACT.TTSYukkuri
         public static void SpeakWithDelay(
             this ISpeechController speechController,
             string text,
-            int delay,
+            double delay,
             PlayDevices playDevice = PlayDevices.Both,
             VoicePalettes voicePalette = VoicePalettes.Default,
             bool isSync = false,
             float? volume = null)
         {
-            if (delay == 0)
+            if (delay == 0d)
             {
                 speechController.Speak(text, playDevice, isSync, volume);
                 return;
@@ -101,8 +100,8 @@ namespace ACT.TTSYukkuri
             }));
 
             timer.Change(
-                delay * 1000,
-                0);
+                TimeSpan.FromSeconds(delay),
+                TimeSpan.Zero);
         }
 
         private static readonly char[] InvalidCars = Path.GetInvalidFileNameChars();
