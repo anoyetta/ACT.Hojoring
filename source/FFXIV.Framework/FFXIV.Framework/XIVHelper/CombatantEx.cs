@@ -312,6 +312,14 @@ namespace FFXIV.Framework.XIVHelper
                 return false;
             }
 
+            if (string.IsNullOrEmpty(this.Name) ||
+                string.IsNullOrEmpty(this.NameFI) ||
+                string.IsNullOrEmpty(this.NameIF) ||
+                string.IsNullOrEmpty(this.NameII))
+            {
+                return false;
+            }
+
             return
                 text.ContainsIgnoreCase(this.Name) ||
                 text.ContainsIgnoreCase(this.NameFI) ||

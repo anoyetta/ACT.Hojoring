@@ -1530,6 +1530,7 @@ namespace ACT.SpecialSpellTimer.Models
             n.BlinkIcon = this.BlinkIcon;
             n.BlinkBar = this.BlinkBar;
             n.ChangeFontColorsWhenWarning = this.ChangeFontColorsWhenWarning;
+            n.ChangeFontColorWhenContainsMe = this.ChangeFontColorWhenContainsMe;
             n.OverlapRecastTime = this.OverlapRecastTime;
             n.ReduceIconBrightness = this.ReduceIconBrightness;
             n.Font = this.Font.Clone() as FontInfo;
@@ -1612,6 +1613,7 @@ namespace ACT.SpecialSpellTimer.Models
             n.HideSpellName = this.HideSpellName;
             n.WarningTime = this.WarningTime;
             n.ChangeFontColorsWhenWarning = this.ChangeFontColorsWhenWarning;
+            n.ChangeFontColorWhenContainsMe = this.ChangeFontColorWhenContainsMe;
             n.BlinkTime = this.BlinkTime;
             n.BlinkIcon = this.BlinkIcon;
             n.BlinkBar = this.BlinkBar;
