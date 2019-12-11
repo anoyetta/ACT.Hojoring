@@ -811,6 +811,7 @@ namespace ACT.SpecialSpellTimer.Models
                 if (this.SetProperty(ref this.isCounterToCenter, value))
                 {
                     this.RaisePropertyChanged(nameof(this.CounterAlignment));
+                    this.RaisePropertyChanged(nameof(this.SpellTitleColumnWidth));
                 }
             }
         }
@@ -820,6 +821,18 @@ namespace ACT.SpecialSpellTimer.Models
             this.isCounterToCenter ?
             HorizontalAlignment.Center :
             HorizontalAlignment.Right;
+
+        [XmlIgnore]
+        public GridLength SpellTitleColumnWidth =>
+            this.isCounterToCenter ?
+            GridLength.Auto :
+            new GridLength(1.0, GridUnitType.Star);
+
+        [XmlIgnore]
+        public GridLength CounterColumnWidth =>
+            this.isCounterToCenter ?
+            new GridLength(1.0, GridUnitType.Star) :
+            GridLength.Auto;
 
         /// <summary>インスタンス化されたスペルか？</summary>
         [XmlIgnore]
