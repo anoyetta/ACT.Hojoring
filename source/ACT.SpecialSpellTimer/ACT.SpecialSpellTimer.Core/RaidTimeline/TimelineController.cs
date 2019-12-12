@@ -1480,6 +1480,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 NotifyQueue.Enqueue(toNotice);
                 tri.Execute();
+                tri.Dump();
 
                 WPFHelper.BeginInvoke(() =>
                 {
