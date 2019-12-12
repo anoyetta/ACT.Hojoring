@@ -51,6 +51,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        [XmlElement(ElementName = "dump")]
+        public TimelineDumpModel[] DumpStatements
+        {
+            get => this.Statements
+                .Where(x => x.TimelineType == TimelineElementTypes.Dump)
+                .Cast<TimelineDumpModel>()
+                .ToArray();
+
+            set => this.AddRange(value);
+        }
+
         /// <summary>
         /// 条件式
         /// </summary>
@@ -102,11 +113,21 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
+        public void Dump()
+        {
+            var dumps = this.DumpStatements;
+            foreach (var dump in dumps)
+            {
+                dump.ExcuteDump();
+            }
+        }
+
         public void Add(TimelineBase timeline)
         {
             if (timeline.TimelineType == TimelineElementTypes.VisualNotice ||
                 timeline.TimelineType == TimelineElementTypes.ImageNotice ||
-                timeline.TimelineType == TimelineElementTypes.Expressions)
+                timeline.TimelineType == TimelineElementTypes.Expressions ||
+                timeline.TimelineType == TimelineElementTypes.Dump)
             {
                 timeline.Parent = this;
                 this.statements.Add(timeline);
