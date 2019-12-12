@@ -120,16 +120,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            lock (act)
-            {
-                if (act.IsNotified)
-                {
-                    return;
-                }
-
-                act.IsNotified = true;
-            }
-
             var now = DateTime.Now;
             var offset = this.CurrentTime - act.Time;
             var log =
