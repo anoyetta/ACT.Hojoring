@@ -43,6 +43,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private async void ExecuteDumpPosition() => await Task.Run(() =>
         {
+            var name = !string.IsNullOrEmpty(this.Name) ?
+                this.Name :
+                this.Parent?.Name;
+
+            var from = string.IsNullOrEmpty(name) ?
+                string.Empty :
+                $@" from=""{this.Name}""";
+
             var combatants = CombatantsManager.Instance.GetCombatants();
 
             foreach (var c in combatants)
@@ -52,7 +60,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     continue;
                 }
 
-                var log = $@"Dump position name=""{c.Name}"" X=""{c.PosXMap:N2}"" Y=""{c.PosYMap:N2}"" Z=""{c.PosZMap:N2}"" hp=""{c.CurrentHP}"" max_hp=""{c.MaxHP}""";
+                var log = $@"Dump pos{from} id=""0x{c.ID:X8}"" name=""{c.Name}"" X=""{c.PosXMap:N2}"" Y=""{c.PosYMap:N2}"" Z=""{c.PosZMap:N2}"" hp=""{c.CurrentHP}"" max_hp=""{c.MaxHP}""";
                 TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
             }
         });
