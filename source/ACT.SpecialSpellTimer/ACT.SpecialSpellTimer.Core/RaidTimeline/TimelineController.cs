@@ -1832,6 +1832,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         if (act.PredicateExpressions())
                         {
                             act.SetExpressions();
+                            act.Execute();
                             act.Dump();
                         }
                     }
