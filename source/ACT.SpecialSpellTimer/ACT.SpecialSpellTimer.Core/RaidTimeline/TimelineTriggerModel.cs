@@ -511,6 +511,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
+        public void Dump()
+        {
+            var dumps = this.DumpStatements;
+            foreach (var dump in dumps)
+            {
+                dump.ExcuteDump();
+            }
+        }
+
         private static readonly string WaitKeyword = "/wait";
 
         private static readonly Regex WaitCommandRegex = new Regex(
@@ -561,15 +570,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     this.StartTool(path);
                 }
             });
-        }
-
-        public void Dump()
-        {
-            var dumps = this.DumpStatements;
-            foreach (var dump in dumps)
-            {
-                dump.ExcuteDump();
-            }
         }
 
         private void StartTool(
