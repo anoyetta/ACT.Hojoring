@@ -358,7 +358,7 @@ namespace FFXIV.Framework.XIVHelper
         private void RaiseZoneChanged(uint zoneID, string zoneName)
         {
             CombatantsManager.Instance.Clear();
-            this.OnZoneChanged(zoneID, zoneName);
+            this.OnZoneChanged?.Invoke(zoneID, zoneName);
         }
 
         public ResolveType Resolve<ResolveType>() where ResolveType : class

@@ -533,7 +533,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
             }
 
-            if (IsExistsTables)
+            if (IsExistsTables &&
+                text.ContainsIgnoreCase("TABLE"))
             {
                 var tables = GetTables();
 

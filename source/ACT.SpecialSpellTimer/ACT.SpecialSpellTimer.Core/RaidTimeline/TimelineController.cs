@@ -1761,13 +1761,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // 通知を判定する
             await Task.Run(() =>
             {
-                var toNotify =
+                var toNotify = (
                 from x in currentActivityLine
                 where
                 !x.IsNotified &&
                 x.Time + TimeSpan.FromSeconds(x.NoticeOffset.Value) <= this.CurrentTime
                 select
-                x;
+                x).ToArray();
 
                 // 通知キューを登録する
                 var now = DateTime.Now;
