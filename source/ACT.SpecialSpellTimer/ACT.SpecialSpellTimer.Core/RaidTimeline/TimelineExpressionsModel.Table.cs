@@ -120,10 +120,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                     foreach (var col in model.Cols)
                     {
-                        row.Cols[col.Name] = new TimelineColumn(
+                        row.AddCol(new TimelineColumn(
                             col.Name,
                             col.Val,
-                            col.IsKey);
+                            col.IsKey));
 
                         logs.Add($"{col.Name}:'{col.Val}'");
 
