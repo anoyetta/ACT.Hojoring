@@ -33,9 +33,15 @@ namespace FFXIV.Framework.Common
         {
             this.Task = new Task(async () =>
             {
-                for (int i = 0; i < 4; i++)
+                if (delay.TotalMilliseconds <= 0)
                 {
-                    await Task.Delay((int)delay.TotalMilliseconds / 4);
+                    action?.Invoke();
+                    return;
+                }
+
+                for (int i = 0; i < 10; i++)
+                {
+                    await Task.Delay((int)delay.TotalMilliseconds / 10);
 
                     if (this.IsCancel)
                     {
