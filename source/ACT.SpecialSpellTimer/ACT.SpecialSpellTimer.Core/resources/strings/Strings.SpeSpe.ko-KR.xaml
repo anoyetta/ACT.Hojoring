@@ -121,7 +121,7 @@
   <system:String x:Key="Spell_UpperLimitOfRecastTime">재사용 대기 시간 최댓값</system:String>
   <system:String x:Key="Spell_WarningTime">초 미만일 경우 경고색으로 변경</system:String>
   <system:String x:Key="Spell_WarningTimeChangeFontColor">글자를 경고색으로 변경</system:String>
-  <system:String x:Key="Spell_ChangeColorWhenContainsMe">Change spell name to warning color when contains me</system:String>
+  <system:String x:Key="Spell_ChangeColorWhenContainsMe">자신이 포함되어 있을 경우 스펠 이름을 경고색으로 변경</system:String>
   <system:String x:Key="Spell_BlinkTime">초 미만일 때 깜박이기</system:String>
   <system:String x:Key="Spell_BlinkIcon">아이콘 깜박이기</system:String>
   <system:String x:Key="Spell_BlinkBar">진행 바 깜박이기</system:String>
