@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -70,20 +69,8 @@ namespace ACT.SpecialSpellTimer.Models
         [XmlIgnore]
         public volatile bool UpdateDone;
 
-        [XmlIgnore]
-        private Timer overSoundTimer = new Timer() { AutoReset = false, Enabled = false };
-
-        [XmlIgnore]
-        private Timer beforeSoundTimer = new Timer() { AutoReset = false, Enabled = false };
-
-        [XmlIgnore]
-        private Timer timeupSoundTimer = new Timer() { AutoReset = false, Enabled = false };
-
         public Spell()
         {
-            this.overSoundTimer.Elapsed += this.OverSoundTimer_Elapsed;
-            this.beforeSoundTimer.Elapsed += this.BeforeSoundTimer_Elapsed;
-            this.timeupSoundTimer.Elapsed += this.TimeupSoundTimer_Elapsed;
         }
 
         private bool isCircleStyle;
@@ -1214,27 +1201,63 @@ namespace ACT.SpecialSpellTimer.Models
 
         #endregion Performance Monitor
 
+        [XmlIgnore]
+        private DelayableTask overSoundTask;
+
+        [XmlIgnore]
+        private DelayableTask beforeSoundTask;
+
+        [XmlIgnore]
+        private DelayableTask timeupSoundTask;
+
         public void Dispose()
         {
-            if (this.overSoundTimer != null)
+            if (this.overSoundTask != null)
             {
-                this.overSoundTimer.Stop();
-                this.overSoundTimer.Dispose();
-                this.overSoundTimer = null;
+                this.overSoundTask.IsCancel = true;
             }
 
-            if (this.beforeSoundTimer != null)
+            if (this.beforeSoundTask != null)
             {
-                this.beforeSoundTimer.Stop();
-                this.beforeSoundTimer.Dispose();
-                this.beforeSoundTimer = null;
+                this.beforeSoundTask.IsCancel = true;
             }
 
-            if (this.timeupSoundTimer != null)
+            if (this.timeupSoundTask != null)
             {
-                this.timeupSoundTimer.Stop();
-                this.timeupSoundTimer.Dispose();
-                this.timeupSoundTimer = null;
+                this.timeupSoundTask.IsCancel = true;
+            }
+        }
+
+        /// <summary>
+        /// マッチ後ｎ秒後のサウンドタイマを開始する
+        /// </summary>
+        public void StartOverSoundTimer()
+        {
+            if (this.overSoundTask != null)
+            {
+                this.overSoundTask.IsCancel = true;
+            }
+
+            if (this.OverTime <= 0 ||
+                this.MatchDateTime <= DateTime.MinValue)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(this.OverSound) &&
+                string.IsNullOrWhiteSpace(this.OverTextToSpeak))
+            {
+                return;
+            }
+
+            var timeToPlay = this.MatchDateTime.AddSeconds(this.OverTime);
+            var duration = (timeToPlay - DateTime.Now).TotalMilliseconds;
+
+            if (duration > 0d)
+            {
+                this.overSoundTask = DelayableTask.Run(
+                    this.PlayOverSound,
+                    TimeSpan.FromMilliseconds(duration));
             }
         }
 
@@ -1243,16 +1266,9 @@ namespace ACT.SpecialSpellTimer.Models
         /// </summary>
         public void StartBeforeSoundTimer()
         {
-            var timer = this.beforeSoundTimer;
-
-            if (timer == null)
+            if (this.beforeSoundTask != null)
             {
-                return;
-            }
-
-            if (timer.Enabled)
-            {
-                timer.Stop();
+                this.beforeSoundTask.IsCancel = true;
             }
 
             if (this.BeforeTime <= 0 ||
@@ -1272,67 +1288,15 @@ namespace ACT.SpecialSpellTimer.Models
                 return;
             }
 
-            // タイマをセットする
             var timeToPlay = this.CompleteScheduledTime.AddSeconds(this.BeforeTime * -1);
             var duration = (timeToPlay - DateTime.Now).TotalMilliseconds;
 
             if (duration > 0d)
             {
-                // タイマスタート
-                timer.Interval = duration;
-                timer.Start();
+                this.beforeSoundTask = DelayableTask.Run(
+                    this.PlayBeforeSound,
+                    TimeSpan.FromMilliseconds(duration));
             }
-        }
-
-        /// <summary>
-        /// マッチ後ｎ秒後のサウンドタイマを開始する
-        /// </summary>
-        public void StartOverSoundTimer()
-        {
-            var timer = this.overSoundTimer;
-
-            if (timer == null)
-            {
-                return;
-            }
-
-            if (timer.Enabled)
-            {
-                timer.Stop();
-            }
-
-            if (this.OverTime <= 0 ||
-                this.MatchDateTime <= DateTime.MinValue)
-            {
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(this.OverSound) &&
-                string.IsNullOrWhiteSpace(this.OverTextToSpeak))
-            {
-                return;
-            }
-
-            // タイマをセットする
-            var timeToPlay = this.MatchDateTime.AddSeconds(this.OverTime);
-            var duration = (timeToPlay - DateTime.Now).TotalMilliseconds;
-
-            if (duration > 0d)
-            {
-                // タイマスタート
-                timer.Interval = duration;
-                timer.Start();
-            }
-        }
-
-        /// <summary>
-        /// 遅延処理のタイマを開始する
-        /// </summary>
-        public void StartTimer()
-        {
-            this.StartOverSoundTimer();
-            this.StartBeforeSoundTimer();
-            this.StartTimeupSoundTimer();
         }
 
         /// <summary>
@@ -1340,16 +1304,9 @@ namespace ACT.SpecialSpellTimer.Models
         /// </summary>
         public void StartTimeupSoundTimer()
         {
-            var timer = this.timeupSoundTimer;
-
-            if (timer == null)
+            if (this.timeupSoundTask != null)
             {
-                return;
-            }
-
-            if (timer.Enabled)
-            {
-                timer.Stop();
+                this.timeupSoundTask.IsCancel = true;
             }
 
             if (this.CompleteScheduledTime <= DateTime.MinValue ||
@@ -1364,24 +1321,22 @@ namespace ACT.SpecialSpellTimer.Models
                 return;
             }
 
-            // タイマをセットする
             var timeToPlay = this.CompleteScheduledTime;
             var duration = (timeToPlay - DateTime.Now).TotalMilliseconds;
 
             if (duration > 0d)
             {
-                // タイマスタート
-                timer.Interval = duration;
-                timer.Start();
+                this.timeupSoundTask = DelayableTask.Run(
+                    this.PlayTimeupSound,
+                    TimeSpan.FromMilliseconds(duration));
             }
             else
             {
-                // 過ぎているなら即座に通知する
-                this.TimeupSoundTimer_Elapsed(null, null);
+                this.PlayTimeupSound();
             }
         }
 
-        private void BeforeSoundTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void PlayBeforeSound()
         {
             this.BeforeDone = true;
 
@@ -1407,7 +1362,7 @@ namespace ACT.SpecialSpellTimer.Models
             }
         }
 
-        private void OverSoundTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void PlayOverSound()
         {
             this.OverDone = true;
 
@@ -1433,7 +1388,7 @@ namespace ACT.SpecialSpellTimer.Models
             }
         }
 
-        private void TimeupSoundTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void PlayTimeupSound()
         {
             this.TimeupDone = true;
 
