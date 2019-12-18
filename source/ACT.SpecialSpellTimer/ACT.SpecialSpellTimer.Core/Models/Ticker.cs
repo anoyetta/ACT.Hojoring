@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
@@ -66,14 +65,10 @@ namespace ACT.SpecialSpellTimer.Models
         #endregion ITreeItem
 
         [XmlIgnore]
-        private Timer delayedSoundTimer = new Timer() { AutoReset = false, Enabled = false };
-
-        [XmlIgnore]
         public bool ToClose { get; set; } = false;
 
         public Ticker()
         {
-            this.delayedSoundTimer.Elapsed += this.DelayedSoundTimer_Elapsed;
         }
 
         private long id;
@@ -541,13 +536,14 @@ namespace ACT.SpecialSpellTimer.Models
 
         #endregion Performance Monitor
 
+        [XmlIgnore]
+        private DelayableTask delayedSoundTask;
+
         public void Dispose()
         {
-            if (this.delayedSoundTimer != null)
+            if (this.delayedSoundTask != null)
             {
-                this.delayedSoundTimer.Stop();
-                this.delayedSoundTimer.Dispose();
-                this.delayedSoundTimer = null;
+                this.delayedSoundTask.IsCancel = true;
             }
         }
 
@@ -556,16 +552,9 @@ namespace ACT.SpecialSpellTimer.Models
         /// </summary>
         public void StartDelayedSoundTimer()
         {
-            var timer = this.delayedSoundTimer;
-
-            if (timer == null)
+            if (this.delayedSoundTask != null)
             {
-                return;
-            }
-
-            if (timer.Enabled)
-            {
-                timer.Stop();
+                this.delayedSoundTask.IsCancel = true;
             }
 
             if (this.Delay <= 0 ||
@@ -580,19 +569,18 @@ namespace ACT.SpecialSpellTimer.Models
                 return;
             }
 
-            // タイマをセットする
             var timeToPlay = this.MatchDateTime.AddSeconds(this.Delay);
             var duration = (timeToPlay - DateTime.Now).TotalMilliseconds;
 
             if (duration > 0d)
             {
-                // タイマスタート
-                timer.Interval = duration;
-                timer.Start();
+                this.delayedSoundTask = DelayableTask.Run(
+                    this.PlayDelayedSound,
+                    TimeSpan.FromMilliseconds(duration));
             }
         }
 
-        private void DelayedSoundTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void PlayDelayedSound()
         {
             this.Delayed = true;
 
