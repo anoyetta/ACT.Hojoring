@@ -13,7 +13,7 @@
   <system:String x:Key="Help_ContactToAnoyetta">호조링 DISCORD 포럼</system:String>
   <system:String x:Key="Help_ContactToAnoyettaTwitter">제작자 Twitter</system:String>
 
-  <system:String x:Key="Help_OpenConfig">Open config folder</system:String>
+  <system:String x:Key="Help_OpenConfig">설정 폴더 열기</system:String>
   <system:String x:Key="Help_ReloadConfig">설정 파일 다시 불러오기</system:String>
 
   <system:String x:Key="Help_OpenPluginLog">플러그인 로그 열기</system:String>
