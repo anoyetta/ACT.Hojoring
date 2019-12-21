@@ -148,7 +148,7 @@ namespace FFXIV.Framework.XIVHelper
 
         public bool IsPlayer => this.ID == this.Player?.ID;
 
-        public Actor.Type ActorType => (Actor.Type)Enum.ToObject(typeof(Actor.Type), this.Type);
+        public Actor.Type ActorType => CombatantExtensions.ParseOrDefaultToActorType(this.Type);
 
         public int DisplayOrder =>
             PCOrder.Instance.PCOrders.Any(x => x.Job == this.JobID) ?
@@ -692,6 +692,19 @@ namespace FFXIV.Framework.XIVHelper
     {
         public static Actor.Type GetActorType(
             this Combatant c)
-            => (Actor.Type)Enum.ToObject(typeof(Actor.Type), c.type);
+            => ParseOrDefaultToActorType(c?.type ?? 0);
+
+        public static Actor.Type ParseOrDefaultToActorType(
+            byte actorTypeValue)
+        {
+            var type = typeof(Actor.Type);
+
+            if (!type.IsEnumDefined(actorTypeValue))
+            {
+                return Actor.Type.Unknown;
+            }
+
+            return (Actor.Type)Enum.ToObject(type, actorTypeValue);
+        }
     }
 }
