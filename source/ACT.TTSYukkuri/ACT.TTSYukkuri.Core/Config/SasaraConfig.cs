@@ -394,7 +394,7 @@ namespace ACT.TTSYukkuri.Config
                                 return;
                             }
 
-                            await Task.Run(async () =>
+                            await Task.Run(() =>
                             {
                                 var ps = Process.GetProcessesByName("CeVIO Creative Studio");
                                 if (ps != null &&
