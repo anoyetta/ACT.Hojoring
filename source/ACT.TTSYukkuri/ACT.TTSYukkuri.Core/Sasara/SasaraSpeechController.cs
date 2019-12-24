@@ -1,7 +1,10 @@
 using System;
+using System.IO;
+using System.Threading.Tasks;
 using ACT.TTSYukkuri.Config;
-using FFXIV.Framework.TTS.Common;
 using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
+using NAudio.Wave;
 
 namespace ACT.TTSYukkuri.Sasara
 {
@@ -16,7 +19,7 @@ namespace ACT.TTSYukkuri.Sasara
         /// </summary>
         public void Initialize()
         {
-            Settings.Default.SasaraSettings.SetToRemote();
+            Settings.Default.SasaraSettings.ApplyToCevio();
         }
 
         public void Free()
@@ -58,18 +61,96 @@ namespace ACT.TTSYukkuri.Sasara
 
             this.CreateWaveWrapper(wave, () =>
             {
-                // 音声waveファイルを生成する
-                Settings.Default.SasaraSettings.SetToRemote();
-                RemoteTTSClient.Instance.TTSModel.TextToWave(
-                    TTSTypes.CeVIO,
+                Settings.Default.SasaraSettings.ApplyToCevio();
+
+                this.TextToWave(
                     text,
                     wave,
-                    0,
                     Settings.Default.SasaraSettings.Gain);
             });
 
             // 再生する
             SoundPlayerWrapper.Play(wave, playDevice, isSync, volume);
+        }
+
+        private volatile bool isSpeaking;
+
+        private async void TextToWave(
+            string tts,
+            string waveFileName,
+            float gain)
+        {
+            if (string.IsNullOrEmpty(tts))
+            {
+                return;
+            }
+
+            if (!Settings.Default.SasaraSettings.IsCevioReady)
+            {
+                return;
+            }
+
+            await Task.Run(async () =>
+            {
+                while (this.isSpeaking)
+                {
+                    await Task.Delay(20);
+                }
+            });
+
+            await Task.Run(() =>
+            {
+                var tempWave = Path.GetTempFileName();
+
+                try
+                {
+                    var result = false;
+
+                    try
+                    {
+                        this.isSpeaking = true;
+
+                        result = Settings.Default.SasaraSettings.Talker.OutputWaveToFile(
+                            tts,
+                            tempWave);
+                    }
+                    finally
+                    {
+                        this.isSpeaking = false;
+                    }
+
+                    if (!result)
+                    {
+                        return;
+                    }
+
+                    FileHelper.CreateDirectory(waveFileName);
+
+                    if (gain != 1.0f)
+                    {
+                        using (var reader = new WaveFileReader(tempWave))
+                        {
+                            WaveFileWriter.CreateWaveFile(
+                                waveFileName,
+                                new VolumeWaveProvider16(reader)
+                                {
+                                    Volume = gain
+                                });
+                        }
+                    }
+                    else
+                    {
+                        File.Move(tempWave, waveFileName);
+                    }
+                }
+                finally
+                {
+                    if (File.Exists(tempWave))
+                    {
+                        File.Delete(tempWave);
+                    }
+                }
+            });
         }
     }
 }

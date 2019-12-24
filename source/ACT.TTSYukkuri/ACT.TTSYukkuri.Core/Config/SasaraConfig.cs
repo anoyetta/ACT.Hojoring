@@ -2,10 +2,14 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
-using FFXIV.Framework.TTS.Common;
-using FFXIV.Framework.TTS.Common.Models;
+using CeVIO.Talk.RemoteService;
+using FFXIV.Framework.Common;
+using NLog;
 using Prism.Mvvm;
 
 namespace ACT.TTSYukkuri.Config
@@ -17,7 +21,15 @@ namespace ACT.TTSYukkuri.Config
     public class SasaraConfig :
         BindableBase
     {
-        private CevioTalkerModel talker;
+        #region Logger
+
+        private Logger Logger => AppLog.DefaultLogger;
+
+        #endregion Logger
+
+        private readonly Lazy<Talker> LazyTalker = new Lazy<Talker>(() => new Talker());
+
+        internal Talker Talker => this.LazyTalker.Value;
 
         private string cast;
         private float gain = 2.1f;
@@ -69,10 +81,7 @@ namespace ACT.TTSYukkuri.Config
         /// <summary>
         /// 感情コンポーネント
         /// </summary>
-        public ObservableCollection<SasaraComponent> Components
-        {
-            get => this.components;
-        }
+        public ObservableCollection<SasaraComponent> Components => this.components;
 
         private void ComponentsCollectionChanged(
             object sender,
@@ -95,11 +104,11 @@ namespace ACT.TTSYukkuri.Config
             }
 
             // 変更を同期させる
-            this.SyncRemoteModel();
+            this.SyncToCevio();
         }
 
         private void ItemOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-            => this.SyncRemoteModel();
+            => this.SyncToCevio();
 
         /// <summary>
         /// 音量
@@ -111,7 +120,7 @@ namespace ACT.TTSYukkuri.Config
             {
                 if (this.SetProperty(ref this.onryo, value))
                 {
-                    this.SyncRemoteModel();
+                    this.SyncToCevio();
                 }
             }
         }
@@ -126,7 +135,7 @@ namespace ACT.TTSYukkuri.Config
             {
                 if (this.SetProperty(ref this.hayasa, value))
                 {
-                    this.SyncRemoteModel();
+                    this.SyncToCevio();
                 }
             }
         }
@@ -141,7 +150,7 @@ namespace ACT.TTSYukkuri.Config
             {
                 if (this.SetProperty(ref this.takasa, value))
                 {
-                    this.SyncRemoteModel();
+                    this.SyncToCevio();
                 }
             }
         }
@@ -156,7 +165,7 @@ namespace ACT.TTSYukkuri.Config
             {
                 if (this.SetProperty(ref this.seishitsu, value))
                 {
-                    this.SyncRemoteModel();
+                    this.SyncToCevio();
                 }
             }
         }
@@ -171,7 +180,7 @@ namespace ACT.TTSYukkuri.Config
             {
                 if (this.SetProperty(ref this.yokuyo, value))
                 {
-                    this.SyncRemoteModel();
+                    this.SyncToCevio();
                 }
             }
         }
@@ -192,7 +201,7 @@ namespace ACT.TTSYukkuri.Config
         /// リモートに自動的に反映するか？
         /// </summary>
         [XmlIgnore]
-        public bool AutoSync { get; private set; } = true;
+        public bool AutoSync { get; set; } = false;
 
         /// <summary>
         /// CeVIOがアクティブか？
@@ -200,14 +209,26 @@ namespace ACT.TTSYukkuri.Config
         [XmlIgnore]
         private bool IsActive => Settings.Default.TTS == TTSType.Sasara;
 
+        private bool isCevioReady;
+
+        /// <summary>
+        /// CeVIOが実行されているか？
+        /// </summary>
+        [XmlIgnore]
+        public bool IsCevioReady
+        {
+            get => this.isCevioReady;
+            set => this.SetProperty(ref this.isCevioReady, value);
+        }
+
         /// <summary>
         /// リモートに反映する
         /// </summary>
-        private void SyncRemoteModel()
+        private void SyncToCevio()
         {
             if (this.AutoSync)
             {
-                this.SetToRemote();
+                this.ApplyToCevio();
             }
         }
 
@@ -221,17 +242,19 @@ namespace ACT.TTSYukkuri.Config
                 return;
             }
 
-            this.talker = RemoteTTSClient.Instance.TTSModel?.GetCevioTalker();
-            if (this.talker == null)
+            this.StartCevio();
+            if (!this.IsCevioReady)
             {
                 return;
             }
 
+            var casts = Talker.AvailableCasts;
+
             // 有効なキャストを列挙する
-            var addCasts = this.talker.AvailableCasts
+            var addCasts = casts
                 .Where(x => !this.AvailableCasts.Contains(x));
             var removeCasts = this.AvailableCasts
-                .Where(x => !this.talker.AvailableCasts.Contains(x))
+                .Where(x => !casts.Contains(x))
                 .ToArray();
 
             this.AvailableCasts.AddRange(addCasts);
@@ -244,12 +267,11 @@ namespace ACT.TTSYukkuri.Config
                 this.AvailableCasts.Contains(this.Cast) &&
                 this.Components.Any())
             {
-                // 現在の設定をリモートに送る
-                this.SetToRemote();
+                this.ApplyToCevio();
             }
             else
             {
-                var cast = this.talker.AvailableCasts.FirstOrDefault();
+                var cast = casts.FirstOrDefault();
                 if (this.AvailableCasts.Contains(this.Cast))
                 {
                     cast = this.Cast;
@@ -272,8 +294,13 @@ namespace ACT.TTSYukkuri.Config
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(cast) ||
-               this.talker == null)
+            if (string.IsNullOrWhiteSpace(cast))
+            {
+                return;
+            }
+
+            this.StartCevio();
+            if (!this.IsCevioReady)
             {
                 return;
             }
@@ -282,25 +309,23 @@ namespace ACT.TTSYukkuri.Config
             {
                 this.AutoSync = false;
 
-                this.talker.Cast = cast;
-                RemoteTTSClient.Instance.TTSModel.SetCevioTalker(this.talker);
-                this.talker = RemoteTTSClient.Instance.TTSModel.GetCevioTalker();
+                this.Talker.Cast = cast;
 
                 this.Components.Clear();
-                this.Components.AddRange(talker.Components.Select(x => new SasaraComponent()
+                this.Components.AddRange(this.Talker.Components.Select(x => new SasaraComponent()
                 {
                     Id = x.Id,
                     Name = x.Name.Trim(),
                     Value = x.Value,
-                    Cast = talker.Cast,
+                    Cast = cast,
                 }));
 
                 this.cast = cast;
-                this.Onryo = talker.Volume;
-                this.Hayasa = talker.Speed;
-                this.Takasa = talker.Tone;
-                this.Seishitsu = talker.Alpha;
-                this.Yokuyo = talker.ToneScale;
+                this.Onryo = this.Talker.Volume;
+                this.Hayasa = this.Talker.Speed;
+                this.Takasa = this.Talker.Tone;
+                this.Seishitsu = this.Talker.Alpha;
+                this.Yokuyo = this.Talker.ToneScale;
             }
             finally
             {
@@ -308,51 +333,121 @@ namespace ACT.TTSYukkuri.Config
             }
         }
 
-        /// <summary>
-        /// ささらの設定を取得する
-        /// </summary>
-        /// <returns>
-        /// ささらの設定モデル</returns>
-        public CevioTalkerModel ToRemoteModel()
+        internal async void ApplyToCevio()
         {
-            if (this.talker == null)
+            this.StartCevio();
+            if (!this.IsCevioReady)
             {
-                this.talker = new CevioTalkerModel();
+                return;
             }
 
-            this.talker.Cast = this.Cast;
-            this.talker.Volume = this.Onryo;
-            this.talker.Speed = this.Hayasa;
-            this.talker.Tone = this.Takasa;
-            this.talker.Alpha = this.Seishitsu;
-            this.talker.ToneScale = this.Yokuyo;
+            await Task.Run(() =>
+            {
+                this.Talker.Cast = this.Cast;
+                this.Talker.Volume = this.Onryo;
+                this.Talker.Speed = this.Hayasa;
+                this.Talker.Tone = this.Takasa;
+                this.Talker.Alpha = this.Seishitsu;
+                this.Talker.ToneScale = this.Yokuyo;
 
-            this.talker.Components = this.Components.Select(
-                x => new CevioTalkerModel.CevioTalkerComponent()
+                foreach (var src in this.components)
                 {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Value = x.Value,
-                }).ToList();
-
-            return this.talker;
+                    var dst = this.Talker.Components[src.Name];
+                    dst.Value = src.Value;
+                }
+            });
         }
 
-        /// <summary>
-        /// ささらを設定する
-        /// </summary>
-        public void SetToRemote(CevioTalkerModel remoteModel)
+        private static readonly string CeVIOPath = @"C:\Program Files\CeVIO\CeVIO Creative Studio (64bit)\CeVIO Creative Studio.exe";
+
+        private volatile bool isStarting;
+
+        private async void StartCevio()
         {
-            if (this.IsActive)
+            if (this.isStarting)
             {
-                RemoteTTSClient.Instance.TTSModel?.SetCevioTalker(remoteModel);
+                return;
+            }
+
+            try
+            {
+                this.isStarting = true;
+
+                if (!ServiceControl.IsHostStarted)
+                {
+                    var result = await Task.Run(() => ServiceControl.StartHost(false));
+
+                    switch (result)
+                    {
+                        case HostStartResult.Succeeded:
+                            this.Logger.Info($"CeVIO RPC start.");
+                            break;
+
+                        case HostStartResult.AlreadyStarted:
+                            this.Logger.Info($"CeVIO RPC already started, connect to CeVIO.");
+                            break;
+
+                        case HostStartResult.NotRegistered:
+                            if (!File.Exists(CeVIOPath))
+                            {
+                                this.IsCevioReady = false;
+                                return;
+                            }
+
+                            await Task.Run(async () =>
+                            {
+                                var ps = Process.GetProcessesByName("CeVIO Creative Studio");
+                                if (ps != null &&
+                                    ps.Length > 0)
+                                {
+                                    return;
+                                }
+
+                                var p = Process.Start(CeVIOPath);
+                                p.WaitForInputIdle();
+                            });
+                            break;
+
+                        default:
+                            this.IsCevioReady = false;
+                            return;
+                    }
+
+                    for (int i = 0; i < 60; i++)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(1));
+
+                        if (ServiceControl.IsHostStarted)
+                        {
+                            break;
+                        }
+                    }
+
+                    this.Talker.Cast = Talker.AvailableCasts.FirstOrDefault();
+                }
+
+                this.IsCevioReady = true;
+            }
+            finally
+            {
+                this.isStarting = false;
             }
         }
 
-        /// <summary>
-        /// ささらを設定する
-        /// </summary>
-        public void SetToRemote() =>
-            this.SetToRemote(this.ToRemoteModel());
+        private async void KillCevio()
+        {
+            if (ServiceControl.IsHostStarted)
+            {
+                await Task.Run(() => ServiceControl.CloseHost(HostCloseMode.Interrupt));
+                await Task.Delay(100);
+
+                if (!ServiceControl.IsHostStarted)
+                {
+                    this.Logger.Info($"CeVIO RPC close.");
+                }
+            }
+
+            this.IsCevioReady = false;
+        }
     }
 }

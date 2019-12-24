@@ -587,6 +587,9 @@ namespace ACT.TTSYukkuri.Config
                         {
                             activeConfig.BoyomiServer = "localhost";
                         }
+
+                        // CeVIO の設定同期を有効にする
+                        activeConfig.SasaraSettings.AutoSync = true;
                     }
                 }
                 finally
