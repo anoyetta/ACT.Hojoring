@@ -301,10 +301,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework.TTS.Common\FFXIV.Framework.TTS.Common.csproj">
-      <Project>{18ce9b28-4f0b-45d1-ae3f-14f3982f0e59}</Project>
-      <Name>FFXIV.Framework.TTS.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
       <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>
       <Name>FFXIV.Framework</Name>

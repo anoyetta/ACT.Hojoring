@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Threading.Tasks;
 using ACT.TTSYukkuri.Config;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
@@ -73,9 +72,7 @@ namespace ACT.TTSYukkuri.Sasara
             SoundPlayerWrapper.Play(wave, playDevice, isSync, volume);
         }
 
-        private volatile bool isSpeaking;
-
-        private async void TextToWave(
+        private void TextToWave(
             string tts,
             string waveFileName,
             float gain)
@@ -90,34 +87,15 @@ namespace ACT.TTSYukkuri.Sasara
                 return;
             }
 
-            await Task.Run(async () =>
-            {
-                while (this.isSpeaking)
-                {
-                    await Task.Delay(20);
-                }
-            });
-
-            await Task.Run(() =>
+            lock (this)
             {
                 var tempWave = Path.GetTempFileName();
 
                 try
                 {
-                    var result = false;
-
-                    try
-                    {
-                        this.isSpeaking = true;
-
-                        result = Settings.Default.SasaraSettings.Talker.OutputWaveToFile(
-                            tts,
-                            tempWave);
-                    }
-                    finally
-                    {
-                        this.isSpeaking = false;
-                    }
+                    var result = Settings.Default.SasaraSettings.Talker.OutputWaveToFile(
+                        tts,
+                        tempWave);
 
                     if (!result)
                     {
@@ -150,7 +128,7 @@ namespace ACT.TTSYukkuri.Sasara
                         File.Delete(tempWave);
                     }
                 }
-            });
+            }
         }
     }
 }

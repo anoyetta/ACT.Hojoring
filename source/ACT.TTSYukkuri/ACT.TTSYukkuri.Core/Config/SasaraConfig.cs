@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -60,7 +61,7 @@ namespace ACT.TTSYukkuri.Config
         public float Gain
         {
             get => this.gain;
-            set => this.SetProperty(ref this.gain, value);
+            set => this.SetProperty(ref this.gain, (float)Math.Round(value, 1));
         }
 
         /// <summary>
@@ -311,14 +312,22 @@ namespace ACT.TTSYukkuri.Config
 
                 this.Talker.Cast = cast;
 
-                this.Components.Clear();
-                this.Components.AddRange(this.Talker.Components.Select(x => new SasaraComponent()
+                var list = new List<SasaraComponent>();
+                for (int i = 0; i < this.Talker.Components.Length; i++)
                 {
-                    Id = x.Id,
-                    Name = x.Name.Trim(),
-                    Value = x.Value,
-                    Cast = cast,
-                }));
+                    var x = this.Talker.Components[i];
+
+                    list.Add(new SasaraComponent()
+                    {
+                        Id = x.Id,
+                        Name = x.Name.Trim(),
+                        Value = x.Value,
+                        Cast = cast,
+                    });
+                }
+
+                this.Components.Clear();
+                this.Components.AddRange(list);
 
                 this.cast = cast;
                 this.Onryo = this.Talker.Volume;
