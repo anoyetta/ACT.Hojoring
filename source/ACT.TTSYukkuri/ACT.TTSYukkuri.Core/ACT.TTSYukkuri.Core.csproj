@@ -53,6 +53,10 @@
       <HintPath>..\..\ThirdParty\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="CeVIO.Talk.RemoteService, Version=2.1.4.0, Culture=neutral, PublicKeyToken=85bf362f6144cc53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ThirdParty\CeVIO\7\CeVIO.Talk.RemoteService.dll</HintPath>
+    </Reference>
     <Reference Include="FFXIV_ACT_Plugin.Common">
       <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.Common.dll</HintPath>
       <Private>False</Private>
@@ -198,7 +202,6 @@
     <Compile Include="Sasara\SasaraSpeechController.cs" />
     <Compile Include="SoundPlayerWrapper.cs" />
     <Compile Include="SpeechController.cs" />
-    <Compile Include="TTSServer\TTSServerController.cs" />
     <Compile Include="Voiceroid\VoiceroidSpeechController.cs" />
     <Compile Include="Yukkuri\AquesTalkParam.cs" />
     <Compile Include="Yukkuri\AquesTalk.cs" />
