@@ -1,5 +1,7 @@
 using System;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -155,6 +157,26 @@ namespace ACT.SpecialSpellTimer.Views
                 title = title.Replace(",", Environment.NewLine);
                 title = title.Replace("\\n", Environment.NewLine);
 
+                var fill = this.FontBrush;
+                var stroke = this.FontOutlineBrush;
+
+                if (this.Spell.ChangeFontColorWhenContainsMe)
+                {
+                    var player = CombatantsManager.Instance.Player;
+                    if (player != null)
+                    {
+                        if (player.ContainsName(title) ||
+                            player.ContainsName(this.Spell.MatchedLog))
+                        {
+                            fill = this.WarningFontBrush;
+                            stroke = this.WarningFontOutlineBrush;
+                        }
+                    }
+                }
+
+                if (tb.Fill != fill) tb.Fill = fill;
+                if (tb.Stroke != stroke) tb.Stroke = stroke;
+
                 tb.Text = title;
 
                 tb.Visibility = this.Spell.HideSpellName ?
@@ -210,11 +232,13 @@ namespace ACT.SpecialSpellTimer.Views
                 var fill = this.FontBrush;
                 var stroke = this.FontOutlineBrush;
 
-                if (this.Spell.ChangeFontColorsWhenWarning &&
-                    this.RecastTime < this.Spell.WarningTime)
+                if (this.Spell.ChangeFontColorsWhenWarning)
                 {
-                    fill = this.WarningFontBrush;
-                    stroke = this.WarningFontOutlineBrush;
+                    if (this.RecastTime < this.Spell.WarningTime)
+                    {
+                        fill = this.WarningFontBrush;
+                        stroke = this.WarningFontOutlineBrush;
+                    }
                 }
 
                 if (tb.Fill != fill) tb.Fill = fill;
@@ -676,5 +700,38 @@ namespace ACT.SpecialSpellTimer.Views
             object sender,
             RoutedEventArgs e)
             => this.Spell?.SimulateMatch();
+
+        #region INotifyPropertyChanged
+
+        [field: NonSerialized]
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void RaisePropertyChanged(
+            [CallerMemberName]string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected virtual bool SetProperty<T>(
+            ref T field,
+            T value,
+            [CallerMemberName]string propertyName = null)
+        {
+            if (Equals(field, value))
+            {
+                return false;
+            }
+
+            field = value;
+            this.PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(propertyName));
+
+            return true;
+        }
+
+        #endregion INotifyPropertyChanged
     }
 }

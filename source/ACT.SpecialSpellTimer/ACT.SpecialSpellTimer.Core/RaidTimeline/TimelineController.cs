@@ -341,6 +341,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             this.ClearActivity();
 
             // 初期化する
+            TimelineManager.Instance.ReloadGlobalTriggers();
             TimelineManager.Instance.InitElements(this.Model);
 
             var acts = new List<TimelineActivityModel>();
@@ -1277,6 +1278,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 NotifyQueue.Enqueue(toNotice);
                 tri.Execute();
+                tri.Dump();
             }
 
             WPFHelper.BeginInvoke(() =>
@@ -1478,6 +1480,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 NotifyQueue.Enqueue(toNotice);
                 tri.Execute();
+                tri.Dump();
 
                 WPFHelper.BeginInvoke(() =>
                 {
@@ -1758,19 +1761,25 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // 通知を判定する
             await Task.Run(() =>
             {
-                var toNotify =
+                var toNotify = (
                 from x in currentActivityLine
                 where
                 !x.IsNotified &&
-                x.PredicateExpressions() &&
                 x.Time + TimeSpan.FromSeconds(x.NoticeOffset.Value) <= this.CurrentTime
                 select
-                x;
+                x).ToArray();
 
                 // 通知キューを登録する
                 var now = DateTime.Now;
                 foreach (var act in toNotify)
                 {
+                    act.IsNotified = true;
+
+                    if (!act.PredicateExpressions())
+                    {
+                        continue;
+                    }
+
                     var vnotices = act.VisualNoticeStatements.Where(x => x.Enabled.GetValueOrDefault());
                     foreach (var vnotice in vnotices)
                     {
@@ -1823,6 +1832,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         if (act.PredicateExpressions())
                         {
                             act.SetExpressions();
+                            act.Execute();
+                            act.Dump();
                         }
                     }
                 });
@@ -1834,8 +1845,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 where
                 !x.IsActive &&
                 !x.IsDone &&
-                x.PredicateExpressions() &&
-                x.Time <= this.CurrentTime
+                x.Time <= this.CurrentTime &&
+                x.PredicateExpressions()
                 orderby
                 x.Seq descending
                 select

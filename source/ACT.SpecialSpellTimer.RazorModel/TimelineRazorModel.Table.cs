@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using Prism.Mvvm;
 
@@ -39,24 +40,36 @@ namespace ACT.SpecialSpellTimer.RazorModel
 
             lock (this)
             {
-                foreach (var row in rows)
+                try
                 {
-                    var current = this.rows
-                        .FirstOrDefault(x => object.Equals(x.KeyValue, row.KeyValue));
+                    this.isSuspendRefreshPlaceholders = true;
 
-                    if (current == null)
+                    foreach (var row in rows)
                     {
-                        this.rows.Add(row);
-                        continue;
-                    }
+                        var current = this.rows
+                            .FirstOrDefault(x => object.Equals(x.KeyValue, row.KeyValue));
 
-                    foreach (var col in row.Cols.Values)
-                    {
-                        var currentCol = current.Cols[col.Name];
-                        currentCol.Value = col.Value;
-                        currentCol.IsKey = col.IsKey;
+                        if (current == null)
+                        {
+                            row.ParentTable = this;
+                            this.rows.Add(row);
+                            continue;
+                        }
+
+                        foreach (var col in row.Cols.Values)
+                        {
+                            var currentCol = current.Cols[col.Name];
+                            currentCol.Value = col.Value;
+                            currentCol.IsKey = col.IsKey;
+                        }
                     }
                 }
+                finally
+                {
+                    this.isSuspendRefreshPlaceholders = false;
+                }
+
+                this.RefreshPlaceholders();
             }
         }
 
@@ -70,7 +83,66 @@ namespace ACT.SpecialSpellTimer.RazorModel
 
             lock (this)
             {
-                this.rows.RemoveAll(x => object.Equals(x.KeyValue, keyValue));
+                var toRemove = this.rows
+                    .Where(x => object.Equals(x.KeyValue, keyValue))
+                    .ToArray();
+
+                try
+                {
+                    this.isSuspendRefreshPlaceholders = true;
+
+                    foreach (var row in toRemove)
+                    {
+                        row.ParentTable = null;
+                        this.rows.Remove(row);
+                    }
+                }
+                finally
+                {
+                    this.isSuspendRefreshPlaceholders = false;
+                }
+
+                if (toRemove.Any())
+                {
+                    this.RefreshPlaceholders();
+                }
+            }
+        }
+
+        private readonly List<(string Placeholder, object Value)> Placeholders = new List<(string Placeholder, object Value)>(128);
+        private volatile bool isSuspendRefreshPlaceholders = false;
+
+        public void RefreshPlaceholders()
+        {
+            if (this.isSuspendRefreshPlaceholders)
+            {
+                return;
+            }
+
+            var list = new List<(string Placeholder, object Value)>(128);
+
+            var rows = this.Rows;
+
+            // COUNT
+            list.Add(($"COUNT('{this.Name}')", rows.Count));
+
+            var i = 0;
+            foreach (var row in rows)
+            {
+                var cols = row.Cols.Values;
+                foreach (var col in cols)
+                {
+                    // TABLE Value
+                    list.Add(($"TABLE['{this.Name}'][{i}]['{col.Name}']", col.Value));
+                }
+
+                i++;
+            }
+
+            lock (this.Placeholders)
+            {
+                this.Placeholders.Clear();
+                this.Placeholders.AddRange(list);
             }
         }
 
@@ -83,38 +155,29 @@ namespace ACT.SpecialSpellTimer.RazorModel
         /// TABLE['table_name'][index]['column_name']
         /// COUNT('table_name')
         /// </example>
-        public IEnumerable<(string Placeholder, object Value)> GetPlaceholders()
-        {
-            var rows = this.Rows;
-
-            // COUNT
-            yield return ($"COUNT('{this.Name}')", rows.Count);
-
-            var i = 0;
-            foreach (var row in rows)
-            {
-                var cols = row.Cols.Values;
-                foreach (var col in cols)
-                {
-                    // TABLE Value
-                    yield return ($"TABLE['{this.Name}'][{i}]['{col.Name}']", col.Value);
-                }
-
-                i++;
-            }
-        }
+        public IEnumerable<(string Placeholder, object Value)> GetPlaceholders() => this.Placeholders.ToArray();
     }
 
     public class TimelineRow :
         BindableBase
     {
-        private readonly Dictionary<string, TimelineColumn> columns = new Dictionary<string, TimelineColumn>(16);
+        public TimelineTable ParentTable { get; set; }
+
+        private readonly ConcurrentDictionary<string, TimelineColumn> columns = new ConcurrentDictionary<string, TimelineColumn>();
 
         public object this[string name] => this.columns.ContainsKey(name) ?
             this.columns[name].Value :
             null;
 
-        public Dictionary<string, TimelineColumn> Cols => this.columns;
+        public IReadOnlyDictionary<string, TimelineColumn> Cols => this.columns;
+
+        public void AddCol(
+            TimelineColumn col)
+        {
+            col.ParentRow = this;
+            this.columns[col.Name] = col;
+            this.ParentTable?.RefreshPlaceholders();
+        }
 
         public object KeyValue => this.columns
             .FirstOrDefault(x => x.Value.IsKey)
@@ -136,17 +199,20 @@ namespace ACT.SpecialSpellTimer.RazorModel
     {
         public TimelineColumn()
         {
+            this.PropertyChanged += (_, __) => this.ParentRow?.ParentTable?.RefreshPlaceholders();
         }
 
         public TimelineColumn(
             string name,
             object value,
-            bool isKey = false)
+            bool isKey = false) : this()
         {
-            this.Name = name;
-            this.Value = value;
-            this.IsKey = isKey;
+            this.name = name;
+            this.value = value;
+            this.isKey = isKey;
         }
+
+        public TimelineRow ParentRow { get; set; }
 
         private string name;
 

@@ -116,17 +116,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 string.IsNullOrEmpty(act.Text) &&
                 string.IsNullOrEmpty(act.Notice))
             {
-                return;
-            }
-
-            lock (act)
-            {
-                if (act.IsNotified)
-                {
-                    return;
-                }
-
                 act.IsNotified = true;
+                return;
             }
 
             var now = DateTime.Now;

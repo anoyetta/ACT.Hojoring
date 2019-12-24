@@ -716,7 +716,8 @@
                     <TextBlock TextWrapping="WrapWithOverflow" Text="{DynamicResource Spell_WarningTime}" />
                   </Label>
                 </StackPanel>
-                <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_WarningTimeChangeFontColor}" IsChecked="{Binding Model.ChangeFontColorsWhenWarning}" />
+                <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_WarningTimeChangeFontColor}" IsChecked="{Binding Model.ChangeFontColorsWhenWarning, Mode=TwoWay}" />
+                <CheckBox Margin="0 5 0 0" Content="{DynamicResource Spell_ChangeColorWhenContainsMe}" IsChecked="{Binding Model.ChangeFontColorWhenContainsMe, Mode=TwoWay}" />
               </StackPanel>
 
               <!-- プログレスバー -->

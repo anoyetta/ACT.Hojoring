@@ -307,3 +307,4 @@ merge_into_master.ps1
 /source/FFXIV.Framework/Thirdparty/*.dll
 /source/ThirdParty/SDK/*.dll
 /source/ThirdParty/*.dll
+CeVIO.Talk.RemoteService.DLL

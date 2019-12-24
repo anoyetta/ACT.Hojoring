@@ -379,7 +379,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                     lock (notice)
                     {
-                        if (DateTime.Now >= notice.TimeToHide.AddSeconds(0.1d) ||
+                        var delay = notice.Delay.HasValue ?
+                            notice.Delay.Value :
+                            0;
+                        if (DateTime.Now >= notice.TimeToHide.AddSeconds(delay + 0.1d) ||
                             notice.toHide)
                         {
                             if (notice.overlay != null)

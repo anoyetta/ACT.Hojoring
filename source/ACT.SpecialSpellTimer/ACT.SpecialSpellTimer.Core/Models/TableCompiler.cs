@@ -77,17 +77,17 @@ namespace ACT.SpecialSpellTimer.Models
 
         private void SubscribeXIVPluginEvents()
         {
-            Task.Run(() =>
+            Task.Run(async () =>
             {
                 var helper = XIVPluginHelper.Instance;
 
                 for (int i = 0; i < 60; i++)
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                    await Task.Delay(TimeSpan.FromSeconds(3));
 
                     if (helper.IsAttached)
                     {
-                        Thread.Sleep(TimeSpan.FromMilliseconds(200));
+                        await Task.Delay(TimeSpan.FromSeconds(0.2));
                         helper.OnPrimaryPlayerChanged += () => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
                         helper.OnPlayerJobChanged += () => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
                         helper.OnPartyListChanged += (_, __) => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
@@ -108,9 +108,9 @@ namespace ACT.SpecialSpellTimer.Models
                     return;
                 }
 
-                Task.Run(() =>
+                Task.Run(async () =>
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(3));
+                    await Task.Delay(TimeSpan.FromSeconds(1));
 
                     if (queue)
                     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using FFXIV_ACT_Plugin.Common.Models;
 using Prism.Mvvm;
 using PropertyChanged;
@@ -147,7 +148,7 @@ namespace FFXIV.Framework.XIVHelper
 
         public bool IsPlayer => this.ID == this.Player?.ID;
 
-        public Actor.Type ActorType => (Actor.Type)Enum.ToObject(typeof(Actor.Type), this.Type);
+        public Actor.Type ActorType => CombatantExtensions.ParseOrDefaultToActorType(this.Type);
 
         public int DisplayOrder =>
             PCOrder.Instance.PCOrders.Any(x => x.Job == this.JobID) ?
@@ -302,6 +303,28 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             return name;
+        }
+
+        public bool ContainsName(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(this.Name) ||
+                string.IsNullOrEmpty(this.NameFI) ||
+                string.IsNullOrEmpty(this.NameIF) ||
+                string.IsNullOrEmpty(this.NameII))
+            {
+                return false;
+            }
+
+            return
+                text.ContainsIgnoreCase(this.Name) ||
+                text.ContainsIgnoreCase(this.NameFI) ||
+                text.ContainsIgnoreCase(this.NameIF) ||
+                text.ContainsIgnoreCase(this.NameII);
         }
 
         public string Names { get; set; } = string.Empty;
@@ -669,6 +692,19 @@ namespace FFXIV.Framework.XIVHelper
     {
         public static Actor.Type GetActorType(
             this Combatant c)
-            => (Actor.Type)Enum.ToObject(typeof(Actor.Type), c.type);
+            => ParseOrDefaultToActorType(c?.type ?? 0);
+
+        public static Actor.Type ParseOrDefaultToActorType(
+            byte actorTypeValue)
+        {
+            var type = typeof(Actor.Type);
+
+            if (!type.IsEnumDefined(actorTypeValue))
+            {
+                return Actor.Type.Unknown;
+            }
+
+            return (Actor.Type)Enum.ToObject(type, actorTypeValue);
+        }
     }
 }

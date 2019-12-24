@@ -360,7 +360,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                     notice.RefreshDuration();
 
-                    if (DateTime.Now >= notice.TimeToHide.AddSeconds(1.0d) ||
+                    var delay = notice.Delay.HasValue ?
+                        notice.Delay.Value :
+                        0;
+                    if (DateTime.Now >= notice.TimeToHide.AddSeconds(delay + 1.0d) ||
                         notice.toHide)
                     {
                         if (!sender.IsDummyMode)

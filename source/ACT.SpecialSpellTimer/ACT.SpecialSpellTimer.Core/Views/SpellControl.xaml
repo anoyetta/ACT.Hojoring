@@ -111,6 +111,7 @@
 
     <!-- standard style start -->
     <Grid
+      HorizontalAlignment="Left"
       Visibility="{Binding IsStandardStyle, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
       <Grid.RowDefinitions>
         <RowDefinition />
@@ -118,8 +119,8 @@
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto" />
-        <ColumnDefinition />
-        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="{Binding SpellTitleColumnWidth, Mode=OneWay}" />
+        <ColumnDefinition Width="{Binding CounterColumnWidth, Mode=OneWay}" />
       </Grid.ColumnDefinitions>
 
       <Canvas
@@ -196,7 +197,7 @@
         Padding="2 0 0 0"
         Margin="0 0 5 0"
         HorizontalAlignment="Left"
-        VerticalAlignment="Bottom"
+        VerticalAlignment="Center"
         Fill="AliceBlue"
         Stroke="Blue"
         Text="Sample Spell"
@@ -211,7 +212,7 @@
         RenderOptions.ClearTypeHint="Enabled"
         RenderOptions.EdgeMode="Unspecified"
         HorizontalAlignment="{Binding CounterAlignment, Mode=OneWay}"
-        VerticalAlignment="Bottom"
+        VerticalAlignment="Center"
         Stretch="None"
         StretchDirection="DownOnly">
 

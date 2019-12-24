@@ -38,6 +38,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // Load
             NewDefault(TimelineElementTypes.Load, "Enabled", true),
 
+            // Dump
+            NewDefault(TimelineElementTypes.Dump, "Enabled", true),
+            NewDefault(TimelineElementTypes.Dump, "Target", DumpTargets.Position),
+
             // VisualNotice
             NewDefault(TimelineElementTypes.VisualNotice, "Enabled", true),
             NewDefault(TimelineElementTypes.VisualNotice, "Text", TimelineVisualNoticeModel.ParentTextPlaceholder),
