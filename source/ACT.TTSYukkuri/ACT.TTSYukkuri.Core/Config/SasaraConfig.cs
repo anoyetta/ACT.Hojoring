@@ -243,8 +243,7 @@ namespace ACT.TTSYukkuri.Config
                 return;
             }
 
-            this.StartCevio();
-            if (!this.IsCevioReady)
+            if (!this.TryStartCevio())
             {
                 return;
             }
@@ -300,8 +299,7 @@ namespace ACT.TTSYukkuri.Config
                 return;
             }
 
-            this.StartCevio();
-            if (!this.IsCevioReady)
+            if (!this.TryStartCevio())
             {
                 return;
             }
@@ -329,7 +327,6 @@ namespace ACT.TTSYukkuri.Config
                 this.Components.Clear();
                 this.Components.AddRange(list);
 
-                this.cast = cast;
                 this.Onryo = this.Talker.Volume;
                 this.Hayasa = this.Talker.Speed;
                 this.Takasa = this.Talker.Tone;
@@ -344,8 +341,7 @@ namespace ACT.TTSYukkuri.Config
 
         internal async void ApplyToCevio()
         {
-            this.StartCevio();
-            if (!this.IsCevioReady)
+            if (!this.TryStartCevio())
             {
                 return;
             }
@@ -441,6 +437,16 @@ namespace ACT.TTSYukkuri.Config
             {
                 this.isStarting = false;
             }
+        }
+
+        private bool TryStartCevio()
+        {
+            if (!this.IsCevioReady)
+            {
+                this.StartCevio();
+            }
+
+            return this.IsCevioReady;
         }
 
         private async void KillCevio()
