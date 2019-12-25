@@ -87,46 +87,43 @@ namespace ACT.TTSYukkuri.Sasara
                 return;
             }
 
-            lock (this)
+            var tempWave = Path.GetTempFileName();
+
+            try
             {
-                var tempWave = Path.GetTempFileName();
+                var result = Settings.Default.SasaraSettings.Talker.OutputWaveToFile(
+                    tts,
+                    tempWave);
 
-                try
+                if (!result)
                 {
-                    var result = Settings.Default.SasaraSettings.Talker.OutputWaveToFile(
-                        tts,
-                        tempWave);
+                    return;
+                }
 
-                    if (!result)
-                    {
-                        return;
-                    }
+                FileHelper.CreateDirectory(waveFileName);
 
-                    FileHelper.CreateDirectory(waveFileName);
-
-                    if (gain != 1.0f)
+                if (gain != 1.0f)
+                {
+                    using (var reader = new WaveFileReader(tempWave))
                     {
-                        using (var reader = new WaveFileReader(tempWave))
-                        {
-                            WaveFileWriter.CreateWaveFile(
-                                waveFileName,
-                                new VolumeWaveProvider16(reader)
-                                {
-                                    Volume = gain
-                                });
-                        }
-                    }
-                    else
-                    {
-                        File.Move(tempWave, waveFileName);
+                        WaveFileWriter.CreateWaveFile(
+                            waveFileName,
+                            new VolumeWaveProvider16(reader)
+                            {
+                                Volume = gain
+                            });
                     }
                 }
-                finally
+                else
                 {
-                    if (File.Exists(tempWave))
-                    {
-                        File.Delete(tempWave);
-                    }
+                    File.Move(tempWave, waveFileName);
+                }
+            }
+            finally
+            {
+                if (File.Exists(tempWave))
+                {
+                    File.Delete(tempWave);
                 }
             }
         }
