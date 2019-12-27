@@ -53,6 +53,10 @@
       <HintPath>..\..\ThirdParty\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="CeVIO.Talk.RemoteService, Version=2.1.2.0, Culture=neutral, PublicKeyToken=8c8a62729f45e96f, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ThirdParty\CeVIO\7\CeVIO.Talk.RemoteService.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -84,15 +88,6 @@
     <ProjectReference Include="..\ACT.TTSYukkuri.Core\ACT.TTSYukkuri.Core.csproj">
       <Project>{9a615561-6cec-4857-870f-88f6ff07764c}</Project>
       <Name>ACT.TTSYukkuri.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework.TTS.Common\FFXIV.Framework.TTS.Common.csproj">
-      <Project>{18ce9b28-4f0b-45d1-ae3f-14f3982f0e59}</Project>
-      <Name>FFXIV.Framework.TTS.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework.TTS.Server\FFXIV.Framework.TTS.Server.csproj">
-      <Project>{4cb004be-8162-4601-8f98-162d4f1c0fa1}</Project>
-      <Name>FFXIV.Framework.TTS.Server</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
       <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>

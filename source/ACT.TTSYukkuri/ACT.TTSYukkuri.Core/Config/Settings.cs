@@ -587,6 +587,9 @@ namespace ACT.TTSYukkuri.Config
                         {
                             activeConfig.BoyomiServer = "localhost";
                         }
+
+                        activeConfig.SasaraSettings.LoadRemoteConfig();
+                        activeConfig.SasaraSettings.IsInitialized = true;
                     }
                 }
                 finally

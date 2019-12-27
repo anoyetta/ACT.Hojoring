@@ -10,7 +10,6 @@ using System.Windows.Forms.Integration;
 using ACT.TTSYukkuri.Config;
 using ACT.TTSYukkuri.Config.Views;
 using ACT.TTSYukkuri.Discord.Models;
-using ACT.TTSYukkuri.TTSServer;
 using ACT.TTSYukkuri.Voiceroid;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
@@ -395,9 +394,6 @@ namespace ACT.TTSYukkuri
 
                     await Task.Run(() =>
                     {
-                        // TTSサーバを開始する
-                        TTSServerController.Start();
-
                         // TTSを初期化する
                         SpeechController.Default.Initialize();
 
@@ -507,9 +503,6 @@ namespace ACT.TTSYukkuri
 
                 // Discordを終了する
                 DiscordClientModel.Model.Dispose();
-
-                // TTSサーバを終了する
-                TTSServerController.End();
 
                 // FF14監視スレッドを開放する
                 FFXIVWatcher.Deinitialize();
