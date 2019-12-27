@@ -87,6 +87,11 @@ namespace ACT.TTSYukkuri.Sasara
                 return;
             }
 
+            if (string.IsNullOrEmpty(Settings.Default.SasaraSettings.Cast))
+            {
+                return;
+            }
+
             var tempWave = Path.GetTempFileName();
 
             try

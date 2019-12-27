@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -32,41 +30,28 @@ namespace ACT.TTSYukkuri.Config
 
         internal Talker Talker => this.LazyTalker.Value;
 
-        private string cast;
-        private float gain = 2.1f;
-        private uint onryo = 50;
-        private uint hayasa = 50;
-        private uint takasa = 50;
-        private uint seishitsu = 50;
-        private uint yokuyo = 50;
-        private ObservableCollection<SasaraComponent> components = new ObservableCollection<SasaraComponent>();
-
         public SasaraConfig()
         {
-            this.components.CollectionChanged += this.ComponentsCollectionChanged;
         }
 
         /// <summary>
-        /// 有効なキャストのリスト
+        /// CeVIOがアクティブか？
         /// </summary>
+        [XmlIgnore]
+        private bool IsActive => Settings.Default.TTS == TTSType.Sasara;
+
+        [XmlIgnore]
+        public bool IsInitialized { get; set; }
+
+        [XmlIgnore]
         public ObservableCollection<string> AvailableCasts
         {
             get;
             private set;
         } = new ObservableCollection<string>();
 
-        /// <summary>
-        /// ゲイン
-        /// </summary>
-        public float Gain
-        {
-            get => this.gain;
-            set => this.SetProperty(ref this.gain, (float)Math.Round(value, 1));
-        }
+        private string cast;
 
-        /// <summary>
-        /// キャスト
-        /// </summary>
         public string Cast
         {
             get => this.cast;
@@ -74,46 +59,33 @@ namespace ACT.TTSYukkuri.Config
             {
                 if (this.SetProperty(ref this.cast, value))
                 {
-                    this.SetCast(this.cast);
+                    this.RaisePropertyChanged(nameof(this.AvailableComponents));
                 }
             }
         }
 
-        /// <summary>
-        /// 感情コンポーネント
-        /// </summary>
-        public ObservableCollection<SasaraComponent> Components => this.components;
-
-        private void ComponentsCollectionChanged(
-            object sender,
-            NotifyCollectionChangedEventArgs e)
+        public ObservableCollection<SasaraComponent> Components
         {
-            if (e.OldItems != null)
-            {
-                foreach (INotifyPropertyChanged item in e.OldItems)
-                {
-                    item.PropertyChanged -= this.ItemOnPropertyChanged;
-                }
-            }
+            get;
+            private set;
+        } = new ObservableCollection<SasaraComponent>();
 
-            if (e.NewItems != null)
-            {
-                foreach (INotifyPropertyChanged item in e.NewItems)
-                {
-                    item.PropertyChanged += this.ItemOnPropertyChanged;
-                }
-            }
+        [XmlIgnore]
+        public IEnumerable<SasaraComponent> AvailableComponents =>
+            this.Components
+            .Where(x => x.Cast == this.cast)
+            .OrderBy(x => x.Id);
 
-            // 変更を同期させる
-            this.SyncToCevio();
+        private float gain = 2.1f;
+
+        public float Gain
+        {
+            get => this.gain;
+            set => this.SetProperty(ref this.gain, (float)Math.Round(value, 1));
         }
 
-        private void ItemOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-            => this.SyncToCevio();
+        private uint onryo = 50;
 
-        /// <summary>
-        /// 音量
-        /// </summary>
         public uint Onryo
         {
             get => this.onryo;
@@ -126,9 +98,8 @@ namespace ACT.TTSYukkuri.Config
             }
         }
 
-        /// <summary>
-        /// 早さ
-        /// </summary>
+        private uint hayasa = 50;
+
         public uint Hayasa
         {
             get => this.hayasa;
@@ -141,9 +112,8 @@ namespace ACT.TTSYukkuri.Config
             }
         }
 
-        /// <summary>
-        /// 高さ
-        /// </summary>
+        private uint takasa = 50;
+
         public uint Takasa
         {
             get => this.takasa;
@@ -156,9 +126,8 @@ namespace ACT.TTSYukkuri.Config
             }
         }
 
-        /// <summary>
-        /// 声質
-        /// </summary>
+        private uint seishitsu = 50;
+
         public uint Seishitsu
         {
             get => this.seishitsu;
@@ -171,9 +140,8 @@ namespace ACT.TTSYukkuri.Config
             }
         }
 
-        /// <summary>
-        /// 抑揚
-        /// </summary>
+        private uint yokuyo = 50;
+
         public uint Yokuyo
         {
             get => this.yokuyo;
@@ -198,18 +166,6 @@ namespace ACT.TTSYukkuri.Config
                 .Select(x => $"{x.Name}.{x.Id}:{x.Value}")
                 .Aggregate((x, y) => $"{x},{y}");
 
-        /// <summary>
-        /// リモートに自動的に反映するか？
-        /// </summary>
-        [XmlIgnore]
-        public bool AutoSync { get; set; } = false;
-
-        /// <summary>
-        /// CeVIOがアクティブか？
-        /// </summary>
-        [XmlIgnore]
-        private bool IsActive => Settings.Default.TTS == TTSType.Sasara;
-
         private bool isCevioReady;
 
         /// <summary>
@@ -227,7 +183,7 @@ namespace ACT.TTSYukkuri.Config
         /// </summary>
         private void SyncToCevio()
         {
-            if (this.AutoSync)
+            if (this.IsInitialized)
             {
                 this.ApplyToCevio();
             }
@@ -263,85 +219,63 @@ namespace ACT.TTSYukkuri.Config
                 this.AvailableCasts.Remove(item);
             }
 
-            if (!string.IsNullOrWhiteSpace(this.Cast) &&
-                this.AvailableCasts.Contains(this.Cast) &&
-                this.Components.Any())
-            {
-                this.ApplyToCevio();
-            }
-            else
-            {
-                var cast = casts.FirstOrDefault();
-                if (this.AvailableCasts.Contains(this.Cast))
-                {
-                    cast = this.Cast;
-                }
+            // キャストのコンポーネントを取得する
+            var remoteComponents = new List<SasaraComponent>();
 
-                this.SetCast(cast);
-            }
-        }
-
-        /// <summary>
-        /// キャストを変更する
-        /// </summary>
-        /// <param name="cast">
-        /// キャスト</param>
-        public void SetCast(
-            string cast)
-        {
-            if (!this.IsActive)
+            foreach (var cast in casts)
             {
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(cast))
-            {
-                return;
-            }
-
-            if (!this.TryStartCevio())
-            {
-                return;
-            }
-
-            try
-            {
-                this.AutoSync = false;
-
                 this.Talker.Cast = cast;
 
-                var list = new List<SasaraComponent>();
-                for (int i = 0; i < this.Talker.Components.Length; i++)
+                foreach (var x in this.Talker.Components)
                 {
-                    var x = this.Talker.Components[i];
-
-                    list.Add(new SasaraComponent()
+                    remoteComponents.Add(new SasaraComponent()
                     {
                         Id = x.Id,
-                        Name = x.Name.Trim(),
+                        Name = x.Name,
                         Value = x.Value,
-                        Cast = cast,
+                        Cast = cast
                     });
                 }
-
-                this.Components.Clear();
-                this.Components.AddRange(list);
-
-                this.Onryo = this.Talker.Volume;
-                this.Hayasa = this.Talker.Speed;
-                this.Takasa = this.Talker.Tone;
-                this.Seishitsu = this.Talker.Alpha;
-                this.Yokuyo = this.Talker.ToneScale;
             }
-            finally
+
+            this.Components.AddRange(remoteComponents.Where(x => !this.Components.Any(y => x.Id == y.Id)));
+            foreach (var item in this.Components
+                .Where(x => !remoteComponents.Any(y => x.Id == y.Id))
+                .ToArray())
             {
-                this.AutoSync = true;
+                this.Components.Remove(item);
             }
+
+            // 重複を削除する
+            foreach (var item in this.Components
+                .GroupBy(x => x.Id)
+                .Where(x => x.Count() > 1)
+                .Select(x => x.FirstOrDefault()))
+            {
+                this.Components.Remove(item);
+            }
+
+            // ソートする
+            var sorted = this.Components.OrderBy(x => x.Id).ToArray();
+            this.Components.Clear();
+            this.Components.AddRange(sorted);
+
+            if (!this.AvailableCasts.Contains(this.Cast))
+            {
+                this.Cast = this.AvailableCasts.FirstOrDefault();
+            }
+
+            this.RaisePropertyChanged(nameof(this.AvailableComponents));
         }
 
         internal async void ApplyToCevio()
         {
             if (!this.TryStartCevio())
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(this.Cast))
             {
                 return;
             }
@@ -355,10 +289,13 @@ namespace ACT.TTSYukkuri.Config
                 this.Talker.Alpha = this.Seishitsu;
                 this.Talker.ToneScale = this.Yokuyo;
 
-                foreach (var src in this.components)
+                foreach (var src in this.AvailableComponents)
                 {
                     var dst = this.Talker.Components[src.Name];
-                    dst.Value = src.Value;
+                    if (dst != null)
+                    {
+                        dst.Value = src.Value;
+                    }
                 }
             });
         }
@@ -439,7 +376,7 @@ namespace ACT.TTSYukkuri.Config
             }
         }
 
-        private bool TryStartCevio()
+        public bool TryStartCevio()
         {
             if (!this.IsCevioReady)
             {
