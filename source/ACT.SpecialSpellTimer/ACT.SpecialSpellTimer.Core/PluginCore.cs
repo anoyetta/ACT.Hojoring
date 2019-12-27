@@ -100,7 +100,6 @@ namespace ACT.SpecialSpellTimer
             try
             {
                 // 設定ファイルを保存する
-                TimelineSettings.Save();
                 Settings.Default.Save();
                 Settings.Default.DeInit();
                 FFXIV.Framework.Config.Save();
