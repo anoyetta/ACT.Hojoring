@@ -35,5 +35,8 @@ namespace ACT.TTSYukkuri.Config
             get => this.cast;
             set => this.SetProperty(ref this.cast, value);
         }
+
+        public override string ToString()
+            => $"Id:{this.Id},Name:{this.Name},Value:{this.Value},Cast:{this.Cast}";
     }
 }

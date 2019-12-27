@@ -277,6 +277,8 @@ namespace ACT.TTSYukkuri.Discord.Models
 
                 lock (this)
                 {
+                    this.ClearQueue();
+
                     if (this.playWorker == null)
                     {
                         this.playWorker = new Thread(this.PlayThread)

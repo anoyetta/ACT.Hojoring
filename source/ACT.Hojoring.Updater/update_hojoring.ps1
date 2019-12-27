@@ -8,7 +8,7 @@ $isUsePreRelease = $FALSE
 '***************************************************'
 '* Hojoring Updater'
 '* UPDATE-Kun'
-'* rev14'
+'* rev15'
 '* (c) anoyetta, 2019'
 '***************************************************'
 '* Start Update Hojoring'
@@ -98,25 +98,32 @@ if ($args.Length -gt 0) {
     }
 }
 
-# Processを殺す
+# ACTの終了を待つ
 $actPath = $null
-$processes = Get-Process
-foreach ($p in $processes) {
-    if ($p.Name -eq "Advanced Combat Tracker") {
-        $actPath = $p.Path
-        if ($p.CloseMainWindow()) {
-            $p.WaitForExit(15 * 1000) | Out-Null
-        } else {
-            $p.Kill()
+for ($i = 0; $i -lt 60; $i++) {
+    $isExistsAct = $FALSE
+    $processes = Get-Process
+
+    foreach ($p in $processes) {
+        if ($p.Name -eq "Advanced Combat Tracker") {
+            $isExistsAct = $TRUE
+            $actPath = $p.Path
         }
     }
 
-    if ($p.Name -eq "FFXIV.Framework.TTS.Server") {
-        if ($p.CloseMainWindow()) {
-            $p.WaitForExit(15 * 1000) | Out-Null
-        } else {
-            $p.Kill()
+    if ($isExistsAct) {
+        if ((Get-Culture).Name -eq "ja-JP") {
+            Write-Warning ("-> Advanced Combat Tracker の終了を待機しています。Advanced Combat Tracker を手動で終了してください。")
         }
+        else {
+            Write-Warning ("-> Please shutdown Advanced Combat Tracker.")
+        }
+    }
+
+    Start-Sleep 5
+
+    if (!($isExistsAct)) {
+        break
     }
 }
 

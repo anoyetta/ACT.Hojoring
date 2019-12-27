@@ -53,6 +53,10 @@
       <HintPath>..\..\ThirdParty\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="CeVIO.Talk.RemoteService, Version=2.1.4.0, Culture=neutral, PublicKeyToken=85bf362f6144cc53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ThirdParty\CeVIO\7\CeVIO.Talk.RemoteService.dll</HintPath>
+    </Reference>
     <Reference Include="FFXIV_ACT_Plugin.Common">
       <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.Common.dll</HintPath>
       <Private>False</Private>
@@ -198,7 +202,6 @@
     <Compile Include="Sasara\SasaraSpeechController.cs" />
     <Compile Include="SoundPlayerWrapper.cs" />
     <Compile Include="SpeechController.cs" />
-    <Compile Include="TTSServer\TTSServerController.cs" />
     <Compile Include="Voiceroid\VoiceroidSpeechController.cs" />
     <Compile Include="Yukkuri\AquesTalkParam.cs" />
     <Compile Include="Yukkuri\AquesTalk.cs" />
@@ -298,10 +301,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework.TTS.Common\FFXIV.Framework.TTS.Common.csproj">
-      <Project>{18ce9b28-4f0b-45d1-ae3f-14f3982f0e59}</Project>
-      <Name>FFXIV.Framework.TTS.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
       <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>
       <Name>FFXIV.Framework</Name>

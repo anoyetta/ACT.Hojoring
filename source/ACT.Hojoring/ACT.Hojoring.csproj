@@ -74,10 +74,6 @@
       <Project>{d504e286-56ec-494f-82cd-fd71aefef606}</Project>
       <Name>ACT.XIVLog</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework.TTS.Server\FFXIV.Framework.TTS.Server.csproj">
-      <Project>{4cb004be-8162-4601-8f98-162d4f1c0fa1}</Project>
-      <Name>FFXIV.Framework.TTS.Server</Name>
-    </ProjectReference>
     <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
       <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>
       <Name>FFXIV.Framework</Name>

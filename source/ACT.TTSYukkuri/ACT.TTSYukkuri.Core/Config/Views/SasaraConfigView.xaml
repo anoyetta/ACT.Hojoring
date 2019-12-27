@@ -56,7 +56,7 @@
 
       <Label Margin="0 10 0 0" Content="{DynamicResource Sasara_Emotions}" />
       <ItemsControl
-        ItemsSource="{Binding Config.Components, Mode=OneWay}">
+        ItemsSource="{Binding Config.AvailableComponents, Mode=OneWay}">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
             <StackPanel Orientation="Horizontal">
