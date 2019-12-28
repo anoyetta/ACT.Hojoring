@@ -247,12 +247,14 @@ namespace ACT.TTSYukkuri.Config
             }
 
             // 重複を削除する
-            foreach (var item in this.Components
+            foreach (var group in this.Components
                 .GroupBy(x => x.Id)
-                .Where(x => x.Count() > 1)
-                .Select(x => x.FirstOrDefault()))
+                .Where(x => x.Count() > 1))
             {
-                this.Components.Remove(item);
+                foreach (var item in group.Take(group.Count() - 1))
+                {
+                    this.Components.Remove(item);
+                }
             }
 
             // ソートする
@@ -268,7 +270,7 @@ namespace ACT.TTSYukkuri.Config
             this.RaisePropertyChanged(nameof(this.AvailableComponents));
         }
 
-        internal async void ApplyToCevio()
+        internal void ApplyToCevio()
         {
             if (!this.TryStartCevio())
             {
@@ -280,24 +282,21 @@ namespace ACT.TTSYukkuri.Config
                 return;
             }
 
-            await Task.Run(() =>
-            {
-                this.Talker.Cast = this.Cast;
-                this.Talker.Volume = this.Onryo;
-                this.Talker.Speed = this.Hayasa;
-                this.Talker.Tone = this.Takasa;
-                this.Talker.Alpha = this.Seishitsu;
-                this.Talker.ToneScale = this.Yokuyo;
+            this.Talker.Cast = this.Cast;
+            this.Talker.Volume = this.Onryo;
+            this.Talker.Speed = this.Hayasa;
+            this.Talker.Tone = this.Takasa;
+            this.Talker.Alpha = this.Seishitsu;
+            this.Talker.ToneScale = this.Yokuyo;
 
-                foreach (var src in this.AvailableComponents)
+            foreach (var src in this.AvailableComponents)
+            {
+                var dst = this.Talker.Components.FirstOrDefault(x => x.Id == src.Id);
+                if (dst != null)
                 {
-                    var dst = this.Talker.Components[src.Name];
-                    if (dst != null)
-                    {
-                        dst.Value = src.Value;
-                    }
+                    dst.Value = src.Value;
                 }
-            });
+            }
         }
 
         private static readonly string CeVIOPath = @"C:\Program Files\CeVIO\CeVIO Creative Studio (64bit)\CeVIO Creative Studio.exe";
