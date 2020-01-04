@@ -85,7 +85,8 @@ namespace FFXIV.Framework.XIVHelper
                     this.plugin == null ||
                     this.DataRepository == null ||
                     this.DataSubscription == null ||
-                    this.Process == null)
+                    this.Process == null ||
+                    this.Process.HasExited)
                 {
                     return false;
                 }
