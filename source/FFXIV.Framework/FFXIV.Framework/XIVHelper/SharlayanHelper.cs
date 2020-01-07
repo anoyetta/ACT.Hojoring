@@ -164,7 +164,7 @@ namespace FFXIV.Framework.XIVHelper
 
         private void DetectFFXIVProcess()
         {
-            var ffxiv = XIVPluginHelper.Instance.Process;
+            var ffxiv = XIVPluginHelper.Instance.GetCurrentFFXIVProcess();
             if (ffxiv == null)
             {
                 return;
@@ -337,7 +337,7 @@ namespace FFXIV.Framework.XIVHelper
         private void ScanMemory()
         {
             if (!MemoryHandler.Instance.IsAttached ||
-                XIVPluginHelper.Instance.Process == null)
+                XIVPluginHelper.Instance.GetCurrentFFXIVProcess() == null)
             {
                 Thread.Sleep((int)ProcessSubscribeInterval);
                 return;

@@ -253,7 +253,7 @@ namespace ACT.SpecialSpellTimer
         private void BackgroundCore()
         {
             // FFXIVプロセスの有無を取得する
-            this.existFFXIVProcess = XIVPluginHelper.Instance.Process != null;
+            this.existFFXIVProcess = XIVPluginHelper.Instance.GetCurrentFFXIVProcess() != null;
 
             if ((DateTime.Now - this.lastSaveTickerTableDateTime).TotalMinutes >= 1)
             {

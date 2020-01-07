@@ -75,7 +75,37 @@ namespace FFXIV.Framework.XIVHelper
             this.DataRepository != null &&
             this.DataSubscription != null;
 
-        public Process Process => this.DataRepository?.GetCurrentFFXIVProcess();
+        private DateTime existsFFXIVProcessTimestamp = DateTime.MinValue;
+        private bool isExistsFFXIVProcess;
+
+        public Process GetCurrentFFXIVProcess()
+        {
+            try
+            {
+                if (!this.isExistsFFXIVProcess)
+                {
+                    if ((DateTime.Now - this.existsFFXIVProcessTimestamp) >= TimeSpan.FromSeconds(30))
+                    {
+                        this.existsFFXIVProcessTimestamp = DateTime.Now;
+                        this.isExistsFFXIVProcess = Process.GetProcessesByName("ffxiv_dx11")
+                            .Where(x => !x.HasExited)
+                            .Any();
+                    }
+                }
+
+                if (!this.isExistsFFXIVProcess)
+                {
+                    return null;
+                }
+
+                return this.DataRepository?.GetCurrentFFXIVProcess();
+            }
+            catch (ArgumentException)
+            {
+                this.isExistsFFXIVProcess = false;
+                return null;
+            }
+        }
 
         public bool IsAvailable
         {
@@ -85,8 +115,7 @@ namespace FFXIV.Framework.XIVHelper
                     this.plugin == null ||
                     this.DataRepository == null ||
                     this.DataSubscription == null ||
-                    this.Process == null ||
-                    this.Process.HasExited)
+                    this.GetCurrentFFXIVProcess() == null)
                 {
                     return false;
                 }
@@ -662,7 +691,7 @@ namespace FFXIV.Framework.XIVHelper
                 // プロセスIDに変換する
                 GetWindowThreadProcessId(hWnd, out int pid);
 
-                if (pid == this.Process?.Id)
+                if (pid == this.GetCurrentFFXIVProcess()?.Id)
                 {
                     this.IsFFXIVActive = true;
                     return;
