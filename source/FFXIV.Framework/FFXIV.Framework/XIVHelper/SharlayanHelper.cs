@@ -165,7 +165,8 @@ namespace FFXIV.Framework.XIVHelper
         private void DetectFFXIVProcess()
         {
             var ffxiv = XIVPluginHelper.Instance.CurrentFFXIVProcess;
-            if (ffxiv == null)
+            if (ffxiv == null ||
+                ffxiv.HasExited)
             {
                 return;
             }

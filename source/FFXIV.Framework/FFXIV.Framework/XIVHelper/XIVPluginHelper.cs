@@ -125,7 +125,8 @@ namespace FFXIV.Framework.XIVHelper
                     this.plugin == null ||
                     this.DataRepository == null ||
                     this.DataSubscription == null ||
-                    this.CurrentFFXIVProcess == null)
+                    this.CurrentFFXIVProcess == null ||
+                    this.CurrentFFXIVProcess.HasExited)
                 {
                     return false;
                 }
@@ -702,7 +703,10 @@ namespace FFXIV.Framework.XIVHelper
                 // プロセスIDに変換する
                 GetWindowThreadProcessId(hWnd, out int pid);
 
-                if (pid == this.CurrentFFXIVProcess?.Id)
+                var ffxiv = this.CurrentFFXIVProcess;
+                if (ffxiv != null &&
+                    !ffxiv.HasExited &&
+                    pid == ffxiv.Id)
                 {
                     this.IsFFXIVActive = true;
                     return;

@@ -112,12 +112,7 @@ for ($i = 0; $i -lt 60; $i++) {
     }
 
     if ($isExistsAct) {
-        if ((Get-Culture).Name -eq "ja-JP") {
-            Write-Warning ("-> Advanced Combat Tracker の終了を待機しています。Advanced Combat Tracker を手動で終了してください。")
-        }
-        else {
-            Write-Warning ("-> Please shutdown Advanced Combat Tracker.")
-        }
+        Write-Warning ("-> Please shutdown Advanced Combat Tracker.")
     }
 
     Start-Sleep 5
@@ -196,7 +191,7 @@ if (Test-Path $updateDir) {
 ''
 '-> Backup Current Version'
 if (Test-Path ".\backup") {
-	Remove-Directory ".\backup"
+    Remove-Directory ".\backup"
 }
 Start-Sleep -Milliseconds 10
 $temp = (New-TemporaryDirectory).FullName
