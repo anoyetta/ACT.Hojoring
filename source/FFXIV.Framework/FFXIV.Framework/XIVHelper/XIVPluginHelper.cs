@@ -75,35 +75,45 @@ namespace FFXIV.Framework.XIVHelper
             this.DataRepository != null &&
             this.DataSubscription != null;
 
-        private DateTime existsFFXIVProcessTimestamp = DateTime.MinValue;
-        private bool isExistsFFXIVProcess;
+        private dynamic processManager;
 
-        public Process GetCurrentFFXIVProcess()
+        private dynamic ProcessManager => this.processManager ??= this.GetProcessManager();
+
+        private dynamic GetProcessManager()
         {
-            try
+            if (this.DataRepository == null)
             {
-                if (!this.isExistsFFXIVProcess)
-                {
-                    if ((DateTime.Now - this.existsFFXIVProcessTimestamp) >= TimeSpan.FromSeconds(30))
-                    {
-                        this.existsFFXIVProcessTimestamp = DateTime.Now;
-                        this.isExistsFFXIVProcess = Process.GetProcessesByName("ffxiv_dx11")
-                            .Where(x => !x.HasExited)
-                            .Any();
-                    }
-                }
-
-                if (!this.isExistsFFXIVProcess)
-                {
-                    return null;
-                }
-
-                return this.DataRepository?.GetCurrentFFXIVProcess();
-            }
-            catch (ArgumentException)
-            {
-                this.isExistsFFXIVProcess = false;
                 return null;
+            }
+
+            var fi = this.DataRepository.GetType().GetField(
+                "_processManager",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+
+            return fi?.GetValue(this.DataRepository);
+        }
+
+        public Process CurrentFFXIVProcess { get; private set; }
+
+        private void RefreshCurrentFFXIVProcess()
+        {
+            var processManager = this.GetProcessManager();
+            if (processManager == null)
+            {
+                this.CurrentFFXIVProcess = null;
+                return;
+            }
+
+            if (this.CurrentFFXIVProcess == null)
+            {
+                this.CurrentFFXIVProcess = processManager.Current.Process;
+            }
+            else
+            {
+                if (this.CurrentFFXIVProcess.Id != processManager.Current.ProcessId)
+                {
+                    this.CurrentFFXIVProcess = processManager.Current.Process;
+                }
             }
         }
 
@@ -115,7 +125,7 @@ namespace FFXIV.Framework.XIVHelper
                     this.plugin == null ||
                     this.DataRepository == null ||
                     this.DataSubscription == null ||
-                    this.GetCurrentFFXIVProcess() == null)
+                    this.CurrentFFXIVProcess == null)
                 {
                     return false;
                 }
@@ -176,6 +186,7 @@ namespace FFXIV.Framework.XIVHelper
             {
                 try
                 {
+                    this.RefreshCurrentFFXIVProcess();
                     this.Attach();
 
                     if (this.plugin == null ||
@@ -691,14 +702,14 @@ namespace FFXIV.Framework.XIVHelper
                 // プロセスIDに変換する
                 GetWindowThreadProcessId(hWnd, out int pid);
 
-                if (pid == this.GetCurrentFFXIVProcess()?.Id)
+                if (pid == this.CurrentFFXIVProcess?.Id)
                 {
                     this.IsFFXIVActive = true;
                     return;
                 }
 
                 // メインモジュールのファイル名を取得する
-                var p = Process.GetProcessById(pid);
+                var p = Process.GetProcesses().FirstOrDefault(x => x.Id == pid);
                 if (p != null)
                 {
                     var fileName = Path.GetFileName(

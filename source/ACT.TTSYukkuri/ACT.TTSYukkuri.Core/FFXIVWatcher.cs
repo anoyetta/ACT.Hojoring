@@ -166,7 +166,7 @@ namespace ACT.TTSYukkuri
             try
             {
                 // FF14Processがなければ何もしない
-                if (XIVPluginHelper.Instance.GetCurrentFFXIVProcess() == null)
+                if (XIVPluginHelper.Instance.CurrentFFXIVProcess == null)
                 {
                     Thread.Sleep(WatcherLongInterval);
                     return;

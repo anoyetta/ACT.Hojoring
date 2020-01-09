@@ -250,7 +250,7 @@ namespace FFXIV.Framework.WPF.Views
                     if (overlay is Window window &&
                         window.IsLoaded)
                     {
-                        if (XIVPluginHelper.Instance.GetCurrentFFXIVProcess() == null)
+                        if (!XIVPluginHelper.Instance.IsAvailable)
                         {
                             overlay.EnsureTopMost();
                             continue;

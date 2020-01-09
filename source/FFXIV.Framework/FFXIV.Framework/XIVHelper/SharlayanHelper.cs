@@ -66,7 +66,7 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         private ThreadWorker ffxivSubscriber;
-        private static readonly double ProcessSubscribeInterval = 5000;
+        private static readonly double ProcessSubscribeInterval = 10 * 1000;
 
         private ThreadWorker memorySubscriber;
         private static readonly double MemorySubscribeDefaultInterval = 500;
@@ -164,7 +164,7 @@ namespace FFXIV.Framework.XIVHelper
 
         private void DetectFFXIVProcess()
         {
-            var ffxiv = XIVPluginHelper.Instance.GetCurrentFFXIVProcess();
+            var ffxiv = XIVPluginHelper.Instance.CurrentFFXIVProcess;
             if (ffxiv == null)
             {
                 return;
@@ -183,7 +183,7 @@ namespace FFXIV.Framework.XIVHelper
             {
                 if (!MemoryHandler.Instance.IsAttached ||
                     this.currentFFXIVProcess == null ||
-                    this.currentFFXIVProcess?.Id != ffxiv?.Id ||
+                    this.currentFFXIVProcess.Id != ffxiv.Id ||
                     this.currentFFXIVLanguage != ffxivLanguage)
                 {
                     this.currentFFXIVProcess = ffxiv;
@@ -337,7 +337,7 @@ namespace FFXIV.Framework.XIVHelper
         private void ScanMemory()
         {
             if (!MemoryHandler.Instance.IsAttached ||
-                XIVPluginHelper.Instance.GetCurrentFFXIVProcess() == null)
+                !XIVPluginHelper.Instance.IsAvailable)
             {
                 Thread.Sleep((int)ProcessSubscribeInterval);
                 return;
