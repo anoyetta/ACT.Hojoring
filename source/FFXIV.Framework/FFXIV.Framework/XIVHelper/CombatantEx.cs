@@ -697,14 +697,38 @@ namespace FFXIV.Framework.XIVHelper
         public static Actor.Type ParseOrDefaultToActorType(
             byte actorTypeValue)
         {
-            var type = typeof(Actor.Type);
-
-            if (!type.IsEnumDefined(actorTypeValue))
+            switch (actorTypeValue)
             {
-                return Actor.Type.Unknown;
-            }
+                case (byte)Actor.Type.PC:
+                    return Actor.Type.PC;
 
-            return (Actor.Type)Enum.ToObject(type, actorTypeValue);
+                case (byte)Actor.Type.Monster:
+                    return Actor.Type.Monster;
+
+                case (byte)Actor.Type.NPC:
+                    return Actor.Type.NPC;
+
+                case (byte)Actor.Type.TreasureCoffer:
+                    return Actor.Type.TreasureCoffer;
+
+                case (byte)Actor.Type.Aetheryte:
+                    return Actor.Type.Aetheryte;
+
+                case (byte)Actor.Type.Gathering:
+                    return Actor.Type.Gathering;
+
+                case (byte)Actor.Type.EventObject:
+                    return Actor.Type.EventObject;
+
+                case (byte)Actor.Type.Mount:
+                    return Actor.Type.Mount;
+
+                case (byte)Actor.Type.Minion:
+                    return Actor.Type.Minion;
+
+                default:
+                    return Actor.Type.Unknown;
+            }
         }
     }
 }

@@ -1,12 +1,10 @@
+using System.Collections.Concurrent;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+
 namespace ACT.SpecialSpellTimer.Views
 {
-    using System.Collections.Concurrent;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Media;
-
-    using ACT.SpecialSpellTimer.Config;
-
     /// <summary>
     /// Windowの拡張メソッド
     /// </summary>
@@ -15,7 +13,7 @@ namespace ACT.SpecialSpellTimer.Views
         /// <summary>
         /// Brush辞書
         /// </summary>
-        private static ConcurrentDictionary<string, SolidColorBrush> brushDictionary = new ConcurrentDictionary<string, SolidColorBrush>();
+        private readonly static ConcurrentDictionary<string, SolidColorBrush> brushDictionary = new ConcurrentDictionary<string, SolidColorBrush>();
 
         /// <summary>
         /// Brushを取得する
@@ -26,9 +24,7 @@ namespace ACT.SpecialSpellTimer.Views
         public static SolidColorBrush GetBrush(
             this Window x,
             Color color)
-        {
-            return GetBrush(color);
-        }
+            => GetBrush(color);
 
         /// <summary>
         /// Brushを取得する
@@ -39,9 +35,7 @@ namespace ACT.SpecialSpellTimer.Views
         public static SolidColorBrush GetBrush(
             this UserControl x,
             Color color)
-        {
-            return GetBrush(color);
-        }
+            => GetBrush(color);
 
         /// <summary>
         /// Brushを取得する
@@ -56,6 +50,7 @@ namespace ACT.SpecialSpellTimer.Views
                 var brush = new SolidColorBrush(color);
                 brush.Freeze();
                 brushDictionary[color.ToString()] = brush;
+                return brush;
             }
 
             return brushDictionary[color.ToString()];

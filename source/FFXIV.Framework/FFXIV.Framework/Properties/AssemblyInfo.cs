@@ -7,7 +7,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("FFXIV.Framework")]
-[assembly: AssemblyCopyright("Copyright © 2017-2019, anoyetta")]
+[assembly: AssemblyCopyright("Copyright © 2017-2020, anoyetta")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]

@@ -7,7 +7,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ACT.Hojoring")]
-[assembly: AssemblyCopyright("Copyright © 2017, anoyetta")]
+[assembly: AssemblyCopyright("Copyright © 2017-2020, anoyetta")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
