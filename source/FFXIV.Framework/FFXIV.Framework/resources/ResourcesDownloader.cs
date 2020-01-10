@@ -73,6 +73,8 @@ namespace FFXIV.Framework.resources
 
             try
             {
+                var isDownloaded = false;
+
                 using (var wc = new WebClient())
                 {
                     foreach (var resources in RemoteResourcesFiles)
@@ -99,6 +101,7 @@ namespace FFXIV.Framework.resources
                             new Uri(resources.Uri),
                             local);
 
+                        isDownloaded = true;
                         await Task.Delay(TimeSpan.FromSeconds(0.1));
                     }
                 }
@@ -106,7 +109,10 @@ namespace FFXIV.Framework.resources
                 splash.CurrentResources = "Completed!";
                 splash.Activate();
 
-                await Task.Delay(TimeSpan.FromSeconds(1));
+                if (isDownloaded)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                }
             }
             finally
             {
