@@ -365,7 +365,7 @@ namespace ACT.TTSYukkuri.Config
                                 {
                                     FileName = path,
                                     UseShellExecute = false,
-                                    WorkingDirectory = Path.GetDirectoryName(CeVIOPath)
+                                    WorkingDirectory = Path.GetDirectoryName(path)
                                 });
 
                                 p.WaitForInputIdle();
