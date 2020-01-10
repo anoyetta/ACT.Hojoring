@@ -344,7 +344,13 @@ namespace ACT.TTSYukkuri.Config
                                     return;
                                 }
 
-                                var p = Process.Start(CeVIOPath);
+                                var p = Process.Start(new ProcessStartInfo()
+                                {
+                                    FileName = CeVIOPath,
+                                    UseShellExecute = false,
+                                    WorkingDirectory = Path.GetDirectoryName(CeVIOPath)
+                                });
+
                                 p.WaitForInputIdle();
                             });
                             break;
