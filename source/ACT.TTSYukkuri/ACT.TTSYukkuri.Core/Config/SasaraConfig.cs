@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using CeVIO.Talk.RemoteService;
 using FFXIV.Framework.Common;
+using Microsoft.Win32;
 using NLog;
 using Prism.Mvvm;
 
@@ -329,10 +330,26 @@ namespace ACT.TTSYukkuri.Config
                             break;
 
                         case HostStartResult.NotRegistered:
-                            if (!File.Exists(CeVIOPath))
+                            var path = CeVIOPath;
+
+                            if (!File.Exists(path))
                             {
-                                this.IsCevioReady = false;
-                                return;
+                                using (var regKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\CeVIO\Subject\Editor\x64"))
+                                {
+                                    var folder = regKey.GetValue("InstallFolder") as string;
+                                    if (string.IsNullOrEmpty(folder))
+                                    {
+                                        this.IsCevioReady = false;
+                                        return;
+                                    }
+
+                                    path = Path.Combine(folder, "CeVIO Creative Studio.exe");
+                                    if (!File.Exists(path))
+                                    {
+                                        this.IsCevioReady = false;
+                                        return;
+                                    }
+                                }
                             }
 
                             await Task.Run(() =>
@@ -346,7 +363,7 @@ namespace ACT.TTSYukkuri.Config
 
                                 var p = Process.Start(new ProcessStartInfo()
                                 {
-                                    FileName = CeVIOPath,
+                                    FileName = path,
                                     UseShellExecute = false,
                                     WorkingDirectory = Path.GetDirectoryName(CeVIOPath)
                                 });
