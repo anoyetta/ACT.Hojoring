@@ -75,7 +75,7 @@ namespace FFXIV.Framework.XIVHelper
             this.DataRepository != null &&
             this.DataSubscription != null;
 
-        public Process Process => this.DataRepository?.GetCurrentFFXIVProcess();
+        public Process CurrentFFXIVProcess { get; private set; }
 
         public bool IsAvailable
         {
@@ -85,7 +85,8 @@ namespace FFXIV.Framework.XIVHelper
                     this.plugin == null ||
                     this.DataRepository == null ||
                     this.DataSubscription == null ||
-                    this.Process == null)
+                    this.CurrentFFXIVProcess == null ||
+                    this.CurrentFFXIVProcess.HasExited)
                 {
                     return false;
                 }
@@ -341,12 +342,14 @@ namespace FFXIV.Framework.XIVHelper
 
         private void SubscribeXIVPluginEvents()
         {
-            // NO-OP
+            this.CurrentFFXIVProcess = this.DataRepository?.GetCurrentFFXIVProcess();
+            this.DataSubscription.ProcessChanged += this.OnProcessChanged;
         }
 
         private void UnsubscribeXIVPluginEvents()
         {
-            // NO-OP
+            this.DataSubscription.ProcessChanged -= this.OnProcessChanged;
+            this.CurrentFFXIVProcess = null;
         }
 
         private void RaisePrimaryPlayerChanged()
@@ -357,12 +360,22 @@ namespace FFXIV.Framework.XIVHelper
 
         private void RaiseZoneChanged(uint zoneID, string zoneName)
         {
+            if (this.CurrentFFXIVProcess == null)
+            {
+                this.CurrentFFXIVProcess = this.DataRepository?.GetCurrentFFXIVProcess();
+            }
+
             CombatantsManager.Instance.Clear();
             this.OnZoneChanged?.Invoke(zoneID, zoneName);
         }
 
         public ResolveType Resolve<ResolveType>() where ResolveType : class
             => this.IOCContainer?.Resolve<ResolveType>();
+
+        private void OnProcessChanged(Process process)
+        {
+            this.CurrentFFXIVProcess = process;
+        }
 
         #endregion Attach FFXIV Plugin
 
@@ -661,14 +674,17 @@ namespace FFXIV.Framework.XIVHelper
                 // プロセスIDに変換する
                 GetWindowThreadProcessId(hWnd, out int pid);
 
-                if (pid == this.Process?.Id)
+                var ffxiv = this.CurrentFFXIVProcess;
+                if (ffxiv != null &&
+                    !ffxiv.HasExited &&
+                    pid == ffxiv.Id)
                 {
                     this.IsFFXIVActive = true;
                     return;
                 }
 
                 // メインモジュールのファイル名を取得する
-                var p = Process.GetProcessById(pid);
+                var p = Process.GetProcesses().FirstOrDefault(x => x.Id == pid);
                 if (p != null)
                 {
                     var fileName = Path.GetFileName(

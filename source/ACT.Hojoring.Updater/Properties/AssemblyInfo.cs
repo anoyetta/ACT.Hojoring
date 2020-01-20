@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ACT.Hojoring.Updater")]
-[assembly: AssemblyCopyright("Copyright © 2018, anoyetta")]
+[assembly: AssemblyCopyright("Copyright © 2018-2020, anoyetta")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
