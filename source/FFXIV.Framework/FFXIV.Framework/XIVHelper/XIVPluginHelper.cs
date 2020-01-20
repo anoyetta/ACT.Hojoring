@@ -95,6 +95,11 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
+        private void RefreshCurrentFFXIVProcess()
+        {
+            this.CurrentFFXIVProcess = this.DataRepository?.GetCurrentFFXIVProcess();
+        }
+
         public Locales LanguageID => (int)(this.DataRepository?.GetSelectedLanguageID() ?? 0) switch
         {
             1 => Locales.EN,
@@ -147,6 +152,7 @@ namespace FFXIV.Framework.XIVHelper
             {
                 try
                 {
+                    this.RefreshCurrentFFXIVProcess();
                     this.Attach();
 
                     if (this.plugin == null ||
@@ -342,14 +348,10 @@ namespace FFXIV.Framework.XIVHelper
 
         private void SubscribeXIVPluginEvents()
         {
-            this.CurrentFFXIVProcess = this.DataRepository?.GetCurrentFFXIVProcess();
-            this.DataSubscription.ProcessChanged += this.OnProcessChanged;
         }
 
         private void UnsubscribeXIVPluginEvents()
         {
-            this.DataSubscription.ProcessChanged -= this.OnProcessChanged;
-            this.CurrentFFXIVProcess = null;
         }
 
         private void RaisePrimaryPlayerChanged()
@@ -371,11 +373,6 @@ namespace FFXIV.Framework.XIVHelper
 
         public ResolveType Resolve<ResolveType>() where ResolveType : class
             => this.IOCContainer?.Resolve<ResolveType>();
-
-        private void OnProcessChanged(Process process)
-        {
-            this.CurrentFFXIVProcess = process;
-        }
 
         #endregion Attach FFXIV Plugin
 
