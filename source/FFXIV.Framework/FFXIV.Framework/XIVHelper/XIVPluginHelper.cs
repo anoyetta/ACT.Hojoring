@@ -75,47 +75,7 @@ namespace FFXIV.Framework.XIVHelper
             this.DataRepository != null &&
             this.DataSubscription != null;
 
-        private dynamic processManager;
-
-        private dynamic ProcessManager => this.processManager ??= this.GetProcessManager();
-
-        private dynamic GetProcessManager()
-        {
-            if (this.DataRepository == null)
-            {
-                return null;
-            }
-
-            var fi = this.DataRepository.GetType().GetField(
-                "_processManager",
-                BindingFlags.NonPublic | BindingFlags.Instance);
-
-            return fi?.GetValue(this.DataRepository);
-        }
-
         public Process CurrentFFXIVProcess { get; private set; }
-
-        private void RefreshCurrentFFXIVProcess()
-        {
-            var processManager = this.GetProcessManager();
-            if (processManager == null)
-            {
-                this.CurrentFFXIVProcess = null;
-                return;
-            }
-
-            if (this.CurrentFFXIVProcess == null)
-            {
-                this.CurrentFFXIVProcess = processManager.Current.Process;
-            }
-            else
-            {
-                if (this.CurrentFFXIVProcess.Id != processManager.Current.ProcessId)
-                {
-                    this.CurrentFFXIVProcess = processManager.Current.Process;
-                }
-            }
-        }
 
         public bool IsAvailable
         {
@@ -187,7 +147,6 @@ namespace FFXIV.Framework.XIVHelper
             {
                 try
                 {
-                    this.RefreshCurrentFFXIVProcess();
                     this.Attach();
 
                     if (this.plugin == null ||
@@ -383,12 +342,14 @@ namespace FFXIV.Framework.XIVHelper
 
         private void SubscribeXIVPluginEvents()
         {
-            // NO-OP
+            this.CurrentFFXIVProcess = this.DataRepository.GetCurrentFFXIVProcess();
+            this.DataSubscription.ProcessChanged += this.OnProcessChanged;
         }
 
         private void UnsubscribeXIVPluginEvents()
         {
-            // NO-OP
+            this.DataSubscription.ProcessChanged -= this.OnProcessChanged;
+            this.CurrentFFXIVProcess = null;
         }
 
         private void RaisePrimaryPlayerChanged()
@@ -405,6 +366,11 @@ namespace FFXIV.Framework.XIVHelper
 
         public ResolveType Resolve<ResolveType>() where ResolveType : class
             => this.IOCContainer?.Resolve<ResolveType>();
+
+        private void OnProcessChanged(Process process)
+        {
+            this.CurrentFFXIVProcess = process;
+        }
 
         #endregion Attach FFXIV Plugin
 
