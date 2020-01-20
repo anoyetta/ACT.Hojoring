@@ -309,10 +309,10 @@ namespace FFXIV.Framework.WPF.Views
                 NativeMethods.SWP_NOSIZE | NativeMethods.SWP_NOMOVE | NativeMethods.SWP_NOACTIVATE);
         }
 
-        private static object xivProcLocker = new object();
+        private static readonly object xivProcLocker = new object();
+        private static readonly TimeSpan TryInterval = TimeSpan.FromSeconds(15);
         private static Process xivProc;
         private static DateTime lastTry;
-        private static TimeSpan tryInterval = new TimeSpan(0, 0, 15);
 
         private static IntPtr GetGameWindowHandle()
         {
@@ -327,12 +327,18 @@ namespace FFXIV.Framework.WPF.Views
                     }
 
                     // プロセス情報がなく、tryIntervalよりも時間が経っているときは新たに取得を試みる
-                    if (xivProc == null && (DateTime.Now - lastTry) > tryInterval)
+                    if (xivProc == null && (DateTime.Now - lastTry) > TryInterval)
                     {
-                        xivProc = Process.GetProcessesByName("ffxiv").FirstOrDefault();
+                        xivProc = XIVPluginHelper.Instance.CurrentFFXIVProcess;
+
                         if (xivProc == null)
                         {
                             xivProc = Process.GetProcessesByName("ffxiv_dx11").FirstOrDefault();
+
+                            if (xivProc == null)
+                            {
+                                xivProc = Process.GetProcessesByName("ffxiv").FirstOrDefault();
+                            }
                         }
 
                         lastTry = DateTime.Now;
