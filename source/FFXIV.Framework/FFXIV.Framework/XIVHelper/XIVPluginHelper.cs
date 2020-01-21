@@ -124,7 +124,7 @@ namespace FFXIV.Framework.XIVHelper
 
         #region Start/End
 
-        private System.Timers.Timer attachFFXIVPluginWorker;
+        private ThreadWorker attachFFXIVPluginWorker;
         private ThreadWorker scanFFXIVWorker;
         private volatile bool isStarted = false;
 
@@ -145,11 +145,13 @@ namespace FFXIV.Framework.XIVHelper
             this.FFXIVLocale = ffxivLocale;
             this.MemorySubscriberInterval = pollingInteval;
 
-            this.attachFFXIVPluginWorker = new System.Timers.Timer();
-            this.attachFFXIVPluginWorker.AutoReset = true;
-            this.attachFFXIVPluginWorker.Interval = 5000;
-            this.attachFFXIVPluginWorker.Elapsed += (s, e) =>
+            this.attachFFXIVPluginWorker = new ThreadWorker(() =>
             {
+                if (!ActGlobals.oFormActMain.InitActDone)
+                {
+                    return;
+                }
+
                 try
                 {
                     this.RefreshCurrentFFXIVProcess();
@@ -162,29 +164,35 @@ namespace FFXIV.Framework.XIVHelper
                         return;
                     }
 
-                    lock (ResourcesLock)
+                    if (this.IsResourcesLoaded)
                     {
-                        this.LoadSkillList();
-                        this.LoadZoneList();
-                        /*
-                        ゾーンの追加を廃止する
-                        this.LoadZoneListFromTerritory();
-                        */
-                        this.LoadWorldList();
-
-                        this.MergeSkillList();
-
-                        this.ComplementSkillList();
-                        this.ComplementBuffList();
-
-                        this.TranslateZoneList();
+                        Thread.Sleep(TimeSpan.FromSeconds(10));
+                        return;
                     }
+
+                    this.LoadSkillList();
+                    this.LoadZoneList();
+                    /*
+                    ゾーンの追加を廃止する
+                    this.LoadZoneListFromTerritory();
+                    */
+                    this.LoadWorldList();
+
+                    this.MergeSkillList();
+
+                    this.ComplementSkillList();
+                    this.ComplementBuffList();
+
+                    this.TranslateZoneList();
                 }
                 catch (Exception ex)
                 {
                     AppLogger.Error(ex, "Attach FFXIV_ACT_Plugin error");
                 }
-            };
+            },
+            5000,
+            nameof(this.attachFFXIVPluginWorker),
+            ThreadPriority.Lowest);
 
             this.scanFFXIVWorker = new ThreadWorker(() =>
             {
@@ -237,7 +245,7 @@ namespace FFXIV.Framework.XIVHelper
                 SharlayanHelper.Instance.Start(pollingInteval);
 
                 Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                this.attachFFXIVPluginWorker.Start();
+                this.attachFFXIVPluginWorker.Run();
 
                 Thread.Sleep(CommonHelper.GetRandomTimeSpan());
                 this.scanFFXIVWorker.Run();
@@ -268,10 +276,7 @@ namespace FFXIV.Framework.XIVHelper
             SharlayanHelper.Instance.End();
 
             this.scanFFXIVWorker?.Abort();
-
-            this.attachFFXIVPluginWorker?.Stop();
-            this.attachFFXIVPluginWorker.Dispose();
-            this.attachFFXIVPluginWorker = null;
+            this.attachFFXIVPluginWorker?.Abort();
 
             this.UnsubscribeXIVPluginEvents();
             this.UnsubscribeParsedLogLine();
@@ -293,42 +298,39 @@ namespace FFXIV.Framework.XIVHelper
 
         private void Attach()
         {
-            lock (this)
+            if (this.plugin != null ||
+                ActGlobals.oFormActMain == null ||
+                !ActGlobals.oFormActMain.InitActDone)
             {
-                if (this.plugin != null ||
-                    ActGlobals.oFormActMain == null ||
-                    !ActGlobals.oFormActMain.InitActDone)
-                {
-                    return;
-                }
+                return;
+            }
 
-                var ffxivPlugin = (
-                    from x in ActGlobals.oFormActMain.ActPlugins
-                    where
-                    x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper())
-                    select
-                    x.pluginObj).FirstOrDefault();
+            var ffxivPlugin = (
+                from x in ActGlobals.oFormActMain.ActPlugins
+                where
+                x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper())
+                select
+                x.pluginObj).FirstOrDefault();
 
-                if (ffxivPlugin != null)
-                {
-                    Thread.Sleep(500);
-                    this.plugin = ffxivPlugin;
-                    this.DataRepository = this.plugin.DataRepository;
-                    this.DataSubscription = this.plugin.DataSubscription;
+            if (ffxivPlugin != null)
+            {
+                Thread.Sleep(500);
+                this.plugin = ffxivPlugin;
+                this.DataRepository = this.plugin.DataRepository;
+                this.DataSubscription = this.plugin.DataSubscription;
 
-                    this.IOCContainer = ffxivPlugin.GetType()
-                        .GetField(
-                            "_iocContainer",
-                            BindingFlags.NonPublic | BindingFlags.Instance)
-                        .GetValue(ffxivPlugin);
+                this.IOCContainer = ffxivPlugin.GetType()
+                    .GetField(
+                        "_iocContainer",
+                        BindingFlags.NonPublic | BindingFlags.Instance)
+                    .GetValue(ffxivPlugin);
 
-                    this.SubscribeXIVPluginEvents();
-                    this.SubscribeParsedLogLine();
+                this.SubscribeXIVPluginEvents();
+                this.SubscribeParsedLogLine();
 
-                    AppLogger.Trace("attached ffxiv plugin.");
+                AppLogger.Trace("attached ffxiv plugin.");
 
-                    this.ActPluginAttachedCallback?.Invoke();
-                }
+                this.ActPluginAttachedCallback?.Invoke();
             }
         }
 
@@ -1247,8 +1249,6 @@ namespace FFXIV.Framework.XIVHelper
 
         #region Resources
 
-        private static readonly object ResourcesLock = new object();
-
         private Dictionary<uint, Buff> buffList = new Dictionary<uint, Buff>();
         private Dictionary<uint, Skill> skillList = new Dictionary<uint, Skill>();
         private Dictionary<uint, World> worldList = new Dictionary<uint, World>();
@@ -1263,8 +1263,22 @@ namespace FFXIV.Framework.XIVHelper
         public IReadOnlyDictionary<uint, Skill> SkillList => this.skillList;
         public IReadOnlyDictionary<uint, World> WorldList => this.worldList;
 
-        private bool isZoneListLoaded = false;
-        private bool isSkillListLoaded = false;
+        private volatile bool isZoneListLoaded = false;
+        private volatile bool isSkillListLoaded = false;
+        private volatile bool isWorldListLoaded = false;
+        private volatile bool isMergedSkillList = false;
+        private volatile bool isComplementedSkillList = false;
+        private volatile bool isComplementedBuffList = false;
+        private volatile bool isZoneListTranslated = false;
+
+        private bool IsResourcesLoaded =>
+            this.isZoneListLoaded &&
+            this.isSkillListLoaded &&
+            this.isWorldListLoaded &&
+            this.isMergedSkillList &&
+            this.isComplementedSkillList &&
+            this.isComplementedBuffList &&
+            this.isZoneListTranslated;
 
         public Regex WorldNameRemoveRegex { get; private set; }
 
@@ -1324,6 +1338,7 @@ namespace FFXIV.Framework.XIVHelper
 
             this.worldList = newList;
             AppLogger.Trace("world list loaded.");
+            this.isWorldListLoaded = true;
         }
 
         public string RemoveWorldName(
@@ -1551,8 +1566,6 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
-        private bool isZoneListTranslated = false;
-
         private void TranslateZoneList()
         {
             if (this.isZoneListTranslated ||
@@ -1588,10 +1601,6 @@ namespace FFXIV.Framework.XIVHelper
             AppLogger.Trace($"zone list translated.");
             this.isZoneListTranslated = true;
         }
-
-        private volatile bool isMergedSkillList = false;
-        private volatile bool isComplementedSkillList = false;
-        private volatile bool isComplementedBuffList = false;
 
         /// <summary>
         /// XIVApiのスキルリストとFFXIVプラグインのスキルリストをマージする
