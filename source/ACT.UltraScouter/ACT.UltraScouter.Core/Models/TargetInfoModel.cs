@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Models.FFLogs;
-using ControlzEx;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.XIVHelper;
