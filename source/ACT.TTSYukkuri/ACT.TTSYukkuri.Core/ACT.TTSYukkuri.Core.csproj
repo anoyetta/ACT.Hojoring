@@ -446,10 +446,10 @@
       <Version>2.0.4</Version>
     </PackageReference>
     <PackageReference Include="Discord.Net">
-      <Version>1.0.2</Version>
+      <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="Discord.Net.Providers.WS4Net">
-      <Version>1.0.2</Version>
+      <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit">
       <Version>3.7.0</Version>
