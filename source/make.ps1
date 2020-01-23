@@ -121,7 +121,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     }
 
     '●to 7z'
-    & $7z a -r "-xr!*.zip" "-xr!*.7z" "-xr!*.pdb" "-xr!archives\" $archive7z *
+    & $7z a -mx9 -r "-xr!*.zip" "-xr!*.7z" "-xr!*.pdb" "-xr!archives\" $archive7z *
     Move-Item $archive7z $archives -Force
 
     <#
