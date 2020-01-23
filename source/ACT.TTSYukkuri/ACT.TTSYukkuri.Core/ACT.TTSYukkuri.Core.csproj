@@ -440,16 +440,16 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.Polly">
-      <Version>3.3.103.18</Version>
+      <Version>3.3.103.37</Version>
     </PackageReference>
     <PackageReference Include="CommonServiceLocator">
       <Version>2.0.4</Version>
     </PackageReference>
     <PackageReference Include="Discord.Net">
-      <Version>1.0.2</Version>
+      <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="Discord.Net.Providers.WS4Net">
-      <Version>1.0.2</Version>
+      <Version>2.1.1</Version>
     </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit">
       <Version>3.7.0</Version>
@@ -458,10 +458,10 @@
       <Version>4.7.0.9</Version>
     </PackageReference>
     <PackageReference Include="Google.Cloud.TextToSpeech.V1">
-      <Version>1.0.0</Version>
+      <Version>1.1.0</Version>
     </PackageReference>
     <PackageReference Include="MahApps.Metro.IconPacks">
-      <Version>2.3.0</Version>
+      <Version>3.1.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection">
       <Version>2.2.0</Version>
