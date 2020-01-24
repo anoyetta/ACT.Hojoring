@@ -1,4 +1,4 @@
-Start-Transcript update.log | Out-Null
+﻿Start-Transcript update.log | Out-Null
 
 # アップデートチャンネル
 ## プレリリースを取得するか否か？
@@ -112,7 +112,12 @@ for ($i = 0; $i -lt 60; $i++) {
     }
 
     if ($isExistsAct) {
-        Write-Warning ("-> Please shutdown Advanced Combat Tracker.")
+        if ((Get-Culture).Name -eq "ja-JP") {
+            Write-Warning ("-> Advanced Combat Tracker の終了を待機しています。Advanced Combat Tracker を手動で終了してください。")
+        }
+        else {
+            Write-Warning ("-> Please shutdown Advanced Combat Tracker.")
+        }
     }
 
     Start-Sleep 5
