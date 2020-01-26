@@ -51,6 +51,7 @@ namespace FFXIV.Framework.XIVHelper
         public CombatantEx Player { get; } = new CombatantEx()
         {
             Name = "Hojoring Hojo",
+            Type = (byte)Actor.Type.PC,
             Job = (int)JobIDs.PLD,
             IsDummy = true,
         };
@@ -139,12 +140,21 @@ namespace FFXIV.Framework.XIVHelper
 
             this.OtherList.Clear();
 
+            var count = 0;
+            var countPC = 0;
+            var countOther = 0;
+
             foreach (var combatant in source)
             {
-                switch (combatant.GetActorType())
+                var actorType = CombatantExtensions.GetActorType(combatant);
+                switch (actorType)
                 {
-                    // �K�v��Combatant
+                    // 必要なCombatant
                     case Actor.Type.PC:
+                        countPC++;
+                        break;
+
+                    // 必要なCombatant
                     case Actor.Type.Monster:
                     case Actor.Type.NPC:
                     case Actor.Type.Aetheryte:
@@ -152,12 +162,13 @@ namespace FFXIV.Framework.XIVHelper
                     case Actor.Type.EventObject:
                         break;
 
-                    // ��L�ȊO�͎̂Ă�
+                    // 上記以外は捨てる
                     default:
+                        Thread.Yield();
                         continue;
                 }
 
-                var isMain = combatant.GetActorType() switch
+                var isMain = actorType switch
                 {
                     Actor.Type.PC => true,
                     Actor.Type.Monster => true,
@@ -166,6 +177,8 @@ namespace FFXIV.Framework.XIVHelper
 
                 if (isMain)
                 {
+                    count++;
+
                     var dic = this.MainDictionary;
                     var key = combatant.ID;
                     var isNew = !dic.ContainsKey(key);
@@ -201,6 +214,8 @@ namespace FFXIV.Framework.XIVHelper
                 }
                 else
                 {
+                    countOther++;
+
                     var ex = new CombatantEx();
                     CombatantEx.CopyToEx(combatant, ex);
                     this.OtherList.Add(ex);
@@ -228,9 +243,9 @@ namespace FFXIV.Framework.XIVHelper
 
             this.TryGarbage();
 
-            this.CombatantsPCCount = this.MainDictionary.Count(x => x.Value.ActorType == Actor.Type.PC);
-            this.CombatantsMainCount = this.MainDictionary.Count;
-            this.CombatantsOtherCount = this.OtherList.Count;
+            this.CombatantsPCCount = countPC;
+            this.CombatantsMainCount = count;
+            this.CombatantsOtherCount = countOther;
 
             return addeds;
         }
@@ -430,20 +445,7 @@ namespace FFXIV.Framework.XIVHelper
 
                 foreach (var target in targets)
                 {
-                    var isMain = target.ActorType switch
-                    {
-                        Actor.Type.PC => true,
-                        Actor.Type.Monster => true,
-                        _ => false,
-                    };
-
-                    var dic = this.MainDictionary;
-
-                    if (dic.ContainsKey(target.ID))
-                    {
-                        dic.Remove(target.ID);
-                    }
-
+                    this.MainDictionary.Remove(target.ID);
                     Thread.Yield();
                 }
             }
