@@ -694,6 +694,10 @@ namespace FFXIV.Framework.XIVHelper
             this Combatant c)
             => ParseOrDefaultToActorType(c?.type ?? 0);
 
+        public static Actor.Type GetActorType(
+            CombatantEx c)
+            => ParseOrDefaultToActorType(c?.Type ?? 0);
+
         public static Actor.Type ParseOrDefaultToActorType(
             byte actorTypeValue)
         {
