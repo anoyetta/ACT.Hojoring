@@ -362,8 +362,31 @@ namespace FFXIV.Framework.XIVHelper
                 names.Add("You");
             }
 
-            this.Names = string.Join("|", names.ToArray());
+            this.Names = string.Join(
+                "|",
+                names.Select(name =>
+                {
+                    var result = name;
+
+                    // -, ' が含まれる名前の場合、記号の後の1文字のCasingを無視するように指定する
+                    // 例) "Ju-be Yagyu" -> "Ju-[bB]e Yagyu"
+                    var i = result.IndexOfAny(PCNameValidSymbols);
+                    if (i > 0)
+                    {
+                        var next = i + 1;
+                        if (result.Length > next)
+                        {
+                            var ignoreCaseChar = result.Substring(next, 1);
+                            result = $"{result.Substring(0, next)}[{ignoreCaseChar.ToLower()}{ignoreCaseChar.ToUpper()}]{result.Substring(next + 1)}";
+                        }
+                    }
+
+                    return result;
+                })
+                .ToArray());
         }
+
+        private static readonly char[] PCNameValidSymbols = new[] { '-', '\'' };
 
         public string NamesRegex => this.Names
             .Replace(@".", @"\.")
@@ -693,6 +716,10 @@ namespace FFXIV.Framework.XIVHelper
         public static Actor.Type GetActorType(
             this Combatant c)
             => ParseOrDefaultToActorType(c?.type ?? 0);
+
+        public static Actor.Type GetActorType(
+            CombatantEx c)
+            => ParseOrDefaultToActorType(c?.Type ?? 0);
 
         public static Actor.Type ParseOrDefaultToActorType(
             byte actorTypeValue)

@@ -354,7 +354,7 @@ namespace ACT.UltraScouter.Workers
 
                 if (this.IsTargetOverlay)
                 {
-                    switch (targetInfo.ActorType)
+                    switch (CombatantExtensions.GetActorType(targetInfo))
                     {
                         case Actor.Type.PC:
                         case Actor.Type.Monster:
