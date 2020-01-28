@@ -376,8 +376,8 @@ namespace FFXIV.Framework.XIVHelper
                         var next = i + 1;
                         if (result.Length > next)
                         {
-                            var ignoreCaseChar = result.Substring(next, 1);
-                            result = $"{result.Substring(0, next)}[{ignoreCaseChar.ToLower()}{ignoreCaseChar.ToUpper()}]{result.Substring(next + 1)}";
+                            var c = result.Substring(next, 1);
+                            result = $"{result.Substring(0, next)}[{c.ToLower()}{c.ToUpper()}]{result.Substring(next + 1)}";
                         }
                     }
 
