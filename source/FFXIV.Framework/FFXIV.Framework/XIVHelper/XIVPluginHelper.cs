@@ -752,7 +752,7 @@ namespace FFXIV.Framework.XIVHelper
         private static readonly Combatant DummyPlayer = new Combatant()
         {
             ID = 1,
-            Name = "Me Taro",
+            Name = "J'ibun T-aro",
             MaxHP = 30000,
             CurrentHP = 30000,
             MaxMP = 12000,

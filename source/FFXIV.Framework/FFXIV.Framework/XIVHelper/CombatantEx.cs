@@ -362,35 +362,29 @@ namespace FFXIV.Framework.XIVHelper
                 names.Add("You");
             }
 
-            this.Names = string.Join(
-                "|",
-                names.Select(name =>
-                {
-                    var result = name;
-
-                    // -, ' が含まれる名前の場合、記号の後の1文字のCasingを無視するように指定する
-                    // 例) "Ju-be Yagyu" -> "Ju-[bB]e Yagyu"
-                    var i = result.IndexOfAny(PCNameValidSymbols);
-                    if (i > 0)
-                    {
-                        var next = i + 1;
-                        if (result.Length > next)
-                        {
-                            var c = result.Substring(next, 1);
-                            result = $"{result.Substring(0, next)}[{c.ToLower()}{c.ToUpper()}]{result.Substring(next + 1)}";
-                        }
-                    }
-
-                    return result;
-                })
-                .ToArray());
+            this.Names = string.Join("|", names.ToArray());
         }
 
         private static readonly char[] PCNameValidSymbols = new[] { '-', '\'' };
 
-        public string NamesRegex => this.Names
-            .Replace(@".", @"\.")
-            .Replace(@"-", @"\-");
+        public string NamesRegex
+        {
+            get
+            {
+                var result = this.Names
+                    .Replace(@".", @"\.")
+                    .Replace(@"-", @"\-");
+
+                // 記号が含まれている？
+                if (result.IndexOfAny(PCNameValidSymbols) > -1)
+                {
+                    // i オプションを付与する
+                    result = $"(?i:{result})";
+                }
+
+                return result;
+            }
+        }
 
         public static readonly string UnknownName = "Unknown";
 
