@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -93,6 +94,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 }
             };
 
+            this.isRefreshing = 0;
             this.timer.Start();
 
             TimelineExpressionsModel.OnVariableChanged += _ => this.RefreshVariables();
@@ -480,52 +482,48 @@ namespace ACT.SpecialSpellTimer.Config.Views
             set => this.SetProperty(ref this.tableDumpText, value);
         }
 
-        private volatile bool isRefreshing = false;
+        private int isRefreshing = 0;
 
         private async void RefreshTables()
         {
-            if (this.isRefreshing)
+            if (Interlocked.CompareExchange(ref this.isRefreshing, 1, 0) < 1)
             {
-                return;
-            }
-
-            this.isRefreshing = true;
-
-            try
-            {
-                var sb = new StringBuilder();
-
-                await Task.Run(() =>
+                try
                 {
-                    var tables = TimelineExpressionsModel.GetTables();
+                    var sb = new StringBuilder();
 
-                    foreach (var table in tables)
+                    await Task.Run(() =>
                     {
-                        sb.AppendLine($"table:\"{table.Name}\"");
+                        var tables = TimelineExpressionsModel.GetTables();
 
-                        var rows = table.Rows;
-                        foreach (var row in rows)
+                        foreach (var table in tables)
                         {
-                            var cols = row.Cols.Values.OrderBy(x => x.IsKey ? 0 : 1);
+                            sb.AppendLine($"table:\"{table.Name}\"");
 
-                            var colsText = new List<string>();
-                            foreach (var col in cols)
+                            var rows = table.Rows;
+                            foreach (var row in rows)
                             {
-                                colsText.Add($"{col.Name}:\"{col.Value}\"");
+                                var cols = row.Cols.Values.OrderBy(x => x.IsKey ? 0 : 1);
+
+                                var colsText = new List<string>();
+                                foreach (var col in cols)
+                                {
+                                    colsText.Add($"{col.Name}:\"{col.Value}\"");
+                                }
+
+                                sb.AppendLine(string.Join(", ", colsText.ToArray()));
                             }
 
-                            sb.AppendLine(string.Join(", ", colsText.ToArray()));
+                            sb.AppendLine();
                         }
+                    });
 
-                        sb.AppendLine();
-                    }
-                });
-
-                await WPFHelper.InvokeAsync(() => this.TableDumpText = sb.ToString());
-            }
-            finally
-            {
-                this.isRefreshing = false;
+                    await WPFHelper.InvokeAsync(() => this.TableDumpText = sb.ToString());
+                }
+                finally
+                {
+                    Interlocked.Exchange(ref this.isRefreshing, 0);
+                }
             }
         }
 

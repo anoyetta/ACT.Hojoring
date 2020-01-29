@@ -280,8 +280,14 @@ namespace FFXIV.Framework.XIVHelper
             // sharlayan を止める
             SharlayanHelper.Instance.End();
 
-            this.scanFFXIVWorker?.Abort();
-            this.attachFFXIVPluginWorker?.Abort();
+            try
+            {
+                this.scanFFXIVWorker?.Abort();
+                this.attachFFXIVPluginWorker?.Abort();
+            }
+            catch (ThreadAbortException)
+            {
+            }
 
             this.UnsubscribeXIVPluginEvents();
             this.UnsubscribeParsedLogLine();
