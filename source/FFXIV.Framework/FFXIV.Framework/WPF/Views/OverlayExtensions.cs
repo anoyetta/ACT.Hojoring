@@ -210,6 +210,7 @@ namespace FFXIV.Framework.WPF.Views
                     ToCorrectOverlays.Add(overlay);
                 }
 
+                isCorrecting = 0;
                 LazyZOrderCorrector.Value.Start();
             }
         }
@@ -232,35 +233,45 @@ namespace FFXIV.Framework.WPF.Views
             }
         }
 
+        private static int isCorrecting;
+
         private static void ZOrderCorrectorOnTick(
             object sender,
             EventArgs e)
         {
-            lock (ZOrderLocker)
+            if (Interlocked.CompareExchange(ref isCorrecting, 1, 0) < 1)
             {
-                foreach (var overlay in ToCorrectOverlays)
+                try
                 {
-                    Thread.Yield();
-
-                    if (overlay == null)
+                    lock (ZOrderLocker)
                     {
-                        continue;
-                    }
-
-                    if (overlay is Window window &&
-                        window.IsLoaded)
-                    {
-                        if (!XIVPluginHelper.Instance.IsAvailable)
+                        foreach (var overlay in ToCorrectOverlays)
                         {
-                            overlay.EnsureTopMost();
-                            continue;
-                        }
+                            if (overlay == null)
+                            {
+                                continue;
+                            }
 
-                        if (!overlay.IsOverlaysGameWindow())
-                        {
-                            overlay.EnsureTopMost();
+                            if (overlay is Window window &&
+                                window.IsLoaded)
+                            {
+                                if (!XIVPluginHelper.Instance.IsAvailable)
+                                {
+                                    overlay.EnsureTopMost();
+                                    continue;
+                                }
+
+                                if (!overlay.IsOverlaysGameWindow())
+                                {
+                                    overlay.EnsureTopMost();
+                                }
+                            }
                         }
                     }
+                }
+                finally
+                {
+                    Interlocked.Exchange(ref isCorrecting, 0);
                 }
             }
         }

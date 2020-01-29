@@ -187,8 +187,8 @@ namespace ACT.UltraScouter.Workers
             }
         }
 
-        private volatile bool isRefreshingViews = false;
-        private volatile bool isRefreshingSubViews = false;
+        private int isRefreshingViewsLock;
+        private int isRefreshingSubViewsLock;
 
         /// <summary>
         /// Viewの更新タイマをリスタートする
@@ -197,25 +197,25 @@ namespace ACT.UltraScouter.Workers
         {
             lock (this)
             {
+                this.isRefreshingViewsLock = 0;
+                this.isRefreshingSubViewsLock = 0;
+
                 restartDispatcher(
                     ref this.refreshViewWorker,
                     Settings.Instance.UIThreadPriority,
                     TimeSpan.FromMilliseconds(Settings.Instance.OverlayRefreshRate),
                     (x, y) =>
                     {
-                        if (this.isRefreshingViews)
+                        if (Interlocked.CompareExchange(ref this.isRefreshingViewsLock, 1, 0) < 1)
                         {
-                            return;
-                        }
-
-                        try
-                        {
-                            this.isRefreshingViews = true;
-                            this.UpdateOverlayDataMethod?.Invoke();
-                        }
-                        finally
-                        {
-                            this.isRefreshingViews = false;
+                            try
+                            {
+                                this.UpdateOverlayDataMethod?.Invoke();
+                            }
+                            finally
+                            {
+                                Interlocked.Exchange(ref this.isRefreshingViewsLock, 0);
+                            }
                         }
                     });
 
@@ -225,19 +225,16 @@ namespace ACT.UltraScouter.Workers
                     TimeSpan.FromMilliseconds(Settings.Instance.OverlayRefreshRate * 1.2),
                     (x, y) =>
                     {
-                        if (this.isRefreshingSubViews)
+                        if (Interlocked.CompareExchange(ref this.isRefreshingSubViewsLock, 1, 0) < 1)
                         {
-                            return;
-                        }
-
-                        try
-                        {
-                            this.isRefreshingSubViews = true;
-                            this.UpdateSubOverlayDataMethod?.Invoke();
-                        }
-                        finally
-                        {
-                            this.isRefreshingSubViews = false;
+                            try
+                            {
+                                this.UpdateSubOverlayDataMethod?.Invoke();
+                            }
+                            finally
+                            {
+                                Interlocked.Exchange(ref this.isRefreshingSubViewsLock, 0);
+                            }
                         }
                     });
             }

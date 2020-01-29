@@ -1623,6 +1623,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 TimelineTimer.Interval = TimelineDefaultInterval;
                 if (!TimelineTimer.IsEnabled)
                 {
+                    timelineViewLock = 0;
                     TimelineTimer.Start();
                 }
 
@@ -1659,7 +1660,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
-        private static volatile bool isTimelineTicking = false;
+        private static int timelineViewLock;
         private static volatile System.Action TimelineTickCallback;
         private static TimeSpan TimelineDefaultInterval => TimeSpan.FromMilliseconds(TimelineSettings.Instance.ProgressBarRefreshInterval);
         private static readonly TimeSpan TimelineIdleInterval = TimeSpan.FromSeconds(5);
@@ -1677,38 +1678,34 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             object sender,
             EventArgs e)
         {
-            if (isTimelineTicking)
+            if (Interlocked.CompareExchange(ref timelineViewLock, 1, 0) < 1)
             {
-                return;
-            }
+                var interval = TimelineDefaultInterval;
 
-            isTimelineTicking = true;
-
-            var interval = TimelineDefaultInterval;
-
-            try
-            {
-                if (!TimelineSettings.Instance.Enabled)
+                try
                 {
-                    return;
-                }
+                    if (!TimelineSettings.Instance.Enabled)
+                    {
+                        return;
+                    }
 
-                if (TimelineTickCallback == null)
+                    if (TimelineTickCallback == null)
+                    {
+                        interval = TimelineIdleInterval;
+                        return;
+                    }
+
+                    TimelineTickCallback.Invoke();
+                }
+                finally
                 {
-                    interval = TimelineIdleInterval;
-                    return;
-                }
+                    if (TimelineTimer.Interval != interval)
+                    {
+                        TimelineTimer.Interval = interval;
+                    }
 
-                TimelineTickCallback.Invoke();
-            }
-            finally
-            {
-                if (TimelineTimer.Interval != interval)
-                {
-                    TimelineTimer.Interval = interval;
+                    Interlocked.Exchange(ref timelineViewLock, 0);
                 }
-
-                isTimelineTicking = false;
             }
         }
 
