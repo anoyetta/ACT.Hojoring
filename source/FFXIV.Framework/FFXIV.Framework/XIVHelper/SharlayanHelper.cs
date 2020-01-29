@@ -201,6 +201,8 @@ namespace FFXIV.Framework.XIVHelper
                         IsWin64 = true
                     };
 
+                    ClearLocalCaches();
+
                     MemoryHandler.Instance.SetProcess(
                         model,
                         gameLanguage: ffxivLanguage,
@@ -331,7 +333,15 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
-        public bool IsScanning { get; set; } = false;
+        public bool IsScanning
+        {
+            get => this.isScanningSemaphore > 0;
+            set => Interlocked.Exchange(ref this.isScanningSemaphore, value ? 1 : 0);
+        }
+
+        public bool TryScanning() => Interlocked.CompareExchange(ref this.isScanningSemaphore, 1, 0) < 1;
+
+        private int isScanningSemaphore = 0;
 
         private DateTime playerScanTimestamp = DateTime.MinValue;
 
@@ -344,19 +354,16 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            try
+            if (this.TryScanning())
             {
-                if (this.IsScanning)
+                try
                 {
-                    return;
+                    doScan();
                 }
-
-                this.IsScanning = true;
-                doScan();
-            }
-            finally
-            {
-                this.IsScanning = false;
+                finally
+                {
+                    this.IsScanning = false;
+                }
             }
 
             void doScan()
@@ -910,25 +917,19 @@ namespace FFXIV.Framework.XIVHelper
                 this.NPCCombatantsDictionary
             };
 
+            while (!this.TryScanning())
+            {
+                Thread.Sleep(5);
+            }
+
             try
             {
-                if (this.IsScanning)
-                {
-                    return;
-                }
-
-                this.IsScanning = true;
-
                 foreach (var dictionary in array)
                 {
                     dictionary
                         .Where(x => (now - x.Value.Timestamp).TotalSeconds > threshold)
                         .ToArray()
-                        .Walk(x =>
-                        {
-                            this.CombatantsDictionary.Remove(x.Key);
-                            Thread.Yield();
-                        });
+                        .Walk(x => this.CombatantsDictionary.Remove(x.Key));
                 }
             }
             finally

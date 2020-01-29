@@ -214,22 +214,19 @@ namespace FFXIV.Framework.XIVHelper
                     }
                 }
 
-                try
+                if (SharlayanHelper.Instance.TryScanning())
                 {
-                    if (SharlayanHelper.Instance.IsScanning)
+                    try
                     {
-                        return;
+                        this.RefreshCombatantList();
                     }
-
-                    SharlayanHelper.Instance.IsScanning = true;
-                    this.RefreshCombatantList();
-                }
-                finally
-                {
-                    SharlayanHelper.Instance.IsScanning = false;
+                    finally
+                    {
+                        SharlayanHelper.Instance.IsScanning = false;
+                    }
                 }
             },
-            pollingInteval * 1.1,
+            pollingInteval * 1.05,
             nameof(this.scanFFXIVWorker),
             ThreadPriority.Lowest);
 
