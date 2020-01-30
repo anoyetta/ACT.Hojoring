@@ -1354,21 +1354,25 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // P-Syncトリガに対して判定する
             foreach (var tri in psyncs)
             {
-                detectPSync(tri);
-                Thread.Yield();
+                var psync = tri.PositionSyncStatements
+                    .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
+
+                if (psync != null)
+                {
+                    lock (tri)
+                    {
+                        detectPSync(tri, psync);
+                    }
+
+                    Thread.Yield();
+                }
             }
 
             // P-Syncトリガに対して判定する
             void detectPSync(
-                TimelineTriggerModel tri)
+                TimelineTriggerModel tri,
+                TimelinePositionSyncModel psync)
             {
-                var psync = tri.PositionSyncStatements
-                    .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
-                if (psync == null)
-                {
-                    return;
-                }
-
                 if ((DateTime.Now - psync.LastSyncTimestamp).TotalSeconds <= psync.Interval)
                 {
                     return;
