@@ -311,10 +311,18 @@ namespace ACT.TTSYukkuri.Config
                 return;
             }
 
+            lock (this)
+            {
+                if (this.isStarting)
+                {
+                    return;
+                }
+
+                this.isStarting = true;
+            }
+
             try
             {
-                this.isStarting = true;
-
                 if (!ServiceControl.IsHostStarted)
                 {
                     var result = await Task.Run(() => ServiceControl.StartHost(false));
