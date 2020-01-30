@@ -326,8 +326,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var result = false;
             foreach (var table in tables)
             {
-                table.ParseJson();
                 result |= table.Execute(
+                    table.ParseJson(),
                     (x) => TimelineController.RaiseLog($"{TimelineController.TLSymbol} {x}"));
             }
 
