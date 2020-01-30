@@ -77,10 +77,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         public bool Execute(
-            TimelineExpressionsTableJsonModel model,
+            TimelineExpressionsTableJsonModel queryModel,
             Action<string> raiseLog = null)
         {
-            if (model == null)
+            if (queryModel == null)
             {
                 return false;
             }
@@ -90,16 +90,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             try
             {
-                var table = TimelineExpressionsModel.GetTable(model.Table);
+                var table = TimelineExpressionsModel.GetTable(queryModel.Table);
 
-                var key = model.Cols
+                var key = queryModel.Cols
                     .FirstOrDefault(x => x.IsKey)?
                     .Val ?? null;
 
-                if (model.Method == TalbeJsonMethods.Delete)
+                if (queryModel.Method == TalbeJsonMethods.Delete)
                 {
                     table.Remove(key);
-                    raiseLog?.Invoke($"Delete row from TABLE['{model.Table}'] by key='{key.ToString()}'");
+                    raiseLog?.Invoke($"Delete row from TABLE['{queryModel.Table}'] by key='{key.ToString()}'");
                 }
                 else
                 {
@@ -108,7 +108,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     var logs = new List<string>();
                     var keyLog = string.Empty;
 
-                    foreach (var col in model.Cols)
+                    foreach (var col in queryModel.Cols)
                     {
                         row.AddCol(new TimelineColumn(
                             col.Name,
@@ -126,7 +126,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     table.Add(row);
 
                     var colLog = string.Join(", ", logs.ToArray());
-                    raiseLog?.Invoke($"Merge row into TABLE['{model.Table}'] cols ({colLog}) {keyLog}");
+                    raiseLog?.Invoke($"Merge row into TABLE['{queryModel.Table}'] cols ({colLog}) {keyLog}");
                 }
 
                 result = true;
