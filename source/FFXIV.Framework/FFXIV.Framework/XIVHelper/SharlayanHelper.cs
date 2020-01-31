@@ -201,6 +201,8 @@ namespace FFXIV.Framework.XIVHelper
                         IsWin64 = true
                     };
 
+                    ClearLocalCaches();
+
                     MemoryHandler.Instance.SetProcess(
                         model,
                         gameLanguage: ffxivLanguage,
@@ -211,8 +213,6 @@ namespace FFXIV.Framework.XIVHelper
                     this.ClearData();
                 }
             }
-
-            this.GarbageCombatantsDictionary();
         }
 
         private readonly List<ActorItem> ActorList = new List<ActorItem>(512);
@@ -293,6 +293,8 @@ namespace FFXIV.Framework.XIVHelper
 
         public bool IsFirstEnmityMe { get; private set; }
 
+        public int EnmityMaxCount { get; set; } = 16;
+
         private readonly List<ActorItem> PartyMemberList = new List<ActorItem>(8);
 
         public List<ActorItem> PartyMembers => this.PartyMemberList.ToList();
@@ -331,7 +333,15 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
-        public bool IsScanning { get; set; } = false;
+        public bool IsScanning
+        {
+            get => this.isScanningSemaphore > 0;
+            set => Interlocked.Exchange(ref this.isScanningSemaphore, value ? 1 : 0);
+        }
+
+        public bool TryScanning() => Interlocked.CompareExchange(ref this.isScanningSemaphore, 1, 0) < 1;
+
+        private int isScanningSemaphore = 0;
 
         private DateTime playerScanTimestamp = DateTime.MinValue;
 
@@ -344,19 +354,17 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            try
+            if (this.TryScanning())
             {
-                if (this.IsScanning)
+                try
                 {
-                    return;
+                    doScan();
+                    this.TryGarbageCombatantsDictionary();
                 }
-
-                this.IsScanning = true;
-                doScan();
-            }
-            finally
-            {
-                this.IsScanning = false;
+                finally
+                {
+                    this.IsScanning = false;
+                }
             }
 
             void doScan()
@@ -560,8 +568,14 @@ namespace FFXIV.Framework.XIVHelper
 
                 var combatantDictionary = CombatantsManager.Instance.GetCombatantMainDictionary();
 
+                var count = 0;
                 foreach (var source in this.TargetInfo.EnmityItems)
                 {
+                    if (count >= this.EnmityMaxCount)
+                    {
+                        break;
+                    }
+
                     Thread.Yield();
 
                     var existing = false;
@@ -604,6 +618,8 @@ namespace FFXIV.Framework.XIVHelper
 
                         this.EnmityDictionary[enmity.ID] = enmity;
                     }
+
+                    count++;
                 }
 
                 if (first != null)
@@ -899,42 +915,51 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
+        private DateTime lastestGarbageTimestamp = DateTime.MinValue;
+
+        private void TryGarbageCombatantsDictionary()
+        {
+            if (XIVPluginHelper.Instance.InCombat)
+            {
+                return;
+            }
+
+            if ((DateTime.Now - this.lastestGarbageTimestamp) >= TimeSpan.FromMinutes(3))
+            {
+                this.lastestGarbageTimestamp = DateTime.Now;
+                this.GarbageCombatantsDictionary();
+            }
+        }
+
         private void GarbageCombatantsDictionary()
         {
-            var threshold = CommonHelper.Random.Next(10 * 60, 15 * 60);
-            var now = DateTime.Now;
-
-            var array = new[]
-            {
-                this.CombatantsDictionary,
-                this.NPCCombatantsDictionary
-            };
-
-            try
-            {
-                if (this.IsScanning)
+            Task.WaitAll(
+                Task.Run(() =>
                 {
-                    return;
-                }
+                    var dic = this.CombatantsDictionary;
+                    var keys = dic
+                        .Where(x => (DateTime.Now - x.Value.Timestamp) >= TimeSpan.FromMinutes(2.9))
+                        .Select(x => x.Key)
+                        .ToArray();
 
-                this.IsScanning = true;
-
-                foreach (var dictionary in array)
+                    foreach (var key in keys)
+                    {
+                        dic.Remove(key);
+                    }
+                }),
+                Task.Run(() =>
                 {
-                    dictionary
-                        .Where(x => (now - x.Value.Timestamp).TotalSeconds > threshold)
-                        .ToArray()
-                        .Walk(x =>
-                        {
-                            this.CombatantsDictionary.Remove(x.Key);
-                            Thread.Yield();
-                        });
-                }
-            }
-            finally
-            {
-                this.IsScanning = false;
-            }
+                    var dic = this.NPCCombatantsDictionary;
+                    var keys = dic
+                        .Where(x => (DateTime.Now - x.Value.Timestamp) >= TimeSpan.FromMinutes(2.9))
+                        .Select(x => x.Key)
+                        .ToArray();
+
+                    foreach (var key in keys)
+                    {
+                        dic.Remove(key);
+                    }
+                }));
         }
     }
 

@@ -64,6 +64,7 @@ namespace ACT.UltraScouter.Workers
         protected override void GetCombatant()
         {
             SharlayanHelper.Instance.IsSkipEnmity = !Settings.Instance.Enmity.Visible;
+            SharlayanHelper.Instance.EnmityMaxCount = Settings.Instance.Enmity.MaxCountOfDisplay;
 
             if (!Settings.Instance.Enmity.Visible)
             {

@@ -212,6 +212,11 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     var head = list.First();
                     list.Insert(0, new TestLog(
                         $"[{head.Timestamp.AddSeconds(-5):HH:mm:ss.fff}] 00:0039:戦闘開始まで5秒！ [DUMMY]"));
+
+                    // xivlog flush を挿入する
+                    var last = list.Last();
+                    list.Add(new TestLog(
+                        $"[{last.Timestamp.AddSeconds(1):HH:mm:ss.fff}] /xivlog flush"));
                 }
 
                 var first = list.First();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.RazorModel;
 using FFXIV.Framework.Common;
@@ -36,46 +37,28 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.jsonText, value);
         }
 
-        private TimelineExpressionsTableJsonModel model;
-
-        [XmlIgnore]
-        public TimelineExpressionsTableJsonModel Model
-        {
-            get => this.model;
-            set => this.SetProperty(ref this.model, value);
-        }
-
-        public void ParseJson()
+        public TimelineExpressionsTableJsonModel ParseJson(
+            Match matched)
         {
             if (string.IsNullOrEmpty(this.JsonText))
             {
-                this.Model = null;
-                return;
+                return null;
             }
 
             var parent = this.Parent?.Parent;
 
             try
             {
-                var matched = parent switch
-                {
-                    TimelineActivityModel a => a.SyncMatch,
-                    TimelineTriggerModel t => t.SyncMatch,
-                    _ => null,
-                };
-
                 var json = ObjectComparer.ConvertToValue(this.JsonText, matched).ToString();
 
                 // HJSON -> JSON
                 json = HjsonValue.Parse(json).ToString();
 
                 // JSON Parse
-                this.Model = JsonConvert.DeserializeObject<TimelineExpressionsTableJsonModel>(json);
+                return JsonConvert.DeserializeObject<TimelineExpressionsTableJsonModel>(json);
             }
             catch (Exception ex)
             {
-                this.Model = null;
-
                 var parentName = string.IsNullOrEmpty(parent.Name) ?
                     (parent as dynamic).Text :
                     parent.Name;
@@ -83,33 +66,35 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.AppLogger.Error(
                     ex,
                     $"[TL] Error on parsing table JSON. parent={parentName}.\n{this.JsonText}");
+
+                return null;
             }
         }
 
         public bool Execute(
+            TimelineExpressionsTableJsonModel queryModel,
             Action<string> raiseLog = null)
         {
-            if (this.Model == null)
+            if (queryModel == null)
             {
                 return false;
             }
 
             var result = false;
             var parent = this.Parent?.Parent;
-            var model = this.Model;
 
             try
             {
-                var table = TimelineExpressionsModel.GetTable(model.Table);
+                var table = TimelineExpressionsModel.GetTable(queryModel.Table);
 
-                var key = model.Cols
+                var key = queryModel.Cols
                     .FirstOrDefault(x => x.IsKey)?
                     .Val ?? null;
 
-                if (model.Method == TalbeJsonMethods.Delete)
+                if (queryModel.Method == TalbeJsonMethods.Delete)
                 {
                     table.Remove(key);
-                    raiseLog?.Invoke($"Delete row from TABLE['{model.Table}'] by key='{key.ToString()}'");
+                    raiseLog?.Invoke($"Delete row from TABLE['{queryModel.Table}'] by key='{key.ToString()}'");
                 }
                 else
                 {
@@ -118,7 +103,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     var logs = new List<string>();
                     var keyLog = string.Empty;
 
-                    foreach (var col in model.Cols)
+                    foreach (var col in queryModel.Cols)
                     {
                         row.AddCol(new TimelineColumn(
                             col.Name,
@@ -136,7 +121,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     table.Add(row);
 
                     var colLog = string.Join(", ", logs.ToArray());
-                    raiseLog?.Invoke($"Merge row into TABLE['{model.Table}'] cols ({colLog}) {keyLog}");
+                    raiseLog?.Invoke($"Merge row into TABLE['{queryModel.Table}'] cols ({colLog}) {keyLog}");
                 }
 
                 result = true;
