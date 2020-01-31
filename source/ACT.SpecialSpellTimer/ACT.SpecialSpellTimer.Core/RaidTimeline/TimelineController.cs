@@ -975,27 +975,18 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // 非表示判定も合わせて実施する
             var background = Task.Run(() =>
             {
-                try
+                foreach (var xivlog in logs)
                 {
-                    Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
+                    // 開始・終了のトリガの判定
+                    this.DetectStartEnd(xivlog, keywords);
+                    this.DetectStartTrigger(xivlog);
 
-                    foreach (var xivlog in logs)
+                    // 非表示待ち判定
+                    foreach (var hide in hides)
                     {
-                        // 開始・終了のトリガの判定
-                        this.DetectStartEnd(xivlog, keywords);
-                        this.DetectStartTrigger(xivlog);
-
-                        // 非表示待ち判定
-                        foreach (var hide in hides)
-                        {
-                            this.Detect(xivlog, hide, detectTime);
-                            Thread.Yield();
-                        }
+                        this.Detect(xivlog, hide, detectTime);
+                        Thread.Yield();
                     }
-                }
-                finally
-                {
-                    Thread.CurrentThread.Priority = ThreadPriority.Normal;
                 }
             });
 
@@ -1141,9 +1132,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 act.IsSynced = true;
+                act.SetExpressions(match);
             }
-
-            act.SetExpressions();
 
             WPFHelper.BeginInvoke(() =>
             {
@@ -1223,7 +1213,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return false;
                 }
 
-                if (!tri.ExecuteExpressions())
+                if (!tri.ExecuteExpressions(match))
                 {
                     return false;
                 }
@@ -1776,7 +1766,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     act.IsNotified = true;
 
-                    if (!act.PredicateExpressions())
+                    if (!act.PredicateExpressions(act.SyncMatch))
                     {
                         continue;
                     }
@@ -1830,9 +1820,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         act.IsDone = true;
 
-                        if (act.PredicateExpressions())
+                        if (act.PredicateExpressions(act.SyncMatch))
                         {
-                            act.SetExpressions();
+                            act.SetExpressions(act.SyncMatch);
                             act.Execute();
                             act.Dump();
                         }
@@ -1847,7 +1837,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 !x.IsActive &&
                 !x.IsDone &&
                 x.Time <= this.CurrentTime &&
-                x.PredicateExpressions()
+                x.PredicateExpressions(x.SyncMatch)
                 orderby
                 x.Seq descending
                 select
@@ -1884,7 +1874,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 x.Enabled.GetValueOrDefault() &&
                 !string.IsNullOrEmpty(x.Text) &&
                 x.IsVisible &&
-                x.PredicateExpressions()
+                x.PredicateExpressions(x.SyncMatch)
                 select
                 x).ToArray());
 
@@ -1922,7 +1912,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 if (count < TimelineSettings.Instance.ShowActivitiesCount &&
                     !x.IsDone &&
-                    x.PredicateExpressions() &&
+                    x.PredicateExpressions(x.SyncMatch) &&
                     x.Time <= maxTime)
                 {
                     x.RefreshProgress();

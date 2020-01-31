@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.RazorModel;
 using FFXIV.Framework.Common;
@@ -36,7 +37,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.jsonText, value);
         }
 
-        public TimelineExpressionsTableJsonModel ParseJson()
+        public TimelineExpressionsTableJsonModel ParseJson(
+            Match matched)
         {
             if (string.IsNullOrEmpty(this.JsonText))
             {
@@ -47,13 +49,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             try
             {
-                var matched = parent switch
-                {
-                    TimelineActivityModel a => a.SyncMatch,
-                    TimelineTriggerModel t => t.SyncMatch,
-                    _ => null,
-                };
-
                 var json = ObjectComparer.ConvertToValue(this.JsonText, matched).ToString();
 
                 // HJSON -> JSON

@@ -90,7 +90,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public bool IsExpressionAvailable =>
             this.ExpressionsStatements.Any(x => x.Enabled.GetValueOrDefault());
 
-        public bool PredicateExpressions()
+        public bool PredicateExpressions(
+            Match matched)
         {
             var expressions = this.ExpressionsStatements.FirstOrDefault(x =>
                 x.Enabled.GetValueOrDefault());
@@ -102,11 +103,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             lock (TimelineExpressionsModel.ExpressionLocker)
             {
-                return expressions.Predicate();
+                return expressions.Predicate(matched);
             }
         }
 
-        public void SetExpressions()
+        public void SetExpressions(
+            Match matched)
         {
             var expressions = this.ExpressionsStatements.FirstOrDefault(x =>
                 x.Enabled.GetValueOrDefault());
@@ -115,7 +117,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 lock (TimelineExpressionsModel.ExpressionLocker)
                 {
-                    expressions.Set();
+                    expressions.Set(matched);
                 }
             }
         }
