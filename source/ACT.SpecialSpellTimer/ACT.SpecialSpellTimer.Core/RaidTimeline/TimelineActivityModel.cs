@@ -702,6 +702,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             this.IsSynced = false;
             this.Progress = 0;
             this.IsProgressBarActive = false;
+            this.SyncMatch = null;
         }
 
         private static readonly string WaitKeyword = "/wait";

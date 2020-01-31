@@ -498,6 +498,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 this.MatchedTimestamp = DateTime.MinValue;
                 this.MatchedCounter = 0;
+                this.SyncMatch = null;
 
                 if (this.PositionSyncStatements != null)
                 {
