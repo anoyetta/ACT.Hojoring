@@ -172,7 +172,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         [XmlAttribute(AttributeName = "time")]
         public string TimeText
         {
-            get => this.time.TotalSeconds.ToString("000");
+            get => Math.Round(this.time.TotalSeconds, 1).ToString("000.0");
             set => this.SetProperty(ref this.time, TimeSpanExtensions.FromTLString(value));
         }
 
