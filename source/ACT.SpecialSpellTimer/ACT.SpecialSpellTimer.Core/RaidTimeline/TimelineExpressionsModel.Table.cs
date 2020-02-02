@@ -36,21 +36,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.jsonText, value);
         }
 
-        private TimelineExpressionsTableJsonModel model;
-
-        [XmlIgnore]
-        public TimelineExpressionsTableJsonModel Model
-        {
-            get => this.model;
-            set => this.SetProperty(ref this.model, value);
-        }
-
-        public void ParseJson()
+        public TimelineExpressionsTableJsonModel ParseJson()
         {
             if (string.IsNullOrEmpty(this.JsonText))
             {
-                this.Model = null;
-                return;
+                return null;
             }
 
             var parent = this.Parent?.Parent;
@@ -70,12 +60,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 json = HjsonValue.Parse(json).ToString();
 
                 // JSON Parse
-                this.Model = JsonConvert.DeserializeObject<TimelineExpressionsTableJsonModel>(json);
+                return JsonConvert.DeserializeObject<TimelineExpressionsTableJsonModel>(json);
             }
             catch (Exception ex)
             {
-                this.Model = null;
-
                 var parentName = string.IsNullOrEmpty(parent.Name) ?
                     (parent as dynamic).Text :
                     parent.Name;
@@ -83,20 +71,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.AppLogger.Error(
                     ex,
                     $"[TL] Error on parsing table JSON. parent={parentName}.\n{this.JsonText}");
+
+                return null;
             }
         }
 
         public bool Execute(
+            TimelineExpressionsTableJsonModel model,
             Action<string> raiseLog = null)
         {
-            if (this.Model == null)
+            if (model == null)
             {
                 return false;
             }
 
             var result = false;
             var parent = this.Parent?.Parent;
-            var model = this.Model;
 
             try
             {
