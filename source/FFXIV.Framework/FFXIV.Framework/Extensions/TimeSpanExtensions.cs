@@ -24,18 +24,16 @@ namespace FFXIV.Framework.Extensions
                 var values = timelineString.Split(':');
                 if (values.Length >= 2)
                 {
-                    int m, s;
-                    if (int.TryParse(values[0], out m) &&
-                        int.TryParse(values[1], out s))
+                    if (double.TryParse(values[0], out double m) &&
+                        double.TryParse(values[1], out double s))
                     {
-                        ts = new TimeSpan(0, m, s);
+                        ts = TimeSpan.FromSeconds((m * 60) + s);
                     }
                 }
             }
             else
             {
-                double s;
-                if (double.TryParse(timelineString, out s))
+                if (double.TryParse(timelineString, out double s))
                 {
                     ts = TimeSpan.FromSeconds(s);
                 }
@@ -45,7 +43,7 @@ namespace FFXIV.Framework.Extensions
         }
 
         public static TimeSpan ToTimeSpan(
-            this int i)
-            => TimeSpan.FromSeconds(i);
+            this double seconds)
+            => TimeSpan.FromSeconds(seconds);
     }
 }

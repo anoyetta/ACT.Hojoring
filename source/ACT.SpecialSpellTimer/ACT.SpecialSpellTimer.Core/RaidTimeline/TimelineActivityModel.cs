@@ -90,7 +90,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public bool IsExpressionAvailable =>
             this.ExpressionsStatements.Any(x => x.Enabled.GetValueOrDefault());
 
-        public bool PredicateExpressions()
+        public bool PredicateExpressions(
+            Match matched)
         {
             var expressions = this.ExpressionsStatements.FirstOrDefault(x =>
                 x.Enabled.GetValueOrDefault());
@@ -102,11 +103,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             lock (TimelineExpressionsModel.ExpressionLocker)
             {
-                return expressions.Predicate();
+                return expressions.Predicate(matched);
             }
         }
 
-        public void SetExpressions()
+        public void SetExpressions(
+            Match matched)
         {
             var expressions = this.ExpressionsStatements.FirstOrDefault(x =>
                 x.Enabled.GetValueOrDefault());
@@ -115,7 +117,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 lock (TimelineExpressionsModel.ExpressionLocker)
                 {
-                    expressions.Set();
+                    expressions.Set(matched);
                 }
             }
         }
@@ -172,7 +174,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         [XmlAttribute(AttributeName = "time")]
         public string TimeText
         {
-            get => this.time.TotalSeconds.ToString("000");
+            get => Math.Round(this.time.TotalSeconds, 1).ToString("000.0");
             set => this.SetProperty(ref this.time, TimeSpanExtensions.FromTLString(value));
         }
 
@@ -700,6 +702,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             this.IsSynced = false;
             this.Progress = 0;
             this.IsProgressBarActive = false;
+            this.SyncMatch = null;
         }
 
         private static readonly string WaitKeyword = "/wait";
