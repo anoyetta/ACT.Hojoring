@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -94,7 +93,6 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 }
             };
 
-            this.isRefreshing = 0;
             this.timer.Start();
 
             TimelineExpressionsModel.OnVariableChanged += _ => this.RefreshVariables();
@@ -482,49 +480,33 @@ namespace ACT.SpecialSpellTimer.Config.Views
             set => this.SetProperty(ref this.tableDumpText, value);
         }
 
-        private int isRefreshing = 0;
-
-        private async void RefreshTables()
+        private void RefreshTables()
         {
-            if (Interlocked.CompareExchange(ref this.isRefreshing, 1, 0) < 1)
+            var sb = new StringBuilder();
+            var tables = TimelineExpressionsModel.GetTables();
+
+            foreach (var table in tables)
             {
-                try
-                {
-                    var sb = new StringBuilder();
+                sb.AppendLine($"table:\"{table.Name}\"");
 
-                    await Task.Run(() =>
+                var rows = table.Rows;
+                foreach (var row in rows)
+                {
+                    var cols = row.Cols.Values.OrderBy(x => x.IsKey ? 0 : 1);
+
+                    var colsText = new List<string>();
+                    foreach (var col in cols)
                     {
-                        var tables = TimelineExpressionsModel.GetTables();
+                        colsText.Add($"{col.Name}:\"{col.Value}\"");
+                    }
 
-                        foreach (var table in tables)
-                        {
-                            sb.AppendLine($"table:\"{table.Name}\"");
-
-                            var rows = table.Rows;
-                            foreach (var row in rows)
-                            {
-                                var cols = row.Cols.Values.OrderBy(x => x.IsKey ? 0 : 1);
-
-                                var colsText = new List<string>();
-                                foreach (var col in cols)
-                                {
-                                    colsText.Add($"{col.Name}:\"{col.Value}\"");
-                                }
-
-                                sb.AppendLine(string.Join(", ", colsText.ToArray()));
-                            }
-
-                            sb.AppendLine();
-                        }
-                    });
-
-                    await WPFHelper.InvokeAsync(() => this.TableDumpText = sb.ToString());
+                    sb.AppendLine(string.Join(", ", colsText.ToArray()));
                 }
-                finally
-                {
-                    Interlocked.Exchange(ref this.isRefreshing, 0);
-                }
+
+                sb.AppendLine();
             }
+
+            WPFHelper.InvokeAsync(() => this.TableDumpText = sb.ToString());
         }
 
         #endregion Commands 右側ペイン
