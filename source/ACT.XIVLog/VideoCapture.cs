@@ -41,11 +41,11 @@ namespace ACT.XIVLog
             RegexOptions.Compiled);
 
         private static readonly Regex FeastStartRegex = new Regex(
-            @"^21:[0-9a-fA-F]{8}:80000004:168",
+            @"^21:[0-9a-fA-F]{8}:40000001:168",
             RegexOptions.Compiled);
 
         private static readonly Regex FeastEndRegex = new Regex(
-            @"^21:[0-9a-fA-F]{8}:40000001:257",
+            @"^21:[0-9a-fA-F]{8}:80000004:257",
             RegexOptions.Compiled);
 
         private static readonly Regex ContentStartLogRegex = new Regex(
@@ -111,7 +111,14 @@ namespace ACT.XIVLog
                 isStart = FeastStartRegex.IsMatch(xivlog.Log);
                 if (isStart)
                 {
-                    this.contentName = "THE FEAST";
+                    this.contentName = ActGlobals.oFormActMain.CurrentZone;
+
+                    if (Config.Instance.TryCountContentName != this.contentName ||
+                        (DateTime.Now - Config.Instance.TryCountTimestamp) >=
+                        TimeSpan.FromHours(Config.Instance.TryCountResetInterval))
+                    {
+                        this.TryCount = 0;
+                    }
                 }
             }
 
