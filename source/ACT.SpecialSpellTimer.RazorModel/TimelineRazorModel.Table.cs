@@ -1,10 +1,18 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RazorModel
 {
+    public class TimelineTables
+    {
+        public static Func<string, TimelineTable> GetTableDelegate { get; set; }
+
+        public TimelineTable this[string name] => GetTableDelegate?.Invoke(name);
+    }
+
     public class TimelineTable :
         BindableBase
     {

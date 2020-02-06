@@ -12,6 +12,15 @@
   <locale>JA</locale>
   <entry>メインフェーズ</entry>
 
+  <script name="SimpleEvalute">
+    var x = 2;
+    var y = 3;
+
+    var result = x * y;
+
+    return true;
+  </script>
+
   <t sync="は「天雷掌」の構え" text="天雷掌\n ➜タンク">
     <v-notice
       duration="5"

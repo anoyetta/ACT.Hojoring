@@ -83,6 +83,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             // Import
             NewDefault(TimelineElementTypes.Import, "Enabled", true),
+
+            // Script
+            NewDefault(TimelineElementTypes.Script, "Enabled", true),
+            NewDefault(TimelineElementTypes.Script, "ScriptingEvent", TimelineScriptEvents.Resident),
+            NewDefault(TimelineElementTypes.Script, "Interval", 20.0d),
         };
 
         private void SetDefaultValues()
