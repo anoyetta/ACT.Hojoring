@@ -354,7 +354,7 @@ namespace ACT.UltraScouter.Workers
 
                 if (this.IsTargetOverlay)
                 {
-                    switch (targetInfo.ActorType)
+                    switch (CombatantExtensions.GetActorType(targetInfo))
                     {
                         case Actor.Type.PC:
                         case Actor.Type.Monster:
@@ -494,33 +494,30 @@ namespace ACT.UltraScouter.Workers
         /// </summary>
         protected void RefreshViews()
         {
-            lock (this)
+            if (!this.RefreshViewsQueue)
             {
-                if (!this.RefreshViewsQueue)
-                {
-                    return;
-                }
-
-                // すでにWindowがあるなら閉じる
-                foreach (var item in this.ViewList)
-                {
-                    (item.View as IOverlay).OverlayVisible = false;
-                    item.View.Close();
-                }
-
-                this.ViewList.Clear();
-
-                // Viewのインスタンスを作る
-                this.CreateViews();
-
-                foreach (var item in this.ViewList)
-                {
-                    // Windowを表示する
-                    item.View.Show();
-                }
-
-                this.RefreshViewsQueue = false;
+                return;
             }
+
+            // すでにWindowがあるなら閉じる
+            foreach (var item in this.ViewList)
+            {
+                (item.View as IOverlay).OverlayVisible = false;
+                item.View.Close();
+            }
+
+            this.ViewList.Clear();
+
+            // Viewのインスタンスを作る
+            this.CreateViews();
+
+            foreach (var item in this.ViewList)
+            {
+                // Windowを表示する
+                item.View.Show();
+            }
+
+            this.RefreshViewsQueue = false;
         }
 
         /// <summary>

@@ -480,53 +480,33 @@ namespace ACT.SpecialSpellTimer.Config.Views
             set => this.SetProperty(ref this.tableDumpText, value);
         }
 
-        private volatile bool isRefreshing = false;
-
-        private async void RefreshTables()
+        private void RefreshTables()
         {
-            if (this.isRefreshing)
+            var sb = new StringBuilder();
+            var tables = TimelineExpressionsModel.GetTables();
+
+            foreach (var table in tables)
             {
-                return;
-            }
+                sb.AppendLine($"table:\"{table.Name}\"");
 
-            this.isRefreshing = true;
-
-            try
-            {
-                var sb = new StringBuilder();
-
-                await Task.Run(() =>
+                var rows = table.Rows;
+                foreach (var row in rows)
                 {
-                    var tables = TimelineExpressionsModel.GetTables();
+                    var cols = row.Cols.Values.OrderBy(x => x.IsKey ? 0 : 1);
 
-                    foreach (var table in tables)
+                    var colsText = new List<string>();
+                    foreach (var col in cols)
                     {
-                        sb.AppendLine($"table:\"{table.Name}\"");
-
-                        var rows = table.Rows;
-                        foreach (var row in rows)
-                        {
-                            var cols = row.Cols.Values.OrderBy(x => x.IsKey ? 0 : 1);
-
-                            var colsText = new List<string>();
-                            foreach (var col in cols)
-                            {
-                                colsText.Add($"{col.Name}:\"{col.Value}\"");
-                            }
-
-                            sb.AppendLine(string.Join(", ", colsText.ToArray()));
-                        }
-
-                        sb.AppendLine();
+                        colsText.Add($"{col.Name}:\"{col.Value}\"");
                     }
-                });
 
-                await WPFHelper.InvokeAsync(() => this.TableDumpText = sb.ToString());
+                    sb.AppendLine(string.Join(", ", colsText.ToArray()));
+                }
+
+                sb.AppendLine();
             }
-            finally
-            {
-                this.isRefreshing = false;
-            }
+
+            WPFHelper.InvokeAsync(() => this.TableDumpText = sb.ToString());
         }
 
         #endregion Commands 右側ペイン

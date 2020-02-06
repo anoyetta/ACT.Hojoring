@@ -365,9 +365,26 @@ namespace FFXIV.Framework.XIVHelper
             this.Names = string.Join("|", names.ToArray());
         }
 
-        public string NamesRegex => this.Names
-            .Replace(@".", @"\.")
-            .Replace(@"-", @"\-");
+        private static readonly char[] PCNameValidSymbols = new[] { '-', '\'' };
+
+        public string NamesRegex
+        {
+            get
+            {
+                var result = this.Names
+                    .Replace(@".", @"\.")
+                    .Replace(@"-", @"\-");
+
+                // 記号が含まれている？
+                if (result.IndexOfAny(PCNameValidSymbols) > -1)
+                {
+                    // i オプションを付与する
+                    result = $"(?i:{result})";
+                }
+
+                return result;
+            }
+        }
 
         public static readonly string UnknownName = "Unknown";
 
@@ -693,6 +710,10 @@ namespace FFXIV.Framework.XIVHelper
         public static Actor.Type GetActorType(
             this Combatant c)
             => ParseOrDefaultToActorType(c?.type ?? 0);
+
+        public static Actor.Type GetActorType(
+            CombatantEx c)
+            => ParseOrDefaultToActorType(c?.Type ?? 0);
 
         public static Actor.Type ParseOrDefaultToActorType(
             byte actorTypeValue)

@@ -119,8 +119,8 @@ namespace ACT.SpecialSpellTimer
             this.backgroudWorker.Start();
         }
 
-        private volatile bool isRefreshingSpells = false;
-        private volatile bool isRefreshingTickers = false;
+        private int refreshingSpellsLock;
+        private int refreshingTickersLock;
 
         public void BeginOverlaysThread()
         {
@@ -132,27 +132,24 @@ namespace ACT.SpecialSpellTimer
 
             this.refreshSpellOverlaysWorker.Tick += (s, e) =>
             {
-                if (this.isRefreshingSpells)
+                if (Interlocked.CompareExchange(ref this.refreshingSpellsLock, 1, 0) < 1)
                 {
-                    return;
-                }
-
-                this.isRefreshingSpells = true;
-
-                try
-                {
-                    this.RefreshSpellOverlaysCore();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Write("refresh spell overlays error:", ex);
-                }
-                finally
-                {
-                    this.isRefreshingSpells = false;
+                    try
+                    {
+                        this.RefreshSpellOverlaysCore();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Write("refresh spell overlays error:", ex);
+                    }
+                    finally
+                    {
+                        Interlocked.Exchange(ref this.refreshingSpellsLock, 0);
+                    }
                 }
             };
 
+            this.refreshingSpellsLock = 0;
             this.refreshSpellOverlaysWorker.Start();
 
             // テロップのスレッドを開始する
@@ -163,27 +160,24 @@ namespace ACT.SpecialSpellTimer
 
             this.refreshTickerOverlaysWorker.Tick += (s, e) =>
             {
-                if (this.isRefreshingTickers)
+                if (Interlocked.CompareExchange(ref this.refreshingTickersLock, 1, 0) < 1)
                 {
-                    return;
-                }
-
-                this.isRefreshingTickers = true;
-
-                try
-                {
-                    this.RefreshTickerOverlaysCore();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Write("refresh ticker overlays error:", ex);
-                }
-                finally
-                {
-                    this.isRefreshingTickers = false;
+                    try
+                    {
+                        this.RefreshTickerOverlaysCore();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Write("refresh ticker overlays error:", ex);
+                    }
+                    finally
+                    {
+                        Interlocked.Exchange(ref this.refreshingTickersLock, 0);
+                    }
                 }
             };
 
+            this.refreshingTickersLock = 0;
             this.refreshTickerOverlaysWorker.Start();
         }
 

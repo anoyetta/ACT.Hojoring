@@ -40,12 +40,20 @@ namespace ACT.XIVLog
             @"^00:...9:戦闘開始まで.+）$",
             RegexOptions.Compiled);
 
+        private static readonly Regex FeastStartRegex = new Regex(
+            @"^21:[0-9a-fA-F]{8}:40000001:168",
+            RegexOptions.Compiled);
+
+        private static readonly Regex FeastEndRegex = new Regex(
+            @"^21:[0-9a-fA-F]{8}:80000004:257",
+            RegexOptions.Compiled);
+
         private static readonly Regex ContentStartLogRegex = new Regex(
-            "^00:0839:「(?<content>.+)」の攻略を開始した。",
+            @"^00:0839:「(?<content>.+)」の攻略を開始した。",
             RegexOptions.Compiled);
 
         private static readonly Regex ContentEndLogRegex = new Regex(
-            "^00:0839:.+を終了した。$",
+            @"^00:0839:.+を終了した。$",
             RegexOptions.Compiled);
 
         private static readonly Regex PlayerChangedLogRegex = new Regex(
@@ -58,8 +66,10 @@ namespace ACT.XIVLog
             XIVLog xivlog)
         {
             if (!xivlog.Log.StartsWith("00:") &&
+                !xivlog.Log.StartsWith("01:") &&
                 !xivlog.Log.StartsWith("02:") &&
-                !xivlog.Log.StartsWith("19:"))
+                !xivlog.Log.StartsWith("19:") &&
+                !xivlog.Log.StartsWith("21:"))
             {
                 return;
             }
@@ -94,7 +104,25 @@ namespace ACT.XIVLog
                 return;
             }
 
-            if (StartCountdownRegex.IsMatch(xivlog.Log) ||
+            var isStart = StartCountdownRegex.IsMatch(xivlog.Log);
+
+            if (!isStart)
+            {
+                isStart = FeastStartRegex.IsMatch(xivlog.Log);
+                if (isStart)
+                {
+                    this.contentName = ActGlobals.oFormActMain.CurrentZone;
+
+                    if (Config.Instance.TryCountContentName != this.contentName ||
+                        (DateTime.Now - Config.Instance.TryCountTimestamp) >=
+                        TimeSpan.FromHours(Config.Instance.TryCountResetInterval))
+                    {
+                        this.TryCount = 0;
+                    }
+                }
+            }
+
+            if (isStart ||
                 xivlog.Log.Contains("/xivlog rec"))
             {
                 this.deathCount = 0;
@@ -110,7 +138,8 @@ namespace ACT.XIVLog
 
             if (isCancel ||
                 xivlog.Log.Contains("wipeout") ||
-                xivlog.Log.Contains("/xivlog stop"))
+                xivlog.Log.Contains("/xivlog stop") ||
+                FeastEndRegex.IsMatch(xivlog.Log))
             {
                 this.FinishRecording();
                 return;

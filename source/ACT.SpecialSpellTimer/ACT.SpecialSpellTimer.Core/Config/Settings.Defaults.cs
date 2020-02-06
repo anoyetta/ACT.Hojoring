@@ -57,7 +57,7 @@ namespace ACT.SpecialSpellTimer.Config
             { nameof(Settings.BarDefaultBackgroundColor), System.Windows.Media.Color.FromArgb(240, 0, 0, 0) },
 
             // 設定画面のない設定項目
-            { nameof(Settings.LastUpdateDateTime), DateTime.Parse("2000-1-1") },
+            { nameof(Settings.LastUpdateDateTime), DateTime.MinValue },
             { nameof(Settings.BlinkBrightnessDark), 0.3d },
             { nameof(Settings.BlinkBrightnessLight), 2.5d },
             { nameof(Settings.BlinkPitch), 0.5d },

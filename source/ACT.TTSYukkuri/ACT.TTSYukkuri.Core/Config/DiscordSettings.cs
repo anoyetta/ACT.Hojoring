@@ -16,7 +16,7 @@ namespace ACT.TTSYukkuri.Config
         public string Token
         {
             get => this.token;
-            set => this.SetProperty(ref this.token, value);
+            set => this.SetProperty(ref this.token, value?.Trim() ?? string.Empty);
         }
 
         public string DefaultServer

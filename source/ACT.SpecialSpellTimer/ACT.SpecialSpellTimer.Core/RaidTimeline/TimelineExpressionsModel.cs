@@ -247,7 +247,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <summary>
         /// 配下のSetステートメントを実行する
         /// </summary>
-        public void Set()
+        public void Set(
+            Match matched)
         {
             var sets = this.SetStatements
                 .Where(x =>
@@ -264,6 +265,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
+            var isVaribleChanged = false;
             foreach (var set in sets)
             {
                 var expretion = DateTime.MaxValue;
@@ -297,13 +299,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
                 else
                 {
-                    var matched = this.Parent switch
-                    {
-                        TimelineActivityModel a => a.SyncMatch,
-                        TimelineTriggerModel t => t.SyncMatch,
-                        _ => null,
-                    };
-
                     variable.Value = ObjectComparer.ConvertToValue(set.Value, matched);
                 }
 
@@ -318,20 +313,25 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     string.IsNullOrEmpty(set.Count) ?
                     $"{TimelineController.TLSymbol} set VAR['{set.Name}'] = {variable.Value}" :
                     $"{TimelineController.TLSymbol} set VAR['{set.Name}'] = {variable.Counter}");
+
+                isVaribleChanged = true;
             }
 
-            OnVariableChanged?.Invoke(new EventArgs());
-
             // table を処理する
-            var result = false;
+            var isTablechanged = false;
             foreach (var table in tables)
             {
-                table.ParseJson();
-                result |= table.Execute(
+                isTablechanged |= table.Execute(
+                    table.ParseJson(matched),
                     (x) => TimelineController.RaiseLog($"{TimelineController.TLSymbol} {x}"));
             }
 
-            if (result)
+            if (isVaribleChanged)
+            {
+                OnVariableChanged?.Invoke(new EventArgs());
+            }
+
+            if (isTablechanged)
             {
                 OnTableChanged?.Invoke(new EventArgs());
             }
@@ -341,7 +341,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// 配下のPredicateを実行して結果を返す
         /// </summary>
         /// <returns>真偽</returns>
-        public bool Predicate()
+        public bool Predicate(
+            Match matched)
         {
             var states = this.PredicateStatements
                 .Where(x =>
@@ -360,11 +361,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (TableDMLKeywords.Any(x => pre.Name.ContainsIgnoreCase(x)))
                 {
-                    result = this.PredicateTable(pre);
+                    result = this.PredicateTable(pre, matched);
                 }
                 else
                 {
-                    result = this.PredicateValue(pre);
+                    result = this.PredicateValue(pre, matched);
                 }
 
                 totalResult &= result;
@@ -374,7 +375,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         private bool PredicateValue(
-            TimelineExpressionsPredicateModel pre)
+            TimelineExpressionsPredicateModel pre,
+            Match matched)
         {
             var result = false;
             var log = string.Empty;
@@ -391,7 +393,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     current = variable.Value;
                 }
 
-                result = ObjectComparer.PredicateValue(current, pre.Value);
+                result = ObjectComparer.PredicateValue(current, pre.Value, matched);
                 log = $"predicate '{pre.Name}':{current} equal {pre.Value} -> {result}";
             }
             else
@@ -495,12 +497,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <param name="pre">predicateオブジェクト</param>
         /// <returns>評価結果</returns>
         private bool PredicateTable(
-            TimelineExpressionsPredicateModel pre)
+            TimelineExpressionsPredicateModel pre,
+            Match matched)
         {
             var log = string.Empty;
 
             var current = GetTableValue(pre.Name) ?? false;
-            var result = ObjectComparer.PredicateValue(current, pre.Value);
+            var result = ObjectComparer.PredicateValue(current, pre.Value, matched);
 
             log = $"predicate {pre.Name}:{current} equal {pre.Value} -> {result}";
             TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
@@ -740,7 +743,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public static bool PredicateValue(
             object inspectionValue,
             object expectedValue,
-            Match matched = null)
+            Match matched)
         {
             var t1 = inspectionValue?.ToString() ?? false.ToString();
             var t2 = expectedValue?.ToString() ?? false.ToString();

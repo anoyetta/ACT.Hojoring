@@ -833,8 +833,24 @@ namespace ACT.SpecialSpellTimer.Models
             new PlaceholderContainer("<id>", "[0-9a-fA-F]+", PlaceholderTypes.Custom),
             new PlaceholderContainer("<id4>", "[0-9a-fA-F]{4}", PlaceholderTypes.Custom),
             new PlaceholderContainer("<id8>", "[0-9a-fA-F]{8}", PlaceholderTypes.Custom),
-            new PlaceholderContainer("<_duration>", @"(?<_duration>[\d\.]+)", PlaceholderTypes.Custom)
+            new PlaceholderContainer("<_duration>", @"(?<_duration>[\d\.]+)", PlaceholderTypes.Custom),
+            new PlaceholderContainer("<job>", $"(?<_job>{string.Join("|", GetJobNames())})" , PlaceholderTypes.Custom)
         };
+
+        private static string[] GetJobNames()
+        {
+            var list = new List<string>();
+
+            var jobs = ((JobIDs[])Enum.GetValues(typeof(JobIDs)))
+                .Where(x => x != JobIDs.Unknown)
+                .Select(x => x.ToString());
+
+            list.AddRange(jobs
+                .Select(x => x.ToString().Substring(0, 1).ToUpper() + x.Substring(1).ToLower()));
+            list.AddRange(jobs);
+
+            return list.ToArray();
+        }
 
         private volatile List<PlaceholderContainer> placeholderList =
             new List<PlaceholderContainer>();
@@ -889,7 +905,8 @@ namespace ACT.SpecialSpellTimer.Models
                 new PlaceholderContainer(createPH("id"), @"([0-9a-fA-F]+|<id>|\[id\]|<id4>|\[id4\]|<id8>|\[id8\])", PlaceholderTypes.Custom),
                 new PlaceholderContainer(createPH("id4"), @"([0-9a-fA-F]{4}|<id4>|\[id4\])", PlaceholderTypes.Custom),
                 new PlaceholderContainer(createPH("id8"), @"([0-9a-fA-F]{8}|<id8>|\[id8\])", PlaceholderTypes.Custom),
-                new PlaceholderContainer(createPH("_duration"), @"(?<_duration>[\d\.]+)", PlaceholderTypes.Custom)
+                new PlaceholderContainer(createPH("_duration"), @"(?<_duration>[\d\.]+)", PlaceholderTypes.Custom),
+                new PlaceholderContainer(createPH("job"), $"(?<_job>{string.Join("|", GetJobNames())})" , PlaceholderTypes.Custom)
             };
 
             var jobs = Enum.GetNames(typeof(JobIDs));
