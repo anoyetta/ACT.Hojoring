@@ -1,10 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using System.Text;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.RazorModel;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using FFXIV.Framework.XIVHelper;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 
@@ -13,6 +17,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
     public class TimelineScriptModel :
         TimelineBase
     {
+        #region Logger
+
+        private NLog.Logger AppLogger => AppLog.DefaultLogger;
+
+        #endregion Logger
+
         public override TimelineElementTypes TimelineType => TimelineElementTypes.Script;
 
         public override IList<TimelineBase> Children => null;
@@ -65,7 +75,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 "System.Text",
                 "System.Text.RegularExpressions",
                 "System.Collections.Generic",
-                "System.Collections.Linq",
+                "System.Linq",
                 "ACT.SpecialSpellTimer.RazorModel",
                 "FFXIV.Framework.Common",
                 "FFXIV.Framework.Extensions",
@@ -79,12 +89,23 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public bool Compile()
         {
             var result = true;
-            this.script = null;
 
             try
             {
+                this.script = null;
+
                 if (!string.IsNullOrEmpty(this.scriptCode))
                 {
+                    if (string.IsNullOrEmpty(this.Name))
+                    {
+                        result = false;
+
+                        this.AppLogger.Error(
+                            $"[TL][CSX] Script name is nothing, Script name is required.\n<script>\n{this.scriptCode}\n</script>");
+
+                        return result;
+                    }
+
                     this.script = CSharpScript.Create(
                         this.scriptCode,
                         TimelineScriptOptions,
@@ -93,15 +114,38 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     this.script.Compile();
 
                     // Test Run
-                    this.Run("00:0000:Hello Script.");
+                    this.TestRun();
+
+                    this.AppLogger.Trace($"[TL][CSX] Compile was successful, name=\"{this.Name}\".");
                 }
+            }
+            catch (CompilationErrorException cex)
+            {
+                result = false;
+                this.DumpCompilationError(cex);
+                this.script = null;
+            }
+            catch (AggregateException ex)
+            {
+                result = false;
+
+                var message = $"[TL][CSX] Runtime error, name=\"{this.Name}\". {ex.Message}\n{ex.InnerException.ToFormatedString()}\n<script>{this.scriptCode}</script>";
+                this.AppLogger.Error(message);
+
+                this.script = null;
             }
             catch (Exception ex)
             {
                 result = false;
 
-                if (ex.InnerException is CompilationErrorException compileError)
+                if (ex.InnerException is CompilationErrorException cex)
                 {
+                    this.DumpCompilationError(cex);
+                }
+                else
+                {
+                    this.AppLogger.Error(
+                        $"[TL][CSX] Unexpected error, name=\"{this.Name}\".\n<script>{this.scriptCode}</script>\n\n{ex.ToFormatedString()}");
                 }
 
                 this.script = null;
@@ -110,33 +154,74 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             return result;
         }
 
-        public bool Run(
-            string logLine = null)
-            => this.RunAsync(logLine).Result;
-
-        public async Task<bool> RunAsync(
-            string logLine = null)
+        public bool Run()
         {
-            var result = true;
-
             if (this.script == null)
             {
-                return result;
+                return true;
             }
 
-            var globals = new TimelineScriptGlobalModel()
-            {
-                LogLine = logLine
-            };
+            var result = true;
 
-            var returnValue = (await this.script?.RunAsync(globals: globals)).ReturnValue;
-
-            if (returnValue is bool b)
+            try
             {
-                result = b;
+                var returnValue = this.script?
+                    .RunAsync(globals: TimelineScriptGlobalModel.Instance).Result?.ReturnValue ?? true;
+
+                if (returnValue is bool b)
+                {
+                    result = b;
+                }
+            }
+            catch (AggregateException ex)
+            {
+                result = false;
+
+                var message = $"[TL][CSX] Runtime error, name=\"{this.Name}\". {ex.Message}\n{ex.InnerException.ToFormatedString()}\n<script>{this.scriptCode}</script>";
+                this.AppLogger.Error(message);
+            }
+            catch (Exception ex)
+            {
+                result = false;
+
+                if (ex.InnerException is CompilationErrorException cex)
+                {
+                    this.DumpCompilationError(cex);
+                }
+                else
+                {
+                    this.AppLogger.Error(
+                        $"[TL][CSX] Unexpected error, name=\"{this.Name}\".\n<script>{this.scriptCode}</script>\n\n{ex.ToFormatedString()}");
+                }
             }
 
             return result;
+        }
+
+        private void TestRun()
+        {
+            this.script?.RunAsync(globals: TimelineScriptGlobalModel.CreateTestInstance()).Wait();
+        }
+
+        private void DumpCompilationError(
+            CompilationErrorException cex)
+        {
+            var message = new StringBuilder();
+
+            var errors = cex.Diagnostics.Count(x => x.Severity == DiagnosticSeverity.Error);
+            var warns = cex.Diagnostics.Count(x => x.Severity == DiagnosticSeverity.Warning);
+            message.AppendLine($"[TL][CSX] Compilation Error, name=\"{this.Name}\". {errors} errors, {warns} warnings.");
+
+            var i = 1;
+            foreach (var diag in cex.Diagnostics)
+            {
+                message.AppendLine($"{i}. {diag}");
+                i++;
+            }
+
+            message.AppendLine($"<script>{this.scriptCode}</script>");
+
+            this.AppLogger.Error(message.ToString());
         }
     }
 
