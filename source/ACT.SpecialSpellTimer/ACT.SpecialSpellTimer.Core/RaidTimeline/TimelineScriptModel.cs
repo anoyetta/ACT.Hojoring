@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -154,13 +154,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             return result;
         }
 
-        public bool Run(
-            string logLine = null)
+        public bool Run()
         {
             if (this.script == null)
             {
                 return true;
             }
+            catch (AggregateException ex)
+            {
+                result = false;
 
             var result = true;
 
@@ -196,17 +198,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
             }
 
-            return result;
+            message.AppendLine($"<script>{this.scriptCode}</script>");
+
+            this.AppLogger.Error(message.ToString());
         }
 
         private void TestRun()
         {
-            var globals = new TimelineScriptGlobalModel()
-            {
-                LogLine = "00:0000:Hello CSX."
-            };
-
-            this.script?.RunAsync(globals: globals).Wait();
+            this.script?.RunAsync(globals: TimelineScriptGlobalModel.CreateTestInstance()).Wait();
         }
 
         private void DumpCompilationError(

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using FFXIV.Framework.XIVHelper;
@@ -18,6 +18,8 @@ namespace ACT.SpecialSpellTimer.RazorModel
         }
 
         #endregion Lazy Singleton
+
+        public static TimelineScriptGlobalModel CreateTestInstance() => new TimelineScriptGlobalModel();
 
         public string TimelineDirectory => TimelineRazorModel.Instance.TimelineDirectory;
 
