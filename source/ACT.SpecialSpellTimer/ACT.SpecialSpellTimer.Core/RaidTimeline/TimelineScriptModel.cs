@@ -160,9 +160,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 return true;
             }
-            catch (AggregateException ex)
-            {
-                result = false;
 
             var result = true;
 
