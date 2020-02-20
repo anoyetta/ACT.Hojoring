@@ -15,6 +15,8 @@ namespace FFXIV.Framework.Common
     {
         private static readonly object Locker = new object();
 
+        public static Application CurrentApp => Application.Current;
+
         public static DispatcherOperation BeginInvoke(
             Action action,
             DispatcherPriority priority = DispatcherPriority.Background)

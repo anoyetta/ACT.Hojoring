@@ -47,6 +47,7 @@
   <system:String x:Key="Yukkuri_Reference">AquesTalk 音声記号列仕様書</system:String>
   <system:String x:Key="Yukkuri_EditDictionary">ユーザ辞書を編集する</system:String>
 
+  <system:String x:Key="Sasara_HideCevioWindow">CeVIOをタスクトレイに格納する</system:String>
   <system:String x:Key="Sasara_Cast">キャスト</system:String>
   <system:String x:Key="Sasara_Emotions">感情パラメータ</system:String>
   <system:String x:Key="Sasara_General">一般パラメータ</system:String>

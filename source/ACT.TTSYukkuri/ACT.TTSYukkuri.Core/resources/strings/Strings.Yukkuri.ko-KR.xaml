@@ -47,6 +47,7 @@
   <system:String x:Key="Yukkuri_Reference">AquesTalk 음성 텍스트 참조</system:String>
   <system:String x:Key="Yukkuri_EditDictionary">사용자 사전 편집</system:String>
 
+  <system:String x:Key="Sasara_HideCevioWindow">Store CeVIO in task tray</system:String>
   <system:String x:Key="Sasara_Cast">캐스트</system:String>
   <system:String x:Key="Sasara_Emotions">감정 파라메터</system:String>
   <system:String x:Key="Sasara_General">일반 파라메터</system:String>
