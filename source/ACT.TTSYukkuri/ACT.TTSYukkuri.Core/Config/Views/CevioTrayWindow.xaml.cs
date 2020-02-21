@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -205,8 +205,6 @@ namespace ACT.TTSYukkuri.Config.Views
 
         private static readonly System.Drawing.Icon CevioIconLegacy =
             new System.Drawing.Icon(Application.GetResourceStream(new Uri("pack://application:,,,/ACT.TTSYukkuri.Core;component/resources/images/CeVIO.ico")).Stream);
-
-        private IntPtr cevioWindowHandle;
 
         private DelegateCommand showCommand;
 
