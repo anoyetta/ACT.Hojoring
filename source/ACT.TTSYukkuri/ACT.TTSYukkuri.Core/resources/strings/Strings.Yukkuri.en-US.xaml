@@ -47,6 +47,7 @@ For use for commercial purposes, a license to use the library is required.</syst
   <system:String x:Key="Yukkuri_Reference">AquesTalk Voice Text Reference</system:String>
   <system:String x:Key="Yukkuri_EditDictionary">Edit User dictionary</system:String>
 
+  <system:String x:Key="Sasara_HideCevioWindow">Store CeVIO in task tray</system:String>
   <system:String x:Key="Sasara_Cast">Cast</system:String>
   <system:String x:Key="Sasara_Emotions">Emotions</system:String>
   <system:String x:Key="Sasara_General">General</system:String>

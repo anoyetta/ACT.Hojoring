@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using ACT.TTSYukkuri.Config.Views;
 using CeVIO.Talk.RemoteService;
 using FFXIV.Framework.Common;
 using Microsoft.Win32;
@@ -33,6 +34,32 @@ namespace ACT.TTSYukkuri.Config
 
         public SasaraConfig()
         {
+        }
+
+        private bool isHideCevioWindow;
+
+        public bool IsHideCevioWindow
+        {
+            get => this.isHideCevioWindow;
+            set
+            {
+                if (this.SetProperty(ref this.isHideCevioWindow, value))
+                {
+                    if (!Settings.IsInitializing)
+                    {
+                        if (value)
+                        {
+                            CevioTrayManager.Start();
+                            CevioTrayManager.ToIcon();
+                        }
+                        else
+                        {
+                            CevioTrayManager.RestoreWindow();
+                            CevioTrayManager.End();
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -408,9 +435,17 @@ namespace ACT.TTSYukkuri.Config
 
         public bool TryStartCevio()
         {
-            if (!this.IsCevioReady)
+            if (this.IsCevioReady)
             {
-                this.StartCevio();
+                return this.IsCevioReady;
+            }
+
+            lock (this)
+            {
+                if (!this.IsCevioReady)
+                {
+                    this.StartCevio();
+                }
             }
 
             return this.IsCevioReady;
