@@ -445,6 +445,13 @@ namespace ACT.TTSYukkuri
                     SoundPlayerWrapper.Init();
                     SoundPlayerWrapper.LoadTTSCache();
 
+                    // CeVIOをアイコン化する
+                    if (Settings.Default.TTS == TTSType.Sasara)
+                    {
+                        CevioTrayManager.Start();
+                        CevioTrayManager.ToIcon();
+                    }
+
                     PluginStatusLabel.Text = "Plugin Started";
 
                     this.Logger.Trace("[YUKKURI] End InitPlugin");
@@ -484,6 +491,10 @@ namespace ACT.TTSYukkuri
 
             try
             {
+                // CeVIO のアイコン化を解除する
+                CevioTrayManager.RestoreWindow();
+                CevioTrayManager.End();
+
                 // 設定を保存する
                 Settings.Default.Save();
                 FFXIV.Framework.Config.Save();

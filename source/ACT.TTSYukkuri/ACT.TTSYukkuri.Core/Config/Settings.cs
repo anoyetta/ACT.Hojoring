@@ -55,7 +55,7 @@ namespace ACT.TTSYukkuri.Config
         /// 初期化中か？
         /// </summary>
         [XmlIgnore]
-        private static bool isInitializing = false;
+        public static bool IsInitializing { get; set; }
 
         [XmlIgnore]
         public const double UpdateCheckInterval = 12;
@@ -267,7 +267,7 @@ namespace ACT.TTSYukkuri.Config
             {
                 if (this.SetProperty(ref this.mainDeviceID, value))
                 {
-                    if (!isInitializing)
+                    if (!IsInitializing)
                     {
                         (DiscordClientModel.Model as DiscordNetModel)?.ClearQueue();
 
@@ -299,7 +299,7 @@ namespace ACT.TTSYukkuri.Config
             {
                 if (this.SetProperty(ref this.subDeviceID, value))
                 {
-                    if (!isInitializing)
+                    if (!IsInitializing)
                     {
                         (DiscordClientModel.Model as DiscordNetModel)?.ClearQueue();
 
@@ -550,7 +550,7 @@ namespace ACT.TTSYukkuri.Config
             {
                 try
                 {
-                    isInitializing = true;
+                    IsInitializing = true;
 
                     var file = FilePath;
 
@@ -594,7 +594,7 @@ namespace ACT.TTSYukkuri.Config
                 }
                 finally
                 {
-                    isInitializing = false;
+                    IsInitializing = false;
                 }
             }
         }
