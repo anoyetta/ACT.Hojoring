@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ACT.TTSYukkuri.Config;
+using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Globalization;
 using FFXIV.Framework.XIVHelper;
-using FFXIV.Framework.Bridge;
 
 namespace ACT.TTSYukkuri
 {

@@ -865,7 +865,6 @@ namespace FFXIV.Framework.XIVHelper
             c.CurrentHP = (uint)actor.HPCurrent;
             c.MaxHP = (uint)actor.HPMax;
             c.CurrentMP = (uint)actor.MPCurrent;
-            c.MaxMP = (uint)actor.MPMax;
             c.CurrentTP = (uint)actor.TPCurrent;
             c.MaxTP = (uint)actor.TPMax;
 
