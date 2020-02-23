@@ -256,7 +256,7 @@
         <Label
           HorizontalAlignment="Center"
           VerticalAlignment="Center"
-          Content="#KYOANISTRONG"
+          Content="MAKKURO"
           Foreground="{DynamicResource MainForegroundBrush}"
           FontFamily="{DynamicResource SubNomalFont}"
           FontSize="{DynamicResource PatchSize}">

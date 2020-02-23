@@ -39,7 +39,6 @@ namespace FFXIV.Framework.XIVHelper
             dst.CurrentHP = src.CurrentHP;
             dst.MaxHP = src.MaxHP;
             dst.CurrentMP = src.CurrentMP;
-            dst.MaxMP = src.MaxMP;
             dst.CurrentTP = src.CurrentTP;
             dst.MaxTP = src.MaxTP;
             dst.CurrentCP = src.CurrentCP;
@@ -93,7 +92,6 @@ namespace FFXIV.Framework.XIVHelper
             dst.CurrentHP = src.CurrentHP;
             dst.MaxHP = src.MaxHP;
             dst.CurrentMP = src.CurrentMP;
-            dst.MaxMP = src.MaxMP;
             dst.CurrentTP = src.CurrentTP;
             dst.MaxTP = src.MaxTP;
             dst.CurrentCP = src.CurrentCP;
@@ -512,11 +510,9 @@ namespace FFXIV.Framework.XIVHelper
             set;
         }
 
-        public uint MaxMP
-        {
-            get;
-            set;
-        }
+        public static uint ConstMaxMP = 10000;
+
+        public uint MaxMP => ConstMaxMP;
 
         public uint CurrentTP
         {

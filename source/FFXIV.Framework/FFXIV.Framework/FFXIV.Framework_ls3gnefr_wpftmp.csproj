@@ -1,0 +1,502 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{22EBF8A4-EED1-4CD1-99EB-99665163A315}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <RootNamespace>FFXIV.Framework</RootNamespace>
+    <AssemblyName>FFXIV.Framework</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>preview</LangVersion>
+    <NoWarn>CS8002</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>preview</LangVersion>
+    <NoWarn>CS8002</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bridge\ConfigBridge.cs" />
+    <Compile Include="Bridge\DiscordBridge.cs" />
+    <Compile Include="Bridge\HelpBridge.cs" />
+    <Compile Include="Bridge\PlayBridge.cs" />
+    <Compile Include="Bridge\TextCommandBridge.cs" />
+    <Compile Include="Common\AppendedLogEventArgs.cs" />
+    <Compile Include="Common\AppLog.cs" />
+    <Compile Include="Common\AppLogEntry.cs" />
+    <Compile Include="Common\BufferedWavePlayer.cs" />
+    <Compile Include="Common\DelayableTask.cs" />
+    <Compile Include="Common\ObservableKeyValue.cs" />
+    <Compile Include="Common\CommonHelper.cs" />
+    <Compile Include="Common\Crypter.cs" />
+    <Compile Include="Common\Enumerator.cs" />
+    <Compile Include="Common\EnvironmentMigrater.cs" />
+    <Compile Include="Common\EqualityComparer.cs" />
+    <Compile Include="Common\JobIconDictionary.cs" />
+    <Compile Include="Common\KeyValue.cs" />
+    <Compile Include="Common\MasterFilePublisher.cs" />
+    <Compile Include="Common\CommonSounds.cs" />
+    <Compile Include="Common\WrappingStream.cs" />
+    <Compile Include="Common\XAudioPlayer.cs" />
+    <Compile Include="Common\DirectoryHelper.cs" />
+    <Compile Include="Common\EnvironmentHelper.cs" />
+    <Compile Include="Common\FileHelper.cs" />
+    <Compile Include="Common\FontInfo.cs" />
+    <Compile Include="Common\FormsHelper.cs" />
+    <Compile Include="Common\NativeMethods.cs" />
+    <Compile Include="Common\ThreadWorker.cs" />
+    <Compile Include="Common\OverlayProgress.cs" />
+    <Compile Include="Common\TimeConverter.cs" />
+    <Compile Include="Common\TimerWorker.cs" />
+    <Compile Include="Common\TreeSource.cs" />
+    <Compile Include="Common\UnmanagedLibrary.cs" />
+    <Compile Include="Common\UpdateChecker.cs" />
+    <Compile Include="Common\WaColors.cs" />
+    <Compile Include="Common\WavePlayer.cs" />
+    <Compile Include="Common\WPFHelper.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="Dialog\ColorDialogResult.cs" />
+    <Compile Include="Dialog\ColorDialogWrapper.cs" />
+    <Compile Include="Dialog\FontDialogResult.cs" />
+    <Compile Include="Dialog\FontDialogWrapper.cs" />
+    <Compile Include="Dialog\Views\ColorDialog.cs" />
+    <Compile Include="Dialog\Views\ColorDialogContent.xaml.cs">
+      <DependentUpon>ColorDialogContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\Views\ColorDialogViewModel.cs" />
+    <Compile Include="Dialog\Views\Dialog.xaml.cs">
+      <DependentUpon>Dialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\Views\FontDialog.cs" />
+    <Compile Include="Dialog\Views\FontDialogContent.xaml.cs">
+      <DependentUpon>FontDialogContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\Views\FontFamilyToNameConverter.cs" />
+    <Compile Include="Dialog\Views\InverseBooleanConverter.cs" />
+    <Compile Include="Dialog\Views\StringToDoubleConverter.cs" />
+    <Compile Include="Extensions\ColorExtensions.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\FontExtensions.cs" />
+    <Compile Include="Extensions\NumericExtensions.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Extensions\RegexExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\TimeSpanExtensions.cs" />
+    <Compile Include="resources\ResourcesDownloader.cs" />
+    <Compile Include="resources\ResourcesDownloaderView.xaml.cs">
+      <DependentUpon>ResourcesDownloaderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPF\CommonViewHelper.cs" />
+    <Compile Include="WPF\Views\CommonView.xaml.cs">
+      <DependentUpon>CommonView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="XIVHelper\Buff.cs" />
+    <Compile Include="XIVHelper\CameraInfo.cs" />
+    <Compile Include="XIVHelper\CombatantsManager.cs" />
+    <Compile Include="XIVHelper\CombatantEx.cs" />
+    <Compile Include="XIVHelper\EnmityEntry.cs" />
+    <Compile Include="XIVHelper\XIVLog.cs" />
+    <Compile Include="XIVHelper\XIVPluginHelper.cs" />
+    <Compile Include="XIVHelper\Jobs.cs" />
+    <Compile Include="XIVHelper\LogMessageTypeEx.cs" />
+    <Compile Include="XIVHelper\NameStyles.cs" />
+    <Compile Include="XIVHelper\PCNameDictionary.cs" />
+    <Compile Include="XIVHelper\PCOrder.cs" />
+    <Compile Include="XIVHelper\SharlayanHelper.cs" />
+    <Compile Include="XIVHelper\Skill.cs" />
+    <Compile Include="XIVHelper\World.cs" />
+    <Compile Include="XIVHelper\XIVApi.cs" />
+    <Compile Include="XIVHelper\Zone.cs" />
+    <Compile Include="Globalization\Locales.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Common\TaskWorker.cs" />
+    <Compile Include="WPF\Controls\Arc.xaml.cs">
+      <DependentUpon>Arc.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPF\Controls\FantImage.cs" />
+    <Compile Include="WPF\Controls\DenomiNumericTextBlock.xaml.cs">
+      <DependentUpon>DenomiNumericTextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPF\Controls\OutlineTextBlock.cs" />
+    <Compile Include="WPF\Controls\ProgressCircle.xaml.cs">
+      <DependentUpon>ProgressCircle.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPF\Controls\RichProgressBar.xaml.cs">
+      <DependentUpon>RichProgressBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPF\Controls\TextPath.cs" />
+    <Compile Include="WPF\Converters\IsNullConverter.cs" />
+    <Compile Include="WPF\Converters\AddConverter.cs" />
+    <Compile Include="WPF\Converters\BoolToHiddenConverter.cs" />
+    <Compile Include="WPF\Converters\BoolToCollapsedConverter.cs" />
+    <Compile Include="WPF\Converters\ColorOpacityConverter.cs" />
+    <Compile Include="WPF\Controls\LightOutlineTextBlock.xaml.cs">
+      <DependentUpon>LightOutlineTextBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPF\Converters\ColorToSolidColorBrushConverter.cs" />
+    <Compile Include="WPF\Converters\MultipleConverter.cs" />
+    <Compile Include="WPF\Converters\SolidColorBrushToColorConverter.cs" />
+    <Compile Include="WPF\Converters\ThicknessToMarginConverter.cs" />
+    <Compile Include="WPF\DependencyObjectExtension.cs" />
+    <Compile Include="WPF\DesignTimeResourcesDictionarycs.cs" />
+    <Compile Include="WPF\ViewModels\HelpViewModel.cs" />
+    <Compile Include="WPF\Views\HelpView.xaml.cs">
+      <DependentUpon>HelpView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPF\Views\IOverlay.cs" />
+    <Compile Include="WPF\Views\ModernMessageBox.xaml.cs">
+      <DependentUpon>ModernMessageBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPF\Views\NotSupportedView.xaml.cs">
+      <DependentUpon>NotSupportedView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WPF\Views\OverlayExtensions.cs" />
+    <Compile Include="WPF\Views\SandboxView.xaml.cs">
+      <DependentUpon>SandboxView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="xivapi\Models\ActionModel.cs" />
+    <Compile Include="xivapi\Models\ApiResultModel.cs" />
+    <Compile Include="xivapi\XIVAPIController.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="FodyWeavers.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <EmbeddedResource Include="resources\fonts\DSEG7ClassicMini-Bold.ttf" />
+    <EmbeddedResource Include="resources\fonts\DSEG7ClassicMini-BoldItalic.ttf" />
+    <EmbeddedResource Include="resources\fonts\DSEG7ClassicMini-Italic.ttf" />
+    <EmbeddedResource Include="resources\fonts\DSEG7ClassicMini-Light.ttf" />
+    <EmbeddedResource Include="resources\fonts\DSEG7ClassicMini-LightItalic.ttf" />
+    <EmbeddedResource Include="resources\fonts\DSEG7ClassicMini-Regular.ttf" />
+    <EmbeddedResource Include="resources\fonts\DSEG7ClassicMini-RegularItalic.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\strings\Strings.Help.ko-KR.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\strings\Strings.Help.en-US.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\strings\Strings.Help.ja-JP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\strings\Strings.Help.zh-CN.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ACT.Hojoring.Activator\ACT.Hojoring.Activator.csproj">
+      <Project>{c1bc2d6e-e10d-4a7f-900b-5fd84f39bf0a}</Project>
+      <Name>ACT.Hojoring.Activator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ACT.Hojoring.Common\ACT.Hojoring.Common.csproj">
+      <Project>{7e1502b5-db00-4b2e-bdba-19e3379670b3}</Project>
+      <Name>ACT.Hojoring.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\PCOrder.sample.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CommonServiceLocator">
+      <Version>2.0.4</Version>
+    </PackageReference>
+    <PackageReference Include="Fody">
+      <Version>6.0.4</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="FontAwesome.WPF">
+      <Version>4.7.0.9</Version>
+    </PackageReference>
+    <PackageReference Include="Hjson">
+      <Version>3.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client">
+      <Version>5.2.7</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client.ja">
+      <Version>5.2.7</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Net.Http">
+      <Version>2.2.29</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.PowerShell.5.ReferenceAssemblies">
+      <Version>1.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="NAudio">
+      <Version>1.9.0</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.Config">
+      <Version>4.5.11</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.StructuredEvents">
+      <Version>0.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="NPOI">
+      <Version>2.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="Octokit">
+      <Version>0.36.0</Version>
+    </PackageReference>
+    <PackageReference Include="Prism.Core">
+      <Version>7.1.0.431</Version>
+    </PackageReference>
+    <PackageReference Include="Prism.Wpf">
+      <Version>7.1.0.431</Version>
+    </PackageReference>
+    <PackageReference Include="PropertyChanged.Fody">
+      <Version>3.1.3</Version>
+    </PackageReference>
+    <PackageReference Include="Sharlayan">
+      <Version>5.0.5</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <ReferencePath Include="J:\hojoring.dev\source\ACT.Hojoring.Activator\bin\Release\ACT.Hojoring.Activator.dll" />
+    <ReferencePath Include="J:\hojoring.dev\source\ACT.Hojoring.Common\bin\Release\ACT.Hojoring.Common.dll" />
+    <ReferencePath Include="J:\hojoring.dev\source\ThirdParty\Advanced Combat Tracker.exe" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\bcrypt.net-next.strongname\3.2.1\lib\net462\BCrypt.Net-Next.StrongName.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\commonservicelocator\2.0.4\lib\net47\CommonServiceLocator.dll" />
+    <ReferencePath Include="J:\hojoring.dev\source\ThirdParty\SDK\FFXIV_ACT_Plugin.Common.dll" />
+    <ReferencePath Include="J:\hojoring.dev\source\ThirdParty\SDK\FFXIV_ACT_Plugin.LogFile.dll" />
+    <ReferencePath Include="J:\hojoring.dev\source\ThirdParty\SDK\FFXIV_ACT_Plugin.Resource.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\fontawesome.wpf\4.7.0.9\lib\net40\FontAwesome.WPF.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\hjson\3.0.0\lib\net40\Hjson.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\sharpziplib\1.0.0\lib\net45\ICSharpCode.SharpZipLib.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Microsoft.CSharp.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Microsoft.VisualBasic.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\mscorlib.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\naudio\1.9.0\lib\net35\NAudio.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\newtonsoft.json\12.0.2\lib\net45\Newtonsoft.Json.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\nlog\4.5.11\lib\net45\NLog.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\nlog.structuredevents\0.4.0\lib\net35\NLog.StructuredEvents.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\npoi\2.4.1\lib\net45\NPOI.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\npoi\2.4.1\lib\net45\NPOI.OOXML.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\npoi\2.4.1\lib\net45\NPOI.OpenXml4Net.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\npoi\2.4.1\lib\net45\NPOI.OpenXmlFormats.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\octokit\0.36.0\lib\net46\Octokit.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\PresentationCore.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\PresentationFramework.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\prism.core\7.1.0.431\lib\net45\Prism.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\prism.wpf\7.1.0.431\lib\net45\Prism.Wpf.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\propertychanged.fody\3.1.3\lib\net40\PropertyChanged.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\sharlayan\5.0.5\lib\net462\Sharlayan.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.ComponentModel.DataAnnotations.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Configuration.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Core.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Data.DataSetExtensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Data.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Drawing.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.IO.Compression.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.IO.Compression.FileSystem.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\microsoft.powershell.5.referenceassemblies\1.1.0\lib\net4\System.Management.Automation.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Net.Http.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\microsoft.net.http\2.2.29\lib\net45\System.Net.Http.Extensions.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\microsoft.aspnet.webapi.client\5.2.7\lib\net45\System.Net.Http.Formatting.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\microsoft.net.http\2.2.29\lib\net45\System.Net.Http.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Net.Http.WebRequest.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Runtime.Serialization.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.ServiceModel.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Transactions.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\system.valuetuple\4.5.0\ref\net47\System.ValueTuple.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Web.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Windows.Forms.dll" />
+    <ReferencePath Include="C:\Users\anoye\.nuget\packages\prism.wpf\7.1.0.431\lib\net45\System.Windows.Interactivity.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Xaml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.Xml.Linq.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\WindowsBase.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\WindowsFormsIntegration.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\Microsoft.Win32.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\netstandard.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.AppContext.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Collections.Concurrent.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Collections.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Collections.NonGeneric.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Collections.Specialized.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.ComponentModel.Annotations.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.ComponentModel.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.ComponentModel.EventBasedAsync.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.ComponentModel.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.ComponentModel.TypeConverter.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Console.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Data.Common.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Diagnostics.Contracts.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Diagnostics.Debug.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Diagnostics.FileVersionInfo.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Diagnostics.Process.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Diagnostics.StackTrace.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Diagnostics.TextWriterTraceListener.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Diagnostics.Tools.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Diagnostics.TraceSource.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Drawing.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Dynamic.Runtime.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Globalization.Calendars.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Globalization.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Globalization.Extensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.IO.Compression.ZipFile.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.IO.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.IO.FileSystem.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.IO.FileSystem.DriveInfo.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.IO.FileSystem.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.IO.FileSystem.Watcher.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.IO.IsolatedStorage.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.IO.MemoryMappedFiles.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.IO.Pipes.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.IO.UnmanagedMemoryStream.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Linq.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Linq.Expressions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Linq.Parallel.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Linq.Queryable.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Net.Http.Rtc.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Net.NameResolution.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Net.NetworkInformation.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Net.Ping.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Net.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Net.Requests.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Net.Security.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Net.Sockets.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Net.WebHeaderCollection.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Net.WebSockets.Client.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Net.WebSockets.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.ObjectModel.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Reflection.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Reflection.Emit.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Reflection.Emit.ILGeneration.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Reflection.Emit.Lightweight.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Reflection.Extensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Reflection.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Resources.Reader.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Resources.ResourceManager.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Resources.Writer.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Runtime.CompilerServices.VisualC.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Runtime.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Runtime.Extensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Runtime.Handles.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Runtime.InteropServices.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Runtime.InteropServices.RuntimeInformation.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Runtime.InteropServices.WindowsRuntime.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Runtime.Numerics.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Runtime.Serialization.Formatters.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Runtime.Serialization.Json.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Runtime.Serialization.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Runtime.Serialization.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Security.Claims.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Security.Cryptography.Algorithms.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Security.Cryptography.Csp.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Security.Cryptography.Encoding.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Security.Cryptography.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Security.Cryptography.X509Certificates.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Security.Principal.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Security.SecureString.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.ServiceModel.Duplex.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.ServiceModel.Http.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.ServiceModel.NetTcp.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.ServiceModel.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.ServiceModel.Security.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Text.Encoding.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Text.Encoding.Extensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Text.RegularExpressions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Threading.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Threading.Overlapped.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Threading.Tasks.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Threading.Tasks.Parallel.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Threading.Thread.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Threading.ThreadPool.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Threading.Timer.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Xml.ReaderWriter.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Xml.XDocument.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Xml.XmlDocument.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Xml.XmlSerializer.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Xml.XPath.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\Facades\System.Xml.XPath.XDocument.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\Dialog\Views\ColorDialogContent.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\Dialog\Views\Dialog.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\Dialog\Views\FontDialogContent.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\resources\ResourcesDownloaderView.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\WPF\Controls\Arc.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\WPF\Controls\LightOutlineTextBlock.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\WPF\Controls\DenomiNumericTextBlock.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\WPF\Controls\ProgressCircle.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\WPF\Controls\RichProgressBar.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\WPF\Views\CommonView.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\WPF\Views\HelpView.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\WPF\Views\ModernMessageBox.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\WPF\Views\NotSupportedView.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\WPF\Views\SandboxView.g.cs" />
+    <Compile Include="J:\hojoring.dev\source\FFXIV.Framework\FFXIV.Framework\obj\Release\GeneratedInternalTypeHelper.g.cs" />
+  </ItemGroup>
+</Project>
