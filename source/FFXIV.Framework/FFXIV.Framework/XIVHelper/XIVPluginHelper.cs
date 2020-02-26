@@ -1,5 +1,3 @@
-#define DISABLE_SHARLAYAN
-
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -50,15 +48,11 @@ namespace FFXIV.Framework.XIVHelper
 
         #endregion Singleton
 
-
-
         #region Logger
 
         private static NLog.Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
-
-
 
         private dynamic plugin;
 
@@ -308,8 +302,6 @@ namespace FFXIV.Framework.XIVHelper
 
         #endregion Start/End
 
-
-
         #region Attach FFXIV Plugin
 
         private void Attach()
@@ -393,8 +385,6 @@ namespace FFXIV.Framework.XIVHelper
             => this.IOCContainer?.Resolve<ResolveType>();
 
         #endregion Attach FFXIV Plugin
-
-
 
         #region Log Subscriber
 
@@ -659,8 +649,6 @@ namespace FFXIV.Framework.XIVHelper
 
         #endregion Log Subscriber
 
-
-
         #region Refresh Active
 
         public bool IsFFXIVActive
@@ -732,8 +720,6 @@ namespace FFXIV.Framework.XIVHelper
 
         #endregion Refresh Active
 
-
-
         #region Activator
 
         private volatile bool isActivationAllowed = true;
@@ -755,8 +741,6 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         #endregion Activator
-
-
 
         #region Refresh Combatants
 
@@ -829,8 +813,6 @@ namespace FFXIV.Framework.XIVHelper
         };
 
         #endregion Dummy Combatants
-
-
 
         private DateTime inCombatTimestamp = DateTime.MinValue;
 
@@ -915,17 +897,14 @@ namespace FFXIV.Framework.XIVHelper
         {
             var result = false;
 
-            if (SharlayanHelper.Instance.CurrentPlayer != null)
+            if (!Config.Instance.IsEnabledSharlayan ||
+                SharlayanHelper.Instance.CurrentPlayer == null)
             {
-#if DISABLE_SHARLAYAN
                 refreshInCombatByParty();
-#else
-                result = SharlayanHelper.Instance.CurrentPlayer.InCombat;
-#endif
             }
             else
             {
-                refreshInCombatByParty();
+                result = SharlayanHelper.Instance.CurrentPlayer.InCombat;
             }
 
             this.InCombat = result;
@@ -1059,8 +1038,6 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         #endregion Refresh Combatants
-
-
 
         #region Get Targets
 
@@ -1218,8 +1195,6 @@ namespace FFXIV.Framework.XIVHelper
 
         #endregion Get Targets
 
-
-
         #region Get Misc
 
         public Player GetPlayerStatus() => this.DataRepository?.GetPlayer();
@@ -1287,8 +1262,6 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         #endregion Get Misc
-
-
 
         #region Resources
 
@@ -1797,8 +1770,6 @@ namespace FFXIV.Framework.XIVHelper
 
         #endregion Resources
 
-
-
         #region NativeMethods
 
         /// <summary>
@@ -1822,6 +1793,5 @@ namespace FFXIV.Framework.XIVHelper
         private static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
         #endregion NativeMethods
-
     }
 }

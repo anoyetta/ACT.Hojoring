@@ -151,6 +151,11 @@ namespace FFXIV.Framework.XIVHelper
 
         private static void ClearLocalCaches()
         {
+            if (!Config.Instance.IsForceFlushSharlayanResources)
+            {
+                return;
+            }
+
             var dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             foreach (var f in LocalCacheFiles)
             {

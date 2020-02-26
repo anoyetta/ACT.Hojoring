@@ -218,6 +218,22 @@ namespace FFXIV.Framework
                 _ => Locales.EN,
             };
 
+        private bool isEnabledSharlayan = true;
+
+        public bool IsEnabledSharlayan
+        {
+            get => this.isEnabledSharlayan;
+            set => this.SetProperty(ref this.isEnabledSharlayan, value);
+        }
+
+        private bool isForceFlushSharlayanResources = true;
+
+        public bool IsForceFlushSharlayanResources
+        {
+            get => this.isForceFlushSharlayanResources;
+            set => this.SetProperty(ref this.isForceFlushSharlayanResources, value);
+        }
+
         [XmlIgnore]
         public bool SupportWin7 => SupportWin7Default;
 
