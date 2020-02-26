@@ -156,7 +156,7 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            var dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var dir = Directory.GetCurrentDirectory();
             foreach (var f in LocalCacheFiles)
             {
                 var file = Path.Combine(dir, f);
