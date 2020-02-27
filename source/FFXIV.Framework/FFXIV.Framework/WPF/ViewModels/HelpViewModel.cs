@@ -78,8 +78,9 @@ namespace FFXIV.Framework.WPF.ViewModels
                 var text = new StringBuilder();
 
                 var ffxivPlugin = ActGlobals.oFormActMain?.ActPlugins?
-                    .FirstOrDefault(
-                        x => x.pluginFile.Name.ContainsIgnoreCase("FFXIV_ACT_Plugin"))?
+                    .FirstOrDefault(x =>
+                        x.pluginFile.Name.ContainsIgnoreCase("FFXIV_ACT_Plugin") &&
+                        x.lblPluginStatus.Text.ContainsIgnoreCase("Started"))?
                     .pluginFile.FullName;
 
                 if (File.Exists(ffxivPlugin))
