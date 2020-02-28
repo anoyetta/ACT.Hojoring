@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
@@ -138,7 +138,14 @@ namespace ACT.SpecialSpellTimer.Sound
                     {
                         if (PlayBridge.Instance.IsAvailable)
                         {
-                            PlayBridge.Instance.Play(source, isSync, volume);
+                            if (Settings.Default.IsDefaultNoticeToOnlyMain)
+                            {
+                                PlayBridge.Instance.PlayMain(source, isSync, volume);
+                            }
+                            else
+                            {
+                                PlayBridge.Instance.Play(source, isSync, volume);
+                            }
                         }
                         else
                         {
@@ -152,7 +159,14 @@ namespace ACT.SpecialSpellTimer.Sound
 
                     if (PlayBridge.Instance.IsAvailable)
                     {
-                        PlayBridge.Instance.Play(source, isSync, volume);
+                        if (Settings.Default.IsDefaultNoticeToOnlyMain)
+                        {
+                            PlayBridge.Instance.PlayMain(source, isSync, volume);
+                        }
+                        else
+                        {
+                            PlayBridge.Instance.Play(source, isSync, volume);
+                        }
                     }
                     else
                     {

@@ -1,3 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Interop;
+using System.Xml;
+using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config.Models;
 using ACT.SpecialSpellTimer.Config.Views;
 using ACT.SpecialSpellTimer.Views;
@@ -8,15 +17,6 @@ using FFXIV.Framework.Globalization;
 using FFXIV.Framework.WPF.Views;
 using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Interop;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace ACT.SpecialSpellTimer.Config
 {
@@ -367,6 +367,14 @@ namespace ACT.SpecialSpellTimer.Config
         {
             get => this.waitingTimeToSyncTTS;
             set => this.SetProperty(ref this.waitingTimeToSyncTTS, value);
+        }
+
+        private bool isDefaultNoticeToOnlyMain = true;
+
+        public bool IsDefaultNoticeToOnlyMain
+        {
+            get => this.isDefaultNoticeToOnlyMain;
+            set => this.SetProperty(ref this.isDefaultNoticeToOnlyMain, value);
         }
 
         #region LPS View

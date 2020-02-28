@@ -204,6 +204,7 @@
   <system:String x:Key="Options_EnabledDetectPacketDump">"FC:"로 시작하는 패킷 덤프도 분석 대상으로 설정 (비추천)</system:String>
   <system:String x:Key="Options_ReadyText">정방향 스펠 타이머 완료 시 텍스트 (기본값: Ready)</system:String>
   <system:String x:Key="Options_OverText">역방향 스펠 타이머 완료 시 텍스트 (기본값: Over)</system:String>
+  <system:String x:Key="Options_DefaultNoticeToOnlyuMain">Default notice to only main</system:String>
 
   <system:String x:Key="Options_VisibleLPS">로그 밀도(LPS) 표시</system:String>
   <system:String x:Key="Options_LPSOverlayScale">LPS 오버레이 스케일</system:String>
