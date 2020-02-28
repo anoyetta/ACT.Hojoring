@@ -751,7 +751,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 try
                 {
-                    if (TimelineManager.Instance.IsLoading)
+                    if (!ActGlobals.oFormActMain.InitActDone ||
+                        TimelineManager.Instance.IsLoading)
                     {
                         Thread.Sleep(TimeSpan.FromSeconds(3));
                         continue;

@@ -204,6 +204,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">Detect FC:Packet dump (not recommend)</system:String>
   <system:String x:Key="Options_ReadyText">Text to display at the completion of the forward direction timer (default: "Ready")</system:String>
   <system:String x:Key="Options_OverText">Text to display at the completion of the back direction timer (default: "Over")</system:String>
+  <system:String x:Key="Options_DefaultNoticeToOnlyuMain">Default notice to only main</system:String>
 
   <system:String x:Key="Options_VisibleLPS">Show log density overlay (LPS)</system:String>
   <system:String x:Key="Options_LPSOverlayScale">LPS Overlay scale</system:String>

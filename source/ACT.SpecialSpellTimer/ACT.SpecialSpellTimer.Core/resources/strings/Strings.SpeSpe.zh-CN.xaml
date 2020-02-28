@@ -204,6 +204,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">检测 FC:开头数据 (不推荐)</system:String>
   <system:String x:Key="Options_ReadyText">正向计时器完成时显示文字 (默认: "Ready")</system:String>
   <system:String x:Key="Options_OverText">反向计时器完成时显示文字 (默认: "Over")</system:String>
+  <system:String x:Key="Options_DefaultNoticeToOnlyuMain">Default notice to only main</system:String>
 
   <system:String x:Key="Options_VisibleLPS">显示日志密度界面 (LPS)</system:String>
   <system:String x:Key="Options_LPSOverlayScale">LPS界面大小</system:String>

@@ -204,6 +204,7 @@ HEALER1 に me（自分）が含まれる場合にこのトリガが有効にな
   <system:String x:Key="Options_EnabledDetectPacketDump">"FC:" から始まるパケットダンプも解析対象にする（非推奨：高負荷）</system:String>
   <system:String x:Key="Options_ReadyText">正方向のスペルのカウント完了時のテキスト（既定値：Ready）</system:String>
   <system:String x:Key="Options_OverText">逆方向のスペルのカウント完了時のテキスト（既定値：Over）</system:String>
+  <system:String x:Key="Options_DefaultNoticeToOnlyuMain">デフォルトの通知先をメインデバイスのみにする</system:String>
 
   <system:String x:Key="Options_VisibleLPS">ログ密度（LPS）を表示する</system:String>
   <system:String x:Key="Options_LPSOverlayScale">LPSオーバーレイのスケール</system:String>

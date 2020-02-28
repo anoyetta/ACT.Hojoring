@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
+using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Utility;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -12,13 +13,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <summary>
         /// 規定の既定値の定義リスト
         /// </summary>
-        private static readonly IList<TimelineDefaultModel> SuperDefaultValues = new[]
+        private static IList<TimelineDefaultModel> GetSuperDefaultValues() => new[]
         {
             // Activity
             NewDefault(TimelineElementTypes.Activity, "Enabled", true),
             NewDefault(TimelineElementTypes.Activity, "SyncOffsetStart", -12d),
             NewDefault(TimelineElementTypes.Activity, "SyncOffsetEnd", 12d),
-            NewDefault(TimelineElementTypes.Activity, "NoticeDevice", NoticeDevices.Both),
+            NewDefault(TimelineElementTypes.Activity, "NoticeDevice", GetDefaultNoticeDevice()),
             NewDefault(TimelineElementTypes.Activity, "NoticeOffset", -6d),
             NewDefault(TimelineElementTypes.Activity, "NoticeSync", false),
 
@@ -27,7 +28,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.Trigger, "Enabled", true),
             NewDefault(TimelineElementTypes.Trigger, "SyncCount", 0),
             NewDefault(TimelineElementTypes.Trigger, "SyncInterval", 0),
-            NewDefault(TimelineElementTypes.Trigger, "NoticeDevice", NoticeDevices.Both),
+            NewDefault(TimelineElementTypes.Trigger, "NoticeDevice", GetDefaultNoticeDevice()),
             NewDefault(TimelineElementTypes.Trigger, "NoticeOffset", 0),
             NewDefault(TimelineElementTypes.Trigger, "NoticeSync", false),
             NewDefault(TimelineElementTypes.Trigger, "IsExecuteHidden", false),
@@ -85,9 +86,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.Import, "Enabled", true),
         };
 
+        /// <summary>
+        /// デフォルトの通知デバイスを決定する
+        /// </summary>
+        /// <returns></returns>
+        private static NoticeDevices GetDefaultNoticeDevice() => Settings.Default.IsDefaultNoticeToOnlyMain ?
+            NoticeDevices.Main :
+            NoticeDevices.Both;
+
         private void SetDefaultValues()
         {
-            var defaults = this.Defaults.Union(SuperDefaultValues)
+            var defaults = this.Defaults.Union(GetSuperDefaultValues())
                 .Where(x => (x.Enabled ?? true));
 
             this.Walk((element) =>

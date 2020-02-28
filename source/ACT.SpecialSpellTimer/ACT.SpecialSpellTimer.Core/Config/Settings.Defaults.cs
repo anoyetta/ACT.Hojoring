@@ -33,6 +33,7 @@ namespace ACT.SpecialSpellTimer.Config
             { nameof(Settings.HideWhenNotActive), false },
             { nameof(Settings.ResetOnWipeOut), true },
             { nameof(Settings.WipeoutNotifyToACT), true },
+            { nameof(Settings.IsDefaultNoticeToOnlyMain), true },
             { nameof(Settings.RemoveTooltipSymbols), true },
             { nameof(Settings.RemoveWorldName), true },
             { nameof(Settings.SimpleRegex), true },
