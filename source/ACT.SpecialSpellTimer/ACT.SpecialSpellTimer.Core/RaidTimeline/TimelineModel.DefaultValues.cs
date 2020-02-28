@@ -160,7 +160,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     if (x.Enabled.GetValueOrDefault() &&
                         x.TimelineType == element.TimelineType &&
-                        string.Equals(x.Name, element.Name, StringComparison.OrdinalIgnoreCase))
+                        !string.IsNullOrEmpty(x.Name) &&
+                        string.Equals(x.Name, element.Inherits, StringComparison.OrdinalIgnoreCase))
                     {
                         super = x;
                         return true;

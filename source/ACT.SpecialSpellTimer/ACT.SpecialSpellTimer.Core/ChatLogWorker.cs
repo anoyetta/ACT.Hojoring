@@ -159,9 +159,12 @@ namespace ACT.SpecialSpellTimer
                 if (this.LogBuffer.Length <= 0 ||
                     !this.OutputEnabled)
                 {
-                    if (this.worker.Interval != LongInterval)
+                    if (this.worker != null)
                     {
-                        this.worker.Interval = LongInterval;
+                        if (this.worker.Interval != LongInterval)
+                        {
+                            this.worker.Interval = LongInterval;
+                        }
                     }
 
                     return;
@@ -180,9 +183,12 @@ namespace ACT.SpecialSpellTimer
                         this.outputStream?.Flush();
                     }
 
-                    if (this.worker.Interval != FlushInterval.TotalMilliseconds)
+                    if (this.worker != null)
                     {
-                        this.worker.Interval = FlushInterval.TotalMilliseconds;
+                        if (this.worker.Interval != FlushInterval.TotalMilliseconds)
+                        {
+                            this.worker.Interval = FlushInterval.TotalMilliseconds;
+                        }
                     }
                 }
             }
