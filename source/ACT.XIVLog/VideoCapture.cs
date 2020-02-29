@@ -62,6 +62,8 @@ namespace ACT.XIVLog
 
         private string defeatedLog = "19:Naoki Yoshida was defeated";
 
+        private bool inFeast;
+
         public void DetectCapture(
             XIVLog xivlog)
         {
@@ -111,6 +113,7 @@ namespace ACT.XIVLog
                 isStart = FeastStartRegex.IsMatch(xivlog.Log);
                 if (isStart)
                 {
+                    this.inFeast = true;
                     this.contentName = ActGlobals.oFormActMain.CurrentZone;
 
                     if (Config.Instance.TryCountContentName != this.contentName ||
@@ -139,7 +142,7 @@ namespace ACT.XIVLog
             if (isCancel ||
                 xivlog.Log.Contains("wipeout") ||
                 xivlog.Log.Contains("/xivlog stop") ||
-                FeastEndRegex.IsMatch(xivlog.Log))
+                (this.inFeast && FeastEndRegex.IsMatch(xivlog.Log)))
             {
                 this.FinishRecording();
                 return;
