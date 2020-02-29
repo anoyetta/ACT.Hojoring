@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows.Threading;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.ViewModels.Bases;
+using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using NLog;
 
@@ -167,6 +168,12 @@ namespace ACT.UltraScouter.Workers
                 {
                     try
                     {
+                        if (!ActGlobals.oFormActMain.InitActDone)
+                        {
+                            Thread.Sleep(TimeSpan.FromSeconds(1));
+                            return;
+                        }
+
                         this.GetDataMethod?.Invoke();
                     }
                     catch (ThreadAbortException)
@@ -210,6 +217,11 @@ namespace ACT.UltraScouter.Workers
                         {
                             try
                             {
+                                if (!ActGlobals.oFormActMain.InitActDone)
+                                {
+                                    return;
+                                }
+
                                 this.UpdateOverlayDataMethod?.Invoke();
                             }
                             finally
@@ -229,6 +241,11 @@ namespace ACT.UltraScouter.Workers
                         {
                             try
                             {
+                                if (!ActGlobals.oFormActMain.InitActDone)
+                                {
+                                    return;
+                                }
+
                                 this.UpdateSubOverlayDataMethod?.Invoke();
                             }
                             finally
