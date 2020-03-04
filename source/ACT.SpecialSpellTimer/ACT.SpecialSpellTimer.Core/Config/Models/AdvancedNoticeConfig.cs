@@ -182,7 +182,14 @@ namespace ACT.SpecialSpellTimer.Config.Models
             {
                 if (PlayBridge.Instance.IsAvailable)
                 {
-                    PlayBridge.Instance.Play(tts, isSync);
+                    if (Settings.Default.IsDefaultNoticeToOnlyMain)
+                    {
+                        PlayBridge.Instance.PlayMain(tts, isSync);
+                    }
+                    else
+                    {
+                        PlayBridge.Instance.Play(tts, isSync);
+                    }
                 }
                 else
                 {

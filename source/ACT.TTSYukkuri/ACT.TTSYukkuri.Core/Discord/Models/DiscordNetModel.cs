@@ -359,6 +359,11 @@ namespace ACT.TTSYukkuri.Discord.Models
         {
             lock (SendBlocker)
             {
+                if (!this.IsJoinedVoiceChannel)
+                {
+                    return;
+                }
+
                 this.AppendLogLine($"Play Sound: {Path.GetFileName(audioFile)}");
 
                 if (this.audioOutStream == null)
@@ -379,7 +384,14 @@ namespace ACT.TTSYukkuri.Discord.Models
                 }
                 catch (Exception ex)
                 {
-                    this.AppendLogLine($"Play Sound Error.", ex);
+                    if (ex.InnerException == null)
+                    {
+                        this.AppendLogLine($"Play Sound Error.", ex);
+                    }
+                    else
+                    {
+                        this.AppendLogLine($"Play Sound Error.", ex.InnerException);
+                    }
 
                     if (this.audioOutStream != null)
                     {
