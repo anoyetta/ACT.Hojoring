@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Prism.Mvvm;
@@ -106,6 +106,30 @@ namespace ACT.SpecialSpellTimer.RazorModel
                 {
                     this.RefreshPlaceholders();
                 }
+            }
+        }
+
+        public void Truncate()
+        {
+            lock (this)
+            {
+                if (this.rows.Count < 1)
+                {
+                    return;
+                }
+
+                try
+                {
+                    this.isSuspendRefreshPlaceholders = true;
+
+                    this.rows.Clear();
+                }
+                finally
+                {
+                    this.isSuspendRefreshPlaceholders = false;
+                }
+
+                this.RefreshPlaceholders();
             }
         }
 

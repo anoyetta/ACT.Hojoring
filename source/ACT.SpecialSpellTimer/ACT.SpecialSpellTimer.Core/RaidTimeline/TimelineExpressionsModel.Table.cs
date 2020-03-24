@@ -96,6 +96,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     table.Remove(key);
                     raiseLog?.Invoke($"Delete row from TABLE['{queryModel.Table}'] by key='{key.ToString()}'");
                 }
+                else if (queryModel.Method == TalbeJsonMethods.Truncate)
+                {
+                    table.Truncate();
+                    raiseLog?.Invoke($"Truncate rows from TABLE['{queryModel.Table}']");
+                }
                 else
                 {
                     var row = new TimelineRow();
@@ -147,7 +152,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
     {
         Insert,
         Update,
-        Delete
+        Delete,
+        Truncate
     }
 
     [JsonObject]
