@@ -393,13 +393,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     current = variable.Value;
                 }
 
-                result = ObjectComparer.PredicateValue(current, pre.Value, matched);
-                log = $"predicate '{pre.Name}':{current} equal {pre.Value} -> {result}";
+                result = ObjectComparer.PredicateValue(current, pre.Value, matched, out string value);
+                log = $"predicate '{pre.Name}':{current} equal {value} -> {result}";
             }
             else
             {
-                result = (pre.Count.GetValueOrDefault() == variable.Counter);
-                log = $"predicate '{pre.Name}':{variable.Counter} equal {pre.Count} -> {result}";
+                var value = pre.Count.GetValueOrDefault();
+                result = (value == variable.Counter);
+                log = $"predicate '{pre.Name}':{variable.Counter} equal {value} -> {result}";
             }
 
             TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
@@ -503,9 +504,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var log = string.Empty;
 
             var current = GetTableValue(pre.Name) ?? false;
-            var result = ObjectComparer.PredicateValue(current, pre.Value, matched);
+            var result = ObjectComparer.PredicateValue(current, pre.Value, matched, out string value);
 
-            log = $"predicate {pre.Name}:{current} equal {pre.Value} -> {result}";
+            log = $"predicate {pre.Name}:{current} equal {value} -> {result}";
             TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
 
             return result;
@@ -524,6 +525,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (text == null)
             {
                 text = string.Empty;
+            }
+
+            var placeholders = TimelineManager.Instance.GetPlaceholders();
+            foreach (var ph in placeholders)
+            {
+                text = text.Replace(
+                    ph.Placeholder,
+                    ph.ReplaceString);
             }
 
             foreach (var item in Variables)
@@ -743,8 +752,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public static bool PredicateValue(
             object inspectionValue,
             object expectedValue,
-            Match matched)
+            Match matched,
+            out string expectedValueReplaced)
         {
+            expectedValueReplaced = string.Empty;
             var t1 = inspectionValue?.ToString() ?? false.ToString();
             var t2 = expectedValue?.ToString() ?? false.ToString();
 
@@ -757,6 +768,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 t2 = matched.Result(t2);
             }
+
+            expectedValueReplaced = t2;
 
             if (double.TryParse(t2, out double d2))
             {
