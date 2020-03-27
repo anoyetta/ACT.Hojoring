@@ -94,7 +94,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 if (queryModel.Method == TalbeJsonMethods.Delete)
                 {
                     table.Remove(key);
-                    raiseLog?.Invoke($"Delete row from TABLE['{queryModel.Table}'] by key='{key.ToString()}'");
+                    raiseLog?.Invoke($"Delete row from TABLE['{queryModel.Table}'] by key='{key}'");
                 }
                 else if (queryModel.Method == TalbeJsonMethods.Truncate)
                 {
