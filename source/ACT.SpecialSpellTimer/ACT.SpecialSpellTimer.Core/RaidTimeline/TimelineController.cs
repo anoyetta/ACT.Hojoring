@@ -1200,12 +1200,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 tri.MatchedCounter++;
 
-                if (tri.SyncCount.Value != 0)
+                if (!tri.IsAvailableSyncCount())
                 {
-                    if (tri.SyncCount.Value != tri.MatchedCounter)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
 
                 if (tri.SyncInterval != 0 &&
@@ -1438,12 +1435,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 tri.MatchedCounter++;
 
-                if (tri.SyncCount.Value != 0)
+                if (!tri.IsAvailableSyncCount())
                 {
-                    if (tri.SyncCount.Value != tri.MatchedCounter)
-                    {
-                        return;
-                    }
+                    return;
                 }
 
                 if (!tri.ExecuteExpressions())

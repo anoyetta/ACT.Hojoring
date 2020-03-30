@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
+using Match = System.Text.RegularExpressions.Match;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -257,20 +258,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.syncMatch, value);
         }
 
-        private int? syncCount = null;
-
-        [XmlIgnore]
-        public int? SyncCount
-        {
-            get => this.syncCount;
-            set => this.SetProperty(ref this.syncCount, value);
-        }
+        private string syncCount = null;
 
         [XmlAttribute(AttributeName = "sync-count")]
         public string SyncCountXML
         {
-            get => this.SyncCount?.ToString();
-            set => this.SyncCount = int.TryParse(value, out var v) ? v : (int?)null;
+            get => this.syncCount;
+            set => this.SetProperty(ref this.syncCount, value);
         }
 
         private int? syncInterval = null;
@@ -511,6 +505,84 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
                 }
             }
+        }
+
+        private static readonly Regex SyncCountRangeRegex = new Regex(
+            @"(?<from>\d*)-(?<to>\d*)",
+            RegexOptions.Compiled);
+
+        public bool IsAvailableSyncCount()
+        {
+            if (string.IsNullOrEmpty(this.SyncCountXML))
+            {
+                return true;
+            }
+
+            var r = true;
+
+            if (this.SyncCountXML.Contains(","))
+            {
+                var counts = this.SyncCountXML.Split(',').Select(x =>
+                {
+                    int.TryParse(x, out int i);
+                    return i;
+                });
+
+                if (counts.Contains(0))
+                {
+                    return r;
+                }
+
+                r = counts.Contains(this.matchedCounter);
+
+                return r;
+            }
+
+            if (this.SyncCountXML.Contains("-"))
+            {
+                var match = SyncCountRangeRegex.Match(this.SyncCountXML);
+                if (!match.Success)
+                {
+                    return r;
+                }
+
+                var from = 0;
+                var to = int.MaxValue;
+
+                var fromText = match.Groups["from"].Value;
+                if (!string.IsNullOrEmpty(fromText))
+                {
+                    if (!int.TryParse(fromText, out from))
+                    {
+                        from = 0;
+                    }
+                }
+
+                var toText = match.Groups["to"].Value;
+                if (!string.IsNullOrEmpty(toText))
+                {
+                    if (!int.TryParse(toText, out to))
+                    {
+                        to = int.MaxValue;
+                    }
+                }
+
+                r = this.matchedCounter >= from && this.matchedCounter <= to;
+
+                return r;
+            }
+
+            if (int.TryParse(this.SyncCountXML, out int i))
+            {
+                if (i <= 0)
+                {
+                    return r;
+                }
+
+                r = this.matchedCounter == i;
+            }
+
+            return r;
         }
 
         public void Dump()
