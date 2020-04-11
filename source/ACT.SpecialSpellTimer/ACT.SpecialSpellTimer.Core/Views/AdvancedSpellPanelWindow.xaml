@@ -82,18 +82,26 @@
     </Grid>
     <!-- レイアウトガイド用グリッド end -->
 
-    <!-- 背景色グリッド -->
+    <!-- 絶対座標配置のときの背景色グリッド -->
     <Border
       Panel.ZIndex="-2"
       CornerRadius="8"
-      Background="{Binding Path=Panel.BackgroundBrush, Mode=OneWay}">
+      Background="{Binding Path=Panel.BackgroundBrush, Mode=OneWay}"
+      Visibility="{Binding Panel.IsAbsoluteLayout, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
     </Border>
-    <!-- 背景色グリッド end -->
 
     <!-- スペル配置グリッド -->
     <Grid
       VerticalAlignment="{Binding Panel.GridVerticalAlignment, Mode=OneWay}"
       HorizontalAlignment="{Binding Panel.GridHorizontalAlignment, Mode=OneWay}">
+      <!-- スタック配置のときの背景色グリッド -->
+      <Border
+        Panel.ZIndex="-2"
+        CornerRadius="8"
+        Background="{Binding Path=Panel.BackgroundBrush, Mode=OneWay}"
+        Visibility="{Binding Panel.IsStackLayout, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+      </Border>
+
       <ItemsControl
         x:Name="SpellsControl"
         Margin="{Binding Panel.GridPadding, Mode=OneWay}"
