@@ -389,7 +389,7 @@ namespace ACT.SpecialSpellTimer.Views
 
             this.CircleProgress.Fill = this.BarBrush;
             this.CircleProgress.Stroke = this.BarOutlineBrush;
-            this.CircleProgress.Radius = this.Spell.BarWidth / 2;
+            this.CircleProgress.Radius = (double)this.Spell.BarWidth / 2d;
             this.CircleProgress.Thickness = this.Spell.BarHeight;
             this.CircleProgress.IsCCW = true;
         }
