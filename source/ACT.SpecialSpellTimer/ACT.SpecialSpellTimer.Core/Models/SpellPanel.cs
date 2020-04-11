@@ -322,10 +322,13 @@ namespace ACT.SpecialSpellTimer.Models
                 if (this.SetProperty(ref this.isStackLayout, value))
                 {
                     this.RaisePropertyChanged(nameof(this.MarginTickness));
+                    this.RaisePropertyChanged(nameof(this.IsAbsoluteLayout));
                     this.RaiseMarginChanged();
                 }
             }
         }
+
+        public bool IsAbsoluteLayout => !this.isStackLayout;
 
         private Orientation stackPanelOrientation = Orientation.Vertical;
 
