@@ -189,6 +189,7 @@ namespace ACT.SpecialSpellTimer.Views
         public ICollectionView ActiveSpellView => this.ActiveSpellViewSource?.View;
 
         private readonly List<SpellControl> spellControls = new List<SpellControl>();
+        private volatile bool isStackLayout;
 
         public void Refresh()
         {
@@ -240,6 +241,18 @@ namespace ACT.SpecialSpellTimer.Views
                 this.activeSpells.Clear();
                 this.ClearSpellControls();
                 return;
+            }
+
+            if (this.isStackLayout != this.panel.IsStackLayout)
+            {
+                lock (this)
+                {
+                    if (this.isStackLayout != this.panel.IsStackLayout)
+                    {
+                        this.isStackLayout = this.panel.IsStackLayout;
+                        this.activeSpells.Clear();
+                    }
+                }
             }
 
             // 有効なスペルリストを入れ替える
