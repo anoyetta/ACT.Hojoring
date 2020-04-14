@@ -604,25 +604,22 @@ namespace ACT.TTSYukkuri.Discord.Models
             var opus = Path.Combine(entryDirectory, "opus.dll");
             var sodium = Path.Combine(entryDirectory, "libsodium.dll");
 
-            if (!File.Exists(opus))
+            var targets = new[]
             {
-                var src = Path.Combine(libDirectory, "libopus.dll");
+                new { src = Path.Combine(libDirectory, "libopus.dll"), dst =  Path.Combine(entryDirectory, "opus.dll") },
+                new { src = Path.Combine(libDirectory, "libsodium.dll"), dst =  Path.Combine(entryDirectory, "libsodium.dll") },
+            };
 
-                if (File.Exists(src))
-                {
-                    this.AppendLogLine("Install Opus.");
-                    File.Copy(src, opus, true);
-                }
-            }
-
-            if (!File.Exists(sodium))
+            foreach (var target in targets)
             {
-                var src = Path.Combine(libDirectory, "libsodium.dll");
-
-                if (File.Exists(src))
+                if (File.Exists(target.src))
                 {
-                    this.AppendLogLine("Install Sodium.");
-                    File.Copy(src, sodium, true);
+                    if (!File.Exists(target.dst) ||
+                        !Crypter.IsMatchHash(target.src, target.dst))
+                    {
+                        File.Copy(target.src, target.dst, true);
+                        this.AppendLogLine($"{Path.GetFileName(target.dst)} has been installed.");
+                    }
                 }
             }
         }

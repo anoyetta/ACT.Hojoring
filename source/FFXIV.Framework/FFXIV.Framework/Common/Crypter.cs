@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -76,6 +77,36 @@ namespace FFXIV.Framework.Common
             }
 
             return decryptedString;
+        }
+
+        public static bool IsMatchHash(
+            string file1,
+            string file2)
+        {
+            if (!File.Exists(file1) ||
+                !File.Exists(file2))
+            {
+                return false;
+            }
+
+            var r = false;
+
+            using (var md5 = MD5.Create())
+            {
+                using (var fs1 = new FileStream(file1, FileMode.Open, FileAccess.Read))
+                using (var fs2 = new FileStream(file2, FileMode.Open, FileAccess.Read))
+                {
+                    var hash1 = md5.ComputeHash(fs1);
+                    var hash2 = md5.ComputeHash(fs2);
+
+                    r = string.Equals(
+                        BitConverter.ToString(hash1),
+                        BitConverter.ToString(hash2),
+                        StringComparison.OrdinalIgnoreCase);
+                }
+            }
+
+            return r;
         }
 
         /// <summary>

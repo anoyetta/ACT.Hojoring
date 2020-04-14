@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using ACT.TTSYukkuri.Config;
 using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
 using Google.Cloud.TextToSpeech.V1;
 
 namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
@@ -133,7 +134,8 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
                     continue;
                 }
 
-                if (!File.Exists(lib.dst))
+                if (!File.Exists(lib.dst) ||
+                    !Crypter.IsMatchHash(lib.src, lib.dst))
                 {
                     File.Copy(lib.src, lib.dst, true);
                 }
