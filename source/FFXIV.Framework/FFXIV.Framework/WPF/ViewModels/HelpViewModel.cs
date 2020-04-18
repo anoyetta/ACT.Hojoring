@@ -499,7 +499,7 @@ namespace FFXIV.Framework.WPF.ViewModels
                 var here = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 p.StartInfo.FileName = "powershell.exe";
                 p.StartInfo.Arguments =
-                    $@"-nologo -command ""Get-ChildItem '{here}' -Recurse | ?{{$_.PsIsContainer -and $_.FullName -inotmatch 'backup'}} | Out-File -Encoding utf8 '{temp}\file_list_Hojoring.txt'";
+                    $@"-nologo -command ""Get-ChildItem '{here}' -Recurse | ?{{$_.FullName -notmatch 'backup'}} | Format-Table -AutoSize | Out-File -Encoding utf8 '{temp}\file_list_Hojoring.txt'";
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.CreateNoWindow = true;
                 p.Start();
