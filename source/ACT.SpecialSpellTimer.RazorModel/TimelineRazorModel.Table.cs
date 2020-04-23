@@ -8,6 +8,8 @@ namespace ACT.SpecialSpellTimer.RazorModel
     public class TimelineTable :
         BindableBase
     {
+        public static readonly object TableLocker = new object();
+
         private string name;
 
         public string Name
@@ -22,7 +24,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
         {
             get
             {
-                lock (this)
+                lock (TableLocker)
                 {
                     return this.rows.OrderBy(x => x.KeyValue?.ToString()).ToList();
                 }
@@ -38,7 +40,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
                 return;
             }
 
-            lock (this)
+            lock (TableLocker)
             {
                 try
                 {
@@ -81,7 +83,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
                 return;
             }
 
-            lock (this)
+            lock (TableLocker)
             {
                 var toRemove = this.rows
                     .Where(x => object.Equals(x.KeyValue, keyValue))
@@ -111,7 +113,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
 
         public void Truncate()
         {
-            lock (this)
+            lock (TableLocker)
             {
                 if (this.rows.Count < 1)
                 {

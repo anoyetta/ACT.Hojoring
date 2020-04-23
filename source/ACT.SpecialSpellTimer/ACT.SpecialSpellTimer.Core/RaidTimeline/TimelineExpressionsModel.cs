@@ -464,13 +464,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (int.TryParse(indexText, out int index))
                 {
-                    var table = TimelineExpressionsModel.GetTable(tableName);
-                    if (table.Rows.Count > index)
+                    lock (TimelineTable.TableLocker)
                     {
-                        var row = table.Rows[index];
-                        if (row.Cols.ContainsKey(colName))
+                        var table = TimelineExpressionsModel.GetTable(tableName);
+                        if (table.Rows.Count > index)
                         {
-                            value = row.Cols[colName].Value;
+                            var row = table.Rows[index];
+                            if (row.Cols.ContainsKey(colName))
+                            {
+                                value = row.Cols[colName].Value;
+                            }
                         }
                     }
                 }
@@ -482,9 +485,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             match = CountTableRegex.Match(keyword);
             if (match.Success)
             {
-                var tableName = match.Groups["TableName"].Value;
-                var table = TimelineExpressionsModel.GetTable(tableName);
-                value = table.Rows.Count;
+                lock (TimelineTable.TableLocker)
+                {
+                    var tableName = match.Groups["TableName"].Value;
+                    var table = TimelineExpressionsModel.GetTable(tableName);
+                    value = table.Rows.Count;
+                }
 
                 return value;
             }
