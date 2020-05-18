@@ -521,30 +521,46 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             return data;
         }
 
+        private volatile bool isSaving;
+
         public void Save(
             string file)
         {
-            lock (Locker)
+            if (this.isSaving)
             {
-                FileHelper.CreateDirectory(file);
+                return;
+            }
 
-                var ns = new XmlSerializerNamespaces();
-                ns.Add(string.Empty, string.Empty);
-
-                var buffer = new StringBuilder();
-                using (var sw = new StringWriter(buffer))
+            try
+            {
+                this.isSaving = true;
+            }
+            finally
+            {
+                lock (Locker)
                 {
-                    var xs = new XmlSerializer(this.GetType());
-                    xs.Serialize(sw, this, ns);
+                    FileHelper.CreateDirectory(file);
+
+                    var ns = new XmlSerializerNamespaces();
+                    ns.Add(string.Empty, string.Empty);
+
+                    var buffer = new StringBuilder();
+                    using (var sw = new StringWriter(buffer))
+                    {
+                        var xs = new XmlSerializer(this.GetType());
+                        xs.Serialize(sw, this, ns);
+                    }
+
+                    buffer.Replace("utf-16", "utf-8");
+
+                    using (var sw = new StreamWriter(file, false, new UTF8Encoding(false)))
+                    {
+                        sw.Write(buffer.ToString() + Environment.NewLine);
+                        sw.Flush();
+                    }
                 }
 
-                buffer.Replace("utf-16", "utf-8");
-
-                using (var sw = new StreamWriter(file, false, new UTF8Encoding(false)))
-                {
-                    sw.Write(buffer.ToString() + Environment.NewLine);
-                    sw.Flush();
-                }
+                this.isSaving = false;
             }
         }
 
