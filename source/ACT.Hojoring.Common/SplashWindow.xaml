@@ -166,7 +166,25 @@
       <Label x:Name="Dummy" Background="{DynamicResource MainForegroundBrush}" Visibility="Collapsed" />
 
       <Grid>
-        <Label x:Name="TitleLabel" Content="Hojoring" Foreground="{DynamicResource MainForegroundBrush}" FontFamily="{StaticResource Font}" FontSize="{DynamicResource TitleSize}">
+        <Label
+          x:Name="DEBUGLabel"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Content="-DEBUG-"
+          FontWeight="Black"
+          Foreground="#c9171e"
+          FontFamily="Century Gothic"
+          FontSize="15">
+        </Label>
+      </Grid>
+
+      <Grid>
+        <Label
+          x:Name="TitleLabel"
+          Content="Hojoring"
+          Foreground="{DynamicResource MainForegroundBrush}"
+          FontFamily="{StaticResource Font}"
+          FontSize="{DynamicResource TitleSize}">
           <Label.Effect>
             <DropShadowEffect
               Opacity="0.2"
