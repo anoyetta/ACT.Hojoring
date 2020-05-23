@@ -23,7 +23,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         Unloaded = 0,
         Loading,
         Loaded,
-        Runnning
+        Runnning,
+        Error
     }
 
     public static class TimelineStatusEx
@@ -36,6 +37,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 "Loading...",
                 "Standby",
                 "Running",
+                "Error",
             }[(int)s];
 
         public static string ToIndicator(
@@ -46,6 +48,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 "Ｒ",
                 "⬛",
                 "▶",
+                "Ｅ"
             }[(int)s];
     }
 
@@ -183,6 +186,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             get
             {
+                if (this.Model.HasError)
+                {
+                    return false;
+                }
+
                 if (!this.Model.IsEnabled)
                 {
                     return false;
