@@ -64,7 +64,8 @@ namespace ACT.SpecialSpellTimer.Config.Views
                                 MessageBoxButton.OK,
                                 ex.InnerException);
                         }
-                    }, DispatcherPriority.ContextIdle);
+                    },
+                    DispatcherPriority.ContextIdle);
                 }
             }
 
@@ -536,7 +537,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void RaisePropertyChanged(
-            [CallerMemberName]string propertyName = null)
+            [CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(
                 this,
@@ -546,7 +547,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
         protected virtual bool SetProperty<T>(
             ref T field,
             T value,
-            [CallerMemberName]string propertyName = null)
+            [CallerMemberName] string propertyName = null)
         {
             if (Equals(field, value))
             {

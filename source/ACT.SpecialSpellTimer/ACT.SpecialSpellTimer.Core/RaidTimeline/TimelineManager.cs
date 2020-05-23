@@ -38,10 +38,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public string TimelineDirectory => TimelineSettings.TimelineDirectory;
 
-        private readonly ObservableCollection<TimelineModel> timelineModels
-            = new ObservableCollection<TimelineModel>();
-
-        public ObservableCollection<TimelineModel> TimelineModels => this.timelineModels;
+        public ObservableCollection<TimelineModel> TimelineModels
+        {
+            get;
+            private set;
+        } = !WPFHelper.IsDesignMode ?
+            new ObservableCollection<TimelineModel>() :
+            new ObservableCollection<TimelineModel>()
+            {
+                new TimelineModel()
+                {
+                    Name = "ダミータイムライン",
+                }
+            };
 
         private readonly List<(string TimelineName, TimelineTriggerModel Trigger)> globalTriggers
             = new List<(string TimelineName, TimelineTriggerModel Trigger)>();
@@ -142,7 +151,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 // 有効なTLが存在しないならばグローバルのいずれかをカレントにする
                 if (newTimeline == null)
                 {
-                    newTimeline = toReloads.FirstOrDefault(x => x.IsGlobalZone);
+                    newTimeline = toReloads.FirstOrDefault(x =>
+                        x.IsGlobalZone &&
+                        !x.HasError);
                 }
 
                 if (newTimeline != null)
@@ -173,7 +184,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             // グローバルトリガとリファンレスファイルをリロードする
             var toReloads = timelines.Where(x =>
-                x.IsGlobalZone);
+                x.IsGlobalZone &&
+                !x.HasError);
             foreach (var tl in toReloads)
             {
                 tl.Reload();
@@ -239,6 +251,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     var tl = TimelineModel.Load(file);
                     if (tl != null)
                     {
+                        if (tl.HasError)
+                        {
+                            this.AppLogger.Error(
+                                $"[TL] Load error. file={file}\n{tl.ErrorText}");
+                            LogManager.Flush();
+                        }
+
                         list.Add(tl);
 
                         if (!TimelineSettings.Instance.TimelineFiles.Any(x => x.Key == file))
@@ -255,11 +274,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     this.AppLogger.Error(
                         ex,
-                        $"[TL] Load error. file={file}");
+                        $"[TL] Load fatal. file={file}");
                     LogManager.Flush();
 
                     throw new FileLoadException(
-                        $"Timeline file Load error.\n{Path.GetFileName(file)}",
+                        $"Timeline file load fatal.\n{Path.GetFileName(file)}",
                         ex);
                 }
 
@@ -268,7 +287,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             // グローバルトリガをロードする
             this.globalTriggers.Clear();
-            var globals = list.Where(x => x.IsGlobalZone);
+            var globals = list.Where(x =>
+                x.IsGlobalZone &&
+                !x.HasError);
 
             foreach (var tl in globals)
             {

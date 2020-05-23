@@ -426,6 +426,33 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             private set;
         }
 
+        private bool hasError;
+
+        [XmlIgnore]
+        public bool HasError
+        {
+            get => this.hasError;
+            set
+            {
+                if (this.SetProperty(ref this.hasError, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.HasNotError));
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public bool HasNotError => !this.hasError;
+
+        private string errorText;
+
+        [XmlIgnore]
+        public string ErrorText
+        {
+            get => this.errorText;
+            set => this.SetProperty(ref this.errorText, value);
+        }
+
         #region Methods
 
         public bool ExistsActivities() =>
@@ -493,12 +520,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             var tl = default(TimelineModel);
-
-            // Razorエンジンで読み込む
-            var sb = CompileRazor(file);
+            var sb = default(StringBuilder);
 
             try
             {
+                // Razorエンジンで読み込む
+                sb = CompileRazor(file);
+
                 if (File.Exists(RazorDumpFile))
                 {
                     File.Delete(RazorDumpFile);
@@ -518,14 +546,35 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                tl = new TimelineModel();
+                tl.SourceFile = file;
+                tl.Name = tl.SourceFileName;
+                tl.HasError = true;
+                tl.Controller.Status = TimelineStatus.Error;
+
+                var msg = new StringBuilder();
+                msg.AppendLine($"Timeline load error.");
+                msg.AppendLine($"{tl.SourceFileName}");
+                msg.AppendLine();
+                msg.AppendLine($"{ex.Message}");
+
+                if (ex.InnerException != null)
+                {
+                    msg.AppendLine($"{ex.InnerException.Message}");
+                }
+
+                tl.ErrorText = msg.ToString();
+
                 File.WriteAllText(
                     RazorDumpFile,
                     sb.ToString(),
                     new UTF8Encoding(false));
 
-                throw;
+                tl.CompiledText = sb.ToString();
+
+                return tl;
             }
 
             if (tl != null)
@@ -814,6 +863,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public ICommand ChangeActiveCommand =>
             this.changeActiveCommand ?? (this.changeActiveCommand = new DelegateCommand<bool?>((isChecked) =>
             {
+                if (this.HasError)
+                {
+                    return;
+                }
+
                 if (!isChecked.HasValue)
                 {
                     return;
@@ -855,10 +909,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         .Replace(".xml", ".compiled.xml")
                         .Replace(".cshtml", ".compiled.xml")));
 
+                FileHelper.DeleteForce(temp);
+
                 System.IO.File.WriteAllText(
                     temp,
                     this.CompiledText,
                     new UTF8Encoding(false));
+
+                FileHelper.SetReadOnly(temp);
 
                 Process.Start(temp);
             }));
@@ -888,9 +946,20 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     await this.ExecuteReloadCommandAsync();
 
-                    ModernMessageBox.ShowDialog(
-                        "Timeline reloaded.",
-                        "Timeline Manager");
+                    if (!this.HasError)
+                    {
+                        ModernMessageBox.ShowDialog(
+                            "Timeline reloaded.",
+                            "Timeline Manager");
+                    }
+                    else
+                    {
+                        ModernMessageBox.ShowDialog(
+                            "Error occurred reloading the timeline.",
+                            "Timeline Manager");
+
+                        this.ShowErrorDetailsCommand.Execute(null);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -902,6 +971,30 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         MessageBoxButton.OK,
                         ex);
                 }
+            }));
+
+        private ICommand showErrorDetailsCommand;
+
+        public ICommand ShowErrorDetailsCommand =>
+            this.showErrorDetailsCommand ?? (this.showErrorDetailsCommand = new DelegateCommand(async () =>
+            {
+                this.ShowCommand.Execute(null);
+                await Task.Delay(500);
+
+                var temp = Path.Combine(
+                    Path.GetTempPath(),
+                    "error_details.txt");
+
+                FileHelper.DeleteForce(temp);
+
+                File.WriteAllText(
+                    temp,
+                    this.ErrorText,
+                    new UTF8Encoding(false));
+
+                FileHelper.SetReadOnly(temp);
+
+                Process.Start(temp);
             }));
 
         public async Task ExecuteReloadCommandAsync()

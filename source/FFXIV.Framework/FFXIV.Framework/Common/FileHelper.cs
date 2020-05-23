@@ -40,5 +40,36 @@ namespace FFXIV.Framework.Common
 
             return files.OrderBy(x => x).ToArray();
         }
+
+        public static void SetReadOnly(
+            string file)
+        {
+            if (!File.Exists(file))
+            {
+                return;
+            }
+
+            var att = File.GetAttributes(file);
+            att |= FileAttributes.ReadOnly;
+            File.SetAttributes(file, att);
+        }
+
+        public static void DeleteForce(
+            string file)
+        {
+            if (!File.Exists(file))
+            {
+                return;
+            }
+
+            var fi = new FileInfo(file);
+
+            if ((fi.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+            {
+                fi.Attributes = FileAttributes.Normal;
+            }
+
+            fi.Delete();
+        }
     }
 }

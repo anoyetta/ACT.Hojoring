@@ -149,6 +149,8 @@ namespace ACT.Hojoring.Common
 
             this.Topmost = IsDebug;
 
+            this.DEBUGLabel.Visibility = IsDebug ? Visibility.Visible : Visibility.Collapsed;
+
             var ver = HojoringVersion;
             if (ver != null)
             {

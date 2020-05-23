@@ -202,6 +202,7 @@
                       <CheckBox
                         Grid.Column="0"
                         IsChecked="{Binding Path=IsActive, Mode=TwoWay}"
+                        IsEnabled="{Binding HasNotError, Mode=OneWay}"
                         Command="{Binding Path=ChangeActiveCommand, Mode=OneWay}"
                         CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Mode=OneWay}"
                         VerticalAlignment="Stretch"
@@ -235,6 +236,25 @@
                             MouseLeftButtonDown="TimelineModel_MouseLeftButtonDown" />
 
                           <TextBlock Margin="15 0 0 0" Text="{Binding Path=Revision, Mode=OneWay}" FontSize="14" VerticalAlignment="Bottom" />
+                        </StackPanel>
+
+                        <StackPanel
+                          Grid.Row="1"
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Left"
+                          Margin="15 15 0 0"
+                          Visibility="{Binding HasError, Mode=OneWay, Converter={StaticResource CollapsedConverter}}">
+                          <TextBlock
+                            Text="ERROR"
+                            FontSize="15"
+                            FontWeight="Bold"
+                            Foreground="#ea5506"
+                            HorizontalAlignment="Left" />
+                          <Button
+                            FontSize="15"
+                            FontWeight="Bold"
+                            Content="Show error details..."
+                            Command="{Binding ShowErrorDetailsCommand, Mode=OneWay}" />
                         </StackPanel>
 
                         <StackPanel
