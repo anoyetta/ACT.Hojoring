@@ -949,13 +949,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     if (!this.HasError)
                     {
                         ModernMessageBox.ShowDialog(
-                            "Timeline reloaded.",
+                            "Timeline reloading has completed.",
                             "Timeline Manager");
                     }
                     else
                     {
                         ModernMessageBox.ShowDialog(
-                            "Error occurred reloading the timeline.",
+                            "An error has occurred in reloading the timeline.",
                             "Timeline Manager");
 
                         this.ShowErrorDetailsCommand.Execute(null);
@@ -966,7 +966,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     TimelineModel.ShowRazorDumpFile();
 
                     ModernMessageBox.ShowDialog(
-                        "Timeline reload error !",
+                        "An unexpected error has occurred in reloading the timeline.",
                         "Timeline Manager",
                         MessageBoxButton.OK,
                         ex);
