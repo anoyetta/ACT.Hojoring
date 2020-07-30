@@ -359,7 +359,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 var result = false;
 
-                if (TableDMLKeywords.Any(x => pre.Name.ContainsIgnoreCase(x)))
+                if (TableDMLKeywords.Any(x => pre.Name.Contains(x)))
                 {
                     result = this.PredicateTable(pre, matched);
                 }
@@ -394,13 +394,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 result = ObjectComparer.PredicateValue(current, pre.Value, matched, out string value);
-                log = $"predicate '{pre.Name}':{current} equal {value} -> {result}";
+                log = $"predicate ['{pre.Name}':{current}] equal [{value}] -> {result}";
             }
             else
             {
                 var value = pre.Count.GetValueOrDefault();
                 result = (value == variable.Counter);
-                log = $"predicate '{pre.Name}':{variable.Counter} equal {value} -> {result}";
+                log = $"predicate ['{pre.Name}':{variable.Counter}] equal [{value}] -> {result}";
             }
 
             TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
@@ -435,8 +435,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private static readonly string[] TableDMLKeywords = new[]
         {
-            TableVarKeyword,
-            CountFunctionKeyword,
+            $"{TableVarKeyword}[",
+            $"{CountFunctionKeyword}(",
         };
 
         /// <summary>
@@ -512,7 +512,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var current = GetTableValue(pre.Name) ?? false;
             var result = ObjectComparer.PredicateValue(current, pre.Value, matched, out string value);
 
-            log = $"predicate {pre.Name}:{current} equal {value} -> {result}";
+            log = $"predicate table variable [{pre.Name}:{current}] equal [{value}] -> {result}";
             TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
 
             return result;

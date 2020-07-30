@@ -144,7 +144,7 @@ namespace FFXIV.Framework.Common
 
                 if (File.Exists(fileName))
                 {
-                    LogManager.Configuration = new XmlLoggingConfiguration(fileName, true);
+                    LogManager.Configuration = new XmlLoggingConfiguration(fileName);
                     loaded = true;
                     return;
                 }
@@ -160,7 +160,7 @@ namespace FFXIV.Framework.Common
                     var file = Path.Combine(dir, Path.GetFileName(fileName));
                     if (File.Exists(file))
                     {
-                        LogManager.Configuration = new XmlLoggingConfiguration(file, true);
+                        LogManager.Configuration = new XmlLoggingConfiguration(file);
                         loaded = true;
                         return;
                     }

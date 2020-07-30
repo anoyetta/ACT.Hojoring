@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
+using FFXIV.Framework.Extensions;
 using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -149,6 +150,27 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             this.NameMatch = this.nameRegex.Match(name);
             return this.NameMatch.Success;
+        }
+
+        private string action;
+
+        [XmlAttribute(AttributeName = "action")]
+        public string Action
+        {
+            get => this.action;
+            set => this.SetProperty(ref this.action, value);
+        }
+
+        public bool IsMatchAction(
+            string action)
+        {
+            if (string.IsNullOrEmpty(this.action) ||
+                string.IsNullOrEmpty(action))
+            {
+                return true;
+            }
+
+            return action.ContainsIgnoreCase(this.action);
         }
 
         /// <summary>
