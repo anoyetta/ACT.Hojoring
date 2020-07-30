@@ -1376,8 +1376,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 var conditions = psync.Combatants
                     .Where(x =>
-                        x.Enabled.GetValueOrDefault() &&
-                        !string.IsNullOrEmpty(x.Name));
+                        x.Enabled.GetValueOrDefault());
 
                 if (!conditions.Any())
                 {
@@ -1389,8 +1388,31 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     var target = combatants.FirstOrDefault(x =>
                     {
                         var r = false;
+                        var isTarget = false;
 
-                        if (con.IsMatchName(x.Name))
+                        if (!string.IsNullOrEmpty(x.Name))
+                        {
+                            isTarget = con.IsMatchName(x.Name);
+
+                            if (isTarget)
+                            {
+                                if (!string.IsNullOrEmpty(x.CastSkillName) &&
+                                    x.IsCasting)
+                                {
+                                    isTarget = con.IsMatchAction(x.CastSkillName);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(x.CastSkillName) &&
+                                x.IsCasting)
+                            {
+                                isTarget = con.IsMatchAction(x.CastSkillName);
+                            }
+                        }
+
+                        if (isTarget)
                         {
                             if (con.X == TimelineCombatantModel.InvalidPosition ||
                                 (con.X - con.Tolerance) <= x.PosXMap && x.PosXMap <= (con.X + con.Tolerance))
