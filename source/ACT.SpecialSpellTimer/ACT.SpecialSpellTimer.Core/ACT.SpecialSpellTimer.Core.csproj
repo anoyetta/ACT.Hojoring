@@ -108,6 +108,7 @@
     <Compile Include="Config\Views\TimelineView.xaml.cs">
       <DependentUpon>TimelineView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\TableCompiler.Placeholders.cs" />
     <Compile Include="RaidTimeline\CombatAnalyzer.cs" />
     <Compile Include="RaidTimeline\CombatLog.cs" />
     <Compile Include="Config\BaseView.xaml.cs">
