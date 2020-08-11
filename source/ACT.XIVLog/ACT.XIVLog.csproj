@@ -104,7 +104,7 @@
       <Version>1.0.4</Version>
     </PackageReference>
     <PackageReference Include="NLog.Config">
-      <Version>4.7.2</Version>
+      <Version>4.7.3</Version>
     </PackageReference>
     <PackageReference Include="Prism.Wpf">
       <Version>7.1.0.431</Version>
@@ -114,6 +114,9 @@
     </PackageReference>
     <PackageReference Include="SLOBSharp">
       <Version>1.1.4</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.RegularExpressions">
+      <Version>4.3.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
