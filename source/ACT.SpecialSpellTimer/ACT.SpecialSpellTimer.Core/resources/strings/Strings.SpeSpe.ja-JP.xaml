@@ -215,6 +215,7 @@ HEALER1 に me（自分）が含まれる場合にこのトリガが有効にな
 
   <system:String x:Key="Options_ResetOnWipeout">全滅時にカウントをリセットする</system:String>
   <system:String x:Key="Options_ResetNotifyToACT">リセット時にACT本体に"end"を通知する</system:String>
+  <system:String x:Key="Options_SimplifiedInCombat">戦闘中の検出を簡易版にする</system:String>
 
   <system:String x:Key="Options_Phonetics">パーティメンバの呼び名</system:String>
   <system:String x:Key="Options_TestPhonetics">呼び名をテストする</system:String>

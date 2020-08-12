@@ -215,6 +215,7 @@
 
   <system:String x:Key="Options_ResetOnWipeout">전멸 시 카운터 재설정</system:String>
   <system:String x:Key="Options_ResetNotifyToACT">리셋 시 ACT 본체에 "end" 전송</system:String>
+  <system:String x:Key="Options_SimplifiedInCombat">Simplify detection in combat</system:String>
 
   <system:String x:Key="Options_Phonetics">파티원 호칭</system:String>
   <system:String x:Key="Options_TestPhonetics">호칭 테스트</system:String>

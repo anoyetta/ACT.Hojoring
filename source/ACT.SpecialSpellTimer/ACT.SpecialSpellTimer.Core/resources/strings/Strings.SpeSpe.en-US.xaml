@@ -215,6 +215,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
 
   <system:String x:Key="Options_ResetOnWipeout">Reset counter at wipe out.</system:String>
   <system:String x:Key="Options_ResetNotifyToACT">Notify "end" to ACT at reset</system:String>
+  <system:String x:Key="Options_SimplifiedInCombat">Simplify detection in combat</system:String>
 
   <system:String x:Key="Options_Phonetics">Party members callsign</system:String>
   <system:String x:Key="Options_TestPhonetics">Test callsign</system:String>
