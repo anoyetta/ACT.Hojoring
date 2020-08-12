@@ -239,6 +239,14 @@ namespace FFXIV.Framework
             set => this.SetProperty(ref this.isEnabledSharlayan, value);
         }
 
+        private bool isSimplifiedInCombat = false;
+
+        public bool IsSimplifiedInCombat
+        {
+            get => this.isSimplifiedInCombat;
+            set => this.SetProperty(ref this.isSimplifiedInCombat, value);
+        }
+
         private bool isForceFlushSharlayanResources = true;
 
         public bool IsForceFlushSharlayanResources

@@ -97,5 +97,6 @@
 
     <CheckBox Margin="0 25 0 0" Content="{DynamicResource Options_ResetOnWipeout}" IsChecked="{Binding Config.ResetOnWipeOut, Mode=TwoWay}" />
     <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_ResetNotifyToACT}" IsChecked="{Binding Config.WipeoutNotifyToACT, Mode=TwoWay}" Visibility="{Binding Config.ResetOnWipeOut, Mode=OneWay, Converter={StaticResource CollapsedConverter}}" />
+    <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_SimplifiedInCombat}" IsChecked="{Binding FrameworkConfig.IsSimplifiedInCombat, Mode=TwoWay}" />
   </StackPanel>
 </UserControl>

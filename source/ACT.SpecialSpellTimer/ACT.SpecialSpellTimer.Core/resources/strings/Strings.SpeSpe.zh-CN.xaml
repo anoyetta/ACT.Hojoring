@@ -215,6 +215,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
 
   <system:String x:Key="Options_ResetOnWipeout">灭团重置计时器.</system:String>
   <system:String x:Key="Options_ResetNotifyToACT">重置时向ACT发送通知</system:String>
+  <system:String x:Key="Options_SimplifiedInCombat">Simplify detection in combat</system:String>
 
   <system:String x:Key="Options_Phonetics">队伍成员绰号</system:String>
   <system:String x:Key="Options_TestPhonetics">测试绰号</system:String>
