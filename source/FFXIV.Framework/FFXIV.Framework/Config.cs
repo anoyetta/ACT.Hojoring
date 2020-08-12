@@ -64,6 +64,8 @@ namespace FFXIV.Framework
                 return null;
             }
 
+            MigrateConfig(FileName);
+
             using (var sr = new StreamReader(FileName, new UTF8Encoding(false)))
             {
                 if (sr.BaseStream.Length > 0)
@@ -85,6 +87,17 @@ namespace FFXIV.Framework
             instance.globalLogFilterDictionary = instance.globalLogFilters.ToDictionary(x => x.Key);
 
             return instance;
+        }
+
+        private static void MigrateConfig(
+            string file)
+        {
+            var buffer = new StringBuilder();
+            buffer.Append(File.ReadAllText(file, new UTF8Encoding(false)));
+
+            buffer.Replace("NetworkTargetMarker", "NetworkSignMarker");
+
+            File.WriteAllText(file, buffer.ToString(), new UTF8Encoding(false));
         }
 
         private static readonly Encoding DefaultEncoding = new UTF8Encoding(false);
