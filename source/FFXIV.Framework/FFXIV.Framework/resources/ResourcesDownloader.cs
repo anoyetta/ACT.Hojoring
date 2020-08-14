@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -28,42 +27,12 @@ namespace FFXIV.Framework.resources
 
         #endregion Lazy Singleton
 
-        private static readonly (string Local, string Uri)[] RemoteResourcesFiles = new (string Local, string Uri)[]
-        {
-            (Local : @"bin\openJTalk\dic\sys.dic", Uri : "https://drive.google.com/uc?id=1DmyTtLe5yAL4oL2-dE53zz_TJNQoq6Oo"),
-            (Local : @"bin\openJTalk\voice\man_m001.htsvoice", Uri : "https://drive.google.com/uc?id=1gGnWc8J-AVXt4zgsvnl067xmvYkAQlGN"),
-            (Local : @"bin\openJTalk\voice\mei_angry.htsvoice", Uri : "https://drive.google.com/uc?id=1O8nWOCc52BirB1z5UhSzaYp13CABqs23"),
-            (Local : @"bin\openJTalk\voice\mei_bashful.htsvoice", Uri : "https://drive.google.com/uc?id=1YHtb3Ekbcsu886y1PdpT9vPmqSWo-ILG"),
-            (Local : @"bin\openJTalk\voice\mei_happy.htsvoice", Uri : "https://drive.google.com/uc?id=1feBrBX3TMRRhpaMSxiWyXa5rAyUhjOpK"),
-            (Local : @"bin\openJTalk\voice\mei_normal.htsvoice", Uri : "https://drive.google.com/uc?id=1QvV_UvrN2bk74O7F3FhMVgOsRA2AMtN_"),
-            (Local : @"bin\openJTalk\voice\mei_sad.htsvoice", Uri : "https://drive.google.com/uc?id=11fbO9WEDliq78uFwyI06DTuxOkUxQWeb"),
-            (Local : @"bin\openJTalk\voice\tohoku-f01-angry.htsvoice", Uri : "https://drive.google.com/uc?id=1tiRgFC-V9mOqJEl6AIaOuH-GWGpvezaM"),
-            (Local : @"bin\openJTalk\voice\tohoku-f01-happy.htsvoice", Uri : "https://drive.google.com/uc?id=1sUHx5JxVrzHqMazuIzKHBI3DXU3Nl4sK"),
-            (Local : @"bin\openJTalk\voice\tohoku-f01-neutral.htsvoice", Uri : "https://drive.google.com/uc?id=15YWIIVnHF-PO9wxa65si75Mt2WW3SXVV"),
-            (Local : @"bin\openJTalk\voice\tohoku-f01-sad.htsvoice", Uri : "https://drive.google.com/uc?id=1sRBGxA48c3UqKgMZNGnuANLP6uXUGY7X"),
-            (Local : @"bin\openJTalk\voice\type-A.htsvoice", Uri : "https://drive.google.com/uc?id=1SpAuVpfWxwZiD8qlkryGVacGySNBD6E2"),
-            (Local : @"bin\openJTalk\voice\type-B.htsvoice", Uri : "https://drive.google.com/uc?id=1L4Z1Q3OPyYZaesh8-jeuDdF-76hZqi5U"),
-            (Local : @"bin\openJTalk\voice\type-G.htsvoice", Uri : "https://drive.google.com/uc?id=1CQgynTdOOkPxiNbdsHTn4aAwS66ObeOR"),
-            (Local : @"bin\openJTalk\voice\type-T.htsvoice", Uri : "https://drive.google.com/uc?id=1EyxeLxMwlg4I87HywnAA9JGEXssb-GYV"),
-            (Local : @"bin\yukkuri\aq_dic\aqdic.bin", Uri : "https://drive.google.com/uc?id=1LSiXo-C88QhFVW0Wc9aRNWQm_Pz6I2qr"),
-            (Local : @"bin\lib\grpc_csharp_ext.x64.dll", Uri : "https://drive.google.com/uc?id=1-qVlIokg-XocmLTQPWmr4KSjz3Yc45Am"),
-            (Local : @"bin\lib\grpc_csharp_ext.x86.dll", Uri : "https://drive.google.com/uc?id=1PQjQtDiSA0K0qAQTg0Q3gpbY6GFGUUch"),
-            (Local : @"bin\lib\libopus.dll", Uri : "https://drive.google.com/uc?id=1mNx5YnoNwz_sktXv891TYbBZi6f4XNMh"),
-            (Local : @"bin\lib\libsodium.dll", Uri : "https://drive.google.com/uc?id=16GRv_xOIl1opXnC8gL1MHssBUQiVUX2i"),
-        };
-
-        public bool IsReady() => EnvironmentHelper.IsDebug ?
-            false :
-            RemoteResourcesFiles.All(x => File.Exists(GetPath(x.Local)));
+        private static readonly Uri RemoteResourcesListUri =
+            new Uri("https://raw.githubusercontent.com/anoyetta/ACT.Hojoring/master/resources/_list.txt");
 
         public async Task DownloadAsync()
         {
             if (this.IsDebugSkip)
-            {
-                return;
-            }
-
-            if (this.IsReady())
             {
                 return;
             }
@@ -77,32 +46,65 @@ namespace FFXIV.Framework.resources
 
                 using (var wc = new WebClient())
                 {
-                    foreach (var resources in RemoteResourcesFiles)
+                    var temp = Path.GetTempFileName();
+                    File.Delete(temp);
+
+                    await wc.DownloadFileTaskAsync(RemoteResourcesListUri, temp);
+                    var list = File.ReadAllText(temp);
+                    File.Delete(temp);
+
+                    using (var sr = new StringReader(list))
                     {
-                        var local = GetPath(resources.Local);
-
-                        if (File.Exists(local))
+                        while (sr.Peek() > -1)
                         {
-#if DEBUG
-                            File.Delete(local);
-#else
-                            continue;
+                            var line = sr.ReadLine().Trim();
+
+                            if (string.IsNullOrEmpty(line) ||
+                                line.StartsWith("#"))
+                            {
+                                continue;
+                            }
+
+                            var values = line.Split(' ');
+                            if (values.Length < 2)
+                            {
+                                continue;
+                            }
+
+                            var local = GetPath(values[0]);
+                            var remote = values[1];
+                            var isForceUpdate = false;
+
+                            if (values.Length > 2)
+                            {
+                                bool.TryParse(values[2], out isForceUpdate);
+                            }
+
+                            if (File.Exists(local))
+                            {
+#if !DEBUG
+                                if (!isForceUpdate)
+                                {
+                                    continue;
+                                }
 #endif
+                                File.Delete(local);
+                            }
+
+                            AppLog.DefaultLogger.Info($"Download... {local}");
+
+                            splash.CurrentResources = values[0];
+                            splash.Activate();
+
+                            FileHelper.CreateDirectory(local);
+
+                            await wc.DownloadFileTaskAsync(
+                                new Uri(remote),
+                                local);
+
+                            isDownloaded = true;
+                            await Task.Delay(TimeSpan.FromSeconds(0.1));
                         }
-
-                        AppLog.DefaultLogger.Info($"Download... {resources.Local}");
-
-                        splash.CurrentResources = resources.Local;
-                        splash.Activate();
-
-                        FileHelper.CreateDirectory(local);
-
-                        await wc.DownloadFileTaskAsync(
-                            new Uri(resources.Uri),
-                            local);
-
-                        isDownloaded = true;
-                        await Task.Delay(TimeSpan.FromSeconds(0.1));
                     }
                 }
 
