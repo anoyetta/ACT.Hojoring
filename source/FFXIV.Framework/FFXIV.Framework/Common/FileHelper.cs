@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace FFXIV.Framework.Common
 {
@@ -70,6 +71,23 @@ namespace FFXIV.Framework.Common
             }
 
             fi.Delete();
+        }
+
+        public static string GetMD5(
+            string file)
+        {
+            var hash = string.Empty;
+
+            using (var md5 = MD5.Create())
+            {
+                using (var fs = new FileStream(file, System.IO.FileMode.Open, FileAccess.Read))
+                {
+                    var bytes = md5.ComputeHash(fs);
+                    hash = System.BitConverter.ToString(bytes).ToUpper().Replace("-", string.Empty);
+                }
+            }
+
+            return hash;
         }
     }
 }

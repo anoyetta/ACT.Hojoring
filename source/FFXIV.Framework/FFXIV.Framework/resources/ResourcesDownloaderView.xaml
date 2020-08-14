@@ -1,4 +1,4 @@
-﻿<Window
+<Window
   x:Class="FFXIV.Framework.resources.ResourcesDownloaderView"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -19,8 +19,8 @@
 
     <StackPanel
       HorizontalAlignment="Left"
-      VerticalAlignment="Bottom"
-      Margin="20 0 0 23">
+      VerticalAlignment="Center"
+      Margin="20 8 0 0">
       <TextBlock FontStyle="Italic">Downloading...</TextBlock>
       <TextBlock Margin="0 2 0 0" Text="{Binding CurrentResources, Mode=OneWay}" />
     </StackPanel>
