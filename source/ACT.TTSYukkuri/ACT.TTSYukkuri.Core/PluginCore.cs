@@ -363,10 +363,7 @@ namespace ACT.TTSYukkuri
                     }
 
                     // 外部リソースをダウンロードする
-                    if (!ResourcesDownloader.Instance.IsReady())
-                    {
-                        await ResourcesDownloader.Instance.DownloadAsync();
-                    }
+                    await ResourcesDownloader.Instance.DownloadAsync();
 
                     // 設定ファイルを読み込む
                     Settings.Default.Load();
