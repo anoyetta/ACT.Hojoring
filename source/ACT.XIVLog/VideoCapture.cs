@@ -308,6 +308,13 @@ namespace ACT.XIVLog
                             File.Move(
                                 original,
                                 dest);
+
+                            var tf = TagLib.File.Create(dest);
+                            tf.Tag.Title = Path.GetFileNameWithoutExtension(dest);
+                            tf.Tag.Album = $"{prefix} - {contentName}";
+                            tf.Tag.Track = (uint)this.TryCount;
+                            tf.Tag.Grouping = "Game";
+                            tf.Save();
                         }
                     }
                 });
