@@ -237,6 +237,8 @@ namespace ACT.XIVLog
             });
         }
 
+        private static readonly string VideoDurationPlaceholder = "#duration#";
+
         public void FinishRecording()
         {
             lock (this)
@@ -280,8 +282,8 @@ namespace ACT.XIVLog
                         $"{prefix} ";
 
                     var f = this.deathCount > 1 ?
-                        $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} death{this.deathCount - 1}.ext" :
-                        $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00}.ext";
+                        $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} {VideoDurationPlaceholder} death{this.deathCount - 1}.ext" :
+                        $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} {VideoDurationPlaceholder}.ext";
 
                     await Task.Delay(TimeSpan.FromSeconds(8));
 
@@ -305,16 +307,21 @@ namespace ACT.XIVLog
                                 Path.GetDirectoryName(original),
                                 f);
 
-                            File.Move(
-                                original,
-                                dest);
+                            var tf = TagLib.File.Create(original);
 
-                            var tf = TagLib.File.Create(dest);
+                            dest = dest.Replace(
+                                VideoDurationPlaceholder,
+                                $"{tf.Properties.Duration.TotalSeconds:N0}s");
+
                             tf.Tag.Title = Path.GetFileNameWithoutExtension(dest);
                             tf.Tag.Album = $"{prefix} - {contentName}";
                             tf.Tag.Track = (uint)this.TryCount;
                             tf.Tag.Grouping = "Game";
                             tf.Save();
+
+                            File.Move(
+                                original,
+                                dest);
                         }
                     }
                 });

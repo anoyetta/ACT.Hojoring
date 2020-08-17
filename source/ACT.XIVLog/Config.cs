@@ -319,7 +319,7 @@ namespace ACT.XIVLog
         [XmlIgnore]
         public bool NotUseObsRpc => !this.UseObsRpc;
 
-        private string videFilePrefix = "FINAL FANTASY XIV";
+        private string videFilePrefix = "FFXIV";
 
         public string VideFilePrefix
         {
