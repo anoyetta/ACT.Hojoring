@@ -325,7 +325,7 @@ namespace ACT.XIVLog
 
                             XIVLogPlugin.Instance.EnqueueLogLine(
                                 "00",
-                                $"[XIVLog] The video was saved. {dest}");
+                                $"[XIVLog] The video was saved. {Path.GetFileName(dest)}");
                         }
                     }
                 });

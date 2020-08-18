@@ -282,11 +282,13 @@ namespace ACT.XIVLog
                 return;
             }
 
+            zone ??= this.currentZoneName;
+
             var log = new LogLineEventArgs(
-                $"[{DateTime.Now:HH.mm.ss.fff}] {logMessageType}:{message}",
+                $"[{DateTime.Now:HH:mm:ss.fff}] {logMessageType}:{message}",
                 int.Parse(logMessageType),
                 DateTime.Now,
-                zone != null ? zone : this.currentZoneName,
+                zone,
                 true);
 
             LogQueue.Enqueue(new XIVLog(false, log));
@@ -349,7 +351,7 @@ namespace ACT.XIVLog
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void RaisePropertyChanged(
-            [CallerMemberName]string propertyName = null)
+            [CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(
                 this,
@@ -359,7 +361,7 @@ namespace ACT.XIVLog
         protected virtual bool SetProperty<T>(
             ref T field,
             T value,
-            [CallerMemberName]string propertyName = null)
+            [CallerMemberName] string propertyName = null)
         {
             if (Equals(field, value))
             {
