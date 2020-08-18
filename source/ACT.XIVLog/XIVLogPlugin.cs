@@ -270,6 +270,28 @@ namespace ACT.XIVLog
             }
         }
 
+        public void EnqueueLogLine(
+            string logMessageType,
+            string message,
+            string zone = null)
+        {
+            if (string.IsNullOrEmpty(Config.Instance.OutputDirectory) &&
+                !Config.Instance.IsEnabledRecording &&
+                !Config.Instance.IsShowTitleCard)
+            {
+                return;
+            }
+
+            var log = new LogLineEventArgs(
+                $"[{DateTime.Now:HH.mm.ss.fff}] {logMessageType}:{message}",
+                int.Parse(logMessageType),
+                DateTime.Now,
+                zone != null ? zone : this.currentZoneName,
+                true);
+
+            LogQueue.Enqueue(new XIVLog(false, log));
+        }
+
         private string ConvertZoneNameToLog()
         {
             var result = this.currentZoneName;
