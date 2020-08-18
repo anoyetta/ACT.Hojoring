@@ -322,6 +322,10 @@ namespace ACT.XIVLog
                             File.Move(
                                 original,
                                 dest);
+
+                            XIVLogPlugin.Instance.EnqueueLogLine(
+                                "00",
+                                $"[XIVLog] The video was saved. {dest}");
                         }
                     }
                 });
