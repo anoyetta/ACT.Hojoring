@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using NLog;
+using NPOI.OpenXmlFormats.Shared;
 using SLOBSharp.Client;
 using SLOBSharp.Client.Requests;
 using WindowsInput;
@@ -307,17 +308,21 @@ namespace ACT.XIVLog
                                 Path.GetDirectoryName(original),
                                 f);
 
-                            var tf = TagLib.File.Create(original);
+                            using (var tf = TagLib.File.Create(original))
+                            {
+                                dest = dest.Replace(
+                                    VideoDurationPlaceholder,
+                                    $"{tf.Properties.Duration.TotalSeconds:N0}s");
 
-                            dest = dest.Replace(
-                                VideoDurationPlaceholder,
-                                $"{tf.Properties.Duration.TotalSeconds:N0}s");
-
-                            tf.Tag.Title = Path.GetFileNameWithoutExtension(dest);
-                            tf.Tag.Album = $"{prefix} - {contentName}";
-                            tf.Tag.Track = (uint)this.TryCount;
-                            tf.Tag.Grouping = "Game";
-                            tf.Save();
+                                tf.Tag.Title = Path.GetFileNameWithoutExtension(dest);
+                                tf.Tag.Description = 
+                                    $"{prefix} - {contentName}\n" +
+                                    $"{this.startTime:yyyy-MM-dd HH:mm} try{this.TryCount} death{this.deathCount - 1}";
+                                tf.Tag.Album = $"{prefix} - {contentName}";
+                                tf.Tag.Track = (uint)this.TryCount;
+                                tf.Tag.Grouping = "Game";
+                                tf.Save();
+                            }
 
                             File.Move(
                                 original,
