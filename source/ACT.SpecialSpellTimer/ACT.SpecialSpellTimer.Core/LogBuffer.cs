@@ -341,6 +341,7 @@ namespace ACT.SpecialSpellTimer
             var summoned = false;
             var doneCommand = false;
             var isDefeated = false;
+            var isCombatEnd = false;
 
             var preLog = new string[3];
             var preLogIndex = 0;
@@ -398,6 +399,12 @@ namespace ACT.SpecialSpellTimer
                     isDefeated = this.IsDefeated(logLine);
                 }
 
+                // 戦闘終了？
+                if (!isCombatEnd)
+                {
+                    isCombatEnd = this.IsCombatEnd(logLine);
+                }
+
                 // コマンドとマッチングする
                 doneCommand |= TextCommandController.MatchCommandCore(logLine);
                 doneCommand |= TextCommandBridge.Instance.TryExecute(logLine);
@@ -413,6 +420,11 @@ namespace ACT.SpecialSpellTimer
             if (isDefeated)
             {
                 PluginMainWorker.Instance.ResetCountAtRestart();
+            }
+
+            if (isCombatEnd)
+            {
+                PluginMainWorker.Instance.Wipeout();
             }
 
             if (doneCommand)
@@ -473,6 +485,8 @@ namespace ACT.SpecialSpellTimer
         {
             "木人討滅戦を達成した！",
             "木人討滅戦に失敗した……",
+            "時空干渉、制限解除、「時の牢獄」に監禁する……。",
+            "パーフェクト・アレキサンダーを倒した。",
             "Your trial is a success!",
             "You have failed in your trial...",
             "Vous avez réussi votre entraînement !",
@@ -509,14 +523,11 @@ namespace ACT.SpecialSpellTimer
                 }
             }
 
-            // 木人討滅戦が終わった？
-            if (EndDummyTrialLogs.Any(x => logLine.Contains(x)))
-            {
-                result = true;
-            }
-
             return result;
         }
+
+        private bool IsCombatEnd(string logLine)
+            => EndDummyTrialLogs.Any(x => logLine.Contains(x));
 
         /// <summary>
         /// 自動カット対象のログか？
