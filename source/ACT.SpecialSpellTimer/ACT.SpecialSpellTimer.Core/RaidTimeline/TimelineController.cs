@@ -1059,7 +1059,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 switch (key.Category)
                 {
                     case KewordTypes.TimelineStart:
-                        if (this.Model.StartTriggerRegex == null)
+                        if (this.Model.EndTriggerRegex == null)
                         {
                             WPFHelper.BeginInvoke(() =>
                             {
@@ -1082,9 +1082,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             if (!this.isRunning)
             {
-                if (this.Model.StartTriggerRegex != null)
+                if (this.Model.EndTriggerRegex != null)
                 {
-                    var match = this.Model.StartTriggerRegex.Match(xivlog.LogLine);
+                    var match = this.Model.EndTriggerRegex.Match(xivlog.LogLine);
                     if (match.Success)
                     {
                         WPFHelper.BeginInvoke(this.StartActivityLine);

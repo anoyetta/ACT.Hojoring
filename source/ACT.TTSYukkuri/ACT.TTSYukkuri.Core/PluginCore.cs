@@ -250,8 +250,7 @@ namespace ACT.TTSYukkuri
         /// </example>
         private static readonly Regex WaitCommandRegex = new Regex(
             @"/wait\s+(?<due>[\d\.]+)[,\s]+(?<tts>.+)$",
-            RegexOptions.Compiled |
-            RegexOptions.IgnoreCase);
+            RegexOptions.Compiled);
 
         private void SpeakTTS(
             string textToSpeak,

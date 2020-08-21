@@ -282,8 +282,7 @@ namespace ACT.UltraScouter
 
         private static readonly Regex ParseCommandRegex = new Regex(
             $@"{ParseCommand}(\s+""(?<characterName>.+)"")?(\s+(?<serverName>.+))?",
-            RegexOptions.Compiled |
-            RegexOptions.IgnoreCase);
+            RegexOptions.Compiled);
 
         private void SubscribeTextCommands()
         {

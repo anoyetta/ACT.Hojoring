@@ -322,8 +322,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         this.StartTriggerRegex = new Regex(
                             this.startTrigger,
                             RegexOptions.Compiled |
-                            RegexOptions.ExplicitCapture |
-                            RegexOptions.IgnoreCase);
+                            RegexOptions.ExplicitCapture);
                     }
                 }
             }
@@ -336,6 +335,40 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             get => this.startTriggerRegex;
             private set => this.SetProperty(ref this.startTriggerRegex, value);
+        }
+
+        private string endTrigger = null;
+
+        [XmlElement(ElementName = "end")]
+        public string EndTrigger
+        {
+            get => this.endTrigger;
+            set
+            {
+                if (this.SetProperty(ref this.endTrigger, value))
+                {
+                    if (string.IsNullOrEmpty(this.endTrigger))
+                    {
+                        this.EndTriggerRegex = null;
+                    }
+                    else
+                    {
+                        this.EndTriggerRegex = new Regex(
+                            this.endTrigger,
+                            RegexOptions.Compiled |
+                            RegexOptions.ExplicitCapture);
+                    }
+                }
+            }
+        }
+
+        private Regex endTriggerRegex = null;
+
+        [XmlIgnore]
+        public Regex EndTriggerRegex
+        {
+            get => this.endTriggerRegex;
+            private set => this.SetProperty(ref this.endTriggerRegex, value);
         }
 
         private string sourceFile = string.Empty;
@@ -1029,7 +1062,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             this.Zone = tl.Zone;
             this.Locale = tl.Locale;
             this.Entry = tl.Entry;
-            this.StartTrigger = tl.StartTrigger;
+            this.EndTrigger = tl.EndTrigger;
             this.CompiledText = tl.CompiledText;
 
             if (this.IsGlobalZone)
