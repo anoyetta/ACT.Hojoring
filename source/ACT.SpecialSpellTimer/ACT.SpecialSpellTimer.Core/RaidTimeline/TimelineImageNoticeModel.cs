@@ -219,8 +219,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     this.SyncToHideKeywordReplaced = replaced;
                     this.SynqToHideRegex = new Regex(
                         replaced,
-                        RegexOptions.Compiled |
-                        RegexOptions.IgnoreCase);
+                        RegexOptions.Compiled);
                 }
             }
         }

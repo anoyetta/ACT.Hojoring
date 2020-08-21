@@ -989,6 +989,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     // 開始・終了のトリガの判定
                     this.DetectStartEnd(xivlog, keywords);
                     this.DetectStartTrigger(xivlog);
+                    this.DetectEndTrigger(xivlog);
 
                     // 非表示待ち判定
                     foreach (var hide in hides)
@@ -1088,6 +1089,25 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     if (match.Success)
                     {
                         WPFHelper.BeginInvoke(this.StartActivityLine);
+                    }
+                }
+            }
+        }
+
+        // エンドトリガを判定する
+        private void DetectEndTrigger(
+            XIVLog xivlog)
+        {
+            if (this.isRunning)
+            {
+                if (this.Model.EndTriggerRegex != null)
+                {
+                    var match = this.Model.EndTriggerRegex.Match(xivlog.LogLine);
+                    if (match.Success)
+                    {
+                        WPFHelper.BeginInvoke(this.EndActivityLine);
+                        PluginMainWorker.Instance.Wipeout(false);
+                        TimelineController.RaiseLog($"{TLSymbol} End-of-Timeline has been detected.");
                     }
                 }
             }

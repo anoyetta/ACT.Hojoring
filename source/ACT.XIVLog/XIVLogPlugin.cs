@@ -79,6 +79,13 @@ namespace ACT.XIVLog
 
         #endregion IActPluginV1
 
+        private static readonly string[] StopLoggingKeywords = new string[]
+        {
+            "wipeout",
+            "の攻略を終了した。",
+            "End-of-Timeline has been detected.",
+        };
+
         public string LogfileNameWithoutParent => Path.GetFileName(this.LogfileName);
 
         public string LogfileName =>
@@ -192,8 +199,7 @@ namespace ACT.XIVLog
                         isNeedsFlush = true;
                     }
 
-                    if (xivlog.Log.Contains("wipeout") ||
-                        xivlog.Log.Contains("の攻略を終了した。"))
+                    if (StopLoggingKeywords.Any(x => xivlog.Log.Contains(x)))
                     {
                         this.wipeoutCounter++;
                         this.fileNo++;

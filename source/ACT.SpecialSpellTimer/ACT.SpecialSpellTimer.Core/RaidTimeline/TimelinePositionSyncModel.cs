@@ -112,8 +112,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         this.NameRegex = new Regex(
                             this.name,
-                            RegexOptions.Compiled |
-                            RegexOptions.IgnoreCase);
+                            RegexOptions.Compiled);
                     }
                 }
             }

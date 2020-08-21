@@ -61,6 +61,12 @@ namespace ACT.XIVLog
             @"^02:Changed primary player to (?<player>.+)\.",
             RegexOptions.Compiled);
 
+        private static readonly string[] StopVideoKeywords = new string[]
+        {
+            "wipeout",
+            "End-of-Timeline has been detected.",
+        };
+
         private string defeatedLog = "19:Naoki Yoshida was defeated";
 
         private bool inFeast;
@@ -141,8 +147,8 @@ namespace ACT.XIVLog
             }
 
             if (isCancel ||
-                xivlog.Log.Contains("wipeout") ||
                 xivlog.Log.Contains("/xivlog stop") ||
+                StopVideoKeywords.Any(x => xivlog.Log.Contains(x)) ||
                 (this.inFeast && FeastEndRegex.IsMatch(xivlog.Log)))
             {
                 this.FinishRecording();
