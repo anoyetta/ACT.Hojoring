@@ -485,8 +485,6 @@ namespace ACT.SpecialSpellTimer
         {
             "木人討滅戦を達成した！",
             "木人討滅戦に失敗した……",
-            "時空干渉、制限解除、「時の牢獄」に監禁する……。",
-            "パーフェクト・アレキサンダーを倒した。",
             "Your trial is a success!",
             "You have failed in your trial...",
             "Vous avez réussi votre entraînement !",
