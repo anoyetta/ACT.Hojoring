@@ -26,7 +26,7 @@ ACT本体のTTS機能をゆっくり実況などで有名な AquesTalk&trade; �
 ### マニュアルインストール
 1. 各種ランタイムをインストールする  
 **[Visual Studio 2017 用 Microsoft Visual C++ 再頒布可能パッケージ](https://go.microsoft.com/fwlink/?LinkId=746572)**  
-**[.NET Framework 4.7.2](https://www.microsoft.com/net/download/thank-you/net472)**  
+**[.NET Framework 4.8](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer)**  
 をインストールする。
 
 2. 最新版を取得する  
