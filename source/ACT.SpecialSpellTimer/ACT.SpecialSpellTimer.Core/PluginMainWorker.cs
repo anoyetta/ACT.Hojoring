@@ -617,36 +617,41 @@ namespace ACT.SpecialSpellTimer
                     x.CurrentHP <= 0 &&
                     x.MaxHP > 0))
             {
-                // リセットするのは10秒に1回にする
-                // 暗転中もずっとリセットし続けてしまうので
-                var now = DateTime.Now;
-                if ((now - this.lastWipeOutDateTime).TotalSeconds >= 10.0)
-                {
-                    this.lastWipeOutDateTime = now;
+                this.Wipeout();
+            }
+        }
 
+        public void Wipeout()
+        {
+            // リセットするのは10秒に1回にする
+            // 暗転中もずっとリセットし続けてしまうので
+            var now = DateTime.Now;
+            if ((now - this.lastWipeOutDateTime).TotalSeconds >= 10.0)
+            {
+                this.lastWipeOutDateTime = now;
+
+                Task.Run(() =>
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
+
+                    // ACT本体に戦闘終了を通知する
+                    if (Settings.Default.WipeoutNotifyToACT)
+                    {
+                        ActInvoker.Invoke(() => ActGlobals.oFormActMain.EndCombat(true));
+                        CommonSounds.Instance.PlayWipeout();
+                    }
+
+                    // トリガーをリセットする
+                    SpellTable.ResetCount();
+                    TickerTable.Instance.ResetCount();
+
+                    // wipeoutログを発生させる
                     Task.Run(() =>
                     {
-                        Thread.Sleep(TimeSpan.FromSeconds(1));
-
-                        // ACT本体に戦闘終了を通知する
-                        if (Settings.Default.WipeoutNotifyToACT)
-                        {
-                            ActInvoker.Invoke(() => ActGlobals.oFormActMain.EndCombat(true));
-                            CommonSounds.Instance.PlayWipeout();
-                        }
-
-                        // トリガーをリセットする
-                        SpellTable.ResetCount();
-                        TickerTable.Instance.ResetCount();
-
-                        // wipeoutログを発生させる
-                        Task.Run(() =>
-                        {
-                            Thread.Sleep(200);
-                            LogParser.RaiseLog(now, ConstantKeywords.Wipeout);
-                        });
+                        Thread.Sleep(200);
+                        LogParser.RaiseLog(now, ConstantKeywords.Wipeout);
                     });
-                }
+                });
             }
         }
 
