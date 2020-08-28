@@ -59,6 +59,7 @@
     <Compile Include="TimelineRazorModel.Table.cs" />
     <Compile Include="TimelineRazorModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TimelineScriptGlobalModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">

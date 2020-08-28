@@ -461,6 +461,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     await WPFHelper.InvokeAsync(image.StanbyNotice);
                 }
 
+                // Script をコンパイルする
+                if (element is TimelineScriptModel script)
+                {
+                    script.Compile();
+                }
+
                 // アクティビティにスタイルを設定する
                 setStyle(element);
 

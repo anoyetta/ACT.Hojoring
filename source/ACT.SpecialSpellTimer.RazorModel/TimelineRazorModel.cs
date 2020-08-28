@@ -32,6 +32,8 @@ namespace ACT.SpecialSpellTimer.RazorModel
 
         public TimelineRazorVariable Var { get; } = new TimelineRazorVariable();
 
+        public TimelineTables Tables { get; } = new TimelineTables();
+
         public bool SyncTTS { get; set; } = false;
 
         public int ZoneID { get; set; } = 0;

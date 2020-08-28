@@ -105,6 +105,30 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        /// <summary>
+        /// Script
+        /// </summary>
+        [XmlElement(ElementName = "script")]
+        public TimelineScriptModel[] Scripts
+        {
+            get => this.Statements
+                .Where(x => x.TimelineType == TimelineElementTypes.Script)
+                .Cast<TimelineScriptModel>()
+                .ToArray();
+            set
+            {
+                this.AddRange(value);
+
+                if (value != null)
+                {
+                    foreach (var item in value)
+                    {
+                        item.ScriptingEvent = TimelineScriptEvents.Expression;
+                    }
+                }
+            }
+        }
+
         [XmlIgnore]
         public bool IsExpressionAvailable =>
             this.ExpressionsStatements.Any(x => x.Enabled.GetValueOrDefault());
@@ -143,7 +167,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 timeline.TimelineType == TimelineElementTypes.ImageNotice ||
                 timeline.TimelineType == TimelineElementTypes.PositionSync ||
                 timeline.TimelineType == TimelineElementTypes.Expressions ||
-                timeline.TimelineType == TimelineElementTypes.Dump)
+                timeline.TimelineType == TimelineElementTypes.Dump ||
+                timeline.TimelineType == TimelineElementTypes.Script)
             {
                 timeline.Parent = this;
                 this.statements.Add(timeline);

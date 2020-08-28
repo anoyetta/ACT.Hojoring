@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.RaidTimeline.Views;
+using ACT.SpecialSpellTimer.RazorModel;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
@@ -386,6 +387,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // タイムライン制御フラグを初期化する
             TimelineExpressionsModel.Clear(this.CurrentZoneName);
 
+            // Script のdelegateを初期化する
+            TimelineScriptGlobalModel.Instance.ScriptingHost.Global.Clear();
+            TimelineScriptGlobalModel.Instance.ScriptingHost.CurrentSub.Clear();
+
             // 表示設定を更新しておく
             this.RefreshActivityLineVisibility();
         }
@@ -529,6 +534,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     this.Model.ResumeLive();
                 }
 
+                // カレントサブルーチンのScriptイベントを初期化する
+                TimelineScriptGlobalModel.Instance.ScriptingHost.CurrentSub.Clear();
+
                 return true;
             }
         }
@@ -581,6 +589,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         this.Model.ResumeLive();
                     }
+
+                    // カレントサブルーチンのScriptイベントを初期化する
+                    TimelineScriptGlobalModel.Instance.ScriptingHost.CurrentSub.Clear();
 
                     return true;
                 }
@@ -637,6 +648,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     this.Model.ResumeLive();
                 }
+
+                // カレントサブルーチンのScriptイベントを初期化する
+                TimelineScriptGlobalModel.Instance.ScriptingHost.CurrentSub.Clear();
 
                 return true;
             }

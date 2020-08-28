@@ -440,6 +440,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        /// <summary>
+        /// Script
+        /// </summary>
+        [XmlElement(ElementName = "script")]
+        public TimelineScriptModel[] Scripts
+        {
+            get => this.Elements
+                .Where(x => x.TimelineType == TimelineElementTypes.Script)
+                .Cast<TimelineScriptModel>()
+                .ToArray();
+            set => this.AddRange(value);
+        }
+
         private TimelineController controller;
 
         /// <summary>
@@ -706,6 +719,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             TimelineRazorVariable.GetVarDelegate ??= () => TimelineExpressionsModel.GetVariables();
             TimelineRazorVariable.SetVarDelegate ??= (name, value, zone) => TimelineExpressionsModel.SetVariable(name, value, zone);
+            TimelineTables.GetTableDelegate ??= (tableName) => TimelineExpressionsModel.GetTable(tableName);
 
             model.BaseDirectory = TimelineManager.Instance.TimelineDirectory;
 
