@@ -94,7 +94,6 @@
     <Compile Include="Config\MobList.cs" />
     <Compile Include="Config\MyMarker.cs" />
     <Compile Include="Config\MPTicker.cs" />
-    <Compile Include="Config\MyUtility.cs" />
     <Compile Include="Config\MyStatus.cs" />
     <Compile Include="Config\ProgressBarColorRange.cs" />
     <Compile Include="Config\ProgressBar.cs" />
