@@ -10,6 +10,7 @@ using ACT.UltraScouter.Config.UI.Views;
 using ACT.UltraScouter.Models;
 using ACT.UltraScouter.Models.FFLogs;
 using ACT.UltraScouter.Workers;
+using ACT.UltraScouter.Workers.TextCommands;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
@@ -315,6 +316,9 @@ namespace ACT.UltraScouter
                     charName,
                     serverName);
             }));
+
+            // MyUtilityの登録
+            MyUtilityOnWipeoutCommand.Instance.Subscribe();
         }
 
         #endregion TextCommands

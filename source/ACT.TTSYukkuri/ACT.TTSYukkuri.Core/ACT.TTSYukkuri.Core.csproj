@@ -450,7 +450,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.Polly">
-      <Version>3.3.104.26</Version>
+      <Version>3.5.0.5</Version>
     </PackageReference>
     <PackageReference Include="CommonServiceLocator">
       <Version>2.0.4</Version>

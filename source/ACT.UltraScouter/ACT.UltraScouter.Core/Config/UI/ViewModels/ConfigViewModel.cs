@@ -186,6 +186,14 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                                 DataContext = new MyMarkerConfigViewModel()
                             }
                         },
+
+                        new TreeSource("My Utility")
+                        {
+                            Content = new MyUtilityConfigView()
+                            {
+                                DataContext = new MyUtilityConfigViewModel()
+                            }
+                        },
                     },
                 },
 
