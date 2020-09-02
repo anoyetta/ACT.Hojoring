@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ACT.UltraScouter.Config;
@@ -51,6 +52,8 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
             return logLine.Contains("wipeout");
         }
+
+        private IntPtr xivHandle;
 
         private void Execute(
             string logLine,
@@ -110,7 +113,9 @@ namespace ACT.UltraScouter.Workers.TextCommands
             if (this.Config.ExtendMealEffect.IsAvailable())
             {
                 var remainOfWellFed = player.Effects
-                    .FirstOrDefault(x => x.BuffID == WellFedEffectID)?.Timer ?? 0;
+                    .FirstOrDefault(x =>
+                        x != null &&
+                        x.BuffID == WellFedEffectID)?.Timer ?? 0;
 
                 if (0 < remainOfWellFed && remainOfWellFed < (this.Config.ExtendMealEffect.RemainingTimeThreshold * 60))
                 {
@@ -121,12 +126,31 @@ namespace ACT.UltraScouter.Workers.TextCommands
             // キーを送る
             if (sendKeySetList.Count > 0)
             {
+                if (this.xivHandle == IntPtr.Zero)
+                {
+                    this.xivHandle = FindWindow(null, "FINAL FANTASY XIV");
+                }
+
+                if (this.xivHandle != IntPtr.Zero)
+                {
+                    SetForegroundWindow(xivHandle);
+                }
+
                 var isFirst = true;
                 foreach (var keySet in sendKeySetList)
                 {
                     if (!isFirst)
                     {
                         await Task.Delay(TimeSpan.FromSeconds(3));
+                    }
+
+                    var modifiers = keySet.GetModifiers();
+                    var keys = keySet.GetKeys();
+                    var sim = this.LazyInput.Value;
+
+                    foreach (var key in modifiers)
+                    {
+                        sim.Keyboard.KeyDown(key);
                     }
 
                     for (int i = 0; i < 3; i++)
@@ -136,7 +160,12 @@ namespace ACT.UltraScouter.Workers.TextCommands
                             await Task.Delay(TimeSpan.FromSeconds(0.1));
                         }
 
-                        this.LazyInput.Value.Keyboard.ModifiedKeyStroke(keySet.GetModifiers(), keySet.GetKeys());
+                        sim.Keyboard.KeyPress(keys);
+                    }
+
+                    foreach (var key in modifiers.Reverse())
+                    {
+                        sim.Keyboard.KeyUp(key);
                     }
 
                     isFirst = false;
@@ -185,7 +214,19 @@ namespace ACT.UltraScouter.Workers.TextCommands
                 return;
             }
 
-            this.inTankStance = player.Effects.Any(x => TankStanceEffectIDs.Contains(x.BuffID));
+            this.inTankStance = player.Effects.Any(x =>
+                x != null &&
+                TankStanceEffectIDs.Contains(x.BuffID));
         }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
     }
 }
