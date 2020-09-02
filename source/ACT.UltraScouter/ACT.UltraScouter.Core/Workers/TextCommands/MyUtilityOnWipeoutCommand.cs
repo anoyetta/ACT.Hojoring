@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using ACT.UltraScouter.Config;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
@@ -63,10 +62,10 @@ namespace ACT.UltraScouter.Workers.TextCommands
             var sendKeySetList = new List<KeyShortcut>();
 
             var player = CombatantsManager.Instance.Player;
+            var partyCount = CombatantsManager.Instance.PartyCount;
 
             // タンクスタンスを復元する
-            if (this.Config.RestoreTankStance.IsEnabled &&
-                this.Config.RestoreTankStance.KeySet.Key != Key.None)
+            if (this.Config.RestoreTankStance.IsAvailable())
             {
                 if (player.Role == Roles.Tank &&
                     this.inTankStance.HasValue)
@@ -81,8 +80,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
             }
 
             // フェアリーを召喚する
-            if (this.Config.SummonFairy.IsEnabled &&
-                this.Config.SummonFairy.KeySet.Key != Key.None)
+            if (this.Config.SummonFairy.IsAvailable())
             {
                 if (player.JobID == JobIDs.SCH)
                 {
@@ -91,8 +89,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
             }
 
             // カードをドローする
-            if (this.Config.DrawCard.IsEnabled &&
-                this.Config.DrawCard.KeySet.Key != Key.None)
+            if (this.Config.DrawCard.IsAvailable())
             {
                 if (player.JobID == JobIDs.AST)
                 {
@@ -101,8 +98,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
             }
 
             // エギを召喚する
-            if (this.Config.SummonEgi.IsEnabled &&
-                this.Config.SummonEgi.KeySet.Key != Key.None)
+            if (this.Config.SummonEgi.IsAvailable())
             {
                 if (player.JobID == JobIDs.SMN)
                 {
@@ -111,13 +107,12 @@ namespace ACT.UltraScouter.Workers.TextCommands
             }
 
             // 食事効果を延長する
-            if (this.Config.ExtendMealEffect.IsEnabled &&
-                this.Config.ExtendMealEffect.KeySet.Key != Key.None)
+            if (this.Config.ExtendMealEffect.IsAvailable())
             {
                 var remainOfWellFed = player.Effects
                     .FirstOrDefault(x => x.BuffID == WellFedEffectID)?.Timer ?? 0;
 
-                if (remainOfWellFed < (this.Config.ExtendMealEffect.RemainingTimeThreshold * 60))
+                if (0 < remainOfWellFed && remainOfWellFed < (this.Config.ExtendMealEffect.RemainingTimeThreshold * 60))
                 {
                     sendKeySetList.Add(this.Config.ExtendMealEffect.KeySet);
                 }

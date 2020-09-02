@@ -1,5 +1,7 @@
 using System;
+using System.Windows.Input;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.XIVHelper;
 using Prism.Mvvm;
 
 namespace ACT.UltraScouter.Config
@@ -23,40 +25,68 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.extendMealEffect, value);
         }
 
-        private SendKeyConfig restoreTankStance;
+        private MyUtilitySendKeyConfig restoreTankStance;
 
-        public SendKeyConfig RestoreTankStance
+        public MyUtilitySendKeyConfig RestoreTankStance
         {
             get => this.restoreTankStance;
             set => this.SetProperty(ref this.restoreTankStance, value);
         }
 
-        private SendKeyConfig summonFairy;
+        private MyUtilitySendKeyConfig summonFairy;
 
-        public SendKeyConfig SummonFairy
+        public MyUtilitySendKeyConfig SummonFairy
         {
             get => this.summonFairy;
             set => this.SetProperty(ref this.summonFairy, value);
         }
 
-        private SendKeyConfig drawCard;
+        private MyUtilitySendKeyConfig drawCard;
 
-        public SendKeyConfig DrawCard
+        public MyUtilitySendKeyConfig DrawCard
         {
             get => this.drawCard;
             set => this.SetProperty(ref this.drawCard, value);
         }
 
-        private SendKeyConfig summonEgi;
+        private MyUtilitySendKeyConfig summonEgi;
 
-        public SendKeyConfig SummonEgi
+        public MyUtilitySendKeyConfig SummonEgi
         {
             get => this.summonEgi;
             set => this.SetProperty(ref this.summonEgi, value);
         }
     }
 
-    public class ExtendMealEffectSendKeyConfig : SendKeyConfig
+    public class MyUtilitySendKeyConfig : SendKeyConfig
+    {
+        private bool isOnlyRAIDParty;
+
+        public bool IsOnlyRAIDParty
+        {
+            get => this.isOnlyRAIDParty;
+            set => this.SetProperty(ref this.isOnlyRAIDParty, value);
+        }
+
+        public bool IsAvailable()
+        {
+            if (!this.IsEnabled ||
+                this.KeySet.Key == Key.None)
+            {
+                return false;
+            }
+
+            if (this.isOnlyRAIDParty &&
+                CombatantsManager.Instance.PartyCount != 8)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    public class ExtendMealEffectSendKeyConfig : MyUtilitySendKeyConfig
     {
         private int remainingTimeThreshold;
 

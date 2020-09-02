@@ -68,6 +68,7 @@
           <Label Content="{DynamicResource MyUtility_ExtendMealEffect}" FontStyle="Italic" />
           <StackPanel Margin="10 0 0 0">
             <CheckBox Content="Enabled" IsChecked="{Binding Config.ExtendMealEffect.IsEnabled, Mode=TwoWay}" />
+            <CheckBox Content="{DynamicResource MyUtility_OnlyForRAIDParty}" IsChecked="{Binding Config.ExtendMealEffect.IsOnlyRAIDParty, Mode=TwoWay}" />
             <StackPanel Orientation="Horizontal" IsEnabled="{Binding Config.ExtendMealEffect.IsEnabled, Mode=OneWay}">
               <CheckBox IsChecked="{Binding Config.ExtendMealEffect.KeySet.IsControl, Mode=TwoWay}" Content="Ctrl" Margin="0 0 5 0" />
               <CheckBox IsChecked="{Binding Config.ExtendMealEffect.KeySet.IsShift, Mode=TwoWay}" Content="Shift" Margin="0 0 5 0" />
@@ -87,6 +88,7 @@
           <Label Content="{DynamicResource MyUtility_RestoreTankStance}" FontStyle="Italic" />
           <StackPanel Margin="10 0 0 0">
             <CheckBox Content="Enabled" IsChecked="{Binding Config.RestoreTankStance.IsEnabled, Mode=TwoWay}" />
+            <CheckBox Content="{DynamicResource MyUtility_OnlyForRAIDParty}" IsChecked="{Binding Config.RestoreTankStance.IsOnlyRAIDParty, Mode=TwoWay}" />
             <StackPanel Orientation="Horizontal" IsEnabled="{Binding Config.RestoreTankStance.IsEnabled, Mode=OneWay}">
               <CheckBox IsChecked="{Binding Config.RestoreTankStance.KeySet.IsControl, Mode=TwoWay}" Content="Ctrl" Margin="0 0 5 0" />
               <CheckBox IsChecked="{Binding Config.RestoreTankStance.KeySet.IsShift, Mode=TwoWay}" Content="Shift" Margin="0 0 5 0" />
@@ -102,6 +104,7 @@
           <Label Content="{DynamicResource MyUtility_SummonFairy}" FontStyle="Italic" />
           <StackPanel Margin="10 0 0 0">
             <CheckBox Content="Enabled" IsChecked="{Binding Config.SummonFairy.IsEnabled, Mode=TwoWay}" />
+            <CheckBox Content="{DynamicResource MyUtility_OnlyForRAIDParty}" IsChecked="{Binding Config.SummonFairy.IsOnlyRAIDParty, Mode=TwoWay}" />
             <StackPanel Orientation="Horizontal" IsEnabled="{Binding Config.SummonFairy.IsEnabled, Mode=OneWay}">
               <CheckBox IsChecked="{Binding Config.SummonFairy.KeySet.IsControl, Mode=TwoWay}" Content="Ctrl" Margin="0 0 5 0" />
               <CheckBox IsChecked="{Binding Config.SummonFairy.KeySet.IsShift, Mode=TwoWay}" Content="Shift" Margin="0 0 5 0" />
@@ -117,6 +120,7 @@
           <Label Content="{DynamicResource MyUtility_DrawCard}" FontStyle="Italic" />
           <StackPanel Margin="10 0 0 0">
             <CheckBox Content="Enabled" IsChecked="{Binding Config.DrawCard.IsEnabled, Mode=TwoWay}" />
+            <CheckBox Content="{DynamicResource MyUtility_OnlyForRAIDParty}" IsChecked="{Binding Config.DrawCard.IsOnlyRAIDParty, Mode=TwoWay}" />
             <StackPanel Orientation="Horizontal" IsEnabled="{Binding Config.DrawCard.IsEnabled, Mode=OneWay}">
               <CheckBox IsChecked="{Binding Config.DrawCard.KeySet.IsControl, Mode=TwoWay}" Content="Ctrl" Margin="0 0 5 0" />
               <CheckBox IsChecked="{Binding Config.DrawCard.KeySet.IsShift, Mode=TwoWay}" Content="Shift" Margin="0 0 5 0" />
@@ -132,6 +136,7 @@
           <Label Content="{DynamicResource MyUtility_SummonEgi}" FontStyle="Italic" />
           <StackPanel Margin="10 0 0 0">
             <CheckBox Content="Enabled" IsChecked="{Binding Config.SummonEgi.IsEnabled, Mode=TwoWay}" />
+            <CheckBox Content="{DynamicResource MyUtility_OnlyForRAIDParty}" IsChecked="{Binding Config.SummonEgi.IsOnlyRAIDParty, Mode=TwoWay}" />
             <StackPanel Orientation="Horizontal" IsEnabled="{Binding Config.SummonEgi.IsEnabled, Mode=OneWay}">
               <CheckBox IsChecked="{Binding Config.SummonEgi.KeySet.IsControl, Mode=TwoWay}" Content="Ctrl" Margin="0 0 5 0" />
               <CheckBox IsChecked="{Binding Config.SummonEgi.KeySet.IsShift, Mode=TwoWay}" Content="Shift" Margin="0 0 5 0" />

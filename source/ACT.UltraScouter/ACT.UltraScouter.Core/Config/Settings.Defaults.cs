@@ -702,10 +702,10 @@ namespace ACT.UltraScouter.Config
                 {
                     RemainingTimeThreshold = 30
                 },
-                RestoreTankStance = new SendKeyConfig(),
-                SummonFairy = new SendKeyConfig(),
-                DrawCard = new SendKeyConfig(),
-                SummonEgi = new SendKeyConfig(),
+                RestoreTankStance = new MyUtilitySendKeyConfig(),
+                SummonFairy = new MyUtilitySendKeyConfig(),
+                DrawCard = new MyUtilitySendKeyConfig(),
+                SummonEgi = new MyUtilitySendKeyConfig(),
             } },
 
             #endregion Me
