@@ -66,6 +66,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
             var sendKeySetList = new List<KeyShortcut>();
 
             var player = CombatantsManager.Instance.Player;
+            var playerEffects = XIVPluginHelper.Instance.GetEffects(player.ID);
             var partyCount = CombatantsManager.Instance.PartyCount;
 
             // タンクスタンスを復元する
@@ -74,7 +75,9 @@ namespace ACT.UltraScouter.Workers.TextCommands
                 if (player.Role == Roles.Tank &&
                     this.inTankStance.HasValue)
                 {
-                    var inTankStanceNow = player.Effects.Any(x => TankStanceEffectIDs.Contains(x.BuffID));
+                    var inTankStanceNow = playerEffects.Any(x =>
+                        x != null &&
+                        TankStanceEffectIDs.Contains(x.BuffID));
 
                     if (this.inTankStance.Value != inTankStanceNow)
                     {
@@ -113,10 +116,9 @@ namespace ACT.UltraScouter.Workers.TextCommands
             // 食事効果を延長する
             if (this.Config.ExtendMealEffect.IsAvailable())
             {
-                var remainOfWellFed = player.Effects
-                    .FirstOrDefault(x =>
-                        x != null &&
-                        x.BuffID == WellFedEffectID)?.Timer ?? 0;
+                var remainOfWellFed = playerEffects.FirstOrDefault(x =>
+                    x != null &&
+                    x.BuffID == WellFedEffectID)?.Timer ?? 0;
 
                 if (0 < remainOfWellFed && remainOfWellFed < (this.Config.ExtendMealEffect.RemainingTimeThreshold * 60))
                 {
@@ -217,7 +219,9 @@ namespace ACT.UltraScouter.Workers.TextCommands
                 return;
             }
 
-            this.inTankStance = player.Effects.Any(x =>
+            var playerEffects = XIVPluginHelper.Instance.GetEffects(player.ID);
+
+            this.inTankStance = playerEffects.Any(x =>
                 x != null &&
                 TankStanceEffectIDs.Contains(x.BuffID));
         }
