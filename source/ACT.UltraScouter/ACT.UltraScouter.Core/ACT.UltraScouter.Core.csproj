@@ -95,6 +95,7 @@
     <Compile Include="Config\MyMarker.cs" />
     <Compile Include="Config\MPTicker.cs" />
     <Compile Include="Config\MyStatus.cs" />
+    <Compile Include="Config\MyUtility.cs" />
     <Compile Include="Config\ProgressBarColorRange.cs" />
     <Compile Include="Config\ProgressBar.cs" />
     <Compile Include="Config\Settings.Defaults.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Config\UI\ViewModels\BossConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\CombatantsViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\EnemyHPConfigViewModel.cs" />
+    <Compile Include="Config\UI\ViewModels\MyUtilityConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MyMPConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MyHPConfigViewModel.cs" />
     <Compile Include="Config\UI\ViewModels\MyMarkerConfigViewModel.cs" />
@@ -143,6 +145,9 @@
     </Compile>
     <Compile Include="Config\UI\Views\EnemyHPConfigView.xaml.cs">
       <DependentUpon>EnemyHPConfigView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Config\UI\Views\MyUtilityConfigView.xaml.cs">
+      <DependentUpon>MyUtilityConfigView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Config\UI\Views\MyStatusConfigView.xaml.cs">
       <DependentUpon>MyStatusConfigView.xaml</DependentUpon>
@@ -270,6 +275,7 @@
     <Compile Include="Workers\TacticalRadarWorker.cs" />
     <Compile Include="Workers\MobListWorker.cs" />
     <Compile Include="Workers\MeInfoWorker.cs" />
+    <Compile Include="Workers\TextCommands\MyUtilityOnWipeoutCommand.cs" />
     <Compile Include="Workers\ToTInfoWorker.cs" />
     <Compile Include="Workers\BossInfoWorker.cs" />
     <Compile Include="Workers\FTInfoWorker.cs" />
@@ -327,6 +333,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Config\UI\Views\EnemyHPConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Config\UI\Views\MyUtilityConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

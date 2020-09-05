@@ -1262,6 +1262,10 @@ namespace FFXIV.Framework.XIVHelper
             return r;
         }
 
+        public ReadOnlyCollection<Effect> GetEffects(
+            uint id)
+            => this.DataRepository?.GetEffectsForCombatants(id);
+
         #endregion Get Misc
 
         #region Resources

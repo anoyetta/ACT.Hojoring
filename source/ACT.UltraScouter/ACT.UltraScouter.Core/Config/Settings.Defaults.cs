@@ -678,7 +678,7 @@ namespace ACT.UltraScouter.Config
                     LinkOutlineColor = true,
                     OutlineColor = DefaultColorStroke,
                 }
-            }},
+            } },
 
             { nameof(Settings.MyMarker), new MyMarker()
             {
@@ -693,6 +693,20 @@ namespace ACT.UltraScouter.Config
                 },
                 MarkerType = MyMarkerTypes.ArrowUp,
             }},
+
+            { nameof(Settings.MyUtility), new MyUtility()
+            {
+                DelayFromWipeout = 1,
+
+                ExtendMealEffect = new ExtendMealEffectSendKeyConfig()
+                {
+                    RemainingTimeThreshold = 30
+                },
+                RestoreTankStance = new MyUtilitySendKeyConfig(),
+                SummonFairy = new MyUtilitySendKeyConfig(),
+                DrawCard = new MyUtilitySendKeyConfig(),
+                SummonEgi = new MyUtilitySendKeyConfig(),
+            } },
 
             #endregion Me
 

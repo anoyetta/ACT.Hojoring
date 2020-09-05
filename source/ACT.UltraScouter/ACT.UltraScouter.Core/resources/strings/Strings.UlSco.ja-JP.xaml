@@ -100,6 +100,17 @@
   <system:String x:Key="MPTicker_ExplationTimeForDisplay2">※0で無限。常に表示されます</system:String>
   <system:String x:Key="MPTicker_TargetJobs">自分が下記のジョブのとき表示する</system:String>
 
+  <system:String x:Key="MyUtility_OnRestart">リスタート時の設定</system:String>
+  <system:String x:Key="MyUtility_DelayFromWipeout">ワイプアウトから実行までの遅延秒数</system:String>
+  <system:String x:Key="MyUtility_OnlyForRAIDParty">8人RAIDパーティのときのみ適用する</system:String>
+  <system:String x:Key="MyUtility_ExtendMealEffect">食事効果を延長する</system:String>
+  <system:String x:Key="MyUtility_RemainingTimeThreshold">食事効果を延長するしきい値（分）</system:String>
+  <system:String x:Key="MyUtility_RestoreTankStance">タンクスタンスを復元する</system:String>
+  <system:String x:Key="MyUtility_RestoreTankStanceDescription">前回の戦闘開始時のタンクスタンスを復元します</system:String>
+  <system:String x:Key="MyUtility_SummonFairy">学者のフェアリーを召喚する</system:String>
+  <system:String x:Key="MyUtility_DrawCard">占星術師のカードをドローする</system:String>
+  <system:String x:Key="MyUtility_SummonEgi">召喚士のエギを召喚する</system:String>
+
   <system:String x:Key="MobList_VisibleMePosition">自分の座標を表示する</system:String>
   <system:String x:Key="MobList_SimpleView">シンプル表示にする</system:String>
   <system:String x:Key="MobList_UngroupSameNameMobs">同名のモブをグループ化しない</system:String>
