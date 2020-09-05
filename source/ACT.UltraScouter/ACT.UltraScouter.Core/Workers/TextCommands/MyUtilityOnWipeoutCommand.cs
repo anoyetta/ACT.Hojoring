@@ -189,8 +189,8 @@ namespace ACT.UltraScouter.Workers.TextCommands
         private static readonly uint[] TankStanceEffectIDs = new uint[]
         {
             91,     // ディフェンダー
-            392,    // ロイヤルガード
-            393,    // アイアンウィル
+            1833,   // ロイヤルガード
+            79,     // アイアンウィル
             743,    // グリットスタンス
         };
 
