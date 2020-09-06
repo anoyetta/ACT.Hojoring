@@ -696,7 +696,7 @@ namespace ACT.UltraScouter.Config
 
             { nameof(Settings.MyUtility), new MyUtility()
             {
-                DelayFromWipeout = 1,
+                DelayFromWipeout = 3,
 
                 ExtendMealEffect = new ExtendMealEffectSendKeyConfig()
                 {
