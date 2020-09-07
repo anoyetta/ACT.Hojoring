@@ -103,6 +103,7 @@
   <system:String x:Key="MyUtility_OnRestart">On the restart</system:String>
   <system:String x:Key="MyUtility_DelayFromWipeout">Delay seconds from wipeout</system:String>
   <system:String x:Key="MyUtility_OnlyForRAIDParty">Only in RAID party</system:String>
+  <system:String x:Key="MyUtility_SendOnZoneChanged">Send a key on zone changed</system:String>
   <system:String x:Key="MyUtility_ExtendMealEffect">Extend duration of "Well Fed" effect</system:String>
   <system:String x:Key="MyUtility_RemainingTimeThreshold">threshold to extend duration of "Well Fed" effect (min)</system:String>
   <system:String x:Key="MyUtility_RestoreTankStance">Restore TANK stance</system:String>

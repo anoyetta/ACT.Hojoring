@@ -103,6 +103,7 @@
   <system:String x:Key="MyUtility_OnRestart">リスタート時の設定</system:String>
   <system:String x:Key="MyUtility_DelayFromWipeout">ワイプアウトから実行までの遅延秒数</system:String>
   <system:String x:Key="MyUtility_OnlyForRAIDParty">8人RAIDパーティのときのみ適用する</system:String>
+  <system:String x:Key="MyUtility_SendOnZoneChanged">ゾーンチェンジのときにキーを送る</system:String>
   <system:String x:Key="MyUtility_ExtendMealEffect">食事効果を延長する</system:String>
   <system:String x:Key="MyUtility_RemainingTimeThreshold">食事効果を延長するしきい値（分）</system:String>
   <system:String x:Key="MyUtility_RestoreTankStance">タンクスタンスを復元する</system:String>

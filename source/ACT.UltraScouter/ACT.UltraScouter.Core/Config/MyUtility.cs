@@ -68,6 +68,14 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.isOnlyRAIDParty, value);
         }
 
+        private bool isSendOnZoneChanged;
+
+        public bool IsSendOnZoneChanged
+        {
+            get => this.isSendOnZoneChanged;
+            set => this.SetProperty(ref this.isSendOnZoneChanged, value);
+        }
+
         public bool IsAvailable()
         {
             if (!this.IsEnabled ||
