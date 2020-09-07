@@ -1256,6 +1256,15 @@
     <Content Include="resources\presets\_dummy.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\icon\Common\_dummy">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\icon\Job\_dummy">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\icon\Role\_dummy">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\timeline\sample\ExampleTimeline.Jump.xml" />
     <Content Include="resources\timeline\sample\ExampleTimeline.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
