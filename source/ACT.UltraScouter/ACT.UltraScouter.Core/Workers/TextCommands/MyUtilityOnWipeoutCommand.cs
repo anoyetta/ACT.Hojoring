@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using ACT.UltraScouter.Config;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
-using WindowsInput;
 
 namespace ACT.UltraScouter.Workers.TextCommands
 {
@@ -24,17 +22,21 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
         #endregion Lazy Singleton
 
-        private readonly Lazy<InputSimulator> LazyInput = new Lazy<InputSimulator>(() => new InputSimulator());
+        private static readonly string WipeoutLog = "wipeout";
+        private static readonly string ChangedZoneLog = "01:Changed Zone to";
 
         public MyUtility Config => Settings.Instance.MyUtility;
 
-        public void Subscribe() =>
-            TextCommandBridge.Instance.Subscribe(new TextCommand(this.CanExecute, this.Execute)
-            {
-                IsSilent = true
-            });
+        public void Subscribe()
+        {
+            TextCommandBridge.Instance.Subscribe(
+                new TextCommand(this.WasWipeout, this.OnWipeout) { IsSilent = true });
 
-        private bool CanExecute(
+            TextCommandBridge.Instance.Subscribe(
+                new TextCommand(this.WasZoneChanged, this.OnZoneChanged) { IsSilent = true });
+        }
+
+        private bool WasWipeout(
             string logLine,
             out Match match)
         {
@@ -51,12 +53,10 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
             this.StoreTankStance(logLine);
 
-            return logLine.Contains("wipeout");
+            return logLine.Contains(WipeoutLog);
         }
 
-        private IntPtr xivHandle;
-
-        private void Execute(
+        private void OnWipeout(
             string logLine,
             Match match) => Task.Run(async () =>
         {
@@ -66,7 +66,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
             var sendKeySetList = new List<KeyShortcut>();
 
             var player = CombatantsManager.Instance.Player;
-            var playerEffects = XIVPluginHelper.Instance.GetEffects(player.ID);
+            var playerEffects = player.Effects;
             var partyCount = CombatantsManager.Instance.PartyCount;
 
             // タンクスタンスを復元する
@@ -127,54 +127,101 @@ namespace ACT.UltraScouter.Workers.TextCommands
             }
 
             // キーを送る
-            if (sendKeySetList.Count > 0)
+            var isFirst = true;
+            foreach (var keySet in sendKeySetList)
             {
-                if (this.xivHandle == IntPtr.Zero)
+                if (!isFirst)
                 {
-                    this.xivHandle = FindWindow(null, "FINAL FANTASY XIV");
-                }
-
-                if (this.xivHandle != IntPtr.Zero)
-                {
-                    SetForegroundWindow(xivHandle);
-                }
-
-                var isFirst = true;
-                foreach (var keySet in sendKeySetList)
-                {
-                    if (!isFirst)
-                    {
-                        Thread.Sleep(TimeSpan.FromMilliseconds(3000));
-                    }
-
-                    var modifiers = keySet.GetModifiers();
-                    var keys = keySet.GetKeys();
-                    var sim = this.LazyInput.Value;
-
-                    foreach (var key in modifiers)
-                    {
-                        sim.Keyboard.KeyDown(key);
-                        Thread.Sleep(TimeSpan.FromMilliseconds(50));
-                    }
-
-                    for (int i = 0; i < 3; i++)
-                    {
-                        if (i > 0)
-                        {
-                            Thread.Sleep(TimeSpan.FromMilliseconds(100));
-                        }
-
-                        sim.Keyboard.KeyPress(keys);
-                    }
-
-                    foreach (var key in modifiers.Reverse())
-                    {
-                        Thread.Sleep(TimeSpan.FromMilliseconds(50));
-                        sim.Keyboard.KeyUp(key);
-                    }
-
+                    Thread.Sleep(TimeSpan.FromSeconds(3));
                     isFirst = false;
                 }
+
+                keySet.SendKey(times: 3, interval: 100);
+            }
+        });
+
+        private bool WasZoneChanged(
+            string logLine,
+            out Match match)
+        {
+            match = null;
+
+            if (!this.Config.RestoreTankStance.IsEnabled &&
+                !this.Config.SummonFairy.IsEnabled &&
+                !this.Config.SummonEgi.IsEnabled)
+            {
+                return false;
+            }
+
+            return logLine.Contains(ChangedZoneLog);
+        }
+
+        private void OnZoneChanged(
+            string logLine,
+            Match match) => Task.Run(async () =>
+        {
+            // wipeoutの検出からのディレイ を兼用する
+            await Task.Delay(TimeSpan.FromSeconds(this.Config.DelayFromWipeout));
+
+            var sendKeySetList = new List<KeyShortcut>();
+
+            var player = CombatantsManager.Instance.Player;
+            var playerEffects = player.Effects;
+            var party = CombatantsManager.Instance.GetPartyList();
+
+            // タンクスタンスを復元する
+            if (this.Config.RestoreTankStance.IsAvailable())
+            {
+                // 自分がタンクかつ、タンクが自分のみ？
+                if (player.Role == Roles.Tank &&
+                    party.Count(x => x.Role == Roles.Tank) <= 1)
+                {
+                    var inTankStanceNow = playerEffects.Any(x =>
+                        x != null &&
+                        TankStanceEffectIDs.Contains(x.BuffID));
+
+                    if (!inTankStanceNow)
+                    {
+                        sendKeySetList.Add(this.Config.RestoreTankStance.KeySet);
+                    }
+                }
+            }
+
+            // フェアリーを召喚する
+            if (this.Config.SummonFairy.IsAvailable())
+            {
+                if (player.JobID == JobIDs.SCH &&
+                    party.Count(x =>
+                        x.Role == Roles.PetsEgi &&
+                        x.OwnerID == player.ID) < 1)
+                {
+                    sendKeySetList.Add(this.Config.SummonFairy.KeySet);
+                }
+            }
+
+            // エギを召喚する
+            if (this.Config.SummonEgi.IsAvailable())
+            {
+                if (player.JobID == JobIDs.SMN &&
+                    party.Count(x =>
+                        x.Role == Roles.PetsEgi &&
+                        x.OwnerID == player.ID) < 1)
+                {
+                    sendKeySetList.Add(this.Config.SummonEgi.KeySet);
+                }
+            }
+
+            // キーを送る
+            var isFirst = true;
+            foreach (var keySet in sendKeySetList)
+            {
+                if (!isFirst)
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(3));
+                    isFirst = false;
+                }
+
+                keySet.SendKey(times: 3, interval: 100);
             }
         });
 
@@ -207,33 +254,22 @@ namespace ACT.UltraScouter.Workers.TextCommands
                 return;
             }
 
+            if (!EngageLogs.Any(x => logLine.Contains(x)))
+            {
+                return;
+            }
+
             var player = CombatantsManager.Instance.Player;
+            var playerEffects = player.Effects;
 
             if (player.Role != Roles.Tank)
             {
                 return;
             }
 
-            if (!EngageLogs.Any(x => logLine.Contains(x)))
-            {
-                return;
-            }
-
-            var playerEffects = XIVPluginHelper.Instance.GetEffects(player.ID);
-
             this.inTankStance = playerEffects.Any(x =>
                 x != null &&
                 TankStanceEffectIDs.Contains(x.BuffID));
         }
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
     }
 }
