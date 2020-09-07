@@ -100,6 +100,17 @@
   <system:String x:Key="MPTicker_ExplationTimeForDisplay2">※0이면 무한. 항상 표시합니다</system:String>
   <system:String x:Key="MPTicker_TargetJobs">자신이 아래의 직업 때 표시</system:String>
 
+  <system:String x:Key="MyUtility_OnRestart">On the restart</system:String>
+  <system:String x:Key="MyUtility_DelayFromWipeout">Delay seconds from wipeout</system:String>
+  <system:String x:Key="MyUtility_OnlyForRAIDParty">Only in RAID party</system:String>
+  <system:String x:Key="MyUtility_ExtendMealEffect">Extend duration of "Well Fed" effect</system:String>
+  <system:String x:Key="MyUtility_RemainingTimeThreshold">threshold to extend duration of "Well Fed" effect (min)</system:String>
+  <system:String x:Key="MyUtility_RestoreTankStance">Restore TANK stance</system:String>
+  <system:String x:Key="MyUtility_RestoreTankStanceDescription">Restore the tank stance from the last time the battle began.</system:String>
+  <system:String x:Key="MyUtility_SummonFairy">Summon SCH's fairy</system:String>
+  <system:String x:Key="MyUtility_DrawCard">Draw AST's card</system:String>
+  <system:String x:Key="MyUtility_SummonEgi">Summon SMN's egi</system:String>
+
   <system:String x:Key="MobList_VisibleMePosition">내 좌표 표시</system:String>
   <system:String x:Key="MobList_SimpleView">간략하게 표시</system:String>
   <system:String x:Key="MobList_UngroupSameNameMobs">같은 이름을 가진 몹에 대한 그룹화 해제</system:String>

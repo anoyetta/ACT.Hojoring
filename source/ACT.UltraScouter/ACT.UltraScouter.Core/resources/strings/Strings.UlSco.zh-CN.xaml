@@ -100,6 +100,17 @@
   <system:String x:Key="MPTicker_ExplationTimeForDisplay2">* =0时一直显示</system:String>
   <system:String x:Key="MPTicker_TargetJobs">角色过滤</system:String>
 
+  <system:String x:Key="MyUtility_OnRestart">On the restart</system:String>
+  <system:String x:Key="MyUtility_DelayFromWipeout">Delay seconds from wipeout</system:String>
+  <system:String x:Key="MyUtility_OnlyForRAIDParty">Only in RAID party</system:String>
+  <system:String x:Key="MyUtility_ExtendMealEffect">Extend duration of "Well Fed" effect</system:String>
+  <system:String x:Key="MyUtility_RemainingTimeThreshold">threshold to extend duration of "Well Fed" effect (min)</system:String>
+  <system:String x:Key="MyUtility_RestoreTankStance">Restore TANK stance</system:String>
+  <system:String x:Key="MyUtility_RestoreTankStanceDescription">Restore the tank stance from the last time the battle began.</system:String>
+  <system:String x:Key="MyUtility_SummonFairy">Summon SCH's fairy</system:String>
+  <system:String x:Key="MyUtility_DrawCard">Draw AST's card</system:String>
+  <system:String x:Key="MyUtility_SummonEgi">Summon SMN's egi</system:String>
+
   <system:String x:Key="MobList_VisibleMePosition">显示玩家位置</system:String>
   <system:String x:Key="MobList_SimpleView">简单显示</system:String>
   <system:String x:Key="MobList_UngroupSameNameMobs">同名怪物独立显示</system:String>
