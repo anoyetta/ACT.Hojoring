@@ -15,6 +15,7 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
+using FFXIV.Framework.resources;
 using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
 using FFXIV.Framework.XIVHelper;
@@ -152,6 +153,12 @@ namespace ACT.UltraScouter
                         return;
                     }
 
+                    // HojoringのSplashを表示する
+                    UpdateChecker.ShowSplash();
+
+                    // 外部リソースをダウンロードする
+                    await ResourcesDownloader.Instance.DownloadAsync();
+
                     // 設定ファイルを読み込む
                     Settings.Instance.Load();
                     Settings.Instance.MPTicker.UpdateUnlockMPSync();
@@ -159,10 +166,6 @@ namespace ACT.UltraScouter
                     // 設定ファイルをバックアップする
                     await EnvironmentHelper.BackupFilesAsync(
                         Settings.Instance.FileName);
-
-                    // HojoringのSplashを表示する
-                    WPFHelper.Start();
-                    UpdateChecker.ShowSplash();
 
                     // 各種ファイルを読み込む
                     await Task.Run(() =>

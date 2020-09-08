@@ -14,6 +14,7 @@ using ACT.SpecialSpellTimer.Utility;
 using ACT.SpecialSpellTimer.Views;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.resources;
 using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
 
@@ -186,6 +187,12 @@ namespace ACT.SpecialSpellTimer
                         return;
                     }
 
+                    // HojoringのSplashを表示する
+                    UpdateChecker.ShowSplash();
+
+                    // 外部リソースをダウンロードする
+                    await ResourcesDownloader.Instance.DownloadAsync();
+
                     // メイン設定ファイルを読み込む
                     Settings.Default.Load();
                     Settings.Default.ApplyRenderMode();
@@ -196,9 +203,6 @@ namespace ACT.SpecialSpellTimer
                     {
                         ActGlobals.oFormActMain.WindowState = FormWindowState.Minimized;
                     }
-
-                    // HojoringのSplashを表示する
-                    UpdateChecker.ShowSplash();
 
                     // 自身の場所を格納しておく
                     var plugin = ActGlobals.oFormActMain.PluginGetSelfData(this.PluginRoot);
