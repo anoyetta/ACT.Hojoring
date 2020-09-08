@@ -138,7 +138,7 @@ resources\icon\Role\TANK.png https://raw.githubusercontent.com/anoyetta/ACT.Hojo
 resources\xivdb\Action.de-DE.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.de-DE.csv 5333616F45FD94FAA9852ABC883158AF
 resources\xivdb\Action.en-US.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.en-US.csv 282F8D96A2880EFC2D491BAB69A7BE56
 resources\xivdb\Action.fr-FR.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.fr-FR.csv 179534BE108AB3F791E10A7115A56662
-resources\xivdb\Action.ja-JP.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.ja-JP.csv 9F61E81F0FB4219ED1B594995C71C6EE
+resources\xivdb\Action.ja-JP.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.ja-JP.csv 6A6D64ED25D545A1CF5126C671167132
 resources\xivdb\Action.ko-KR.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.ko-KR.csv 38D39EF3CB70103C9814E39245584FD2
 resources\xivdb\Action.zh-CN.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.zh-CN.csv 6A4A6F5FC7E86F532DDA792BA5ED2D28
 resources\xivdb\Instance.de-DE.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Instance.de-DE.csv 6341C7FC84EE39E2DB75114A75283577
