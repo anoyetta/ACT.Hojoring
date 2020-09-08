@@ -8,37 +8,37 @@
   xmlns:local="clr-namespace:ACT.Hojoring.Common"
   mc:Ignorable="d"
   Title="ACT.Hojoring"
-  TextOptions.TextFormattingMode="Ideal"
+  TextOptions.TextFormattingMode="Display"
   TextOptions.TextHintingMode="Animated"
   TextOptions.TextRenderingMode="ClearType"
-  RenderOptions.ClearTypeHint="Auto"
+  RenderOptions.ClearTypeHint="Enabled"
   RenderOptions.BitmapScalingMode="Fant"
   RenderOptions.EdgeMode="Unspecified"
   AllowsTransparency="True"
   WindowStyle="None"
   ShowInTaskbar="False"
   Background="Transparent"
-  WindowStartupLocation="CenterScreen"
-  Width="600"
-  Height="600"
+  WindowStartupLocation="Manual"
+  Top="40" Left="0"
+  SizeToContent="WidthAndHeight"
   d:DataContext="{d:DesignInstance Type=local:SplashWindow, IsDesignTimeCreatable=True}"
   DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
   <Window.Resources>
-    <sys:Double x:Key="Scale">1.2</sys:Double>
+    <sys:Double x:Key="Scale">1.0</sys:Double>
 
     <FontFamily x:Key="Font">Century Gothic</FontFamily>
-    <FontFamily x:Key="SubFont">Century Gothic Italic</FontFamily>
+    <FontFamily x:Key="SubFont">Century Gothic</FontFamily>
     <FontFamily x:Key="SubNomalFont">Century Gothic</FontFamily>
 
     <SolidColorBrush x:Key="BackgroudBrush" Color="#f8f4e6" />
     <SolidColorBrush x:Key="MainForegroundBrush" Color="#383c3c" />
     <SolidColorBrush x:Key="ReiwaForegroundBrush" Color="#887f7a" />
 
-    <sys:Double x:Key="TitleSize">40</sys:Double>
-    <sys:Double x:Key="CopySize">10</sys:Double>
-    <sys:Double x:Key="VersionSize">18</sys:Double>
-    <sys:Double x:Key="PatchSize">12</sys:Double>
+    <sys:Double x:Key="TitleSize">43</sys:Double>
+    <sys:Double x:Key="VersionSize">16</sys:Double>
+    <sys:Double x:Key="PatchSize">16</sys:Double>
+    <sys:Double x:Key="CopySize">16</sys:Double>
     <sys:Double x:Key="BlurRadiusReiwa">2</sys:Double>
     <sys:Double x:Key="BlurRadiusMain">2</sys:Double>
     <sys:Double x:Key="BlurRadiusSub">0</sys:Double>
@@ -99,14 +99,14 @@
     </Style>
   </Window.Resources>
 
-  <Grid RenderTransformOrigin="0.5 0.5" Opacity="0.95">
+  <Grid RenderTransformOrigin="0.5 0.5" Opacity="0.98">
     <Grid.RenderTransform>
       <ScaleTransform
         ScaleX="{StaticResource Scale}"
         ScaleY="{StaticResource Scale}" />
     </Grid.RenderTransform>
 
-    <Rectangle x:Name="BackgroundRect" Panel.ZIndex="-2" Width="260" Height="260" Fill="{StaticResource BackgroudBrush}" RadiusX="1" RadiusY="1" Opacity="0.6">
+    <Rectangle x:Name="BackgroundRect" Panel.ZIndex="-2" Width="360" Height="140" Fill="{StaticResource BackgroudBrush}" RadiusX="1" RadiusY="1" Opacity="0.6">
       <Rectangle.Effect>
         <DropShadowEffect
           Color="{Binding ElementName=BackgroundRect, Mode=OneWay, Path=Fill.Color}"
@@ -115,171 +115,60 @@
           BlurRadius="6" />
       </Rectangle.Effect>
       <Rectangle.LayoutTransform>
-        <RotateTransform Angle="45" />
+        <RotateTransform Angle="0" />
       </Rectangle.LayoutTransform>
     </Rectangle>
 
-    <Label x:Name="ReiwaDummy" Visibility="Collapsed" Foreground="{DynamicResource ReiwaForegroundBrush}" />
-
-    <StackPanel Panel.ZIndex="-1" VerticalAlignment="Center" HorizontalAlignment="Center">
-      <Grid Margin="0 0 0 0" Visibility="Collapsed">
-        <Label x:Name="ReiwaLabel" Content="令" FontSize="40" FontFamily="{Binding ReiwaFont, Mode=OneWay}">
-          <Label.Effect>
-            <DropShadowEffect
-              Opacity="0.2"
-              Direction="0"
-              ShadowDepth="0"
-              Color="{Binding ElementName=ReiwaDummy, Path=Foreground.Color, Mode=OneWay}"
-              BlurRadius="{DynamicResource BlurRadiusReiwa}" />
-          </Label.Effect>
-        </Label>
-
-        <Label Style="{DynamicResource ReiwaLabelStyle}" />
-        <Label Style="{DynamicResource ReiwaLabelStyle}" />
-        <Label Style="{DynamicResource ReiwaLabelStyle}" />
-        <Label Style="{DynamicResource ReiwaLabelStyle}" />
-        <Label Style="{DynamicResource ReiwaLabelStyle}" />
-      </Grid>
-
-      <Label Height="130" Visibility="Collapsed" />
-
-      <Grid Visibility="Collapsed">
-        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
-        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
-        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
-        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
-        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
-        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
-        <Label Content="和" Style="{DynamicResource ReiwaLabelStyle}" />
-      </Grid>
-    </StackPanel>
-
     <StackPanel
-      Margin="0 15 0 0"
+      Margin="10 10 0 0"
       Orientation="Vertical"
-      HorizontalAlignment="Center"
-      VerticalAlignment="Center">
+      HorizontalAlignment="Left"
+      VerticalAlignment="Top">
 
-      <!---
-      <Label x:Name="Dummy" Background="{Binding MainBrush, Mode=OneWay}" Visibility="Collapsed" />
-      -->
-      <Label x:Name="Dummy" Background="{DynamicResource MainForegroundBrush}" Visibility="Collapsed" />
-
-      <Grid>
-        <Label
-          x:Name="DEBUGLabel"
-          HorizontalAlignment="Center"
-          VerticalAlignment="Center"
-          Content="-DEBUG-"
-          FontWeight="Black"
-          Foreground="#c9171e"
-          FontFamily="Century Gothic"
-          FontSize="15">
-        </Label>
-      </Grid>
-
-      <Grid>
+      <StackPanel Orientation="Horizontal">
         <Label
           x:Name="TitleLabel"
           Content="Hojoring"
           Foreground="{DynamicResource MainForegroundBrush}"
           FontFamily="{StaticResource Font}"
-          FontSize="{DynamicResource TitleSize}">
-          <Label.Effect>
-            <DropShadowEffect
-              Opacity="0.2"
-              Direction="0"
-              ShadowDepth="0"
-              Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
-              BlurRadius="{DynamicResource BlurRadiusMain}" />
-          </Label.Effect>
-        </Label>
-        <Label Style="{DynamicResource TitleLabelStyle}" />
-        <Label Style="{DynamicResource TitleLabelStyle}" />
-        <Label Style="{DynamicResource TitleLabelStyle}" />
-        <Label Style="{DynamicResource TitleLabelStyle}" />
-        <Label Style="{DynamicResource TitleLabelStyle}" />
-      </Grid>
+          FontSize="{DynamicResource TitleSize}" />
 
-      <Grid Margin="0 -8 0 0">
         <Label
-          HorizontalAlignment="Right"
+          x:Name="DEBUGLabel"
+          Margin="5 0 0 0"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Content="- DEBUG -"
+          Foreground="#c9171e"
+          FontFamily="Century Gothic"
+          FontSize="16" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Margin="0 -5 0 0">
+        <Label
           x:Name="VersionLabel"
+          VerticalAlignment="Center"
           Content="v1.0.0"
           Foreground="{DynamicResource MainForegroundBrush}"
           FontFamily="{DynamicResource SubFont}"
-          FontSize="{DynamicResource VersionSize}">
-          <!--
-          <Label.Effect>
-            <DropShadowEffect
-              Opacity="0"
-              Direction="0"
-              ShadowDepth="0"
-              Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
-              BlurRadius="{DynamicResource BlurRadiusSub}" />
-          </Label.Effect>
-          -->
-        </Label>
-        <Label Style="{DynamicResource VersionLabelStyle}" />
-        <Label Style="{DynamicResource VersionLabelStyle}" />
-        <Label Style="{DynamicResource VersionLabelStyle}" />
-        <Label Style="{DynamicResource VersionLabelStyle}" />
-        <Label Style="{DynamicResource VersionLabelStyle}" />
+          FontSize="{DynamicResource VersionSize}" />
 
-        <Label
-          HorizontalAlignment="Left"
-          VerticalAlignment="Center"
-          x:Name="CopyrightLabel"
-          Content="©anoyetta"
-          Foreground="{DynamicResource MainForegroundBrush}"
-          FontFamily="{DynamicResource SubFont}"
-          FontSize="{DynamicResource CopySize}">
-          <!--
-          <Label.Effect>
-            <DropShadowEffect
-              Opacity="0"
-              Direction="0"
-              ShadowDepth="0"
-              Color="{Binding ElementName=Dummy, Path=Background.Color, Mode=OneWay}"
-              BlurRadius="{DynamicResource BlurRadiusSub}" />
-          </Label.Effect>
-          -->
-        </Label>
-        <Label Style="{DynamicResource CopylightLabelStyle}" />
-        <Label Style="{DynamicResource CopylightLabelStyle}" />
-        <Label Style="{DynamicResource CopylightLabelStyle}" />
-        <Label Style="{DynamicResource CopylightLabelStyle}" />
-        <Label Style="{DynamicResource CopylightLabelStyle}" />
-      </Grid>
-
-      <Grid Margin="0 -10 0 0">
         <Label
           x:Name="FFXIVLabel"
-          HorizontalAlignment="Right"
           VerticalAlignment="Center"
           Content="{Binding FFXIVVersion, Mode=OneWay}"
           Foreground="{DynamicResource MainForegroundBrush}"
           FontFamily="{DynamicResource SubFont}"
-          FontSize="{DynamicResource PatchSize}">
-        </Label>
-        <Label Style="{DynamicResource FFXIVLabelStyle}" />
-        <Label Style="{DynamicResource FFXIVLabelStyle}" />
-        <Label Style="{DynamicResource FFXIVLabelStyle}" />
-        <Label Style="{DynamicResource FFXIVLabelStyle}" />
-        <Label Style="{DynamicResource FFXIVLabelStyle}" />
-        <Label Style="{DynamicResource FFXIVLabelStyle}" />
-      </Grid>
-
-      <Grid Margin="0 5 0 0">
-        <Label
-          HorizontalAlignment="Center"
-          VerticalAlignment="Center"
-          Content="MAKKURO"
-          Foreground="{DynamicResource MainForegroundBrush}"
-          FontFamily="{DynamicResource SubNomalFont}"
-          FontSize="{DynamicResource PatchSize}">
-        </Label>
-      </Grid>
+          FontSize="{DynamicResource PatchSize}" />
+      </StackPanel>
     </StackPanel>
+
+    <TextBlock
+      VerticalAlignment="Bottom"
+      HorizontalAlignment="Left"
+      Margin="14 0 0 10"
+      Foreground="{DynamicResource MainForegroundBrush}"
+      FontSize="16"
+      Text="{Binding Message, Mode=OneWay}" />
   </Grid>
 </Window>

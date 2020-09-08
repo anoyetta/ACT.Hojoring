@@ -30,6 +30,10 @@ namespace FFXIV.Framework.Common
 
         #endregion Logger
 
+        private static readonly object Locker = new object();
+
+        private static dynamic hojoringInstance;
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static dynamic GetHojoring()
         {
@@ -37,37 +41,46 @@ namespace FFXIV.Framework.Common
 
             var obj = default(object);
 
-            try
+            lock (Locker)
             {
-#if DEBUG
-                // DEBUGビルド時に依存関係でDLLを配置させるためにタイプを参照する
-                new ACT.Hojoring.Common.Hojoring();
-#endif
-                var t = Type.GetType(HojoringTypeName);
-
-                if (t == null)
+                if (hojoringInstance != null)
                 {
-                    var cd = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                    var hojoring = Path.Combine(cd, "ACT.Hojoring.Common.dll");
-                    if (File.Exists(hojoring))
+                    return hojoringInstance;
+                }
+
+                try
+                {
+#if DEBUG
+                    // DEBUGビルド時に依存関係でDLLを配置させるためにタイプを参照する
+                    new ACT.Hojoring.Common.Hojoring();
+#endif
+                    var t = Type.GetType(HojoringTypeName);
+
+                    if (t == null)
                     {
-                        var asm = Assembly.LoadFrom(hojoring);
-                        t = asm?.GetType(HojoringTypeName);
+                        var cd = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                        var hojoring = Path.Combine(cd, "ACT.Hojoring.Common.dll");
+                        if (File.Exists(hojoring))
+                        {
+                            var asm = Assembly.LoadFrom(hojoring);
+                            t = asm?.GetType(HojoringTypeName);
+                        }
+                    }
+
+                    if (t != null)
+                    {
+                        obj = Activator.CreateInstance(t);
                     }
                 }
-
-                if (t != null)
+                catch (Exception ex)
                 {
-                    obj = Activator.CreateInstance(t);
+                    Debug.WriteLine(ex);
+                    obj = null;
                 }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                obj = null;
-            }
 
-            return obj;
+                hojoringInstance = obj;
+                return obj;
+            }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -135,12 +148,36 @@ namespace FFXIV.Framework.Common
                         Logger.Trace($"Hojoring v{ver.Major}.{ver.Minor}.{ver.Revision}");
                     }
 
-                    hojoring.ShowSplash();
+                    hojoring.ShowSplash("initializing...");
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void SetMessageToSplash(
+            string message)
+        {
+            var hojoring = GetHojoring();
+            if (hojoring != null)
+            {
+                hojoring.Message = message;
+            }
+        }
+
+        public static bool IsSustainSplash
+        {
+            get => GetHojoring()?.IsSustainFadeOut ?? false;
+            set
+            {
+                var hojoring = GetHojoring();
+                if (hojoring != null)
+                {
+                    hojoring.IsSustainFadeOut = value;
+                }
             }
         }
 
@@ -162,6 +199,8 @@ namespace FFXIV.Framework.Common
 
             try
             {
+                SetMessageToSplash("Checking for update...");
+
                 // TLSプロトコルを設定する
                 EnvironmentHelper.SetTLSProtocol();
 
@@ -289,8 +328,6 @@ namespace FFXIV.Framework.Common
         /// 最後にチェックした結果
         /// </summary>
         private static bool? lastResult;
-
-        private static readonly object Locker = new object();
 
         /// <summary>
         /// .NET Framework が有効か？

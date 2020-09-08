@@ -361,6 +361,9 @@ namespace ACT.TTSYukkuri
                         return;
                     }
 
+                    // HojoringのSplashを表示する
+                    UpdateChecker.ShowSplash();
+
                     // 外部リソースをダウンロードする
                     await ResourcesDownloader.Instance.DownloadAsync();
 
@@ -381,10 +384,6 @@ namespace ACT.TTSYukkuri
                         this.MigrateTTSCache();
                         this.GarbageTTSCache();
                     });
-
-                    // HojoringのSplashを表示する
-                    WPFHelper.Start();
-                    UpdateChecker.ShowSplash();
 
                     EnvironmentHelper.WaitInitActDone();
 
