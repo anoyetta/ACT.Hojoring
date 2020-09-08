@@ -135,16 +135,16 @@ resources\icon\Role\RangeDPS.png https://raw.githubusercontent.com/anoyetta/ACT.
 resources\icon\Role\TANK.png https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/icon/Role/TANK.png 24708DDBE1243C49D868C4946F0BBB49
 
 # resources\xivdb
-resources\xivdb\Action.de-DE.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.de-DE.csv 64683672C06191273905480677B850AF
-resources\xivdb\Action.en-US.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.en-US.csv F4975DE9F40BBDF0BE39AC19E0859631
-resources\xivdb\Action.fr-FR.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.fr-FR.csv 0FD935F518D3C9694633FADA95F6C538
-resources\xivdb\Action.ja-JP.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.ja-JP.csv F9D3A5F98F3FE75981F8E4BDC51E3090
+resources\xivdb\Action.de-DE.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.de-DE.csv 5333616F45FD94FAA9852ABC883158AF
+resources\xivdb\Action.en-US.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.en-US.csv 282F8D96A2880EFC2D491BAB69A7BE56
+resources\xivdb\Action.fr-FR.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.fr-FR.csv 179534BE108AB3F791E10A7115A56662
+resources\xivdb\Action.ja-JP.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.ja-JP.csv 9F61E81F0FB4219ED1B594995C71C6EE
 resources\xivdb\Action.ko-KR.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.ko-KR.csv 38D39EF3CB70103C9814E39245584FD2
 resources\xivdb\Action.zh-CN.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Action.zh-CN.csv 6A4A6F5FC7E86F532DDA792BA5ED2D28
-resources\xivdb\Instance.de-DE.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Instance.de-DE.csv 571FD3A262D3FC0A12E16D6337A470F9
-resources\xivdb\Instance.en-US.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Instance.en-US.csv A9E9B7E419449DD5265667D8CC65E8D5
-resources\xivdb\Instance.fr-FR.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Instance.fr-FR.csv CAAC2CD7CDBA0DF1DA53509A3668EE36
-resources\xivdb\Instance.ja-JP.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Instance.ja-JP.csv 75F131E4E1591A935FCCDD41B49852A8
+resources\xivdb\Instance.de-DE.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Instance.de-DE.csv 6341C7FC84EE39E2DB75114A75283577
+resources\xivdb\Instance.en-US.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Instance.en-US.csv 647A490DF2F5B17AD509A8BC9BF271C0
+resources\xivdb\Instance.fr-FR.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Instance.fr-FR.csv EAFEB295437B3AC2CC9B79D7829A0D45
+resources\xivdb\Instance.ja-JP.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Instance.ja-JP.csv 9F61E81F0FB4219ED1B594995C71C6EE
 resources\xivdb\Instance.ko-KR.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Instance.ko-KR.csv 7898296942609AB39442B0D255F70915
 resources\xivdb\Instance.zh-CN.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Instance.zh-CN.csv E616CE8DE62CE67AF810AC52EBC265E7
 resources\xivdb\Status.de-DE.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Status.de-DE.csv B7F1DBC64C3D837CA9F2555CFE403FDE
@@ -152,8 +152,8 @@ resources\xivdb\Status.en-US.csv https://raw.githubusercontent.com/anoyetta/ACT.
 resources\xivdb\Status.fr-FR.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Status.fr-FR.csv 7842D8B6FC8E87F637EE39DE3AA14DE5
 resources\xivdb\Status.ja-JP.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Status.ja-JP.csv C3B4CBC054D4EB82B38BE631F5D0E8E2
 resources\xivdb\Status.ko-KR.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/Status.ko-KR.csv F224DE1A4AE87CBDF6144E1AC5533FE8
-resources\xivdb\TerritoryType.de-DE.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/TerritoryType.de-DE.csv 6D925BBF5921CF1919ACBB8974160250
-resources\xivdb\TerritoryType.en-US.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/TerritoryType.en-US.csv DC1E334D364312E5A8817090B07D324D
-resources\xivdb\TerritoryType.fr-FR.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/TerritoryType.fr-FR.csv DA9ABCD1BF21D4A2286F8252CBCF27FC
-resources\xivdb\TerritoryType.ja-JP.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/TerritoryType.ja-JP.csv A87AF3E9ADA573594028EB7C47171042
+resources\xivdb\TerritoryType.de-DE.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/TerritoryType.de-DE.csv CC7029CB47DEF10E59CF19D02E6BFF00
+resources\xivdb\TerritoryType.en-US.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/TerritoryType.en-US.csv 535A47574FDAF72C0C56CF72F1C37D9F
+resources\xivdb\TerritoryType.fr-FR.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/TerritoryType.fr-FR.csv 44AF62984A6D9B8F7FBA014C3B8A8A90
+resources\xivdb\TerritoryType.ja-JP.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/TerritoryType.ja-JP.csv 93B86DA0AE9A3A9A67423B1F338FF433
 resources\xivdb\TerritoryType.ko-KR.csv https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/xivdb/TerritoryType.ko-KR.csv 21F3056A52037E507F1E96FA838B3470
