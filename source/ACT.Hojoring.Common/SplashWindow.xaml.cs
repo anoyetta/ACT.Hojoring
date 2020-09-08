@@ -187,7 +187,7 @@ namespace ACT.Hojoring.Common
 
             await Task.Run(async () =>
             {
-                while (DateTime.Now < this.FadeOutStartTime || this.IsSustainFadeOut)
+                while (DateTime.Now <= this.FadeOutStartTime || this.IsSustainFadeOut)
                 {
                     await Task.Delay(200);
                 }

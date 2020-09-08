@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace ACT.Hojoring.Common
 {
@@ -13,37 +12,35 @@ namespace ACT.Hojoring.Common
 
         private SplashWindow splash;
 
-        public async void ShowSplash(
+        public void ShowSplash(
             string message = "")
         {
-            if (isSplashShown)
+            lock (this)
             {
-                return;
-            }
+                if (isSplashShown)
+                {
+                    return;
+                }
 
-            isSplashShown = true;
+                isSplashShown = true;
 
 #if false
-            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            if (Directory.GetFiles(
-                dir,
-                "*NOSPLASH*",
-                SearchOption.TopDirectoryOnly).Length > 0)
-            {
-                return;
-            }
+                var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                if (Directory.GetFiles(
+                    dir,
+                    "*NOSPLASH*",
+                    SearchOption.TopDirectoryOnly).Length > 0)
+                {
+                    return;
+                }
 #endif
 
-            await Application.Current.Dispatcher.InvokeAsync(
-                () =>
-                {
-                    this.splash = new SplashWindow();
-                    this.splash.Loaded += (_, __) => this.splash.StartFadeOut();
-                    this.splash.Show();
-                    this.splash.Activate();
-                    this.splash.Message = message;
-                },
-                DispatcherPriority.Normal);
+                this.splash = new SplashWindow();
+                this.splash.Loaded += (_, __) => this.splash.StartFadeOut();
+                this.splash.Show();
+                this.splash.Activate();
+                this.splash.Message = message;
+            }
         }
 
         public string Message

@@ -26,21 +26,31 @@ namespace FFXIV.Framework.resources
 
         #endregion Lazy Singleton
 
+        private static readonly Random Random = new Random();
+
         private static readonly Uri RemoteResourcesListUri =
-            EnvironmentHelper.IsDebug ?
-            new Uri("https://raw.githubusercontent.com/anoyetta/ACT.Hojoring/develop/resources/_list.txt") :
-            new Uri("https://raw.githubusercontent.com/anoyetta/ACT.Hojoring/master/resources/_list.txt");
+            new Uri("https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources.txt" + $"?random={Random.Next()}");
+
+        private bool pass;
 
         public async Task DownloadAsync()
         {
+            lock (Random)
+            {
+                if (this.pass)
+                {
+                    return;
+                }
+
+                this.pass = true;
+            }
+
             if (this.IsDebugSkip)
             {
                 return;
             }
 
             UpdateChecker.IsSustainSplash = true;
-
-            var random = new Random();
 
             var isDownloaded = false;
 
@@ -112,7 +122,7 @@ namespace FFXIV.Framework.resources
 
                         temp = GetTempFileName();
                         await wc.DownloadFileTaskAsync(
-                            new Uri($"{remote}?random={random.Next()}"),
+                            new Uri($"{remote}?random={Random.Next()}"),
                             temp);
 
                         var md5New = FileHelper.GetMD5(temp);
