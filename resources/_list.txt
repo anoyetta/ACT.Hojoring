@@ -1,26 +1,32 @@
 # Hojoring.Resources
 
-# bin
-bin\aqdic.bin https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/aqdic.bin BCB8D5675254EB9884838185C9952927
-bin\grpc_csharp_ext.x64.dll https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/grpc_csharp_ext.x64.dll F533148359F1DC6A38DA7E56A260A949
-bin\grpc_csharp_ext.x86.dll https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/grpc_csharp_ext.x86.dll 4880F5F4F3F750BE0D17CFB95E76234D
-bin\libopus.dll https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/libopus.dll 8EFA1FE57D0654D3C9A94F15039196B2
-bin\libsodium.dll https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/libsodium.dll 6AB13686F40B52C170D74231D455228E
-bin\man_m001.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/man_m001.htsvoice 6B46BF60F423F89EF91B760B67DB950E
-bin\mei_angry.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/mei_angry.htsvoice F6274B5A90427322FFE889057BB82A31
-bin\mei_bashful.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/mei_bashful.htsvoice 8EBF0F91792F3CD01C94EE6FB9ABFD2B
-bin\mei_happy.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/mei_happy.htsvoice 3C0997617C6C74B9518A4B57E01DBF70
-bin\mei_normal.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/mei_normal.htsvoice 2B9D326EB30EACB52FB4BD447A13F318
-bin\mei_sad.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/mei_sad.htsvoice 625118DDD4F07C47EF3C88EE35524661
-bin\sys.dic https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/sys.dic 8187D58E68FCA403916BF47E262EC50C
-bin\tohoku-f01-angry.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/tohoku-f01-angry.htsvoice D0284B6734909044F4E0DCB440D69EA4
-bin\tohoku-f01-happy.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/tohoku-f01-happy.htsvoice C0A36DA8D48D4DCF61D277B88020ADB4
-bin\tohoku-f01-neutral.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/tohoku-f01-neutral.htsvoice 814D1B37D79DEDC0AF65BC9298A979E8
-bin\tohoku-f01-sad.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/tohoku-f01-sad.htsvoice 641B3BE6A14391815A45D8D14E056B7B
-bin\type-A.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/type-A.htsvoice D598151D844F7F725FD65983323533C3
-bin\type-B.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/type-B.htsvoice A842D3E71E6979F73184241CA7046D48
-bin\type-G.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/type-G.htsvoice 00B1282E7520A4B375B6CE82AE9F915F
-bin\type-T.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/type-T.htsvoice 2403AD5FAE2FA330ACDB61B807A310E4
+# bin\lib
+bin\lib\grpc_csharp_ext.x64.dll https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/lib/grpc_csharp_ext.x64.dll F533148359F1DC6A38DA7E56A260A949
+bin\lib\grpc_csharp_ext.x86.dll https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/lib/grpc_csharp_ext.x86.dll 4880F5F4F3F750BE0D17CFB95E76234D
+bin\lib\libopus.dll https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/lib/libopus.dll 8EFA1FE57D0654D3C9A94F15039196B2
+bin\lib\libsodium.dll https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/lib/libsodium.dll 6AB13686F40B52C170D74231D455228E
+
+# bin\openJTalk\dic
+bin\openJTalk\dic\sys.dic https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/dic/sys.dic 8187D58E68FCA403916BF47E262EC50C
+
+# bin\openJTalk\voice
+bin\openJTalk\voice\man_m001.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/man_m001.htsvoice 6B46BF60F423F89EF91B760B67DB950E
+bin\openJTalk\voice\mei_angry.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/mei_angry.htsvoice F6274B5A90427322FFE889057BB82A31
+bin\openJTalk\voice\mei_bashful.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/mei_bashful.htsvoice 8EBF0F91792F3CD01C94EE6FB9ABFD2B
+bin\openJTalk\voice\mei_happy.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/mei_happy.htsvoice 3C0997617C6C74B9518A4B57E01DBF70
+bin\openJTalk\voice\mei_normal.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/mei_normal.htsvoice 2B9D326EB30EACB52FB4BD447A13F318
+bin\openJTalk\voice\mei_sad.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/mei_sad.htsvoice 625118DDD4F07C47EF3C88EE35524661
+bin\openJTalk\voice\tohoku-f01-angry.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/tohoku-f01-angry.htsvoice D0284B6734909044F4E0DCB440D69EA4
+bin\openJTalk\voice\tohoku-f01-happy.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/tohoku-f01-happy.htsvoice C0A36DA8D48D4DCF61D277B88020ADB4
+bin\openJTalk\voice\tohoku-f01-neutral.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/tohoku-f01-neutral.htsvoice 814D1B37D79DEDC0AF65BC9298A979E8
+bin\openJTalk\voice\tohoku-f01-sad.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/tohoku-f01-sad.htsvoice 641B3BE6A14391815A45D8D14E056B7B
+bin\openJTalk\voice\type-A.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/type-A.htsvoice D598151D844F7F725FD65983323533C3
+bin\openJTalk\voice\type-B.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/type-B.htsvoice A842D3E71E6979F73184241CA7046D48
+bin\openJTalk\voice\type-G.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/type-G.htsvoice 00B1282E7520A4B375B6CE82AE9F915F
+bin\openJTalk\voice\type-T.htsvoice https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/openJTalk/voice/type-T.htsvoice 2403AD5FAE2FA330ACDB61B807A310E4
+
+# bin\yukkuri\aq_dic
+bin\yukkuri\aq_dic\aqdic.bin https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/bin/yukkuri/aq_dic/aqdic.bin BCB8D5675254EB9884838185C9952927
 
 # resources\icon\Common
 resources\icon\Common\Apple.png https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources/icon/Common/Apple.png FB7B2A1038F6DC0A795837458C89197F
