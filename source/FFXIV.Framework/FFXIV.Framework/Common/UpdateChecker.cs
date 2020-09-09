@@ -7,6 +7,7 @@ using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Threading;
@@ -186,6 +187,10 @@ namespace FFXIV.Framework.Common
         /// </summary>
         private static readonly Dictionary<string, bool> checkedDictinary = new Dictionary<string, bool>();
 
+        private static readonly Regex ReleaseVersionTitleRegex = new Regex(
+            @"v(?<major>\d+)\.(?<minor>\d+)\.(?<revision>\d+)-?(?<build>[\d\.]*)",
+            RegexOptions.Compiled);
+
         /// <summary>
         /// アップデートを行う
         /// </summary>
@@ -236,12 +241,19 @@ namespace FFXIV.Framework.Common
                 // バージョンを比較する
                 if (!lastestReleaseVersion.ContainsIgnoreCase("FINAL"))
                 {
+                    var match = ReleaseVersionTitleRegex.Match(lastestReleaseVersion);
+                    if (!match.Success)
+                    {
+                        Logger.Trace($"Update checker. Unknown release version.");
+                        return r;
+                    }
+
                     var values = lastestReleaseVersion.Replace("v", string.Empty).Split('.');
                     var remoteVersion = new Version(
-                        values.Length > 0 ? int.Parse(values[0]) : 0,
-                        values.Length > 1 ? int.Parse(values[1]) : 0,
+                        int.Parse(match.Groups["major"].Value),
+                        int.Parse(match.Groups["minor"].Value),
                         0,
-                        values.Length > 2 ? int.Parse(values[2]) : 0);
+                        int.Parse(match.Groups["revision"].Value));
 
                     if (remoteVersion <= currentVersion)
                     {
