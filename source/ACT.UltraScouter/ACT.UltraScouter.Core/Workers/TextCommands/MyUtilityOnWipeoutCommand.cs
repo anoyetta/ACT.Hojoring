@@ -192,7 +192,8 @@ namespace ACT.UltraScouter.Workers.TextCommands
             }
 
             // フェアリーを召喚する
-            if (this.Config.SummonFairy.IsAvailable())
+            if (this.Config.SummonFairy.IsEnabled &&
+                this.Config.SummonFairy.KeySet.Key != Key.None)
             {
                 if (player.JobID == JobIDs.SCH)
                 {
@@ -206,7 +207,8 @@ namespace ACT.UltraScouter.Workers.TextCommands
             }
 
             // エギを召喚する
-            if (this.Config.SummonEgi.IsAvailable())
+            if (this.Config.SummonEgi.IsEnabled &&
+                this.Config.SummonEgi.KeySet.Key != Key.None)
             {
                 if (player.JobID == JobIDs.SMN)
                 {
