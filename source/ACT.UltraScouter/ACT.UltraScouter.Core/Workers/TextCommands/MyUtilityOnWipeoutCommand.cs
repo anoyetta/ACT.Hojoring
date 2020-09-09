@@ -136,7 +136,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
                     isFirst = false;
                 }
 
-                keySet.SendKey(times: 3, interval: 100);
+                keySet.SendKey(times: 1, interval: 100);
             }
         });
 
