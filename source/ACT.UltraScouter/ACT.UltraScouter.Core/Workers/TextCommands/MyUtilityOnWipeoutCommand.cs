@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using ACT.UltraScouter.Config;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
@@ -167,22 +168,25 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
             var player = CombatantsManager.Instance.Player;
             var playerEffects = player.Effects;
-            var party = CombatantsManager.Instance.GetPartyList();
 
             // タンクスタンスを復元する
-            if (this.Config.RestoreTankStance.IsAvailable())
+            if (this.Config.RestoreTankStance.IsEnabled &&
+                this.Config.RestoreTankStance.KeySet.Key != Key.None)
             {
                 // 自分がタンクかつ、タンクが自分のみ？
-                if (player.Role == Roles.Tank &&
-                    party.Count(x => x.Role == Roles.Tank) <= 1)
+                if (player.Role == Roles.Tank)
                 {
-                    var inTankStanceNow = playerEffects.Any(x =>
-                        x != null &&
-                        TankStanceEffectIDs.Contains(x.BuffID));
-
-                    if (!inTankStanceNow)
+                    var party = CombatantsManager.Instance.GetPartyList();
+                    if (party.Count(x => x.Role == Roles.Tank) <= 1)
                     {
-                        sendKeySetList.Add(this.Config.RestoreTankStance.KeySet);
+                        var inTankStanceNow = playerEffects.Any(x =>
+                            x != null &&
+                            TankStanceEffectIDs.Contains(x.BuffID));
+
+                        if (!inTankStanceNow)
+                        {
+                            sendKeySetList.Add(this.Config.RestoreTankStance.KeySet);
+                        }
                     }
                 }
             }
@@ -190,24 +194,28 @@ namespace ACT.UltraScouter.Workers.TextCommands
             // フェアリーを召喚する
             if (this.Config.SummonFairy.IsAvailable())
             {
-                if (player.JobID == JobIDs.SCH &&
-                    party.Count(x =>
-                        x.Role == Roles.PetsEgi &&
-                        x.OwnerID == player.ID) < 1)
+                if (player.JobID == JobIDs.SCH)
                 {
-                    sendKeySetList.Add(this.Config.SummonFairy.KeySet);
+                    var combatants = CombatantsManager.Instance.GetCombatants();
+                    if (!combatants.Any(x =>
+                        x.OwnerID == player.ID))
+                    {
+                        sendKeySetList.Add(this.Config.SummonFairy.KeySet);
+                    }
                 }
             }
 
             // エギを召喚する
             if (this.Config.SummonEgi.IsAvailable())
             {
-                if (player.JobID == JobIDs.SMN &&
-                    party.Count(x =>
-                        x.Role == Roles.PetsEgi &&
-                        x.OwnerID == player.ID) < 1)
+                if (player.JobID == JobIDs.SMN)
                 {
-                    sendKeySetList.Add(this.Config.SummonEgi.KeySet);
+                    var combatants = CombatantsManager.Instance.GetCombatants();
+                    if (!combatants.Any(x =>
+                        x.OwnerID == player.ID))
+                    {
+                        sendKeySetList.Add(this.Config.SummonEgi.KeySet);
+                    }
                 }
             }
 
