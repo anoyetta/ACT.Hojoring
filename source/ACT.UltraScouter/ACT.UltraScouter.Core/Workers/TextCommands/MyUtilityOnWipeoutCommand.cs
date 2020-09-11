@@ -24,7 +24,9 @@ namespace ACT.UltraScouter.Workers.TextCommands
         #endregion Lazy Singleton
 
         private static readonly string WipeoutLog = "wipeout";
+
         private static readonly string ChangedZoneLog = "01:Changed Zone to";
+        private static readonly string ContentStartLog = "の攻略を開始した。";
 
         public MyUtility Config => Settings.Instance.MyUtility;
 
@@ -141,11 +143,14 @@ namespace ACT.UltraScouter.Workers.TextCommands
             }
         });
 
+        private volatile bool isZoneChanged;
+
         private bool WasZoneChanged(
             string logLine,
             out Match match)
         {
             match = null;
+            this.isZoneChanged = false;
 
             if (!this.Config.RestoreTankStance.IsEnabled &&
                 !this.Config.SummonFairy.IsEnabled &&
@@ -154,7 +159,18 @@ namespace ACT.UltraScouter.Workers.TextCommands
                 return false;
             }
 
-            return logLine.Contains(ChangedZoneLog);
+            if (logLine.Contains(ChangedZoneLog))
+            {
+                this.isZoneChanged = true;
+                return true;
+            }
+
+            if (logLine.Contains(ContentStartLog))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void OnZoneChanged(
@@ -162,7 +178,10 @@ namespace ACT.UltraScouter.Workers.TextCommands
             Match match) => Task.Run(async () =>
         {
             // wipeoutの検出からのディレイ を兼用する
-            await Task.Delay(TimeSpan.FromSeconds(this.Config.DelayFromWipeout));
+            if (this.isZoneChanged)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(this.Config.DelayFromWipeout));
+            }
 
             var sendKeySetList = new List<KeyShortcut>();
 
@@ -222,16 +241,10 @@ namespace ACT.UltraScouter.Workers.TextCommands
             }
 
             // キーを送る
-            var isFirst = true;
             foreach (var keySet in sendKeySetList)
             {
-                if (!isFirst)
-                {
-                    Thread.Sleep(TimeSpan.FromSeconds(3));
-                    isFirst = false;
-                }
-
                 keySet.SendKey(times: 1, interval: 100);
+                Thread.Sleep(TimeSpan.FromSeconds(4));
             }
         });
 
