@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -145,6 +145,10 @@ namespace ACT.UltraScouter.Models
                 Settings.Instance.MPTicker.IsUnlockMPSync)
             {
                 var playerStatus = XIVPluginHelper.Instance.GetPlayerStatus();
+                if (playerStatus == null)
+                {
+                    return;
+                }
 
                 // 標準回復量200 + (PIE - PIE初期値340) / PIE22ごと
                 HealerInCombatMPRecoverValue = 200 + ((playerStatus.Pie - 340) / 22);
