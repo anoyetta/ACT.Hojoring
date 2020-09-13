@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using NLog;
-using NPOI.OpenXmlFormats.Shared;
 using SLOBSharp.Client;
 using SLOBSharp.Client.Requests;
 using WindowsInput;
@@ -321,12 +320,10 @@ namespace ACT.XIVLog
                                     $"{tf.Properties.Duration.TotalSeconds:N0}s");
 
                                 tf.Tag.Title = Path.GetFileNameWithoutExtension(dest);
-                                tf.Tag.Description = 
+                                tf.Tag.Subtitle = $"{prefix} - {contentName}";
+                                tf.Tag.Comment =
                                     $"{prefix} - {contentName}\n" +
                                     $"{this.startTime:yyyy-MM-dd HH:mm} try{this.TryCount} death{this.deathCount - 1}";
-                                tf.Tag.Album = $"{prefix} - {contentName}";
-                                tf.Tag.Track = (uint)this.TryCount;
-                                tf.Tag.Grouping = "Game";
                                 tf.Save();
                             }
 
