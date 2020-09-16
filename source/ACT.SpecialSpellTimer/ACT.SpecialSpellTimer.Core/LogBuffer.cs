@@ -647,6 +647,55 @@ namespace ACT.SpecialSpellTimer
                 $"[EX] {(isAuto ? "Beacon" : "POS")} X={player.PosXMap:N2} Y={player.PosYMap:N2} Z={player.PosZMap:N2} zone={zone}");
         }
 
+        private static double previousPetDistance = 0;
+
+        /// <summary>
+        /// ペットとの距離をログにダンプする
+        /// </summary>
+        public static void DumpMyPetDistance()
+        {
+            var player = CombatantsManager.Instance.Player;
+            if (player == null ||
+                !player.IsPetJob)
+            {
+                previousPetDistance = 0;
+                return;
+            }
+
+            var combatants = CombatantsManager.Instance.GetCombatants();
+
+            var pet = combatants.FirstOrDefault(x =>
+                x.OwnerID == player.ID);
+
+            if (pet == null)
+            {
+                previousPetDistance = 0;
+                return;
+            }
+
+            var distance = pet.HorizontalDistanceByPlayer;
+
+            try
+            {
+                var distance10m = (int)distance / 10;
+                var distance10mPrevious = (int)previousPetDistance / 10;
+
+                if (distance10m <= distance10mPrevious ||
+                    distance10m < 3)
+                {
+                    return;
+                }
+
+                LogParser.RaiseLog(
+                    DateTime.Now,
+                    $"[EX] Pet distance is over {distance10m * 10:N0}m.");
+            }
+            finally
+            {
+                previousPetDistance = distance;
+            }
+        }
+
         #endregion その他のメソッド
     }
 }
