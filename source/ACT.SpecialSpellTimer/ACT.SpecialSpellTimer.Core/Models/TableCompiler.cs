@@ -31,8 +31,7 @@ namespace ACT.SpecialSpellTimer.Models
 
         #region Worker
 
-        private readonly double WorkerInterval = 1000;
-        private readonly int WorkerTickInterval = 3;
+        private readonly double WorkerInterval = 2500;
         private System.Timers.Timer worker;
 
         #endregion Worker
@@ -123,27 +122,12 @@ namespace ACT.SpecialSpellTimer.Models
             }
         }
 
-        private int tickCount;
-
         private void DoWork()
         {
             try
             {
                 lock (this)
                 {
-                    // ペットとの距離をダンプする
-                    LogBuffer.DumpMyPetDistance();
-
-                    // この後の処理は3回に1回処理する（3秒ごとに処理する）
-                    this.tickCount++;
-
-                    if (this.tickCount < WorkerTickInterval)
-                    {
-                        return;
-                    }
-
-                    this.tickCount = 0;
-
                     this.RefreshCombatants();
 
                     var isSimulationChanged = false;
