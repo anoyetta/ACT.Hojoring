@@ -150,6 +150,12 @@
           </StackPanel>
 
           <LineBreak />
+          <StackPanel Margin="10 5 0 0" Orientation="Horizontal">
+            <TextBlock>/xivlog flush</TextBlock>
+            <TextBlock Margin="16 0 0 0">: Flush log file command.</TextBlock>
+          </StackPanel>
+
+          <LineBreak />
           <StackPanel Margin="10 1 0 0" Orientation="Horizontal">
             <TextBlock>/xivlog rec</TextBlock>
             <TextBlock Margin="34 0 0 0">: Start video recording.</TextBlock>
