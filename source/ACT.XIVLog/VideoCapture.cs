@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -134,6 +135,7 @@ namespace ACT.XIVLog
             if (isStart ||
                 xivlog.Log.Contains("/xivlog rec"))
             {
+                SystemSounds.Beep.Play();
                 this.deathCount = 0;
                 this.StartRecording();
                 return;
@@ -151,6 +153,7 @@ namespace ACT.XIVLog
                 (this.inFeast && FeastEndRegex.IsMatch(xivlog.Log)))
             {
                 this.FinishRecording();
+                SystemSounds.Beep.Play();
                 return;
             }
 
