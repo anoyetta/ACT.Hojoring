@@ -1,5 +1,7 @@
 using System;
+using System.ComponentModel;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,7 +15,7 @@ namespace ACT.Hojoring.Common
     /// <summary>
     /// SplashWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class SplashWindow : Window
+    public partial class SplashWindow : Window, INotifyPropertyChanged
     {
 #if DEBUG
         private static readonly bool IsDebug = true;
@@ -21,12 +23,13 @@ namespace ACT.Hojoring.Common
         private static readonly bool IsDebug = false;
 #endif
 
-        public string FFXIVVersion => "for patch 5.2x";
+        public string FFXIVVersion => "for patch 5.3x";
 
         public static Version HojoringVersion => Assembly.GetExecutingAssembly()?.GetName()?.Version;
 
         private static readonly TimeSpan SplashDuration = TimeSpan.FromSeconds(2);
         private static readonly TimeSpan FadeOutDuration = TimeSpan.FromSeconds(2);
+        private DateTime FadeOutStartTime;
 
         private readonly DoubleAnimation OpacityAnimation = new DoubleAnimation(
             0,
@@ -40,6 +43,22 @@ namespace ACT.Hojoring.Common
             => new FontFamily(
                 new Uri("pack://application:,,,/ACT.Hojoring.Common;component/fonts/"),
                 "./#HakusyuGyosyo_kk");
+
+        public bool IsSustainFadeOut { get; set; }
+
+        private string message;
+
+        public string Message
+        {
+            get => this.message;
+            set
+            {
+                if (this.SetProperty(ref this.message, value))
+                {
+                    this.FadeOutStartTime = DateTime.Now.Add(SplashDuration);
+                }
+            }
+        }
 
         #region Colors
 
@@ -164,7 +183,16 @@ namespace ACT.Hojoring.Common
 
         public async void StartFadeOut()
         {
-            await Task.Delay(SplashDuration);
+            this.FadeOutStartTime = DateTime.Now.Add(SplashDuration);
+
+            await Task.Run(async () =>
+            {
+                while (DateTime.Now <= this.FadeOutStartTime || this.IsSustainFadeOut)
+                {
+                    await Task.Delay(200);
+                }
+            });
+
             await Application.Current.Dispatcher.InvokeAsync(
                 () => this.BeginAnimation(
                     Window.OpacityProperty,
@@ -210,6 +238,39 @@ namespace ACT.Hojoring.Common
                 GWL_EXSTYLE,
                 extendedStyle | WS_EX_TRANSPARENT);
         }
+
+        #region INotifyPropertyChanged
+
+        [field: NonSerialized]
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void RaisePropertyChanged(
+            [CallerMemberName] string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected virtual bool SetProperty<T>(
+            ref T field,
+            T value,
+            [CallerMemberName] string propertyName = null)
+        {
+            if (Equals(field, value))
+            {
+                return false;
+            }
+
+            field = value;
+            this.PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(propertyName));
+
+            return true;
+        }
+
+        #endregion INotifyPropertyChanged
 
         #region Win32 API
 

@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Input;
 using System.Xml.Serialization;
 using Prism.Mvvm;
+using WindowsInput;
 using WindowsInput.Native;
 
 namespace FFXIV.Framework.Common
@@ -85,6 +88,57 @@ namespace FFXIV.Framework.Common
         }
         .Where(x => !string.IsNullOrEmpty(x))
         .ToArray());
+
+        private static IntPtr xivHandle = IntPtr.Zero;
+        private static readonly Lazy<InputSimulator> LazyInput = new Lazy<InputSimulator>(() => new InputSimulator());
+
+        public void SendKey(
+            int times = 1,
+            int interval = 100)
+        {
+            if (xivHandle == IntPtr.Zero)
+            {
+                xivHandle = FindWindow(null, "FINAL FANTASY XIV");
+            }
+
+            if (xivHandle != IntPtr.Zero)
+            {
+                SetForegroundWindow(xivHandle);
+            }
+
+            var modifiers = this.GetModifiers();
+            var keys = this.GetKeys();
+            var sim = LazyInput.Value;
+
+            foreach (var key in modifiers)
+            {
+                sim.Keyboard.KeyDown(key);
+                Thread.Sleep(TimeSpan.FromMilliseconds(20));
+            }
+
+            for (int i = 0; i < times; i++)
+            {
+                if (i > 0)
+                {
+                    Thread.Sleep(TimeSpan.FromMilliseconds(interval));
+                }
+
+                sim.Keyboard.KeyPress(keys);
+            }
+
+            foreach (var key in modifiers.Reverse())
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(20));
+                sim.Keyboard.KeyUp(key);
+            }
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
     }
 
     public static class KeyShortcutExtensions

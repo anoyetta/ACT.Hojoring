@@ -12,8 +12,8 @@ using System.Windows.Markup;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("6d17f2c1-f9bd-4c9c-96c9-1a60ad975e4b")]
-[assembly: AssemblyVersion("1.10.0.0")]
-[assembly: AssemblyFileVersion("1.10.0.0")]
+[assembly: AssemblyVersion("1.10.0.1")]
+[assembly: AssemblyFileVersion("1.10.0.1")]
 #if DEBUG
 [assembly: XmlnsDefinition("debug-mode", "Namespace")]
 #endif

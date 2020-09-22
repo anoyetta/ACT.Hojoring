@@ -158,6 +158,17 @@ namespace FFXIV.Framework.XIVHelper
             (JobIDs)((int)this.Job) :
             JobIDs.Unknown;
 
+        public bool IsPetJob
+        {
+            get
+            {
+                var jobID = this.JobID;
+                return
+                    jobID == JobIDs.SCH ||
+                    jobID == JobIDs.SMN;
+            }
+        }
+
         private Job jobInfo = JobIDs.Unknown.GetInfo();
 
         public Job JobInfo => this.jobInfo.ID == this.JobID ?

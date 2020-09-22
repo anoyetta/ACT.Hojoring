@@ -1,8 +1,6 @@
 using System;
-using System.IO;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace ACT.Hojoring.Common
 {
@@ -12,33 +10,64 @@ namespace ACT.Hojoring.Common
 
         public Version Version => Assembly.GetExecutingAssembly().GetName().Version;
 
-        public async void ShowSplash()
+        private SplashWindow splash;
+
+        public void ShowSplash(
+            string message = "")
         {
-            if (isSplashShown)
+            lock (this)
             {
-                return;
-            }
-
-            isSplashShown = true;
-
-            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            if (Directory.GetFiles(
-                dir,
-                "*NOSPLASH*",
-                SearchOption.TopDirectoryOnly).Length > 0)
-            {
-                return;
-            }
-
-            await Application.Current.Dispatcher.InvokeAsync(
-                () =>
+                if (isSplashShown)
                 {
-                    var window = new SplashWindow();
-                    window.Loaded += (_, __) => window.StartFadeOut();
-                    window.Show();
-                    window.Activate();
-                },
-                DispatcherPriority.Normal);
+                    return;
+                }
+
+                isSplashShown = true;
+
+#if false
+                var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                if (Directory.GetFiles(
+                    dir,
+                    "*NOSPLASH*",
+                    SearchOption.TopDirectoryOnly).Length > 0)
+                {
+                    return;
+                }
+#endif
+
+                this.splash = new SplashWindow();
+                this.splash.Loaded += (_, __) => this.splash.StartFadeOut();
+                this.splash.Show();
+                this.splash.Activate();
+                this.splash.Message = message;
+            }
+        }
+
+        public string Message
+        {
+            get => this.splash?.Message;
+            set
+            {
+                if (this.splash != null)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        this.splash.Message = value;
+                    });
+                }
+            }
+        }
+
+        public bool IsSustainFadeOut
+        {
+            get => this.splash?.IsSustainFadeOut ?? false;
+            set
+            {
+                if (this.splash != null)
+                {
+                    this.splash.IsSustainFadeOut = value;
+                }
+            }
         }
     }
 }

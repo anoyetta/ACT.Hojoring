@@ -98,4 +98,8 @@
 DEL /F *grpc_csharp_ext.* &gt; nul
 </PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>

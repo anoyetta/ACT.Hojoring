@@ -7,6 +7,7 @@ using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Threading;
@@ -30,6 +31,10 @@ namespace FFXIV.Framework.Common
 
         #endregion Logger
 
+        private static readonly object Locker = new object();
+
+        private static dynamic hojoringInstance;
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static dynamic GetHojoring()
         {
@@ -37,37 +42,46 @@ namespace FFXIV.Framework.Common
 
             var obj = default(object);
 
-            try
+            lock (Locker)
             {
-#if DEBUG
-                // DEBUGビルド時に依存関係でDLLを配置させるためにタイプを参照する
-                new ACT.Hojoring.Common.Hojoring();
-#endif
-                var t = Type.GetType(HojoringTypeName);
-
-                if (t == null)
+                if (hojoringInstance != null)
                 {
-                    var cd = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                    var hojoring = Path.Combine(cd, "ACT.Hojoring.Common.dll");
-                    if (File.Exists(hojoring))
+                    return hojoringInstance;
+                }
+
+                try
+                {
+#if DEBUG
+                    // DEBUGビルド時に依存関係でDLLを配置させるためにタイプを参照する
+                    new ACT.Hojoring.Common.Hojoring();
+#endif
+                    var t = Type.GetType(HojoringTypeName);
+
+                    if (t == null)
                     {
-                        var asm = Assembly.LoadFrom(hojoring);
-                        t = asm?.GetType(HojoringTypeName);
+                        var cd = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                        var hojoring = Path.Combine(cd, "ACT.Hojoring.Common.dll");
+                        if (File.Exists(hojoring))
+                        {
+                            var asm = Assembly.LoadFrom(hojoring);
+                            t = asm?.GetType(HojoringTypeName);
+                        }
+                    }
+
+                    if (t != null)
+                    {
+                        obj = Activator.CreateInstance(t);
                     }
                 }
-
-                if (t != null)
+                catch (Exception ex)
                 {
-                    obj = Activator.CreateInstance(t);
+                    Debug.WriteLine(ex);
+                    obj = null;
                 }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                obj = null;
-            }
 
-            return obj;
+                hojoringInstance = obj;
+                return obj;
+            }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -135,7 +149,7 @@ namespace FFXIV.Framework.Common
                         Logger.Trace($"Hojoring v{ver.Major}.{ver.Minor}.{ver.Revision}");
                     }
 
-                    hojoring.ShowSplash();
+                    hojoring.ShowSplash("initializing...");
                 }
             }
             catch (Exception ex)
@@ -144,10 +158,38 @@ namespace FFXIV.Framework.Common
             }
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void SetMessageToSplash(
+            string message)
+        {
+            var hojoring = GetHojoring();
+            if (hojoring != null)
+            {
+                hojoring.Message = message;
+            }
+        }
+
+        public static bool IsSustainSplash
+        {
+            get => GetHojoring()?.IsSustainFadeOut ?? false;
+            set
+            {
+                var hojoring = GetHojoring();
+                if (hojoring != null)
+                {
+                    hojoring.IsSustainFadeOut = value;
+                }
+            }
+        }
+
         /// <summary>
         /// チェック済み辞書
         /// </summary>
         private static readonly Dictionary<string, bool> checkedDictinary = new Dictionary<string, bool>();
+
+        private static readonly Regex ReleaseVersionTitleRegex = new Regex(
+            @"v(?<major>\d+)\.(?<minor>\d+)\.(?<revision>\d+)-?(?<build>[\d\.]*)",
+            RegexOptions.Compiled);
 
         /// <summary>
         /// アップデートを行う
@@ -162,6 +204,8 @@ namespace FFXIV.Framework.Common
 
             try
             {
+                SetMessageToSplash("Checking for update...");
+
                 // TLSプロトコルを設定する
                 EnvironmentHelper.SetTLSProtocol();
 
@@ -197,12 +241,19 @@ namespace FFXIV.Framework.Common
                 // バージョンを比較する
                 if (!lastestReleaseVersion.ContainsIgnoreCase("FINAL"))
                 {
+                    var match = ReleaseVersionTitleRegex.Match(lastestReleaseVersion);
+                    if (!match.Success)
+                    {
+                        Logger.Trace($"Update checker. Unknown release version.");
+                        return r;
+                    }
+
                     var values = lastestReleaseVersion.Replace("v", string.Empty).Split('.');
                     var remoteVersion = new Version(
-                        values.Length > 0 ? int.Parse(values[0]) : 0,
-                        values.Length > 1 ? int.Parse(values[1]) : 0,
+                        int.Parse(match.Groups["major"].Value),
+                        int.Parse(match.Groups["minor"].Value),
                         0,
-                        values.Length > 2 ? int.Parse(values[2]) : 0);
+                        int.Parse(match.Groups["revision"].Value));
 
                     if (remoteVersion <= currentVersion)
                     {
@@ -289,8 +340,6 @@ namespace FFXIV.Framework.Common
         /// 最後にチェックした結果
         /// </summary>
         private static bool? lastResult;
-
-        private static readonly object Locker = new object();
 
         /// <summary>
         /// .NET Framework が有効か？

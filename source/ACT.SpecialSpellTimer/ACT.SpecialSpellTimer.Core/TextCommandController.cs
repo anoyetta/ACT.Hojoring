@@ -35,7 +35,7 @@ namespace ACT.SpecialSpellTimer
         /// Logコマンド
         /// </summary>
         private readonly static Regex logCommand = new Regex(
-            @".*/spespe log (?<switch>on|off|open)",
+            @".*/spespe log (?<switch>on|off|open|flush)",
             RegexOptions.Compiled |
             RegexOptions.IgnoreCase);
 
@@ -310,6 +310,12 @@ namespace ACT.SpecialSpellTimer
                 {
                     Process.Start(file);
                 }
+            }
+
+            if (switchValue == "flush")
+            {
+                r = true;
+                ChatLogWorker.Instance.Write(true);
             }
 
             return r;

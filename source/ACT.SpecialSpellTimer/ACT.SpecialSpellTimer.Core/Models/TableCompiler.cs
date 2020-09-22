@@ -31,7 +31,7 @@ namespace ACT.SpecialSpellTimer.Models
 
         #region Worker
 
-        private readonly double WorkerInterval = 3000;
+        private readonly double WorkerInterval = 2500;
         private System.Timers.Timer worker;
 
         #endregion Worker
@@ -199,6 +199,9 @@ namespace ACT.SpecialSpellTimer.Models
                         this.lastDumpPositionTimestamp = DateTime.Now;
                         LogBuffer.DumpPosition(true);
                     }
+
+                    // ペットとの距離をダンプする
+                    LogBuffer.DumpMyPetDistance();
                 }
             }
             catch (Exception ex)
