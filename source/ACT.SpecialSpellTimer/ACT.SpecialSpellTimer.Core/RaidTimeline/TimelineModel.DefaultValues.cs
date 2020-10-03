@@ -52,6 +52,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.VisualNotice, "StackVisible", false),
             NewDefault(TimelineElementTypes.VisualNotice, "Order", 0),
             NewDefault(TimelineElementTypes.VisualNotice, "IsJobIcon", false),
+            NewDefault(TimelineElementTypes.VisualNotice, "FontScale", 1.0d),
 
             // ImageNotice
             NewDefault(TimelineElementTypes.ImageNotice, "Enabled", true),
