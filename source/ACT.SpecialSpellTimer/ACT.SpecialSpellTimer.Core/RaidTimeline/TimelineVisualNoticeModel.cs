@@ -458,6 +458,31 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             ToHideTimer.Stop();
         }
 
+        private double? fontScale = null;
+
+        [XmlIgnore]
+        public double? FontScale
+        {
+            get => this.fontScale;
+            set
+            {
+                if (this.SetProperty(ref this.fontScale, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.FontSize));
+                }
+            }
+        }
+
+        [XmlAttribute(AttributeName = "font-scale")]
+        public string FontScaleXML
+        {
+            get => this.FontScale?.ToString();
+            set => this.FontScale = double.TryParse(value, out var v) ? v : (double?)null;
+        }
+
+        [XmlIgnore]
+        public double FontSize => this.StyleModel.Font.Size * (this.FontScale ?? 1);
+
         #region IStylable
 
         private string style = null;
