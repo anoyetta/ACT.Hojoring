@@ -197,7 +197,7 @@ namespace FFXIV.Framework.XIVHelper
             new Job() {ID = JobIDs.RDM, Role = Roles.MagicDPS, NameEN = "Red Mage", NameJA = "赤魔道士", NameFR = "Mage Rouge", NameDE = "Rotmagier" , NameCN = "赤魔法师", NameKO = "적마도사", IsPopular = true},
             new Job() {ID = JobIDs.BLU, Role = Roles.MagicDPS, NameEN = "Blue Mage", NameJA = "青魔道士", NameFR = "Mage Bleu", NameDE = "Blaumagier" , NameCN = "青魔法师", NameKO = "청마도사", IsPopular = false},
             new Job() {ID = JobIDs.GNB, Role = Roles.Tank, NameEN = "Gunbreaker", NameJA = "ガンブレイカー", NameFR = "Pistosabreur", NameDE = "Revolverklinge" , NameCN = "绝枪战士", NameKO = "Gunbreaker", IsPopular = true},
-            new Job() {ID = JobIDs.DNC, Role = Roles.RangeDPS, NameEN = "Dancer", NameJA = "踊り子", NameFR = "Danseur", NameDE = "Tänzer" , NameCN = "Dancer", NameKO = "舞者", IsPopular = true},
+            new Job() {ID = JobIDs.DNC, Role = Roles.RangeDPS, NameEN = "Dancer", NameJA = "踊り子", NameFR = "Danseur", NameDE = "Tänzer" , NameCN = "舞者", NameKO = "Dancer", IsPopular = true},
         };
 
         public static IEnumerable<JobIDs> PopularJobIDs =>
