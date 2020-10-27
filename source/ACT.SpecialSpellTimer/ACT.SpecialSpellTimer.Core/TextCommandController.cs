@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -48,6 +49,22 @@ namespace ACT.SpecialSpellTimer
             RegexOptions.IgnoreCase);
 
         /// <summary>
+        /// オプションコマンドの定義
+        /// </summary>
+        private static readonly (string keyword, Action<bool> change)[] optionCommands = new[]
+        {
+            ("reset-on-wipeout", new Action<bool>((value) => Settings.Default.ResetOnWipeOut = value))
+        };
+
+        /// <summary>
+        /// オプションコマンド
+        /// </summary>
+        private static readonly Regex optionCommand = new Regex(
+            @$"/spespe (?<option>{string.Join("|", optionCommands.Select(x => x.keyword))})\s+(?<command>enabled|disabled|on|off)",
+            RegexOptions.Compiled |
+            RegexOptions.IgnoreCase);
+
+        /// <summary>
         /// ログ1行とマッチングする
         /// </summary>
         /// <param name="logLine">ログ行</param>
@@ -79,8 +96,11 @@ namespace ACT.SpecialSpellTimer
                 return isLog;
             }
 
-            // TTSコマンドとマッチングする
-            MatchTTSCommand(logLine);
+            // スペスペオプションの操作コマンドとマッチングする
+            if (MatchOptionCommand(logLine))
+            {
+                return true;
+            }
 
             // その他の通常コマンドとマッチングする
             var match = regexCommand.Match(logLine);
@@ -88,6 +108,9 @@ namespace ACT.SpecialSpellTimer
             {
                 return r;
             }
+
+            // TTSコマンドとマッチングする
+            MatchTTSCommand(logLine);
 
             var command = match.Groups["command"].ToString().ToLower();
             var target = match.Groups["target"].ToString().ToLower();
@@ -321,13 +344,13 @@ namespace ACT.SpecialSpellTimer
             return r;
         }
 
-        public static void MatchTTSCommand(
+        public static bool MatchTTSCommand(
             string logLine)
         {
             var match = ttsCommand.Match(logLine);
             if (!match.Success)
             {
-                return;
+                return false;
             }
 
             var text = match.Groups["text"].ToString().ToLower();
@@ -335,6 +358,33 @@ namespace ACT.SpecialSpellTimer
             {
                 SoundController.Instance.Play(text);
             }
+
+            return true;
+        }
+
+        private static bool MatchOptionCommand(
+            string logLine)
+        {
+            var match = optionCommand.Match(logLine);
+            if (!match.Success)
+            {
+                return false;
+            }
+
+            var option = match.Groups["option"].ToString().ToLower();
+            var command = match.Groups["command"].ToString().ToLower();
+
+            var value = command switch
+            {
+                "enabled" => true,
+                "on" => true,
+                _ => false,
+            };
+
+            var o = optionCommands.FirstOrDefault(x => x.keyword == command);
+            o.change?.Invoke(value);
+
+            return true;
         }
 
         /// <summary>
