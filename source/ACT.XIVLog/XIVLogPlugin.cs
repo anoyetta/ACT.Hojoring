@@ -80,9 +80,14 @@ namespace ACT.XIVLog
 
         #endregion IActPluginV1
 
+        public const string Wipeout = "wipeout";
+        public static readonly string WipeoutLog = $"00:0000:Hojoring:{Wipeout}";
+        public static readonly string WipeoutLogEcho = $"00:0038:{Wipeout}";
+
         private static readonly string[] StopLoggingKeywords = new string[]
         {
-            "wipeout",
+            WipeoutLog,
+            WipeoutLogEcho,
             "の攻略を終了した。",
             "End-of-Timeline has been detected.",
         };

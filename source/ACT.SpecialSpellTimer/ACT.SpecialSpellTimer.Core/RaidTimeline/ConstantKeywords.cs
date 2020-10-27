@@ -1,8 +1,8 @@
-using ACT.SpecialSpellTimer.Config;
-using FFXIV.Framework.Globalization;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
+using ACT.SpecialSpellTimer.Config;
+using FFXIV.Framework.Globalization;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -116,8 +116,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
     public static class ConstantKeywords
     {
-        public const string Wipeout = "wipeout";
         public const string ImportLog = "00:0000:import";
+        public const string Wipeout = "wipeout";
         public static readonly string WipeoutLog = $"00:0000:Hojoring:{Wipeout}";
         public static readonly string WipeoutLogEcho = $"00:0038:{Wipeout}";
 
