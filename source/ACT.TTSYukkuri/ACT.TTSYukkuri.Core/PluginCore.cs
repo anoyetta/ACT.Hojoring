@@ -560,8 +560,8 @@ namespace ACT.TTSYukkuri
 
                 if (!string.IsNullOrEmpty(logLine))
                 {
-                    if (logLine.Contains("00:0000:wipeout") ||
-                        logLine.Contains("00:0038:wipeout") ||
+                    if (logLine.Contains(WipeoutKeywords.WipeoutLog) ||
+                        logLine.Contains(WipeoutKeywords.WipeoutLogEcho) ||
                         logLine.Contains("01:Changed Zone to"))
                     {
                         result = true;

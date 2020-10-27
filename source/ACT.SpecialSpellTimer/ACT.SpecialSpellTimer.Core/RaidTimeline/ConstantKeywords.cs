@@ -1,8 +1,9 @@
-using ACT.SpecialSpellTimer.Config;
-using FFXIV.Framework.Globalization;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
+using ACT.SpecialSpellTimer.Config;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Globalization;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -116,10 +117,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
     public static class ConstantKeywords
     {
-        public const string Wipeout = "wipeout";
         public const string ImportLog = "00:0000:import";
-        public static readonly string WipeoutLog = $"00:0000:Hojoring:{Wipeout}";
-        public static readonly string WipeoutLogEcho = $"00:0038:{Wipeout}";
 
         private static Dictionary<Locales, AnalyzerContainer> analyzerDictionary;
 
@@ -241,8 +239,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "ロットを行ってください。", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "01:Changed Zone", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "00:0139:戦闘開始まで", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = WipeoutLog, Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = WipeoutLogEcho, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLog, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "レディチェックを開始しました。", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "「", Category = KewordTypes.Action },
             new AnalyzeKeyword() { Keyword = "」", Category = KewordTypes.Action },
@@ -354,8 +352,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "Cast your lot.", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "01:Changed Zone", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "00:0139:", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = WipeoutLog, Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = WipeoutLogEcho, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLog, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "uses", Category = KewordTypes.Action },    //not used in E1s and E2s instead of 'casts',considering deleting.
             new AnalyzeKeyword() { Keyword = "casts", Category = KewordTypes.Action },
         };
@@ -459,8 +457,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "입찰을 진행하십시오", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "01:Changed Zone", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "00:0139:", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = WipeoutLog, Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = WipeoutLogEcho, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLog, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "준비 확인을 시작했습니다.", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "시전했습니다.", Category = KewordTypes.Action },
         };
@@ -566,8 +564,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "00:0839:请掷骰。", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "01:Changed Zone", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "00:0139:", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = WipeoutLog, Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = WipeoutLogEcho, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLog, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "发动了", Category = KewordTypes.Action },
         };
 

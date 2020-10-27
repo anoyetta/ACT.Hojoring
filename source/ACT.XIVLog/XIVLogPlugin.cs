@@ -82,7 +82,8 @@ namespace ACT.XIVLog
 
         private static readonly string[] StopLoggingKeywords = new string[]
         {
-            "wipeout",
+            WipeoutKeywords.WipeoutLog,
+            WipeoutKeywords.WipeoutLogEcho,
             "の攻略を終了した。",
             "End-of-Timeline has been detected.",
         };
