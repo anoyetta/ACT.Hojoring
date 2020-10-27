@@ -6,7 +6,6 @@ using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Config.Models;
 using ACT.SpecialSpellTimer.Models;
-using ACT.SpecialSpellTimer.RaidTimeline;
 using ACT.SpecialSpellTimer.Sound;
 using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
@@ -652,7 +651,7 @@ namespace ACT.SpecialSpellTimer
                         Task.Run(() =>
                         {
                             Thread.Sleep(200);
-                            LogParser.RaiseLog(now, ConstantKeywords.Wipeout);
+                            LogParser.RaiseLog(now, WipeoutKeywords.Wipeout);
                         });
                     }
                 });

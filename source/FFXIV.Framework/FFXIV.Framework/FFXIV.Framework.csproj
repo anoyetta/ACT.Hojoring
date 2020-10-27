@@ -106,6 +106,7 @@
     <Compile Include="Common\KeyValue.cs" />
     <Compile Include="Common\MasterFilePublisher.cs" />
     <Compile Include="Common\CommonSounds.cs" />
+    <Compile Include="Common\WipeoutKeywords.cs" />
     <Compile Include="Common\WrappingStream.cs" />
     <Compile Include="Common\XAudioPlayer.cs" />
     <Compile Include="Common\DirectoryHelper.cs" />
