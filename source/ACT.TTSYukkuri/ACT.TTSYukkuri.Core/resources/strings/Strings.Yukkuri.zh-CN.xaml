@@ -10,14 +10,14 @@
   <system:String x:Key="General_TTSType">TTS类型</system:String>
   <system:String x:Key="General_SyncPlayback">强制顺序播报</system:String>
   <system:String x:Key="General_SyncPlaybackDesc">所有声音按顺序播放,覆盖SST设置.</system:String>
-  <system:String x:Key="General_ClearBufferWithWipeout">Clear playback buffer when wipeout</system:String>
-  <system:String x:Key="General_ClearBuffer">Clear playback buffer</system:String>
+  <system:String x:Key="General_ClearBufferWithWipeout">脱战后清空缓冲区</system:String>
+  <system:String x:Key="General_ClearBuffer">清空缓冲区</system:String>
   <system:String x:Key="General_ClearCache">退出时清空TTS缓存.</system:String>
   <system:String x:Key="General_Latency">Latency</system:String>
   <system:String x:Key="General_PlaybackBufferCount">Playback buffer count</system:String>
   <system:String x:Key="General_PlaybackBufferSize">Playback buffer size (second)</system:String>
   <system:String x:Key="General_RequiresRestart">* requires reset</system:String>
-  <system:String x:Key="General_Reset">Reset</system:String>
+  <system:String x:Key="General_Reset">重置</system:String>
   <system:String x:Key="General_OpenCacheDirectory">打开缓存文件夹</system:String>
   <system:String x:Key="General_ClearCacheNow">立即清空TTS缓存</system:String>
   <system:String x:Key="General_WaveVolume">主音量.</system:String>
@@ -58,7 +58,7 @@ For use for commercial purposes, a license to use the library is required.</syst
   <system:String x:Key="Sasara_Seishitsu">音质</system:String>
   <system:String x:Key="Sasara_Yokuyo">Tone Scale</system:String>
 
-  <system:String x:Key="OJT_Voices">姻缘</system:String>
+  <system:String x:Key="OJT_Voices">音源</system:String>
   <system:String x:Key="OJT_Gain">增幅</system:String>
   <system:String x:Key="OJT_Volume">-g 音量 (dB)</system:String>
   <system:String x:Key="OJT_AllPass">-a Tone</system:String>
@@ -118,7 +118,7 @@ For use for commercial purposes, a license to use the library is required.</syst
   <system:String x:Key="SA_TTSFormat">警报内容</system:String>
   <system:String x:Key="SA_AlertTarget">警报目标</system:String>
   <system:String x:Key="SA_Device">通过设备</system:String>
-  <system:String x:Key="SA_PlayPalette">Voice config to Notify</system:String>
+  <system:String x:Key="SA_PlayPalette">通知声音预设</system:String>
 
   <system:String x:Key="SA_Discription" xml:space="preserve">
 * 警报内容样例
