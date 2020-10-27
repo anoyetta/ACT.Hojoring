@@ -14,7 +14,7 @@
   <system:String x:Key="GeneralConfig_LogPollingPriority">扫描日志线程优先级</system:String>
   <system:String x:Key="GeneralConfig_OverlayRefreshPriority">界面刷新线程优先级</system:String>
   <system:String x:Key="GeneralConfig_RestartThreads">重启以上两个线程</system:String>
-  <system:String x:Key="GeneralConfig_AnimationMaxFPS">动画FPS</system:String>
+  <system:String x:Key="GeneralConfig_AnimationMaxFPS">FPS限制</system:String>
   <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">文字轮廓大小比率</system:String>
   <system:String x:Key="GeneralConfig_TextBlurGain">文字模糊比率</system:String>
   <system:String x:Key="GeneralConfig_Sound">声音</system:String>
@@ -24,19 +24,19 @@
 
   <system:String x:Key="Common_Visible">显示</system:String>
   <system:String x:Key="Common_Location">位置</system:String>
-  <system:String x:Key="Common_Layout">Layout</system:String>
+  <system:String x:Key="Common_Layout">布局</system:String>
   <system:String x:Key="Common_Style">Style</system:String>
-  <system:String x:Key="Common_Alignment">Alignment</system:String>
-  <system:String x:Key="Common_BarWidth">Bar width</system:String>
-  <system:String x:Key="Common_BarSize">Bar size</system:String>
-  <system:String x:Key="Common_Scale">尺度</system:String>
+  <system:String x:Key="Common_Alignment">对齐</system:String>
+  <system:String x:Key="Common_BarWidth">条宽度</system:String>
+  <system:String x:Key="Common_BarSize">条大小</system:String>
+  <system:String x:Key="Common_Scale">缩放</system:String>
   <system:String x:Key="Common_Background">背景色</system:String>
   <system:String x:Key="Common_Font">字体</system:String>
   <system:String x:Key="Common_FillColor">填充色</system:String>
   <system:String x:Key="Common_StrokeColor">轮廓色</system:String>
-  <system:String x:Key="Common_Text">Text</system:String>
-  <system:String x:Key="Common_Bar">Bar</system:String>
-  <system:String x:Key="Common_RefreshDisplay">Refresh</system:String>
+  <system:String x:Key="Common_Text">文字</system:String>
+  <system:String x:Key="Common_Bar">条</system:String>
+  <system:String x:Key="Common_RefreshDisplay">刷新</system:String>
   <system:String x:Key="Common_Add">添加</system:String>
   <system:String x:Key="Common_Change">变更</system:String>
   <system:String x:Key="Common_Delete">删除</system:String>
@@ -60,7 +60,7 @@
   <system:String x:Key="Action_VisibleRemainOfCasting">显示剩余时间</system:String>
   <system:String x:Key="Action_VisibleRemainAsInteger">整数显示</system:String>
   <system:String x:Key="Action_VisibleRateOfCasting">现实读条进度</system:String>
-  <system:String x:Key="Action_VisibleType">Visible attack type</system:String>
+  <system:String x:Key="Action_VisibleType">显示攻击类型</system:String>
   <system:String x:Key="Action_DummyActionName">测试用技能名</system:String>
   <system:String x:Key="Action_CastingBar">咏唱</system:String>
   <system:String x:Key="Action_CastingBarStrokeColor">咏唱条轮廓颜色</system:String>
@@ -77,18 +77,18 @@
   <system:String x:Key="BOSS_BossVSFTHideBoss">BOSS='焦点'时隐藏</system:String>
   <system:String x:Key="BOSS_BossVSToTHideBoss">BOSS='目标的目标'时隐藏</system:String>
 
-  <system:String x:Key="MyStatus_VisibleText">Visible value</system:String>
-  <system:String x:Key="MyStatus_VisibleBar">Visible bar</system:String>
+  <system:String x:Key="MyStatus_VisibleText">显示值</system:String>
+  <system:String x:Key="MyStatus_VisibleBar">显示进度条</system:String>
   <system:String x:Key="MyStatus_ObjectLayout">Object layout</system:String>
-  <system:String x:Key="MyStatus_HorizontalAlignment">Horizontal alignment</system:String>
-  <system:String x:Key="MyStatus_ColorRange">Color ranges (%)</system:String>
+  <system:String x:Key="MyStatus_HorizontalAlignment">水平对齐</system:String>
+  <system:String x:Key="MyStatus_ColorRange">颜色范围 (%)</system:String>
 
   <system:String x:Key="MPTicker_VisibleCounter">显示值</system:String>
-  <system:String x:Key="MPTicker_SyncHoT">Sync to HoT</system:String>
-  <system:String x:Key="MPTicker_SyncDoT">Sync to DoT</system:String>
-  <system:String x:Key="MPTicker_Offset">Offset (sec)</system:String>
-  <system:String x:Key="MPTicker_SyncMP">Sync to MP</system:String>
-  <system:String x:Key="MPTicker_ResyncInterval">Resync interval (sec)</system:String>
+  <system:String x:Key="MPTicker_SyncHoT">与HoT同步</system:String>
+  <system:String x:Key="MPTicker_SyncDoT">与DoT同步</system:String>
+  <system:String x:Key="MPTicker_Offset">偏移(秒)</system:String>
+  <system:String x:Key="MPTicker_SyncMP">与MP同步</system:String>
+  <system:String x:Key="MPTicker_ResyncInterval">同步间隔(秒)</system:String>
   <system:String x:Key="MPTicker_Bar">条</system:String>
   <system:String x:Key="MPTicker_BarStrokeColor">条轮廓颜色</system:String>
   <system:String x:Key="MPTicker_LinkBarStrokeColorToBarColor">关联'条轮廓颜色' &lt;- '条颜色'</system:String>
@@ -100,17 +100,17 @@
   <system:String x:Key="MPTicker_ExplationTimeForDisplay2">* =0时一直显示</system:String>
   <system:String x:Key="MPTicker_TargetJobs">角色过滤</system:String>
 
-  <system:String x:Key="MyUtility_OnRestart">On the restart</system:String>
-  <system:String x:Key="MyUtility_DelayFromWipeout">Delay seconds from wipeout</system:String>
-  <system:String x:Key="MyUtility_OnlyForRAIDParty">Only in RAID party</system:String>
-  <system:String x:Key="MyUtility_SendOnZoneChanged">Send a key on zone changed</system:String>
-  <system:String x:Key="MyUtility_ExtendMealEffect">Extend duration of "Well Fed" effect</system:String>
-  <system:String x:Key="MyUtility_RemainingTimeThreshold">threshold to extend duration of "Well Fed" effect (min)</system:String>
-  <system:String x:Key="MyUtility_RestoreTankStance">Restore TANK stance</system:String>
-  <system:String x:Key="MyUtility_RestoreTankStanceDescription">Restore the tank stance from the last time the battle began.</system:String>
-  <system:String x:Key="MyUtility_SummonFairy">Summon SCH's fairy</system:String>
-  <system:String x:Key="MyUtility_DrawCard">Draw AST's card</system:String>
-  <system:String x:Key="MyUtility_SummonEgi">Summon SMN's egi</system:String>
+  <system:String x:Key="MyUtility_OnRestart">重新准备开怪时</system:String>
+  <system:String x:Key="MyUtility_DelayFromWipeout">灭团后延迟（秒）</system:String>
+  <system:String x:Key="MyUtility_OnlyForRAIDParty">仅在8人本生效</system:String>
+  <system:String x:Key="MyUtility_SendOnZoneChanged">地图变化时按下按键</system:String>
+  <system:String x:Key="MyUtility_ExtendMealEffect">延长食物时间</system:String>
+  <system:String x:Key="MyUtility_RemainingTimeThreshold">延长食物时间到最低（分钟）</system:String>
+  <system:String x:Key="MyUtility_RestoreTankStance">恢复T姿</system:String>
+  <system:String x:Key="MyUtility_RestoreTankStanceDescription">恢复到上一次开怪时的T姿状态.</system:String>
+  <system:String x:Key="MyUtility_SummonFairy">召唤小仙女</system:String>
+  <system:String x:Key="MyUtility_DrawCard">占星抽卡</system:String>
+  <system:String x:Key="MyUtility_SummonEgi">召唤召唤兽</system:String>
 
   <system:String x:Key="MobList_VisibleMePosition">显示玩家位置</system:String>
   <system:String x:Key="MobList_SimpleView">简单显示</system:String>
@@ -119,8 +119,8 @@
   <system:String x:Key="MobList_DirectionOrigin">方向显示</system:String>
   <system:String x:Key="MobList_DirectionAdjustmentAngle">箭头指向基准角度</system:String>
   <system:String x:Key="MobList_DirectionOriginDescription">要使用"角色"或"视角", FFXIV_MemoryReader需要保持启动.</system:String>
-  <system:String x:Key="MobList_ScanNPC">Scan NPC</system:String>
-  <system:String x:Key="MobList_NotScanNPCInFullParty">Not scan NPC in full party</system:String>
+  <system:String x:Key="MobList_ScanNPC">扫描NPC</system:String>
+  <system:String x:Key="MobList_NotScanNPCInFullParty">8人队伍时不扫描NPC</system:String>
   <system:String x:Key="MobList_OpenTargetMobList">打开狩猎怪列表</system:String>
   <system:String x:Key="MobList_ReloadTargetMobList">重载狩猎怪列表</system:String>
   <system:String x:Key="MobList_CountOfDisplay">最大显示数量</system:String>
@@ -133,23 +133,23 @@
   <system:String x:Key="MobList_MobBColor">B级颜色</system:String>
   <system:String x:Key="MobList_MobOtherColor">其他颜色</system:String>
 
-  <system:String x:Key="Enmity_HideInNotCombat">Hide when not combat</system:String>
-  <system:String x:Key="Enmity_HideInSolo">Hide in solo</system:String>
-  <system:String x:Key="Enmity_DisplayPCasYou">Display PC as "You"</system:String>
-  <system:String x:Key="Enmity_IsDenomi">Cut the value less than 1,000</system:String>
-  <system:String x:Key="Enmity_IsVisibleJobIcon">Visible job icon</system:String>
-  <system:String x:Key="Enmity_IsIconRight">Alignment job icon right</system:String>
-  <system:String x:Key="Enmity_IsVisibleName">Visible character name</system:String>
-  <system:String x:Key="Enmity_IsDifferenceMode">GUILTEX Style (Relative value mode)</system:String>
-  <system:String x:Key="Enmity_JobIconScale">Job icon scale</system:String>
-  <system:String x:Key="Enmity_MaxCountOfDisplay">Max count of display</system:String>
-  <system:String x:Key="Enmity_ScaningRate">Enmity scaning rate (msec)</system:String>
+  <system:String x:Key="Enmity_HideInNotCombat">战斗外隐藏</system:String>
+  <system:String x:Key="Enmity_HideInSolo">单人时隐藏</system:String>
+  <system:String x:Key="Enmity_DisplayPCasYou">显示你的角色名为"You"</system:String>
+  <system:String x:Key="Enmity_IsDenomi">不显示1,000以下</system:String>
+  <system:String x:Key="Enmity_IsVisibleJobIcon">显示职业图标</system:String>
+  <system:String x:Key="Enmity_IsIconRight">图标右对齐</system:String>
+  <system:String x:Key="Enmity_IsVisibleName">显示角色名</system:String>
+  <system:String x:Key="Enmity_IsDifferenceMode">GUILTEX式显示 (相对值)</system:String>
+  <system:String x:Key="Enmity_JobIconScale">职业图标大小</system:String>
+  <system:String x:Key="Enmity_MaxCountOfDisplay">最大显示数量</system:String>
+  <system:String x:Key="Enmity_ScaningRate">仇恨扫描间隔 (毫秒)</system:String>
   <system:String x:Key="Enmity_AlterTextMeValue">Alternative text for Your enmity</system:String>
   <system:String x:Key="Enmity_IsNearIndicator">Use bar to near enmity alert</system:String>
   <system:String x:Key="Enmity_NearIndicatorColor">Near Enmity Color</system:String>
   <system:String x:Key="Enmity_NearThresholdRate">Near enmity threshold rate</system:String>
   <system:String x:Key="Enmity_IsVisibleNearThreshold">Visible near enmity threshold</system:String>
-  <system:String x:Key="Enmity_LogDirectory">Log folder</system:String>
+  <system:String x:Key="Enmity_LogDirectory">Log文件夹</system:String>
 
   <system:String x:Key="FFLogs_VisibleHistogram">显示直方图</system:String>
   <system:String x:Key="FFLogs_HideInCombat">战斗中隐藏</system:String>
@@ -158,12 +158,12 @@
 判定为战斗中
   </system:String>
 
-  <system:String x:Key="TacticalRadar_HorizontalLayout">Horizontal layout</system:String>
-  <system:String x:Key="TacticalRadar_Target">Tactical targets</system:String>
-  <system:String x:Key="TacticalRadar_TargetName">Name</system:String>
-  <system:String x:Key="TacticalRadar_DetectRange">Range</system:String>
-  <system:String x:Key="TacticalRadar_NoticeEnabled">Notice</system:String>
-  <system:String x:Key="TacticalRadar_Enabled">Enabled</system:String>
+  <system:String x:Key="TacticalRadar_HorizontalLayout">水平布局</system:String>
+  <system:String x:Key="TacticalRadar_Target">战术目标</system:String>
+  <system:String x:Key="TacticalRadar_TargetName">名称</system:String>
+  <system:String x:Key="TacticalRadar_DetectRange">范围</system:String>
+  <system:String x:Key="TacticalRadar_NoticeEnabled">提示</system:String>
+  <system:String x:Key="TacticalRadar_Enabled">启动</system:String>
 
   <system:String x:Key="Help_GotoLastestRelease">显示GitHub上最新版本</system:String>
   <system:String x:Key="Help_ContactToAnoyetta">在DISCORD(DNS污染中)联系作者</system:String>

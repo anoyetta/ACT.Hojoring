@@ -70,11 +70,11 @@
 
   <system:String x:Key="Trigger_JobFilter">职业过滤</system:String>
   <system:String x:Key="Trigger_PartyJobFilter">队伍职业过滤</system:String>
-  <system:String x:Key="Trigger_PartyCompositionFilter">Party Composition Filter</system:String>
+  <system:String x:Key="Trigger_PartyCompositionFilter">队伍构成过滤</system:String>
   <system:String x:Key="Trigger_ZoneFilter">区域过滤</system:String>
-  <system:String x:Key="Trigger_ExpressionFilter">Expression Filter</system:String>
-  <system:String x:Key="Trigger_ExpressionFilterExample" xml:space="preserve">ex. Target:&lt;HEALER1&gt;, Regex:&lt;me&gt; ...
-This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
+  <system:String x:Key="Trigger_ExpressionFilter">正则过滤</system:String>
+  <system:String x:Key="Trigger_ExpressionFilterExample" xml:space="preserve">如. 目标:&lt;HEALER1&gt;, 正则:&lt;me&gt; ...
+本触发器将在 "HEALER1" 包含 "me (本人角色名)"时起效.</system:String>
   <system:String x:Key="Trigger_Preconditions">前提条件</system:String>
   <system:String x:Key="Trigger_ClearFilter">清除过滤</system:String>
   <system:String x:Key="Trigger_ForMustStartRunningSpell">⚪必须在触发中的技能</system:String>
@@ -110,7 +110,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Spell_TextToMatch">匹配内容</system:String>
   <system:String x:Key="Spell_UserRegex">使用正则</system:String>
   <system:String x:Key="Spell_RecastTime">复唱时间</system:String>
-  <system:String x:Key="Spell_DelayToShow">Delay to show</system:String>
+  <system:String x:Key="Spell_DelayToShow">延迟显示</system:String>
   <system:String x:Key="Spell_UseHotbrRecastTime">使用快捷栏中复唱数据</system:String>
   <system:String x:Key="Spell_HotbarItemName">快捷栏名称</system:String>
   <system:String x:Key="Spell_TextToExtend">匹配以延长</system:String>
@@ -121,13 +121,13 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Spell_UpperLimitOfRecastTime">延长时间上限</system:String>
   <system:String x:Key="Spell_WarningTime">秒时改为警告颜色.</system:String>
   <system:String x:Key="Spell_WarningTimeChangeFontColor">字体颜色改为警告色</system:String>
-  <system:String x:Key="Spell_ChangeColorWhenContainsMe">Change spell name to warning color when contains me</system:String>
+  <system:String x:Key="Spell_ChangeColorWhenContainsMe">当目标包含本人时更改为警告色</system:String>
   <system:String x:Key="Spell_BlinkTime">秒时开始闪烁.</system:String>
   <system:String x:Key="Spell_BlinkIcon">图标闪烁</system:String>
   <system:String x:Key="Spell_BlinkBar">进度条闪烁</system:String>
   <system:String x:Key="Spell_HideCounter">隐藏复唱时间</system:String>
-  <system:String x:Key="Spell_TitleVAlignment">Spell name vertical alignment</system:String>
-  <system:String x:Key="Spell_HideInNotCombat">Hide in not combat</system:String>
+  <system:String x:Key="Spell_TitleVAlignment">技能名纵向对齐</system:String>
+  <system:String x:Key="Spell_HideInNotCombat">战斗外隐藏</system:String>
   <system:String x:Key="Spell_NotResetAtWipeout">团灭后不重置</system:String>
   <system:String x:Key="Spell_NoticeOnMatch">触发时通知</system:String>
   <system:String x:Key="Spell_NoticeOnOver">触发后N秒提示</system:String>
@@ -141,7 +141,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Spell_NoticeOnBeforeThisScounds">秒前通知</system:String>
   <system:String x:Key="Spell_UseSequencialTTS">按顺序播放TTS (禁止同时播放)</system:String>
   <system:String x:Key="Spell_TestSequencialTTS">测试顺序播放</system:String>
-  <system:String x:Key="Spell_PlayPalette">Voice config to Notify</system:String>
+  <system:String x:Key="Spell_PlayPalette">TTS播报使用预设</system:String>
 
   <system:String x:Key="Ticker_Name">字幕名</system:String>
   <system:String x:Key="Ticker_Message">要显示的内容</system:String>
@@ -162,7 +162,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
 
   <system:String x:Key="Options_Visual">显示</system:String>
   <system:String x:Key="Options_Trigger">触发器</system:String>
-  <system:String x:Key="Options_LogFilter">Log Filter</system:String>
+  <system:String x:Key="Options_LogFilter">日志过滤</system:String>
   <system:String x:Key="Options_Log">日志</system:String>
   <system:String x:Key="Options_TTSDictionary">TTS字典</system:String>
 
@@ -196,15 +196,15 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Options_EnabledNotifyDefaultSpellTimer">提示ACT的触发器</system:String>
   <system:String x:Key="Options_EnabledSimplyRegex">简化的正则式</system:String>
   <system:String x:Key="Options_EnabledRemoveTooltipSymbol">不显示Tooltip</system:String>
-  <system:String x:Key="Options_EnabledRemoveWorldName">Remove world name from character name</system:String>
+  <system:String x:Key="Options_EnabledRemoveWorldName">移除服务器名</system:String>
   <system:String x:Key="Options_EnabledCompleteUnknownSkill">补全未知技能</system:String>
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">忽略伤害和治疗日志</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">忽略15:或 16:开头日志</system:String>
-  <system:String x:Key="Options_EnabledAutoIgnore">Auto filter detail logs when there are many people</system:String>
+  <system:String x:Key="Options_EnabledAutoIgnore">角色过多时自动过滤</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">检测 FC:开头数据 (不推荐)</system:String>
   <system:String x:Key="Options_ReadyText">正向计时器完成时显示文字 (默认: "Ready")</system:String>
   <system:String x:Key="Options_OverText">反向计时器完成时显示文字 (默认: "Over")</system:String>
-  <system:String x:Key="Options_DefaultNoticeToOnlyuMain">Default notice to only main</system:String>
+  <system:String x:Key="Options_DefaultNoticeToOnlyuMain">仅在主设备播放</system:String>
 
   <system:String x:Key="Options_VisibleLPS">显示日志密度界面 (LPS)</system:String>
   <system:String x:Key="Options_LPSOverlayScale">LPS界面大小</system:String>
@@ -215,7 +215,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
 
   <system:String x:Key="Options_ResetOnWipeout">灭团重置计时器.</system:String>
   <system:String x:Key="Options_ResetNotifyToACT">重置时向ACT发送通知</system:String>
-  <system:String x:Key="Options_SimplifiedInCombat">Simplify detection in combat</system:String>
+  <system:String x:Key="Options_SimplifiedInCombat">简化战斗中检测</system:String>
 
   <system:String x:Key="Options_Phonetics">队伍成员绰号</system:String>
   <system:String x:Key="Options_TestPhonetics">测试绰号</system:String>
@@ -223,7 +223,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Options_ReloadTTSDictionary">重载TTS替换字典</system:String>
 
   <system:String x:Key="Options_MinimizeOnStart">启动ACT时最小化</system:String>
-  <system:String x:Key="Options_Polon">Sounds "Polon♪" every 15 seconds</system:String>
+  <system:String x:Key="Options_Polon">15秒"Polon♪"一下</system:String>
 
   <system:String x:Key="Info_Placeholders">占位符</system:String>
   <system:String x:Key="Info_Triggers">活动触发器</system:String>
@@ -259,7 +259,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Timeline_ThisIsOrigin">原始记录</system:String>
   <system:String x:Key="Timeline_ImportCombatLog">导入战斗记录</system:String>
 
-  <system:String x:Key="Timeline_Mute">Mute</system:String>
+  <system:String x:Key="Timeline_Mute">静音</system:String>
   <system:String x:Key="Timeline_Location">位置(时间轴)</system:String>
   <system:String x:Key="Timeline_LocationNotice">位置(提醒)</system:String>
   <system:String x:Key="Timeline_ShowDummyTimeline">显示界面以方便调整</system:String>
