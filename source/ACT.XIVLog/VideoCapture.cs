@@ -228,9 +228,12 @@ namespace ACT.XIVLog
                 }
             }
 
-            if ((DateTime.Now - this.endCombatDateTime) >= TimeSpan.FromMinutes(min))
+            if (!inCombat)
             {
-                this.FinishRecording();
+                if ((DateTime.Now - this.endCombatDateTime) >= TimeSpan.FromMinutes(min))
+                {
+                    this.FinishRecording();
+                }
             }
 
             this.prevInCombat = inCombat;
@@ -300,6 +303,7 @@ namespace ACT.XIVLog
                         this.StopRecordingSubscriber.Elapsed += (_, __) => this.DetectStopRecording();
                     }
 
+                    this.endCombatDateTime = DateTime.Now;
                     this.StopRecordingSubscriber.Start();
                 }
             }
