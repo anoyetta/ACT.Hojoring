@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.XIVHelper;
 using NLog;
 using SLOBSharp.Client;
 using SLOBSharp.Client.Requests;
@@ -176,6 +177,7 @@ namespace ACT.XIVLog
 
         private DateTime startTime;
         private string contentName = string.Empty;
+        private string playerName = string.Empty;
         private int deathCount = 0;
 
         private int TryCount
@@ -237,6 +239,8 @@ namespace ACT.XIVLog
                     this.contentName :
                     ActGlobals.oFormActMain.CurrentZone;
 
+                this.playerName = CombatantsManager.Instance.Player.Name;
+
                 if (Config.Instance.IsShowTitleCard)
                 {
                     TitleCardView.ShowTitleCard(
@@ -291,9 +295,11 @@ namespace ACT.XIVLog
                         string.Empty :
                         $"{prefix} ";
 
-                    var f = this.deathCount > 1 ?
-                        $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} {VideoDurationPlaceholder} death{this.deathCount - 1}.ext" :
-                        $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} {VideoDurationPlaceholder}.ext";
+                    var deathCountText = this.deathCount > 1 ?
+                        $" death{this.deathCount - 1}" :
+                        string.Empty;
+
+                    var f = $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} {VideoDurationPlaceholder}{deathCountText}.ext";
 
                     await Task.Delay(TimeSpan.FromSeconds(8));
 
@@ -325,9 +331,12 @@ namespace ACT.XIVLog
 
                                 tf.Tag.Title = Path.GetFileNameWithoutExtension(dest);
                                 tf.Tag.Subtitle = $"{prefix} - {contentName}";
+                                tf.Tag.Album = $"FFXIV - {contentName}";
+                                tf.Tag.AlbumArtists = new[] { "FFXIV", this.playerName }.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                tf.Tag.Genres = new[] { "Game" };
                                 tf.Tag.Comment =
                                     $"{prefix} - {contentName}\n" +
-                                    $"{this.startTime:yyyy-MM-dd HH:mm} try{this.TryCount} death{this.deathCount - 1}";
+                                    $"{this.startTime:yyyy-MM-dd HH:mm} try{this.TryCount}{deathCountText}";
                                 tf.Save();
                             }
 
