@@ -63,7 +63,8 @@ namespace ACT.XIVLog
 
         private static readonly string[] StopVideoKeywords = new string[]
         {
-            "wipeout",
+            WipeoutKeywords.WipeoutLog,
+            WipeoutKeywords.WipeoutLogEcho,
             "End-of-Timeline has been detected.",
         };
 
