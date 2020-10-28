@@ -190,6 +190,15 @@ namespace ACT.XIVLog
             set => this.SetProperty(ref this.isEnabledRecording, value);
         }
 
+        private double stopRecordingAfterCombatMinutes;
+
+        [DefaultValue(0d)]
+        public double StopRecordingAfterCombatMinutes
+        {
+            get => this.stopRecordingAfterCombatMinutes;
+            set => this.SetProperty(ref this.stopRecordingAfterCombatMinutes, value);
+        }
+
         private bool isShowTitleCard;
 
         [DefaultValue(false)]

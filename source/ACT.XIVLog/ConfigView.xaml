@@ -56,8 +56,16 @@
       <Label Margin="0 20 0 0" Content="Video" FontWeight="Bold" />
       <StackPanel Margin="10 0 0 0">
         <CheckBox Margin="0 8 0 0" Content="Recording video every wipeout." IsChecked="{Binding Path=Config.IsEnabledRecording, Mode=TwoWay}" />
+        <StackPanel
+          Orientation="Horizontal"
+          Margin="0 15 0 0"
+          Visibility="{Binding Config.IsEnabledRecording, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+          <TextBlock Text="Stop recording after a combat." />
+          <xctk:DoubleUpDown Margin="6 0 0 0" Width="55" Value="{Binding Config.StopRecordingAfterCombatMinutes, Mode=TwoWay}" Minimum="0" FormatString="N0" Increment="1.0" />
+          <TextBlock Text=" minutes later" />
+        </StackPanel>
 
-        <CheckBox Margin="0 5 0 0" Content="Show title card." IsChecked="{Binding Path=Config.IsShowTitleCard, Mode=TwoWay}" />
+        <CheckBox Margin="0 10 0 0" Content="Show title card." IsChecked="{Binding Path=Config.IsShowTitleCard, Mode=TwoWay}" />
         <StackPanel
           Margin="20 8 0 0"
           Visibility="{Binding Config.IsShowTitleCard, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">

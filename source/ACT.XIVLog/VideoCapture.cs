@@ -196,6 +196,46 @@ namespace ACT.XIVLog
             });
         }
 
+        /// <summary>
+        /// 戦闘終了後に録画停止していない場合に停止させるためのタイマー
+        /// </summary>
+        private System.Timers.Timer StopRecordingSubscriber;
+
+        private bool prevInCombat;
+        private DateTime endCombatDateTime;
+
+        private void DetectStopRecording()
+        {
+            var min = Config.Instance.StopRecordingAfterCombatMinutes;
+
+            if (min <= 0d)
+            {
+                return;
+            }
+
+            if (!Config.Instance.IsRecording)
+            {
+                return;
+            }
+
+            var inCombat = XIVPluginHelper.Instance.InCombat;
+
+            if (this.prevInCombat != inCombat)
+            {
+                if (!inCombat)
+                {
+                    this.endCombatDateTime = DateTime.Now;
+                }
+            }
+
+            if ((DateTime.Now - this.endCombatDateTime) >= TimeSpan.FromMinutes(min))
+            {
+                this.FinishRecording();
+            }
+
+            this.prevInCombat = inCombat;
+        }
+
         public void StartRecording()
         {
             lock (this)
@@ -249,12 +289,28 @@ namespace ACT.XIVLog
                         this.startTime);
                 }
             });
+
+            if (Config.Instance.StopRecordingAfterCombatMinutes > 0)
+            {
+                lock (this)
+                {
+                    if (this.StopRecordingSubscriber == null)
+                    {
+                        this.StopRecordingSubscriber = new System.Timers.Timer(5000);
+                        this.StopRecordingSubscriber.Elapsed += (_, __) => this.DetectStopRecording();
+                    }
+
+                    this.StopRecordingSubscriber.Start();
+                }
+            }
         }
 
         private static readonly string VideoDurationPlaceholder = "#duration#";
 
         public void FinishRecording()
         {
+            this.StopRecordingSubscriber?.Stop();
+
             lock (this)
             {
                 if (!Config.Instance.IsRecording)
