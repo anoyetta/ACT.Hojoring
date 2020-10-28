@@ -50,10 +50,10 @@ namespace ACT.SpecialSpellTimer
         /// <summary>
         /// オプションコマンド
         /// </summary>
-        private static readonly Regex optionCommand = new Regex(
+        private static readonly Lazy<Regex> lazyOptionCommand = new Lazy<Regex>(() => new Regex(
             @$"/spespe\s+(?<option>{string.Join("|", optionCommands.Select(x => x.keyword))})\s+(?<command>enabled|disabled|on|off)",
             RegexOptions.Compiled |
-            RegexOptions.IgnoreCase);
+            RegexOptions.IgnoreCase));
 
         /// <summary>
         /// オプションコマンドの定義
@@ -371,7 +371,7 @@ namespace ACT.SpecialSpellTimer
         private static bool MatchOptionCommand(
             string logLine)
         {
-            var match = optionCommand.Match(logLine);
+            var match = lazyOptionCommand.Value.Match(logLine);
             if (!match.Success)
             {
                 return false;
