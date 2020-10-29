@@ -26,8 +26,7 @@
   Background="Transparent"
   Left="{Binding Path=Config.Location.X, Mode=TwoWay}"
   Top="{Binding Path=Config.Location.Y, Mode=TwoWay}"
-  d:DataContext="{d:DesignInstance Type=vm:ActionViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{x:Type vm:ActionViewModel}">
+  d:DataContext="{d:DesignInstance Type=vm:ActionViewModel, IsDesignTimeCreatable=True}">
 
   <Window.Resources>
     <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />
@@ -240,7 +239,6 @@
               Canvas.ZIndex="0"
               HorizontalContentAlignment="Right"
               VerticalAlignment="Center"
-              Width="{Binding ElementName=DummyCounterCircleLabel, Path=Width, Mode=OneWay}"
               Margin="0 0 0 0"
               Fill="{Binding ElementName=RemainTextBlock, Path=Fill, Mode=OneWay}"
               Stroke="{Binding ElementName=RemainTextBlock, Path=Stroke, Mode=OneWay}"
@@ -264,7 +262,6 @@
               Canvas.ZIndex="0"
               HorizontalContentAlignment="Right"
               VerticalAlignment="Center"
-              Width="{Binding ElementName=DummyCounterCircleLabel, Path=Width, Mode=OneWay}"
               Margin="0 0 0 0"
               Fill="{Binding ElementName=RateTextBlock, Path=Fill, Mode=OneWay}"
               Stroke="{Binding ElementName=RateTextBlock, Path=Stroke, Mode=OneWay}"

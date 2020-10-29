@@ -25,8 +25,7 @@
   WindowStyle="None"
   Left="{Binding Path=Config.TextLocation.X, Mode=TwoWay}"
   Top="{Binding Path=Config.TextLocation.Y, Mode=TwoWay}"
-  d:DataContext="{d:DesignInstance Type=vm:HPViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{x:Type vm:HPViewModel}">
+  d:DataContext="{d:DesignInstance Type=vm:HPViewModel, IsDesignTimeCreatable=True}">
 
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
