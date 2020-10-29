@@ -21,8 +21,7 @@
   FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
   FontSize="17"
   d:DesignWidth="600"
-  d:DataContext="{d:DesignInstance Type=vm:MobListConfigViewModel }"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  d:DataContext="{d:DesignInstance Type=vm:MobListConfigViewModel}">
 
   <Page.Resources>
     <ResourceDictionary>
