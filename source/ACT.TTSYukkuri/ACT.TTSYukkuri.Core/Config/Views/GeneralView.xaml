@@ -27,8 +27,7 @@
   Margin="0"
   Focusable="False"
   d:DesignHeight="720" d:DesignWidth="1024"
-  d:DataContext="{d:DesignInstance Type=vm:GeneralViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  d:DataContext="{d:DesignInstance Type=vm:GeneralViewModel, IsDesignTimeCreatable=True}">
 
   <UserControl.Resources>
     <ResourceDictionary>

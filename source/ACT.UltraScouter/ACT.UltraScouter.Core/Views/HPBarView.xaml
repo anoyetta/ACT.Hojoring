@@ -25,8 +25,7 @@
   WindowStyle="None"
   Left="{Binding Path=Config.BarLocation.X, Mode=TwoWay}"
   Top="{Binding Path=Config.BarLocation.Y, Mode=TwoWay}"
-  d:DataContext="{d:DesignInstance Type=vm:HPBarViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{x:Type vm:HPBarViewModel}">
+  d:DataContext="{d:DesignInstance Type=vm:HPBarViewModel, IsDesignTimeCreatable=True}">
 
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
@@ -80,7 +79,7 @@
         <StackPanel
           Orientation="Horizontal">
 
-          <StackPanel Margin="0 0 10 0" Visibility="{Binding HPVisible, Mode=OneWay}">
+          <StackPanel Margin="0 0 10 0" Visibility="{Binding HPVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
             <!-- 通常表示 -->
             <StackPanel Visibility="{Binding Config.IsHPValueNotCompact, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
               <ctrl:LightOutlineTextBlock
@@ -120,7 +119,7 @@
             </StackPanel>
           </StackPanel>
 
-          <StackPanel Margin="0 0 16 0" Visibility="{Binding HPRateVisible, Mode=OneWay}" VerticalAlignment="Center">
+          <StackPanel Margin="0 0 16 0" Visibility="{Binding HPRateVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" VerticalAlignment="Center">
             <ctrl:LightOutlineTextBlock
               Text="{Binding Path=CurrentHPRateText, Mode=OneWay}"
               Visibility="{Binding Config.IsHPValueNotCompact, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"

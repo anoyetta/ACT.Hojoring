@@ -23,8 +23,7 @@
   FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
   FontSize="17"
   d:DesignWidth="1024"
-  d:DataContext="{d:DesignInstance Type=vm:TargetConfigViewModel}"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  d:DataContext="{d:DesignInstance Type=vm:TargetConfigViewModel}">
 
   <Page.Resources>
     <ResourceDictionary>

@@ -99,7 +99,7 @@ namespace ACT.SpecialSpellTimer
             if (MatchOptionCommand(logLine))
             {
                 // 戦闘中ならば鳴らさない
-                return inCombat ? false : true;
+                return !inCombat;
             }
 
             // TTSコマンドとマッチングする
@@ -122,8 +122,7 @@ namespace ACT.SpecialSpellTimer
             var target = match.Groups["target"].ToString().ToLower();
             var windowname = match.Groups["windowname"].ToString().Replace(@"""", string.Empty);
             var valueAsText = match.Groups["value"].ToString();
-            var value = false;
-            if (!bool.TryParse(valueAsText, out value))
+            if (!bool.TryParse(valueAsText, out bool value))
             {
                 value = false;
             }
@@ -387,8 +386,7 @@ namespace ACT.SpecialSpellTimer
                 _ => false,
             };
 
-            var o = optionCommands.FirstOrDefault(x => x.keyword == command);
-            o.change?.Invoke(value);
+            optionCommands.FirstOrDefault(x => x.keyword == command).change?.Invoke(value);
 
             return true;
         }

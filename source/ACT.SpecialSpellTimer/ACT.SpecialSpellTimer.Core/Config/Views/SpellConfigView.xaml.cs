@@ -58,7 +58,10 @@ namespace ACT.SpecialSpellTimer.Config.Views
             object sender,
             SelectionChangedEventArgs e)
         {
-            this.ViewModel.IsActiveVisualTab = this.VisualTab.IsSelected;
+            if (this.VisualTab != null)
+            {
+                this.ViewModel.IsActiveVisualTab = this.VisualTab.IsSelected;
+            }
         }
 
         private void FilterExpander_Expanded(

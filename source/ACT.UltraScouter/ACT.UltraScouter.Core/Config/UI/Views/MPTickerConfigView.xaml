@@ -23,8 +23,7 @@
   FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
   FontSize="17"
   d:DesignWidth="1024"
-  d:DataContext="{d:DesignInstance Type=vm:MPTickerConfigViewModel}"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  d:DataContext="{d:DesignInstance Type=vm:MPTickerConfigViewModel}">
 
   <Page.Resources>
     <ResourceDictionary>
@@ -201,7 +200,6 @@
         <CheckBox
           Margin="25 0 0 0"
           Content="{DynamicResource MPTicker_RotateCCW}"
-          Command="{Binding TestModeCommand}"
           CommandParameter="{Binding ElementName=TestModeCheckBox, Path=IsChecked, Mode=OneWay}"
           Visibility="{Binding MPTicker.UseCircle, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
           IsChecked="{Binding MPTicker.IsCircleReverse, Mode=TwoWay}" />

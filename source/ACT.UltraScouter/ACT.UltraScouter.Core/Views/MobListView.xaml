@@ -28,8 +28,7 @@
   Background="Transparent"
   Left="{Binding Path=Config.Location.X, Mode=TwoWay}"
   Top="{Binding Path=Config.Location.Y, Mode=TwoWay}"
-  d:DataContext="{d:DesignInstance Type=vm:MobListViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{x:Type vm:MobListViewModel}">
+  d:DataContext="{d:DesignInstance Type=vm:MobListViewModel, IsDesignTimeCreatable=True}">
 
   <Window.Resources>
     <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />
@@ -156,7 +155,7 @@
                     RenderTransformOrigin="0.5 0.5">
                     <DockPanel.RenderTransform>
                       <RotateTransform
-                        Angle="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OriginAngle, Mode=OneWay}" />
+                        Angle="{Binding Path=ParentViewModel.OriginAngle, Mode=OneWay}" />
                     </DockPanel.RenderTransform>
 
                     <ctrl:LightOutlineTextBlock
@@ -581,7 +580,7 @@
                   RenderTransformOrigin="0.5 0.5">
                   <DockPanel.RenderTransform>
                     <RotateTransform
-                      Angle="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OriginAngle, Mode=OneWay}" />
+                      Angle="{Binding Path=ParentViewModel.OriginAngle, Mode=OneWay}" />
                   </DockPanel.RenderTransform>
 
                   <ctrl:LightOutlineTextBlock

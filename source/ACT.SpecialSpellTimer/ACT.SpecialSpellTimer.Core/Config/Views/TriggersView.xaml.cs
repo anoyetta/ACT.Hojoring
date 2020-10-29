@@ -24,7 +24,6 @@ namespace ACT.SpecialSpellTimer.Config.Views
         {
             this.InitializeComponent();
 
-            this.DataContext = new TriggersViewModel();
             this.SetLocale(Settings.Default.UILocale);
             this.LoadConfigViewResources();
 
@@ -85,7 +84,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     t.IsDesignMode = false;
                 }
 
-                if (this.previousModel is SpellPanel p)
+                if (this.previousModel is SpellPanel)
                 {
                     this.spellPanelViewModel.ClearFirstSpellChanged();
                 }
@@ -165,8 +164,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
             object sender,
             KeyEventArgs e)
         {
-            var item = (sender as TreeView)?.SelectedItem as TreeItemBase;
-            if (item == null)
+            if ((sender as TreeView)?.SelectedItem is not TreeItemBase item)
             {
                 return;
             }

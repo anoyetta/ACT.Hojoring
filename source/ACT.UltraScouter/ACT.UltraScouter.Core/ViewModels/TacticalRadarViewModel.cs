@@ -21,8 +21,11 @@ namespace ACT.UltraScouter.ViewModels
         OverlayViewModelBase,
         IOverlayViewModel
     {
+        public static TacticalRadarViewModel Current { get; private set; }
+
         public TacticalRadarViewModel()
         {
+            Current = this;
             this.Initialize();
         }
 

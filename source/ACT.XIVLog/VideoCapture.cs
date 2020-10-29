@@ -299,7 +299,13 @@ namespace ACT.XIVLog
                 {
                     if (this.StopRecordingSubscriber == null)
                     {
-                        this.StopRecordingSubscriber = new System.Timers.Timer(5000);
+                        var interval = Config.Instance.StopRecordingSubscribeInterval;
+                        if (interval <= 0)
+                        {
+                            interval = 10;
+                        }
+
+                        this.StopRecordingSubscriber = new System.Timers.Timer(interval * 1000);
                         this.StopRecordingSubscriber.Elapsed += (_, __) => this.DetectStopRecording();
                     }
 

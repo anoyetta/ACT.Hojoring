@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
   x:Class="ACT.UltraScouter.Views.MyStatusVertical"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -12,6 +12,7 @@
   IsTabStop="False"
   Background="Transparent"
   d:DataContext="{d:DesignInstance Type=vm:MyHPViewModel, IsDesignTimeCreatable=True}">
+
   <ctrl:RichProgressBar
     Height="{Binding Config.ProgressBar.Height, Mode=OneWay}"
     Width="{Binding Config.ProgressBar.Width, Mode=OneWay}"

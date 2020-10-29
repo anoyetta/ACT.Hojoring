@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Windows.Media.Imaging;
 using ACT.UltraScouter.Config;
+using ACT.UltraScouter.ViewModels;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
@@ -23,6 +24,8 @@ namespace ACT.UltraScouter.Models
         }
 
         public TacticalRadar Config => Settings.Instance.TacticalRadar;
+
+        public TacticalRadarViewModel ParentViewModel => TacticalRadarViewModel.Current;
 
         public void UpdateTargetInfo()
         {

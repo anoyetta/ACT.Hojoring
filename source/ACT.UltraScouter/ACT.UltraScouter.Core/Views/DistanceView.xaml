@@ -26,8 +26,7 @@
   MinWidth="350"
   Left="{Binding Path=Config.Location.X, Mode=TwoWay}"
   Top="{Binding Path=Config.Location.Y, Mode=TwoWay}"
-  d:DataContext="{d:DesignInstance Type=vm:DistanceViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{x:Type vm:DistanceViewModel}">
+  d:DataContext="{d:DesignInstance Type=vm:DistanceViewModel, IsDesignTimeCreatable=True}">
 
   <Window.Resources>
     <fwcnv:ColorToSolidColorBrushConverter x:Key="ColorToBrushConverter" />
@@ -68,7 +67,7 @@
       Fill="{Binding Path=Model.DistanceIndicatorBrush, Mode=OneWay}"
       Stroke="{Binding Path=Model.DistanceIndicatorBrush, Mode=OneWay}"
       StrokeThickness="1"
-      FontSize="{Binding Path=DisplayText.Font.Size, Mode=OneWay}">
+      FontSize="{Binding Path=Config.DisplayText.Font.Size, Mode=OneWay}">
       <ctrl:OutlineTextBlock.Effect>
         <DropShadowEffect
           Color="White"

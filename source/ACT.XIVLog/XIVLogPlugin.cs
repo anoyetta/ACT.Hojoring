@@ -52,7 +52,7 @@ namespace ACT.XIVLog
             this.pluginLabel = pluginStatusText;
 
             // 設定ファイルをロードする
-            var i = Config.Instance;
+            _ = Config.Instance;
 
             // 設定Panelを追加する
             pluginScreenSpace.Controls.Add(new ElementHost()
@@ -93,7 +93,7 @@ namespace ACT.XIVLog
         public string LogfileName =>
             Path.Combine(
                 Config.Instance.OutputDirectory,
-                $"{DateTime.Now.ToString("yyMMdd")}-{this.fileNo:000}.{this.GetZoneNameForFile()}.take{this.wipeoutCounter:00}.csv");
+                $"{DateTime.Now:yyMMdd}-{this.fileNo:000}.{this.GetZoneNameForFile()}.take{this.wipeoutCounter:00}.csv");
 
         private static readonly char[] InvalidChars = Path.GetInvalidFileNameChars();
 
@@ -121,7 +121,7 @@ namespace ACT.XIVLog
         private static readonly ConcurrentQueue<XIVLog> LogQueue = new ConcurrentQueue<XIVLog>();
         private ThreadWorker dumpLogTask;
         private StreamWriter writter;
-        private StringBuilder writeBuffer = new StringBuilder(5120);
+        private readonly StringBuilder writeBuffer = new StringBuilder(5120);
         private DateTime lastFlushTimestamp = DateTime.MinValue;
         private volatile bool isForceFlush = false;
         private int wipeoutCounter = 1;
@@ -302,6 +302,7 @@ namespace ACT.XIVLog
             LogQueue.Enqueue(new XIVLog(false, log));
         }
 
+        /*
         private string ConvertZoneNameToLog()
         {
             var result = this.currentZoneName;
@@ -322,6 +323,7 @@ namespace ACT.XIVLog
 
             return result;
         }
+        */
 
         private const string CommandKeywordOpen = "/xivlog open";
         private const string CommandKeywordFlush = "/xivlog flush";
@@ -420,8 +422,7 @@ namespace ACT.XIVLog
             var timeString = line.Substring(1, 12);
 
             var timestampString = DateTime.Now.ToString("yyyy-MM-dd") + " " + timeString;
-            DateTime d;
-            if (DateTime.TryParse(timestampString, out d))
+            if (DateTime.TryParse(timestampString, out DateTime d))
             {
                 this.Timestamp = d;
             }

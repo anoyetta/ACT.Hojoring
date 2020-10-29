@@ -106,7 +106,7 @@
               CornerRadius="3">
               <Border.Effect>
                 <DropShadowEffect
-                  Color="{Binding BorderBrush.Color, Mode=OneWay}"
+                  Color="{Binding BorderBrushColor, Mode=OneWay}"
                   Direction="0"
                   ShadowDepth="0"
                   BlurRadius="4" />
