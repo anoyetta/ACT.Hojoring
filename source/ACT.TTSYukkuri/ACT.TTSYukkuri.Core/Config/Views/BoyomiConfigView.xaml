@@ -26,8 +26,7 @@
   FontSize="17"
   Margin="5"
   d:DesignWidth="600"
-  d:DataContext="{d:DesignInstance Type=vm:BoyomiConfigViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  d:DataContext="{d:DesignInstance Type=vm:BoyomiConfigViewModel, IsDesignTimeCreatable=True}">
 
   <UserControl.Resources>
     <ResourceDictionary>
@@ -78,11 +77,11 @@
       IsChecked="{Binding Config.IsBoyomiInterruptNotication, Mode=TwoWay}" />
 
     <TextBlock Margin="0 10 0 0" FontSize="14" xml:space="preserve">
-* ����
- �_�ǂ݂�����HTTP�T�[�o�C���^�[�t�F�[�X�ɐڑ����܂��B
- <Hyperlink NavigateUri="https://chi.usamimi.info/Program/Application/BouyomiChan/" RequestNavigate="Hyperlink_RequestNavigate">�����T�C�g</Hyperlink> �Ŕz�z����Ă���ŐV���ł̖_�ǂ݂������g�p���Ă��������B
- �܂����o�[�W�����Ŏg�p���Ă��� Socket �C���^�[�t�F�X����͎g�p����|�[�g�ԍ����ς���Ă��܂��B
- ��L�� Default �{�^�����N���b�N���ă|�[�g�ԍ��� 50080 �ɕύX���Ă���g�p���Ă��������B
+* 注意
+ 棒読みちゃんのHTTPサーバインターフェースに接続します。
+ 公式サイトで配布されている最新β版の棒読みちゃんを使用してください。
+ また旧バージョンで使用していた Socket インターフェスからは使用するポート番号が変わっています。
+ 上記の Default ボタンをクリックしてポート番号を 50080 に変更してから使用してください。
     </TextBlock>
   </StackPanel>
 </UserControl>
