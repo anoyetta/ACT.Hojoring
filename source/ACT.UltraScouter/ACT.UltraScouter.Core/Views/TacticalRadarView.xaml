@@ -172,7 +172,7 @@
                   RenderTransformOrigin="0.5 0.5">
                   <DockPanel.RenderTransform>
                     <RotateTransform
-                      Angle="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OriginAngle, Mode=OneWay}" />
+                      Angle="{Binding Path=ParentViewModel.OriginAngle, Mode=OneWay}" />
                   </DockPanel.RenderTransform>
 
                   <Grid
@@ -238,7 +238,7 @@
                     RenderTransformOrigin="0.5 0.5">
                     <DockPanel.RenderTransform>
                       <RotateTransform
-                        Angle="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OriginAngle, Mode=OneWay}" />
+                        Angle="{Binding Path=ParentViewModel.OriginAngle, Mode=OneWay}" />
                     </DockPanel.RenderTransform>
 
                     <Grid
