@@ -36,6 +36,10 @@
   Focusable="False"
   mc:Ignorable="d">
 
+  <UserControl.DataContext>
+    <vm:SpellPanelConfigViewModel />
+  </UserControl.DataContext>
+
   <UserControl.Resources>
     <ResourceDictionary>
       <Style TargetType="Label">
