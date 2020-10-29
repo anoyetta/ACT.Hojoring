@@ -34,6 +34,8 @@ namespace ACT.UltraScouter.Models
 
         public SolidColorBrush BorderBrush => this.isCurrentTarget ? Brushes.WhiteSmoke : Brushes.Transparent;
 
+        public Color BorderBrushColor => this.BorderBrush.Color;
+
         private double distance;
 
         public double Distance
