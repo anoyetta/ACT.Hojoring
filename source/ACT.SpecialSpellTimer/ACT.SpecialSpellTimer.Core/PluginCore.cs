@@ -216,6 +216,7 @@ namespace ACT.SpecialSpellTimer
                     SpellTable.Instance.Load();
                     TickerTable.Instance.Load();
                     TagTable.Instance.Load();
+                    _ = TimelineSettings.Instance;
 
                     // 設定ファイルをバックアップする
                     await EnvironmentHelper.BackupFilesAsync(
