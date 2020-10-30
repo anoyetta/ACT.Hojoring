@@ -8,34 +8,62 @@ namespace ACT.SpecialSpellTimer.resources
 {
     public static class LocalizeExtensions
     {
+        private const string LocaleFileName = @"Strings.SpeSpe.{0}.xaml";
+
+        private const string CommonResourcesDirecotry = @"resources\styles";
+        private const string CommonResourcesResources = @"ConfigViewResources.xaml";
+
+        private static readonly object lockObject = new object();
+        private static bool isCommonResourcesLoaded;
+        private static bool isLocaleLoaded;
+
         public static void LoadConfigViewResources(
             this ILocalizable target)
         {
-            const string Direcotry = @"resources\styles";
-            const string Resources = @"ConfigViewResources.xaml";
-
             var element = target as FrameworkElement;
             if (element == null)
             {
                 return;
             }
 
-            var file = Path.Combine(DirectoryHelper.FindSubDirectory(Direcotry), Resources);
-            if (File.Exists(file))
+            lock (lockObject)
             {
-                element.Resources.MergedDictionaries.Add(new ResourceDictionary()
+                if (isCommonResourcesLoaded)
                 {
-                    Source = new Uri(file, UriKind.Absolute)
-                });
+                    return;
+                }
+
+                var file = Path.Combine(DirectoryHelper.FindSubDirectory(CommonResourcesDirecotry), CommonResourcesResources);
+                if (File.Exists(file))
+                {
+                    Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary()
+                    {
+                        Source = new Uri(file, UriKind.Absolute)
+                    });
+                }
+
+                isCommonResourcesLoaded = true;
             }
         }
 
         public static void ReloadLocaleDictionary<T>(
             this T element,
-            Locales locale) where T : FrameworkElement, ILocalizable =>
-            element.Resources.MergedDictionaries.Add(new ResourceDictionary()
+            Locales locale) where T : FrameworkElement, ILocalizable
+        {
+            lock (lockObject)
             {
-                Source = locale.GetUri("Strings.SpeSpe.{0}.xaml")
-            });
+                if (isLocaleLoaded)
+                {
+                    return;
+                }
+
+                Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary()
+                {
+                    Source = locale.GetUri(LocaleFileName)
+                });
+
+                isLocaleLoaded = true;
+            }
+        }
     }
 }

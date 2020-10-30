@@ -773,7 +773,7 @@
               <StackPanel Margin="10 0 0 0">
                 <StackPanel Margin="0 8 0 8" Orientation="Horizontal">
                   <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="6">
-                    <Image Source="{Binding Model.SpellIconFullPath, Mode=OneWay}" Height="72" Width="72" />
+                    <Image Source="{Binding Model.SpellIconImage, Mode=OneWay}" Height="72" Width="72" />
                   </Border>
                   <StackPanel VerticalAlignment="Bottom">
                     <TextBlock Margin="10 0 0 10" HorizontalAlignment="Left">
