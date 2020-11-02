@@ -71,22 +71,33 @@
     <system:Double x:Key="HistogramBarHeight">40</system:Double>
   </Window.Resources>
 
-  <Border
-    CornerRadius="8"
-    Background="{Binding Config.Background, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}">
-    <Border.LayoutTransform>
+  <Grid>
+    <Grid.LayoutTransform>
       <ScaleTransform
-        ScaleX="{Binding Config.Scale, Mode=OneWay}"
-        ScaleY="{Binding Config.Scale, Mode=OneWay}" />
-    </Border.LayoutTransform>
+          ScaleX="{Binding Config.Scale, Mode=OneWay}"
+          ScaleY="{Binding Config.Scale, Mode=OneWay}" />
+    </Grid.LayoutTransform>
 
-    <d:DesignerProperties.DesignStyle>
-      <Style TargetType="Border">
-        <Setter Property="Background" Value="Transparent" />
-      </Style>
-    </d:DesignerProperties.DesignStyle>
+    <Border
+      CornerRadius="6"
+      Background="{Binding Config.Background, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}">
 
-    <Grid Margin="30 15">
+      <Border.Effect>
+        <DropShadowEffect
+          Color="{Binding Config.Background, Mode=OneWay}"
+          Direction="0"
+          ShadowDepth="0"
+          BlurRadius="1" />
+      </Border.Effect>
+
+      <d:DesignerProperties.DesignStyle>
+        <Style TargetType="Border">
+          <Setter Property="Background" Value="Transparent" />
+        </Style>
+      </d:DesignerProperties.DesignStyle>
+    </Border>
+
+    <Grid Margin="10 10">
       <Grid.RowDefinitions>
         <RowDefinition />
         <RowDefinition />
@@ -389,5 +400,5 @@
         </ItemsControl.ItemTemplate>
       </ItemsControl>
     </Grid>
-  </Border>
+  </Grid>
 </Window>
