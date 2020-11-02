@@ -231,6 +231,7 @@ namespace ACT.UltraScouter.Config
                 Location = new Location() { X = 0, Y = 0 },
                 Scale = 1.0d,
                 IsDesignMode = false,
+                Background = Color.FromArgb((byte)(255 * 0.6), 0, 0, 0),
                 DisplayText = new DisplayText()
                 {
                     Font = DefaultFontL,

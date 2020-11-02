@@ -105,6 +105,7 @@ namespace ACT.UltraScouter.Models.FFLogs
         {
             "55DEC1C85CCEE22E636C10D9B966F39C",
             "B4222EFB5F74777300623471742B7C9C",
+            "669EE61736B3F08180610BAD05F02FFD"
         };
 
         public bool IsSpecial => SpecialNameHash.Contains(this.CharacterNameFull.GetMD5());
