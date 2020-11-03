@@ -181,6 +181,8 @@ namespace FFXIV.Framework
         private static string FormatLogMessageType(LogMessageType t)
             => $"0x{((int)t):X2}:{t}";
 
+        private const float CommonSoundVolumeDefault = 0.5f;
+
         #endregion Default Values
 
         [field: NonSerialized]
@@ -295,6 +297,14 @@ namespace FFXIV.Framework
                     this.RaisePropertyChanged(nameof(WasapiLoopBufferDuration));
                 }
             }
+        }
+
+        private float commonSoundVolume = CommonSoundVolumeDefault;
+
+        public float CommonSoundVolume
+        {
+            get => this.commonSoundVolume;
+            set => this.SetProperty(ref this.commonSoundVolume, value);
         }
 
         private Dictionary<LogMessageType, ObservableKeyValue<LogMessageType, bool>> globalLogFilterDictionary;

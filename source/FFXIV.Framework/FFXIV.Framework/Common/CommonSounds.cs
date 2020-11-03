@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Media;
 using Advanced_Combat_Tracker;
@@ -35,6 +35,11 @@ namespace FFXIV.Framework.Common
         private void PlayWave(
             string fileName)
         {
+            if (Config.Instance.CommonSoundVolume <= 0f)
+            {
+                return;
+            }
+
             var wave = Path.Combine(
                 this.WaveDirectory.Value,
                 fileName);
@@ -47,7 +52,7 @@ namespace FFXIV.Framework.Common
 
             if (PlayBridge.Instance.IsAvailable)
             {
-                PlayBridge.Instance.PlayMain(wave);
+                PlayBridge.Instance.PlayMain(wave, Config.Instance.CommonSoundVolume);
             }
             else
             {

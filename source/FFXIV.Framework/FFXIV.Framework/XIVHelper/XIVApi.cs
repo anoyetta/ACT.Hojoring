@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -73,7 +74,7 @@ namespace FFXIV.Framework.XIVHelper
         private readonly Dictionary<int, Area> areaENList = new Dictionary<int, Area>();
         private readonly List<Area> areaList = new List<Area>();
         private readonly List<Placename> placenameList = new List<Placename>();
-        private readonly Dictionary<uint, XIVApiAction> actionList = new Dictionary<uint, XIVApiAction>();
+        private readonly Dictionary<uint, XIVApiAction> actionList = new Dictionary<uint, XIVApiAction>(65535);
         private readonly Dictionary<uint, Buff> buffList = new Dictionary<uint, Buff>();
 
         public IReadOnlyList<Area> TerritoryList => this.territoryList;
@@ -386,52 +387,61 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
+            var sw = Stopwatch.StartNew();
+            var obj = new object();
+
             lock (this.actionList)
             {
                 this.actionList.Clear();
 
-                // UTF-8 BOMあり
-                using (var sr = new StreamReader(this.SkillFile, new UTF8Encoding(true)))
-                using (var parser = new TextFieldParser(sr)
+                var lines = File.ReadAllLines(this.SkillFile, new UTF8Encoding(true));
+
+                Parallel.For(0, lines.Length, (i) =>
                 {
-                    TextFieldType = FieldType.Delimited,
-                    Delimiters = new[] { "," },
-                    HasFieldsEnclosedInQuotes = true,
-                    TrimWhiteSpace = true,
-                    CommentTokens = new[] { "#" },
-                })
-                {
-                    while (!parser.EndOfData)
+                    using (var parser = new TextFieldParser(new StringReader(lines[i]))
                     {
-                        var fields = parser.ReadFields();
-
-                        if (fields == null ||
-                            fields.Length < 2)
+                        TextFieldType = FieldType.Delimited,
+                        Delimiters = new[] { "," },
+                        HasFieldsEnclosedInQuotes = true,
+                        TrimWhiteSpace = true,
+                        CommentTokens = new[] { "#" },
+                    })
+                    {
+                        do
                         {
-                            continue;
-                        }
+                            var fields = parser.ReadFields();
 
-                        uint id;
-                        if (!uint.TryParse(fields[0], out id) ||
-                            string.IsNullOrEmpty(fields[1]))
-                        {
-                            continue;
-                        }
+                            if (fields == null ||
+                                fields.Length < 2)
+                            {
+                                break;
+                            }
 
-                        var entry = new XIVApiAction()
-                        {
-                            ID = id,
-                            Name = fields[1],
-                            AttackTypeName = fields[XIVApiAction.AttackTypeIndex]
-                        };
+                            if (!uint.TryParse(fields[0], out uint id) ||
+                                string.IsNullOrEmpty(fields[1]))
+                            {
+                                break;
+                            }
 
-                        entry.SetAttackTypeEnum();
+                            var entry = new XIVApiAction()
+                            {
+                                ID = id,
+                                Name = fields[1],
+                                AttackTypeName = fields[XIVApiAction.AttackTypeIndex]
+                            };
 
-                        this.actionList[entry.ID] = entry;
+                            entry.SetAttackTypeEnum();
+
+                            lock (obj)
+                            {
+                                this.actionList[entry.ID] = entry;
+                            }
+                        } while (false);
                     }
-                }
+                });
 
-                this.AppLogger.Trace($"xivapi action list loaded. {this.SkillFile}");
+                sw.Stop();
+                this.AppLogger.Trace($"xivapi action list loaded. {sw.Elapsed.TotalSeconds:N0}s {this.SkillFile}");
 
                 // Userリストの方も読み込む
                 this.LoadUserAction();
