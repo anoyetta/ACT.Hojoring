@@ -73,6 +73,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.Combatant, "Z", TimelineCombatantModel.InvalidPosition),
             NewDefault(TimelineElementTypes.Combatant, "Tolerance", 0.01f),
 
+            // HPSync
+            NewDefault(TimelineElementTypes.HPSync, "Enabled", true),
+
             // Expressions
             NewDefault(TimelineElementTypes.Expressions, "Enabled", true),
             NewDefault(TimelineElementTypes.ExpressionsSet, "Enabled", true),
