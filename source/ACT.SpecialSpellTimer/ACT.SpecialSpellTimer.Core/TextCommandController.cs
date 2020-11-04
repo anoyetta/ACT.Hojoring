@@ -20,40 +20,35 @@ namespace ACT.SpecialSpellTimer
         /// </summary>
         private readonly static Regex regexCommand = new Regex(
             @"/spespe\s+(?<command>refresh|changeenabled|set|clear|on|off|pos)\s+?(?<target>all|spells|telops|me|pt|pet|placeholder|$)\s+?(?<windowname>"".*""|all)? ?(?<value>.*)",
-            RegexOptions.Compiled |
-            RegexOptions.IgnoreCase);
+            RegexOptions.Compiled);
 
         /// <summary>
         /// TTS読み仮名コマンド
         /// </summary>
         private readonly static Regex phoneticsCommand = new Regex(
             @"/spespe\s+phonetic\s+""(?<pcname>.+?)"" ""(?<phonetic>.+?)""",
-            RegexOptions.Compiled |
-            RegexOptions.IgnoreCase);
+            RegexOptions.Compiled);
 
         /// <summary>
         /// Logコマンド
         /// </summary>
         private readonly static Regex logCommand = new Regex(
             @"/spespe\s+log\s+(?<switch>on|off|open|flush)",
-            RegexOptions.Compiled |
-            RegexOptions.IgnoreCase);
+            RegexOptions.Compiled);
 
         /// <summary>
         /// TTSコマンド
         /// </summary>
         private readonly static Regex ttsCommand = new Regex(
             @"/tts\s+(?<text>.*)",
-            RegexOptions.Compiled |
-            RegexOptions.IgnoreCase);
+            RegexOptions.Compiled);
 
         /// <summary>
         /// オプションコマンド
         /// </summary>
         private static readonly Lazy<Regex> lazyOptionCommand = new Lazy<Regex>(() => new Regex(
             @$"/spespe\s+(?<option>{string.Join("|", optionCommands.Select(x => x.keyword))})\s+(?<command>enabled|disabled|on|off)",
-            RegexOptions.Compiled |
-            RegexOptions.IgnoreCase));
+            RegexOptions.Compiled));
 
         /// <summary>
         /// オプションコマンドの定義
