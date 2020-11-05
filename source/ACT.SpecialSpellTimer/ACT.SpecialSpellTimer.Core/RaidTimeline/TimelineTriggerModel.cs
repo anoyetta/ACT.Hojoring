@@ -485,7 +485,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             if (this.Enabled.GetValueOrDefault())
             {
-                if (this.IsPositionSyncAvailable)
+                if (this.IsPositionSyncAvailable || this.IsHPSyncAvailable)
                 {
                     return true;
                 }
