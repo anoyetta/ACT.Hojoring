@@ -11,6 +11,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public static void RefreshGlobalVariables()
         {
             RefreshIsToTMe();
+            RefreshInTankStance();
             RefreshIsFirstEnmityMe();
             RefreshET();
             RefreshZone();
@@ -39,6 +40,30 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         TimelineController.RaiseLog(
                             $"{TimelineController.TLSymbol} set VAR['{name}'] = {value}");
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// タンクスタンス中か？
+        /// </summary>
+        public const string IN_TANK_STANCE = "IN_TANK_STANCE";
+
+        /// <summary>
+        /// IN_TANK_STANCE を更新する
+        /// </summary>
+        public static void RefreshInTankStance()
+        {
+            var name = IN_TANK_STANCE;
+
+            var player = CombatantsManager.Instance.Player;
+            if (player != null)
+            {
+                var value = player.InTankStance();
+                if (SetVariable(name, value))
+                {
+                    TimelineController.RaiseLog(
+                        $"{TimelineController.TLSymbol} set VAR['{name}'] = {value}");
                 }
             }
         }

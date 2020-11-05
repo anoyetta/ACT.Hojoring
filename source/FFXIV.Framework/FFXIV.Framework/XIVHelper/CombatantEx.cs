@@ -13,7 +13,7 @@ using Sharlayan.Core.Enums;
 namespace FFXIV.Framework.XIVHelper
 {
     [AddINotifyPropertyChangedInterface]
-    public class CombatantEx :
+    public partial class CombatantEx :
         BindableBase,
         ICloneable
     {
