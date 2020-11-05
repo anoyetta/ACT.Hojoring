@@ -78,9 +78,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
                 if (player.Role == Roles.Tank &&
                     this.inTankStance.HasValue)
                 {
-                    var inTankStanceNow = playerEffects.Any(x =>
-                        x != null &&
-                        TankStanceEffectIDs.Contains(x.BuffID));
+                    var inTankStanceNow = player.InTankStance();
 
                     if (this.inTankStance.Value != inTankStanceNow)
                     {
@@ -198,11 +196,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
                     var party = CombatantsManager.Instance.GetPartyList();
                     if (party.Count(x => x.Role == Roles.Tank) <= 1)
                     {
-                        var inTankStanceNow = playerEffects.Any(x =>
-                            x != null &&
-                            TankStanceEffectIDs.Contains(x.BuffID));
-
-                        if (!inTankStanceNow)
+                        if (!player.InTankStance())
                         {
                             sendKeySetList.Add(this.Config.RestoreTankStance.KeySet);
                         }
@@ -256,14 +250,6 @@ namespace ACT.UltraScouter.Workers.TextCommands
             "00:0039:战斗开始！",
         };
 
-        private static readonly uint[] TankStanceEffectIDs = new uint[]
-        {
-            91,     // ディフェンダー
-            1833,   // ロイヤルガード
-            79,     // アイアンウィル
-            743,    // グリットスタンス
-        };
-
         /// <summary>食事効果のエフェクトID</summary>
         private static readonly uint WellFedEffectID = 48;
 
@@ -290,9 +276,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
                 return;
             }
 
-            this.inTankStance = playerEffects.Any(x =>
-                x != null &&
-                TankStanceEffectIDs.Contains(x.BuffID));
+            this.inTankStance = player.InTankStance();
         }
     }
 }

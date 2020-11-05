@@ -161,6 +161,7 @@
     </Compile>
     <Compile Include="XIVHelper\Buff.cs" />
     <Compile Include="XIVHelper\CameraInfo.cs" />
+    <Compile Include="XIVHelper\CombatantEx.Extensions.cs" />
     <Compile Include="XIVHelper\CombatantsManager.cs" />
     <Compile Include="XIVHelper\CombatantEx.cs" />
     <Compile Include="XIVHelper\EnmityEntry.cs" />

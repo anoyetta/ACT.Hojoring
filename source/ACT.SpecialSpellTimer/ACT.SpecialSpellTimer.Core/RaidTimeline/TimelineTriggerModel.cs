@@ -77,6 +77,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        [XmlElement(ElementName = "hp-sync")]
+        public TimelineHPSyncModel[] HPSyncStatements
+        {
+            get => this.Statements
+                .Where(x => x.TimelineType == TimelineElementTypes.HPSync)
+                .Cast<TimelineHPSyncModel>()
+                .ToArray();
+
+            set => this.AddRange(value);
+        }
+
         [XmlElement(ElementName = "dump")]
         public TimelineDumpModel[] DumpStatements
         {
@@ -136,12 +147,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public bool IsPositionSyncAvailable =>
             this.PositionSyncStatements.Any(x => x.Enabled.GetValueOrDefault());
 
+        [XmlIgnore]
+        public bool IsHPSyncAvailable =>
+            this.HPSyncStatements.Any(x => x.Enabled.GetValueOrDefault());
+
         public void Add(TimelineBase timeline)
         {
             if (timeline.TimelineType == TimelineElementTypes.Load ||
                 timeline.TimelineType == TimelineElementTypes.VisualNotice ||
                 timeline.TimelineType == TimelineElementTypes.ImageNotice ||
                 timeline.TimelineType == TimelineElementTypes.PositionSync ||
+                timeline.TimelineType == TimelineElementTypes.HPSync ||
                 timeline.TimelineType == TimelineElementTypes.Expressions ||
                 timeline.TimelineType == TimelineElementTypes.Dump)
             {

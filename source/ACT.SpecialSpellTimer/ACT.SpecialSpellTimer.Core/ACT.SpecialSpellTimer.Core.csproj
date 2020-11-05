@@ -209,6 +209,7 @@
     <Compile Include="RaidTimeline\TimelineExpressionsModel.Table.cs" />
     <Compile Include="RaidTimeline\TimelineExpressionsModel.Global.cs" />
     <Compile Include="RaidTimeline\TimelineDumpModel.cs" />
+    <Compile Include="RaidTimeline\TimelineHPSyncModel.cs" />
     <Compile Include="RaidTimeline\TimelineLoadModel.cs" />
     <Compile Include="RaidTimeline\TimelineManager.cs" />
     <Compile Include="RaidTimeline\TimelineModel.DefaultValues.cs" />

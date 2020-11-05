@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -1144,7 +1143,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             XIVLog xivlog,
             TimelineActivityModel act)
         {
-            var match = default(Match);
+            var match = default(System.Text.RegularExpressions.Match);
 
             lock (act)
             {
@@ -1208,8 +1207,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             TimelineTriggerModel tri,
             DateTime detectTime)
         {
-            // P-Syncならば対象外なので抜ける
-            if (tri.IsPositionSyncAvailable)
+            // P-Sync or HP-Syncならば対象外なので抜ける
+            if (tri.IsPositionSyncAvailable || tri.IsHPSyncAvailable)
             {
                 return false;
             }
@@ -1338,24 +1337,29 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             this.DumpStartsUsingPosition();
 
             var localDetectTime = DateTime.Now;
-            var psyncs = default(TimelineTriggerModel[]);
+            var targets = default((TimelineTriggerModel Trigger, TimelineElementTypes TriggerType)[]);
 
             lock (this)
             {
                 // P-Syncトリガを抽出する
-                psyncs = (
+                targets = (
                     from x in
                         TimelineManager.Instance.GlobalTriggers
                         .Concat(!this.Model.IsGlobalZone ? this.Model.Triggers : EmptyTiggers)
                         .Concat(this.CurrentSubroutine != null ? this.CurrentSubroutine.Triggers : EmptyTiggers)
                     where
                     x.IsAvailable() &&
-                    x.IsPositionSyncAvailable
+                    (x.IsPositionSyncAvailable || x.IsHPSyncAvailable)
                     select
-                    x).ToArray();
+                    (
+                        Trigger: x,
+                        TriggerType: x.IsPositionSyncAvailable ?
+                            TimelineElementTypes.PositionSync :
+                            TimelineElementTypes.HPSync
+                    )).ToArray();
             }
 
-            if (!psyncs.Any())
+            if (!targets.Any())
             {
                 return;
             }
@@ -1367,20 +1371,35 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            // P-Syncトリガに対して判定する
-            foreach (var tri in psyncs)
+            foreach (var target in targets)
             {
-                var psync = tri.PositionSyncStatements
-                    .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
-
-                if (psync != null)
+                switch (target.TriggerType)
                 {
-                    lock (tri)
-                    {
-                        detectPSync(tri, psync);
-                    }
+                    case TimelineElementTypes.PositionSync:
+                        var psync = target.Trigger.PositionSyncStatements
+                            .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
 
-                    Thread.Yield();
+                        if (psync != null)
+                        {
+                            lock (target.Trigger)
+                            {
+                                detectPSync(target.Trigger, psync);
+                            }
+                        }
+                        break;
+
+                    case TimelineElementTypes.HPSync:
+                        var hpsync = target.Trigger.HPSyncStatements
+                            .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
+
+                        if (hpsync != null)
+                        {
+                            lock (target.Trigger)
+                            {
+                                detectHPSync(target.Trigger, hpsync);
+                            }
+                        }
+                        break;
                 }
             }
 
@@ -1461,41 +1480,78 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return;
                 }
 
-                tri.TextReplaced = tri.Text ?? string.Empty;
-                tri.NoticeReplaced = tri.Notice ?? string.Empty;
+                var text = tri.Text ?? string.Empty;
+                var notice = tri.Notice ?? string.Empty;
 
                 var i = 1;
                 foreach (var con in conditions)
                 {
-                    string replace(string text)
+                    string replace(string t)
                     {
-                        text = text.Replace("{name" + i + "}", con.ActualCombatant.Name);
-                        text = text.Replace("{X" + i + "}", con.ActualCombatant.PosXMap.ToString("N1"));
-                        text = text.Replace("{Y" + i + "}", con.ActualCombatant.PosYMap.ToString("N1"));
-                        text = text.Replace("{Z" + i + "}", con.ActualCombatant.PosZMap.ToString("N1"));
+                        t = t.Replace("{name" + i + "}", con.ActualCombatant.Name);
+                        t = t.Replace("{X" + i + "}", con.ActualCombatant.PosXMap.ToString("N1"));
+                        t = t.Replace("{Y" + i + "}", con.ActualCombatant.PosYMap.ToString("N1"));
+                        t = t.Replace("{Z" + i + "}", con.ActualCombatant.PosZMap.ToString("N1"));
 
-                        return text;
+                        return t;
                     }
 
-                    tri.TextReplaced = replace(tri.TextReplaced);
-                    tri.NoticeReplaced = replace(tri.NoticeReplaced);
+                    text = replace(text);
+                    notice = replace(notice);
 
                     i++;
                 }
+
+                if (tryExecuteTrigger(tri, text, notice))
+                {
+                    psync.LastSyncTimestamp = DateTime.Now;
+                }
+            }
+
+            // HP-Syncトリガに対して判定する
+            void detectHPSync(
+                TimelineTriggerModel tri,
+                TimelineHPSyncModel hpsync)
+            {
+                if (hpsync.IsSynced)
+                {
+                    return;
+                }
+
+                if (!hpsync.IsMatch(combatants))
+                {
+                    return;
+                }
+
+                var text = tri.Text ?? string.Empty;
+                var notice = tri.Notice ?? string.Empty;
+
+                if (tryExecuteTrigger(tri, text, notice))
+                {
+                    hpsync.IsSynced = true;
+                }
+            }
+
+            // トリガを実行する
+            bool tryExecuteTrigger(
+                TimelineTriggerModel tri,
+                string text,
+                string notice)
+            {
+                tri.TextReplaced = text;
+                tri.NoticeReplaced = notice;
 
                 tri.MatchedCounter++;
 
                 if (!tri.IsAvailableSyncCount())
                 {
-                    return;
+                    return false;
                 }
 
                 if (!tri.ExecuteExpressions())
                 {
-                    return;
+                    return false;
                 }
-
-                psync.LastSyncTimestamp = DateTime.Now;
 
                 var toNotice = tri.Clone();
 
@@ -1549,6 +1605,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         RaiseLog(tri);
                     }
                 });
+
+                return true;
             }
         }
 
@@ -1586,23 +1644,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static void RaiseLog(
             TimelineBase element)
         {
-            var now = DateTime.Now;
             var log = string.Empty;
 
             var sub = element.Parent as TimelineSubroutineModel;
 
+            var name = !string.IsNullOrEmpty(element.Name) ? $"name={element.Name}" : string.Empty;
+            var text = string.Empty;
+            var subName = sub != null ? $"sub={sub.Name}" : string.Empty;
+
+            var parts = new[] { name, text, subName };
+
             switch (element)
             {
                 case TimelineActivityModel act:
-                    log =
-                        $"{TLSymbol} Synced to activity. " +
-                        $"name={act.Name}, sub={sub?.Name}";
+                    text = !string.IsNullOrEmpty(act.Text) ? $"text={act.Text}" : string.Empty; ;
+                    log = $"{TLSymbol} synced-to-activity {string.Join(" ", parts.Where(x => !string.IsNullOrWhiteSpace(x)))}";
                     break;
 
                 case TimelineTriggerModel tri:
-                    log =
-                        $"{TLSymbol} Synced to trigger. " +
-                        $"name={tri.Name}, sync-count={tri.MatchedCounter}, sub={sub?.Name}";
+                    text = !string.IsNullOrEmpty(tri.Text) ? $"text={tri.Text}" : string.Empty; ;
+                    log = $"{TLSymbol} synced-to-trigger {string.Join(" ", parts.Where(x => !string.IsNullOrWhiteSpace(x)))}";
                     break;
 
                 default:
