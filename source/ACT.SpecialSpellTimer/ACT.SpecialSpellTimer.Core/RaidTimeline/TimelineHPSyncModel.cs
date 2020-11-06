@@ -86,6 +86,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 from x in combatants
                 where
                 x.MaxHP > 0 &&
+                x.CurrentHP > 0 &&
                 x.CurrentHP < x.MaxHP &&
                 x.CurrentHPRate <= hpp &&
                 !string.IsNullOrEmpty(x.Name) &&

@@ -334,7 +334,11 @@ namespace ACT.TTSYukkuri
 
                     if (!EnvironmentHelper.IsValidPluginLoadOrder())
                     {
-                        pluginStatusText.Text = "Plugin Initialize Error";
+                        if (pluginStatusText != null)
+                        {
+                            pluginStatusText.Text = "Plugin Initialize Error";
+                        }
+
                         return;
                     }
 
@@ -447,7 +451,10 @@ namespace ACT.TTSYukkuri
                         CevioTrayManager.ToIcon();
                     }
 
-                    PluginStatusLabel.Text = "Plugin Started";
+                    if (this.PluginStatusLabel != null)
+                    {
+                        this.PluginStatusLabel.Text = "Plugin Started";
+                    }
 
                     this.Logger.Trace("[YUKKURI] End InitPlugin");
 
@@ -541,7 +548,10 @@ namespace ACT.TTSYukkuri
                     }
                 }
 
-                this.PluginStatusLabel.Text = "Plugin Exited";
+                if (this.PluginStatusLabel != null)
+                {
+                    this.PluginStatusLabel.Text = "Plugin Exited";
+                }
             }
             catch (Exception ex)
             {
