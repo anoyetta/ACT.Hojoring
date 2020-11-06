@@ -520,6 +520,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
                     }
                 }
+
+                if (this.HPSyncStatements != null)
+                {
+                    foreach (var hpsync in this.HPSyncStatements)
+                    {
+                        if (hpsync != null)
+                        {
+                            hpsync.IsSynced = false;
+                        }
+                    }
+                }
             }
         }
 
