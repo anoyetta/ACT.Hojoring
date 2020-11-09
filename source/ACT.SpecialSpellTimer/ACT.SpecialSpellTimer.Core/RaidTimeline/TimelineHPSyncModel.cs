@@ -82,19 +82,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var hpp = this.hpp / 100;
 
-            var targets =
+            var target = (
                 from x in combatants
                 where
                 x.MaxHP > 0 &&
-                x.CurrentHP > 0 &&
+                x.CurrentHP > 1 &&
                 x.CurrentHP < x.MaxHP &&
                 x.CurrentHPRate <= hpp &&
                 !string.IsNullOrEmpty(x.Name) &&
                 (this.nameRegex?.IsMatch(x.Name) ?? false)
                 select
-                x;
+                x).FirstOrDefault();
 
-            return targets.Any();
+            var r = target != null;
+            if (r)
+            {
+                TimelineController.RaiseLog(
+                    $"{TimelineController.TLSymbol} hp-sync name={target.Name} {target.CurrentCP}/{target.MaxMP} {target.CurrentHPRate:P1}");
+            }
+
+            return r;
         }
     }
 }
