@@ -1739,6 +1739,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 TimelineTickCallback = null;
 
+                this.Status = TimelineStatus.Loading;
+
                 // リソースを開放する
                 TimelineExpressionsModel.Clear(this.CurrentZoneName);
                 TimelineNoticeOverlay.NoticeView?.ClearNotice();
