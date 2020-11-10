@@ -70,6 +70,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public bool IsMatch(
             IEnumerable<CombatantEx> combatants)
         {
+            if (!TimelineController.CurrentController.IsRunning)
+            {
+                return false;
+            }
+
             if (!this.hpp.HasValue)
             {
                 return false;
@@ -98,7 +103,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (r)
             {
                 TimelineController.RaiseLog(
-                    $"{TimelineConstants.LogSymbol} hp-sync name={target.Name} {target.CurrentCP}/{target.MaxMP} {target.CurrentHPRate:P1}");
+                    $"{TimelineConstants.LogSymbol} hp-sync name={target.Name} {target.CurrentHP}/{target.MaxMP} {target.CurrentHPRate:P1}");
             }
 
             return r;
