@@ -310,7 +310,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.Status = TimelineStatus.Loaded;
                 this.IsReady = true;
-                this.AppLogger.Trace($"[TL] Timeline loaded. name={this.Model.TimelineName}");
+                this.AppLogger.Trace($"{TimelineController.TLSymbol} Timeline loaded. name={this.Model.TimelineName}");
             }
         }
 
@@ -334,7 +334,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.Status = TimelineStatus.Unloaded;
                 this.IsReady = false;
-                this.AppLogger.Trace($"[TL] Timeline unloaded. name={this.Model.TimelineName}");
+                this.AppLogger.Trace($"{TimelineController.TLSymbol} Timeline unloaded. name={this.Model.TimelineName}");
 
                 // GC
                 GC.Collect();
@@ -784,7 +784,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     var model = CurrentController?.Model;
                     AppLog.DefaultLogger.Error(
                         ex,
-                        $"[TL] Error DetectLog. name={model?.TimelineName}, zone={model?.Zone}, file={model?.SourceFile}");
+                        $"{TimelineController.TLSymbol} Error DetectLog. name={model?.TimelineName}, zone={model?.Zone}, file={model?.SourceFile}");
                 }
                 finally
                 {
@@ -1826,7 +1826,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 this.AppLogger.Error(
                     ex,
-                    $"[TL] Error Timeline ticker. name={this.Model.TimelineName}, zone={this.Model.Zone}, file={this.Model.SourceFile}");
+                    $"{TimelineController.TLSymbol} Error Timeline ticker. name={this.Model.TimelineName}, zone={this.Model.Zone}, file={this.Model.SourceFile}");
             }
         }
 
