@@ -157,7 +157,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
                 catch (Exception ex)
                 {
-                    Logger.Write($"{TimelineController.TLSymbol} Load default values error.", ex);
+                    Logger.Write($"{TimelineConstants.LogSymbol} Load default values error.", ex);
                 }
             }
 

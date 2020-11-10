@@ -62,11 +62,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private static readonly object Locker = new object();
 
-        /// <summary>
-        /// タイムラインから発生するログのSymbol
-        /// </summary>
-        public const string TLSymbol = "[TL]";
-
         public static void Init()
         {
             lock (Locker)
@@ -310,7 +305,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.Status = TimelineStatus.Loaded;
                 this.IsReady = true;
-                this.AppLogger.Trace($"{TimelineController.TLSymbol} Timeline loaded. name={this.Model.TimelineName}");
+                this.AppLogger.Trace($"{TimelineConstants.LogSymbol} Timeline loaded. name={this.Model.TimelineName}");
             }
         }
 
@@ -334,7 +329,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.Status = TimelineStatus.Unloaded;
                 this.IsReady = false;
-                this.AppLogger.Trace($"{TimelineController.TLSymbol} Timeline unloaded. name={this.Model.TimelineName}");
+                this.AppLogger.Trace($"{TimelineConstants.LogSymbol} Timeline unloaded. name={this.Model.TimelineName}");
 
                 // GC
                 GC.Collect();
@@ -784,7 +779,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     var model = CurrentController?.Model;
                     AppLog.DefaultLogger.Error(
                         ex,
-                        $"{TimelineController.TLSymbol} Error DetectLog. name={model?.TimelineName}, zone={model?.Zone}, file={model?.SourceFile}");
+                        $"{TimelineConstants.LogSymbol} Error DetectLog. name={model?.TimelineName}, zone={model?.Zone}, file={model?.SourceFile}");
                 }
                 finally
                 {
@@ -884,7 +879,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 // [TL]キーワードが含まれていればスキップする
-                if (logLine.Contains(TLSymbol))
+                if (logLine.Contains(TimelineConstants.LogSymbol))
                 {
                     continue;
                 }
@@ -1106,7 +1101,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         WPFHelper.BeginInvoke(this.EndActivityLine);
                         PluginMainWorker.Instance.Wipeout(false);
-                        TimelineController.RaiseLog($"{TLSymbol} End-of-Timeline has been detected.");
+                        TimelineController.RaiseLog($"{TimelineConstants.LogSymbol} End-of-Timeline has been detected.");
                     }
                 }
             }
@@ -1629,7 +1624,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         !this.previouseCastingCombatantIDs.Contains(combatant.ID))
                     {
                         TimelineController.RaiseLog(
-                            $"{TLSymbol} {combatant.Name} starts using {combatant.CastSkillName}. X={combatant.PosXMap:N2} Y={combatant.PosYMap:N2} Z={combatant.PosZMap:N2}. ID={combatant.CastBuffID:X4} duration={combatant.CastDurationMax:N1}");
+                            $"{TimelineConstants.LogSymbol} {combatant.Name} starts using {combatant.CastSkillName}. X={combatant.PosXMap:N2} Y={combatant.PosYMap:N2} Z={combatant.PosZMap:N2}. ID={combatant.CastBuffID:X4} duration={combatant.CastDurationMax:N1}");
                     }
                 }
 
@@ -1658,12 +1653,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 case TimelineActivityModel act:
                     text = !string.IsNullOrEmpty(act.Text) ? $"text={act.Text}" : string.Empty; ;
-                    log = $"{TLSymbol} synced-to-activity {string.Join(" ", parts.Where(x => !string.IsNullOrWhiteSpace(x)))}";
+                    log = $"{TimelineConstants.LogSymbol} synced-to-activity {string.Join(" ", parts.Where(x => !string.IsNullOrWhiteSpace(x)))}";
                     break;
 
                 case TimelineTriggerModel tri:
                     text = !string.IsNullOrEmpty(tri.Text) ? $"text={tri.Text}" : string.Empty; ;
-                    log = $"{TLSymbol} synced-to-trigger {string.Join(" ", parts.Where(x => !string.IsNullOrWhiteSpace(x)))}";
+                    log = $"{TimelineConstants.LogSymbol} synced-to-trigger {string.Join(" ", parts.Where(x => !string.IsNullOrWhiteSpace(x)))}";
                     break;
 
                 default:
@@ -1729,7 +1724,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.isRunning = true;
                 this.Status = TimelineStatus.Runnning;
-                this.AppLogger.Trace($"{TLSymbol} Timeline started. name={this.Model.TimelineName}");
+                this.AppLogger.Trace($"{TimelineConstants.LogSymbol} Timeline started. name={this.Model.TimelineName}");
             }
         }
 
@@ -1756,7 +1751,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.isRunning = false;
                 this.Status = TimelineStatus.Loaded;
-                this.AppLogger.Trace($"{TLSymbol} Timeline stoped. name={this.Model.TimelineName}");
+                this.AppLogger.Trace($"{TimelineConstants.LogSymbol} Timeline stoped. name={this.Model.TimelineName}");
             }
         }
 
@@ -1826,7 +1821,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 this.AppLogger.Error(
                     ex,
-                    $"{TimelineController.TLSymbol} Error Timeline ticker. name={this.Model.TimelineName}, zone={this.Model.Zone}, file={this.Model.SourceFile}");
+                    $"{TimelineConstants.LogSymbol} Error Timeline ticker. name={this.Model.TimelineName}, zone={this.Model.Zone}, file={this.Model.SourceFile}");
             }
         }
 

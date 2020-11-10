@@ -65,7 +65,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.AppLogger.Error(
                     ex,
-                    $"{TimelineController.TLSymbol} Error on parsing table JSON. parent={parentName}.\n{this.JsonText}");
+                    $"{TimelineConstants.LogSymbol} Error on parsing table JSON. parent={parentName}.\n{this.JsonText}");
 
                 return null;
             }
@@ -139,7 +139,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.AppLogger.Error(
                     ex,
-                    $"{TimelineController.TLSymbol} Error on execute table JSON. parent={parentName}.\n{this.JsonText}");
+                    $"{TimelineConstants.LogSymbol} Error on execute table JSON. parent={parentName}.\n{this.JsonText}");
 
                 result = false;
             }

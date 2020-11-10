@@ -202,6 +202,7 @@
     <Compile Include="Models\Ticker.cs" />
     <Compile Include="RaidTimeline\TimelineActivityModel.cs" />
     <Compile Include="RaidTimeline\TimelineBase.cs" />
+    <Compile Include="RaidTimeline\TimelineConstants.cs" />
     <Compile Include="RaidTimeline\TimelineController.Notice.cs" />
     <Compile Include="RaidTimeline\TimelineDefaultModel.cs" />
     <Compile Include="RaidTimeline\TimelineController.cs" />
