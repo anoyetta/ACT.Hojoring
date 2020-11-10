@@ -1724,6 +1724,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.isRunning = true;
                 this.Status = TimelineStatus.Runnning;
+
+                RaiseLog($"{TimelineConstants.LogSymbol} start-timeline name={this.Model.TimelineName}");
                 this.AppLogger.Trace($"{TimelineConstants.LogSymbol} Timeline started. name={this.Model.TimelineName}");
             }
         }
@@ -1753,6 +1755,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.isRunning = false;
                 this.Status = TimelineStatus.Loaded;
+
+                RaiseLog($"{TimelineConstants.LogSymbol} stop-timeline name={this.Model.TimelineName}");
                 this.AppLogger.Trace($"{TimelineConstants.LogSymbol} Timeline stoped. name={this.Model.TimelineName}");
             }
         }
