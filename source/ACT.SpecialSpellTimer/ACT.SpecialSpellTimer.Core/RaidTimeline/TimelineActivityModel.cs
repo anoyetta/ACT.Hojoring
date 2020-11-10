@@ -810,13 +810,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 Process.Start(ps);
 
                 TimelineController.RaiseLog(
-                    $"[TL] trigger executed. exec={this.ExecuteFileName}, args={this.Arguments}");
+                    $"{TimelineConstants.LogSymbol} trigger executed. exec={this.ExecuteFileName}, args={this.Arguments}");
             }
             catch (Exception ex)
             {
                 AppLog.DefaultLogger.Error(
                     ex,
-                    $"[TL] Error at execute external tool. exec={this.ExecuteFileName}, args={this.Arguments}");
+                    $"{TimelineConstants.LogSymbol} Error at execute external tool. exec={this.ExecuteFileName}, args={this.Arguments}");
             }
         }
 
@@ -900,22 +900,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 if (response.IsSuccessStatusCode)
                 {
                     TimelineController.RaiseLog(
-                        $"[TL] trigger call REST API. {uri} {method}");
+                        $"{TimelineConstants.LogSymbol} trigger call REST API. {uri} {method}");
                 }
                 else
                 {
                     TimelineController.RaiseLog(
-                        $"[TL] Error at call REST API. {uri} {method} status={(int)response.StatusCode}:{response.StatusCode}");
+                        $"{TimelineConstants.LogSymbol} Error at call REST API. {uri} {method} status={(int)response.StatusCode}:{response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
                 TimelineController.RaiseLog(
-                    $"[TL] Error at call REST API. {uri} {method} message={ex.Message}");
+                    $"{TimelineConstants.LogSymbol} Error at call REST API. {uri} {method} message={ex.Message}");
 
                 AppLog.DefaultLogger.Error(
                     ex,
-                    $"[TL] Error at call REST API. {uri} {method}");
+                    $"{TimelineConstants.LogSymbol} Error at call REST API. {uri} {method}");
             }
 
             return true;

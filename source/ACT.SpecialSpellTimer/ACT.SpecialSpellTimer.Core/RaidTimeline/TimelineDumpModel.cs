@@ -74,7 +74,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 var log = $@"Dump pos{from} id=""0x{c.ID:X8}"" name=""{c.Name}"" X=""{c.PosXMap:N2}"" Y=""{c.PosYMap:N2}"" Z=""{c.PosZMap:N2}"" hp=""{c.CurrentHP}"" max_hp=""{c.MaxHP}""";
-                TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
+                TimelineController.RaiseLog($"{TimelineConstants.LogSymbol} {log}");
             }
         });
 

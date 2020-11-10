@@ -98,7 +98,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (r)
             {
                 TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} hp-sync name={target.Name} {target.CurrentCP}/{target.MaxMP} {target.CurrentHPRate:P1}");
+                    $"{TimelineConstants.LogSymbol} hp-sync name={target.Name} {target.CurrentCP}/{target.MaxMP} {target.CurrentHPRate:P1}");
             }
 
             return r;

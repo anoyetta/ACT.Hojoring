@@ -170,7 +170,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     newTimeline.IsActive = true;
                     WPFHelper.DelayTask();
 
-                    this.AppLogger.Trace($"[TL] Timeline auto loaded. active_timeline={newTimeline.TimelineName}.");
+                    this.AppLogger.Trace($"{TimelineConstants.LogSymbol} Timeline auto loaded. active_timeline={newTimeline.TimelineName}.");
                 }
 
                 // グローバルトリガを初期化する
@@ -254,7 +254,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         if (tl.HasError)
                         {
                             this.AppLogger.Error(
-                                $"[TL] Load error. file={file}\n{tl.ErrorText}");
+                                $"{TimelineConstants.LogSymbol} Load error. file={file}\n{tl.ErrorText}");
                             LogManager.Flush();
                         }
 
@@ -274,7 +274,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     this.AppLogger.Error(
                         ex,
-                        $"[TL] Load fatal. file={file}");
+                        $"{TimelineConstants.LogSymbol} Load fatal. file={file}");
                     LogManager.Flush();
 
                     throw new FileLoadException(
@@ -345,7 +345,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.InitElements(tri);
             }
 
-            this.AppLogger.Trace("[TL] Loaded global triggers.");
+            this.AppLogger.Trace($"{TimelineConstants.LogSymbol} Loaded global triggers.");
         }
 
         public void ReloadGlobalTriggers(
@@ -365,7 +365,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.InitElements(tri);
             }
 
-            this.AppLogger.Trace("[TL] Reloaded global triggers.");
+            this.AppLogger.Trace($"{TimelineConstants.LogSymbol} Reloaded global triggers.");
         }
 
         public void InitElements(

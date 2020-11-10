@@ -38,7 +38,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     if (SetVariable(name, value))
                     {
                         TimelineController.RaiseLog(
-                            $"{TimelineController.TLSymbol} set VAR['{name}'] = {value}");
+                            $"{TimelineConstants.LogSymbol} set VAR['{name}'] = {value}");
                     }
                 }
             }
@@ -63,7 +63,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 if (SetVariable(name, value))
                 {
                     TimelineController.RaiseLog(
-                        $"{TimelineController.TLSymbol} set VAR['{name}'] = {value}");
+                        $"{TimelineConstants.LogSymbol} set VAR['{name}'] = {value}");
                 }
             }
         }
@@ -85,7 +85,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (SetVariable(name, value))
             {
                 TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} set VAR['{name}'] = {value}");
+                    $"{TimelineConstants.LogSymbol} set VAR['{name}'] = {value}");
             }
         }
 
@@ -106,7 +106,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (SetVariable(name, value))
             {
                 TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} set VAR['{name}'] = {value}");
+                    $"{TimelineConstants.LogSymbol} set VAR['{name}'] = {value}");
             }
         }
 
@@ -132,9 +132,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 SetVariable(ZoneName, zoneName);
                 TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} set VAR['{ZoneID}'] = {zoneID}");
+                    $"{TimelineConstants.LogSymbol} set VAR['{ZoneID}'] = {zoneID}");
                 TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} set VAR['{ZoneName}'] = {zoneName}");
+                    $"{TimelineConstants.LogSymbol} set VAR['{ZoneName}'] = {zoneName}");
             }
         }
 
