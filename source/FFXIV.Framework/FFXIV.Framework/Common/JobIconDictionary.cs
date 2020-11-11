@@ -71,17 +71,14 @@ namespace FFXIV.Framework.Common
                         continue;
                     }
 
-                    using (var fs = new FileStream(png, FileMode.Open))
+                    var bmp = default(WriteableBitmap);
+                    using (var ms = new WrappingStream(new MemoryStream(File.ReadAllBytes(png))))
                     {
-                        var decoder = PngBitmapDecoder.Create(
-                            fs,
-                            BitmapCreateOptions.None,
-                            BitmapCacheOption.OnLoad);
-                        var bmp = new WriteableBitmap(decoder.Frames[0]);
-                        bmp.Freeze();
-
-                        this.Icons[job] = bmp;
+                        bmp = new WriteableBitmap(BitmapFrame.Create(ms));
                     }
+
+                    bmp.Freeze();
+                    this.Icons[job] = bmp;
                 }
             });
 
