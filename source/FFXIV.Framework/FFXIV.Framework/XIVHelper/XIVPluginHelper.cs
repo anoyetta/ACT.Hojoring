@@ -230,36 +230,33 @@ namespace FFXIV.Framework.XIVHelper
             nameof(this.scanFFXIVWorker),
             ThreadPriority.Lowest);
 
-            // その他リソース読み込みを開始する
-            await Task.Run(() =>
+            // XIVApiのロケールを設定する
+            XIVApi.Instance.FFXIVLocale = ffxivLocale;
+
+            // sharlayanを設定する
+            // Actor を取得しない
+            // Party を取得しない
+            SharlayanHelper.Instance.IsSkipActor = true;
+            SharlayanHelper.Instance.IsSkipParty = true;
+
+            var tasksG1 = new System.Action[]
             {
-                // xivapiをロードする
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                XIVApi.Instance.FFXIVLocale = ffxivLocale;
-                XIVApi.Instance.Load();
+                () => XIVApi.Instance.Load(),
+                () => SharlayanHelper.Instance.Start(pollingInteval),
+                () => this.attachFFXIVPluginWorker.Run(),
+                () => this.scanFFXIVWorker.Run(),
+            };
 
-                // sharlayan を開始する
-                // Actor を取得しない
-                // Party を取得しない
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                SharlayanHelper.Instance.IsSkipActor = true;
-                SharlayanHelper.Instance.IsSkipParty = true;
-                SharlayanHelper.Instance.Start(pollingInteval);
+            var tasksG2 = new System.Action[]
+            {
+                () => PCNameDictionary.Instance.Load(),
+                () => PCOrder.Instance.Load(),
+            };
 
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                this.attachFFXIVPluginWorker.Run();
-
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                this.scanFFXIVWorker.Run();
-
-                // PC名記録をロードする
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                PCNameDictionary.Instance.Load();
-
-                // PTリストの並び順をロードする
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                PCOrder.Instance.Load();
-            });
+            // その他リソース読み込みを開始する
+            await Task.WhenAll(
+                CommonHelper.InvokeTasks(tasksG1),
+                CommonHelper.InvokeTasks(tasksG2));
         }
 
         public void End()
