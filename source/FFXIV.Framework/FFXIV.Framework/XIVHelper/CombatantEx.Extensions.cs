@@ -21,9 +21,13 @@ namespace FFXIV.Framework.XIVHelper
                 return false;
             }
 
+            if (this.Effects == null)
+            {
+                return false;
+            }
+
             return this.Effects.Any(x =>
-                x != null &&
-                TankStanceEffectIDs.Contains(x.BuffID));
+                TankStanceEffectIDs.Contains(x?.BuffID ?? 0));
         }
     }
 }
