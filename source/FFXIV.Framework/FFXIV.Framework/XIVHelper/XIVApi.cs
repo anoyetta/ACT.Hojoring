@@ -394,49 +394,33 @@ namespace FFXIV.Framework.XIVHelper
             {
                 this.actionList.Clear();
 
-                var lines = File.ReadAllLines(this.SkillFile, new UTF8Encoding(true));
+                var lines = CSVParser.LoadFromPath(this.SkillFile, encoding: new UTF8Encoding(false));
 
-                Parallel.For(0, lines.Length, (i) =>
+                Parallel.ForEach(lines, (fields) =>
                 {
-                    using (var parser = new TextFieldParser(new StringReader(lines[i]))
+                    if (fields.Count < 2)
                     {
-                        TextFieldType = FieldType.Delimited,
-                        Delimiters = new[] { "," },
-                        HasFieldsEnclosedInQuotes = true,
-                        TrimWhiteSpace = true,
-                        CommentTokens = new[] { "#" },
-                    })
+                        return;
+                    }
+
+                    if (!uint.TryParse(fields[0], out uint id) ||
+                        string.IsNullOrEmpty(fields[1]))
                     {
-                        do
-                        {
-                            var fields = parser.ReadFields();
+                        return;
+                    }
 
-                            if (fields == null ||
-                                fields.Length < 2)
-                            {
-                                break;
-                            }
+                    var entry = new XIVApiAction()
+                    {
+                        ID = id,
+                        Name = fields[1],
+                        AttackTypeName = fields[XIVApiAction.AttackTypeIndex]
+                    };
 
-                            if (!uint.TryParse(fields[0], out uint id) ||
-                                string.IsNullOrEmpty(fields[1]))
-                            {
-                                break;
-                            }
+                    entry.SetAttackTypeEnum();
 
-                            var entry = new XIVApiAction()
-                            {
-                                ID = id,
-                                Name = fields[1],
-                                AttackTypeName = fields[XIVApiAction.AttackTypeIndex]
-                            };
-
-                            entry.SetAttackTypeEnum();
-
-                            lock (obj)
-                            {
-                                this.actionList[entry.ID] = entry;
-                            }
-                        } while (false);
+                    lock (obj)
+                    {
+                        this.actionList[entry.ID] = entry;
                     }
                 });
 
