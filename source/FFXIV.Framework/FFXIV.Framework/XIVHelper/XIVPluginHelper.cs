@@ -1372,8 +1372,7 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             var matches = this.WorldNameRemoveRegex.Matches(text);
-            if (matches == null ||
-                matches.Count < 1)
+            if (matches == null)
             {
                 return text;
             }
