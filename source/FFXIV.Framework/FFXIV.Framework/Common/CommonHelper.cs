@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FFXIV.Framework.Common
 {
@@ -48,6 +49,23 @@ namespace FFXIV.Framework.Common
             foreach (var item in e)
             {
                 action(item);
+            }
+        }
+
+        public static async Task InvokeTasks(
+            IEnumerable<Action> tasks)
+        {
+            var f = true;
+
+            foreach (var task in tasks)
+            {
+                if (!f)
+                {
+                    await Task.Yield();
+                }
+
+                task.Invoke();
+                f = false;
             }
         }
     }

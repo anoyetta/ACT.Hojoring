@@ -10,7 +10,7 @@ namespace FFXIV.Framework.Extensions
         public static bool ContainsIgnoreCase(
             this string source,
             string value)
-            => Contains(source, value, StringComparison.InvariantCultureIgnoreCase);
+            => Contains(source, value, StringComparison.OrdinalIgnoreCase);
 
         public static bool Contains(
             this string source,

@@ -64,9 +64,12 @@ namespace ACT.SpecialSpellTimer.Config
 
         public void DeInit()
         {
-            this.polonTimer.Stop();
-            this.polonTimer.Dispose();
-            this.polonTimer = null;
+            if (this.polonTimer != null)
+            {
+                this.polonTimer.Stop();
+                this.polonTimer.Dispose();
+                this.polonTimer = null;
+            }
         }
 
         #region Constants

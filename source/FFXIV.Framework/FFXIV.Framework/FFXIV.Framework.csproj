@@ -94,6 +94,7 @@
     <Compile Include="Common\AppLog.cs" />
     <Compile Include="Common\AppLogEntry.cs" />
     <Compile Include="Common\BufferedWavePlayer.cs" />
+    <Compile Include="Common\CSVParser.cs" />
     <Compile Include="Common\DelayableTask.cs" />
     <Compile Include="Common\KeyShortcut.cs" />
     <Compile Include="Common\ObservableKeyValue.cs" />
