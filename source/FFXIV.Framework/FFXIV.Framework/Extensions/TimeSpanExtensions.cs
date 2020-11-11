@@ -7,12 +7,12 @@ namespace FFXIV.Framework.Extensions
         public static string ToTLString(
             this TimeSpan ts)
             => ts.TotalSeconds >= 0 ?
-            ts.ToString(@"mm\:ss") :
-            ts.ToString(@"\-mm\:ss");
+            ts.ToString(@"mm\:ss\.f") :
+            ts.ToString(@"\-mm\:ss\.f");
 
         public static string ToSecondString(
             this TimeSpan ts)
-            => ts.TotalSeconds.ToString("N0");
+            => ts.TotalSeconds.ToString("N1");
 
         public static TimeSpan FromTLString(
             string timelineString)
