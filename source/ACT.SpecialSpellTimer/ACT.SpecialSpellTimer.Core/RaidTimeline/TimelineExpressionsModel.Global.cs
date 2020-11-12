@@ -22,6 +22,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         public const string IS_TOT_ME = "IS_TOT_ME";
 
+        private static DateTime totChangedTimestamp;
+
         /// <summary>
         /// IS_TOT_ME を更新する
         /// </summary>
@@ -39,6 +41,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         TimelineController.RaiseLog(
                             $"{TimelineConstants.LogSymbol} set VAR['{name}'] = {value}");
+
+                        if ((DateTime.Now - totChangedTimestamp) > TimeSpan.FromSeconds(2))
+                        {
+                            totChangedTimestamp = DateTime.Now;
+                            TimelineController.RaiseLog(
+                                $"Target-of-Target has been changed.");
+                        }
                     }
                 }
             }
