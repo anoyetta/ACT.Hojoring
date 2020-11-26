@@ -152,43 +152,36 @@ namespace FFXIV.Framework.XIVHelper
                     return;
                 }
 
-                try
+                this.RefreshCurrentFFXIVProcess();
+                this.Attach();
+
+                if (this.plugin == null ||
+                    this.DataRepository == null ||
+                    this.DataSubscription == null)
                 {
-                    this.RefreshCurrentFFXIVProcess();
-                    this.Attach();
-
-                    if (this.plugin == null ||
-                        this.DataRepository == null ||
-                        this.DataSubscription == null)
-                    {
-                        return;
-                    }
-
-                    if (this.IsResourcesLoaded)
-                    {
-                        Thread.Sleep(TimeSpan.FromSeconds(10));
-                        return;
-                    }
-
-                    this.LoadSkillList();
-                    this.LoadZoneList();
-                    /*
-                    ゾーンの追加を廃止する
-                    this.LoadZoneListFromTerritory();
-                    */
-                    this.LoadWorldList();
-
-                    this.MergeSkillList();
-
-                    this.ComplementSkillList();
-                    this.ComplementBuffList();
-
-                    this.TranslateZoneList();
+                    return;
                 }
-                catch (Exception ex)
+
+                if (this.IsResourcesLoaded)
                 {
-                    AppLogger.Error(ex, "Attach FFXIV_ACT_Plugin error");
+                    Thread.Sleep(TimeSpan.FromSeconds(10));
+                    return;
                 }
+
+                this.LoadSkillList();
+                this.LoadZoneList();
+                /*
+                ゾーンの追加を廃止する
+                this.LoadZoneListFromTerritory();
+                */
+                this.LoadWorldList();
+
+                this.MergeSkillList();
+
+                this.ComplementSkillList();
+                this.ComplementBuffList();
+
+                this.TranslateZoneList();
             },
             5000,
             nameof(this.attachFFXIVPluginWorker),
