@@ -188,7 +188,8 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
             // タンクスタンスを復元する
             if (this.Config.RestoreTankStance.IsEnabled &&
-                this.Config.RestoreTankStance.KeySet.Key != Key.None)
+                this.Config.RestoreTankStance.KeySet.Key != Key.None &&
+                this.Config.RestoreTankStance.IsSendOnZoneChanged)
             {
                 // 自分がタンクかつ、タンクが自分のみ？
                 if (player.Role == Roles.Tank)
@@ -206,7 +207,8 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
             // フェアリーを召喚する
             if (this.Config.SummonFairy.IsEnabled &&
-                this.Config.SummonFairy.KeySet.Key != Key.None)
+                this.Config.SummonFairy.KeySet.Key != Key.None &&
+                this.Config.SummonFairy.IsSendOnZoneChanged)
             {
                 if (player.JobID == JobIDs.SCH)
                 {
@@ -221,7 +223,8 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
             // エギを召喚する
             if (this.Config.SummonEgi.IsEnabled &&
-                this.Config.SummonEgi.KeySet.Key != Key.None)
+                this.Config.SummonEgi.KeySet.Key != Key.None &&
+                this.Config.SummonEgi.IsSendOnZoneChanged)
             {
                 if (player.JobID == JobIDs.SMN)
                 {
