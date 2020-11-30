@@ -186,8 +186,7 @@ namespace ACT.TTSYukkuri
 
         private static readonly Random Random = new Random((int)DateTime.Now.Ticks);
 
-        public static void LoadTTSCache(
-            bool isNow = false)
+        public static void LoadTTSCache()
         {
             if (Settings.Default.Player != WavePlayerTypes.WASAPIBuffered)
             {
@@ -199,54 +198,26 @@ namespace ACT.TTSYukkuri
             WPFHelper.BeginInvoke(() =>
             {
             },
-            DispatcherPriority.SystemIdle).Task.ContinueWith((_) => Task.Run(async () =>
+            DispatcherPriority.SystemIdle).Task.ContinueWith((_) => Task.Run(() =>
             {
-                if (!isNow)
+                var count = 0;
+
+                try
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(Random.Next(60, 90)));
+                    Logger.Info("Started loading TTS caches.");
+                    BufferedWavePlayer.PlayerSet.LoadTTSHistory();
+                    count = BufferedWavePlayer.Instance.BufferWaves(volume);
                 }
-                else
+                finally
                 {
-                    await Task.Delay(TimeSpan.FromMilliseconds(100));
-                }
-
-                var dirs = new[]
-                {
-                    Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        @"anoyetta\ACT\tts cache"),
-                    DirectoryHelper.FindSubDirectory(@"resources\wav"),
-                };
-
-                var files = new List<string>();
-
-                foreach (var dir in dirs)
-                {
-                    if (!Directory.Exists(dir))
-                    {
-                        continue;
-                    }
-
-                    files.AddRange(Directory.GetFiles(dir, "*.wav"));
-                    files.AddRange(Directory.GetFiles(dir, "*.mp3"));
-                }
-
-                if (files.Count > 0)
-                {
-                    try
-                    {
-                        Logger.Info("Load TTS caches.");
-
-                        BufferedWavePlayer.Instance.BufferWaves(
-                            files,
-                            volume);
-                    }
-                    finally
-                    {
-                        Logger.Info("Load TTS caches, done.");
-                    }
+                    Logger.Info($"Completed loading TTS caches. {count} files has loaded.");
                 }
             }));
+        }
+
+        public static void SaveTTSHistory()
+        {
+            BufferedWavePlayer.PlayerSet.SaveTTSHistory();
         }
     }
 }

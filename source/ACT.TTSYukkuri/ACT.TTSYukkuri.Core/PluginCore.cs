@@ -548,6 +548,9 @@ namespace ACT.TTSYukkuri
                     }
                 }
 
+                // TTSヒストリを保存する
+                SoundPlayerWrapper.SaveTTSHistory();
+
                 if (this.PluginStatusLabel != null)
                 {
                     this.PluginStatusLabel.Text = "Plugin Exited";
