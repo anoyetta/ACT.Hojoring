@@ -23,8 +23,7 @@
   Background="White"
   FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
   FontSize="17"
-  d:DataContext="{d:DesignInstance Type=vm:StatusAlertConfigViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  d:DataContext="{d:DesignInstance Type=vm:StatusAlertConfigViewModel, IsDesignTimeCreatable=True}">
 
   <UserControl.Resources>
     <ResourceDictionary>

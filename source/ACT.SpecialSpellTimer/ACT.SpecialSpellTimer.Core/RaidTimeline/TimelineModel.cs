@@ -1078,6 +1078,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             this.Entry = tl.Entry;
             this.EndTrigger = tl.EndTrigger;
             this.CompiledText = tl.CompiledText;
+            this.HasError = tl.HasError;
+            this.ErrorText = tl.ErrorText;
 
             if (this.IsGlobalZone)
             {

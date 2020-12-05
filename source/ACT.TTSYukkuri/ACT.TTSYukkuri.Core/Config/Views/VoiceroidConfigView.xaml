@@ -26,8 +26,7 @@
   FontSize="17"
   Margin="5"
   d:DesignWidth="600"
-  d:DataContext="{d:DesignInstance Type=vm:VoiceroidConfigViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  d:DataContext="{d:DesignInstance Type=vm:VoiceroidConfigViewModel, IsDesignTimeCreatable=True}">
 
   <UserControl.Resources>
     <ResourceDictionary>

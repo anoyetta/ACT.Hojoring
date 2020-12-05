@@ -78,9 +78,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
                 if (player.Role == Roles.Tank &&
                     this.inTankStance.HasValue)
                 {
-                    var inTankStanceNow = playerEffects.Any(x =>
-                        x != null &&
-                        TankStanceEffectIDs.Contains(x.BuffID));
+                    var inTankStanceNow = player.InTankStance();
 
                     if (this.inTankStance.Value != inTankStanceNow)
                     {
@@ -190,7 +188,8 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
             // タンクスタンスを復元する
             if (this.Config.RestoreTankStance.IsEnabled &&
-                this.Config.RestoreTankStance.KeySet.Key != Key.None)
+                this.Config.RestoreTankStance.KeySet.Key != Key.None &&
+                this.Config.RestoreTankStance.IsSendOnZoneChanged)
             {
                 // 自分がタンクかつ、タンクが自分のみ？
                 if (player.Role == Roles.Tank)
@@ -198,11 +197,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
                     var party = CombatantsManager.Instance.GetPartyList();
                     if (party.Count(x => x.Role == Roles.Tank) <= 1)
                     {
-                        var inTankStanceNow = playerEffects.Any(x =>
-                            x != null &&
-                            TankStanceEffectIDs.Contains(x.BuffID));
-
-                        if (!inTankStanceNow)
+                        if (!player.InTankStance())
                         {
                             sendKeySetList.Add(this.Config.RestoreTankStance.KeySet);
                         }
@@ -212,7 +207,8 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
             // フェアリーを召喚する
             if (this.Config.SummonFairy.IsEnabled &&
-                this.Config.SummonFairy.KeySet.Key != Key.None)
+                this.Config.SummonFairy.KeySet.Key != Key.None &&
+                this.Config.SummonFairy.IsSendOnZoneChanged)
             {
                 if (player.JobID == JobIDs.SCH)
                 {
@@ -227,7 +223,8 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
             // エギを召喚する
             if (this.Config.SummonEgi.IsEnabled &&
-                this.Config.SummonEgi.KeySet.Key != Key.None)
+                this.Config.SummonEgi.KeySet.Key != Key.None &&
+                this.Config.SummonEgi.IsSendOnZoneChanged)
             {
                 if (player.JobID == JobIDs.SMN)
                 {
@@ -256,14 +253,6 @@ namespace ACT.UltraScouter.Workers.TextCommands
             "00:0039:战斗开始！",
         };
 
-        private static readonly uint[] TankStanceEffectIDs = new uint[]
-        {
-            91,     // ディフェンダー
-            1833,   // ロイヤルガード
-            79,     // アイアンウィル
-            743,    // グリットスタンス
-        };
-
         /// <summary>食事効果のエフェクトID</summary>
         private static readonly uint WellFedEffectID = 48;
 
@@ -290,9 +279,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
                 return;
             }
 
-            this.inTankStance = playerEffects.Any(x =>
-                x != null &&
-                TankStanceEffectIDs.Contains(x.BuffID));
+            this.inTankStance = player.InTankStance();
         }
     }
 }

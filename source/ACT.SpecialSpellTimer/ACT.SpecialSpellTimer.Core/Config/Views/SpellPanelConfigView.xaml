@@ -19,7 +19,6 @@
   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
   d:DataContext="{d:DesignInstance Type=vm:SpellPanelConfigViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{x:Type vm:SpellPanelConfigViewModel}"
   d:DesignWidth="800"
   Background="White"
   FontFamily="{DynamicResource UIFont}"
@@ -36,6 +35,10 @@
   IsTabStop="False"
   Focusable="False"
   mc:Ignorable="d">
+
+  <UserControl.DataContext>
+    <vm:SpellPanelConfigViewModel />
+  </UserControl.DataContext>
 
   <UserControl.Resources>
     <ResourceDictionary>
@@ -316,7 +319,7 @@
             <StackPanel Margin="10 0 0 0">
               <StackPanel Margin="0 8 0 8" Orientation="Horizontal">
                 <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="6">
-                  <Image Source="{Binding FirstSpell.SpellIconFullPath, Mode=OneWay}" Height="72" Width="72" />
+                  <Image Source="{Binding FirstSpell.SpellIconImage, Mode=OneWay}" Height="72" Width="72" />
                 </Border>
                 <StackPanel VerticalAlignment="Bottom">
                   <TextBlock Margin="10 0 0 10" HorizontalAlignment="Left">

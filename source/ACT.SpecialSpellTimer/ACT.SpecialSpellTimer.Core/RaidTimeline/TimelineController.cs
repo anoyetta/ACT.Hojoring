@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -63,11 +62,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         #endregion Logger
 
         private static readonly object Locker = new object();
-
-        /// <summary>
-        /// タイムラインから発生するログのSymbol
-        /// </summary>
-        public const string TLSymbol = "[TL]";
 
         public static void Init()
         {
@@ -312,7 +306,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.Status = TimelineStatus.Loaded;
                 this.IsReady = true;
-                this.AppLogger.Trace($"[TL] Timeline loaded. name={this.Model.TimelineName}");
+                this.AppLogger.Trace($"{TimelineConstants.LogSymbol} Timeline loaded. name={this.Model.TimelineName}");
             }
         }
 
@@ -336,7 +330,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.Status = TimelineStatus.Unloaded;
                 this.IsReady = false;
-                this.AppLogger.Trace($"[TL] Timeline unloaded. name={this.Model.TimelineName}");
+                this.AppLogger.Trace($"{TimelineConstants.LogSymbol} Timeline unloaded. name={this.Model.TimelineName}");
 
                 // GC
                 GC.Collect();
@@ -799,7 +793,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     var model = CurrentController?.Model;
                     AppLog.DefaultLogger.Error(
                         ex,
-                        $"[TL] Error DetectLog. name={model?.TimelineName}, zone={model?.Zone}, file={model?.SourceFile}");
+                        $"{TimelineConstants.LogSymbol} Error DetectLog. name={model?.TimelineName}, zone={model?.Zone}, file={model?.SourceFile}");
                 }
                 finally
                 {
@@ -899,7 +893,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 // [TL]キーワードが含まれていればスキップする
-                if (logLine.Contains(TLSymbol))
+                if (logLine.Contains(TimelineConstants.LogSymbol))
                 {
                     continue;
                 }
@@ -1121,7 +1115,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         WPFHelper.BeginInvoke(this.EndActivityLine);
                         PluginMainWorker.Instance.Wipeout(false);
-                        TimelineController.RaiseLog($"{TLSymbol} End-of-Timeline has been detected.");
+                        TimelineController.RaiseLog($"{TimelineConstants.LogSymbol} End-of-Timeline has been detected.");
                     }
                 }
             }
@@ -1158,7 +1152,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             XIVLog xivlog,
             TimelineActivityModel act)
         {
-            var match = default(Match);
+            var match = default(System.Text.RegularExpressions.Match);
 
             lock (act)
             {
@@ -1222,8 +1216,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             TimelineTriggerModel tri,
             DateTime detectTime)
         {
-            // P-Syncならば対象外なので抜ける
-            if (tri.IsPositionSyncAvailable)
+            // P-Sync or HP-Syncならば対象外なので抜ける
+            if (tri.IsPositionSyncAvailable || tri.IsHPSyncAvailable)
             {
                 return false;
             }
@@ -1352,24 +1346,29 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             this.DumpStartsUsingPosition();
 
             var localDetectTime = DateTime.Now;
-            var psyncs = default(TimelineTriggerModel[]);
+            var targets = default((TimelineTriggerModel Trigger, TimelineElementTypes TriggerType)[]);
 
             lock (this)
             {
                 // P-Syncトリガを抽出する
-                psyncs = (
+                targets = (
                     from x in
                         TimelineManager.Instance.GlobalTriggers
                         .Concat(!this.Model.IsGlobalZone ? this.Model.Triggers : EmptyTiggers)
                         .Concat(this.CurrentSubroutine != null ? this.CurrentSubroutine.Triggers : EmptyTiggers)
                     where
                     x.IsAvailable() &&
-                    x.IsPositionSyncAvailable
+                    (x.IsPositionSyncAvailable || x.IsHPSyncAvailable)
                     select
-                    x).ToArray();
+                    (
+                        Trigger: x,
+                        TriggerType: x.IsPositionSyncAvailable ?
+                            TimelineElementTypes.PositionSync :
+                            TimelineElementTypes.HPSync
+                    )).ToArray();
             }
 
-            if (!psyncs.Any())
+            if (!targets.Any())
             {
                 return;
             }
@@ -1381,20 +1380,35 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            // P-Syncトリガに対して判定する
-            foreach (var tri in psyncs)
+            foreach (var target in targets)
             {
-                var psync = tri.PositionSyncStatements
-                    .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
-
-                if (psync != null)
+                switch (target.TriggerType)
                 {
-                    lock (tri)
-                    {
-                        detectPSync(tri, psync);
-                    }
+                    case TimelineElementTypes.PositionSync:
+                        var psync = target.Trigger.PositionSyncStatements
+                            .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
 
-                    Thread.Yield();
+                        if (psync != null)
+                        {
+                            lock (target.Trigger)
+                            {
+                                detectPSync(target.Trigger, psync);
+                            }
+                        }
+                        break;
+
+                    case TimelineElementTypes.HPSync:
+                        var hpsync = target.Trigger.HPSyncStatements
+                            .FirstOrDefault(x => x.Enabled.GetValueOrDefault());
+
+                        if (hpsync != null)
+                        {
+                            lock (target.Trigger)
+                            {
+                                detectHPSync(target.Trigger, hpsync);
+                            }
+                        }
+                        break;
                 }
             }
 
@@ -1475,41 +1489,78 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return;
                 }
 
-                tri.TextReplaced = tri.Text ?? string.Empty;
-                tri.NoticeReplaced = tri.Notice ?? string.Empty;
+                var text = tri.Text ?? string.Empty;
+                var notice = tri.Notice ?? string.Empty;
 
                 var i = 1;
                 foreach (var con in conditions)
                 {
-                    string replace(string text)
+                    string replace(string t)
                     {
-                        text = text.Replace("{name" + i + "}", con.ActualCombatant.Name);
-                        text = text.Replace("{X" + i + "}", con.ActualCombatant.PosXMap.ToString("N1"));
-                        text = text.Replace("{Y" + i + "}", con.ActualCombatant.PosYMap.ToString("N1"));
-                        text = text.Replace("{Z" + i + "}", con.ActualCombatant.PosZMap.ToString("N1"));
+                        t = t.Replace("{name" + i + "}", con.ActualCombatant.Name);
+                        t = t.Replace("{X" + i + "}", con.ActualCombatant.PosXMap.ToString("N1"));
+                        t = t.Replace("{Y" + i + "}", con.ActualCombatant.PosYMap.ToString("N1"));
+                        t = t.Replace("{Z" + i + "}", con.ActualCombatant.PosZMap.ToString("N1"));
 
-                        return text;
+                        return t;
                     }
 
-                    tri.TextReplaced = replace(tri.TextReplaced);
-                    tri.NoticeReplaced = replace(tri.NoticeReplaced);
+                    text = replace(text);
+                    notice = replace(notice);
 
                     i++;
                 }
+
+                if (tryExecuteTrigger(tri, text, notice))
+                {
+                    psync.LastSyncTimestamp = DateTime.Now;
+                }
+            }
+
+            // HP-Syncトリガに対して判定する
+            void detectHPSync(
+                TimelineTriggerModel tri,
+                TimelineHPSyncModel hpsync)
+            {
+                if (hpsync.IsSynced)
+                {
+                    return;
+                }
+
+                if (!hpsync.IsMatch(combatants))
+                {
+                    return;
+                }
+
+                var text = tri.Text ?? string.Empty;
+                var notice = tri.Notice ?? string.Empty;
+
+                if (tryExecuteTrigger(tri, text, notice))
+                {
+                    hpsync.IsSynced = true;
+                }
+            }
+
+            // トリガを実行する
+            bool tryExecuteTrigger(
+                TimelineTriggerModel tri,
+                string text,
+                string notice)
+            {
+                tri.TextReplaced = text;
+                tri.NoticeReplaced = notice;
 
                 tri.MatchedCounter++;
 
                 if (!tri.IsAvailableSyncCount())
                 {
-                    return;
+                    return false;
                 }
 
                 if (!tri.ExecuteExpressions())
                 {
-                    return;
+                    return false;
                 }
-
-                psync.LastSyncTimestamp = DateTime.Now;
 
                 var toNotice = tri.Clone();
 
@@ -1563,6 +1614,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         RaiseLog(tri);
                     }
                 });
+
+                return true;
             }
         }
 
@@ -1585,7 +1638,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         !this.previouseCastingCombatantIDs.Contains(combatant.ID))
                     {
                         TimelineController.RaiseLog(
-                            $"{TLSymbol} {combatant.Name} starts using {combatant.CastSkillName}. X={combatant.PosXMap:N2} Y={combatant.PosYMap:N2} Z={combatant.PosZMap:N2}. ID={combatant.CastBuffID:X4} duration={combatant.CastDurationMax:N1}");
+                            $"{TimelineConstants.LogSymbol} {combatant.Name} starts using {combatant.CastSkillName}. X={combatant.PosXMap:N2} Y={combatant.PosYMap:N2} Z={combatant.PosZMap:N2}. ID={combatant.CastBuffID:X4} duration={combatant.CastDurationMax:N1}");
                     }
                 }
 
@@ -1600,23 +1653,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static void RaiseLog(
             TimelineBase element)
         {
-            var now = DateTime.Now;
             var log = string.Empty;
 
             var sub = element.Parent as TimelineSubroutineModel;
 
+            var name = !string.IsNullOrEmpty(element.Name) ? $"name={element.Name}" : string.Empty;
+            var text = string.Empty;
+            var subName = sub != null ? $"sub={sub.Name}" : string.Empty;
+
+            var parts = new[] { name, text, subName };
+
             switch (element)
             {
                 case TimelineActivityModel act:
-                    log =
-                        $"{TLSymbol} Synced to activity. " +
-                        $"name={act.Name}, sub={sub?.Name}";
+                    text = !string.IsNullOrEmpty(act.Text) ? $"text={act.Text}" : string.Empty; ;
+                    log = $"{TimelineConstants.LogSymbol} synced-to-activity {string.Join(" ", parts.Where(x => !string.IsNullOrWhiteSpace(x)))}";
                     break;
 
                 case TimelineTriggerModel tri:
-                    log =
-                        $"{TLSymbol} Synced to trigger. " +
-                        $"name={tri.Name}, sync-count={tri.MatchedCounter}, sub={sub?.Name}";
+                    text = !string.IsNullOrEmpty(tri.Text) ? $"text={tri.Text}" : string.Empty; ;
+                    log = $"{TimelineConstants.LogSymbol} synced-to-trigger {string.Join(" ", parts.Where(x => !string.IsNullOrWhiteSpace(x)))}";
                     break;
 
                 default:
@@ -1682,7 +1738,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.isRunning = true;
                 this.Status = TimelineStatus.Runnning;
-                this.AppLogger.Trace($"{TLSymbol} Timeline started. name={this.Model.TimelineName}");
+
+                RaiseLog($"{TimelineConstants.LogSymbol} start-timeline name={this.Model.TimelineName}");
+                this.AppLogger.Trace($"{TimelineConstants.LogSymbol} Timeline started. name={this.Model.TimelineName}");
             }
         }
 
@@ -1697,6 +1755,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 TimelineTickCallback = null;
 
+                this.Status = TimelineStatus.Loading;
+
                 // リソースを開放する
                 TimelineExpressionsModel.Clear(this.CurrentZoneName);
                 TimelineNoticeOverlay.NoticeView?.ClearNotice();
@@ -1709,7 +1769,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 this.isRunning = false;
                 this.Status = TimelineStatus.Loaded;
-                this.AppLogger.Trace($"{TLSymbol} Timeline stoped. name={this.Model.TimelineName}");
+
+                RaiseLog($"{TimelineConstants.LogSymbol} stop-timeline name={this.Model.TimelineName}");
+                this.AppLogger.Trace($"{TimelineConstants.LogSymbol} Timeline stoped. name={this.Model.TimelineName}");
             }
         }
 
@@ -1779,7 +1841,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 this.AppLogger.Error(
                     ex,
-                    $"[TL] Error Timeline ticker. name={this.Model.TimelineName}, zone={this.Model.Zone}, file={this.Model.SourceFile}");
+                    $"{TimelineConstants.LogSymbol} Error Timeline ticker. name={this.Model.TimelineName}, zone={this.Model.Zone}, file={this.Model.SourceFile}");
             }
         }
 

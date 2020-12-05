@@ -92,7 +92,11 @@ namespace ACT.UltraScouter
                 MainWorker.Free();
                 Settings.Free();
 
-                this.PluginStatusLabel.Text = "Plugin exited.";
+                if (this.PluginStatusLabel != null)
+                {
+                    this.PluginStatusLabel.Text = "Plugin exited.";
+                }
+
                 this.Logger.Trace("end DeInitPlugin. succeeded.");
             }
             catch (Exception ex)
@@ -132,7 +136,11 @@ namespace ACT.UltraScouter
 
                     if (!EnvironmentHelper.IsValidPluginLoadOrder())
                     {
-                        pluginStatusText.Text = "Plugin Initialize Error";
+                        if (pluginStatusText != null)
+                        {
+                            pluginStatusText.Text = "Plugin Initialize Error";
+                        }
+
                         return;
                     }
 
@@ -193,7 +201,11 @@ namespace ACT.UltraScouter
                     // テキストコマンドの購読を追加する
                     this.SubscribeTextCommands();
 
-                    this.PluginStatusLabel.Text = "Plugin started.";
+                    if (this.PluginStatusLabel != null)
+                    {
+                        this.PluginStatusLabel.Text = "Plugin started.";
+                    }
+
                     this.Logger.Trace("[ULTRA SCOUTER] End InitPlugin");
 
                     // 共通ビューを追加する

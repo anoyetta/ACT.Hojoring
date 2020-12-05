@@ -88,6 +88,16 @@
           FontSize="23"
           FontFamily="Century Gothic" />
       </StackPanel>
+
+      <!-- 録画中 -->
+      <Ellipse
+        VerticalAlignment="Bottom"
+        HorizontalAlignment="Right"
+        Margin="10"
+        Fill="#e83929"
+        Opacity="0.9"
+        Width="20" Height="20"
+        Visibility="{Binding Config.IsRecording, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
     </Grid>
 
     <!-- Compact Mode -->
@@ -129,6 +139,16 @@
           FontSize="30"
           FontFamily="Century Gothic" />
       </StackPanel>
+
+      <!-- 録画中 -->
+      <Ellipse
+        VerticalAlignment="Bottom"
+        HorizontalAlignment="Right"
+        Margin="10"
+        Fill="#e83929"
+        Opacity="0.9"
+        Width="20" Height="20"
+        Visibility="{Binding Config.IsRecording, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
     </Grid>
   </Grid>
 </Window>

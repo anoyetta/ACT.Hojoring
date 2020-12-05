@@ -80,8 +80,7 @@ namespace ACT.TTSYukkuri.Config.Views
                 case TTSType.Yukkuri:
                     try
                     {
-                        var ctrl = SpeechController.Default as YukkuriSpeechController;
-                        if (ctrl != null)
+                        if (SpeechController.Default is YukkuriSpeechController ctrl)
                         {
                             if (!ctrl.SetAppKey())
                             {

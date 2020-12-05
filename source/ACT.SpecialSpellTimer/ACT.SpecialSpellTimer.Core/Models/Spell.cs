@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config.Models;
 using ACT.SpecialSpellTimer.Image;
@@ -873,6 +874,7 @@ namespace ACT.SpecialSpellTimer.Models
                 if (this.SetProperty(ref this.spellIcon, value))
                 {
                     this.RaisePropertyChanged(nameof(this.SpellIconFullPath));
+                    this.RaisePropertyChanged(nameof(this.SpellIconImage));
                 }
             }
         }
@@ -882,6 +884,12 @@ namespace ACT.SpecialSpellTimer.Models
             string.IsNullOrEmpty(this.SpellIcon) ?
             string.Empty :
             IconController.Instance.GetIconFile(this.SpellIcon)?.FullPath;
+
+        [XmlIgnore]
+        public BitmapSource SpellIconImage =>
+            string.IsNullOrEmpty(this.SpellIcon) ?
+            IconController.BlankBitmap :
+            IconController.Instance.GetIconFile(this.SpellIcon)?.BitmapImage;
 
         private int spellIconSize = 24;
 

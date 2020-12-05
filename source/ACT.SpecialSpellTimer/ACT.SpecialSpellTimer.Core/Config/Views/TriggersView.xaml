@@ -16,7 +16,6 @@
   xmlns:vm="clr-namespace:ACT.SpecialSpellTimer.Config.ViewModels"
   xmlns:fa="http://schemas.fontawesome.io/icons/"
   d:DataContext="{d:DesignInstance Type=vm:TriggersViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{x:Type vm:TriggersViewModel}"
   d:DesignWidth="1280"
   d:DesignHeight="800"
   Background="White"
@@ -35,6 +34,10 @@
   IsTabStop="False"
   Focusable="False"
   Padding="0 3 3 3">
+
+  <UserControl.DataContext>
+    <vm:TriggersViewModel />
+  </UserControl.DataContext>
 
   <UserControl.Resources>
     <ResourceDictionary>

@@ -152,43 +152,36 @@ namespace FFXIV.Framework.XIVHelper
                     return;
                 }
 
-                try
+                this.RefreshCurrentFFXIVProcess();
+                this.Attach();
+
+                if (this.plugin == null ||
+                    this.DataRepository == null ||
+                    this.DataSubscription == null)
                 {
-                    this.RefreshCurrentFFXIVProcess();
-                    this.Attach();
-
-                    if (this.plugin == null ||
-                        this.DataRepository == null ||
-                        this.DataSubscription == null)
-                    {
-                        return;
-                    }
-
-                    if (this.IsResourcesLoaded)
-                    {
-                        Thread.Sleep(TimeSpan.FromSeconds(10));
-                        return;
-                    }
-
-                    this.LoadSkillList();
-                    this.LoadZoneList();
-                    /*
-                    ゾーンの追加を廃止する
-                    this.LoadZoneListFromTerritory();
-                    */
-                    this.LoadWorldList();
-
-                    this.MergeSkillList();
-
-                    this.ComplementSkillList();
-                    this.ComplementBuffList();
-
-                    this.TranslateZoneList();
+                    return;
                 }
-                catch (Exception ex)
+
+                if (this.IsResourcesLoaded)
                 {
-                    AppLogger.Error(ex, "Attach FFXIV_ACT_Plugin error");
+                    Thread.Sleep(TimeSpan.FromSeconds(10));
+                    return;
                 }
+
+                this.LoadSkillList();
+                this.LoadZoneList();
+                /*
+                ゾーンの追加を廃止する
+                this.LoadZoneListFromTerritory();
+                */
+                this.LoadWorldList();
+
+                this.MergeSkillList();
+
+                this.ComplementSkillList();
+                this.ComplementBuffList();
+
+                this.TranslateZoneList();
             },
             5000,
             nameof(this.attachFFXIVPluginWorker),
@@ -230,36 +223,33 @@ namespace FFXIV.Framework.XIVHelper
             nameof(this.scanFFXIVWorker),
             ThreadPriority.Lowest);
 
-            // その他リソース読み込みを開始する
-            await Task.Run(() =>
+            // XIVApiのロケールを設定する
+            XIVApi.Instance.FFXIVLocale = ffxivLocale;
+
+            // sharlayanを設定する
+            // Actor を取得しない
+            // Party を取得しない
+            SharlayanHelper.Instance.IsSkipActor = true;
+            SharlayanHelper.Instance.IsSkipParty = true;
+
+            var tasksG1 = new System.Action[]
             {
-                // xivapiをロードする
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                XIVApi.Instance.FFXIVLocale = ffxivLocale;
-                XIVApi.Instance.Load();
+                () => XIVApi.Instance.Load(),
+                () => SharlayanHelper.Instance.Start(pollingInteval),
+                () => this.attachFFXIVPluginWorker.Run(),
+                () => this.scanFFXIVWorker.Run(),
+            };
 
-                // sharlayan を開始する
-                // Actor を取得しない
-                // Party を取得しない
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                SharlayanHelper.Instance.IsSkipActor = true;
-                SharlayanHelper.Instance.IsSkipParty = true;
-                SharlayanHelper.Instance.Start(pollingInteval);
+            var tasksG2 = new System.Action[]
+            {
+                () => PCNameDictionary.Instance.Load(),
+                () => PCOrder.Instance.Load(),
+            };
 
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                this.attachFFXIVPluginWorker.Run();
-
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                this.scanFFXIVWorker.Run();
-
-                // PC名記録をロードする
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                PCNameDictionary.Instance.Load();
-
-                // PTリストの並び順をロードする
-                Thread.Sleep(CommonHelper.GetRandomTimeSpan());
-                PCOrder.Instance.Load();
-            });
+            // その他リソース読み込みを開始する
+            await Task.WhenAll(
+                CommonHelper.InvokeTasks(tasksG1),
+                CommonHelper.InvokeTasks(tasksG2));
         }
 
         public void End()
@@ -1372,8 +1362,7 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             var matches = this.WorldNameRemoveRegex.Matches(text);
-            if (matches == null ||
-                matches.Count < 1)
+            if (matches == null)
             {
                 return text;
             }

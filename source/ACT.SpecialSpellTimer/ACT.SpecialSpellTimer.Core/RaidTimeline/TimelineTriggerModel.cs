@@ -77,6 +77,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        [XmlElement(ElementName = "hp-sync")]
+        public TimelineHPSyncModel[] HPSyncStatements
+        {
+            get => this.Statements
+                .Where(x => x.TimelineType == TimelineElementTypes.HPSync)
+                .Cast<TimelineHPSyncModel>()
+                .ToArray();
+
+            set => this.AddRange(value);
+        }
+
         [XmlElement(ElementName = "dump")]
         public TimelineDumpModel[] DumpStatements
         {
@@ -160,12 +171,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public bool IsPositionSyncAvailable =>
             this.PositionSyncStatements.Any(x => x.Enabled.GetValueOrDefault());
 
+        [XmlIgnore]
+        public bool IsHPSyncAvailable =>
+            this.HPSyncStatements.Any(x => x.Enabled.GetValueOrDefault());
+
         public void Add(TimelineBase timeline)
         {
             if (timeline.TimelineType == TimelineElementTypes.Load ||
                 timeline.TimelineType == TimelineElementTypes.VisualNotice ||
                 timeline.TimelineType == TimelineElementTypes.ImageNotice ||
                 timeline.TimelineType == TimelineElementTypes.PositionSync ||
+                timeline.TimelineType == TimelineElementTypes.HPSync ||
                 timeline.TimelineType == TimelineElementTypes.Expressions ||
                 timeline.TimelineType == TimelineElementTypes.Dump ||
                 timeline.TimelineType == TimelineElementTypes.Script)
@@ -494,7 +510,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             if (this.Enabled.GetValueOrDefault())
             {
-                if (this.IsPositionSyncAvailable)
+                if (this.IsPositionSyncAvailable || this.IsHPSyncAvailable)
                 {
                     return true;
                 }
@@ -526,6 +542,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         if (psync != null)
                         {
                             psync.LastSyncTimestamp = DateTime.MinValue;
+                        }
+                    }
+                }
+
+                if (this.HPSyncStatements != null)
+                {
+                    foreach (var hpsync in this.HPSyncStatements)
+                    {
+                        if (hpsync != null)
+                        {
+                            hpsync.IsSynced = false;
                         }
                     }
                 }
@@ -725,13 +752,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 Process.Start(ps);
 
                 TimelineController.RaiseLog(
-                    $"[TL] trigger executed. exec={this.ExecuteFileName}, args={this.Arguments}");
+                    $"{TimelineConstants.LogSymbol} trigger executed. exec={this.ExecuteFileName}, args={this.Arguments}");
             }
             catch (Exception ex)
             {
                 AppLog.DefaultLogger.Error(
                     ex,
-                    $"[TL] Error at execute external tool. exec={this.ExecuteFileName}, args={this.Arguments}");
+                    $"{TimelineConstants.LogSymbol} Error at execute external tool. exec={this.ExecuteFileName}, args={this.Arguments}");
             }
         }
 
@@ -815,22 +842,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 if (response.IsSuccessStatusCode)
                 {
                     TimelineController.RaiseLog(
-                        $"[TL] trigger call REST API. {uri} {method}");
+                        $"{TimelineConstants.LogSymbol} trigger call REST API. {uri} {method}");
                 }
                 else
                 {
                     TimelineController.RaiseLog(
-                        $"[TL] Error at call REST API. {uri} {method} status={(int)response.StatusCode}:{response.StatusCode}");
+                        $"{TimelineConstants.LogSymbol} Error at call REST API. {uri} {method} status={(int)response.StatusCode}:{response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
                 TimelineController.RaiseLog(
-                    $"[TL] Error at call REST API. {uri} {method} message={ex.Message}");
+                    $"{TimelineConstants.LogSymbol} Error at call REST API. {uri} {method} message={ex.Message}");
 
                 AppLog.DefaultLogger.Error(
                     ex,
-                    $"[TL] Error at call REST API. {uri} {method}");
+                    $"{TimelineConstants.LogSymbol} Error at call REST API. {uri} {method}");
             }
 
             return true;

@@ -17,21 +17,21 @@ namespace ACT.SpecialSpellTimer.Config.ViewModels
 
         public Settings RootConfig => Settings.Default;
 
-        private CollectionViewSource spellsSource = new CollectionViewSource()
+        private readonly CollectionViewSource spellsSource = new CollectionViewSource()
         {
             Source = SpellPanelTable.Instance.Table,
             IsLiveFilteringRequested = true,
             IsLiveSortingRequested = true,
         };
 
-        private CollectionViewSource tickersSource = new CollectionViewSource()
+        private readonly CollectionViewSource tickersSource = new CollectionViewSource()
         {
             Source = TickerTable.Instance.Table,
             IsLiveFilteringRequested = true,
             IsLiveSortingRequested = true,
         };
 
-        private CollectionViewSource tagsSource = new CollectionViewSource()
+        private readonly CollectionViewSource tagsSource = new CollectionViewSource()
         {
             Source = TagTable.Instance.Tags,
             IsLiveFilteringRequested = true,

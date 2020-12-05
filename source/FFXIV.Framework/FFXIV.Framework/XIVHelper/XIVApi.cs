@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
-using Microsoft.VisualBasic.FileIO;
 
 namespace FFXIV.Framework.XIVHelper
 {
@@ -68,17 +68,13 @@ namespace FFXIV.Framework.XIVHelper
 
         #region Resources Lists
 
-        private readonly List<Area> territoryList = new List<Area>();
-        private readonly List<Area> territoryENList = new List<Area>();
-        private readonly Dictionary<int, Area> areaENList = new Dictionary<int, Area>();
-        private readonly List<Area> areaList = new List<Area>();
-        private readonly List<Placename> placenameList = new List<Placename>();
-        private readonly Dictionary<uint, XIVApiAction> actionList = new Dictionary<uint, XIVApiAction>();
-        private readonly Dictionary<uint, Buff> buffList = new Dictionary<uint, Buff>();
+        private readonly List<Area> territoryList = new List<Area>(2048);
+        private readonly List<Area> areaList = new List<Area>(65535);
+        private readonly Dictionary<uint, XIVApiAction> actionList = new Dictionary<uint, XIVApiAction>(20480);
+        private readonly Dictionary<uint, Buff> buffList = new Dictionary<uint, Buff>(2560);
 
         public IReadOnlyList<Area> TerritoryList => this.territoryList;
         public IReadOnlyList<Area> AreaList => this.areaList;
-        public IReadOnlyList<Placename> PlacenameList => this.placenameList;
         public IReadOnlyDictionary<uint, XIVApiAction> ActionList => this.actionList;
         public IReadOnlyDictionary<uint, Buff> BuffList => this.buffList;
 
@@ -122,12 +118,16 @@ namespace FFXIV.Framework.XIVHelper
 
         public void Load()
         {
+            var sw = Stopwatch.StartNew();
+
             Task.WaitAll(
                 Task.Run(() => this.LoadTerritory()),
                 Task.Run(() => this.LoadArea()),
-                Task.Run(() => this.LoadPlacename()),
                 Task.Run(() => this.LoadAction()),
                 Task.Run(() => this.LoadBuff()));
+
+            sw.Stop();
+            _ = sw.Elapsed.TotalSeconds;
         }
 
         private static readonly int AddtionalTerritoryStartID = 0;
@@ -166,51 +166,41 @@ namespace FFXIV.Framework.XIVHelper
 
             var list = new List<Area>(2048);
 
-            // UTF-8 BOMあり
-            using (var sr = new StreamReader(file, new UTF8Encoding(true)))
-            using (var parser = new TextFieldParser(sr)
+            var lines = CSVParser.LoadFromPath(file, encoding: new UTF8Encoding(true));
+
+            Parallel.ForEach(lines, (fields) =>
             {
-                TextFieldType = FieldType.Delimited,
-                Delimiters = new[] { "," },
-                HasFieldsEnclosedInQuotes = true,
-                TrimWhiteSpace = true,
-                CommentTokens = new[] { "#" },
-            })
-            {
-                while (!parser.EndOfData)
+                if (fields.Count < 5)
                 {
-                    var fields = parser.ReadFields();
+                    return;
+                }
 
-                    if (fields == null ||
-                        fields.Length < 5)
-                    {
-                        continue;
-                    }
+                if (!int.TryParse(fields[0], out int id) ||
+                    string.IsNullOrEmpty(fields[6]) ||
+                    !int.TryParse(fields[10], out int indented) ||
+                    !int.TryParse(fields[11], out int order))
+                {
+                    return;
+                }
 
-                    if (!int.TryParse(fields[0], out int id) ||
-                        string.IsNullOrEmpty(fields[6]) ||
-                        !int.TryParse(fields[10], out int indented) ||
-                        !int.TryParse(fields[11], out int order))
-                    {
-                        continue;
-                    }
+                if (id < AddtionalTerritoryStartID)
+                {
+                    return;
+                }
 
-                    if (id < AddtionalTerritoryStartID)
-                    {
-                        continue;
-                    }
+                var entry = new Area()
+                {
+                    ID = id,
+                    Name = fields[6],
+                    IntendedUse = indented,
+                    Order = order,
+                };
 
-                    var entry = new Area()
-                    {
-                        ID = id,
-                        Name = fields[6],
-                        IntendedUse = indented,
-                        Order = order,
-                    };
-
+                lock (list)
+                {
                     list.Add(entry);
                 }
-            }
+            });
 
             return list;
         }
@@ -222,124 +212,98 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            // 先にENリストをロードする
-            this.LoadAreaEN();
+            // 英語辞書として英語版リストをロードしておく
+            var en = this.AreaENDictionary;
 
-            lock (this.areaENList)
+            var current = new List<Area>(256);
+
+            var lines = CSVParser.LoadFromPath(this.AreaFile, encoding: new UTF8Encoding(true));
+
+            Parallel.ForEach(lines, (fields) =>
+            {
+                if (fields.Count < 5)
+                {
+                    return;
+                }
+
+                if (!int.TryParse(fields[0], out int id) ||
+                    string.IsNullOrEmpty(fields[4]))
+                {
+                    return;
+                }
+
+                var entry = new Area()
+                {
+                    ID = id,
+                    NameEn = en[id]?.Name ?? string.Empty,
+                    Name = fields[4]
+                };
+
+                lock (current)
+                {
+                    current.Add(entry);
+                }
+            });
+
+            lock (this.areaList)
             {
                 this.areaList.Clear();
-
-                // UTF-8 BOMあり
-                using (var sr = new StreamReader(this.AreaFile, new UTF8Encoding(true)))
-                using (var parser = new TextFieldParser(sr)
-                {
-                    TextFieldType = FieldType.Delimited,
-                    Delimiters = new[] { "," },
-                    HasFieldsEnclosedInQuotes = true,
-                    TrimWhiteSpace = true,
-                    CommentTokens = new[] { "#" },
-                })
-                {
-                    while (!parser.EndOfData)
-                    {
-                        var fields = parser.ReadFields();
-
-                        if (fields == null ||
-                            fields.Length < 5)
-                        {
-                            continue;
-                        }
-
-                        int id;
-                        if (!int.TryParse(fields[0], out id) ||
-                            string.IsNullOrEmpty(fields[4]))
-                        {
-                            continue;
-                        }
-
-                        var entry = new Area()
-                        {
-                            ID = id,
-                            NameEn = this.areaENList[id]?.Name ?? string.Empty,
-                            Name = fields[4]
-                        };
-
-                        this.areaList.Add(entry);
-                    }
-
-                    this.areaList.Add(new Area()
-                    {
-                        ID = 0,
-                        NameEn = "dummy",
-                        Name = "dummy",
-                    });
-                }
+                this.areaList.AddRange(current);
             }
 
             this.AppLogger.Trace($"xivapi area list loaded. {this.AreaFile}");
         }
 
-        private void LoadAreaEN()
+        private Dictionary<int, Area> _areaENDictionary;
+
+        private Dictionary<int, Area> AreaENDictionary => this._areaENDictionary ??= this.LoadAreaEN();
+
+        private Dictionary<int, Area> LoadAreaEN()
         {
+            var dic = new Dictionary<int, Area>()
+            {
+                { 0, new Area() {ID = 0, NameEn = "dummy", Name = "dummy"} }
+            };
+
             if (!File.Exists(this.AreaENFile))
             {
-                return;
+                return dic;
             }
 
-            lock (this.areaENList)
+            var lines = CSVParser.LoadFromPath(this.AreaENFile, encoding: new UTF8Encoding(true));
+
+            Parallel.ForEach(lines, (fields) =>
             {
-                this.areaENList.Clear();
-
-                // UTF-8 BOMあり
-                using (var sr = new StreamReader(this.AreaENFile, new UTF8Encoding(true)))
-                using (var parser = new TextFieldParser(sr)
+                if (fields.Count < 5)
                 {
-                    TextFieldType = FieldType.Delimited,
-                    Delimiters = new[] { "," },
-                    HasFieldsEnclosedInQuotes = true,
-                    TrimWhiteSpace = true,
-                    CommentTokens = new[] { "#" },
-                })
-                {
-                    while (!parser.EndOfData)
-                    {
-                        var fields = parser.ReadFields();
-
-                        if (fields == null ||
-                            fields.Length < 5)
-                        {
-                            continue;
-                        }
-
-                        int id;
-                        if (!int.TryParse(fields[0], out id) ||
-                            string.IsNullOrEmpty(fields[4]))
-                        {
-                            continue;
-                        }
-
-                        var entry = new Area()
-                        {
-                            ID = id,
-                            NameEn = fields[4],
-                            Name = fields[4]
-                        };
-
-                        this.areaENList[entry.ID] = entry;
-                    }
-
-                    this.areaList.Add(new Area()
-                    {
-                        ID = 0,
-                        NameEn = "dummy",
-                        Name = "dummy",
-                    });
+                    return;
                 }
-            }
+
+                if (!int.TryParse(fields[0], out int id) ||
+                    string.IsNullOrEmpty(fields[4]))
+                {
+                    return;
+                }
+
+                var entry = new Area()
+                {
+                    ID = id,
+                    NameEn = fields[4],
+                    Name = fields[4]
+                };
+
+                lock (dic)
+                {
+                    dic[entry.ID] = entry;
+                }
+            });
 
             this.AppLogger.Trace($"xivapi area list loaded. {this.AreaENFile}");
+
+            return dic;
         }
 
+#if false
         private void LoadPlacename()
         {
             if (!File.Exists(this.PlacenameFile))
@@ -378,6 +342,7 @@ namespace FFXIV.Framework.XIVHelper
 
             this.AppLogger.Trace($"xivapi placement list loaded. {this.PlacenameFile}");
         }
+#endif
 
         private void LoadAction()
         {
@@ -386,108 +351,97 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
+            var sw = Stopwatch.StartNew();
+
+            var userList = this.UserActionList;
+
+            var obj = new object();
             lock (this.actionList)
             {
                 this.actionList.Clear();
 
-                // UTF-8 BOMあり
-                using (var sr = new StreamReader(this.SkillFile, new UTF8Encoding(true)))
-                using (var parser = new TextFieldParser(sr)
+                var lines = CSVParser.LoadFromPath(this.SkillFile, encoding: new UTF8Encoding(true));
+
+                Parallel.ForEach(lines, (fields) =>
                 {
-                    TextFieldType = FieldType.Delimited,
-                    Delimiters = new[] { "," },
-                    HasFieldsEnclosedInQuotes = true,
-                    TrimWhiteSpace = true,
-                    CommentTokens = new[] { "#" },
-                })
-                {
-                    while (!parser.EndOfData)
+                    if (fields.Count < 2)
                     {
-                        var fields = parser.ReadFields();
-
-                        if (fields == null ||
-                            fields.Length < 2)
-                        {
-                            continue;
-                        }
-
-                        uint id;
-                        if (!uint.TryParse(fields[0], out id) ||
-                            string.IsNullOrEmpty(fields[1]))
-                        {
-                            continue;
-                        }
-
-                        var entry = new XIVApiAction()
-                        {
-                            ID = id,
-                            Name = fields[1],
-                            AttackTypeName = fields[XIVApiAction.AttackTypeIndex]
-                        };
-
-                        entry.SetAttackTypeEnum();
-
-                        this.actionList[entry.ID] = entry;
-                    }
-                }
-
-                this.AppLogger.Trace($"xivapi action list loaded. {this.SkillFile}");
-
-                // Userリストの方も読み込む
-                this.LoadUserAction();
-            }
-        }
-
-        private void LoadUserAction()
-        {
-            var isLoaded = false;
-
-            if (!File.Exists(this.UserSkillFile))
-            {
-                return;
-            }
-
-            using (var sr = new StreamReader(this.UserSkillFile, new UTF8Encoding(false)))
-            using (var parser = new TextFieldParser(sr)
-            {
-                TextFieldType = FieldType.Delimited,
-                Delimiters = new[] { "," },
-                HasFieldsEnclosedInQuotes = true,
-                TrimWhiteSpace = true,
-                CommentTokens = new[] { "#" },
-            })
-            {
-                while (!parser.EndOfData)
-                {
-                    var fields = parser.ReadFields();
-
-                    if (fields == null ||
-                        fields.Length < 2)
-                    {
-                        continue;
+                        return;
                     }
 
                     if (!uint.TryParse(fields[0], out uint id) ||
                         string.IsNullOrEmpty(fields[1]))
                     {
-                        continue;
+                        return;
                     }
 
                     var entry = new XIVApiAction()
                     {
                         ID = id,
                         Name = fields[1],
+                        AttackTypeName = fields[XIVApiAction.AttackTypeIndex]
                     };
 
-                    this.actionList[entry.ID] = entry;
-                    isLoaded = true;
-                }
+                    entry.SetAttackTypeEnum();
+
+                    if (userList.ContainsKey(entry.ID))
+                    {
+                        entry.Name = userList[entry.ID].Name;
+                    }
+
+                    lock (obj)
+                    {
+                        this.actionList[entry.ID] = entry;
+                    }
+                });
             }
 
-            if (isLoaded)
+            sw.Stop();
+            this.AppLogger.Trace($"xivapi action list loaded. {sw.Elapsed.TotalSeconds:N0}s {this.SkillFile}");
+        }
+
+        private Dictionary<uint, XIVApiAction> _userActionList;
+        private Dictionary<uint, XIVApiAction> UserActionList => this._userActionList ??= this.LoadUserAction();
+
+        private Dictionary<uint, XIVApiAction> LoadUserAction()
+        {
+            var list = new Dictionary<uint, XIVApiAction>(256);
+
+            if (!File.Exists(this.UserSkillFile))
             {
-                this.AppLogger.Trace($"user action list loaded.");
+                return list;
             }
+
+            var lines = CSVParser.LoadFromPath(this.UserSkillFile, encoding: new UTF8Encoding(false));
+
+            Parallel.ForEach(lines, (fields) =>
+            {
+                if (fields.Count < 2)
+                {
+                    return;
+                }
+
+                if (!uint.TryParse(fields[0], out uint id) ||
+                    string.IsNullOrEmpty(fields[1]))
+                {
+                    return;
+                }
+
+                var entry = new XIVApiAction()
+                {
+                    ID = id,
+                    Name = fields[1],
+                };
+
+                lock (list)
+                {
+                    list[entry.ID] = entry;
+                }
+            });
+
+            this.AppLogger.Trace($"user action list loaded.");
+
+            return list;
         }
 
         private void LoadBuff()
@@ -497,47 +451,38 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
+            var lines = CSVParser.LoadFromPath(this.BuffFile, encoding: new UTF8Encoding(true));
+
+            var obj = new object();
             lock (this.buffList)
             {
                 this.buffList.Clear();
 
-                // UTF-8 BOMあり
-                using (var sr = new StreamReader(this.BuffFile, new UTF8Encoding(true)))
-                using (var parser = new TextFieldParser(sr)
+                Parallel.ForEach(lines, (fields) =>
                 {
-                    TextFieldType = FieldType.Delimited,
-                    Delimiters = new[] { "," },
-                    HasFieldsEnclosedInQuotes = true,
-                    TrimWhiteSpace = true,
-                    CommentTokens = new[] { "#" },
-                })
-                {
-                    while (!parser.EndOfData)
+                    if (fields.Count < 2)
                     {
-                        var fields = parser.ReadFields();
+                        return;
+                    }
 
-                        if (fields == null ||
-                            fields.Length < 2)
-                        {
-                            continue;
-                        }
+                    uint id;
+                    if (!uint.TryParse(fields[0], out id) ||
+                        string.IsNullOrEmpty(fields[1]))
+                    {
+                        return;
+                    }
 
-                        uint id;
-                        if (!uint.TryParse(fields[0], out id) ||
-                            string.IsNullOrEmpty(fields[1]))
-                        {
-                            continue;
-                        }
+                    var entry = new Buff()
+                    {
+                        ID = id,
+                        Name = fields[1]
+                    };
 
-                        var entry = new Buff()
-                        {
-                            ID = id,
-                            Name = fields[1]
-                        };
-
+                    lock (obj)
+                    {
                         this.buffList[entry.ID] = entry;
                     }
-                }
+                });
             }
 
             this.AppLogger.Trace($"xivapi status list loaded. {this.BuffFile}");

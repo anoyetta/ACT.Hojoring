@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ACT.UltraScouter.Common;
 using ACT.UltraScouter.Config;
+using ACT.UltraScouter.ViewModels;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
 using Prism.Commands;
@@ -38,6 +39,8 @@ namespace ACT.UltraScouter.Models
         }
 
         public MobList Config => Settings.Instance.MobList;
+
+        public MobListViewModel ParentViewModel => MobListViewModel.Current;
 
         private static readonly Dictionary<string, int> RankTable = new Dictionary<string, int>()
         {

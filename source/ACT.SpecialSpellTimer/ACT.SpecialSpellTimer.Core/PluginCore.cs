@@ -115,7 +115,11 @@ namespace ACT.SpecialSpellTimer
                 TimelineController.Free();
 
                 this.RemoveSwitchVisibleButton();
-                this.PluginStatusLabel.Text = "Plugin Exited";
+
+                if (this.PluginStatusLabel != null)
+                {
+                    this.PluginStatusLabel.Text = "Plugin Exited";
+                }
 
                 Logger.Write("Plugin Exited.");
             }
@@ -165,7 +169,11 @@ namespace ACT.SpecialSpellTimer
 
                     if (!EnvironmentHelper.IsValidPluginLoadOrder())
                     {
-                        pluginStatusText.Text = "Plugin Initialize Error";
+                        if (pluginStatusText != null)
+                        {
+                            pluginStatusText.Text = "Plugin Initialize Error";
+                        }
+
                         return;
                     }
 
@@ -216,6 +224,7 @@ namespace ACT.SpecialSpellTimer
                     SpellTable.Instance.Load();
                     TickerTable.Instance.Load();
                     TagTable.Instance.Load();
+                    _ = TimelineSettings.Instance;
 
                     // 設定ファイルをバックアップする
                     await EnvironmentHelper.BackupFilesAsync(
@@ -249,7 +258,11 @@ namespace ACT.SpecialSpellTimer
                     POSView.ShowPOS();
 
                     this.SetSwitchVisibleButton();
-                    this.PluginStatusLabel.Text = "Plugin Started";
+
+                    if (this.PluginStatusLabel != null)
+                    {
+                        this.PluginStatusLabel.Text = "Plugin Started";
+                    }
 
                     Logger.Write("[SPESPE] End InitPlugin");
 

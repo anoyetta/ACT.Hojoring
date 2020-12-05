@@ -18,7 +18,6 @@
   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
   d:DataContext="{d:DesignInstance Type=vm:SpellConfigViewModel}"
-  DataContext="{x:Type vm:SpellConfigViewModel}"
   d:DesignWidth="1000"
   Background="White"
   FontFamily="{DynamicResource UIFont}"
@@ -35,6 +34,10 @@
   IsTabStop="False"
   Focusable="False"
   mc:Ignorable="d">
+
+  <UserControl.DataContext>
+    <vm:SpellConfigViewModel />
+  </UserControl.DataContext>
 
   <UserControl.Resources>
     <ResourceDictionary>
@@ -195,7 +198,7 @@
             </StackPanel>
 
             <!-- Recast Time from HotbarInfo -->
-            <StackPanel Visibility="{Binding FFXIVReader.IsAvailable, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+            <StackPanel>
               <CheckBox Content="{DynamicResource Spell_UseHotbrRecastTime}" IsChecked="{Binding Model.UseHotbarRecastTime, Mode=TwoWay}" Margin="0 10 0 0" />
               <Label Content="{DynamicResource Spell_HotbarItemName}" VerticalAlignment="Center" Margin="0 5 0 0" HorizontalAlignment="Left" Visibility="{Binding Model.UseHotbarRecastTime, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
               <TextBox Text="{Binding Model.HotbarName, Mode=TwoWay}" Width="300" Margin="0 2 0 0" HorizontalAlignment="Left"  Visibility="{Binding Model.UseHotbarRecastTime, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
@@ -770,7 +773,7 @@
               <StackPanel Margin="10 0 0 0">
                 <StackPanel Margin="0 8 0 8" Orientation="Horizontal">
                   <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="6">
-                    <Image Source="{Binding Model.SpellIconFullPath, Mode=OneWay}" Height="72" Width="72" />
+                    <Image Source="{Binding Model.SpellIconImage, Mode=OneWay}" Height="72" Width="72" />
                   </Border>
                   <StackPanel VerticalAlignment="Bottom">
                     <TextBlock Margin="10 0 0 10" HorizontalAlignment="Left">

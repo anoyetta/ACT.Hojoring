@@ -117,7 +117,7 @@
     <Setter Property="FontWeight" Value="{Binding Path=StyleModel.Font.Weight, Mode=OneWay}" />
     <Setter Property="FontStyle" Value="{Binding Path=StyleModel.Font.Style, Mode=OneWay}" />
     <Setter Property="FontStretch" Value="{Binding Path=StyleModel.Font.Stretch, Mode=OneWay}" />
-    <Setter Property="FontSize" Value="{Binding Path=StyleModel.Font.Size, Mode=OneWay}" />
+    <Setter Property="FontSize" Value="{Binding Path=FontSize, Mode=OneWay}" />
     <Setter Property="Fill" Value="{Binding Path=StyleModel.ColorBrush, Mode=OneWay}" />
     <Setter Property="Stroke" Value="{Binding Path=StyleModel.OutlineColorBrush, Mode=OneWay}" />
     <Setter Property="StrokeThickness" Value="{Binding Path=StyleModel.Font.OutlineThickness, Mode=OneWay}" />
@@ -137,7 +137,7 @@
     <Setter Property="FontWeight" Value="{Binding Path=StyleModel.Font.Weight, Mode=OneWay}" />
     <Setter Property="FontStyle" Value="{Binding Path=StyleModel.Font.Style, Mode=OneWay}" />
     <Setter Property="FontStretch" Value="{Binding Path=StyleModel.Font.Stretch, Mode=OneWay}" />
-    <Setter Property="FontSize" Value="{Binding Path=StyleModel.Font.Size, Mode=OneWay}" />
+    <Setter Property="FontSize" Value="{Binding Path=FontSize, Mode=OneWay}" />
     <Setter Property="Fill" Value="{Binding Path=StyleModel.ColorBrush, Mode=OneWay}" />
     <Setter Property="Stroke" Value="{Binding Path=StyleModel.OutlineColorBrush, Mode=OneWay}" />
     <Setter Property="StrokeThickness" Value="{Binding Path=StyleModel.Font.OutlineThickness, Mode=OneWay}" />
@@ -158,7 +158,7 @@
     <Setter Property="FontWeight" Value="{Binding Path=StyleModel.Font.Weight, Mode=OneWay}" />
     <Setter Property="FontStyle" Value="{Binding Path=StyleModel.Font.Style, Mode=OneWay}" />
     <Setter Property="FontStretch" Value="{Binding Path=StyleModel.Font.Stretch, Mode=OneWay}" />
-    <Setter Property="FontSize" Value="{Binding Path=StyleModel.Font.Size, Mode=OneWay}" />
+    <Setter Property="FontSize" Value="{Binding Path=FontSize, Mode=OneWay}" />
     <Setter Property="Fill" Value="{Binding Path=StyleModel.ColorBrush, Mode=OneWay}" />
     <Setter Property="Stroke" Value="{Binding Path=StyleModel.OutlineColorBrush, Mode=OneWay}" />
     <Setter Property="StrokeThickness" Value="{Binding Path=StyleModel.Font.OutlineThickness, Mode=OneWay}" />

@@ -11,6 +11,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public static void RefreshGlobalVariables()
         {
             RefreshIsToTMe();
+            RefreshInTankStance();
             RefreshIsFirstEnmityMe();
             RefreshET();
             RefreshZone();
@@ -20,6 +21,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// TargetOfTargetが自分か？
         /// </summary>
         public const string IS_TOT_ME = "IS_TOT_ME";
+
+        private static DateTime totChangedTimestamp;
 
         /// <summary>
         /// IS_TOT_ME を更新する
@@ -37,8 +40,39 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     if (SetVariable(name, value))
                     {
                         TimelineController.RaiseLog(
-                            $"{TimelineController.TLSymbol} set VAR['{name}'] = {value}");
+                            $"{TimelineConstants.LogSymbol} set VAR['{name}'] = {value}");
+
+                        if ((DateTime.Now - totChangedTimestamp) > TimeSpan.FromSeconds(2))
+                        {
+                            totChangedTimestamp = DateTime.Now;
+                            TimelineController.RaiseLog(
+                                $"Target-of-Target has been changed.");
+                        }
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// タンクスタンス中か？
+        /// </summary>
+        public const string IN_TANK_STANCE = "IN_TANK_STANCE";
+
+        /// <summary>
+        /// IN_TANK_STANCE を更新する
+        /// </summary>
+        public static void RefreshInTankStance()
+        {
+            var name = IN_TANK_STANCE;
+
+            var player = CombatantsManager.Instance.Player;
+            if (player != null)
+            {
+                var value = player.InTankStance();
+                if (SetVariable(name, value))
+                {
+                    TimelineController.RaiseLog(
+                        $"{TimelineConstants.LogSymbol} set VAR['{name}'] = {value}");
                 }
             }
         }
@@ -60,7 +94,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (SetVariable(name, value))
             {
                 TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} set VAR['{name}'] = {value}");
+                    $"{TimelineConstants.LogSymbol} set VAR['{name}'] = {value}");
             }
         }
 
@@ -81,7 +115,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (SetVariable(name, value))
             {
                 TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} set VAR['{name}'] = {value}");
+                    $"{TimelineConstants.LogSymbol} set VAR['{name}'] = {value}");
             }
         }
 
@@ -107,9 +141,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 SetVariable(ZoneName, zoneName);
                 TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} set VAR['{ZoneID}'] = {zoneID}");
+                    $"{TimelineConstants.LogSymbol} set VAR['{ZoneID}'] = {zoneID}");
                 TimelineController.RaiseLog(
-                    $"{TimelineController.TLSymbol} set VAR['{ZoneName}'] = {zoneName}");
+                    $"{TimelineConstants.LogSymbol} set VAR['{ZoneName}'] = {zoneName}");
             }
         }
 

@@ -334,7 +334,11 @@ namespace ACT.TTSYukkuri
 
                     if (!EnvironmentHelper.IsValidPluginLoadOrder())
                     {
-                        pluginStatusText.Text = "Plugin Initialize Error";
+                        if (pluginStatusText != null)
+                        {
+                            pluginStatusText.Text = "Plugin Initialize Error";
+                        }
+
                         return;
                     }
 
@@ -447,7 +451,10 @@ namespace ACT.TTSYukkuri
                         CevioTrayManager.ToIcon();
                     }
 
-                    PluginStatusLabel.Text = "Plugin Started";
+                    if (this.PluginStatusLabel != null)
+                    {
+                        this.PluginStatusLabel.Text = "Plugin Started";
+                    }
 
                     this.Logger.Trace("[YUKKURI] End InitPlugin");
 
@@ -541,7 +548,13 @@ namespace ACT.TTSYukkuri
                     }
                 }
 
-                this.PluginStatusLabel.Text = "Plugin Exited";
+                // TTSヒストリを保存する
+                SoundPlayerWrapper.SaveTTSHistory();
+
+                if (this.PluginStatusLabel != null)
+                {
+                    this.PluginStatusLabel.Text = "Plugin Exited";
+                }
             }
             catch (Exception ex)
             {
@@ -560,8 +573,8 @@ namespace ACT.TTSYukkuri
 
                 if (!string.IsNullOrEmpty(logLine))
                 {
-                    if (logLine.Contains("00:0000:wipeout") ||
-                        logLine.Contains("00:0038:wipeout") ||
+                    if (logLine.Contains(WipeoutKeywords.WipeoutLog) ||
+                        logLine.Contains(WipeoutKeywords.WipeoutLogEcho) ||
                         logLine.Contains("01:Changed Zone to"))
                     {
                         result = true;

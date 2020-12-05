@@ -187,7 +187,7 @@
           SortMemberPath="TimeStampElapted"
           Header="Time"
           ClipboardContentBinding="{Binding TimeStampElapted, Mode=OneWay}"
-          Width="76">
+          Width="88">
           <DataGridTemplateColumn.CellTemplate>
             <DataTemplate>
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

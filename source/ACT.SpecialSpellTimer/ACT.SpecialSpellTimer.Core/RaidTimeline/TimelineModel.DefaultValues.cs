@@ -52,6 +52,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.VisualNotice, "StackVisible", false),
             NewDefault(TimelineElementTypes.VisualNotice, "Order", 0),
             NewDefault(TimelineElementTypes.VisualNotice, "IsJobIcon", false),
+            NewDefault(TimelineElementTypes.VisualNotice, "FontScale", 1.0d),
 
             // ImageNotice
             NewDefault(TimelineElementTypes.ImageNotice, "Enabled", true),
@@ -71,6 +72,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.Combatant, "Y", TimelineCombatantModel.InvalidPosition),
             NewDefault(TimelineElementTypes.Combatant, "Z", TimelineCombatantModel.InvalidPosition),
             NewDefault(TimelineElementTypes.Combatant, "Tolerance", 0.01f),
+
+            // HPSync
+            NewDefault(TimelineElementTypes.HPSync, "Enabled", true),
 
             // Expressions
             NewDefault(TimelineElementTypes.Expressions, "Enabled", true),
@@ -158,7 +162,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
                 catch (Exception ex)
                 {
-                    Logger.Write("[TL] Load default values error.", ex);
+                    Logger.Write($"{TimelineConstants.LogSymbol} Load default values error.", ex);
                 }
             }
 

@@ -123,7 +123,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var now = DateTime.Now;
             var offset = this.CurrentTime - act.Time;
             var log =
-                $"{TLSymbol} Notice from TL. " +
+                $"{TimelineConstants.LogSymbol} Notice from TL. " +
                 $"name={act.Name}, text={act.TextReplaced}, notice={act.NoticeReplaced}, offset={offset.TotalSeconds:N1}";
 
             var notice = act.NoticeReplaced ?? string.Empty;
@@ -246,7 +246,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var now = DateTime.Now;
             var log =
-                $"{TLSymbol} Notice from TL. " +
+                $"{TimelineConstants.LogSymbol} Notice from TL. " +
                 $"name={tri.Name}, text={tri.TextReplaced}, notice={tri.NoticeReplaced}";
 
             var notice = tri.NoticeReplaced ?? string.Empty;

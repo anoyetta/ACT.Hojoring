@@ -18,7 +18,6 @@
   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
   d:DataContext="{d:DesignInstance Type=vm:TickerConfigViewModel}"
-  DataContext="{x:Type vm:TickerConfigViewModel}"
   d:DesignWidth="800"
   Background="White"
   FontFamily="{DynamicResource UIFont}"
@@ -35,6 +34,11 @@
   IsTabStop="False"
   Focusable="False"
   mc:Ignorable="d">
+
+  <UserControl.DataContext>
+    <vm:TickerConfigViewModel />
+  </UserControl.DataContext>
+
   <UserControl.Resources>
     <ResourceDictionary>
       <Style TargetType="Label">

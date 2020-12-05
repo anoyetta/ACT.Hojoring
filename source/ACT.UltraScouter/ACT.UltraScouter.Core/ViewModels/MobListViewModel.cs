@@ -11,8 +11,11 @@ namespace ACT.UltraScouter.ViewModels
         OverlayViewModelBase,
         IOverlayViewModel
     {
+        public static MobListViewModel Current { get; private set; }
+
         public MobListViewModel()
         {
+            Current = this;
             this.Initialize();
         }
 

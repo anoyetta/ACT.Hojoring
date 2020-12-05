@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -36,6 +37,8 @@ namespace FFXIV.Framework.Common
             {
                 lock (LockObject)
                 {
+                    var backupDirs = new List<string>();
+
                     foreach (var file in files)
                     {
                         if (!File.Exists(file))
@@ -57,9 +60,12 @@ namespace FFXIV.Framework.Common
                             backupFile,
                             true);
 
-                        // 古いバックアップを消す
-                        foreach (var bak in
-                            Directory.GetFiles(Path.GetDirectoryName(backupFile), "*.bak"))
+                        backupDirs.Add(Path.GetDirectoryName(backupFile));
+                    }
+
+                    foreach (var dir in backupDirs.Distinct())
+                    {
+                        foreach (var bak in Directory.GetFiles(dir, "*.bak"))
                         {
                             var timeStamp = File.GetCreationTime(bak);
                             if ((DateTime.Now - timeStamp).TotalDays > BackupDays)

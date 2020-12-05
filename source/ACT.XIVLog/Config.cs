@@ -20,7 +20,7 @@ namespace ACT.XIVLog
         private static Config instance;
 
         public static Config Instance =>
-            instance ?? (instance = (Load() ?? new Config()));
+            instance ??= (Load() ?? new Config());
 
         private volatile bool isAutoSaving;
 
@@ -83,8 +83,7 @@ namespace ACT.XIVLog
                         if (sr.BaseStream.Length > 0)
                         {
                             var xs = new XmlSerializer(typeof(Config));
-                            var data = xs.Deserialize(sr) as Config;
-                            if (data != null)
+                            if (xs.Deserialize(sr) is Config data)
                             {
                                 instance = data;
                             }
@@ -188,6 +187,24 @@ namespace ACT.XIVLog
         {
             get => this.isEnabledRecording;
             set => this.SetProperty(ref this.isEnabledRecording, value);
+        }
+
+        private double stopRecordingAfterCombatMinutes;
+
+        [DefaultValue(0d)]
+        public double StopRecordingAfterCombatMinutes
+        {
+            get => this.stopRecordingAfterCombatMinutes;
+            set => this.SetProperty(ref this.stopRecordingAfterCombatMinutes, value);
+        }
+
+        private double stopRecordingSubscribeInterval;
+
+        [DefaultValue(10d)]
+        public double StopRecordingSubscribeInterval
+        {
+            get => this.stopRecordingSubscribeInterval;
+            set => this.SetProperty(ref this.stopRecordingSubscribeInterval, value);
         }
 
         private bool isShowTitleCard;

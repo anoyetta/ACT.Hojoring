@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.Sound;
-using FFXIV.Framework.Common;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -19,82 +19,105 @@ namespace ACT.SpecialSpellTimer
         /// コマンド解析用の正規表現
         /// </summary>
         private readonly static Regex regexCommand = new Regex(
-            @".*/spespe (?<command>refresh|changeenabled|set|clear|on|off|pos) ?(?<target>all|spells|telops|me|pt|pet|placeholder|$) ?(?<windowname>"".*""|all)? ?(?<value>.*)",
-            RegexOptions.Compiled |
-            RegexOptions.IgnoreCase);
+            @"/spespe\s+(?<command>refresh|changeenabled|set|clear|on|off|pos)\s+?(?<target>all|spells|telops|me|pt|pet|placeholder|$)\s+?(?<windowname>"".*""|all)? ?(?<value>.*)",
+            RegexOptions.Compiled);
 
         /// <summary>
         /// TTS読み仮名コマンド
         /// </summary>
         private readonly static Regex phoneticsCommand = new Regex(
-            @".*/spespe phonetic ""(?<pcname>.+?)"" ""(?<phonetic>.+?)""",
-            RegexOptions.Compiled |
-            RegexOptions.IgnoreCase);
+            @"/spespe\s+phonetic\s+""(?<pcname>.+?)"" ""(?<phonetic>.+?)""",
+            RegexOptions.Compiled);
 
         /// <summary>
         /// Logコマンド
         /// </summary>
         private readonly static Regex logCommand = new Regex(
-            @".*/spespe log (?<switch>on|off|open|flush)",
-            RegexOptions.Compiled |
-            RegexOptions.IgnoreCase);
+            @"/spespe\s+log\s+(?<switch>on|off|open|flush)",
+            RegexOptions.Compiled);
 
         /// <summary>
         /// TTSコマンド
         /// </summary>
         private readonly static Regex ttsCommand = new Regex(
-            @".*/tts (?<text>.*)",
-            RegexOptions.Compiled |
-            RegexOptions.IgnoreCase);
+            @"/tts\s+(?<text>.*)",
+            RegexOptions.Compiled);
+
+        /// <summary>
+        /// オプションコマンド
+        /// </summary>
+        private static readonly Lazy<Regex> lazyOptionCommand = new Lazy<Regex>(() => new Regex(
+            @$"/spespe\s+(?<option>{string.Join("|", optionCommands.Select(x => x.keyword))})\s+(?<command>enabled|disabled|on|off)",
+            RegexOptions.Compiled));
+
+        /// <summary>
+        /// オプションコマンドの定義
+        /// </summary>
+        private static readonly (string keyword, Action<bool> change)[] optionCommands = new[]
+        {
+            ("reset-on-wipeout", new Action<bool>((value) => Settings.Default.ResetOnWipeOut = value))
+        };
 
         /// <summary>
         /// ログ1行とマッチングする
         /// </summary>
         /// <param name="logLine">ログ行</param>
         /// <returns>
-        /// コマンドを実行したか？</returns>
+        /// エコーを鳴らすか？</returns>
         public static bool MatchCommandCore(
             string logLine)
         {
-            var r = false;
+            logLine = logLine.ToLower();
 
             // 正規表現の前にキーワードがなければ抜けてしまう
-            if (!logLine.ToLower().Contains("/spespe") &&
-                !logLine.ToLower().Contains("/tts"))
+            if (!logLine.Contains("/spespe") &&
+                !logLine.Contains("/tts"))
             {
-                return r;
+                return false;
             }
 
+            var inCombat = XIVPluginHelper.Instance.InCombat;
+
             // 読み仮名コマンドとマッチングする
-            var isPhonetic = MatchPhoneticCommand(logLine);
-            if (isPhonetic)
+            if (MatchPhoneticCommand(logLine))
             {
-                return isPhonetic;
+                return true;
             }
 
             // ログコマンドとマッチングする
-            var isLog = MatchLogCommand(logLine);
-            if (isLog)
+            if (MatchLogCommand(logLine))
             {
-                return isLog;
+                return true;
+            }
+
+            // スペスペオプションの操作コマンドとマッチングする
+            if (MatchOptionCommand(logLine))
+            {
+                // 戦闘中ならば鳴らさない
+                return !inCombat;
             }
 
             // TTSコマンドとマッチングする
-            MatchTTSCommand(logLine);
+            if (MatchTTSCommand(logLine))
+            {
+                // サウンドを鳴らさない
+                return false;
+            }
 
-            // その他の通常コマンドとマッチングする
+            // 通常コマンドとマッチングする
             var match = regexCommand.Match(logLine);
             if (!match.Success)
             {
-                return r;
+                return false;
             }
+
+            var r = false;
 
             var command = match.Groups["command"].ToString().ToLower();
             var target = match.Groups["target"].ToString().ToLower();
             var windowname = match.Groups["windowname"].ToString().Replace(@"""", string.Empty);
             var valueAsText = match.Groups["value"].ToString();
-            var value = false;
-            if (!bool.TryParse(valueAsText, out value))
+            if (!bool.TryParse(valueAsText, out bool value))
             {
                 value = false;
             }
@@ -255,8 +278,8 @@ namespace ACT.SpecialSpellTimer
                 return r;
             }
 
-            var pcName = match.Groups["pcname"].ToString().ToLower();
-            var phonetic = match.Groups["phonetic"].ToString().ToLower();
+            var pcName = match.Groups["pcname"].ToString();
+            var phonetic = match.Groups["phonetic"].ToString();
 
             if (!string.IsNullOrEmpty(pcName) &&
                 !string.IsNullOrEmpty(phonetic))
@@ -288,7 +311,7 @@ namespace ACT.SpecialSpellTimer
                 return r;
             }
 
-            var switchValue = match.Groups["switch"].ToString().ToLower();
+            var switchValue = match.Groups["switch"].ToString();
 
             if (switchValue == "on")
             {
@@ -321,41 +344,46 @@ namespace ACT.SpecialSpellTimer
             return r;
         }
 
-        public static void MatchTTSCommand(
+        public static bool MatchTTSCommand(
             string logLine)
         {
             var match = ttsCommand.Match(logLine);
             if (!match.Success)
             {
-                return;
+                return false;
             }
 
-            var text = match.Groups["text"].ToString().ToLower();
+            var text = match.Groups["text"].ToString().Trim();
             if (!string.IsNullOrEmpty(text))
             {
                 SoundController.Instance.Play(text);
             }
+
+            return true;
         }
 
-        /// <summary>
-        /// Commandとマッチングする
-        /// </summary>
-        /// <param name="logLines">
-        /// ログ行</param>
-        public static void MatchCommand(
-            IReadOnlyList<string> logLines)
+        private static bool MatchOptionCommand(
+            string logLine)
         {
-            var commandDone = false;
-            logLines.AsParallel().ForAll(log =>
+            var match = lazyOptionCommand.Value.Match(logLine);
+            if (!match.Success)
             {
-                commandDone |= MatchCommandCore(log);
-            });
-
-            // コマンドを実行したらシステム音を鳴らす
-            if (commandDone)
-            {
-                CommonSounds.Instance.PlayAsterisk();
+                return false;
             }
+
+            var option = match.Groups["option"].ToString();
+            var command = match.Groups["command"].ToString();
+
+            var value = command switch
+            {
+                "enabled" => true,
+                "on" => true,
+                _ => false,
+            };
+
+            optionCommands.FirstOrDefault(x => x.keyword == command).change?.Invoke(value);
+
+            return true;
         }
     }
 }

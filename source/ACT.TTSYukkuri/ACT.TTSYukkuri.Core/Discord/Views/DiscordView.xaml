@@ -22,8 +22,7 @@
   FontSize="17"
   Margin="0"
   d:DesignWidth="1024"
-  d:DataContext="{d:DesignInstance Type=vm:DiscordViewModel, IsDesignTimeCreatable=True}"
-  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  d:DataContext="{d:DesignInstance Type=vm:DiscordViewModel, IsDesignTimeCreatable=True}">
 
   <UserControl.Resources>
     <cv:BoolConverter x:Key="BoolConverter" />

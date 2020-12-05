@@ -69,21 +69,21 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
             (this.displayTextColorCommand =
             new ChangeColorCommand(
                 (color) => this.Config.DisplayText.Color = color,
-                () => this.RefreshCommand?.Execute(null)));
+                () => this.RefreshViewCommand?.Execute(null)));
 
         public ICommand DisplayTextOutlineColorCommand =>
             this.displayTextOutlineColorCommand ??
             (this.displayTextOutlineColorCommand =
             new ChangeColorCommand(
                 (color) => this.Config.DisplayText.OutlineColor = color,
-                () => this.RefreshCommand?.Execute(null)));
+                () => this.RefreshViewCommand?.Execute(null)));
 
         public ICommand ProgressBarOutlineColorCommand =>
             this.progressBarOutlineColorCommand ??
             (this.progressBarOutlineColorCommand =
             new ChangeColorCommand(
                 (color) => this.Config.ProgressBar.OutlineColor = color,
-                () => this.RefreshCommand?.Execute(null)));
+                () => this.RefreshViewCommand?.Execute(null)));
 
         public ICommand BarAddCommand =>
             this.barAddCommand ??
@@ -100,13 +100,13 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                     Max = maxRange?.Max ?? 0,
                 });
 
-                this.RefreshCommand?.Execute(null);
+                this.RefreshViewCommand?.Execute(null);
             }));
 
-        private ICommand refreshCommand;
+        private ICommand refreshViewCommand;
 
-        public ICommand RefreshCommand =>
-            this.refreshCommand ?? (this.refreshCommand = new DelegateCommand(
+        public ICommand RefreshViewCommand =>
+            this.refreshViewCommand ?? (this.refreshViewCommand = new DelegateCommand(
                 () => this.Config.ExecuteRefreshViewCommand()));
     }
 }

@@ -31,8 +31,11 @@ namespace ACT.SpecialSpellTimer.Models
 
         #region Worker
 
-        private readonly double WorkerInterval = 2500;
-        private System.Timers.Timer worker;
+        private static readonly double CompileHandlerInterval = 6000;
+        private ThreadWorker compileWorker;
+
+        private static readonly double CombatantsSubscriber = 2000;
+        private ThreadWorker combatantsSubscriber;
 
         #endregion Worker
 
@@ -45,20 +48,38 @@ namespace ACT.SpecialSpellTimer.Models
 
             this.SubscribeXIVPluginEvents();
 
-            this.worker = new System.Timers.Timer();
-            this.worker.AutoReset = true;
-            this.worker.Interval = WorkerInterval;
-            this.worker.Elapsed += (s, e) => this.DoWork();
-            this.worker.Start();
+            this.compileWorker = new ThreadWorker(
+                this.TryCompile,
+                CompileHandlerInterval,
+                "Trigger compiler service",
+                ThreadPriority.Lowest);
 
-            Logger.Write("start spell compiler.");
+            this.compileWorker.Run();
+
+            this.combatantsSubscriber = new ThreadWorker(
+                this.TryWork,
+                CombatantsSubscriber,
+                "Combatants subscriber",
+                ThreadPriority.Lowest);
+
+            this.combatantsSubscriber.Run();
+
+            Logger.Write("start trigger compiler.");
         }
 
         public void End()
         {
-            this.worker?.Stop();
-            this.worker?.Dispose();
-            this.worker = null;
+            if (this.compileWorker != null)
+            {
+                this.compileWorker.Abort();
+                this.compileWorker = null;
+            }
+
+            if (this.combatantsSubscriber != null)
+            {
+                this.combatantsSubscriber.Abort();
+                this.combatantsSubscriber = null;
+            }
         }
 
         #endregion Begin / End
@@ -69,8 +90,9 @@ namespace ACT.SpecialSpellTimer.Models
 
         private DateTime lastDumpPositionTimestamp = DateTime.MinValue;
 
-        private bool isPartyChanged = false;
-        private bool isZoneChanged = false;
+        private bool isQueueRecompile = false;
+        private bool isQueueZoneChange = false;
+        private DateTime lastQueueTimestamp = DateTime.MaxValue;
 
         private void SubscribeXIVPluginEvents()
         {
@@ -85,133 +107,125 @@ namespace ACT.SpecialSpellTimer.Models
                     if (helper.IsAttached)
                     {
                         await Task.Delay(TimeSpan.FromSeconds(0.2));
-                        helper.OnPrimaryPlayerChanged += () => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
-                        helper.OnPlayerJobChanged += () => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
-                        helper.OnPartyListChanged += (_, __) => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
-                        helper.OnPlayerJobChanged += () => setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
-                        helper.OnZoneChanged += (_, __) => setQueue(this.isZoneChanged, () => this.isZoneChanged = true);
 
-                        setQueue(this.isPartyChanged, () => this.isPartyChanged = true);
-                        setQueue(this.isPartyChanged, () => this.isZoneChanged = true);
+                        helper.OnPrimaryPlayerChanged += () => enqueueRecompile();
+                        helper.OnPlayerJobChanged += () => enqueueRecompile();
+                        helper.OnPartyListChanged += (_, _) => enqueueRecompile();
+                        helper.OnPlayerJobChanged += () => enqueueRecompile();
+                        helper.OnZoneChanged += (_, _) => enqueueByZoneChanged();
+
+                        enqueueByZoneChanged();
                         break;
                     }
                 }
             });
 
-            void setQueue(bool queue, Action setAction)
+            void enqueueRecompile()
             {
-                if (queue)
+                lock (this)
+                {
+                    this.isQueueRecompile = true;
+                    this.lastQueueTimestamp = DateTime.Now;
+                }
+            }
+
+            void enqueueByZoneChanged()
+            {
+                lock (this)
+                {
+                    this.isQueueRecompile = true;
+                    this.isQueueZoneChange = true;
+                    this.lastQueueTimestamp = DateTime.Now;
+                }
+            }
+        }
+
+        private void TryCompile()
+        {
+            lock (this)
+            {
+                if ((DateTime.Now - this.lastQueueTimestamp).TotalMilliseconds <= CompileHandlerInterval)
                 {
                     return;
                 }
 
-                Task.Run(async () =>
+                this.lastQueueTimestamp = DateTime.MaxValue;
+
+                this.RefreshCombatants();
+
+                var isSimulationChanged = false;
+
+                if (this.previousInSimulation != this.InSimulation)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    this.previousInSimulation = this.InSimulation;
+                    isSimulationChanged = true;
+                }
 
-                    if (queue)
-                    {
-                        return;
-                    }
-
-                    lock (this)
-                    {
-                        setAction();
-                    }
-                });
-            }
-        }
-
-        private void DoWork()
-        {
-            try
-            {
-                lock (this)
+                if (isSimulationChanged || this.isQueueRecompile)
                 {
-                    this.RefreshCombatants();
-
-                    var isSimulationChanged = false;
-
-                    if (this.previousInSimulation != this.InSimulation)
-                    {
-                        this.previousInSimulation = this.InSimulation;
-                        isSimulationChanged = true;
-                    }
-
-                    if (this.isPartyChanged ||
-                        this.isZoneChanged)
+                    if (this.isQueueRecompile)
                     {
                         this.RefreshPlayerPlacceholder();
                         this.RefreshPartyPlaceholders();
                         this.RefreshPetPlaceholder();
                     }
 
-                    if (isSimulationChanged ||
-                        this.isPartyChanged ||
-                        this.isZoneChanged)
+                    this.RecompileSpells();
+                    this.RecompileTickers();
+
+                    var fromEvent = isSimulationChanged ? "simulation changed" : "condition changed";
+                    Logger.Write($"recompiled triggers on {fromEvent}");
+
+                    TickersController.Instance.GarbageWindows(this.TickerList);
+                    SpellsController.Instance.GarbageSpellPanelWindows(this.SpellList);
+
+                    this.CompileConditionChanged?.Invoke(this, new EventArgs());
+
+                    this.isQueueRecompile = false;
+                }
+
+                if (this.isQueueZoneChange)
+                {
+                    // インスタンススペルを消去する
+                    SpellTable.Instance.RemoveInstanceSpellsAll();
+
+                    // 設定を保存する
+                    PluginCore.Instance?.SaveSettingsAsync();
+
+                    var zone = ActGlobals.oFormActMain.CurrentZone;
+                    var zoneID = XIVPluginHelper.Instance?.GetCurrentZoneID();
+                    Logger.Write($"zone changed. zone={ActGlobals.oFormActMain.CurrentZone}, zone_id={XIVPluginHelper.Instance?.GetCurrentZoneID()}");
+                    this.ZoneChanged?.Invoke(this, new EventArgs());
+
+                    Task.Run(() =>
                     {
-                        this.RecompileSpells();
-                        this.RecompileTickers();
+                        Thread.Sleep(TimeSpan.FromSeconds(6));
 
-                        var fromEvent =
-                            isSimulationChanged ? "simulation changed" :
-                                this.isPartyChanged ? "party changed" :
-                                    this.isZoneChanged ? "zone changed" : string.Empty;
-                        Logger.Write($"recompiled triggers on {fromEvent}");
-
-                        TickersController.Instance.GarbageWindows(this.TickerList);
-                        SpellsController.Instance.GarbageSpellPanelWindows(this.SpellList);
-
-                        this.CompileConditionChanged?.Invoke(this, new EventArgs());
-                    }
-
-                    if (this.isZoneChanged)
-                    {
-                        // インスタンススペルを消去する
-                        SpellTable.Instance.RemoveInstanceSpellsAll();
-
-                        // 設定を保存する
-                        PluginCore.Instance?.SaveSettingsAsync();
-
-                        var zone = ActGlobals.oFormActMain.CurrentZone;
-                        var zoneID = XIVPluginHelper.Instance?.GetCurrentZoneID();
-                        Logger.Write($"zone changed. zone={zone}, zone_id={zoneID}");
-                        this.ZoneChanged?.Invoke(this, new EventArgs());
-
-                        Task.Run(() =>
-                        {
-                            Thread.Sleep(TimeSpan.FromSeconds(6));
-
-                            // 自分の座標をダンプする
-                            LogBuffer.DumpPosition(true);
-
-                            // ETを出力する
-                            var nowET = EorzeaTime.Now;
-                            LogParser.RaiseLog(
-                                DateTime.Now,
-                                $"[EX] ZoneChanged ET{nowET.Hour:00}:00 Zone:{zoneID:000} {zone}");
-                        });
-                    }
-
-                    // 定期的に自分の座標をダンプする
-                    if ((DateTime.Now - this.lastDumpPositionTimestamp).TotalSeconds >= 60.0)
-                    {
-                        this.lastDumpPositionTimestamp = DateTime.Now;
+                        // 自分の座標をダンプする
                         LogBuffer.DumpPosition(true);
-                    }
 
-                    // ペットとの距離をダンプする
-                    LogBuffer.DumpMyPetDistance();
+                        // ETを出力する
+                        var nowET = EorzeaTime.Now;
+                        LogParser.RaiseLog(
+                            DateTime.Now,
+                            $"[EX] ZoneChanged ET{nowET.Hour:00}:00 Zone:{zoneID:000} {zone}");
+                    });
+
+                    this.isQueueZoneChange = false;
                 }
             }
-            catch (Exception ex)
+        }
+
+        private void TryWork()
+        {
+            // 自分のペットとの距離をダンプする
+            LogBuffer.DumpMyPetDistance();
+
+            // 定期的に自分の座標をダンプする
+            if ((DateTime.Now - this.lastDumpPositionTimestamp).TotalSeconds >= 60.0)
             {
-                Logger.Write("table compiler error:", ex);
-            }
-            finally
-            {
-                this.isPartyChanged = false;
-                this.isZoneChanged = false;
+                this.lastDumpPositionTimestamp = DateTime.Now;
+                LogBuffer.DumpPosition(true);
             }
         }
 

@@ -25,6 +25,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.target, value);
         }
 
+        private string log;
+
+        [XmlAttribute(AttributeName = "log")]
+        public string Log
+        {
+            get => this.log;
+            set => this.SetProperty(ref this.log, value);
+        }
+
         public void ExcuteDump()
         {
             if (!this.Enabled.HasValue ||
@@ -37,6 +46,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 case DumpTargets.Position:
                     this.ExecuteDumpPosition();
+                    break;
+
+                case DumpTargets.Log:
+                    this.ExecuteDumpLog();
                     break;
             }
         }
@@ -61,13 +74,24 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 var log = $@"Dump pos{from} id=""0x{c.ID:X8}"" name=""{c.Name}"" X=""{c.PosXMap:N2}"" Y=""{c.PosYMap:N2}"" Z=""{c.PosZMap:N2}"" hp=""{c.CurrentHP}"" max_hp=""{c.MaxHP}""";
-                TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
+                TimelineController.RaiseLog($"{TimelineConstants.LogSymbol} {log}");
             }
+        });
+
+        private async void ExecuteDumpLog() => await Task.Run(() =>
+        {
+            if (string.IsNullOrEmpty(this.Log))
+            {
+                return;
+            }
+
+            TimelineController.RaiseLog(this.Log);
         });
     }
 
     public enum DumpTargets
     {
-        Position
+        Position,
+        Log
     }
 }

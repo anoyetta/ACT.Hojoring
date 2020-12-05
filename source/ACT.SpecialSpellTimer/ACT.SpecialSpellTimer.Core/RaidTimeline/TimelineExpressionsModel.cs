@@ -193,7 +193,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     Variables.Remove(item.Key);
                     TimelineController.RaiseLog(
-                        $"{TimelineController.TLSymbol} clear VAR['{item.Key}']");
+                        $"{TimelineConstants.LogSymbol} clear VAR['{item.Key}']");
                 }
 
                 if (targets.Length > 0)
@@ -206,7 +206,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     Tables.Clear();
                     IsExistsTables = false;
                     TimelineController.RaiseLog(
-                        $"{TimelineController.TLSymbol} clear Tables.");
+                        $"{TimelineConstants.LogSymbol} clear Tables.");
 
                     OnTableChanged?.Invoke(new EventArgs());
                 }
@@ -227,7 +227,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 if (any)
                 {
                     TimelineController.RaiseLog(
-                        $"{TimelineController.TLSymbol} clear all variables.");
+                        $"{TimelineConstants.LogSymbol} clear all variables.");
 
                     OnVariableChanged?.Invoke(new EventArgs());
                 }
@@ -237,7 +237,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     Tables.Clear();
                     IsExistsTables = false;
                     TimelineController.RaiseLog(
-                        $"{TimelineController.TLSymbol} clear Tables.");
+                        $"{TimelineConstants.LogSymbol} clear Tables.");
 
                     OnTableChanged?.Invoke(new EventArgs());
                 }
@@ -311,8 +311,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 // フラグの状況を把握するためにログを出力する
                 TimelineController.RaiseLog(
                     string.IsNullOrEmpty(set.Count) ?
-                    $"{TimelineController.TLSymbol} set VAR['{set.Name}'] = {variable.Value}" :
-                    $"{TimelineController.TLSymbol} set VAR['{set.Name}'] = {variable.Counter}");
+                    $"{TimelineConstants.LogSymbol} set VAR['{set.Name}'] = {variable.Value}" :
+                    $"{TimelineConstants.LogSymbol} set VAR['{set.Name}'] = {variable.Counter}");
 
                 isVaribleChanged = true;
             }
@@ -323,7 +323,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 isTablechanged |= table.Execute(
                     table.ParseJson(matched),
-                    (x) => TimelineController.RaiseLog($"{TimelineController.TLSymbol} {x}"));
+                    (x) => TimelineController.RaiseLog($"{TimelineConstants.LogSymbol} {x}"));
             }
 
             if (isVaribleChanged)
@@ -403,7 +403,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 log = $"predicate ['{pre.Name}':{variable.Counter}] equal [{value}] -> {result}";
             }
 
-            TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
+            TimelineController.RaiseLog($"{TimelineConstants.LogSymbol} {log}");
 
             return result;
         }
@@ -513,7 +513,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var result = ObjectComparer.PredicateValue(current, pre.Value, matched, out string value);
 
             log = $"predicate table variable [{pre.Name}:{current}] equal [{value}] -> {result}";
-            TimelineController.RaiseLog($"{TimelineController.TLSymbol} {log}");
+            TimelineController.RaiseLog($"{TimelineConstants.LogSymbol} {log}");
 
             return result;
         }
