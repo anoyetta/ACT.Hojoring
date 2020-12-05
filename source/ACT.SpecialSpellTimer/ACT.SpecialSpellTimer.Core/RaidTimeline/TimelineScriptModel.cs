@@ -162,6 +162,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             var result = true;
+            var message = string.Empty;
 
             try
             {
@@ -177,7 +178,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 result = false;
 
-                var message = $"[TL][CSX] Runtime error, name=\"{this.Name}\". {ex.Message}\n{ex.InnerException.ToFormatedString()}\n<script>{this.scriptCode}</script>";
+                message = $"[TL][CSX] Runtime error, name=\"{this.Name}\". {ex.Message}\n{ex.InnerException.ToFormatedString()}\n<script>{this.scriptCode}</script>";
                 this.AppLogger.Error(message);
             }
             catch (Exception ex)
@@ -195,9 +196,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
             }
 
-            message.AppendLine($"<script>{this.scriptCode}</script>");
-
-            this.AppLogger.Error(message.ToString());
+            return result;
         }
 
         private void TestRun()
