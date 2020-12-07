@@ -157,6 +157,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.psyncDetectInterval, value);
         }
 
+        private double residentScriptInterval = 20;
+
+        public double ResidentScriptInterval
+        {
+            get => this.residentScriptInterval;
+            set => this.SetProperty(ref this.residentScriptInterval, value);
+        }
+
         private ThreadPriority notifyThreadPriority = ThreadPriority.Normal;
 
         public ThreadPriority NotifyThreadPriority

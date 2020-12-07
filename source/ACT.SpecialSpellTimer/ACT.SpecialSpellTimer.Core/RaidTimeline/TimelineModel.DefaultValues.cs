@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config;
+using ACT.SpecialSpellTimer.RazorModel;
 using ACT.SpecialSpellTimer.Utility;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline

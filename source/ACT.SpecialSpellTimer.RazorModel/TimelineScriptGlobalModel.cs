@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer.RazorModel
@@ -58,21 +59,38 @@ namespace ACT.SpecialSpellTimer.RazorModel
 
         public dynamic ParseJsonString(
             string hjson)
-            => TimelineRazorModel.Instance.InZone(hjson);
+            => TimelineRazorModel.Instance.ParseJsonString(hjson);
 
         public dynamic ParseJsonFile(
             string file)
-            => TimelineRazorModel.Instance.InZone(file);
+            => TimelineRazorModel.Instance.ParseJsonFile(file);
+
+        public XIVLog[] CurrentLogs { get; set; }
 
         public TimelineScriptingHost ScriptingHost { get; } = new TimelineScriptingHost();
 
-        public dynamic ExpandoObject { get; } = new ExpandoObject();
+        public dynamic ExpandoObject { get; internal set; } = new ExpandoObject();
 
-        public void Speak(
+        /// <summary>
+        /// TTS
+        /// </summary>
+        /// <param name="tts">読み上げる文字列</param>
+        /// <param name="device">再生デバイス。Main, Sub, Both</param>
+        /// <param name="sync">同期再生するか</param>
+        /// <param name="volume">ボリューム。0.0-1.0</param>
+        /// <param name="delay">再生までの遅延秒数(s) ex. 1.1秒</param>
+        public void TTS(
             string tts,
+            string device = "Main",
+            bool sync = false,
+            float volume = 1.0f,
             double delay = 0)
-        {
-        }
+            => this.TTSDelegate?.Invoke(
+                tts,
+                device,
+                sync,
+                volume,
+                delay);
 
         public void ShowVNotice(
             string message,
@@ -90,114 +108,223 @@ namespace ACT.SpecialSpellTimer.RazorModel
         }
 
         public CombatantEx GetPlayer()
-        {
-            return null;
-        }
+            => this.GetPlayerDelegate?.Invoke();
 
         public CombatantEx[] GetParty()
-        {
-            return null;
-        }
+            => this.GetPartyDelegate?.Invoke();
 
         public CombatantEx[] GetCombatants()
-        {
-            return null;
-        }
+            => this.GetCombatantsDelegate?.Invoke();
+
+        public string GetCurrentSubRoutineName()
+            => this.GetCurrentSubRoutineNameDelegate?.Invoke();
 
         public void RaiseLogLine(
             string logLine)
-        {
-        }
+            => this.RaiseLogLineDelegate?.Invoke(logLine);
 
         public void Trace(
             string message)
-        {
-        }
+            => this.TraseDelegate?.Invoke(message);
+
+        #region Delegates
+
+        internal Action<string> RaiseLogLineDelegate { get; set; }
+
+        internal Action<string> TraseDelegate { get; set; }
+
+        internal Func<string> GetCurrentSubRoutineNameDelegate { get; set; }
+
+        internal Func<CombatantEx> GetPlayerDelegate { get; set; }
+
+        internal Func<CombatantEx[]> GetPartyDelegate { get; set; }
+
+        internal Func<CombatantEx[]> GetCombatantsDelegate { get; set; }
+
+        internal Action<string, string, bool, float, double> TTSDelegate { get; set; }
+
+        #endregion Delegates
     }
 
     public class TimelineScriptingHost
     {
-        public TimelineScriptingDelegates Global { get; } = new TimelineScriptingDelegates();
+        public readonly object ScriptingBlocker = new object();
 
-        public TimelineScriptingDelegates CurrentSub { get; } = new TimelineScriptingDelegates();
-    }
+        private readonly List<ITimelineScript> Scripts = new List<ITimelineScript>();
 
-    public class TimelineScriptingDelegates
-    {
-        public Action OnLoad { get; set; }
+        private int anonymouseNo = 1;
 
-        public Action<string> OnLoglineRead { get; set; }
-
-        private readonly List<TimelineScriptingSubscriber> Subscribers = new List<TimelineScriptingSubscriber>();
-
-        public void Subscribe(
-            Action subscriber,
-            double interval = 20)
+        public void AddScript(
+            ITimelineScript script)
         {
-            lock (this.Subscribers)
+            lock (this.ScriptingBlocker)
             {
-                this.Subscribers.Add(new TimelineScriptingSubscriber()
-                {
-                    Action = subscriber,
-                    Interval = interval,
-                });
-            }
-        }
+                var name = script.Name;
 
-        public void ExecuteSubscribers()
-        {
-            lock (this.Subscribers)
-            {
-                var array = this.Subscribers.ToArray();
-
-                foreach (var s in array)
+                if (string.IsNullOrEmpty(name))
                 {
-                    s.Execute();
+                    name = "AnonymouseScript-" + this.anonymouseNo;
+                    this.anonymouseNo++;
                 }
+
+                this.Scripts.Add(script);
             }
         }
 
         public void Clear()
         {
-            this.OnLoad = null;
-            this.OnLoglineRead = null;
-
-            lock (this.Subscribers)
+            lock (this.ScriptingBlocker)
             {
-                this.Subscribers.Clear();
+                TimelineScriptGlobalModel.Instance.ExpandoObject = new ExpandoObject();
+                this.anonymouseNo = 1;
+                this.Scripts.Clear();
             }
         }
-    }
 
-    public class TimelineScriptingSubscriber
-    {
-        public Action Action { get; set; }
-
-        public double Interval { get; set; }
-
-        public DateTime LastExecutionTimestamp { get; private set; }
-
-        public void Execute()
+        public void ExecuteResidents(
+            string currentSubRoutine)
         {
-            lock (this)
+            lock (this.ScriptingBlocker)
             {
-                if (this.Action == null)
+                var now = DateTime.Now;
+
+                var scripts = this.Scripts.Where(x =>
+                {
+                    if (!x.Enabled.GetValueOrDefault())
+                    {
+                        return false;
+                    }
+
+                    if (x.ScriptingEvent != TimelineScriptEvents.Resident)
+                    {
+                        return false;
+                    }
+
+                    if (string.IsNullOrEmpty(x.ParentSubRoutine) ||
+                        x.ParentSubRoutine == currentSubRoutine)
+                    {
+                        if ((now - x.LastExecutedTimestamp).TotalMilliseconds > x.Interval)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                });
+
+                if (!scripts.Any())
                 {
                     return;
                 }
 
-                if ((DateTime.Now - this.LastExecutionTimestamp) < TimeSpan.FromMilliseconds(this.Interval))
+                foreach (var script in scripts)
+                {
+                    var returnValue = script.Run();
+                }
+            }
+        }
+
+        public void ExecuteOnLogs(
+            string currentSubRoutine,
+            IEnumerable<XIVLog> logs)
+        {
+            lock (this.ScriptingBlocker)
+            {
+                var now = DateTime.Now;
+
+                var scripts = this.Scripts.Where(x =>
+                {
+                    if (!x.Enabled.GetValueOrDefault())
+                    {
+                        return false;
+                    }
+
+                    if (x.ScriptingEvent != TimelineScriptEvents.OnLogs)
+                    {
+                        return false;
+                    }
+
+                    if (string.IsNullOrEmpty(x.ParentSubRoutine) ||
+                        x.ParentSubRoutine == currentSubRoutine)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                });
+
+                if (!scripts.Any())
                 {
                     return;
                 }
 
-                try
+                TimelineScriptGlobalModel.Instance.CurrentLogs = logs.ToArray();
+
+                foreach (var script in scripts)
                 {
-                    this.Action.Invoke();
+                    var returnValue = script.Run();
                 }
-                finally
+            }
+        }
+
+        public void ExecuteOnLoad()
+        {
+            lock (this.ScriptingBlocker)
+            {
+                var scripts = this.Scripts.Where(x =>
+                    x.Enabled.GetValueOrDefault() &&
+                    x.ScriptingEvent == TimelineScriptEvents.OnLoad);
+
+                if (!scripts.Any())
                 {
-                    this.LastExecutionTimestamp = DateTime.Now;
+                    return;
+                }
+
+                foreach (var script in scripts)
+                {
+                    var returnValue = script.Run();
+                }
+            }
+        }
+
+        public void ExecuteOnSub(
+            string currentSubRoutine)
+        {
+            lock (this.ScriptingBlocker)
+            {
+                var scripts = this.Scripts.Where(x =>
+                    x.Enabled.GetValueOrDefault() &&
+                    x.ScriptingEvent == TimelineScriptEvents.OnSub &&
+                    x.ParentSubRoutine == currentSubRoutine);
+
+                if (!scripts.Any())
+                {
+                    return;
+                }
+
+                foreach (var script in scripts)
+                {
+                    var returnValue = script.Run();
+                }
+            }
+        }
+
+        public void ExecuteOnWipeout()
+        {
+            lock (this.ScriptingBlocker)
+            {
+                var scripts = this.Scripts.Where(x =>
+                    x.Enabled.GetValueOrDefault() &&
+                    x.ScriptingEvent == TimelineScriptEvents.OnWipeout);
+
+                if (!scripts.Any())
+                {
+                    return;
+                }
+
+                foreach (var script in scripts)
+                {
+                    var returnValue = script.Run();
                 }
             }
         }

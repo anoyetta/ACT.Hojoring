@@ -15,7 +15,7 @@ using Microsoft.CodeAnalysis.Scripting;
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
     public class TimelineScriptModel :
-        TimelineBase
+        TimelineBase, ITimelineScript
     {
         #region Logger
 
@@ -26,6 +26,27 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public override TimelineElementTypes TimelineType => TimelineElementTypes.Script;
 
         public override IList<TimelineBase> Children => null;
+
+        [XmlIgnore]
+        public string ParentSubRoutine => this.GetRootSubRoutine(this);
+
+        private string GetRootSubRoutine(
+            TimelineBase element)
+        {
+            var parent = element.Parent;
+
+            if (parent == null)
+            {
+                return string.Empty;
+            }
+
+            if (parent is TimelineSubroutineModel sub)
+            {
+                return sub.Name ?? string.Empty;
+            }
+
+            return this.GetRootSubRoutine(parent);
+        }
 
         private TimelineScriptEvents? scriptingEvent = null;
 
@@ -68,6 +89,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.scriptCode, value);
         }
 
+        [XmlIgnore]
+        public DateTime LastExecutedTimestamp
+        {
+            get;
+            private set;
+        } = DateTime.MinValue;
+
         private static readonly ScriptOptions TimelineScriptOptions = ScriptOptions.Default
             .WithImports(
                 "System",
@@ -82,7 +110,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 "FFXIV.Framework.XIVHelper")
             .AddReferences(
                 Assembly.GetAssembly(typeof(TimelineScriptGlobalModel)),
-                Assembly.GetAssembly(typeof(CombatantEx)));
+                Assembly.GetAssembly(typeof(CombatantEx)),
+                Assembly.GetAssembly(typeof(XIVLog)));
 
         private Script<object> script;
 
@@ -101,7 +130,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         result = false;
 
                         this.AppLogger.Error(
-                            $"[TL][CSX] Script name is nothing, Script name is required.\n<script>\n{this.scriptCode}\n</script>");
+                            $"{TimelineConstants.TLXLogSymbol} Script name is nothing, Script name is required.\n<script>\n{this.scriptCode}\n</script>");
 
                         return result;
                     }
@@ -116,7 +145,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     // Test Run
                     this.TestRun();
 
-                    this.AppLogger.Trace($"[TL][CSX] Compile was successful, name=\"{this.Name}\".");
+                    this.AppLogger.Trace($"{TimelineConstants.TLXLogSymbol} Compile was successful, name=\"{this.Name}\".");
                 }
             }
             catch (CompilationErrorException cex)
@@ -129,7 +158,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 result = false;
 
-                var message = $"[TL][CSX] Runtime error, name=\"{this.Name}\". {ex.Message}\n{ex.InnerException.ToFormatedString()}\n<script>{this.scriptCode}</script>";
+                var message = $"{TimelineConstants.TLXLogSymbol} Runtime error, name=\"{this.Name}\". {ex.Message}\n{ex.InnerException.ToFormatedString()}\n<script>{this.scriptCode}</script>";
                 this.AppLogger.Error(message);
 
                 this.script = null;
@@ -145,7 +174,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 else
                 {
                     this.AppLogger.Error(
-                        $"[TL][CSX] Unexpected error, name=\"{this.Name}\".\n<script>{this.scriptCode}</script>\n\n{ex.ToFormatedString()}");
+                        $"{TimelineConstants.TLXLogSymbol} Unexpected error, name=\"{this.Name}\".\n<script>{this.scriptCode}</script>\n\n{ex.ToFormatedString()}");
                 }
 
                 this.script = null;
@@ -173,8 +202,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 result = null;
 
-                message = $"[TL][CSX] Runtime error, name=\"{this.Name}\". {ex.Message}\n{ex.InnerException.ToFormatedString()}\n<script>{this.scriptCode}</script>";
+                message = $"{TimelineConstants.TLXLogSymbol} Runtime error, name=\"{this.Name}\". {ex.Message}\n{ex.InnerException.ToFormatedString()}\n<script>{this.scriptCode}</script>";
                 this.AppLogger.Error(message);
+
+                TimelineController.RaiseLog($"{TimelineConstants.TLXTraceLogSymbol} Runtime error, name=\"{this.Name}\". {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -187,8 +218,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 else
                 {
                     this.AppLogger.Error(
-                        $"[TL][CSX] Unexpected error, name=\"{this.Name}\".\n<script>{this.scriptCode}</script>\n\n{ex.ToFormatedString()}");
+                        $"{TimelineConstants.TLXLogSymbol} Unexpected error, name=\"{this.Name}\".\n<script>{this.scriptCode}</script>\n\n{ex.ToFormatedString()}");
+
+                    TimelineController.RaiseLog($"{TimelineConstants.TLXTraceLogSymbol} Unexpected error, name=\"{this.Name}\". {ex.Message}");
                 }
+            }
+            finally
+            {
+                this.LastExecutedTimestamp = DateTime.Now;
             }
 
             return result;
@@ -206,7 +243,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var errors = cex.Diagnostics.Count(x => x.Severity == DiagnosticSeverity.Error);
             var warns = cex.Diagnostics.Count(x => x.Severity == DiagnosticSeverity.Warning);
-            message.AppendLine($"[TL][CSX] Compilation Error, name=\"{this.Name}\". {errors} errors, {warns} warnings.");
+            message.AppendLine($"{TimelineConstants.TLXLogSymbol} Compilation Error, name=\"{this.Name}\". {errors} errors, {warns} warnings.");
 
             var i = 1;
             foreach (var diag in cex.Diagnostics)
@@ -219,48 +256,5 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             this.AppLogger.Error(message.ToString());
         }
-    }
-
-    public enum TimelineScriptEvents
-    {
-        /// <summary>
-        /// 随時処理（デフォルト）
-        /// </summary>
-        /// <remarks>
-        /// スクリプトは呼び出されるまで実行されない</remarks>
-        Anytime = 0x00,
-
-        /// <summary>
-        /// 常駐処理
-        /// </summary>
-        Resident = 0x01,
-
-        /// <summary>
-        /// 判定を拡張する
-        /// </summary>
-        /// <remarks>
-        /// a タグ, t タグ の配下で使用した場合は自動的にこの扱いとなる
-        /// </remarks>
-        Expression = 0x02,
-
-        /// <summary>
-        /// Loglineが発生したとき
-        /// </summary>
-        OnLog = 0x10,
-
-        /// <summary>
-        /// タイムラインファイルがロードされたとき
-        /// </summary>
-        OnLoad = 0x11,
-
-        /// <summary>
-        /// 当該サブルーチンが始まったとき
-        /// </summary>
-        OnSub = 0x12,
-
-        /// <summary>
-        /// ワイプしたとき
-        /// </summary>
-        OnWipe = 0x14,
     }
 }
