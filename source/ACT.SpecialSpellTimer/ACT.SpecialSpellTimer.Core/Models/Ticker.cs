@@ -93,13 +93,25 @@ namespace ACT.SpecialSpellTimer.Models
         public double Left
         {
             get => this.left;
-            set => this.SetProperty(ref this.left, Math.Round(value));
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.left, Math.Round(value));
+                }
+            }
         }
 
         public double Top
         {
             get => this.top;
-            set => this.SetProperty(ref this.top, Math.Round(value));
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.top, Math.Round(value));
+                }
+            }
         }
 
         private bool isDesignMode = false;

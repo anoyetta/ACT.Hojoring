@@ -7,6 +7,7 @@
   <system:String x:Key="UILanguage">UI 언어 (* 재시작 필요)</system:String>
   <system:String x:Key="FFXIVLanguage">FFXIV 언어 (* 재시작 필요)</system:String>
 
+  <system:String x:Key="GeneralConfig_LockAllOverlayOnHojoring">Lock all overlays on Hojoring</system:String>
   <system:String x:Key="GeneralConfig_ClickThrough">클릭 무시</system:String>
   <system:String x:Key="GeneralConfig_Opacity">불투명도</system:String>
   <system:String x:Key="GeneralConfig_LogPollingRate">메모리 스캔 간격 (msec)</system:String>
