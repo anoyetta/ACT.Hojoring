@@ -40,7 +40,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public string ScriptingEventXML
         {
             get => this.ScriptingEvent?.ToString();
-            set => this.ScriptingEvent = Enum.TryParse<TimelineScriptEvents>(value, out var v) ? v : (TimelineScriptEvents?)null;
+            set => this.ScriptingEvent = Enum.TryParse<TimelineScriptEvents>(value, out var v) ? v : null;
         }
 
         private double? interval = null;
@@ -154,36 +154,31 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             return result;
         }
 
-        public bool Run()
+        public object Run()
         {
             if (this.script == null)
             {
-                return true;
+                return null;
             }
 
-            var result = true;
+            var result = default(object);
             var message = string.Empty;
 
             try
             {
-                var returnValue = this.script?
+                result = this.script?
                     .RunAsync(globals: TimelineScriptGlobalModel.Instance).Result?.ReturnValue ?? true;
-
-                if (returnValue is bool b)
-                {
-                    result = b;
-                }
             }
             catch (AggregateException ex)
             {
-                result = false;
+                result = null;
 
                 message = $"[TL][CSX] Runtime error, name=\"{this.Name}\". {ex.Message}\n{ex.InnerException.ToFormatedString()}\n<script>{this.scriptCode}</script>";
                 this.AppLogger.Error(message);
             }
             catch (Exception ex)
             {
-                result = false;
+                result = null;
 
                 if (ex.InnerException is CompilationErrorException cex)
                 {
@@ -229,9 +224,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
     public enum TimelineScriptEvents
     {
         /// <summary>
+        /// 随時処理（デフォルト）
+        /// </summary>
+        /// <remarks>
+        /// スクリプトは呼び出されるまで実行されない</remarks>
+        Anytime = 0x00,
+
+        /// <summary>
         /// 常駐処理
         /// </summary>
-        Resident = 0x00,
+        Resident = 0x01,
 
         /// <summary>
         /// 判定を拡張する
@@ -239,26 +241,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <remarks>
         /// a タグ, t タグ の配下で使用した場合は自動的にこの扱いとなる
         /// </remarks>
-        Expression = 0x01,
+        Expression = 0x02,
 
         /// <summary>
         /// Loglineが発生したとき
         /// </summary>
-        OnLogline = 0x02,
+        OnLog = 0x10,
 
         /// <summary>
         /// タイムラインファイルがロードされたとき
         /// </summary>
-        OnLoaded = 0x10,
+        OnLoad = 0x11,
 
         /// <summary>
         /// 当該サブルーチンが始まったとき
         /// </summary>
-        OnSubStarted = 0x11,
+        OnSub = 0x12,
 
         /// <summary>
         /// ワイプしたとき
         /// </summary>
-        OnWiped = 0x12,
+        OnWipe = 0x14,
     }
 }

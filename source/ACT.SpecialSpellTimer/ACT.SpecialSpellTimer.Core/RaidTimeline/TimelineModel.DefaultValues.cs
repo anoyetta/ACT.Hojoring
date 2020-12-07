@@ -91,7 +91,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             // Script
             NewDefault(TimelineElementTypes.Script, "Enabled", true),
-            NewDefault(TimelineElementTypes.Script, "ScriptingEvent", TimelineScriptEvents.Resident),
+            NewDefault(TimelineElementTypes.Script, "ScriptingEvent", TimelineScriptEvents.Anytime),
             NewDefault(TimelineElementTypes.Script, "Interval", 20.0d),
         };
 
