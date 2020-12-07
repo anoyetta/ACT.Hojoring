@@ -405,13 +405,25 @@ namespace ACT.SpecialSpellTimer.Config
         public double LPSViewX
         {
             get => this.lpsViewX;
-            set => this.SetProperty(ref this.lpsViewX, Math.Floor(value));
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.lpsViewX, Math.Round(value));
+                }
+            }
         }
 
         public double LPSViewY
         {
             get => this.lpsViewY;
-            set => this.SetProperty(ref this.lpsViewY, Math.Floor(value));
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.lpsViewY, Math.Round(value));
+                }
+            }
         }
 
         public double LPSViewScale
@@ -448,13 +460,25 @@ namespace ACT.SpecialSpellTimer.Config
         public double POSViewX
         {
             get => this.posViewX;
-            set => this.SetProperty(ref this.posViewX, Math.Floor(value));
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.posViewX, Math.Round(value));
+                }
+            }
         }
 
         public double POSViewY
         {
             get => this.posViewY;
-            set => this.SetProperty(ref this.posViewY, Math.Floor(value));
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.posViewY, Math.Round(value));
+                }
+            }
         }
 
         public double POSViewScale

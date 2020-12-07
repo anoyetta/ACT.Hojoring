@@ -167,6 +167,7 @@ HEALER1 に me（自分）が含まれる場合にこのトリガが有効にな
   <system:String x:Key="Options_TTSDictionary">TTS辞書</system:String>
 
   <system:String x:Key="Options_OverlayEnabled">オーバーレイを有効にする</system:String>
+  <system:String x:Key="Options_LockAllOverlayOnHojoring">補助輪のすべてのオーバーレイを固定する</system:String>
   <system:String x:Key="Options_HideOverlayOnNonActive">非アクティブのときオーバーレイを隠す</system:String>
   <system:String x:Key="Options_VisibleOverlayWithoutFFXIV">FFXIVのプロセスが存在しなくてもオーバーレイを表示する（テスト用）</system:String>
   <system:String x:Key="Options_Transparency">透過率 ※100で透明</system:String>
