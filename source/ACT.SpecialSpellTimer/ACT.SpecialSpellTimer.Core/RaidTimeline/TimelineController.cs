@@ -134,7 +134,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             scriptGlobal.GetCombatantsDelegate =
                 () => CombatantsManager.Instance.GetCombatants().ToArray();
 
-            scriptGlobal.TTSDelegate = (tts, device, sync, volume, delay) =>
+            scriptGlobal.TTSDelegate = (
+                tts,
+                device,
+                sync,
+                volume,
+                delay) =>
             {
                 if (string.IsNullOrEmpty(tts))
                 {
@@ -155,6 +160,60 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     sync,
                     volume,
                     delay);
+            };
+
+            scriptGlobal.ShowTickerDelegate = (
+                message,
+                icon,
+                order,
+                delay,
+                duration,
+                durationVisible,
+                syncToHide,
+                fontScale) =>
+            {
+                if (string.IsNullOrEmpty(message))
+                {
+                    return;
+                }
+
+                WPFHelper.BeginInvoke(async () =>
+                {
+                    var v = new TimelineVisualNoticeModel();
+
+                    v.Enabled = true;
+                    v.LogSeq = long.MaxValue;
+                    v.Timestamp = DateTime.Now;
+
+                    v.Icon = icon;
+                    v.Order = order;
+                    v.Delay = delay;
+                    v.Duration = duration;
+                    v.DurationVisible = durationVisible;
+                    v.FontScale = fontScale;
+
+                    var text = message;
+                    text = TimelineExpressionsModel.ReplaceText(text);
+                    text = XIVPluginHelper.Instance.ReplacePartyMemberName(
+                        text,
+                        Settings.Default.PCNameInitialOnDisplayStyle);
+
+                    v.TextToDisplay = text;
+
+                    if (!string.IsNullOrEmpty(syncToHide))
+                    {
+                        v.SyncToHideKeyword = syncToHide ?? string.Empty;
+                    }
+
+                    if (v.Delay > 0)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(v.Delay ?? 0));
+                    }
+
+                    TimelineNoticeOverlay.NoticeView?.AddNotice(v);
+                    v.SetSyncToHide(TimelineManager.Instance.GetPlaceholders());
+                    v.AddSyncToHide();
+                });
             };
         }
 

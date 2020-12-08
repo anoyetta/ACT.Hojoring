@@ -92,19 +92,43 @@ namespace ACT.SpecialSpellTimer.RazorModel
                 volume,
                 delay);
 
-        public void ShowVNotice(
+        /// <summary>
+        /// スペスペたいむ専用Ticker（v-notice）を表示する
+        /// </summary>
+        /// <param name="message">表示するメッセージ</param>
+        /// <param name="icon">表示するアイコン</param>
+        /// <param name="order">表示順。数字が小さいほど上に表示される</param>
+        /// <param name="delay">表示までの遅延秒数</param>
+        /// <param name="duration">表示秒数</param>
+        /// <param name="durationVisible">秒数のカウントダウンを表示するか？</param>
+        /// <param name="syncToHide">強制的に非表示にする文字列</param>
+        /// <param name="fontScale">フォントスケール</param>
+        public void ShowTicker(
             string message,
             string icon = null,
-            double duration = 5.0)
-        {
-        }
+            int order = 0,
+            double delay = 0,
+            double duration = 5.0,
+            bool durationVisible = false,
+            string syncToHide = null,
+            double fontScale = 1.0)
+            => this.ShowTickerDelegate?.Invoke(
+                message,
+                icon,
+                order,
+                delay,
+                duration,
+                durationVisible,
+                syncToHide,
+                fontScale);
 
-        public void ShowINotice(
+        public void ShowImage(
             string image,
             double duration = 5.0,
             double x = 0,
             double y = 0)
         {
+            // NO-OP
         }
 
         public CombatantEx GetPlayer()
@@ -142,6 +166,8 @@ namespace ACT.SpecialSpellTimer.RazorModel
         internal Func<CombatantEx[]> GetCombatantsDelegate { get; set; }
 
         internal Action<string, string, bool, float, double> TTSDelegate { get; set; }
+
+        internal Action<string, string, int, double, double, bool, string, double> ShowTickerDelegate { get; set; }
 
         #endregion Delegates
     }
