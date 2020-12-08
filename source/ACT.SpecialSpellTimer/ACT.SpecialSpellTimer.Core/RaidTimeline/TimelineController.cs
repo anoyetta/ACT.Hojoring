@@ -185,7 +185,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     v.LogSeq = long.MaxValue;
                     v.Timestamp = DateTime.Now;
 
-                    v.Icon = icon;
+                    if (!string.IsNullOrEmpty(icon))
+                    {
+                        var c = CombatantsManager.Instance.GetCombatant(icon);
+                        if (c != null)
+                        {
+                            v.Icon = $"{c.JobID}.png";
+                        }
+                        else
+                        {
+                            v.Icon = icon;
+                        }
+                    }
+
                     v.Order = order;
                     v.Delay = delay;
                     v.Duration = duration;

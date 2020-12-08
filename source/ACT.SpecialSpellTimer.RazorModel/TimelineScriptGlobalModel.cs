@@ -96,7 +96,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
         /// スペスペたいむ専用Ticker（v-notice）を表示する
         /// </summary>
         /// <param name="message">表示するメッセージ</param>
-        /// <param name="icon">表示するアイコン</param>
+        /// <param name="icon">表示するアイコン。キャラ名を指定するとそのキャラのジョブアイコンが表示される</param>
         /// <param name="order">表示順。数字が小さいほど上に表示される</param>
         /// <param name="delay">表示までの遅延秒数</param>
         /// <param name="duration">表示秒数</param>
