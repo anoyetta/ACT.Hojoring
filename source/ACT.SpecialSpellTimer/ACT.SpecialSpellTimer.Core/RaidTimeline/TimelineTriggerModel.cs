@@ -11,6 +11,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using ACT.SpecialSpellTimer.RazorModel;
 using FFXIV.Framework.Common;
 using Match = System.Text.RegularExpressions.Match;
 
@@ -116,6 +117,30 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.AddRange(value);
         }
 
+        /// <summary>
+        /// Script
+        /// </summary>
+        [XmlElement(ElementName = "script")]
+        public TimelineScriptModel[] Scripts
+        {
+            get => this.Statements
+                .Where(x => x.TimelineType == TimelineElementTypes.Script)
+                .Cast<TimelineScriptModel>()
+                .ToArray();
+            set
+            {
+                this.AddRange(value);
+
+                if (value != null)
+                {
+                    foreach (var item in value)
+                    {
+                        item.ScriptingEvent = TimelineScriptEvents.Expression;
+                    }
+                }
+            }
+        }
+
         [XmlIgnore]
         public bool IsExpressionAvailable =>
             this.ExpressionsStatements.Any(x => x.Enabled.GetValueOrDefault());
@@ -143,6 +168,47 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
+        public bool ExecuteScripts()
+        {
+            var scripts = this.Scripts.Where(x => x.Enabled.GetValueOrDefault());
+
+            if (!scripts.Any())
+            {
+                return true;
+            }
+
+            var totalResult = true;
+
+            lock (TimelineScriptGlobalModel.Instance.ScriptingHost.ScriptingBlocker)
+            {
+                foreach (var script in scripts)
+                {
+                    var result = false;
+                    var returnValue = script.Run();
+
+                    if (returnValue == null)
+                    {
+                        result = true;
+                    }
+                    else
+                    {
+                        if (returnValue is bool b)
+                        {
+                            result = b;
+                        }
+                        else
+                        {
+                            result = true;
+                        }
+                    }
+
+                    totalResult |= result;
+                }
+            }
+
+            return totalResult;
+        }
+
         [XmlIgnore]
         public bool IsPositionSyncAvailable =>
             this.PositionSyncStatements.Any(x => x.Enabled.GetValueOrDefault());
@@ -159,7 +225,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 timeline.TimelineType == TimelineElementTypes.PositionSync ||
                 timeline.TimelineType == TimelineElementTypes.HPSync ||
                 timeline.TimelineType == TimelineElementTypes.Expressions ||
-                timeline.TimelineType == TimelineElementTypes.Dump)
+                timeline.TimelineType == TimelineElementTypes.Dump ||
+                timeline.TimelineType == TimelineElementTypes.Script)
             {
                 timeline.Parent = this;
                 this.statements.Add(timeline);

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.RaidTimeline.Views;
+using ACT.SpecialSpellTimer.RazorModel;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using NLog;
@@ -459,6 +460,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 if (element is TimelineImageNoticeModel image)
                 {
                     await WPFHelper.InvokeAsync(image.StanbyNotice);
+                }
+
+                // Script をコンパイルする
+                // スクリプトホストに登録する
+                if (element is TimelineScriptModel script)
+                {
+                    if (script.Compile())
+                    {
+                        TimelineScriptGlobalModel.Instance.ScriptingHost.AddScript(script);
+                    }
                 }
 
                 // アクティビティにスタイルを設定する

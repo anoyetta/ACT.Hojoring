@@ -71,6 +71,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         /// <summary>
+        /// Script
+        /// </summary>
+        [XmlElement(ElementName = "script")]
+        public TimelineScriptModel[] Scripts
+        {
+            get => this.Statements
+                .Where(x => x.TimelineType == TimelineElementTypes.Script)
+                .Cast<TimelineScriptModel>()
+                .ToArray();
+            set => this.AddRange(value);
+        }
+
+        /// <summary>
         /// トリガのインポートを実行する
         /// </summary>
         public void ExecuteImports()
@@ -133,7 +146,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             if (timeline.TimelineType == TimelineElementTypes.Activity ||
                 timeline.TimelineType == TimelineElementTypes.Trigger ||
-                timeline.TimelineType == TimelineElementTypes.Import)
+                timeline.TimelineType == TimelineElementTypes.Import ||
+                timeline.TimelineType == TimelineElementTypes.Script)
             {
                 timeline.Parent = this;
                 this.statements.Add(timeline);

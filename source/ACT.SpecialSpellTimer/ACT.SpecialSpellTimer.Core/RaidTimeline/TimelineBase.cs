@@ -34,6 +34,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         ExpressionsPredicate,
         ExpressionsTable,
         Import,
+        Script,
     }
 
     public static class TimelineElementTypesEx
@@ -59,6 +60,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 "predicate",
                 "table",
                 "import",
+                "script",
             }[(int)t];
 
         public static TimelineElementTypes FromText(
