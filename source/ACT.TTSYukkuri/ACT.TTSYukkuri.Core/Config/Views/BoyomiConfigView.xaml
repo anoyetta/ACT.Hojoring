@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="Shift_JIS"?>
 <UserControl
   x:Class="ACT.TTSYukkuri.Config.Views.BoyomiConfigView"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -77,11 +76,11 @@
       IsChecked="{Binding Config.IsBoyomiInterruptNotication, Mode=TwoWay}" />
 
     <TextBlock Margin="0 10 0 0" FontSize="14" xml:space="preserve">
-* 注意
- 棒読みちゃんのHTTPサーバインターフェースに接続します。
- 公式サイトで配布されている最新β版の棒読みちゃんを使用してください。
- また旧バージョンで使用していた Socket インターフェスからは使用するポート番号が変わっています。
- 上記の Default ボタンをクリックしてポート番号を 50080 に変更してから使用してください。
+* 注意 
+棒読みちゃんのHTTPサーバインターフェースに接続します。 
+公式サイトで配布されている最新β版の棒読みちゃんを使用してください。 
+また旧バージョンで使用していた Socket インターフェスからは使用するポート番号が変わっています。 
+上記の Default ボタンをクリックしてポート番号を 50080 に変更してから使用してください。 
     </TextBlock>
   </StackPanel>
 </UserControl>

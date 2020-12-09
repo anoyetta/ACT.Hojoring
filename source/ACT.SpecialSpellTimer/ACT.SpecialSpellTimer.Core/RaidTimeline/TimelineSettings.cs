@@ -82,7 +82,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public double Left
         {
             get => this.left;
-            set => this.SetProperty(ref this.left, Math.Round(value));
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.left, Math.Round(value));
+                }
+            }
         }
 
         private double top = 10;
@@ -90,7 +96,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public double Top
         {
             get => this.top;
-            set => this.SetProperty(ref this.top, Math.Round(value));
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.top, Math.Round(value));
+                }
+            }
         }
 
         private double width = 300;
@@ -98,7 +110,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public double Width
         {
             get => this.width;
-            set => this.SetProperty(ref this.width, Math.Round(value));
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.width, Math.Round(value));
+                }
+            }
         }
 
         private double height = 400;
@@ -106,7 +124,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public double Height
         {
             get => this.height;
-            set => this.SetProperty(ref this.height, Math.Round(value));
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.height, Math.Round(value));
+                }
+            }
         }
 
         private double noticeLeft = 10;
@@ -114,7 +138,55 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public double NoticeLeft
         {
             get => this.noticeLeft;
-            set => this.SetProperty(ref this.noticeLeft, Math.Round(value));
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.noticeLeft, Math.Round(value));
+                }
+            }
+        }
+
+        private double noticeTop = 10;
+
+        public double NoticeTop
+        {
+            get => this.noticeTop;
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.noticeTop, Math.Round(value));
+                }
+            }
+        }
+
+        private double noticeWidth = 300;
+
+        public double NoticeWidth
+        {
+            get => this.noticeWidth;
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.noticeWidth, Math.Round(value));
+                }
+            }
+        }
+
+        private double noticeHeight = 250;
+
+        public double NoticeHeight
+        {
+            get => this.noticeHeight;
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.noticeHeight, Math.Round(value));
+                }
+            }
         }
 
         private bool isTimelineLiveUpdate = false;
@@ -157,6 +229,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.psyncDetectInterval, value);
         }
 
+        private double residentScriptInterval = 20;
+
+        public double ResidentScriptInterval
+        {
+            get => this.residentScriptInterval;
+            set => this.SetProperty(ref this.residentScriptInterval, value);
+        }
+
         private ThreadPriority notifyThreadPriority = ThreadPriority.Normal;
 
         public ThreadPriority NotifyThreadPriority
@@ -171,30 +251,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             get => this.timelineThreadPriority;
             set => this.SetProperty(ref this.timelineThreadPriority, value);
-        }
-
-        private double noticeTop = 10;
-
-        public double NoticeTop
-        {
-            get => this.noticeTop;
-            set => this.SetProperty(ref this.noticeTop, Math.Round(value));
-        }
-
-        private double noticeWidth = 300;
-
-        public double NoticeWidth
-        {
-            get => this.noticeWidth;
-            set => this.SetProperty(ref this.noticeWidth, Math.Round(value));
-        }
-
-        private double noticeHeight = 250;
-
-        public double NoticeHeight
-        {
-            get => this.noticeHeight;
-            set => this.SetProperty(ref this.noticeHeight, Math.Round(value));
         }
 
         private bool isMute = false;

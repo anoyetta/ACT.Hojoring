@@ -167,6 +167,7 @@
   <system:String x:Key="Options_TTSDictionary">TTS字典</system:String>
 
   <system:String x:Key="Options_OverlayEnabled">启用插件</system:String>
+  <system:String x:Key="Options_LockAllOverlayOnHojoring">Lock all overlays on Hojoring</system:String>
   <system:String x:Key="Options_HideOverlayOnNonActive">不活动时隐藏插件</system:String>
   <system:String x:Key="Options_VisibleOverlayWithoutFFXIV">即使没有游戏进程也显示(debug)</system:String>
   <system:String x:Key="Options_Transparency">透明度</system:String>

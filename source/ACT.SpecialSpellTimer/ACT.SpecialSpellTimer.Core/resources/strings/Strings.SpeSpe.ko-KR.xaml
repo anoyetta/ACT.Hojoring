@@ -167,6 +167,7 @@
   <system:String x:Key="Options_TTSDictionary">TTS사전</system:String>
 
   <system:String x:Key="Options_OverlayEnabled">오버레이 사용</system:String>
+  <system:String x:Key="Options_LockAllOverlayOnHojoring">Lock all overlays on Hojoring</system:String>
   <system:String x:Key="Options_HideOverlayOnNonActive">오버레이 자동 숨김</system:String>
   <system:String x:Key="Options_VisibleOverlayWithoutFFXIV">FFXIV 프로세스가 실행 중이 아니어도 오버레이 표시 (테스트용)</system:String>
   <system:String x:Key="Options_Transparency">투명도 (※ 100에 가까울수록 투명)</system:String>

@@ -167,6 +167,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Options_TTSDictionary">TTS Dictionary</system:String>
 
   <system:String x:Key="Options_OverlayEnabled">Overlay enabled</system:String>
+  <system:String x:Key="Options_LockAllOverlayOnHojoring">Lock all overlays on Hojoring</system:String>
   <system:String x:Key="Options_HideOverlayOnNonActive">Hide overlay when inactive</system:String>
   <system:String x:Key="Options_VisibleOverlayWithoutFFXIV">Show overlay when not exists FFXIV process (for debug)</system:String>
   <system:String x:Key="Options_Transparency">Transparency</system:String>

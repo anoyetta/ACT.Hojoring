@@ -48,13 +48,15 @@ namespace FFXIV.Framework.XIVHelper
 
         public int CombatantsOtherCount { get; private set; } = 0;
 
-        public CombatantEx Player { get; } = new CombatantEx()
+        public static readonly CombatantEx DummyPlayer = new CombatantEx()
         {
             Name = "Hojoring Hojo",
             Type = (byte)Actor.Type.PC,
             Job = (int)JobIDs.PLD,
             IsDummy = true,
         };
+
+        public CombatantEx Player { get; } = DummyPlayer;
 
         public IEnumerable<CombatantEx> GetCombatants()
         {

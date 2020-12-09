@@ -28,7 +28,13 @@ namespace ACT.UltraScouter.Config
         public double X
         {
             get => this.x;
-            set => SetProperty(ref this.x, Math.Round(value));
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.x, Math.Round(value));
+                }
+            }
         }
 
         /// <summary>
@@ -39,7 +45,13 @@ namespace ACT.UltraScouter.Config
         public double Y
         {
             get => this.y;
-            set => this.SetProperty(ref this.y, Math.Round(value));
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.y, Math.Round(value));
+                }
+            }
         }
     }
 
@@ -52,7 +64,13 @@ namespace ACT.UltraScouter.Config
         public double W
         {
             get => this.w;
-            set => this.SetProperty(ref this.w, value);
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.w, Math.Round(value));
+                }
+            }
         }
 
         private double h;
@@ -61,7 +79,13 @@ namespace ACT.UltraScouter.Config
         public double H
         {
             get => this.h;
-            set => this.SetProperty(ref this.h, value);
+            set
+            {
+                if (!FFXIV.Framework.Config.Instance.IsOverlaysAllLocked)
+                {
+                    this.SetProperty(ref this.h, Math.Round(value));
+                }
+            }
         }
     }
 }
