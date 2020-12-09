@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 using FFXIV.Framework.XIVHelper;
@@ -65,7 +66,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
             string file)
             => TimelineRazorModel.Instance.ParseJsonFile(file);
 
-        public XIVLog[] CurrentLogs { get; set; }
+        public XIVLog[] CurrentLogs { get; set; } = new XIVLog[0];
 
         public TimelineScriptingHost ScriptingHost { get; } = new TimelineScriptingHost();
 
@@ -131,17 +132,19 @@ namespace ACT.SpecialSpellTimer.RazorModel
             // NO-OP
         }
 
+        private static readonly CombatantEx[] EmptyCombatants = new CombatantEx[0];
+
         public CombatantEx GetPlayer()
-            => this.GetPlayerDelegate?.Invoke();
+            => this.GetPlayerDelegate?.Invoke() ?? CombatantsManager.DummyPlayer;
 
         public CombatantEx[] GetParty()
-            => this.GetPartyDelegate?.Invoke();
+            => this.GetPartyDelegate?.Invoke() ?? EmptyCombatants;
 
         public CombatantEx[] GetCombatants()
-            => this.GetCombatantsDelegate?.Invoke();
+            => this.GetCombatantsDelegate?.Invoke() ?? EmptyCombatants;
 
         public string GetCurrentSubRoutineName()
-            => this.GetCurrentSubRoutineNameDelegate?.Invoke();
+            => this.GetCurrentSubRoutineNameDelegate?.Invoke() ?? string.Empty;
 
         public void RaiseLogLine(
             string logLine)
@@ -178,21 +181,13 @@ namespace ACT.SpecialSpellTimer.RazorModel
 
         private readonly List<ITimelineScript> Scripts = new List<ITimelineScript>();
 
-        private int anonymouseNo = 1;
+        public static int AnonymouseScriptNo { get; internal set; } = 1;
 
         public void AddScript(
             ITimelineScript script)
         {
             lock (this.ScriptingBlocker)
             {
-                var name = script.Name;
-
-                if (string.IsNullOrEmpty(name))
-                {
-                    name = "AnonymouseScript-" + this.anonymouseNo;
-                    this.anonymouseNo++;
-                }
-
                 this.Scripts.Add(script);
             }
         }
@@ -201,8 +196,8 @@ namespace ACT.SpecialSpellTimer.RazorModel
         {
             lock (this.ScriptingBlocker)
             {
+                AnonymouseScriptNo = 1;
                 TimelineScriptGlobalModel.Instance.ExpandoObject = new ExpandoObject();
-                this.anonymouseNo = 1;
                 this.Scripts.Clear();
             }
         }
@@ -257,6 +252,13 @@ namespace ACT.SpecialSpellTimer.RazorModel
             lock (this.ScriptingBlocker)
             {
                 var now = DateTime.Now;
+
+#if DEBUG
+                if (currentSubRoutine == "応用フェーズ")
+                {
+                    Debug.WriteLine("応用フェーズ");
+                }
+#endif
 
                 var scripts = this.Scripts.Where(x =>
                 {

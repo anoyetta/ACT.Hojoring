@@ -127,6 +127,8 @@ namespace ACT.XIVLog
         private int wipeoutCounter = 1;
         private int fileNo = 1;
 
+        private DateTime lastWroteTimestamp = DateTime.MaxValue;
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void InitTask()
         {
@@ -143,11 +145,24 @@ namespace ACT.XIVLog
             {
                 var isNeedsFlush = false;
 
-                if (string.IsNullOrEmpty(Config.Instance.OutputDirectory) ||
-                    LogQueue.IsEmpty)
+                if (string.IsNullOrEmpty(Config.Instance.OutputDirectory))
                 {
                     Thread.Sleep(TimeSpan.FromSeconds(Config.Instance.WriteInterval));
                     return;
+                }
+
+                if (LogQueue.IsEmpty)
+                {
+                    if ((DateTime.Now - this.lastWroteTimestamp).TotalSeconds > 10)
+                    {
+                        this.lastWroteTimestamp = DateTime.MaxValue;
+                        isNeedsFlush = true;
+                    }
+                    else
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(Config.Instance.WriteInterval));
+                        return;
+                    }
                 }
 
                 if ((DateTime.Now - this.lastFlushTimestamp).TotalSeconds
@@ -209,6 +224,7 @@ namespace ACT.XIVLog
                     }
 
                     this.writeBuffer.AppendLine(xivlog.ToCSVLine());
+                    this.lastWroteTimestamp = DateTime.Now;
                     Thread.Yield();
                 }
 
@@ -216,8 +232,11 @@ namespace ACT.XIVLog
                     this.isForceFlush ||
                     this.writeBuffer.Length > 5000)
                 {
-                    this.writter.Write(this.writeBuffer.ToString());
-                    this.writeBuffer.Clear();
+                    if (this.writeBuffer.Length > 0)
+                    {
+                        this.writter.Write(this.writeBuffer.ToString());
+                        this.writeBuffer.Clear();
+                    }
 
                     if (isNeedsFlush || this.isForceFlush)
                     {

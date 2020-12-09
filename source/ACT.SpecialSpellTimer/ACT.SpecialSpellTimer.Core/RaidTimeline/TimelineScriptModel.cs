@@ -66,6 +66,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private double? interval = null;
 
+        /// <summary>
+        /// 常駐処理を実行する間隔（ミリ秒）
+        /// </summary>
         [XmlIgnore]
         public double? Interval
         {
@@ -115,12 +118,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private Script<object> script;
 
+        private string currentCompiledCode;
+
+        public static int anonymouseNo = 1;
+
         public bool Compile()
         {
             var result = true;
 
             try
             {
+                if (string.IsNullOrEmpty(this.Name))
+                {
+                    this.Name = "AnonymouseScript-" + TimelineScriptingHost.AnonymouseScriptNo;
+                    TimelineScriptingHost.AnonymouseScriptNo++;
+                }
+
                 this.script = null;
 
                 if (!string.IsNullOrEmpty(this.scriptCode))
@@ -135,17 +148,27 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         return result;
                     }
 
-                    this.script = CSharpScript.Create(
-                        this.scriptCode,
-                        TimelineScriptOptions,
-                        typeof(TimelineScriptGlobalModel));
+                    if (this.script == null ||
+                        this.currentCompiledCode != this.scriptCode)
+                    {
+                        this.script = CSharpScript.Create(
+                            this.scriptCode,
+                            TimelineScriptOptions,
+                            typeof(TimelineScriptGlobalModel));
 
-                    this.script.Compile();
+                        this.script.Compile();
 
-                    // Test Run
-                    this.TestRun();
+                        // Test Run
+                        this.TestRun();
 
-                    this.AppLogger.Trace($"{TimelineConstants.TLXLogSymbol} Compile was successful, name=\"{this.Name}\".");
+                        this.currentCompiledCode = this.scriptCode;
+
+                        this.AppLogger.Trace($"{TimelineConstants.TLXLogSymbol} Compile was successful, name=\"{this.Name}\".");
+                    }
+                    else
+                    {
+                        this.AppLogger.Trace($"{TimelineConstants.TLXLogSymbol} Is available, name=\"{this.Name}\".");
+                    }
                 }
             }
             catch (CompilationErrorException cex)
@@ -193,10 +216,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var result = default(object);
             var message = string.Empty;
 
+            var globalObject = TimelineScriptGlobalModel.Instance;
+
             try
             {
-                result = this.script?
-                    .RunAsync(globals: TimelineScriptGlobalModel.Instance).Result?.ReturnValue ?? true;
+                result = this.script?.RunAsync(globalObject).Result?.ReturnValue ?? true;
+
+                if (this.ScriptingEvent != TimelineScriptEvents.Resident)
+                {
+                    TimelineController.RaiseLog(
+                        $"{TimelineConstants.TLXTraceLogSymbol} \"{this.Name}\" executed. ReturnValue=\"{result}\"");
+                }
             }
             catch (AggregateException ex)
             {
@@ -256,5 +286,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             this.AppLogger.Error(message.ToString());
         }
+
+        public override string ToString()
+            => $"name={this.Name} parent={this.ParentSubRoutine} event={this.ScriptingEvent} inverval={this.interval:N0}";
     }
 }

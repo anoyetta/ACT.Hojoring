@@ -67,6 +67,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 .Where(x => x.TimelineType == TimelineElementTypes.Import)
                 .Cast<TimelineImportModel>()
                 .ToArray();
+
             set => this.AddRange(value);
         }
 
@@ -80,6 +81,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 .Where(x => x.TimelineType == TimelineElementTypes.Script)
                 .Cast<TimelineScriptModel>()
                 .ToArray();
+
             set => this.AddRange(value);
         }
 

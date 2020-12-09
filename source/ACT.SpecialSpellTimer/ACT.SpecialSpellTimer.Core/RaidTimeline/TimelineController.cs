@@ -202,6 +202,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
                     }
 
+                    v.StyleModel = TimelineSettings.Instance.DefaultNoticeStyle;
                     v.Order = order;
                     v.Delay = delay;
                     v.Duration = duration;

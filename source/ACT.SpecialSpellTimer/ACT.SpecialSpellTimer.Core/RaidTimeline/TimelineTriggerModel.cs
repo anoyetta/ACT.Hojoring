@@ -183,6 +183,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 foreach (var script in scripts)
                 {
+#if DEBUG
+                    if (!string.IsNullOrEmpty(script.Name) &&
+                        script.Name.Contains("DEBUG"))
+                    {
+                        Debug.WriteLine(script.Name);
+                    }
+#endif
                     var result = false;
                     var returnValue = script.Run();
 
@@ -202,7 +209,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
                     }
 
-                    totalResult |= result;
+                    totalResult &= result;
                 }
             }
 
