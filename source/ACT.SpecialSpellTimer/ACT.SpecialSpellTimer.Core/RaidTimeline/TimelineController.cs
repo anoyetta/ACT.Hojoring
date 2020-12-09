@@ -101,13 +101,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 TimelineImageNoticeModel.Collect();
 
                 isDetectLogWorking = false;
-                LogWorker.Join(100);
-                if (LogWorker.IsAlive)
-                {
-                    LogWorker.Abort();
-                }
 
-                LogWorker = null;
+                if (LogWorker != null)
+                {
+                    LogWorker.Join(100);
+                    if (LogWorker.IsAlive)
+                    {
+                        LogWorker.Abort();
+                    }
+
+                    LogWorker = null;
+                }
             }
         }
 
