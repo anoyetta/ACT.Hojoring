@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<timeline>
+  <name>スペスペたいむスクリプト サンプル</name>
+  <rev>rev1</rev>
+  <description>
+    スペスペたいむスクリプトの記述サンプル集です。
+    スクリプトの言語は C# となっております。
+  </description>
+  <author>anoyetta</author>
+  <zone>Test Zone (Dummy)</zone>
+  <locale>JA</locale>
+  <entry>メインフェーズ</entry>
+
+  <s name="メインフェーズ">
+    <a time="00:00" text="スタート" />
+
+    <!-- a タグ配下のスクリプトはそのアクティビティが到来したときに実行される -->
+    <a time="00:05" text="a タグ配下のスクリプト">
+      <script name="Test01-OnActivity">
+      </script>
+    </a>
+  </s>
+</timeline>
