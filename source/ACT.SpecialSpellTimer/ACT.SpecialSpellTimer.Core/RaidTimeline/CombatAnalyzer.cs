@@ -176,7 +176,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="isImport">Importか？</param>
         /// <param name="logInfo">ログ情報</param>
-        private void FormActMain_OnLogLineRead(
+        private async void FormActMain_OnLogLineRead(
             bool isImport,
             LogLineEventArgs logInfo)
         {
@@ -187,8 +187,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return;
                 }
 
-                // キューに貯める
-                this.logInfoQueue.Enqueue(logInfo);
+                await Task.Run(() => this.logInfoQueue.Enqueue(logInfo));
             }
             catch (Exception ex)
             {

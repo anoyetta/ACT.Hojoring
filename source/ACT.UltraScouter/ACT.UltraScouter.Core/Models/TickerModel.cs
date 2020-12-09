@@ -225,7 +225,7 @@ namespace ACT.UltraScouter.Models
 
         private static volatile uint HealerInCombatMPRecoverValue;
 
-        private void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
+        private async void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
         {
             if (isImport)
             {
@@ -241,34 +241,37 @@ namespace ACT.UltraScouter.Models
 
                 this.semaphore = true;
 
-                var config = Settings.Instance.MPTicker;
-
-                if ((DateTime.Now - this.lastSyncTimestamp).TotalSeconds <= config.ResyncInterval)
+                await Task.Run(() =>
                 {
-                    return;
-                }
+                    var config = Settings.Instance.MPTicker;
 
-                var sync = false;
-                var target = string.Empty;
+                    if ((DateTime.Now - this.lastSyncTimestamp).TotalSeconds <= config.ResyncInterval)
+                    {
+                        return;
+                    }
 
-                if (!string.IsNullOrEmpty(this.syncKeywordToHoT) &&
-                    config.IsSyncHoT)
-                {
-                    sync = logInfo.logLine.Contains(this.syncKeywordToHoT);
-                    target = "HoT";
-                }
+                    var sync = false;
+                    var target = string.Empty;
 
-                if (!string.IsNullOrEmpty(this.syncKeywordToDoT) &&
-                    config.IsSyncDoT)
-                {
-                    sync = logInfo.logLine.Contains(this.syncKeywordToDoT);
-                    target = "DoT";
-                }
+                    if (!string.IsNullOrEmpty(this.syncKeywordToHoT) &&
+                        config.IsSyncHoT)
+                    {
+                        sync = logInfo.logLine.Contains(this.syncKeywordToHoT);
+                        target = "HoT";
+                    }
 
-                if (sync)
-                {
-                    this.Sync(logInfo.logLine, target);
-                }
+                    if (!string.IsNullOrEmpty(this.syncKeywordToDoT) &&
+                        config.IsSyncDoT)
+                    {
+                        sync = logInfo.logLine.Contains(this.syncKeywordToDoT);
+                        target = "DoT";
+                    }
+
+                    if (sync)
+                    {
+                        this.Sync(logInfo.logLine, target);
+                    }
+                });
             }
             finally
             {
