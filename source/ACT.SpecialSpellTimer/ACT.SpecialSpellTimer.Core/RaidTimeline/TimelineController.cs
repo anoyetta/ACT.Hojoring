@@ -945,9 +945,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // グローバル変数を更新する
             TimelineExpressionsModel.RefreshGlobalVariables();
 
-            // P-Syncを判定する
             var detectPSyncTask = default(Task);
             var scriptingTask = default(Task);
+            var optionTasks = new[] { detectPSyncTask, scriptingTask };
 
             try
             {
@@ -984,7 +984,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
             finally
             {
-                Task.WaitAll(detectPSyncTask, scriptingTask);
+                Task.WaitAll(
+                    optionTasks.Where(x => x != null).ToArray());
             }
 
             return existsLog;
