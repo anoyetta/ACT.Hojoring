@@ -413,39 +413,42 @@ namespace FFXIV.Framework.XIVHelper
 
         private uint sequence = 1;
 
-        private void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
+        private async void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
         {
             if (!this.isActivationAllowed)
             {
                 return;
             }
 
-            var line = logInfo.logLine;
-
-            // 18文字未満のログは書式エラーになるため無視する
-            if (line.Length < 18)
+            await Task.Run(() =>
             {
-                return;
-            }
+                var line = logInfo.logLine;
 
-            // メッセージタイプを抽出する
-            var messagetypeText = line.Substring(15, 2);
-            if (!int.TryParse(
-                messagetypeText,
-                NumberStyles.HexNumber,
-                CultureInfo.InvariantCulture,
-                out int messagetype))
-            {
-                return;
-            }
+                // 18文字未満のログは書式エラーになるため無視する
+                if (line.Length < 18)
+                {
+                    return;
+                }
 
-            // メッセージ部分だけを抽出する
-            var message = line.Substring(15);
+                // メッセージタイプを抽出する
+                var messagetypeText = line.Substring(15, 2);
+                if (!int.TryParse(
+                    messagetypeText,
+                    NumberStyles.HexNumber,
+                    CultureInfo.InvariantCulture,
+                    out int messagetype))
+                {
+                    return;
+                }
 
-            this.OnParsedLogLine(
-                this.sequence++,
-                messagetype,
-                message);
+                // メッセージ部分だけを抽出する
+                var message = line.Substring(15);
+
+                this.OnParsedLogLine(
+                    this.sequence++,
+                    messagetype,
+                    message);
+            });
         }
 
         private void OnParsedLogLine(
