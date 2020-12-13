@@ -224,8 +224,13 @@ namespace FFXIV.Framework
 
         public bool IsOverlaysAllLocked
         {
+#if false
             get => this.isOverlaysAllLocked;
             set => this.SetProperty(ref this.isOverlaysAllLocked, value);
+#else
+            get => this.isOverlaysAllLocked;
+            set => this.isOverlaysAllLocked = false;
+#endif
         }
 
         public static Locales GetDefaultLocale()
