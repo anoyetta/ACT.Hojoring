@@ -176,6 +176,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 // グローバルトリガを初期化する
                 TimelineManager.Instance.InitGlobalTriggers();
+
+                // ゾーングローバルオブジェクトを初期化する
+                TimelineScriptGlobalModel.Instance.DynamicObject.ClearZoneGlobal();
             }
         }
 

@@ -70,7 +70,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
 
         public TimelineScriptingHost ScriptingHost { get; } = new TimelineScriptingHost();
 
-        public dynamic ExpandoObject { get; internal set; } = new ExpandoObject();
+        public DynamicObject DynamicObject { get; } = new DynamicObject();
 
         /// <summary>
         /// TTS
@@ -175,6 +175,19 @@ namespace ACT.SpecialSpellTimer.RazorModel
         #endregion Delegates
     }
 
+    public class DynamicObject
+    {
+        public dynamic ZoneGlobal { get; private set; } = new ExpandoObject();
+
+        public dynamic CurrentTry { get; private set; } = new ExpandoObject();
+
+        internal void ClearZoneGlobal()
+            => this.ZoneGlobal = new ExpandoObject();
+
+        internal void ClearCurrentTry()
+            => this.CurrentTry = new ExpandoObject();
+    }
+
     public class TimelineScriptingHost
     {
         public readonly object ScriptingBlocker = new object();
@@ -197,7 +210,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
             lock (this.ScriptingBlocker)
             {
                 AnonymouseScriptNo = 1;
-                TimelineScriptGlobalModel.Instance.ExpandoObject = new ExpandoObject();
+                TimelineScriptGlobalModel.Instance.DynamicObject.ClearCurrentTry();
                 this.Scripts.Clear();
             }
         }
