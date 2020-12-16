@@ -161,7 +161,6 @@ namespace FFXIV.Framework
                         LogMessageType.NetworkDoT => true,
                         LogMessageType.NetworkCancelAbility => true,
                         LogMessageType.NetworkEffectResult => true,
-                        LogMessageType.NetworkStatusList => true,
                         LogMessageType.NetworkUpdateHp => true,
                         LogMessageType.Settings => true,
                         LogMessageType.Process => true,
