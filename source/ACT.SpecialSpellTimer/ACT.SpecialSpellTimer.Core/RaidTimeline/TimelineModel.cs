@@ -613,12 +613,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 tl.ErrorText = msg.ToString();
 
-                File.WriteAllText(
-                    RazorDumpFile,
-                    sb.ToString(),
-                    new UTF8Encoding(false));
+                if (sb != null)
+                {
+                    File.WriteAllText(
+                        RazorDumpFile,
+                        sb.ToString(),
+                        new UTF8Encoding(false));
 
-                tl.CompiledText = sb.ToString();
+                    tl.CompiledText = sb.ToString();
+                }
 
                 return tl;
             }
