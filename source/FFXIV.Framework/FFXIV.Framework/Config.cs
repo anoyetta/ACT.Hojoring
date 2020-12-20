@@ -331,8 +331,15 @@ namespace FFXIV.Framework
 
         public bool IsFilterdLog(
             LogMessageType type)
-            => this.globalLogFilterDictionary.ContainsKey(type) ?
-            this.globalLogFilterDictionary[type].Value :
-            false;
+        {
+            if (this.globalLogFilterDictionary == null)
+            {
+                return false;
+            }
+
+            return this.globalLogFilterDictionary.ContainsKey(type) ?
+                this.globalLogFilterDictionary[type].Value :
+                false;
+        }
     }
 }

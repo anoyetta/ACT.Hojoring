@@ -132,6 +132,9 @@ namespace ACT.XIVLog
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void InitTask()
         {
+            // 共通設定ファイルを読み込む
+            _ = FFXIV.Framework.Config.Instance;
+
             this.dumpLogTask = ThreadWorker.Run(
                 doWork,
                 TimeSpan.FromSeconds(Config.Instance.WriteInterval).TotalMilliseconds,
