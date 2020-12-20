@@ -161,6 +161,9 @@ namespace ACT.UltraScouter
                         return;
                     }
 
+                    // 共通設定ファイルを読み込む
+                    _ = FFXIV.Framework.Config.Instance;
+
                     // HojoringのSplashを表示する
                     UpdateChecker.ShowSplash();
 
