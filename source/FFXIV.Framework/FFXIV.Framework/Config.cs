@@ -20,6 +20,8 @@ namespace FFXIV.Framework
     public class Config :
         BindableBase
     {
+        public static readonly object ConfigBlocker = new object();
+
         #region Singleton
 
         private static Config instance;
