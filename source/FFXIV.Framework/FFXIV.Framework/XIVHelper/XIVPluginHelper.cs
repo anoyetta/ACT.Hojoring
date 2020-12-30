@@ -142,6 +142,12 @@ namespace FFXIV.Framework.XIVHelper
                 this.isStarted = true;
             }
 
+            // FFXIV.Framework.config を読み込ませる
+            lock (Config.ConfigBlocker)
+            {
+                _ = Config.Instance;
+            }
+
             this.FFXIVLocale = ffxivLocale;
             this.MemorySubscriberInterval = pollingInteval;
 

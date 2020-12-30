@@ -365,8 +365,11 @@ namespace ACT.TTSYukkuri
                         return;
                     }
 
-                    // 共通設定ファイルを読み込む
-                    _ = FFXIV.Framework.Config.Instance;
+                    // FFXIV.Framework.config を読み込ませる
+                    lock (FFXIV.Framework.Config.ConfigBlocker)
+                    {
+                        _ = FFXIV.Framework.Config.Instance;
+                    }
 
                     // HojoringのSplashを表示する
                     UpdateChecker.ShowSplash();
