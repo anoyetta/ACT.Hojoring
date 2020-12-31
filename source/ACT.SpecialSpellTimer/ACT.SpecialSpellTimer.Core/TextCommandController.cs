@@ -19,7 +19,7 @@ namespace ACT.SpecialSpellTimer
         /// コマンド解析用の正規表現
         /// </summary>
         private readonly static Regex regexCommand = new Regex(
-            @"/spespe\s+(?<command>refresh|changeenabled|set|clear|on|off|pos)\s+?(?<target>all|spells|telops|me|pt|pet|placeholder|$)\s+?(?<windowname>"".*""|all)? ?(?<value>.*)",
+            @"/spespe\s+(?<command>refresh|changeenabled|set|clear|on|off|pos)(\s+)?(?<target>all|spells|telops|me|pt|pet|placeholder|$)(\s+)?(?<windowname>"".*""|all)?(\s+)?(?<value>.*)",
             RegexOptions.Compiled);
 
         /// <summary>
