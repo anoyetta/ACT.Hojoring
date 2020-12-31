@@ -577,6 +577,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             TimelineActivityModel currentActivity,
             string destination = null)
         {
+            if (currentActivity == null)
+            {
+                return false;
+            }
+
             var name = string.IsNullOrEmpty(destination) ?
                 currentActivity?.CallTarget ?? string.Empty :
                 destination;
@@ -663,6 +668,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             TimelineActivityModel currentActivity,
             string destination = null)
         {
+            if (currentActivity == null)
+            {
+                return false;
+            }
+
             var name = string.IsNullOrEmpty(destination) ?
                 currentActivity?.GoToDestination ?? string.Empty :
                 destination;
@@ -693,6 +703,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         this.Model.StopLive();
 
+                        this.CurrentTime = targetAct.Time;
+
                         // ジャンプ後のアクティビティを初期化する
                         foreach (var item in this.ActivityLine.Where(x =>
                             x.IsDone &&
@@ -701,7 +713,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             item.Init();
                         }
 
-                        this.CurrentTime = targetAct.Time;
+                        currentActivity.Init();
                     }
                     finally
                     {
@@ -2101,7 +2113,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // Activeなアクティビティを決める
-            var active = await Task.Run(() => (
+            var active = (
                 from x in currentActivityLine
                 where
                 !x.IsActive &&
@@ -2111,7 +2123,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 orderby
                 x.Seq descending
                 select
-                x).FirstOrDefault());
+                x).FirstOrDefault();
 
             if (active != null)
             {
