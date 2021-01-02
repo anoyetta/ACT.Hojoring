@@ -577,11 +577,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             TimelineActivityModel currentActivity,
             string destination = null)
         {
-            if (currentActivity == null)
-            {
-                return false;
-            }
-
             var name = string.IsNullOrEmpty(destination) ?
                 currentActivity?.CallTarget ?? string.Empty :
                 destination;
@@ -668,11 +663,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             TimelineActivityModel currentActivity,
             string destination = null)
         {
-            if (currentActivity == null)
-            {
-                return false;
-            }
-
             var name = string.IsNullOrEmpty(destination) ?
                 currentActivity?.GoToDestination ?? string.Empty :
                 destination;
@@ -2113,7 +2103,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             // Activeなアクティビティを決める
-            var active = (
+            var active = await Task.Run(() => (
                 from x in currentActivityLine
                 where
                 !x.IsActive &&
@@ -2123,7 +2113,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 orderby
                 x.Seq descending
                 select
-                x).FirstOrDefault();
+                x).FirstOrDefault());
 
             if (active != null)
             {
