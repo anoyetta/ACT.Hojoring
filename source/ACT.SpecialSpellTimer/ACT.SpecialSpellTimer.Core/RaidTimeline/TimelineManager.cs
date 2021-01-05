@@ -427,9 +427,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var defaultStyle = TimelineSettings.Instance.DefaultStyle;
             var defaultNoticeStyle = TimelineSettings.Instance.DefaultNoticeStyle;
 
-            // <HOGE>を[HOGE]に置き換えたプレースホルダリストを生成する
+            // プレースホルダリストを初期化する
             this.ClearCurrentPlaceholders();
-            var placeholders = this.GetPlaceholders();
 
             // 初期化する
             if (timeline != null)
@@ -487,7 +486,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 setStyle(element);
 
                 // sync用の正規表現にプレースホルダをセットしてコンパイルし直す
-                (element as ISynchronizable)?.SetRegex(placeholders);
+                (element as ISynchronizable)?.InitRegex();
             }
 
             // スタイルを適用する

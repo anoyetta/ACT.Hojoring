@@ -108,6 +108,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static readonly Dictionary<string, TimelineTable> Tables = new Dictionary<string, TimelineTable>(16);
 
         /// <summary>
+        /// 変数・テーブルを参照しているトリガをリコンパイルするためのデリゲート
+        /// </summary>
+        public static readonly Dictionary<string, Action> ReferedTriggerRecompileDelegates = new Dictionary<string, Action>();
+
+        /// <summary>
         /// テーブルが存在するか？
         /// </summary>
         public static bool IsExistsTables
@@ -565,6 +570,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 foreach (var table in tables)
                 {
+                    var before = text;
+
                     foreach (var ph in table.GetPlaceholders())
                     {
                         var valueText = ph.Value?.ToString();

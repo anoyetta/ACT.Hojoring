@@ -4,9 +4,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Image;
-using ACT.SpecialSpellTimer.Models;
 using Prism.Mvvm;
-using static ACT.SpecialSpellTimer.Models.TableCompiler;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -172,6 +170,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
     public interface ISynchronizable
     {
+        string Name { get; }
+
         string SyncKeyword { get; set; }
 
         string SyncKeywordReplaced { get; set; }
@@ -199,26 +199,58 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             return sync.SyncMatch;
         }
 
-        public static void SetRegex(
-            this ISynchronizable sync,
-            IEnumerable<PlaceholderContainer> placeholders = null)
-        {
-            if (placeholders == null)
-            {
-                placeholders = TableCompiler.Instance.GetPlaceholders();
-            }
+        private static readonly Regex DetectVariableRegex = new Regex(
+            @"(TABLE|VAR)\['(?<name>.+)'\]",
+            RegexOptions.Compiled);
 
+        public static void InitRegex(
+            this ISynchronizable sync)
+        {
             var replacedKeyword = sync.SyncKeyword;
 
-            if (!string.IsNullOrEmpty(replacedKeyword))
+            var matches = DetectVariableRegex.Matches(
+                replacedKeyword);
+
+            if (matches.Count > 0)
             {
-                foreach (var ph in placeholders)
+                foreach (Match m in matches)
                 {
-                    replacedKeyword = replacedKeyword.Replace(
-                        ph.Placeholder,
-                        ph.ReplaceString);
+                    var name = m.Groups["name"].Value;
+
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        TimelineExpressionsModel.ReferedTriggerRecompileDelegates[name] += () =>
+                        {
+                            sync.RecompileRegex();
+
+                            TimelineController.RaiseLog(
+                                $"{TimelineConstants.LogSymbol} Refered trigger was recompiled. name={sync.Name}");
+                        };
+                    }
                 }
             }
+
+            // プレースホルダを置換する
+            // VAR['hoge'] 変数を置換する
+            replacedKeyword = TimelineExpressionsModel.ReplaceText(replacedKeyword);
+
+            // EVAL(expressions) 関数を置換する
+            replacedKeyword = TimelineExpressionsModel.ReplaceEval(replacedKeyword);
+
+            sync.SyncKeywordReplaced = replacedKeyword;
+        }
+
+        public static void RecompileRegex(
+            this ISynchronizable sync)
+        {
+            var replacedKeyword = sync.SyncKeyword;
+
+            // プレースホルダを置換する
+            // VAR['hoge'] 変数を置換する
+            replacedKeyword = TimelineExpressionsModel.ReplaceText(replacedKeyword);
+
+            // EVAL(expressions) 関数を置換する
+            replacedKeyword = TimelineExpressionsModel.ReplaceEval(replacedKeyword);
 
             sync.SyncKeywordReplaced = replacedKeyword;
         }
