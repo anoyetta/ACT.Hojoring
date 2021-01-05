@@ -572,6 +572,63 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             return text;
         }
+
+        private static readonly string EVALKeyword = "EVAL";
+
+        private static readonly Regex EVALRegex = new Regex(
+            $@"{EVALKeyword}\((?<expressions>.+?)(\s*,\s*(?<format>.*))?\)",
+            RegexOptions.Compiled);
+
+        public static string ReplaceEval(
+            string text)
+        {
+            if (text == null)
+            {
+                text = string.Empty;
+            }
+
+            if (!text.Contains(EVALKeyword))
+            {
+                return text;
+            }
+
+            var match = EVALRegex.Match(text);
+            if (!match.Success)
+            {
+                return text;
+            }
+
+            var expressions = match.Groups["expressions"].Value;
+            var format = match.Groups["format"].Value;
+
+            expressions = expressions?
+                .Replace("'", string.Empty)
+                .Replace("\"", string.Empty);
+
+            format = format?
+                .Replace("'", string.Empty)
+                .Replace("\"", string.Empty);
+
+            if (string.IsNullOrEmpty(expressions))
+            {
+                return text;
+            }
+
+            var result = string.Empty;
+
+            if (string.IsNullOrEmpty(format))
+            {
+                result = expressions.Eval<double>().ToString();
+            }
+            else
+            {
+                result = expressions.Eval<double>().ToString(format);
+            }
+
+            text = match.Result(result);
+
+            return text;
+        }
     }
 
     [XmlType(TypeName = "set")]
@@ -742,6 +799,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 t = matched.Result(t);
             }
 
+            // EVAL関数を判定する
+            t = TimelineExpressionsModel.ReplaceEval(t);
+
             if (bool.TryParse(t, out bool b))
             {
                 return b;
@@ -774,6 +834,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 t2 = matched.Result(t2);
             }
+
+            // EVAL関数を判定する
+            t2 = TimelineExpressionsModel.ReplaceEval(t2);
 
             expectedValueReplaced = t2;
 
