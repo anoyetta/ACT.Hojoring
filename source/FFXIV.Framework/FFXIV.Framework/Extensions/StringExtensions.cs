@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
@@ -81,14 +80,20 @@ namespace FFXIV.Framework.Extensions
 
         private static readonly DataTable dataTable = new DataTable();
 
-        public static T Eval<T>(
+        public static object Eval(
             this string text,
             params object[] args)
         {
             text = string.Format(text, args);
-            var result = dataTable.Compute(text, string.Empty);
-            var converter = TypeDescriptor.GetConverter(typeof(T));
-            return (T)converter.ConvertFromString(result.ToString());
+
+            try
+            {
+                return dataTable.Compute(text, string.Empty);
+            }
+            catch (SyntaxErrorException)
+            {
+                return null;
+            }
         }
     }
 }
