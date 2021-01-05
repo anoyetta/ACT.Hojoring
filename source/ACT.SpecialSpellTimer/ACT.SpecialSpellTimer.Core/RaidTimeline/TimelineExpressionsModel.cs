@@ -320,6 +320,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     $"{TimelineConstants.LogSymbol} set VAR['{set.Name}'] = {variable.Counter}");
 
                 isVaribleChanged = true;
+
+                if (ReferedTriggerRecompileDelegates.ContainsKey(set.Name))
+                {
+                    ReferedTriggerRecompileDelegates[set.Name]?.Invoke();
+                }
             }
 
             // table を処理する

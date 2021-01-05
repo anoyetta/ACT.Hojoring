@@ -206,6 +206,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public static void InitRegex(
             this ISynchronizable sync)
         {
+            if (string.IsNullOrEmpty(sync.SyncKeyword))
+            {
+                sync.SyncKeywordReplaced = string.Empty;
+                return;
+            }
+
             var replacedKeyword = sync.SyncKeyword;
 
             var matches = DetectVariableRegex.Matches(
@@ -219,13 +225,26 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                     if (!string.IsNullOrEmpty(name))
                     {
-                        TimelineExpressionsModel.ReferedTriggerRecompileDelegates[name] += () =>
+                        var action = new Action(() =>
                         {
                             sync.RecompileRegex();
 
+                            var label = !string.IsNullOrEmpty(sync.Name) ?
+                                $"name={sync.Name}" :
+                                $"text={sync.Text}";
+
                             TimelineController.RaiseLog(
-                                $"{TimelineConstants.LogSymbol} Refered trigger was recompiled. name={sync.Name}");
-                        };
+                                $"{TimelineConstants.LogSymbol} Refered trigger was recompiled. {label} regex={sync.SyncKeywordReplaced}");
+                        });
+
+                        if (!TimelineExpressionsModel.ReferedTriggerRecompileDelegates.ContainsKey(name))
+                        {
+                            TimelineExpressionsModel.ReferedTriggerRecompileDelegates[name] = action;
+                        }
+                        else
+                        {
+                            TimelineExpressionsModel.ReferedTriggerRecompileDelegates[name] += action;
+                        }
                     }
                 }
             }
@@ -243,6 +262,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public static void RecompileRegex(
             this ISynchronizable sync)
         {
+            if (string.IsNullOrEmpty(sync.SyncKeyword))
+            {
+                sync.SyncKeywordReplaced = string.Empty;
+                return;
+            }
+
             var replacedKeyword = sync.SyncKeyword;
 
             // プレースホルダを置換する

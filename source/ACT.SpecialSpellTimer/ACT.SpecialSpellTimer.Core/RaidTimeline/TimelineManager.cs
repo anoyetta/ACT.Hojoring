@@ -486,7 +486,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 setStyle(element);
 
                 // sync用の正規表現にプレースホルダをセットしてコンパイルし直す
-                (element as ISynchronizable)?.InitRegex();
+                if (element is ISynchronizable sync)
+                {
+                    sync.InitRegex();
+                }
             }
 
             // スタイルを適用する
