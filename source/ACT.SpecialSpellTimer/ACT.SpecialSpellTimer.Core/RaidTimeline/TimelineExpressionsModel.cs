@@ -403,7 +403,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 log = $"predicate ['{pre.Name}':{variable.Counter}] equal [{value}] -> {result}";
             }
 
-            TimelineController.RaiseLog($"{TimelineConstants.LogSymbol} {log}");
+            lock (pre)
+            {
+                if (pre.LastestLog != log)
+                {
+                    TimelineController.RaiseLog($"{TimelineConstants.LogSymbol} {log}");
+                }
+
+                pre.LastestLog = log;
+            }
 
             return result;
         }
@@ -774,6 +782,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             get => this.Count?.ToString();
             set => this.Count = int.TryParse(value, out var v) ? v : (int?)null;
         }
+
+        [XmlIgnore]
+        public string LastestLog { get; set; } = string.Empty;
     }
 
     public static class ObjectComparer

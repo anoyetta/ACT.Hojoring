@@ -478,6 +478,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
                 }
 
+                if (element is TimelineExpressionsPredicateModel pre)
+                {
+                    pre.LastestLog = string.Empty;
+                }
+
                 // アクティビティにスタイルを設定する
                 setStyle(element);
 
