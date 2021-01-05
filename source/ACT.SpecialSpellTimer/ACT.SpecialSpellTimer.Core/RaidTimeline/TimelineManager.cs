@@ -482,7 +482,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 setStyle(element);
 
                 // sync用の正規表現にプレースホルダをセットしてコンパイルし直す
-                setRegex(element, placeholders);
+                (element as ISynchronizable)?.SetRegex(placeholders);
             }
 
             // スタイルを適用する
@@ -519,31 +519,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             StringComparison.OrdinalIgnoreCase)) ??
                         defaultNoticeStyle;
                 }
-            }
-
-            // 正規表現をセットする
-            void setRegex(
-                TimelineBase element,
-                IEnumerable<PlaceholderContainer> phs)
-            {
-                if (!(element is ISynchronizable sync))
-                {
-                    return;
-                }
-
-                var replacedKeyword = sync.SyncKeyword;
-
-                if (!string.IsNullOrEmpty(replacedKeyword))
-                {
-                    foreach (var ph in phs)
-                    {
-                        replacedKeyword = replacedKeyword.Replace(
-                            ph.Placeholder,
-                            ph.ReplaceString);
-                    }
-                }
-
-                sync.SyncKeywordReplaced = replacedKeyword;
             }
         }
 

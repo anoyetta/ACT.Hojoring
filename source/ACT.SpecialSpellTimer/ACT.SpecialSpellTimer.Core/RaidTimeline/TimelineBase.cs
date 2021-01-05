@@ -4,7 +4,9 @@ using System.Text.RegularExpressions;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Image;
+using ACT.SpecialSpellTimer.Models;
 using Prism.Mvvm;
+using static ACT.SpecialSpellTimer.Models.TableCompiler;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -195,6 +197,30 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             sync.SyncMatch = sync.SyncRegex?.Match(logLine);
             return sync.SyncMatch;
+        }
+
+        public static void SetRegex(
+            this ISynchronizable sync,
+            IEnumerable<PlaceholderContainer> placeholders = null)
+        {
+            if (placeholders == null)
+            {
+                placeholders = TableCompiler.Instance.GetPlaceholders();
+            }
+
+            var replacedKeyword = sync.SyncKeyword;
+
+            if (!string.IsNullOrEmpty(replacedKeyword))
+            {
+                foreach (var ph in placeholders)
+                {
+                    replacedKeyword = replacedKeyword.Replace(
+                        ph.Placeholder,
+                        ph.ReplaceString);
+                }
+            }
+
+            sync.SyncKeywordReplaced = replacedKeyword;
         }
     }
 
