@@ -403,15 +403,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 log = $"predicate ['{pre.Name}':{variable.Counter}] equal [{value}] -> {result}";
             }
 
-            lock (pre)
+            if (pre.LastestLog != log)
             {
-                if (pre.LastestLog != log)
-                {
-                    TimelineController.RaiseLog($"{TimelineConstants.LogSymbol} {log}");
-                }
-
-                pre.LastestLog = log;
+                TimelineController.RaiseLog($"{TimelineConstants.LogSymbol} {log}");
             }
+
+            pre.LastestLog = log;
 
             return result;
         }
@@ -529,13 +526,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <summary>
         /// テキストに含まれるプレースホルダを変数値に置き換える
         /// </summary>
-        /// <param name="text">
+        /// <param name="input">
         /// インプットテキスト</param>
         /// <returns>
         /// 置換後のテキスト</returns>
         public static string ReplaceText(
-            string text)
+            string input)
         {
+            var text = input;
+
             if (text == null)
             {
                 text = string.Empty;
@@ -584,12 +583,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static readonly string EVALKeyword = "EVAL";
 
         private static readonly Regex EVALRegex = new Regex(
-            $@"{EVALKeyword}\((?<expressions>.+?)(\s*,\s*(?<format>.*))?\)",
+            @"EVAL\((?<expressions>.+?)(\s*,\s*(?<format>.*))?\)",
             RegexOptions.Compiled);
 
         public static string ReplaceEval(
-            string text)
+            string input)
         {
+            var text = input;
+
             if (text == null)
             {
                 text = string.Empty;
@@ -597,13 +598,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (!text.Contains(EVALKeyword))
             {
-                return text;
+                return input;
             }
 
             var match = EVALRegex.Match(text);
             if (!match.Success)
             {
-                return text;
+                return input;
             }
 
             var expressions = match.Groups["expressions"].Value;
@@ -619,21 +620,34 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (string.IsNullOrEmpty(expressions))
             {
-                return text;
+                return input;
             }
 
-            var result = string.Empty;
+            var result = expressions.Eval();
+            var resultText = string.Empty;
+
+            if (result == null)
+            {
+                return input;
+            }
 
             if (string.IsNullOrEmpty(format))
             {
-                result = expressions.Eval<double>().ToString();
+                resultText = result.ToString();
             }
             else
             {
-                result = expressions.Eval<double>().ToString(format);
+                if (result is IFormattable f)
+                {
+                    resultText = f.ToString(format, null);
+                }
+                else
+                {
+                    resultText = result.ToString();
+                }
             }
 
-            text = match.Result(result);
+            text = match.Result(resultText);
 
             return text;
         }
