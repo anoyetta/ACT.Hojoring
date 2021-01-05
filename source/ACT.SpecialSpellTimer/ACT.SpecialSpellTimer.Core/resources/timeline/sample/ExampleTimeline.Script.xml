@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<timeline>
+  <name>スペスペたいむスクリプト サンプル</name>
+  <rev>rev1</rev>
+  <description>
+    スペスペたいむスクリプトの記述サンプル集です。
+    スクリプトの言語は C# となっております。
+  </description>
+  <author>anoyetta</author>
+  <zone>Test Zone (Dummy)</zone>
+  <locale>JA</locale>
+  <entry>基本フェーズ</entry>
+
+  <s name="基本フェーズ">
+
+    <t name="スクリプトからのログを検知する" sync="テストトリガを起動する">
+      <v-notice
+        text="スクリプトからのログを検知しました"
+        duration="5"
+        duration-visible="false" />
+    </t>
+
+    <a time="000" text="スタート" />
+
+    <!-- a タグ配下のスクリプトはそのアクティビティが到来したときに実行される -->
+    <a time="006" text="v-noticeを発生させる">
+      <script name="Test01-OnActivity">
+        // ShowTicker で v-notice を表示する
+        ShowTicker("スクリプトからの通知");
+      </script>
+    </a>
+
+    <a time="012" text="ログを発生させる">
+      <script name="Test02-RaiseLogLine">
+        // RaiseLogLine でログを任意に発生させる
+        RaiseLogLine("テストトリガを起動する");
+      </script>
+    </a>
+
+    <a time="018" text="TTSで喋らせる">
+      <script name="Test03-TTS">
+        // TTS で任意に喋らせる
+        TTS("ハロー、スクリプト");
+      </script>
+    </a>
+
+    <a time="021" text="応用フェーズへ" goto="応用フェーズ" />
+
+    <a time="090" text="終了" />
+  </s>
+
+  <s name="応用フェーズ">
+    <!--
+      event を定義するとイベントハンドラによって呼び出される
+      event="OnSub" はサブルーチンに入ったときに一度だけ実行される
+    -->
+    <script name="サブルーチンに入ったときに実行する" event="OnSub">
+      ShowTicker("応用フェーズ始まるよー");
+    </script>
+
+    <!-- トリガの配下で定義した場合はトリガの前提条件となる -->
+    <t name="トリガとスクリプト1-起動しない" sync="テストトリガ2を起動する">
+      <script>
+        // false を返すのでこのトリガは実行されない
+        return false;
+      </script>
+      <v-notice
+        text="実行されないトリガからの通知"
+        duration="5"
+        duration-visible="false"
+        icon="Cross.png" />
+    </t>
+
+    <t name="トリガとスクリプト2-起動する" sync="テストトリガ2を起動する">
+      <script>
+        // true を返すのでこのトリガは実行される
+        return true;
+      </script>
+      <v-notice
+        text="実行されるトリガからの通知"
+        duration="5"
+        duration-visible="false"
+        icon="Circle.png" />
+    </t>
+
+    <!--
+      常駐スクリプトを定義する
+      event="Resident" を指定すると常駐処理として繰り返し呼び出される。
+      サブルーチン配下に記載した場合は、そのサブルーチンの間だけ処理を繰り返す。
+      ルートに記載した場合は、そのスペスペたいむの実行中、処理を繰り返す。
+      処理の間隔は interval で指定する。単位はミリ秒、初期値は1000ミリ秒となっている。
+    -->
+    <script name="常駐処理" event="Resident" interval="1000">
+      // 周囲のCombatantsを取得する
+      var combatants = GetCombatants();
+
+      // 取得したCombatantsに対してループする
+      foreach (var c in combatants)
+      {
+        if (c.Name.Contains("Anoyetta"))
+        {
+          ShowTicker("あのさん発見！");
+          break;
+        }
+      }
+    </script>
+
+    <!--
+      ログに対する判定を定義する
+      event="OnLogs" を指定するとログが発生したときに繰り返し呼び出される。
+      1行ずつ呼び出すと負荷が高いためある程度の行数分をまとめたタイミングで呼ばれる。
+      ログ行が抜けることはない。
+      判定する場合は渡されたログ行に対してループして判定する必要がある。
+    -->
+    <script name="ログ処理" event="OnLogs">
+      var xivLogs = CurrentLogs;
+
+      foreach (var xivLog in xivLogs)
+      {
+        if (xivLog.LogLine.Contains("show-ticker-from-log"))
+        {
+          ShowTicker("ログにマッチしました");
+        }
+      }
+    </script>
+    
+    <a time="006" text="テストトリガを起動する">
+      <script name="Test11-RaiseLogLine">
+        // RaiseLogLine でログを任意に発生させる
+        RaiseLogLine("テストトリガ2を起動する");
+      </script>
+    </a>
+
+    <a time="012" text="ダミーログを発生させる">
+      <script name="Test12-RaiseLogLine">
+        // RaiseLogLine でログを任意に発生させる
+        RaiseLogLine("show-ticker-from-log");
+      </script>
+    </a>
+
+    <a time="090" text="終了" />
+  </s>
+</timeline>

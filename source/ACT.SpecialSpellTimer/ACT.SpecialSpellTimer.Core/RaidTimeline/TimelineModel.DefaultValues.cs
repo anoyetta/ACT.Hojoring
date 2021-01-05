@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Config;
+using ACT.SpecialSpellTimer.RazorModel;
 using ACT.SpecialSpellTimer.Utility;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -91,8 +92,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             // Script
             NewDefault(TimelineElementTypes.Script, "Enabled", true),
-            NewDefault(TimelineElementTypes.Script, "ScriptingEvent", TimelineScriptEvents.Resident),
-            NewDefault(TimelineElementTypes.Script, "Interval", 20.0d),
+            NewDefault(TimelineElementTypes.Script, "ScriptingEvent", TimelineScriptEvents.Anytime),
+            NewDefault(TimelineElementTypes.Script, "Interval", 1000d),
         };
 
         /// <summary>

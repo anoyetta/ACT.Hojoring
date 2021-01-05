@@ -20,6 +20,8 @@ namespace FFXIV.Framework
     public class Config :
         BindableBase
     {
+        public static readonly object ConfigBlocker = new object();
+
         #region Singleton
 
         private static Config instance;
@@ -47,46 +49,49 @@ namespace FFXIV.Framework
 
         public static Config Load()
         {
-            if (File.Exists(OldFileName) &&
-                !File.Exists(FileName))
+            lock (ConfigBlocker)
             {
-                File.Move(OldFileName, FileName);
-            }
-
-            if (!File.Exists(FileName))
-            {
-                return null;
-            }
-
-            var fi = new FileInfo(FileName);
-            if (fi.Length <= 0)
-            {
-                return null;
-            }
-
-            MigrateConfig(FileName);
-
-            using (var sr = new StreamReader(FileName, new UTF8Encoding(false)))
-            {
-                if (sr.BaseStream.Length > 0)
+                if (File.Exists(OldFileName) &&
+                    !File.Exists(FileName))
                 {
-                    var xs = new XmlSerializer(typeof(Config));
-                    var data = xs.Deserialize(sr) as Config;
-                    if (data != null)
+                    File.Move(OldFileName, FileName);
+                }
+
+                if (!File.Exists(FileName))
+                {
+                    return null;
+                }
+
+                var fi = new FileInfo(FileName);
+                if (fi.Length <= 0)
+                {
+                    return null;
+                }
+
+                MigrateConfig(FileName);
+
+                using (var sr = new StreamReader(FileName, new UTF8Encoding(false)))
+                {
+                    if (sr.BaseStream.Length > 0)
                     {
-                        instance = data;
+                        var xs = new XmlSerializer(typeof(Config));
+                        var data = xs.Deserialize(sr) as Config;
+                        if (data != null)
+                        {
+                            instance = data;
+                        }
                     }
                 }
+
+                foreach (var item in instance.globalLogFilters)
+                {
+                    item.FormatTextDelegate = (t, _) => FormatLogMessageType(t);
+                }
+
+                instance.globalLogFilterDictionary = instance.globalLogFilters.ToDictionary(x => x.Key);
+
+                return instance;
             }
-
-            foreach (var item in instance.globalLogFilters)
-            {
-                item.FormatTextDelegate = (t, _) => FormatLogMessageType(t);
-            }
-
-            instance.globalLogFilterDictionary = instance.globalLogFilters.ToDictionary(x => x.Key);
-
-            return instance;
         }
 
         private static void MigrateConfig(
@@ -104,13 +109,13 @@ namespace FFXIV.Framework
 
         public static void Save()
         {
-            if (instance == null)
+            lock (ConfigBlocker)
             {
-                return;
-            }
+                if (instance == null)
+                {
+                    return;
+                }
 
-            lock (instance)
-            {
                 var directoryName = Path.GetDirectoryName(FileName);
 
                 if (!Directory.Exists(directoryName))
@@ -161,7 +166,6 @@ namespace FFXIV.Framework
                         LogMessageType.NetworkDoT => true,
                         LogMessageType.NetworkCancelAbility => true,
                         LogMessageType.NetworkEffectResult => true,
-                        LogMessageType.NetworkStatusList => true,
                         LogMessageType.NetworkUpdateHp => true,
                         LogMessageType.Settings => true,
                         LogMessageType.Process => true,
@@ -218,6 +222,19 @@ namespace FFXIV.Framework
         {
             get => this.xivLocale;
             set => this.SetProperty(ref this.xivLocale, value);
+        }
+
+        private bool isOverlaysAllLocked;
+
+        public bool IsOverlaysAllLocked
+        {
+#if false
+            get => this.isOverlaysAllLocked;
+            set => this.SetProperty(ref this.isOverlaysAllLocked, value);
+#else
+            get => this.isOverlaysAllLocked;
+            set => this.isOverlaysAllLocked = false;
+#endif
         }
 
         public static Locales GetDefaultLocale()
@@ -319,8 +336,15 @@ namespace FFXIV.Framework
 
         public bool IsFilterdLog(
             LogMessageType type)
-            => this.globalLogFilterDictionary.ContainsKey(type) ?
-            this.globalLogFilterDictionary[type].Value :
-            false;
+        {
+            if (this.globalLogFilterDictionary == null)
+            {
+                return false;
+            }
+
+            return this.globalLogFilterDictionary.ContainsKey(type) ?
+                this.globalLogFilterDictionary[type].Value :
+                false;
+        }
     }
 }

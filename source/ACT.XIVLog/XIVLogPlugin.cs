@@ -127,9 +127,17 @@ namespace ACT.XIVLog
         private int wipeoutCounter = 1;
         private int fileNo = 1;
 
+        private DateTime lastWroteTimestamp = DateTime.MaxValue;
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void InitTask()
         {
+            // FFXIV.Framework.config を読み込ませる
+            lock (FFXIV.Framework.Config.ConfigBlocker)
+            {
+                _ = FFXIV.Framework.Config.Instance;
+            }
+
             this.dumpLogTask = ThreadWorker.Run(
                 doWork,
                 TimeSpan.FromSeconds(Config.Instance.WriteInterval).TotalMilliseconds,
@@ -143,11 +151,24 @@ namespace ACT.XIVLog
             {
                 var isNeedsFlush = false;
 
-                if (string.IsNullOrEmpty(Config.Instance.OutputDirectory) ||
-                    LogQueue.IsEmpty)
+                if (string.IsNullOrEmpty(Config.Instance.OutputDirectory))
                 {
                     Thread.Sleep(TimeSpan.FromSeconds(Config.Instance.WriteInterval));
                     return;
+                }
+
+                if (LogQueue.IsEmpty)
+                {
+                    if ((DateTime.Now - this.lastWroteTimestamp).TotalSeconds > 10)
+                    {
+                        this.lastWroteTimestamp = DateTime.MaxValue;
+                        isNeedsFlush = true;
+                    }
+                    else
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(Config.Instance.WriteInterval));
+                        return;
+                    }
                 }
 
                 if ((DateTime.Now - this.lastFlushTimestamp).TotalSeconds
@@ -209,6 +230,7 @@ namespace ACT.XIVLog
                     }
 
                     this.writeBuffer.AppendLine(xivlog.ToCSVLine());
+                    this.lastWroteTimestamp = DateTime.Now;
                     Thread.Yield();
                 }
 
@@ -216,8 +238,11 @@ namespace ACT.XIVLog
                     this.isForceFlush ||
                     this.writeBuffer.Length > 5000)
                 {
-                    this.writter.Write(this.writeBuffer.ToString());
-                    this.writeBuffer.Clear();
+                    if (this.writeBuffer.Length > 0)
+                    {
+                        this.writter.Write(this.writeBuffer.ToString());
+                        this.writeBuffer.Clear();
+                    }
 
                     if (isNeedsFlush || this.isForceFlush)
                     {
@@ -252,7 +277,7 @@ namespace ACT.XIVLog
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void OnLogLineRead(
+        private async void OnLogLineRead(
             bool isImport,
             LogLineEventArgs logInfo)
         {
@@ -263,19 +288,24 @@ namespace ACT.XIVLog
                 return;
             }
 
-            var xivlog = new XIVLog(isImport, logInfo);
-            if (string.IsNullOrEmpty(xivlog.Log))
-            {
-                return;
-            }
+            var xivlog = default(XIVLog);
 
-            LogQueue.Enqueue(xivlog);
-
-            if (!isImport)
+            await Task.Run(() =>
             {
-                this.OpenXIVLogAsync(logInfo.logLine);
-                VideoCapture.Instance.DetectCapture(xivlog);
-            }
+                xivlog = new XIVLog(isImport, logInfo);
+                if (string.IsNullOrEmpty(xivlog.Log))
+                {
+                    return;
+                }
+
+                LogQueue.Enqueue(xivlog);
+
+                if (!isImport)
+                {
+                    this.OpenXIVLog(logInfo.logLine);
+                    VideoCapture.Instance.DetectCapture(xivlog);
+                }
+            });
         }
 
         public void EnqueueLogLine(
@@ -328,33 +358,31 @@ namespace ACT.XIVLog
         private const string CommandKeywordOpen = "/xivlog open";
         private const string CommandKeywordFlush = "/xivlog flush";
 
-        private Task OpenXIVLogAsync(
+        private void OpenXIVLog(
             string logLine)
         {
             if (string.IsNullOrEmpty(logLine))
             {
-                return null;
+                return;
             }
 
             if (!File.Exists(this.LogfileName))
             {
-                return null;
+                return;
             }
 
             if (logLine.ContainsIgnoreCase(CommandKeywordOpen))
             {
                 SystemSounds.Beep.Play();
-                return Task.Run(() => Process.Start(this.LogfileName));
+                Task.Run(() => Process.Start(this.LogfileName));
             }
 
             if (logLine.ContainsIgnoreCase(CommandKeywordFlush))
             {
                 this.isForceFlush = true;
                 SystemSounds.Beep.Play();
-                return Task.CompletedTask;
+                return;
             }
-
-            return null;
         }
 
         #region INotifyPropertyChanged

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -75,6 +76,24 @@ namespace FFXIV.Framework.Extensions
             }
 
             return result.ToArray();
+        }
+
+        private static readonly DataTable dataTable = new DataTable();
+
+        public static object Eval(
+            this string text,
+            params object[] args)
+        {
+            text = string.Format(text, args);
+
+            try
+            {
+                return dataTable.Compute(text, string.Empty);
+            }
+            catch (SyntaxErrorException)
+            {
+                return null;
+            }
         }
     }
 }

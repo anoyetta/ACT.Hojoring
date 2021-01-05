@@ -9,6 +9,12 @@ namespace FFXIV.Framework.Common
         private const double DefaultMin = 0.05;
         private const double DefaultMax = 1.00;
 
+#if DEBUG
+        public static bool IsDebugMode => true;
+#else
+        public static bool IsDebugMode => false;
+#endif
+
         private static readonly Random random = new Random((int)DateTime.Now.Ticks);
 
         public static Random Random => random;

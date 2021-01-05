@@ -108,6 +108,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static readonly Dictionary<string, TimelineTable> Tables = new Dictionary<string, TimelineTable>(16);
 
         /// <summary>
+        /// 変数・テーブルを参照しているトリガをリコンパイルするためのデリゲート
+        /// </summary>
+        public static readonly Dictionary<string, Action> ReferedTriggerRecompileDelegates = new Dictionary<string, Action>();
+
+        /// <summary>
         /// テーブルが存在するか？
         /// </summary>
         public static bool IsExistsTables
@@ -315,6 +320,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     $"{TimelineConstants.LogSymbol} set VAR['{set.Name}'] = {variable.Counter}");
 
                 isVaribleChanged = true;
+
+                if (ReferedTriggerRecompileDelegates.ContainsKey(set.Name))
+                {
+                    ReferedTriggerRecompileDelegates[set.Name]?.Invoke();
+                }
             }
 
             // table を処理する
@@ -403,7 +413,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 log = $"predicate ['{pre.Name}':{variable.Counter}] equal [{value}] -> {result}";
             }
 
-            TimelineController.RaiseLog($"{TimelineConstants.LogSymbol} {log}");
+            if (pre.LastestLog != log)
+            {
+                TimelineController.RaiseLog($"{TimelineConstants.LogSymbol} {log}");
+            }
+
+            pre.LastestLog = log;
 
             return result;
         }
@@ -521,13 +536,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <summary>
         /// テキストに含まれるプレースホルダを変数値に置き換える
         /// </summary>
-        /// <param name="text">
+        /// <param name="input">
         /// インプットテキスト</param>
         /// <returns>
         /// 置換後のテキスト</returns>
         public static string ReplaceText(
-            string text)
+            string input)
         {
+            var text = input;
+
             if (text == null)
             {
                 text = string.Empty;
@@ -558,6 +575,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 foreach (var table in tables)
                 {
+                    var before = text;
+
                     foreach (var ph in table.GetPlaceholders())
                     {
                         var valueText = ph.Value?.ToString();
@@ -569,6 +588,78 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
                 }
             }
+
+            return text;
+        }
+
+        private static readonly string EVALKeyword = "EVAL";
+
+        private static readonly Regex EVALRegex = new Regex(
+            @"EVAL\((?<expressions>.+?)(\s*,\s*(?<format>.*))?\)",
+            RegexOptions.Compiled);
+
+        public static string ReplaceEval(
+            string input)
+        {
+            var text = input;
+
+            if (text == null)
+            {
+                text = string.Empty;
+            }
+
+            if (!text.Contains(EVALKeyword))
+            {
+                return input;
+            }
+
+            var match = EVALRegex.Match(text);
+            if (!match.Success)
+            {
+                return input;
+            }
+
+            var expressions = match.Groups["expressions"].Value;
+            var format = match.Groups["format"].Value;
+
+            expressions = expressions?
+                .Replace("'", string.Empty)
+                .Replace("\"", string.Empty);
+
+            format = format?
+                .Replace("'", string.Empty)
+                .Replace("\"", string.Empty);
+
+            if (string.IsNullOrEmpty(expressions))
+            {
+                return input;
+            }
+
+            var result = expressions.Eval();
+            var resultText = string.Empty;
+
+            if (result == null)
+            {
+                return input;
+            }
+
+            if (string.IsNullOrEmpty(format))
+            {
+                resultText = result.ToString();
+            }
+            else
+            {
+                if (result is IFormattable f)
+                {
+                    resultText = f.ToString(format, null);
+                }
+                else
+                {
+                    resultText = result.ToString();
+                }
+            }
+
+            text = match.Result(resultText);
 
             return text;
         }
@@ -717,6 +808,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             get => this.Count?.ToString();
             set => this.Count = int.TryParse(value, out var v) ? v : (int?)null;
         }
+
+        [XmlIgnore]
+        public string LastestLog { get; set; } = string.Empty;
     }
 
     public static class ObjectComparer
@@ -741,6 +835,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 t = matched.Result(t);
             }
+
+            // EVAL関数を判定する
+            t = TimelineExpressionsModel.ReplaceEval(t);
 
             if (bool.TryParse(t, out bool b))
             {
@@ -774,6 +871,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 t2 = matched.Result(t2);
             }
+
+            // EVAL関数を判定する
+            t2 = TimelineExpressionsModel.ReplaceEval(t2);
 
             expectedValueReplaced = t2;
 

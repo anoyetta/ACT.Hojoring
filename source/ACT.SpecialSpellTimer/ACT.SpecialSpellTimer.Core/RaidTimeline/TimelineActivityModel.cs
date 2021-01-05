@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
+using ACT.SpecialSpellTimer.RazorModel;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 
@@ -144,6 +145,47 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     expressions.Set(matched);
                 }
             }
+        }
+
+        public bool ExecuteScripts()
+        {
+            var scripts = this.Scripts.Where(x => x.Enabled.GetValueOrDefault());
+
+            if (!scripts.Any())
+            {
+                return true;
+            }
+
+            var totalResult = true;
+
+            lock (TimelineScriptGlobalModel.Instance.ScriptingHost.ScriptingBlocker)
+            {
+                foreach (var script in scripts)
+                {
+                    var result = false;
+                    var returnValue = script.Run();
+
+                    if (returnValue == null)
+                    {
+                        result = true;
+                    }
+                    else
+                    {
+                        if (returnValue is bool b)
+                        {
+                            result = b;
+                        }
+                        else
+                        {
+                            result = true;
+                        }
+                    }
+
+                    totalResult |= result;
+                }
+            }
+
+            return totalResult;
         }
 
         public void Dump()
