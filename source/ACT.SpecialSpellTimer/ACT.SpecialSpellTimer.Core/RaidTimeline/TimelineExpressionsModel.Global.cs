@@ -1,6 +1,7 @@
 using System;
 using ACT.SpecialSpellTimer.RazorModel;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -178,8 +179,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 switch (value)
                 {
                     case bool b:
-                        if (!(variable.Value is bool current) ||
-                            current != b)
+                        if (!(variable.Value is bool current1) ||
+                            current1 != b)
                         {
                             variable.Value = b;
                             variable.Expiration = DateTime.MaxValue;
@@ -193,6 +194,23 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             variable.Counter = i;
                             variable.Expiration = DateTime.MaxValue;
                             result = true;
+                        }
+                        break;
+
+                    case string s:
+                        if (s.TryParse0xString2Int(out int i2))
+                        {
+                            if (!(variable.Value is int current2) ||
+                                current2 != i2)
+                            {
+                                variable.Value = i2;
+                                variable.Expiration = DateTime.MaxValue;
+                                result = true;
+                            }
+                        }
+                        else
+                        {
+                            goto default;
                         }
                         break;
 

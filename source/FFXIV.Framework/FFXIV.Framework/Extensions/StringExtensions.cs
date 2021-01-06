@@ -95,5 +95,23 @@ namespace FFXIV.Framework.Extensions
                 return null;
             }
         }
+
+        public static bool TryParse0xString2Int(
+            this string text,
+            out int i)
+        {
+            i = 0;
+
+            if (!string.IsNullOrEmpty(text))
+            {
+                if (text.Length > 2 && text.StartsWith("0x"))
+                {
+                    i = Convert.ToInt32(text.Substring(2), 16);
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

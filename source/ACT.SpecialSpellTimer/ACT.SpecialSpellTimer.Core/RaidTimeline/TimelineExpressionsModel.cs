@@ -844,9 +844,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return b;
             }
 
+            if (int.TryParse(t, out int i))
+            {
+                return i;
+            }
+
             if (double.TryParse(t, out double d))
             {
                 return d;
+            }
+
+            if (t.TryParse0xString2Int(out int i2))
+            {
+                return i2;
             }
 
             return t;
@@ -876,6 +886,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             t2 = TimelineExpressionsModel.ReplaceEval(t2);
 
             expectedValueReplaced = t2;
+
+            // 16進数文字列を10進数文字列に変換する
+            if (t2.TryParse0xString2Int(out int ii))
+            {
+                t2 = ii.ToString();
+            }
+
+            if (int.TryParse(t2, out int i2))
+            {
+                if (!int.TryParse(t1, out int i1))
+                {
+                    i1 = 0;
+                }
+
+                return i1 == i2;
+            }
 
             if (double.TryParse(t2, out double d2))
             {
