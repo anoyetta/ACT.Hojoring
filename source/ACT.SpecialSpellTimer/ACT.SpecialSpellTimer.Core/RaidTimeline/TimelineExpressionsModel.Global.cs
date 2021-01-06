@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using ACT.SpecialSpellTimer.RazorModel;
 using FFXIV.Framework.Common;
@@ -191,7 +192,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             var newSign = match.Groups["sign_code"].Value;
-            var newSignValue = Convert.ToInt32(newSign, 16);
+
+            if (!int.TryParse(
+                newSign,
+                NumberStyles.HexNumber,
+                CultureInfo.InvariantCulture,
+                out int newSignValue))
+            {
+                return;
+            }
 
             var currentSignValue = int.MaxValue;
 
@@ -222,10 +231,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             string zone = null)
         {
             var result = false;
+            var variable = default(TimelineVariable);
 
             lock (ExpressionLocker)
             {
-                var variable = default(TimelineVariable);
                 if (Variables.ContainsKey(name))
                 {
                     variable = Variables[name];
@@ -283,9 +292,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 OnVariableChanged?.Invoke(new EventArgs());
 
-                if (ReferedTriggerRecompileDelegates.ContainsKey(name))
+                if (ReferedTriggerRecompileDelegates.ContainsKey(variable.Name))
                 {
-                    ReferedTriggerRecompileDelegates[name]?.Invoke();
+                    lock (variable)
+                    {
+                        ReferedTriggerRecompileDelegates[variable.Name]?.Invoke();
+                    }
                 }
             }
 

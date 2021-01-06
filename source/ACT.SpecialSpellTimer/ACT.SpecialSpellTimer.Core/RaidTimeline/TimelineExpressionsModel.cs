@@ -323,7 +323,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (ReferedTriggerRecompileDelegates.ContainsKey(set.Name))
                 {
-                    ReferedTriggerRecompileDelegates[set.Name]?.Invoke();
+                    lock (variable)
+                    {
+                        ReferedTriggerRecompileDelegates[set.Name]?.Invoke();
+                    }
                 }
             }
 

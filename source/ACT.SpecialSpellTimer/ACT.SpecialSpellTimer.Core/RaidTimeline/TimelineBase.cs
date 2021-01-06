@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Image;
@@ -208,103 +207,94 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public static void InitRegex(
             this ISynchronizable sync)
         {
-            lock (sync)
+            if (string.IsNullOrEmpty(sync.SyncKeyword))
             {
-                if (string.IsNullOrEmpty(sync.SyncKeyword))
+                sync.SyncKeywordReplaced = string.Empty;
+                return;
+            }
+
+            var replacedKeyword = sync.SyncKeyword;
+
+            var matches = DetectVariableRegex.Matches(
+                replacedKeyword);
+
+            if (matches.Count > 0)
+            {
+                foreach (Match m in matches)
                 {
-                    sync.SyncKeywordReplaced = string.Empty;
-                    return;
-                }
+                    var name = m.Groups["name"].Value;
 
-                var replacedKeyword = sync.SyncKeyword;
-
-                var matches = DetectVariableRegex.Matches(
-                    replacedKeyword);
-
-                if (matches.Count > 0)
-                {
-                    foreach (Match m in matches)
+                    if (!string.IsNullOrEmpty(name))
                     {
-                        var name = m.Groups["name"].Value;
-
-                        if (!string.IsNullOrEmpty(name))
+                        var action = new Action(() =>
                         {
-                            var action = new Action(async () =>
+                            var sw = Stopwatch.StartNew();
+
+                            try
                             {
-                                await Task.Run(() =>
-                                {
-                                    var sw = Stopwatch.StartNew();
-
-                                    try
-                                    {
-                                        sync.RecompileRegex();
-                                    }
-                                    finally
-                                    {
-                                        sw.Stop();
-                                    }
-
-                                    var label = !string.IsNullOrEmpty(sync.Name) ?
-                                        $"name={sync.Name}" :
-                                        $"text={sync.Text}";
-
-                                    TimelineController.RaiseLog(
-                                        $"{TimelineConstants.LogSymbol} Refered trigger was recompiled. {label} regex=\"{sync.SyncRegex}\" {sw.ElapsedMilliseconds}ms");
-                                });
-                            });
-
-                            if (!TimelineExpressionsModel.ReferedTriggerRecompileDelegates.ContainsKey(name))
-                            {
-                                TimelineExpressionsModel.ReferedTriggerRecompileDelegates[name] = action;
+                                sync.RecompileRegex();
                             }
-                            else
+                            finally
                             {
-                                TimelineExpressionsModel.ReferedTriggerRecompileDelegates[name] += action;
+                                sw.Stop();
                             }
+
+                            var label = !string.IsNullOrEmpty(sync.Name) ?
+                                $"name={sync.Name}" :
+                                $"text={sync.Text}";
+
+                            TimelineController.RaiseLog(
+                                $"{TimelineConstants.LogSymbol} Refered trigger was recompiled. {label} regex=\"{sync.SyncRegex}\" {sw.ElapsedMilliseconds}ms");
+                        });
+
+                        if (!TimelineExpressionsModel.ReferedTriggerRecompileDelegates.ContainsKey(name))
+                        {
+                            TimelineExpressionsModel.ReferedTriggerRecompileDelegates[name] = action;
+                        }
+                        else
+                        {
+                            TimelineExpressionsModel.ReferedTriggerRecompileDelegates[name] += action;
                         }
                     }
                 }
-
-                // プレースホルダを置換する
-                // VAR['hoge'] 変数を置換する
-                replacedKeyword = TimelineExpressionsModel.ReplaceText(replacedKeyword);
-
-                // EVAL(expressions) 関数を置換する
-                replacedKeyword = TimelineExpressionsModel.ReplaceEval(replacedKeyword);
-
-                sync.SyncKeywordReplaced = replacedKeyword;
             }
+
+            // プレースホルダを置換する
+            // VAR['hoge'] 変数を置換する
+            replacedKeyword = TimelineExpressionsModel.ReplaceText(replacedKeyword);
+
+            // EVAL(expressions) 関数を置換する
+            replacedKeyword = TimelineExpressionsModel.ReplaceEval(replacedKeyword);
+
+            sync.SyncKeywordReplaced = replacedKeyword;
         }
 
         public static void RecompileRegex(
             this ISynchronizable sync)
         {
-            lock (sync)
+            if (string.IsNullOrEmpty(sync.SyncKeyword))
             {
-                if (string.IsNullOrEmpty(sync.SyncKeyword))
-                {
-                    sync.SyncKeywordReplaced = string.Empty;
-                    return;
-                }
+                sync.SyncKeywordReplaced = string.Empty;
+                return;
+            }
 
 #if DEBUG
-                if (sync.Name?.Contains("DEBUG") ?? false)
-                {
-                    Debug.WriteLine("RecompileRegex");
-                }
+            if (sync.Name?.Contains("DEBUG") ?? false)
+            {
+                Debug.WriteLine("RecompileRegex");
+            }
 #endif
 
-                var replacedKeyword = sync.SyncKeyword;
+            var replacedKeyword = sync.SyncKeyword;
 
-                // プレースホルダを置換する
-                // VAR['hoge'] 変数を置換する
-                replacedKeyword = TimelineExpressionsModel.ReplaceText(replacedKeyword);
+            // プレースホルダを置換する
+            // VAR['hoge'] 変数を置換する
+            replacedKeyword = TimelineExpressionsModel.ReplaceText(replacedKeyword);
 
-                // EVAL(expressions) 関数を置換する
-                replacedKeyword = TimelineExpressionsModel.ReplaceEval(replacedKeyword);
+            // EVAL(expressions) 関数を置換する
+            replacedKeyword = TimelineExpressionsModel.ReplaceEval(replacedKeyword);
 
-                sync.SyncKeywordReplaced = replacedKeyword;
-            }
+            sync.SyncKeywordReplaced = replacedKeyword;
         }
     }
 

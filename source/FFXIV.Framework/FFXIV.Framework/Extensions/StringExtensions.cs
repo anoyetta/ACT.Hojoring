@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -114,8 +115,14 @@ namespace FFXIV.Framework.Extensions
             {
                 if (text.Length > 2 && text.StartsWith("0x"))
                 {
-                    i = Convert.ToInt32(text.Substring(2), 16);
-                    return true;
+                    if (int.TryParse(
+                        text.Substring(2),
+                        NumberStyles.HexNumber,
+                        CultureInfo.InvariantCulture,
+                        out i))
+                    {
+                        return true;
+                    }
                 }
             }
 
