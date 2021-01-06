@@ -474,6 +474,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             // Script を初期化する
             TimelineScriptGlobalModel.Instance.ScriptingHost.Clear();
 
+            // 変数への依存関係を初期化する
+            TimelineExpressionsModel.ReferedTriggerRecompileDelegates.Clear();
+
             // 初期化する
             TimelineManager.Instance.ReloadGlobalTriggers();
             TimelineManager.Instance.InitElements(this.Model);

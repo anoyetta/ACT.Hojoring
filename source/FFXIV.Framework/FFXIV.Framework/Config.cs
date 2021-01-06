@@ -49,46 +49,49 @@ namespace FFXIV.Framework
 
         public static Config Load()
         {
-            if (File.Exists(OldFileName) &&
-                !File.Exists(FileName))
+            lock (ConfigBlocker)
             {
-                File.Move(OldFileName, FileName);
-            }
-
-            if (!File.Exists(FileName))
-            {
-                return null;
-            }
-
-            var fi = new FileInfo(FileName);
-            if (fi.Length <= 0)
-            {
-                return null;
-            }
-
-            MigrateConfig(FileName);
-
-            using (var sr = new StreamReader(FileName, new UTF8Encoding(false)))
-            {
-                if (sr.BaseStream.Length > 0)
+                if (File.Exists(OldFileName) &&
+                    !File.Exists(FileName))
                 {
-                    var xs = new XmlSerializer(typeof(Config));
-                    var data = xs.Deserialize(sr) as Config;
-                    if (data != null)
+                    File.Move(OldFileName, FileName);
+                }
+
+                if (!File.Exists(FileName))
+                {
+                    return null;
+                }
+
+                var fi = new FileInfo(FileName);
+                if (fi.Length <= 0)
+                {
+                    return null;
+                }
+
+                MigrateConfig(FileName);
+
+                using (var sr = new StreamReader(FileName, new UTF8Encoding(false)))
+                {
+                    if (sr.BaseStream.Length > 0)
                     {
-                        instance = data;
+                        var xs = new XmlSerializer(typeof(Config));
+                        var data = xs.Deserialize(sr) as Config;
+                        if (data != null)
+                        {
+                            instance = data;
+                        }
                     }
                 }
+
+                foreach (var item in instance.globalLogFilters)
+                {
+                    item.FormatTextDelegate = (t, _) => FormatLogMessageType(t);
+                }
+
+                instance.globalLogFilterDictionary = instance.globalLogFilters.ToDictionary(x => x.Key);
+
+                return instance;
             }
-
-            foreach (var item in instance.globalLogFilters)
-            {
-                item.FormatTextDelegate = (t, _) => FormatLogMessageType(t);
-            }
-
-            instance.globalLogFilterDictionary = instance.globalLogFilters.ToDictionary(x => x.Key);
-
-            return instance;
         }
 
         private static void MigrateConfig(
@@ -106,13 +109,13 @@ namespace FFXIV.Framework
 
         public static void Save()
         {
-            if (instance == null)
+            lock (ConfigBlocker)
             {
-                return;
-            }
+                if (instance == null)
+                {
+                    return;
+                }
 
-            lock (instance)
-            {
                 var directoryName = Path.GetDirectoryName(FileName);
 
                 if (!Directory.Exists(directoryName))

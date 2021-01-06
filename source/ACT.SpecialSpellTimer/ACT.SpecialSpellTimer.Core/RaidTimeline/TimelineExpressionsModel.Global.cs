@@ -212,6 +212,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             if (result)
             {
                 OnVariableChanged?.Invoke(new EventArgs());
+
+                if (ReferedTriggerRecompileDelegates.ContainsKey(name))
+                {
+                    ReferedTriggerRecompileDelegates[name]?.Invoke();
+                }
             }
 
             return result;

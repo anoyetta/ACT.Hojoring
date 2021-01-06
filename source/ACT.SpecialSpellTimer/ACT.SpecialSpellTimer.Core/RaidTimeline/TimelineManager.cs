@@ -427,9 +427,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var defaultStyle = TimelineSettings.Instance.DefaultStyle;
             var defaultNoticeStyle = TimelineSettings.Instance.DefaultNoticeStyle;
 
-            // <HOGE>を[HOGE]に置き換えたプレースホルダリストを生成する
+            // プレースホルダリストを初期化する
             this.ClearCurrentPlaceholders();
-            var placeholders = this.GetPlaceholders();
 
             // 初期化する
             if (timeline != null)
@@ -478,11 +477,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
                 }
 
+                if (element is TimelineExpressionsPredicateModel pre)
+                {
+                    pre.LastestLog = string.Empty;
+                }
+
                 // アクティビティにスタイルを設定する
                 setStyle(element);
 
                 // sync用の正規表現にプレースホルダをセットしてコンパイルし直す
-                setRegex(element, placeholders);
+                if (element is ISynchronizable sync)
+                {
+                    sync.InitRegex();
+                }
             }
 
             // スタイルを適用する
@@ -519,31 +526,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             StringComparison.OrdinalIgnoreCase)) ??
                         defaultNoticeStyle;
                 }
-            }
-
-            // 正規表現をセットする
-            void setRegex(
-                TimelineBase element,
-                IEnumerable<PlaceholderContainer> phs)
-            {
-                if (!(element is ISynchronizable sync))
-                {
-                    return;
-                }
-
-                var replacedKeyword = sync.SyncKeyword;
-
-                if (!string.IsNullOrEmpty(replacedKeyword))
-                {
-                    foreach (var ph in phs)
-                    {
-                        replacedKeyword = replacedKeyword.Replace(
-                            ph.Placeholder,
-                            ph.ReplaceString);
-                    }
-                }
-
-                sync.SyncKeywordReplaced = replacedKeyword;
             }
         }
 
