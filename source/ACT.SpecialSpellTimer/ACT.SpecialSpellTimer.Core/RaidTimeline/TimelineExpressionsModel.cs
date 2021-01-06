@@ -558,7 +558,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     ph.ReplaceString);
             }
 
-            foreach (var item in Variables)
+            foreach (var item in GetVariables())
             {
                 var variable = item.Value;
 
@@ -613,53 +613,56 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return input;
             }
 
-            var match = EVALRegex.Match(text);
-            if (!match.Success)
+            var matches = EVALRegex.Matches(text);
+            if (matches.Count < 1)
             {
                 return input;
             }
 
-            var expressions = match.Groups["expressions"].Value;
-            var format = match.Groups["format"].Value;
-
-            expressions = expressions?
-                .Replace("'", string.Empty)
-                .Replace("\"", string.Empty);
-
-            format = format?
-                .Replace("'", string.Empty)
-                .Replace("\"", string.Empty);
-
-            if (string.IsNullOrEmpty(expressions))
+            foreach (Match match in matches)
             {
-                return input;
-            }
+                var expressions = match.Groups["expressions"].Value;
+                var format = match.Groups["format"].Value;
 
-            var result = expressions.Eval();
-            var resultText = string.Empty;
+                expressions = expressions?
+                    .Replace("'", string.Empty)
+                    .Replace("\"", string.Empty);
 
-            if (result == null)
-            {
-                return input;
-            }
+                format = format?
+                    .Replace("'", string.Empty)
+                    .Replace("\"", string.Empty);
 
-            if (string.IsNullOrEmpty(format))
-            {
-                resultText = result.ToString();
-            }
-            else
-            {
-                if (result is IFormattable f)
+                if (string.IsNullOrEmpty(expressions))
                 {
-                    resultText = f.ToString(format, null);
+                    return input;
                 }
-                else
+
+                var result = expressions.Eval();
+                var resultText = string.Empty;
+
+                if (result == null)
+                {
+                    return input;
+                }
+
+                if (string.IsNullOrEmpty(format))
                 {
                     resultText = result.ToString();
                 }
-            }
+                else
+                {
+                    if (result is IFormattable f)
+                    {
+                        resultText = f.ToString(format, null);
+                    }
+                    else
+                    {
+                        resultText = result.ToString();
+                    }
+                }
 
-            text = match.Result(resultText);
+                text = text.Replace(match.Value, resultText);
+            }
 
             return text;
         }

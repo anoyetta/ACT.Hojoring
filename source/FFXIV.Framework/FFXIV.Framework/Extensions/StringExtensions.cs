@@ -80,6 +80,8 @@ namespace FFXIV.Framework.Extensions
 
         private static readonly DataTable dataTable = new DataTable();
 
+        private static readonly HashSet<string> syntaxErrorStrings = new HashSet<string>();
+
         public static object Eval(
             this string text,
             params object[] args)
@@ -88,10 +90,16 @@ namespace FFXIV.Framework.Extensions
 
             try
             {
+                if (syntaxErrorStrings.Contains(text))
+                {
+                    return null;
+                }
+
                 return dataTable.Compute(text, string.Empty);
             }
             catch (SyntaxErrorException)
             {
+                syntaxErrorStrings.Add(text);
                 return null;
             }
         }

@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using ACT.SpecialSpellTimer.RazorModel;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
@@ -149,6 +151,65 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         /// <summary>
+        /// 1B Sign の基底値
+        /// </summary>
+        public const string Origin1B = "1B_ORIGIN";
+
+        private static readonly Regex SignRegex = new Regex(
+            @"^(1B|00:0000:Hojoring:1B):[0-9a-fA-F]{8}:.+:[0-9a-fA-F]{4}:[0-9a-fA-F]{4}:(?<sign_code>[0-9a-fA-F]{4}):");
+
+        /// <summary>
+        /// 1B Sign の最小値の更新を試みる
+        /// </summary>
+        /// <param name="logLine">
+        /// ログ行</param>
+        public static void TryRefresh1BSignOrigin(
+            string logLine)
+        {
+            if (string.IsNullOrEmpty(logLine))
+            {
+                return;
+            }
+
+#if DEBUG
+            if (logLine.Contains("1B:"))
+            {
+                Debug.WriteLine("TryRefresh1BSignOrigin");
+            }
+#endif
+
+            if (!logLine.StartsWith("1B:") &&
+                !logLine.StartsWith("00:0000:Hojoring:1B:"))
+            {
+                return;
+            }
+
+            var match = SignRegex.Match(logLine);
+            if (!match.Success)
+            {
+                return;
+            }
+
+            var newSign = match.Groups["sign_code"].Value;
+            var newSignValue = Convert.ToInt32(newSign, 16);
+
+            var currentSignValue = int.MaxValue;
+
+            if (Variables.ContainsKey(Origin1B))
+            {
+                currentSignValue = (int)(Variables[Origin1B].Value ?? int.MaxValue);
+            }
+
+            if (newSignValue < currentSignValue)
+            {
+                TimelineController.RaiseLog(
+                    $"{TimelineConstants.LogSymbol} set VAR['{Origin1B}'] = {newSignValue} ({newSignValue:X4})");
+
+                SetVariable(Origin1B, newSignValue, TimelineController.CurrentController?.CurrentZoneName);
+            }
+        }
+
+        /// <summary>
         /// グローバル変数をセットする
         /// </summary>
         /// <param name="name">グローバル変数名</param>
@@ -183,15 +244,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             current1 != b)
                         {
                             variable.Value = b;
-                            variable.Expiration = DateTime.MaxValue;
-                            result = true;
-                        }
-                        break;
-
-                    case int i:
-                        if (variable.Counter != i)
-                        {
-                            variable.Counter = i;
                             variable.Expiration = DateTime.MaxValue;
                             result = true;
                         }
