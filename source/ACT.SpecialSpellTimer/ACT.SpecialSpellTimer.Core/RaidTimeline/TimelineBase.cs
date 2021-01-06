@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
@@ -227,14 +228,23 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     {
                         var action = new Action(() =>
                         {
-                            sync.RecompileRegex();
+                            var sw = Stopwatch.StartNew();
+
+                            try
+                            {
+                                sync.RecompileRegex();
+                            }
+                            finally
+                            {
+                                sw.Stop();
+                            }
 
                             var label = !string.IsNullOrEmpty(sync.Name) ?
                                 $"name={sync.Name}" :
                                 $"text={sync.Text}";
 
                             TimelineController.RaiseLog(
-                                $"{TimelineConstants.LogSymbol} Refered trigger was recompiled. {label} regex={sync.SyncKeywordReplaced}");
+                                $"{TimelineConstants.LogSymbol} Refered trigger was recompiled. {label} regex=\"{sync.SyncRegex}\" {sw.ElapsedMilliseconds}ms");
                         });
 
                         if (!TimelineExpressionsModel.ReferedTriggerRecompileDelegates.ContainsKey(name))
@@ -267,6 +277,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 sync.SyncKeywordReplaced = string.Empty;
                 return;
             }
+
+#if DEBUG
+            if (sync.Name?.Contains("DEBUG") ?? false)
+            {
+                Debug.WriteLine("RecompileRegex");
+            }
+#endif
 
             var replacedKeyword = sync.SyncKeyword;
 

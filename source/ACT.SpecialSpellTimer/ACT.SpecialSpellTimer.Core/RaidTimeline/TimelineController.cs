@@ -1149,6 +1149,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 foreach (var xivlog in logs)
                 {
+                    // 1B Sign の基底値の更新を試みる
+                    TimelineExpressionsModel.TryRefresh1BSignOrigin(xivlog.LogLine);
+
                     foreach (var act in acts)
                     {
                         this.Detect(xivlog, act, detectTime);
@@ -2198,7 +2201,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         if (this.CurrentSubroutine != sub)
                         {
                             this.CurrentSubroutine = sub;
-                            Task.Run(() => TimelineScriptGlobalModel.Instance.ScriptingHost.ExecuteOnSub(sub.Name));
+                            Task.Run(() => TimelineScriptGlobalModel.Instance.ScriptingHost.ExecuteOnSub(sub?.Name ?? string.Empty));
                         }
 
                         this.Model.SubName = this.CurrentSubroutine?.Name ?? string.Empty;

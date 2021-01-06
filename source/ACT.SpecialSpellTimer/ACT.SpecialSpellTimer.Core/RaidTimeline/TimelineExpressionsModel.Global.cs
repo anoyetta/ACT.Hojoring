@@ -1,6 +1,10 @@
 using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using ACT.SpecialSpellTimer.RazorModel;
 using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
 using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -148,6 +152,73 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         /// <summary>
+        /// 1B Sign の基底値
+        /// </summary>
+        public const string Origin1B = "1B_ORIGIN";
+
+        private static readonly Regex SignRegex = new Regex(
+            @"^(1B|00:0000:Hojoring:1B):[0-9a-fA-F]{8}:.+:[0-9a-fA-F]{4}:[0-9a-fA-F]{4}:(?<sign_code>[0-9a-fA-F]{4}):");
+
+        /// <summary>
+        /// 1B Sign の最小値の更新を試みる
+        /// </summary>
+        /// <param name="logLine">
+        /// ログ行</param>
+        public static void TryRefresh1BSignOrigin(
+            string logLine)
+        {
+            if (string.IsNullOrEmpty(logLine))
+            {
+                return;
+            }
+
+#if DEBUG
+            if (logLine.Contains("1B:"))
+            {
+                Debug.WriteLine("TryRefresh1BSignOrigin");
+            }
+#endif
+
+            if (!logLine.StartsWith("1B:") &&
+                !logLine.StartsWith("00:0000:Hojoring:1B:"))
+            {
+                return;
+            }
+
+            var match = SignRegex.Match(logLine);
+            if (!match.Success)
+            {
+                return;
+            }
+
+            var newSign = match.Groups["sign_code"].Value;
+
+            if (!int.TryParse(
+                newSign,
+                NumberStyles.HexNumber,
+                CultureInfo.InvariantCulture,
+                out int newSignValue))
+            {
+                return;
+            }
+
+            var currentSignValue = int.MaxValue;
+
+            if (Variables.ContainsKey(Origin1B))
+            {
+                currentSignValue = (int)(Variables[Origin1B].Value ?? int.MaxValue);
+            }
+
+            if (newSignValue < currentSignValue)
+            {
+                TimelineController.RaiseLog(
+                    $"{TimelineConstants.LogSymbol} set VAR['{Origin1B}'] = {newSignValue} ({newSignValue:X4})");
+
+                SetVariable(Origin1B, newSignValue, TimelineController.CurrentController?.CurrentZoneName);
+            }
+        }
+
+        /// <summary>
         /// グローバル変数をセットする
         /// </summary>
         /// <param name="name">グローバル変数名</param>
@@ -160,10 +231,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             string zone = null)
         {
             var result = false;
+            var variable = default(TimelineVariable);
 
             lock (ExpressionLocker)
             {
-                var variable = default(TimelineVariable);
                 if (Variables.ContainsKey(name))
                 {
                     variable = Variables[name];
@@ -178,8 +249,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 switch (value)
                 {
                     case bool b:
-                        if (!(variable.Value is bool current) ||
-                            current != b)
+                        if (!(variable.Value is bool current1) ||
+                            current1 != b)
                         {
                             variable.Value = b;
                             variable.Expiration = DateTime.MaxValue;
@@ -187,12 +258,20 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
                         break;
 
-                    case int i:
-                        if (variable.Counter != i)
+                    case string s:
+                        if (s.TryParse0xString2Int(out int i2))
                         {
-                            variable.Counter = i;
-                            variable.Expiration = DateTime.MaxValue;
-                            result = true;
+                            if (!(variable.Value is int current2) ||
+                                current2 != i2)
+                            {
+                                variable.Value = i2;
+                                variable.Expiration = DateTime.MaxValue;
+                                result = true;
+                            }
+                        }
+                        else
+                        {
+                            goto default;
                         }
                         break;
 
@@ -213,9 +292,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 OnVariableChanged?.Invoke(new EventArgs());
 
-                if (ReferedTriggerRecompileDelegates.ContainsKey(name))
+                if (ReferedTriggerRecompileDelegates.ContainsKey(variable.Name))
                 {
-                    ReferedTriggerRecompileDelegates[name]?.Invoke();
+                    lock (variable)
+                    {
+                        ReferedTriggerRecompileDelegates[variable.Name]?.Invoke();
+                    }
                 }
             }
 

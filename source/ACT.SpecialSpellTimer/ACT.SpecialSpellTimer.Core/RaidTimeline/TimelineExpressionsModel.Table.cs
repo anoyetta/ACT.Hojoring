@@ -131,7 +131,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (TimelineExpressionsModel.ReferedTriggerRecompileDelegates.ContainsKey(table.Name))
                 {
-                    TimelineExpressionsModel.ReferedTriggerRecompileDelegates[table.Name]?.Invoke();
+                    lock (table)
+                    {
+                        TimelineExpressionsModel.ReferedTriggerRecompileDelegates[table.Name]?.Invoke();
+                    }
                 }
 
                 result = true;
