@@ -323,7 +323,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 if (ReferedTriggerRecompileDelegates.ContainsKey(set.Name))
                 {
-                    ReferedTriggerRecompileDelegates[set.Name]?.Invoke();
+                    lock (variable)
+                    {
+                        ReferedTriggerRecompileDelegates[set.Name]?.Invoke();
+                    }
                 }
             }
 
@@ -558,7 +561,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     ph.ReplaceString);
             }
 
-            foreach (var item in Variables)
+            foreach (var item in GetVariables())
             {
                 var variable = item.Value;
 
@@ -613,53 +616,56 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return input;
             }
 
-            var match = EVALRegex.Match(text);
-            if (!match.Success)
+            var matches = EVALRegex.Matches(text);
+            if (matches.Count < 1)
             {
                 return input;
             }
 
-            var expressions = match.Groups["expressions"].Value;
-            var format = match.Groups["format"].Value;
-
-            expressions = expressions?
-                .Replace("'", string.Empty)
-                .Replace("\"", string.Empty);
-
-            format = format?
-                .Replace("'", string.Empty)
-                .Replace("\"", string.Empty);
-
-            if (string.IsNullOrEmpty(expressions))
+            foreach (Match match in matches)
             {
-                return input;
-            }
+                var expressions = match.Groups["expressions"].Value;
+                var format = match.Groups["format"].Value;
 
-            var result = expressions.Eval();
-            var resultText = string.Empty;
+                expressions = expressions?
+                    .Replace("'", string.Empty)
+                    .Replace("\"", string.Empty);
 
-            if (result == null)
-            {
-                return input;
-            }
+                format = format?
+                    .Replace("'", string.Empty)
+                    .Replace("\"", string.Empty);
 
-            if (string.IsNullOrEmpty(format))
-            {
-                resultText = result.ToString();
-            }
-            else
-            {
-                if (result is IFormattable f)
+                if (string.IsNullOrEmpty(expressions))
                 {
-                    resultText = f.ToString(format, null);
+                    return input;
                 }
-                else
+
+                var result = expressions.Eval();
+                var resultText = string.Empty;
+
+                if (result == null)
+                {
+                    return input;
+                }
+
+                if (string.IsNullOrEmpty(format))
                 {
                     resultText = result.ToString();
                 }
-            }
+                else
+                {
+                    if (result is IFormattable f)
+                    {
+                        resultText = f.ToString(format, null);
+                    }
+                    else
+                    {
+                        resultText = result.ToString();
+                    }
+                }
 
-            text = match.Result(resultText);
+                text = text.Replace(match.Value, resultText);
+            }
 
             return text;
         }
@@ -844,9 +850,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return b;
             }
 
+            if (int.TryParse(t, out int i))
+            {
+                return i;
+            }
+
             if (double.TryParse(t, out double d))
             {
                 return d;
+            }
+
+            if (t.TryParse0xString2Int(out int i2))
+            {
+                return i2;
             }
 
             return t;
@@ -876,6 +892,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             t2 = TimelineExpressionsModel.ReplaceEval(t2);
 
             expectedValueReplaced = t2;
+
+            // 16進数文字列を10進数文字列に変換する
+            if (t2.TryParse0xString2Int(out int ii))
+            {
+                t2 = ii.ToString();
+            }
+
+            if (int.TryParse(t2, out int i2))
+            {
+                if (!int.TryParse(t1, out int i1))
+                {
+                    i1 = 0;
+                }
+
+                return i1 == i2;
+            }
 
             if (double.TryParse(t2, out double d2))
             {

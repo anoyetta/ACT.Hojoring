@@ -122,9 +122,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var now = DateTime.Now;
             var offset = this.CurrentTime - act.Time;
-            var log =
-                $"{TimelineConstants.LogSymbol} Notice from TL. " +
-                $"name={act.Name}, text={act.TextReplaced}, notice={act.NoticeReplaced}, offset={offset.TotalSeconds:N1}";
+
+            var from = new[] { act.Name, act.TextReplaced, act.SyncKeyword }.FirstOrDefault(x => !string.IsNullOrEmpty(x));
+            var log = $"{TimelineConstants.LogSymbol} notice \"{act.NoticeReplaced}\" from \"{from}\"";
 
             var notice = act.NoticeReplaced ?? string.Empty;
             notice = TimelineExpressionsModel.ReplaceText(notice);
@@ -151,7 +151,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 (TimelineRazorModel.Instance?.SyncTTS ?? false) ||
                 act.NoticeSync.Value;
 
-            RaiseLog(log);
+            if (!string.IsNullOrEmpty(notice))
+            {
+                RaiseLog(log);
+            }
+
             NotifySoundAsync(notice, act.NoticeDevice.GetValueOrDefault(), isSync, act.NoticeVolume);
 
             var vnotices = act.VisualNoticeStatements
@@ -245,9 +249,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             var now = DateTime.Now;
-            var log =
-                $"{TimelineConstants.LogSymbol} Notice from TL. " +
-                $"name={tri.Name}, text={tri.TextReplaced}, notice={tri.NoticeReplaced}";
+
+            var from = new[] { tri.Name, tri.TextReplaced, tri.SyncKeyword }.FirstOrDefault(x => !string.IsNullOrEmpty(x));
+            var log = $"{TimelineConstants.LogSymbol} notice \"{tri.NoticeReplaced}\" from \"{from}\"";
 
             var notice = tri.NoticeReplaced ?? string.Empty;
             notice = TimelineExpressionsModel.ReplaceText(notice);
@@ -268,7 +272,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 (TimelineRazorModel.Instance?.SyncTTS ?? false) ||
                 tri.NoticeSync.Value;
 
-            RaiseLog(log);
+            if (!string.IsNullOrEmpty(notice))
+            {
+                RaiseLog(log);
+            }
+
             NotifySoundAsync(notice, tri.NoticeDevice.GetValueOrDefault(), isSync, tri.NoticeVolume, tri.NoticeOffset);
 
             var vnotices = tri.VisualNoticeStatements

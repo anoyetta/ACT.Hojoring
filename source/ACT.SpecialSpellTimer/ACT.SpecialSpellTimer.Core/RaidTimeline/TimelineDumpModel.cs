@@ -85,7 +85,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            TimelineController.RaiseLog(this.Log);
+            var log = this.Log;
+
+            log = TimelineExpressionsModel.ReplaceText(log);
+            log = TimelineExpressionsModel.ReplaceEval(log);
+
+            TimelineController.RaiseLog(log);
         });
     }
 
