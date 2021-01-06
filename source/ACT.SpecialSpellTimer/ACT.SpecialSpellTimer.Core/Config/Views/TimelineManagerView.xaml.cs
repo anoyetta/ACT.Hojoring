@@ -242,6 +242,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 if (activeTL.Controller.IsRunning)
                 {
                     activeTL.Controller.EndActivityLine();
+                    ChatLogWorker.Instance.Write(true);
                     this.StartButtonLabel = StartString;
                 }
                 else
