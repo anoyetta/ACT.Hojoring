@@ -83,6 +83,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             NewDefault(TimelineElementTypes.ExpressionsSet, "Value", true),
             NewDefault(TimelineElementTypes.ExpressionsSet, "IsToggle", false),
             NewDefault(TimelineElementTypes.ExpressionsSet, "TTL", -1),
+            NewDefault(TimelineElementTypes.ExpressionsSet, "Scope", TimelineExpressionsSetModel.Scopes.None),
             NewDefault(TimelineElementTypes.ExpressionsPredicate, "Enabled", true),
             NewDefault(TimelineElementTypes.ExpressionsPredicate, "Value", true),
             NewDefault(TimelineElementTypes.ExpressionsTable, "Enabled", true),

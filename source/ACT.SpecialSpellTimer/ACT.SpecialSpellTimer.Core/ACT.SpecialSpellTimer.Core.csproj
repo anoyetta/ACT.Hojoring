@@ -207,6 +207,8 @@
     <Compile Include="RaidTimeline\TimelineDefaultModel.cs" />
     <Compile Include="RaidTimeline\TimelineController.cs" />
     <Compile Include="RaidTimeline\ConstantKeywords.cs" />
+    <Compile Include="RaidTimeline\TimelineExpressionsModel.PreModel .cs" />
+    <Compile Include="RaidTimeline\TimelineExpressionsModel.SetModel.cs" />
     <Compile Include="RaidTimeline\TimelineExpressionsModel.Table.cs" />
     <Compile Include="RaidTimeline\TimelineExpressionsModel.Global.cs" />
     <Compile Include="RaidTimeline\TimelineDumpModel.cs" />
