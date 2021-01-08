@@ -290,6 +290,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     Variables[set.Name] = variable;
                 }
 
+                variable.Zone = set.Scope switch
+                {
+                    TimelineExpressionsSetModel.Scopes.CurrentZone => TimelineController.CurrentController?.CurrentZoneName ?? string.Empty,
+                    TimelineExpressionsSetModel.Scopes.Global => TimelineModel.GlobalZone,
+                    _ => string.Empty
+                };
+
                 // トグル？
                 if (set.IsToggle.GetValueOrDefault())
                 {
@@ -669,154 +676,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             return text;
         }
-    }
-
-    [XmlType(TypeName = "set")]
-    [Serializable]
-    public class TimelineExpressionsSetModel :
-        TimelineBase
-    {
-        #region TimelineBase
-
-        public override TimelineElementTypes TimelineType => TimelineElementTypes.ExpressionsSet;
-
-        public override IList<TimelineBase> Children => null;
-
-        #endregion TimelineBase
-
-        private object value = null;
-
-        [XmlIgnore]
-        public object Value
-        {
-            get => this.value;
-            set => this.SetProperty(ref this.value, value);
-        }
-
-        [XmlAttribute(AttributeName = "value")]
-        public string ValueXML
-        {
-            get => this.Value?.ToString();
-            set => this.Value = ObjectComparer.ConvertToValue(value);
-        }
-
-        private bool? isToggle = null;
-
-        [XmlIgnore]
-        public bool? IsToggle
-        {
-            get => this.isToggle;
-            set => this.SetProperty(ref this.isToggle, value);
-        }
-
-        [XmlAttribute(AttributeName = "toggle")]
-        public string IsToggleXML
-        {
-            get => this.IsToggle?.ToString();
-            set => this.IsToggle = bool.TryParse(value, out var v) ? v : (bool?)null;
-        }
-
-        private string count = null;
-
-        [XmlAttribute(AttributeName = "count")]
-        public string Count
-        {
-            get => this.count;
-            set => this.SetProperty(ref this.count, value);
-        }
-
-        public int ExecuteCount(
-            int counter)
-        {
-            var result = counter;
-
-            if (string.IsNullOrEmpty(this.Count))
-            {
-                return result;
-            }
-
-            if (!int.TryParse(this.Count, out int i))
-            {
-                return result;
-            }
-
-            if (this.Count.StartsWith("+") ||
-                this.Count.StartsWith("-"))
-            {
-                result += i;
-            }
-            else
-            {
-                result = i;
-            }
-
-            return result;
-        }
-
-        private double? ttl = -1;
-
-        [XmlIgnore]
-        public double? TTL
-        {
-            get => this.ttl;
-            set => this.SetProperty(ref this.ttl, value);
-        }
-
-        [XmlAttribute(AttributeName = "ttl")]
-        public string TTLXML
-        {
-            get => this.TTL?.ToString();
-            set => this.TTL = double.TryParse(value, out var v) ? v : (double?)null;
-        }
-    }
-
-    [XmlType(TypeName = "pre")]
-    [Serializable]
-    public class TimelineExpressionsPredicateModel :
-        TimelineBase
-    {
-        #region TimelineBase
-
-        public override TimelineElementTypes TimelineType => TimelineElementTypes.ExpressionsPredicate;
-
-        public override IList<TimelineBase> Children => null;
-
-        #endregion TimelineBase
-
-        private object value = null;
-
-        [XmlIgnore]
-        public object Value
-        {
-            get => this.value;
-            set => this.SetProperty(ref this.value, value);
-        }
-
-        [XmlAttribute(AttributeName = "value")]
-        public string ValueXML
-        {
-            get => this.Value?.ToString();
-            set => this.Value = ObjectComparer.ConvertToValue(value);
-        }
-
-        private int? count = null;
-
-        [XmlIgnore]
-        public int? Count
-        {
-            get => this.count;
-            set => this.SetProperty(ref this.count, value);
-        }
-
-        [XmlAttribute(AttributeName = "count")]
-        public string CountXML
-        {
-            get => this.Count?.ToString();
-            set => this.Count = int.TryParse(value, out var v) ? v : (int?)null;
-        }
-
-        [XmlIgnore]
-        public string LastestLog { get; set; } = string.Empty;
     }
 
     public static class ObjectComparer
