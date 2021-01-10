@@ -555,6 +555,11 @@ namespace ACT.XIVLog
 
             foreach (var entry in PCNameDictionary)
             {
+                if (string.IsNullOrEmpty(entry.Key))
+                {
+                    continue;
+                }
+
                 var before = result;
                 result = result.Replace(entry.Key, entry.Value.Replacement);
                 if (result != before)
