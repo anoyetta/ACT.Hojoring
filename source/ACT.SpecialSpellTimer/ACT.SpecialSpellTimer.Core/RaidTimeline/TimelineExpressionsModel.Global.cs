@@ -157,7 +157,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         public const string Origin1B = "1B_ORIGIN";
 
         private static readonly Regex SignRegex = new Regex(
-            @"^(1B|00:0000:Hojoring:1B):[0-9a-fA-F]{8}:.+:[0-9a-fA-F]{4}:[0-9a-fA-F]{4}:(?<sign_code>[0-9a-fA-F]{4}):");
+            @"^(1B|00:0000:Hojoring:1B):[0-9a-fA-F]{8}:.+?:[0-9a-fA-F]{4}:[0-9a-fA-F]{4}:(?<sign_code>[0-9a-fA-F]{4}):");
 
         /// <summary>
         /// 1B Sign の最小値の更新を試みる
