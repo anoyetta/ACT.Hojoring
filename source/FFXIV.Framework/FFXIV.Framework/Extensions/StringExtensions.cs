@@ -101,7 +101,7 @@ namespace FFXIV.Framework.Extensions
             catch (SyntaxErrorException)
             {
                 syntaxErrorStrings.Add(text);
-                return null;
+                throw;
             }
         }
 
