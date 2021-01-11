@@ -606,7 +606,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static readonly string EVALKeyword = "EVAL";
 
         private static readonly Regex EVALRegex = new Regex(
-            @"EVAL\((?<expressions>.+?)(\s*,\s*(?<format>.*))?\)",
+            @"EVAL\((?<expressions>.+?)(\s*,\s*(?<format>[^)]*))?\)",
             RegexOptions.Compiled);
 
         public static string ReplaceEval(

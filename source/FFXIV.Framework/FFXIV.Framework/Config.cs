@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
@@ -90,6 +91,18 @@ namespace FFXIV.Framework
 
                 instance.globalLogFilterDictionary = instance.globalLogFilters.ToDictionary(x => x.Key);
 
+                if (instance.RegexCacheSize != RegexCacheSizeDefault)
+                {
+                    if (instance.RegexCacheSize < RegexCacheSizeDefault)
+                    {
+                        instance.RegexCacheSize = instance.RegexCacheSize <= 0 ?
+                            RegexCacheSizeDefaultOverride :
+                            RegexCacheSizeDefault;
+                    }
+
+                    instance.ApplyRegexCacheSize();
+                }
+
                 return instance;
             }
         }
@@ -150,6 +163,8 @@ namespace FFXIV.Framework
         private const int WasapiLatencyDefault = 200;
         private const int WasapiMultiplePlaybackCountDefault = 4;
         private const double WasapiLoopBufferDurationDefault = 20;
+        private const int RegexCacheSizeDefault = 15;
+        private const int RegexCacheSizeDefaultOverride = 128;
 
         private static ObservableKeyValue<LogMessageType, bool>[] GetDefaultGlobalLogFilter()
         {
@@ -322,6 +337,26 @@ namespace FFXIV.Framework
         {
             get => this.commonSoundVolume;
             set => this.SetProperty(ref this.commonSoundVolume, value);
+        }
+
+        private int regexCacheSize = RegexCacheSizeDefaultOverride;
+
+        [DefaultValue(RegexCacheSizeDefault)]
+        public int RegexCacheSize
+        {
+            get => this.regexCacheSize;
+            set
+            {
+                if (this.SetProperty(ref this.regexCacheSize, value))
+                {
+                    this.ApplyRegexCacheSize();
+                }
+            }
+        }
+
+        private void ApplyRegexCacheSize()
+        {
+            Regex.CacheSize = this.regexCacheSize;
         }
 
         private Dictionary<LogMessageType, ObservableKeyValue<LogMessageType, bool>> globalLogFilterDictionary;
