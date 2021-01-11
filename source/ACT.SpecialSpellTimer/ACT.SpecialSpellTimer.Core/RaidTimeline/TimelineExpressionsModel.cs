@@ -312,28 +312,39 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
                 else
                 {
-                    variable.Value = ObjectComparer.ConvertToValue(set.Value, matched);
+                    var newValue = ObjectComparer.ConvertToValue(set.Value, matched);
+
+                    if (!ObjectComparer.Equals(variable.Value, newValue))
+                    {
+                        variable.Value = newValue;
+                        isVaribleChanged = true;
+                    }
                 }
 
                 // カウンタを更新する
-                variable.Counter = set.ExecuteCount(variable.Counter);
+                if (!string.IsNullOrEmpty(set.Count))
+                {
+                    variable.Counter = set.ExecuteCount(variable.Counter);
+                    isVaribleChanged = true;
+                }
 
                 // 有効期限を設定する
                 variable.Expiration = expretion;
 
-                // フラグの状況を把握するためにログを出力する
-                TimelineController.RaiseLog(
-                    string.IsNullOrEmpty(set.Count) ?
-                    $"{TimelineConstants.LogSymbol} set VAR['{set.Name}'] = {variable.Value}" :
-                    $"{TimelineConstants.LogSymbol} set VAR['{set.Name}'] = {variable.Counter}");
-
-                isVaribleChanged = true;
-
-                if (ReferedTriggerRecompileDelegates.ContainsKey(set.Name))
+                if (isVaribleChanged)
                 {
-                    lock (variable)
+                    // フラグの状況を把握するためにログを出力する
+                    TimelineController.RaiseLog(
+                        string.IsNullOrEmpty(set.Count) ?
+                        $"{TimelineConstants.LogSymbol} set VAR['{set.Name}'] = {variable.Value}" :
+                        $"{TimelineConstants.LogSymbol} set VAR['{set.Name}'] = {variable.Counter}");
+
+                    if (ReferedTriggerRecompileDelegates.ContainsKey(set.Name))
                     {
-                        ReferedTriggerRecompileDelegates[set.Name]?.Invoke();
+                        lock (variable)
+                        {
+                            ReferedTriggerRecompileDelegates[set.Name]?.Invoke();
+                        }
                     }
                 }
             }
