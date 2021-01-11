@@ -1821,10 +1821,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             switch (element)
             {
+                /*
                 case TimelineActivityModel act:
                     text = !string.IsNullOrEmpty(act.Text) ? $"text={act.Text}" : string.Empty; ;
                     log = $"{TimelineConstants.LogSymbol} synced-to-activity {string.Join(" ", parts.Where(x => !string.IsNullOrWhiteSpace(x)))}";
                     break;
+                */
 
                 case TimelineTriggerModel tri:
                     text = !string.IsNullOrEmpty(tri.Text) ? $"text={tri.Text}" : string.Empty; ;

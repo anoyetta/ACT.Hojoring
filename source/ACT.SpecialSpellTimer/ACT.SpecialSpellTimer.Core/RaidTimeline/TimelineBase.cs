@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using ACT.SpecialSpellTimer.Image;
+using ACT.SpecialSpellTimer.Utility;
 using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -201,7 +202,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         private static readonly Regex DetectVariableRegex = new Regex(
-            @"(TABLE|VAR)\['(?<name>.+)'\]",
+            @"(TABLE|VAR)\['(?<name>[^']+?)'\]",
             RegexOptions.Compiled);
 
         public static void InitRegex(
@@ -220,12 +221,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (matches.Count > 0)
             {
+                var variableList = new List<string>();
+
                 foreach (Match m in matches)
                 {
                     var name = m.Groups["name"].Value;
 
                     if (!string.IsNullOrEmpty(name))
                     {
+                        if (variableList.Contains(name))
+                        {
+                            continue;
+                        }
+
                         var action = new Action(() =>
                         {
                             var sw = Stopwatch.StartNew();
@@ -243,8 +251,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                                 $"name={sync.Name}" :
                                 $"text={sync.Text}";
 
-                            TimelineController.RaiseLog(
-                                $"{TimelineConstants.LogSymbol} Refered trigger was recompiled. {label} regex=\"{sync.SyncRegex}\" {sw.ElapsedMilliseconds}ms");
+                            var log = $"{TimelineConstants.LogSymbol} Refered trigger was recompiled. {label} regex=\"{sync.SyncRegex}\" {sw.ElapsedMilliseconds}ms";
+                            var simpleLog = $"{TimelineConstants.LogSymbol} Refered trigger was recompiled. {label} {sw.ElapsedMilliseconds}ms";
+                            TimelineController.RaiseLog(simpleLog);
+                            Logger.Write(log);
                         });
 
                         if (!TimelineExpressionsModel.ReferedTriggerRecompileDelegates.ContainsKey(name))
@@ -255,6 +265,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         {
                             TimelineExpressionsModel.ReferedTriggerRecompileDelegates[name] += action;
                         }
+
+                        variableList.Add(name);
                     }
                 }
             }
