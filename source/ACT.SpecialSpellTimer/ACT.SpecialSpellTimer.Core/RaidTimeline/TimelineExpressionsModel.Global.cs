@@ -207,7 +207,25 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             if (Variables.ContainsKey(Origin1B))
             {
-                currentSignValue = (int)(Variables[Origin1B].Value ?? int.MaxValue);
+                if (Variables[Origin1B].Value != null)
+                {
+                    if (Variables[Origin1B].Value is int i)
+                    {
+                        currentSignValue = i;
+                    }
+                    else
+                    {
+                        var currentText = Variables[Origin1B].Value.ToString();
+                        if (int.TryParse(
+                            currentText,
+                            NumberStyles.HexNumber,
+                            CultureInfo.InvariantCulture,
+                            out int j))
+                        {
+                            currentSignValue = j;
+                        }
+                    }
+                }
             }
 
             if (newSignValue < currentSignValue)
