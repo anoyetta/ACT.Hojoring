@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
@@ -647,11 +648,23 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return input;
                 }
 
-                var result = expressions.Eval();
+                var result = default(object);
                 var resultText = string.Empty;
 
-                if (result == null)
+                try
                 {
+                    result = expressions.Eval();
+
+                    if (result == null)
+                    {
+                        return input;
+                    }
+                }
+                catch (SyntaxErrorException)
+                {
+                    TimelineController.RaiseLog(
+                        $"{TimelineConstants.LogSymbol} EVAL syntax error. expressions=\"{expressions}\"");
+
                     return input;
                 }
 
