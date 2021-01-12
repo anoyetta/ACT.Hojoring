@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.RaidTimeline.Views;
@@ -357,38 +358,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
         }
 
-        private static string lastRaisedLog = string.Empty;
-        private static DateTime lastRaisedLogTimestamp = DateTime.MinValue;
-
-        public static void RaiseLog(
-            string log)
-        {
-            if (string.IsNullOrEmpty(log))
-            {
-                return;
-            }
-
-            lock (NoticeLocker)
-            {
-                if (lastRaisedLog == log)
-                {
-                    if ((DateTime.Now - lastRaisedLogTimestamp).TotalSeconds <= 0.1)
-                    {
-                        return;
-                    }
-                }
-
-                lastRaisedLog = log;
-                lastRaisedLogTimestamp = DateTime.Now;
-            }
-
-            log = log.Replace(Environment.NewLine, "\\n");
-
-            LogParser.RaiseLog(DateTime.Now, log);
-        }
-
-        private static string lastNotice = string.Empty;
-        private static DateTime lastNoticeTimestamp = DateTime.MinValue;
+        private static volatile string lastNotice = string.Empty;
+        private static long lastNoticeTimestamp = DateTime.MinValue.Ticks;
 
         private static Task NotifySoundAsync(
             string notice,
@@ -429,19 +400,20 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            lock (NoticeLocker)
-            {
-                if (lastNotice == notice)
-                {
-                    if ((DateTime.Now - lastNoticeTimestamp).TotalSeconds <= 0.1)
-                    {
-                        return;
-                    }
-                }
+            var now = DateTime.Now;
 
-                lastNotice = notice;
-                lastNoticeTimestamp = DateTime.Now;
+            if (lastNotice == notice)
+            {
+                var timestamp = new DateTime(Interlocked.Read(ref lastNoticeTimestamp));
+
+                if ((now - timestamp).TotalSeconds <= 0.1)
+                {
+                    return;
+                }
             }
+
+            lastNotice = notice;
+            Interlocked.Exchange(ref lastNoticeTimestamp, now.Ticks);
 
             var isWave =
                 notice.EndsWith(".wav", StringComparison.OrdinalIgnoreCase) ||

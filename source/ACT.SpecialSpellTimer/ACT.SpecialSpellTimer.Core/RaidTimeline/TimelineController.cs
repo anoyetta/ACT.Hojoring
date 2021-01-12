@@ -1840,6 +1840,40 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             TimelineController.RaiseLog(log);
         }
 
+        private static volatile string lastRaisedLog = string.Empty;
+        private static long lastRaisedLogTimestamp = DateTime.MinValue.Ticks;
+
+        public static void RaiseLog(
+            string log)
+        {
+            if (string.IsNullOrEmpty(log))
+            {
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                var now = DateTime.Now;
+
+                if (lastRaisedLog == log)
+                {
+                    var timestamp = new DateTime(Interlocked.Read(ref lastRaisedLogTimestamp));
+
+                    if ((now - timestamp).TotalSeconds <= 0.1)
+                    {
+                        return;
+                    }
+                }
+
+                lastRaisedLog = log;
+                Interlocked.Exchange(ref lastRaisedLogTimestamp, now.Ticks);
+
+                log = log.Replace(Environment.NewLine, "\\n");
+
+                LogParser.RaiseLog(DateTime.Now, log);
+            });
+        }
+
         #endregion Log 関係のスレッド
 
         #region 時間進行関係のスレッド
