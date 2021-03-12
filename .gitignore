@@ -308,6 +308,7 @@ merge_into_master.ps1
 /source/ThirdParty/SDK/*.dll
 /source/ThirdParty/*.dll
 CeVIO.Talk.RemoteService.DLL
+CeVIO.Talk.RemoteService2.DLL
 Advanced Combat Tracker.exe
 
 source_dotnet5/
