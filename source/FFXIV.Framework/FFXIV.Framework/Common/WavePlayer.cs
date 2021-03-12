@@ -167,6 +167,9 @@ namespace FFXIV.Framework.Common
             var list = new List<PlayDevice>();
 
             var deviceEnumrator = new MMDeviceEnumerator();
+
+            list.Add(PlayDevice.DefaultDevice);
+
             foreach (var device in deviceEnumrator.EnumerateAudioEndPoints(
                 DataFlow.Render,
                 DeviceState.Active))
@@ -304,9 +307,14 @@ namespace FFXIV.Framework.Common
                     break;
 
                 case WavePlayerTypes.WASAPI:
-                    var device = deviceEnumrator
-                        .EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active)
-                        .FirstOrDefault(x => x.ID == deviceID);
+                    var device = deviceID switch
+                    {
+                        PlayDevice.DefaultDeviceID => deviceEnumrator
+                            .GetDefaultAudioEndpoint(DataFlow.Render, Role.Console),
+                        _ => deviceEnumrator
+                            .EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active)
+                            .FirstOrDefault(x => x.ID == deviceID)
+                    };
 
                     player = device == null ?
                         new WasapiOut() :
@@ -334,6 +342,14 @@ namespace FFXIV.Framework.Common
         {
             ID = DiscordDeviceID,
             Name = "Use DISCORD BOT",
+        };
+
+        public const string DefaultDeviceID = "DEFAULT";
+
+        public readonly static PlayDevice DefaultDevice = new PlayDevice()
+        {
+            ID = DefaultDeviceID,
+            Name = "Default",
         };
 
         private string id = null;

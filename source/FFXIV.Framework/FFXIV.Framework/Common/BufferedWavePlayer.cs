@@ -37,13 +37,14 @@ namespace FFXIV.Framework.Common
         /// </summary>
         private static readonly WaveFormat DefaultOutputFormat = new WaveFormat(44100, 16, 2);
 
-        private MMDevice[] GetDevices() =>
-            new MMDeviceEnumerator()
+        private static readonly MMDeviceEnumerator DeviceEnuerator = new MMDeviceEnumerator();
+
+        private MMDevice[] GetDevices() => DeviceEnuerator
             .EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active)
             .ToArray();
 
-        private MMDevice GetDefaultAudioDevice() =>
-            (new MMDeviceEnumerator()).GetDefaultAudioEndpoint(DataFlow.Render, Role.Console);
+        private MMDevice GetDefaultAudioDevice() => DeviceEnuerator
+            .GetDefaultAudioEndpoint(DataFlow.Render, Role.Console);
 
         private readonly Dictionary<string, PlayerSet> players = new Dictionary<string, PlayerSet>(2);
 
@@ -188,7 +189,11 @@ namespace FFXIV.Framework.Common
                 }
                 else
                 {
-                    var device = this.GetDevices().FirstOrDefault(x => x.ID == deviceID);
+                    var device = deviceID switch
+                    {
+                        PlayDevice.DefaultDeviceID => this.GetDefaultAudioDevice(),
+                        _ => this.GetDevices().FirstOrDefault(x => x.ID == deviceID)
+                    };
 
                     if (device != null)
                     {
