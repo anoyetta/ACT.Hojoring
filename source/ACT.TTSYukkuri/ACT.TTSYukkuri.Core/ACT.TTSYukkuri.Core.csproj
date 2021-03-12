@@ -57,6 +57,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\ThirdParty\CeVIO\7\CeVIO.Talk.RemoteService.dll</HintPath>
     </Reference>
+    <Reference Include="CeVIO.Talk.RemoteService2">
+      <HintPath>..\..\ThirdParty\CeVIO\AI\CeVIO.Talk.RemoteService2.dll</HintPath>
+    </Reference>
     <Reference Include="FFXIV_ACT_Plugin.Common">
       <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.Common.dll</HintPath>
       <Private>False</Private>
@@ -104,6 +107,7 @@
     <Compile Include="Config\OpenJTalkConfig.cs" />
     <Compile Include="Config\PollyConfigs.cs" />
     <Compile Include="Config\SAPI5Configs.cs" />
+    <Compile Include="Config\CevioAIConfig.cs" />
     <Compile Include="Config\StatusAlertConfig.cs" />
     <Compile Include="Config\SasaraComponent.cs" />
     <Compile Include="Config\SasaraConfig.cs" />
@@ -113,6 +117,7 @@
     <Compile Include="Config\ViewModels\GoogleCloudTextToSpeechViewModel.cs" />
     <Compile Include="Config\ViewModels\PollyConfigViewModel.cs" />
     <Compile Include="Config\ViewModels\SAPI5ConfigViewModel.cs" />
+    <Compile Include="Config\ViewModels\CevioAIConfigViewModel.cs" />
     <Compile Include="Config\ViewModels\VoiceroidConfigViewModel.cs" />
     <Compile Include="Config\ViewModels\SasaraConfigViewModel.cs" />
     <Compile Include="Config\ViewModels\HoyaConfigViewModel.cs" />
@@ -161,6 +166,9 @@
     <Compile Include="Config\Views\OpenJTalkConfigView.xaml.cs">
       <DependentUpon>OpenJTalkConfigView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Config\Views\CevioAIConfigView.xaml.cs">
+      <DependentUpon>CevioAIConfigView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Config\Views\SasaraConfigView.xaml.cs">
       <DependentUpon>SasaraConfigView.xaml</DependentUpon>
     </Compile>
@@ -202,6 +210,7 @@
     <Compile Include="resources\ILocalizable.cs" />
     <Compile Include="resources\LocalizeExtensions.cs" />
     <Compile Include="SAPI5\SAPI5SpeechController.cs" />
+    <Compile Include="Sasara\CevioAISpeechController .cs" />
     <Compile Include="Sasara\SasaraSpeechController.cs" />
     <Compile Include="SoundPlayerWrapper.cs" />
     <Compile Include="SpeechController.cs" />
@@ -395,6 +404,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Config\Views\CevioAIConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Config\Views\SasaraConfigView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -446,7 +459,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config\Models\" />
-    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.Polly">

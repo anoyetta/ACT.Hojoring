@@ -117,11 +117,26 @@ namespace ACT.TTSYukkuri.Config.Views
                     }
                     catch (Exception ex)
                     {
-                        this.ShowErrorMessage("CeVIO Creative Studio との接続で例外が発生しました。", ex);
+                        this.ShowErrorMessage("CeVIO 7 との接続で例外が発生しました。", ex);
                         return;
                     }
 
                     content = new SasaraConfigView();
+                    break;
+
+                case TTSType.CevioAI:
+                    try
+                    {
+                        // リモートからCeVIO AIの設定を取得する
+                        await Task.Run(() => Settings.Default.CevioAISettings.LoadRemoteConfig());
+                    }
+                    catch (Exception ex)
+                    {
+                        this.ShowErrorMessage("CeVIO AI との接続で例外が発生しました。", ex);
+                        return;
+                    }
+
+                    content = new CevioAIConfigView();
                     break;
 
                 case TTSType.Boyomichan:

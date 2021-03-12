@@ -57,6 +57,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\ThirdParty\CeVIO\7\CeVIO.Talk.RemoteService.dll</HintPath>
     </Reference>
+    <Reference Include="CeVIO.Talk.RemoteService2">
+      <HintPath>..\..\ThirdParty\CeVIO\AI\CeVIO.Talk.RemoteService2.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />

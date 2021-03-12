@@ -1,0 +1,224 @@
+<UserControl
+  x:Class="ACT.TTSYukkuri.Config.Views.CevioAIConfigView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:vm="clr-namespace:ACT.TTSYukkuri.Config.ViewModels"
+  xmlns:fwcnv="clr-namespace:FFXIV.Framework.WPF.Converters;assembly=FFXIV.Framework"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
+  mc:Ignorable="d"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.EdgeMode="Unspecified"
+  Background="White"
+  FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
+  FontSize="17"
+  Margin="5"
+  d:DesignWidth="600"
+  d:DataContext="{d:DesignInstance Type=vm:CevioAIConfigViewModel, IsDesignTimeCreatable=True}"
+  DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
+      <fwcnv:BoolToCollapsedConverter x:Key="VisibilityConverter" />
+      <fwcnv:BoolToHiddenConverter x:Key="HiddenConverter" />
+
+      <ResourceDictionary.MergedDictionaries>
+        <wpf:DesignTimeResourceDictionary Source="../../resources/strings/Strings.Yukkuri.ja-JP.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <ScrollViewer
+    HorizontalScrollBarVisibility="Disabled"
+    VerticalScrollBarVisibility="Auto">
+
+    <StackPanel Orientation="Vertical">
+      <Label Content="{DynamicResource Sasara_Cast}" />
+      <ComboBox
+        x:Name="PresetsComboBox"
+        HorizontalAlignment="Left"
+        MinWidth="350"
+        ItemsSource="{Binding Config.AvailableCasts, Mode=OneWay}"
+        SelectedItem="{Binding Config.Cast, Mode=TwoWay}">
+      </ComboBox>
+
+      <Label Margin="0 10 0 0" Content="{DynamicResource Sasara_Emotions}" />
+      <ItemsControl
+        ItemsSource="{Binding Config.AvailableComponents, Mode=OneWay}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <StackPanel Orientation="Horizontal">
+              <Label
+                MinWidth="100"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Content="{Binding Name, Mode=OneWay}" />
+              <Label
+                Margin="5 0 0 0"
+                MinWidth="60"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                HorizontalContentAlignment="Right"
+                Content="{Binding Value, Mode=OneWay, StringFormat=N0}" />
+              <Slider
+                Margin="5 0 0 0"
+                MinWidth="250"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                SmallChange="1"
+                LargeChange="1"
+                Minimum="0" Maximum="100"
+                Value="{Binding Value, Mode=TwoWay}" />
+            </StackPanel>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+
+      <Label Margin="0 15 0 0" Content="{DynamicResource Sasara_General}" />
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="100"
+          Content="{DynamicResource Sasara_Gain}" />
+        <Label
+          Margin="5 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=GainSlider, Path=Value, Mode=OneWay }"
+          ContentStringFormat="N1" />
+        <Slider
+          Margin="5 0 0 0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Width="250"
+          x:Name="GainSlider"
+          SmallChange="0.1"
+          LargeChange="0.1"
+          Minimum="0.0" Maximum="9.9"
+          Value="{Binding Config.Gain, Mode=TwoWay}" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="100"
+          Content="{DynamicResource Sasara_Onryo}" />
+        <Label
+          Margin="5 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=OnryoSlider, Path=Value, Mode=OneWay, StringFormat=N0}" />
+        <Slider
+          Margin="5 0 0 0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Width="250"
+          x:Name="OnryoSlider"
+          SmallChange="1"
+          LargeChange="1"
+          Minimum="0" Maximum="100"
+          Value="{Binding Config.Onryo, Mode=TwoWay}" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="100"
+          Content="{DynamicResource Sasara_Hayasa}" />
+        <Label
+          Margin="5 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=HayasaSlider, Path=Value, Mode=OneWay, StringFormat=N0}" />
+        <Slider
+          Margin="5 0 0 0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Width="250"
+          x:Name="HayasaSlider"
+          SmallChange="1"
+          LargeChange="1"
+          Minimum="0" Maximum="100"
+          Value="{Binding Config.Hayasa, Mode=TwoWay}" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="100"
+          Content="{DynamicResource Sasara_Takasa}" />
+        <Label
+          Margin="5 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=TakasaSlider, Path=Value, Mode=OneWay, StringFormat=N0}" />
+        <Slider
+          Margin="5 0 0 0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Width="250"
+          x:Name="TakasaSlider"
+          SmallChange="1"
+          LargeChange="1"
+          Minimum="0" Maximum="100"
+          Value="{Binding Config.Takasa, Mode=TwoWay}" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="100"
+          Content="{DynamicResource Sasara_Seishitsu}" />
+        <Label
+          Margin="5 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=SeishitsuSlider, Path=Value, Mode=OneWay, StringFormat=N0}" />
+        <Slider
+          Margin="5 0 0 0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Width="250"
+          x:Name="SeishitsuSlider"
+          SmallChange="1"
+          LargeChange="1"
+          Minimum="0" Maximum="100"
+          Value="{Binding Config.Seishitsu, Mode=TwoWay}" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+        <Label
+          Margin="0 0 0 0"
+          MinWidth="100"
+          Content="{DynamicResource Sasara_Yokuyo}" />
+        <Label
+          Margin="5 0 0 0"
+          MinWidth="60"
+          HorizontalContentAlignment="Right"
+          Content="{Binding ElementName=YokuyoSlider, Path=Value, Mode=OneWay, StringFormat=N0}" />
+        <Slider
+          Margin="5 0 0 0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Width="250"
+          x:Name="YokuyoSlider"
+          SmallChange="1"
+          LargeChange="1"
+          Minimum="0" Maximum="100"
+          Value="{Binding Config.Yokuyo, Mode=TwoWay}" />
+      </StackPanel>
+
+      <CheckBox
+        Margin="0 10 0 0"
+        VerticalContentAlignment="Center"
+        Content="{DynamicResource Sasara_HideCevioWindow}"
+        IsChecked="{Binding Config.IsHideCevioWindow, Mode=TwoWay}" />
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

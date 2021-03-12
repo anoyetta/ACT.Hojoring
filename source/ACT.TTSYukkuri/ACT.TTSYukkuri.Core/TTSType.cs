@@ -16,6 +16,11 @@ namespace ACT.TTSYukkuri
         public const string Sasara = "Sasara";
 
         /// <summary>
+        /// CeVIO AI
+        /// </summary>
+        public const string CevioAI = "CeVIOAI";
+
+        /// <summary>
         /// Boyomichan:棒読みちゃん
         /// </summary>
         public const string Boyomichan = "Boyomichan";
@@ -56,7 +61,8 @@ namespace ACT.TTSYukkuri
         public static ComboBoxItem[] ToComboBox = new ComboBoxItem[]
         {
             new ComboBoxItem("AquesTalk (ゆっくり)", TTSType.Yukkuri),
-            new ComboBoxItem("CeVIO Creative Studio", TTSType.Sasara),
+            new ComboBoxItem("CeVIO 7", TTSType.Sasara),
+            new ComboBoxItem("CeVIO AI", TTSType.CevioAI),
             new ComboBoxItem("Open JTalk", TTSType.OpenJTalk),
             new ComboBoxItem("VOICEROID", TTSType.VOICEROID),
             new ComboBoxItem("棒読みちゃん(RESTインターフェース)", TTSType.Boyomichan),
