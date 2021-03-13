@@ -97,6 +97,7 @@ namespace ACT.TTSYukkuri.Config
         private OpenJTalkConfig openJTalkSettingsExt2 = new OpenJTalkConfig();
         private OpenJTalkConfig openJTalkSettingsExt3 = new OpenJTalkConfig();
         private SasaraConfig sasaraSettings = new SasaraConfig();
+        private CevioAIConfig cevioAISettings = new CevioAIConfig();
         private VoiceroidConfig voiceroidSettings = new VoiceroidConfig();
         private SAPI5Configs sapi5Settings = new SAPI5Configs();
         private SAPI5Configs sapi5SettingsExt1 = new SAPI5Configs();
@@ -456,6 +457,15 @@ namespace ACT.TTSYukkuri.Config
         }
 
         /// <summary>
+        /// CeVIO AI設定
+        /// </summary>
+        public CevioAIConfig CevioAISettings
+        {
+            get => this.cevioAISettings;
+            set => this.SetProperty(ref this.cevioAISettings, value);
+        }
+
+        /// <summary>
         /// VOICEROID設定
         /// </summary>
         public VoiceroidConfig VoiceroidSettings
@@ -590,6 +600,9 @@ namespace ACT.TTSYukkuri.Config
 
                         activeConfig.SasaraSettings.LoadRemoteConfig();
                         activeConfig.SasaraSettings.IsInitialized = true;
+
+                        activeConfig.CevioAISettings.LoadRemoteConfig();
+                        activeConfig.CevioAISettings.IsInitialized = true;
                     }
                 }
                 finally

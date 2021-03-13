@@ -57,6 +57,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\ThirdParty\CeVIO\7\CeVIO.Talk.RemoteService.dll</HintPath>
     </Reference>
+    <Reference Include="CeVIO.Talk.RemoteService2">
+      <HintPath>..\..\ThirdParty\CeVIO\AI\CeVIO.Talk.RemoteService2.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -96,7 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next.StrongName">
-      <Version>4.0.0</Version>
+      <Version>4.0.2</Version>
     </PackageReference>
     <PackageReference Include="Costura.Fody">
       <Version>4.1.0</Version>

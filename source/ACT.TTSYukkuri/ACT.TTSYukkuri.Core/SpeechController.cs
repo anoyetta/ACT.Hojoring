@@ -60,6 +60,10 @@ namespace ACT.TTSYukkuri
                                 SpeechController.instance = new SasaraSpeechController();
                                 break;
 
+                            case TTSType.CevioAI:
+                                SpeechController.instance = new CevioAISpeechController();
+                                break;
+
                             case TTSType.Boyomichan:
                                 SpeechController.instance = new BoyomichanSpeechController();
                                 break;

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using ACT.TTSYukkuri.Config.Views;
-using CeVIO.Talk.RemoteService;
+using CeVIO.Talk.RemoteService2;
 using FFXIV.Framework.Common;
 using Microsoft.Win32;
 using NLog;
@@ -16,10 +16,10 @@ using Prism.Mvvm;
 namespace ACT.TTSYukkuri.Config
 {
     /// <summary>
-    /// TTSささら設定
+    /// CeVIO AI設定
     /// </summary>
     [Serializable]
-    public class SasaraConfig :
+    public class CevioAIConfig :
         BindableBase
     {
         #region Logger
@@ -28,11 +28,11 @@ namespace ACT.TTSYukkuri.Config
 
         #endregion Logger
 
-        private readonly Lazy<Talker> LazyTalker = new Lazy<Talker>(() => new Talker());
+        private readonly Lazy<Talker2> LazyTalker = new Lazy<Talker2>(() => new Talker2());
 
-        internal Talker Talker => this.LazyTalker.Value;
+        internal Talker2 Talker => this.LazyTalker.Value;
 
-        public SasaraConfig()
+        public CevioAIConfig()
         {
         }
 
@@ -66,7 +66,7 @@ namespace ACT.TTSYukkuri.Config
         /// CeVIOがアクティブか？
         /// </summary>
         [XmlIgnore]
-        private bool IsActive => Settings.Default.TTS == TTSType.Sasara;
+        private bool IsActive => Settings.Default.TTS == TTSType.CevioAI;
 
         [XmlIgnore]
         public bool IsInitialized { get; set; }
@@ -183,6 +183,7 @@ namespace ACT.TTSYukkuri.Config
         }
 
         public override string ToString() =>
+            $"CeVIO AI" +
             $"{nameof(this.Cast)}:{this.Cast}," +
             $"{nameof(this.Gain)}:{this.Gain}," +
             $"{nameof(this.Onryo)}:{this.Onryo}," +
@@ -232,7 +233,7 @@ namespace ACT.TTSYukkuri.Config
                 return;
             }
 
-            var casts = Talker.AvailableCasts;
+            var casts = Talker2.AvailableCasts;
 
             // 有効なキャストを列挙する
             var addCasts = casts
@@ -327,17 +328,17 @@ namespace ACT.TTSYukkuri.Config
             }
         }
 
-        private static readonly string CeVIOPath = @"C:\Program Files\CeVIO\CeVIO Creative Studio (64bit)\CeVIO Creative Studio.exe";
+        private static readonly string CevioAIPath = @"C:\Program Files\CeVIO\CeVIO AI\CeVIO AI.exe";
 
         private async void StartCevio()
         {
-            if (ServiceControl.IsHostStarted)
+            if (ServiceControl2.IsHostStarted)
             {
                 this.IsCevioReady = true;
                 return;
             }
 
-            var result = ServiceControl.StartHost(false);
+            var result = ServiceControl2.StartHost(false);
 
             switch (result)
             {
@@ -352,11 +353,11 @@ namespace ACT.TTSYukkuri.Config
                 case HostStartResult.NotRegistered:
                 case HostStartResult.FileNotFound:
                 case HostStartResult.HostError:
-                    var path = CeVIOPath;
+                    var path = CevioAIPath;
 
                     if (!File.Exists(path))
                     {
-                        using (var regKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\CeVIO\Subject\Editor\x64"))
+                        using (var regKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\CeVIO_NV\Subject\Editor\x64"))
                         {
                             var folder = regKey.GetValue("InstallFolder") as string;
                             if (string.IsNullOrEmpty(folder))
@@ -365,7 +366,7 @@ namespace ACT.TTSYukkuri.Config
                                 return;
                             }
 
-                            path = Path.Combine(folder, "CeVIO Creative Studio.exe");
+                            path = Path.Combine(folder, "CeVIO AI.exe");
                             if (!File.Exists(path))
                             {
                                 this.IsCevioReady = false;
@@ -374,7 +375,7 @@ namespace ACT.TTSYukkuri.Config
                         }
                     }
 
-                    var ps = Process.GetProcessesByName("CeVIO Creative Studio");
+                    var ps = Process.GetProcessesByName("CeVIO AI");
                     if (ps != null &&
                         ps.Length > 0)
                     {
@@ -400,13 +401,13 @@ namespace ACT.TTSYukkuri.Config
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
-                if (ServiceControl.IsHostStarted)
+                if (ServiceControl2.IsHostStarted)
                 {
                     break;
                 }
             }
 
-            this.Talker.Cast = Talker.AvailableCasts.FirstOrDefault();
+            this.Talker.Cast = Talker2.AvailableCasts.FirstOrDefault();
 
             this.IsCevioReady = true;
         }
@@ -431,12 +432,12 @@ namespace ACT.TTSYukkuri.Config
 
         internal async void KillCevio()
         {
-            if (ServiceControl.IsHostStarted)
+            if (ServiceControl2.IsHostStarted)
             {
-                ServiceControl.CloseHost(HostCloseMode.Interrupt);
+                ServiceControl2.CloseHost(HostCloseMode.Interrupt);
                 await Task.Delay(100);
 
-                if (!ServiceControl.IsHostStarted)
+                if (!ServiceControl2.IsHostStarted)
                 {
                     this.Logger.Info($"CeVIO RPC close.");
                 }

@@ -3,8 +3,11 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Threading;
+using ACT.SpecialSpellTimer.Config;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline.Views
 {
@@ -150,6 +153,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
 
         #endregion View
 
+        private readonly DispatcherTimer NotActiveToHideSubscriber = new DispatcherTimer(DispatcherPriority.ContextIdle)
+        {
+            Interval = TimeSpan.FromSeconds(3)
+        };
+
         public TimelineOverlay()
         {
             LoadResourcesDictionary();
@@ -164,12 +172,33 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
             this.ToNonActive();
             this.Opacity = 0;
 
-            this.MouseLeftButtonDown += (x, y) => this.DragMove();
+            this.MouseLeftButtonDown += (_, _) => this.DragMove();
 
-            this.Loaded += (x, y) =>
+            this.Loaded += (_, _) =>
             {
                 this.IsClickthrough = this.Config.Clickthrough;
                 this.SubscribeZOrderCorrector();
+                this.NotActiveToHideSubscriber.Start();
+            };
+
+            this.NotActiveToHideSubscriber.Tick += (_, _) =>
+            {
+                if (XIVPluginHelper.Instance.IsAvailable)
+                {
+                    if (Settings.Default.HideWhenNotActive &&
+                        !PluginMainWorker.Instance.IsFFXIVActive)
+                    {
+                        this.BaseGrid.Visibility = Visibility.Hidden;
+                        return;
+                    }
+                }
+
+                this.BaseGrid.Visibility = Visibility.Visible;
+            };
+
+            this.Closing += (_, _) =>
+            {
+                this.NotActiveToHideSubscriber.Stop();
             };
         }
 
@@ -268,7 +297,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void RaisePropertyChanged(
-            [CallerMemberName]string propertyName = null)
+            [CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(
                 this,
@@ -278,7 +307,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline.Views
         protected virtual bool SetProperty<T>(
             ref T field,
             T value,
-            [CallerMemberName]string propertyName = null)
+            [CallerMemberName] string propertyName = null)
         {
             if (Equals(field, value))
             {

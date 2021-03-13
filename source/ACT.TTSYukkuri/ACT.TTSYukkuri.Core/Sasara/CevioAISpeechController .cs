@@ -8,23 +8,25 @@ using NAudio.Wave;
 namespace ACT.TTSYukkuri.Sasara
 {
     /// <summary>
-    /// さとうささらスピーチコントローラ
+    /// CeVIO AIスピーチコントローラ
     /// </summary>
-    public class SasaraSpeechController :
+    public class CevioAISpeechController :
         ISpeechController
     {
+        private CevioAIConfig config => Settings.Default.CevioAISettings;
+
         /// <summary>
         /// 初期化する
         /// </summary>
         public void Initialize()
         {
-            Settings.Default.SasaraSettings.LoadRemoteConfig();
-            Settings.Default.SasaraSettings.ApplyToCevio();
+            this.config.LoadRemoteConfig();
+            this.config.ApplyToCevio();
         }
 
         public void Free()
         {
-            Settings.Default.SasaraSettings.KillCevio();
+            this.config.KillCevio();
         }
 
         /// <summary>
@@ -58,16 +60,16 @@ namespace ACT.TTSYukkuri.Sasara
             var wave = this.GetCacheFileName(
                 Settings.Default.TTS,
                 text.Replace(Environment.NewLine, "+"),
-                Settings.Default.SasaraSettings.ToString());
+                this.config.ToString());
 
             this.CreateWaveWrapper(wave, () =>
             {
-                Settings.Default.SasaraSettings.ApplyToCevio();
+                this.config.ApplyToCevio();
 
                 this.TextToWave(
                     text,
                     wave,
-                    Settings.Default.SasaraSettings.Gain);
+                    this.config.Gain);
             });
 
             // 再生する
@@ -84,12 +86,12 @@ namespace ACT.TTSYukkuri.Sasara
                 return;
             }
 
-            if (!Settings.Default.SasaraSettings.IsCevioReady)
+            if (!this.config.IsCevioReady)
             {
                 return;
             }
 
-            if (string.IsNullOrEmpty(Settings.Default.SasaraSettings.Cast))
+            if (string.IsNullOrEmpty(this.config.Cast))
             {
                 return;
             }
@@ -98,7 +100,7 @@ namespace ACT.TTSYukkuri.Sasara
 
             try
             {
-                var result = Settings.Default.SasaraSettings.Talker.OutputWaveToFile(
+                var result = this.config.Talker.OutputWaveToFile(
                     tts,
                     tempWave);
 
