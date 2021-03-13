@@ -18,11 +18,13 @@ namespace ACT.TTSYukkuri.Sasara
         /// </summary>
         public void Initialize()
         {
+            Settings.Default.SasaraSettings.LoadRemoteConfig();
             Settings.Default.SasaraSettings.ApplyToCevio();
         }
 
         public void Free()
         {
+            Settings.Default.SasaraSettings.KillCevio();
         }
 
         /// <summary>

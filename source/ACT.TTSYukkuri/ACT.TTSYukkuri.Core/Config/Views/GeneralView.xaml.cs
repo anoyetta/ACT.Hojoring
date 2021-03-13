@@ -74,6 +74,9 @@ namespace ACT.TTSYukkuri.Config.Views
         private async void LoadTTSConfigPage(
             string ttsType)
         {
+            // コントローラを更新する
+            _ = SpeechController.Default;
+
             var content = default(object);
             switch (ttsType)
             {
@@ -110,6 +113,7 @@ namespace ACT.TTSYukkuri.Config.Views
                     break;
 
                 case TTSType.Sasara:
+                    /*
                     try
                     {
                         // リモートからささらの設定を取得する
@@ -120,11 +124,13 @@ namespace ACT.TTSYukkuri.Config.Views
                         this.ShowErrorMessage("CeVIO 7 との接続で例外が発生しました。", ex);
                         return;
                     }
+                    */
 
                     content = new SasaraConfigView();
                     break;
 
                 case TTSType.CevioAI:
+                    /*
                     try
                     {
                         // リモートからCeVIO AIの設定を取得する
@@ -135,6 +141,7 @@ namespace ACT.TTSYukkuri.Config.Views
                         this.ShowErrorMessage("CeVIO AI との接続で例外が発生しました。", ex);
                         return;
                     }
+                    */
 
                     content = new CevioAIConfigView();
                     break;

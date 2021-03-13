@@ -20,11 +20,13 @@ namespace ACT.TTSYukkuri.Sasara
         /// </summary>
         public void Initialize()
         {
+            this.config.LoadRemoteConfig();
             this.config.ApplyToCevio();
         }
 
         public void Free()
         {
+            this.config.KillCevio();
         }
 
         /// <summary>

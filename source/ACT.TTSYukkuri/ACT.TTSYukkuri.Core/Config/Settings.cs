@@ -600,6 +600,9 @@ namespace ACT.TTSYukkuri.Config
 
                         activeConfig.SasaraSettings.LoadRemoteConfig();
                         activeConfig.SasaraSettings.IsInitialized = true;
+
+                        activeConfig.CevioAISettings.LoadRemoteConfig();
+                        activeConfig.CevioAISettings.IsInitialized = true;
                     }
                 }
                 finally

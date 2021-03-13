@@ -57,6 +57,12 @@ For use for commercial purposes, a license to use the library is required.</syst
   <system:String x:Key="Sasara_Takasa">Pitch</system:String>
   <system:String x:Key="Sasara_Seishitsu">Alpha</system:String>
   <system:String x:Key="Sasara_Yokuyo">Tone Scale</system:String>
+  <system:String x:Key="Sasara_AttentionToSwitching" xml:space="preserve">
+When switching between CeVIO 7 and CeVIO AI, switch to AquesTalk once, reboot, and then select the next CeVIO.
+Procedure. Switch from CeVIO 7 to CeVIO AI 1.
+1. switch the TTS type from [CeVIO 7] to [AquesTalk]. 2.
+2. restart ACT.
+3. switch the TTS type to [CeVIO AI] after ACT is started.</system:String>
 
   <system:String x:Key="OJT_Voices">Voice</system:String>
   <system:String x:Key="OJT_Gain">Gain</system:String>

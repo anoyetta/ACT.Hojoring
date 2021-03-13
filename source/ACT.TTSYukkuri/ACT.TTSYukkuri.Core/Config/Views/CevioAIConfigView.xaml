@@ -219,6 +219,13 @@
         VerticalContentAlignment="Center"
         Content="{DynamicResource Sasara_HideCevioWindow}"
         IsChecked="{Binding Config.IsHideCevioWindow, Mode=TwoWay}" />
+
+      <TextBlock
+        Margin="0 20 5 0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        TextWrapping="Wrap"
+        Text="{DynamicResource Sasara_AttentionToSwitching}" />
     </StackPanel>
   </ScrollViewer>
 </UserControl>

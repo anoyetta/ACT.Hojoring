@@ -57,6 +57,12 @@
   <system:String x:Key="Sasara_Takasa">高さ</system:String>
   <system:String x:Key="Sasara_Seishitsu">声質</system:String>
   <system:String x:Key="Sasara_Yokuyo">抑揚</system:String>
+  <system:String x:Key="Sasara_AttentionToSwitching" xml:space="preserve">
+CeVIO 7 と CeVIO AI との切替時には一度 AquesTalk に切替えて再起動後に次のCeVIOを選択してください。
+手順. CeVIO 7 → CeVIO AI に切り替える
+1. TTSの種類を[CeVIO 7]から[AquesTalk]に切替える。
+2. ACTを再起動する。
+3. ACTの起動後にTTSの種類を[CeVIO AI]に切替える。</system:String>
 
   <system:String x:Key="OJT_Voices">ボイス</system:String>
   <system:String x:Key="OJT_Gain">ゲイン</system:String>

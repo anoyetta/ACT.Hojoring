@@ -329,108 +329,86 @@ namespace ACT.TTSYukkuri.Config
 
         private static readonly string CeVIOPath = @"C:\Program Files\CeVIO\CeVIO Creative Studio (64bit)\CeVIO Creative Studio.exe";
 
-        private volatile bool isStarting;
-
         private async void StartCevio()
         {
-            if (this.isStarting)
+            if (ServiceControl.IsHostStarted)
             {
+                this.IsCevioReady = true;
                 return;
             }
 
-            lock (this)
+            var result = ServiceControl.StartHost(false);
+
+            switch (result)
             {
-                if (this.isStarting)
-                {
-                    return;
-                }
+                case HostStartResult.Succeeded:
+                    this.Logger.Info($"CeVIO RPC start.");
+                    break;
 
-                this.isStarting = true;
-            }
+                case HostStartResult.AlreadyStarted:
+                    this.Logger.Info($"CeVIO RPC already started, connect to CeVIO.");
+                    break;
 
-            try
-            {
-                if (!ServiceControl.IsHostStarted)
-                {
-                    var result = await Task.Run(() => ServiceControl.StartHost(false));
+                case HostStartResult.NotRegistered:
+                case HostStartResult.FileNotFound:
+                case HostStartResult.HostError:
+                    var path = CeVIOPath;
 
-                    switch (result)
+                    if (!File.Exists(path))
                     {
-                        case HostStartResult.Succeeded:
-                            this.Logger.Info($"CeVIO RPC start.");
-                            break;
-
-                        case HostStartResult.AlreadyStarted:
-                            this.Logger.Info($"CeVIO RPC already started, connect to CeVIO.");
-                            break;
-
-                        case HostStartResult.NotRegistered:
-                            var path = CeVIOPath;
-
-                            if (!File.Exists(path))
+                        using (var regKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\CeVIO\Subject\Editor\x64"))
+                        {
+                            var folder = regKey.GetValue("InstallFolder") as string;
+                            if (string.IsNullOrEmpty(folder))
                             {
-                                using (var regKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\CeVIO\Subject\Editor\x64"))
-                                {
-                                    var folder = regKey.GetValue("InstallFolder") as string;
-                                    if (string.IsNullOrEmpty(folder))
-                                    {
-                                        this.IsCevioReady = false;
-                                        return;
-                                    }
-
-                                    path = Path.Combine(folder, "CeVIO Creative Studio.exe");
-                                    if (!File.Exists(path))
-                                    {
-                                        this.IsCevioReady = false;
-                                        return;
-                                    }
-                                }
+                                this.IsCevioReady = false;
+                                return;
                             }
 
-                            await Task.Run(() =>
+                            path = Path.Combine(folder, "CeVIO Creative Studio.exe");
+                            if (!File.Exists(path))
                             {
-                                var ps = Process.GetProcessesByName("CeVIO Creative Studio");
-                                if (ps != null &&
-                                    ps.Length > 0)
-                                {
-                                    return;
-                                }
-
-                                var p = Process.Start(new ProcessStartInfo()
-                                {
-                                    FileName = path,
-                                    UseShellExecute = false,
-                                    WorkingDirectory = Path.GetDirectoryName(path)
-                                });
-
-                                p.WaitForInputIdle();
-                            });
-                            break;
-
-                        default:
-                            this.IsCevioReady = false;
-                            return;
-                    }
-
-                    for (int i = 0; i < 60; i++)
-                    {
-                        await Task.Delay(TimeSpan.FromSeconds(1));
-
-                        if (ServiceControl.IsHostStarted)
-                        {
-                            break;
+                                this.IsCevioReady = false;
+                                return;
+                            }
                         }
                     }
 
-                    this.Talker.Cast = Talker.AvailableCasts.FirstOrDefault();
-                }
+                    var ps = Process.GetProcessesByName("CeVIO Creative Studio");
+                    if (ps != null &&
+                        ps.Length > 0)
+                    {
+                        return;
+                    }
 
-                this.IsCevioReady = true;
+                    var p = Process.Start(new ProcessStartInfo()
+                    {
+                        FileName = path,
+                        UseShellExecute = false,
+                        WorkingDirectory = Path.GetDirectoryName(path)
+                    });
+
+                    p.WaitForInputIdle();
+                    break;
+
+                default:
+                    this.IsCevioReady = false;
+                    return;
             }
-            finally
+
+            for (int i = 0; i < 60; i++)
             {
-                this.isStarting = false;
+                await Task.Delay(TimeSpan.FromSeconds(1));
+
+                if (ServiceControl.IsHostStarted)
+                {
+                    break;
+                }
             }
+
+            this.Talker.Cast = Talker.AvailableCasts.FirstOrDefault();
+
+            this.IsCevioReady = true;
         }
 
         public bool TryStartCevio()
@@ -451,11 +429,11 @@ namespace ACT.TTSYukkuri.Config
             return this.IsCevioReady;
         }
 
-        private async void KillCevio()
+        internal async void KillCevio()
         {
             if (ServiceControl.IsHostStarted)
             {
-                await Task.Run(() => ServiceControl.CloseHost(HostCloseMode.Interrupt));
+                ServiceControl.CloseHost(HostCloseMode.Interrupt);
                 await Task.Delay(100);
 
                 if (!ServiceControl.IsHostStarted)

@@ -57,6 +57,12 @@
   <system:String x:Key="Sasara_Takasa">피치</system:String>
   <system:String x:Key="Sasara_Seishitsu">음질</system:String>
   <system:String x:Key="Sasara_Yokuyo">억양</system:String>
+  <system:String x:Key="Sasara_AttentionToSwitching" xml:space="preserve">
+When switching between CeVIO 7 and CeVIO AI, switch to AquesTalk once, reboot, and then select the next CeVIO.
+Procedure. Switch from CeVIO 7 to CeVIO AI 1.
+1. switch the TTS type from [CeVIO 7] to [AquesTalk]. 2.
+2. restart ACT.
+3. switch the TTS type to [CeVIO AI] after ACT is started.</system:String>
 
   <system:String x:Key="OJT_Voices">음성</system:String>
   <system:String x:Key="OJT_Gain">게인</system:String>
