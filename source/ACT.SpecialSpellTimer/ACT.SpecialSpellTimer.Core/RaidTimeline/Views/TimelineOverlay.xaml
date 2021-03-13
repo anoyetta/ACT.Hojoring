@@ -1,13 +1,13 @@
 <Window
   x:Class="ACT.SpecialSpellTimer.RaidTimeline.Views.TimelineOverlay"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
-  xmlns:controls="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
-  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.RaidTimeline.Views"
   xmlns:tl="clr-namespace:ACT.SpecialSpellTimer.RaidTimeline"
+  xmlns:local="clr-namespace:ACT.SpecialSpellTimer.RaidTimeline.Views"
+  xmlns:controls="clr-namespace:FFXIV.Framework.WPF.Controls;assembly=FFXIV.Framework"
+  xmlns:wpf="clr-namespace:FFXIV.Framework.WPF;assembly=FFXIV.Framework"
   mc:Ignorable="d"
   RenderOptions.BitmapScalingMode="HighQuality"
   RenderOptions.ClearTypeHint="Enabled"
@@ -36,7 +36,7 @@
     </ResourceDictionary>
   </Window.Resources>
 
-  <Grid Style="{DynamicResource TimelineBaseGrid}">
+  <Grid x:Name="BaseGrid" Style="{DynamicResource TimelineBaseGrid}">
 
     <!-- 背景用ボーダー-->
     <Border Style="{DynamicResource TimelineBaseBorder}" />
