@@ -2,6 +2,10 @@
 [![Downloads](https://img.shields.io/github/downloads/anoyetta/ACT.Hojoring/total.svg)](https://github.com/anoyetta/ACT.Hojoring/releases)
 [![License](https://img.shields.io/badge/license-BSD--3--Clause-blue.svg)](https://github.com/anoyetta/ACT.Hojoring/blob/master/LICENSE)
 
+___
+インストール方法は **[こちら](https://www.anoyetta.com/entry/hojoring-setup)** から
+___
+
 「補助輪」  
 Advanced Combat Tracker の FFXIV向けプラグインの詰合せです。  
 スペスペ・ウルスカ・TTSゆっくりをまとめて「補助輪」 という名称でリリースしています。  
@@ -41,8 +45,6 @@ ACTにプラグインとして追加します。3つのプラグインそれぞ�
     * ACT.SpecialSpellTimer.dll
     * ACT.UltraScouter.dll
     * ACT.TTSYukkuri.dll
-
-詳細な手順は **[anoyetta の開発記録 - ACTおよび補助輪のインストール手順（完全版）](https://www.anoyetta.com/entry/hojoring-setup)** を読んでください。
 
 ### 動作環境
 * [Windows 10](https://www.microsoft.com/software-download/windows10) 以降（Windows 7/8/8.1 では原則的に動作しません）
