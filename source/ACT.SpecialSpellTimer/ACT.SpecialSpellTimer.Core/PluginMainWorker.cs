@@ -632,13 +632,17 @@ namespace ACT.SpecialSpellTimer
 
                 Task.Run(() =>
                 {
+                    if (Settings.Default.WipeoutNotifyToACT)
+                    {
+                        CommonSounds.Instance.PlayWipeout();
+                    }
+
                     Thread.Sleep(TimeSpan.FromSeconds(1));
 
                     // ACT本体に戦闘終了を通知する
                     if (Settings.Default.WipeoutNotifyToACT)
                     {
                         ActInvoker.Invoke(() => ActGlobals.oFormActMain.EndCombat(true));
-                        CommonSounds.Instance.PlayWipeout();
                     }
 
                     // トリガーをリセットする
