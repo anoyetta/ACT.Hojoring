@@ -104,7 +104,6 @@ namespace ACT.SpecialSpellTimer
                 Settings.Default.Save();
                 Settings.Default.DeInit();
                 FFXIV.Framework.Config.Save();
-                FFXIV.Framework.Config.Free();
 
                 // 付加情報オーバーレイを閉じる
                 LPSView.CloseLPS();

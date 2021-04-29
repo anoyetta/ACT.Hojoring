@@ -211,10 +211,6 @@ namespace FFXIV.Framework.Common
         public class PlayerSet :
             IDisposable
         {
-            private static int MultiplePlaybackCount => Config.Instance.WasapiMultiplePlaybackCount;
-
-            private static TimeSpan BufferDurations => Config.Instance.WasapiLoopBufferDuration;
-
             private static readonly Dictionary<string, WaveDataContainer> WaveBuffer = new Dictionary<string, WaveDataContainer>(512);
 
             public string DeviceID { get; set; }
@@ -240,18 +236,20 @@ namespace FFXIV.Framework.Common
                     return;
                 }
 
+                var config = Config.Instance;
+
                 this.Player = new WasapiOut(
                     device,
                     AudioClientShareMode.Shared,
                     false,
-                    Config.Instance.WasapiLatency);
+                    config.WasapiLatency);
 
                 var list = new List<BufferedWaveProvider>();
-                for (int i = 0; i < MultiplePlaybackCount; i++)
+                for (int i = 0; i < config.WasapiMultiplePlaybackCount; i++)
                 {
                     var buffer = new BufferedWaveProvider(this.OutputFormat)
                     {
-                        BufferDuration = BufferDurations,
+                        BufferDuration = config.WasapiLoopBufferDuration,
                         DiscardOnBufferOverflow = true,
                     };
 
@@ -261,7 +259,7 @@ namespace FFXIV.Framework.Common
                 // シンクロ再生用のバッファを追加しておく
                 list.Add(new BufferedWaveProvider(this.OutputFormat)
                 {
-                    BufferDuration = BufferDurations,
+                    BufferDuration = config.WasapiLoopBufferDuration,
                     DiscardOnBufferOverflow = true,
                 });
 
@@ -298,6 +296,7 @@ namespace FFXIV.Framework.Common
                 }
 
                 var buffer = default(BufferedWaveProvider);
+                var config = Config.Instance;
 
                 if (!sync)
                 {
@@ -306,7 +305,7 @@ namespace FFXIV.Framework.Common
                         buffer = this.Buffers[this.CurrentPlayerIndex];
                         this.CurrentPlayerIndex++;
 
-                        if (this.CurrentPlayerIndex >= MultiplePlaybackCount)
+                        if (this.CurrentPlayerIndex >= config.WasapiMultiplePlaybackCount)
                         {
                             this.CurrentPlayerIndex = 0;
                         }
@@ -314,7 +313,7 @@ namespace FFXIV.Framework.Common
                 }
                 else
                 {
-                    buffer = this.Buffers[MultiplePlaybackCount];
+                    buffer = this.Buffers[config.WasapiMultiplePlaybackCount];
                 }
 
                 if (buffer == null)

@@ -35,7 +35,9 @@ namespace FFXIV.Framework.Common
         private void PlayWave(
             string fileName)
         {
-            if (Config.Instance.CommonSoundVolume <= 0f)
+            var commonSoundVol = Config.Instance.CommonSoundVolume;
+
+            if (commonSoundVol <= 0f)
             {
                 return;
             }
@@ -52,7 +54,7 @@ namespace FFXIV.Framework.Common
 
             if (PlayBridge.Instance.IsAvailable)
             {
-                PlayBridge.Instance.PlayMain(wave, Config.Instance.CommonSoundVolume);
+                PlayBridge.Instance.PlayMain(wave, commonSoundVol);
             }
             else
             {

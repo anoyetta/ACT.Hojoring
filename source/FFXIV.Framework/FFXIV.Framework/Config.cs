@@ -34,8 +34,6 @@ namespace FFXIV.Framework
         {
         }
 
-        public static void Free() => instance = null;
-
         #endregion Singleton
 
         #region Load & Save
@@ -120,11 +118,19 @@ namespace FFXIV.Framework
 
         private static readonly Encoding DefaultEncoding = new UTF8Encoding(false);
 
+        private static DateTime lastSaveTimestamp;
+
         public static void Save()
         {
             lock (ConfigBlocker)
             {
                 if (instance == null)
+                {
+                    return;
+                }
+
+                var now = DateTime.Now;
+                if ((now - lastSaveTimestamp).TotalSeconds < 5)
                 {
                     return;
                 }
@@ -152,6 +158,8 @@ namespace FFXIV.Framework
                     FileName,
                     sb.ToString() + Environment.NewLine,
                     DefaultEncoding);
+
+                lastSaveTimestamp = now;
             }
         }
 
