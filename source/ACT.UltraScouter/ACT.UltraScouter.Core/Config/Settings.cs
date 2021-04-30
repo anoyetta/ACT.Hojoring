@@ -68,14 +68,6 @@ namespace ACT.UltraScouter.Config
             }
         }
 
-        public static void Free()
-        {
-            lock (locker)
-            {
-                instance = null;
-            }
-        }
-
         #endregion Singleton
 
         #region Serializer
