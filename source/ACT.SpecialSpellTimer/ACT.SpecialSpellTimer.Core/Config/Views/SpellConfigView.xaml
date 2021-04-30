@@ -731,9 +731,9 @@
 
                 <StackPanel Margin="0 8 0 8" Orientation="Horizontal">
                   <TextBlock Margin="6 0 5 0" Text="W" VerticalAlignment="Center" />
-                  <xctk:DoubleUpDown Value="{Binding Model.BarWidth, Mode=TwoWay}" Increment="1" MinWidth="80" />
+                  <xctk:DoubleUpDown Value="{Binding Model.BarWidth, Mode=TwoWay}" Increment="1" MinWidth="80" Minimum="0" />
                   <TextBlock Margin="10 0 5 0" Text="H" VerticalAlignment="Center" />
-                  <xctk:DoubleUpDown Value="{Binding Model.BarHeight, Mode=TwoWay}" Increment="1" MinWidth="80" />
+                  <xctk:DoubleUpDown Value="{Binding Model.BarHeight, Mode=TwoWay}" Increment="1" MinWidth="80" Minimum="0" />
                 </StackPanel>
 
                 <TextBlock Margin="0 3 0 0" HorizontalAlignment="Left">
@@ -750,7 +750,7 @@
 
                 <StackPanel Orientation="Horizontal" Margin="0 6 0 0">
                   <Label Content="{DynamicResource Common_BlurRadius}" VerticalAlignment="Center" Margin="0 0 7 0" />
-                  <xctk:DoubleUpDown Value="{Binding Model.BarBlurRadius, Mode=TwoWay}" Increment="1"  HorizontalAlignment="Left" Width="70" FormatString="N0" />
+                  <xctk:DoubleUpDown Value="{Binding Model.BarBlurRadius, Mode=TwoWay}" Increment="1"  HorizontalAlignment="Left" Width="70" FormatString="N0" Minimum="0" />
                 </StackPanel>
               </StackPanel>
 
@@ -784,7 +784,7 @@
 
                     <StackPanel Orientation="Horizontal">
                       <TextBlock Margin="10 0 5 2" Text="Size" VerticalAlignment="Bottom" />
-                      <xctk:DoubleUpDown Value="{Binding Model.SpellIconSize, Mode=TwoWay}" Increment="1" MinWidth="65" VerticalAlignment="Bottom" />
+                      <xctk:DoubleUpDown Value="{Binding Model.SpellIconSize, Mode=TwoWay}" Increment="1" MinWidth="65" VerticalAlignment="Bottom" Minimum="0" />
                     </StackPanel>
                   </StackPanel>
                 </StackPanel>

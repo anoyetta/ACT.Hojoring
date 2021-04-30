@@ -89,7 +89,6 @@ namespace ACT.UltraScouter
                 // 参照を開放する
                 WavePlayer.Free();
                 MainWorker.Free();
-                Settings.Free();
 
                 if (this.PluginStatusLabel != null)
                 {
