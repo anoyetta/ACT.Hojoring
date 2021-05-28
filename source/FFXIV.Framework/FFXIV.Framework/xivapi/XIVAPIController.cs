@@ -8,9 +8,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
-using FFXIV.Framework.XIVHelper;
 using FFXIV.Framework.Globalization;
 using FFXIV.Framework.xivapi.Models;
+using FFXIV.Framework.XIVHelper;
 using Newtonsoft.Json;
 
 namespace FFXIV.Framework.xivapi
@@ -141,13 +141,15 @@ namespace FFXIV.Framework.xivapi
 
                 currentPage++;
                 await Task.Delay(TimeSpan.FromSeconds(1.05));
-            } while (result.Pagination.Page < result.Pagination.PageTotal);
+            } while (
+                result.Pagination.Page.HasValue &&
+                result.Pagination.Page < result.Pagination.PageTotal);
 
             var sorted =
                 from x in actionList
                 orderby
                 x.ClassJob.ID,
-                x.ID
+                x.ID ?? 0
                 select
                 x;
 #if DEBUG
@@ -214,7 +216,7 @@ namespace FFXIV.Framework.xivapi
                     {
                         var action = group.First();
 
-                        var fileName = $"{action.ID:0000}_{action.Name}.png";
+                        var fileName = $"{(action.ID ?? 0):0000}_{action.Name}.png";
 
                         // ファイル名に使えない文字を除去する
                         fileName = string.Concat(fileName.Where(c =>

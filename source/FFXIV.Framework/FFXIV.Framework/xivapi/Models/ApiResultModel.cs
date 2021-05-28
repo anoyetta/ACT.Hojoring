@@ -8,7 +8,7 @@ namespace FFXIV.Framework.xivapi.Models
 
     public class PaginationModel
     {
-        public int Page { get; set; }
+        public int? Page { get; set; }
         public int PageNext { get; set; }
         public int PageTotal { get; set; }
         public int Results { get; set; }
