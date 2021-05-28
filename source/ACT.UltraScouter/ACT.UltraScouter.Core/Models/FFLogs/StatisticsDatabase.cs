@@ -218,6 +218,11 @@ namespace ACT.UltraScouter.Models.FFLogs
                             this.InsertRanking(rankingFileName, rankingBuffer);
                             rankingBuffer.Clear();
                             this.Log($@"[FFLogs] new rankings downloaded. ""{encounter.Name}"" page={page} count={count}.");
+
+#if DEBUG
+                            // デバッグモードならば100ページで抜ける
+                            break;
+#endif
                         }
 
                         page++;
@@ -230,12 +235,15 @@ namespace ACT.UltraScouter.Models.FFLogs
                         break;
                     }
 
-                    await Task.Delay(TimeSpan.FromSeconds(0.50));
+                    await Task.Delay(TimeSpan.FromSeconds(0.10));
                 } while (rankings != null && rankings.HasMorePages);
 
-                this.InsertRanking(rankingFileName, rankingBuffer);
-                rankingBuffer.Clear();
-                this.Log($@"[FFLogs] new rankings downloaded. ""{encounter.Name}"" page={page} count={count}.");
+                if (rankingBuffer.Any())
+                {
+                    this.InsertRanking(rankingFileName, rankingBuffer);
+                    rankingBuffer.Clear();
+                    this.Log($@"[FFLogs] new rankings downloaded. ""{encounter.Name}"" page={page} count={count}.");
+                }
             }
 
             this.Log($@"[FFLogs] new rankings downloaded.");
@@ -572,15 +580,23 @@ namespace ACT.UltraScouter.Models.FFLogs
                 {
                     cm.Transaction = tran;
 
-                    var values = new List<string>();
+                    cm.CommandText =
+                        $"INSERT INTO rankings " +
+                        $"(encounter_name, character_hash, spec_name, region, total) VALUES " +
+                        $"(@encounter_name, @character_hash, @spec_name, @region, @total);";
+
                     foreach (var entry in rankings)
                     {
-                        values.Add($"('{entry.EncounterName}', '{entry.CreateCharacterHash()}', '{entry.Spec}', '{entry.Region}', {entry.Total})");
-                    }
+                        cm.Parameters.Clear();
 
-                    cm.CommandText =
-                        $"INSERT INTO rankings (encounter_name, character_hash, spec_name, region, total) VALUES \n{string.Join($",\n", values)}";
-                    cm.ExecuteNonQuery();
+                        cm.Parameters.AddWithValue("@encounter_name", entry.EncounterName);
+                        cm.Parameters.AddWithValue("@character_hash", entry.CreateCharacterHash());
+                        cm.Parameters.AddWithValue("@spec_name", entry.Spec);
+                        cm.Parameters.AddWithValue("@region", entry.Region);
+                        cm.Parameters.AddWithValue("@total", entry.Total);
+
+                        cm.ExecuteNonQuery();
+                    }
                 }
 
                 tran.Commit();

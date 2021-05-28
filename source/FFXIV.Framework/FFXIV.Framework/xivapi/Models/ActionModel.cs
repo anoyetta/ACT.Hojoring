@@ -6,7 +6,7 @@ namespace FFXIV.Framework.xivapi.Models
     {
         public readonly static string HandledColumns = $"{nameof(ID)},{nameof(Name)},{nameof(ActionCategory)}.ID,{nameof(ClassJobCategory)}.ID,{nameof(ClassJobCategory)}.Name_en,{nameof(ClassJob)}.ID,{nameof(Icon)}";
 
-        public int ID { get; set; }
+        public int? ID { get; set; }
         public string Name { get; set; }
         public ActionCategoryModel ActionCategory { get; set; }
         public ClassJobCategoryModel ClassJobCategory { get; set; }
@@ -31,7 +31,7 @@ namespace FFXIV.Framework.xivapi.Models
         }
 
         public override string ToString()
-            => $"ID={this.ID} Name={this.Name} Job={this.ClassJob.ToLocalJob()}";
+            => $"ID={this.ID ?? 0} Name={this.Name} Job={this.ClassJob.ToLocalJob()}";
     }
 
     public class ActionCategoryModel
