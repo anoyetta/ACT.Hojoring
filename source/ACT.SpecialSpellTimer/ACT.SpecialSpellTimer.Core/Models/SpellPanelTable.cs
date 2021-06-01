@@ -16,9 +16,7 @@ namespace ACT.SpecialSpellTimer.Models
     {
         #region Singleton
 
-        private static SpellPanelTable instance = new SpellPanelTable();
-
-        public static SpellPanelTable Instance => instance;
+        public static SpellPanelTable Instance { get; } = new SpellPanelTable();
 
         #endregion Singleton
 
@@ -32,97 +30,100 @@ namespace ACT.SpecialSpellTimer.Models
 
         public void Load()
         {
-            try
+            lock (this)
             {
-                // サイズ0のファイルがもしも存在したら消す
-                if (File.Exists(this.DefaultFile))
+                try
                 {
-                    var fi = new FileInfo(this.DefaultFile);
-                    if (fi.Length <= 0)
+                    // サイズ0のファイルがもしも存在したら消す
+                    if (File.Exists(this.DefaultFile))
                     {
-                        File.Delete(this.DefaultFile);
-                    }
-                }
-
-                if (!File.Exists(this.DefaultFile))
-                {
-                    return;
-                }
-
-                // 旧形式を置換する
-                var text = File.ReadAllText(
-                    this.DefaultFile,
-                    new UTF8Encoding(false));
-                text = text.Replace("DocumentElement", "ArrayOfPanelSettings");
-                File.WriteAllText(
-                    this.DefaultFile,
-                    text,
-                    new UTF8Encoding(false));
-
-                using (var sr = new StreamReader(this.DefaultFile, new UTF8Encoding(false)))
-                {
-                    if (sr.BaseStream.Length > 0)
-                    {
-                        var xs = new XmlSerializer(this.table.GetType());
-                        var data = xs.Deserialize(sr) as IList<SpellPanel>;
-
-                        this.table.Clear();
-
-                        foreach (var x in data)
+                        var fi = new FileInfo(this.DefaultFile);
+                        if (fi.Length <= 0)
                         {
-                            // 旧Generalパネルの名前を置換える
-                            if (x.PanelName == "General")
-                            {
-                                x.PanelName = SpellPanel.GeneralPanel.PanelName;
-                            }
+                            File.Delete(this.DefaultFile);
+                        }
+                    }
 
-                            // NaNを潰す
-                            x.Top = double.IsNaN(x.Top) ? 0 : x.Top;
-                            x.Left = double.IsNaN(x.Left) ? 0 : x.Left;
-                            x.Margin = double.IsNaN(x.Margin) ? 0 : x.Margin;
+                    if (!File.Exists(this.DefaultFile))
+                    {
+                        return;
+                    }
 
-                            // ソートオーダーを初期化する
-                            if (x.SortOrder == SpellOrders.None)
+                    // 旧形式を置換する
+                    var text = File.ReadAllText(
+                        this.DefaultFile,
+                        new UTF8Encoding(false));
+                    text = text.Replace("DocumentElement", "ArrayOfPanelSettings");
+                    File.WriteAllText(
+                        this.DefaultFile,
+                        text,
+                        new UTF8Encoding(false));
+
+                    using (var sr = new StreamReader(this.DefaultFile, new UTF8Encoding(false)))
+                    {
+                        if (sr.BaseStream.Length > 0)
+                        {
+                            var xs = new XmlSerializer(this.table.GetType());
+                            var data = xs.Deserialize(sr) as IList<SpellPanel>;
+
+                            this.table.Clear();
+
+                            foreach (var x in data)
                             {
-                                if (x.FixedPositionSpell)
+                                // 旧Generalパネルの名前を置換える
+                                if (x.PanelName == "General")
                                 {
-                                    x.SortOrder = SpellOrders.Fixed;
+                                    x.PanelName = SpellPanel.GeneralPanel.PanelName;
                                 }
-                                else
+
+                                // NaNを潰す
+                                x.Top = double.IsNaN(x.Top) ? 0 : x.Top;
+                                x.Left = double.IsNaN(x.Left) ? 0 : x.Left;
+                                x.Margin = double.IsNaN(x.Margin) ? 0 : x.Margin;
+
+                                // ソートオーダーを初期化する
+                                if (x.SortOrder == SpellOrders.None)
                                 {
-                                    if (!Settings.Default.AutoSortEnabled)
+                                    if (x.FixedPositionSpell)
                                     {
-                                        x.SortOrder = SpellOrders.SortMatchTime;
+                                        x.SortOrder = SpellOrders.Fixed;
                                     }
                                     else
                                     {
-                                        if (!Settings.Default.AutoSortReverse)
+                                        if (!Settings.Default.AutoSortEnabled)
                                         {
-                                            x.SortOrder = SpellOrders.SortRecastTimeASC;
+                                            x.SortOrder = SpellOrders.SortMatchTime;
                                         }
                                         else
                                         {
-                                            x.SortOrder = SpellOrders.SortRecastTimeDESC;
+                                            if (!Settings.Default.AutoSortReverse)
+                                            {
+                                                x.SortOrder = SpellOrders.SortRecastTimeASC;
+                                            }
+                                            else
+                                            {
+                                                x.SortOrder = SpellOrders.SortRecastTimeDESC;
+                                            }
                                         }
                                     }
                                 }
-                            }
 
-                            this.table.Add(x);
+                                this.table.Add(x);
+                            }
                         }
                     }
                 }
-            }
-            finally
-            {
-                var generalPanel = this.table.FirstOrDefault(x => x.PanelName == SpellPanel.GeneralPanel.PanelName);
-                if (generalPanel != null)
+                finally
                 {
-                    SpellPanel.SetGeneralPanel(generalPanel);
-                }
-                else
-                {
-                    this.table.Add(SpellPanel.GeneralPanel);
+                    var generalPanel = this.table.FirstOrDefault(x => x.PanelName == SpellPanel.GeneralPanel.PanelName);
+                    if (generalPanel != null)
+                    {
+                        SpellPanel.SetGeneralPanel(generalPanel);
+                    }
+                    else
+                    {
+                        this.table.Add(SpellPanel.GeneralPanel);
+                    }
                 }
             }
         }
@@ -131,14 +132,14 @@ namespace ACT.SpecialSpellTimer.Models
 
         public void Save()
         {
-            if (this.table == null ||
-                this.table.Count < 1)
-            {
-                return;
-            }
-
             lock (this)
             {
+                if (this.table == null ||
+                    this.table.Count < 1)
+                {
+                    return;
+                }
+
                 var dir = Path.GetDirectoryName(this.DefaultFile);
 
                 if (!Directory.Exists(dir))
