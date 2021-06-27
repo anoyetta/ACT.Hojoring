@@ -49,6 +49,10 @@
       <HintPath>..\..\ThirdParty\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="FFXIV_ACT_Plugin">
+      <HintPath>..\..\ThirdParty\FFXIV_ACT_Plugin.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="FFXIV_ACT_Plugin.Common">
       <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.Common.dll</HintPath>
       <Private>False</Private>
