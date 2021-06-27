@@ -15,9 +15,7 @@ namespace ACT.SpecialSpellTimer.Models
     {
         #region Singleton
 
-        private static TagTable instance = new TagTable();
-
-        public static TagTable Instance => instance;
+        public static TagTable Instance { get; } = new TagTable();
 
         #endregion Singleton
 
@@ -75,53 +73,56 @@ namespace ACT.SpecialSpellTimer.Models
 
         public void Load()
         {
-            var file = this.DefaultFile;
-
-            try
+            lock (this)
             {
-                this.isLoaded = true;
+                var file = this.DefaultFile;
 
-                // サイズ0のファイルがもしも存在したら消す
-                if (File.Exists(file))
+                try
                 {
-                    var fi = new FileInfo(file);
-                    if (fi.Length <= 0)
+                    this.isLoaded = true;
+
+                    // サイズ0のファイルがもしも存在したら消す
+                    if (File.Exists(file))
                     {
-                        File.Delete(file);
+                        var fi = new FileInfo(file);
+                        if (fi.Length <= 0)
+                        {
+                            File.Delete(file);
+                        }
+                    }
+
+                    if (!File.Exists(file))
+                    {
+                        return;
+                    }
+
+                    using (var sr = new StreamReader(file, new UTF8Encoding(false)))
+                    {
+                        if (sr.BaseStream.Length > 0)
+                        {
+                            var xs = new XmlSerializer(this.GetType());
+                            var data = xs.Deserialize(sr) as TagTable;
+
+                            this.Tags.Clear();
+                            this.ItemTags.Clear();
+
+                            this.ItemTags.AddRange(data.ItemTags);
+                            this.Tags.AddRange(data.Tags);
+                        }
                     }
                 }
-
-                if (!File.Exists(file))
+                finally
                 {
-                    return;
-                }
-
-                using (var sr = new StreamReader(file, new UTF8Encoding(false)))
-                {
-                    if (sr.BaseStream.Length > 0)
+                    // インポートタグを追加する
+                    var importsTag = this.Tags.FirstOrDefault(x => x.Name == Tag.ImportsTag.Name);
+                    if (importsTag == null)
                     {
-                        var xs = new XmlSerializer(this.GetType());
-                        var data = xs.Deserialize(sr) as TagTable;
-
-                        this.Tags.Clear();
-                        this.ItemTags.Clear();
-
-                        this.ItemTags.AddRange(data.ItemTags);
-                        this.Tags.AddRange(data.Tags);
+                        this.Tags.Add(Tag.ImportsTag);
                     }
-                }
-            }
-            finally
-            {
-                // インポートタグを追加する
-                var importsTag = this.Tags.FirstOrDefault(x => x.Name == Tag.ImportsTag.Name);
-                if (importsTag == null)
-                {
-                    this.Tags.Add(Tag.ImportsTag);
-                }
-                else
-                {
-                    Tag.SetImportTag(importsTag);
+                    else
+                    {
+                        Tag.SetImportTag(importsTag);
+                    }
                 }
             }
         }

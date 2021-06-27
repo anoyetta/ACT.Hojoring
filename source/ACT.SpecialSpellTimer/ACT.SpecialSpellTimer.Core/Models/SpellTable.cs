@@ -17,8 +17,7 @@ namespace ACT.SpecialSpellTimer.Models
     {
         #region Singleton
 
-        private static SpellTable instance = new SpellTable();
-        public static SpellTable Instance => instance;
+        public static SpellTable Instance { get; } = new SpellTable();
 
         #endregion Singleton
 
@@ -132,7 +131,10 @@ namespace ACT.SpecialSpellTimer.Models
         /// </summary>
         public void Load()
         {
-            this.Load(this.DefaultFile, true);
+            lock (this)
+            {
+                this.Load(this.DefaultFile, true);
+            }
         }
 
         /// <summary>
@@ -140,7 +142,7 @@ namespace ACT.SpecialSpellTimer.Models
         /// </summary>
         /// <param name="file">ファイルパス</param>
         /// <param name="isClear">消去してからロードする？</param>
-        public void Load(
+        private void Load(
             string file,
             bool isClear)
         {
@@ -256,14 +258,17 @@ namespace ACT.SpecialSpellTimer.Models
         public void Save(
             bool force = false)
         {
-            this.Save(this.DefaultFile, force);
+            lock (this)
+            {
+                this.Save(this.DefaultFile, force);
+            }
         }
 
         /// <summary>
         /// 保存する
         /// </summary>
         /// <param name="file">ファイルパス</param>
-        public void Save(
+        private void Save(
             string file,
             bool force,
             string panelName = "")
@@ -293,35 +298,32 @@ namespace ACT.SpecialSpellTimer.Models
 
         private static readonly Encoding DefaultEncoding = new UTF8Encoding(false);
 
-        public void Save(
+        private void Save(
             string file,
             List<Spell> list)
         {
-            lock (this)
+            var dir = Path.GetDirectoryName(file);
+            if (!Directory.Exists(dir))
             {
-                var dir = Path.GetDirectoryName(file);
-                if (!Directory.Exists(dir))
-                {
-                    Directory.CreateDirectory(dir);
-                }
-
-                var ns = new XmlSerializerNamespaces();
-                ns.Add(string.Empty, string.Empty);
-
-                var sb = new StringBuilder();
-                using (var sw = new StringWriter(sb))
-                {
-                    var xs = new XmlSerializer(list.GetType());
-                    xs.Serialize(sw, list, ns);
-                }
-
-                sb.Replace("utf-16", "utf-8");
-
-                File.WriteAllText(
-                    file,
-                    sb.ToString() + Environment.NewLine,
-                    DefaultEncoding);
+                Directory.CreateDirectory(dir);
             }
+
+            var ns = new XmlSerializerNamespaces();
+            ns.Add(string.Empty, string.Empty);
+
+            var sb = new StringBuilder();
+            using (var sw = new StringWriter(sb))
+            {
+                var xs = new XmlSerializer(list.GetType());
+                xs.Serialize(sw, list, ns);
+            }
+
+            sb.Replace("utf-16", "utf-8");
+
+            File.WriteAllText(
+                file,
+                sb.ToString() + Environment.NewLine,
+                DefaultEncoding);
         }
 
         public IList<Spell> LoadFromFile(
