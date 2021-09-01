@@ -179,23 +179,44 @@ namespace FFXIV.Framework.Common
         private PlayerSet GetPlayerSet(
             string deviceID)
         {
+            var defaultDevice = this.GetDefaultAudioDevice();
+            var defaultComDevice = this.GetDefaultComAudioDevice();
+
             var ps = default(PlayerSet);
             var key = !string.IsNullOrEmpty(deviceID) ?
                 deviceID :
-                this.GetDefaultAudioDevice().ID;
+                defaultDevice.ID;
 
             lock (this.players)
             {
-                if (this.players.ContainsKey(key))
+                var isNew = false;
+
+                if (!this.players.ContainsKey(key))
                 {
-                    ps = this.players[key];
+                    isNew = true;
                 }
                 else
                 {
+                    ps = this.players[key];
+
+                    switch (deviceID)
+                    {
+                        case PlayDevice.DefaultDeviceID:
+                            isNew = ps.DeviceID != defaultDevice.ID;
+                            break;
+
+                        case PlayDevice.DefaultComDeviceID:
+                            isNew = ps.DeviceID != defaultComDevice.ID;
+                            break;
+                    }
+                }
+
+                if (isNew)
+                {
                     var device = deviceID switch
                     {
-                        PlayDevice.DefaultDeviceID => this.GetDefaultAudioDevice(),
-                        PlayDevice.DefaultComDeviceID => this.GetDefaultComAudioDevice(),
+                        PlayDevice.DefaultDeviceID => defaultDevice,
+                        PlayDevice.DefaultComDeviceID => defaultComDevice,
                         _ => this.GetDevices().FirstOrDefault(x => x.ID == deviceID)
                     };
 
@@ -241,6 +262,8 @@ namespace FFXIV.Framework.Common
                 }
 
                 var config = Config.Instance;
+
+                this.DeviceID = device.ID;
 
                 this.Player = new WasapiOut(
                     device,
