@@ -1,8 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Config.Models;
 using ACT.SpecialSpellTimer.Models;
@@ -11,6 +6,11 @@ using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -70,14 +70,14 @@ namespace ACT.SpecialSpellTimer
         {
             this.isOver = false;
 
+            // ログバッファを生成する
+            this.LogBuffer = new LogBuffer();
+
             // FFXIVのスキャンを開始する
             // FFXIVプラグインへのアクセスを開始する
             await Task.Run(() => XIVPluginHelper.Instance.Start(
                 Settings.Default.LogPollSleepInterval,
                 Settings.Default.FFXIVLocale));
-
-            // ログバッファを生成する
-            this.LogBuffer = new LogBuffer();
 
             await Task.Run(() =>
             {

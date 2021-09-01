@@ -1,3 +1,8 @@
+using ACT.Hojoring.Activator;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -5,11 +10,6 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
-using ACT.Hojoring.Activator;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.WPF.Views;
-using FFXIV.Framework.XIVHelper;
 
 namespace FFXIV.Framework.Common
 {
