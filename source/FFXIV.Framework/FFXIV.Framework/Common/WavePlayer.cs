@@ -1,12 +1,12 @@
+using NAudio.CoreAudioApi;
+using NAudio.Wave;
+using Prism.Mvvm;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Timers;
-using NAudio.CoreAudioApi;
-using NAudio.Wave;
-using Prism.Mvvm;
 
 namespace FFXIV.Framework.Common
 {
@@ -115,9 +115,6 @@ namespace FFXIV.Framework.Common
                     break;
 
                 case WavePlayerTypes.WASAPI:
-                    list = EnumerateDevicesByWasapiOut();
-                    break;
-
                 case WavePlayerTypes.WASAPIBuffered:
                     list = EnumerateDevicesByWasapiOut();
                     break;
@@ -169,6 +166,7 @@ namespace FFXIV.Framework.Common
             var deviceEnumrator = new MMDeviceEnumerator();
 
             list.Add(PlayDevice.DefaultDevice);
+            list.Add(PlayDevice.DefaultComDevice);
 
             foreach (var device in deviceEnumrator.EnumerateAudioEndPoints(
                 DataFlow.Render,
@@ -311,6 +309,8 @@ namespace FFXIV.Framework.Common
                     {
                         PlayDevice.DefaultDeviceID => deviceEnumrator
                             .GetDefaultAudioEndpoint(DataFlow.Render, Role.Console),
+                        PlayDevice.DefaultComDeviceID => deviceEnumrator
+                            .GetDefaultAudioEndpoint(DataFlow.Render, Role.Communications),
                         _ => deviceEnumrator
                             .EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active)
                             .FirstOrDefault(x => x.ID == deviceID)
@@ -350,6 +350,14 @@ namespace FFXIV.Framework.Common
         {
             ID = DefaultDeviceID,
             Name = "Default",
+        };
+
+        public const string DefaultComDeviceID = "DEFAULT-COM";
+
+        public readonly static PlayDevice DefaultComDevice = new PlayDevice()
+        {
+            ID = DefaultComDeviceID,
+            Name = "Default (COM)",
         };
 
         private string id = null;

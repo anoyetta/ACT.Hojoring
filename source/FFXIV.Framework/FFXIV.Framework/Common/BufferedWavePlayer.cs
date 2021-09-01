@@ -1,3 +1,5 @@
+using NAudio.CoreAudioApi;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -5,8 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using NAudio.CoreAudioApi;
-using NAudio.Wave;
 
 namespace FFXIV.Framework.Common
 {
@@ -45,6 +45,9 @@ namespace FFXIV.Framework.Common
 
         private MMDevice GetDefaultAudioDevice() => DeviceEnuerator
             .GetDefaultAudioEndpoint(DataFlow.Render, Role.Console);
+
+        private MMDevice GetDefaultComAudioDevice() => DeviceEnuerator
+            .GetDefaultAudioEndpoint(DataFlow.Render, Role.Communications);
 
         private readonly Dictionary<string, PlayerSet> players = new Dictionary<string, PlayerSet>(2);
 
@@ -192,6 +195,7 @@ namespace FFXIV.Framework.Common
                     var device = deviceID switch
                     {
                         PlayDevice.DefaultDeviceID => this.GetDefaultAudioDevice(),
+                        PlayDevice.DefaultComDeviceID => this.GetDefaultComAudioDevice(),
                         _ => this.GetDevices().FirstOrDefault(x => x.ID == deviceID)
                     };
 

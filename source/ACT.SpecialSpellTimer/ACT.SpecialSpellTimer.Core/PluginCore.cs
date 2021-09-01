@@ -1,11 +1,3 @@
-using System;
-using System.Drawing;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.Integration;
-using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.RaidTimeline;
@@ -17,6 +9,14 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.resources;
 using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
+using System;
+using System.Drawing;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Forms.Integration;
+using System.Windows.Threading;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -253,6 +253,15 @@ namespace ACT.SpecialSpellTimer
                     });
 
                     EnvironmentHelper.WaitInitActDone();
+
+                    // ACTのメインウィンドウの表示まで待つ
+                    await Task.Run(async () =>
+                    {
+                        while (!ActGlobals.oFormActMain.CanFocus)
+                        {
+                            await Task.Delay(200);
+                        }
+                    });
 
                     // 本体を開始する
                     PluginMainWorker.Instance.Begin();
