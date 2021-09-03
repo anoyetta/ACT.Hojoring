@@ -408,8 +408,8 @@
       <Version>7.1.0.431</Version>
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody">
-      <Version>3.1.3</Version>
-      <PrivateAssets>All</PrivateAssets>
+      <Version>3.4.0</Version>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Sharlayan">
       <Version>5.0.6</Version>
