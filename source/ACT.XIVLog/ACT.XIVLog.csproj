@@ -108,7 +108,7 @@
       <Version>4.7.11</Version>
     </PackageReference>
     <PackageReference Include="Prism.Wpf">
-      <Version>7.1.0.431</Version>
+      <Version>8.1.97</Version>
     </PackageReference>
     <PackageReference Include="Sharlayan">
       <Version>5.0.6</Version>
