@@ -120,11 +120,11 @@ namespace FFXIV.Framework.XIVHelper
 
         private static readonly string[] LocalCacheFiles = new[]
         {
-            "actions.json",
-            "signatures-x64.json",
-            "statuses.json",
-            "structures-x64.json",
-            "zones.json"
+            "actions*.json",
+            "signatures*.json",
+            "statuses*.json",
+            "structures*.json",
+            "zones*.json",
         };
 
         private static void ClearLocalCaches()
@@ -137,10 +137,12 @@ namespace FFXIV.Framework.XIVHelper
             var dir = Directory.GetCurrentDirectory();
             foreach (var f in LocalCacheFiles)
             {
-                var file = Path.Combine(dir, f);
-                if (File.Exists(file))
+                foreach (var file in Directory.EnumerateFiles(dir, f))
                 {
-                    File.Delete(file);
+                    if (File.Exists(file))
+                    {
+                        File.Delete(file);
+                    }
                 }
             }
         }
@@ -338,7 +340,7 @@ namespace FFXIV.Framework.XIVHelper
 
         private void ScanMemory()
         {
-            if (this._memoryHandler != null ||
+            if (this._memoryHandler == null ||
                 !XIVPluginHelper.Instance.IsAvailable)
             {
                 Thread.Sleep((int)ProcessSubscribeInterval);
@@ -380,7 +382,7 @@ namespace FFXIV.Framework.XIVHelper
                     if ((DateTime.Now - this.playerScanTimestamp).TotalMilliseconds > 500)
                     {
                         this.playerScanTimestamp = DateTime.Now;
-                        this._memoryHandler.Reader.GetActors();
+                        this.CurrentPlayer = this._memoryHandler.Reader.GetCurrentPlayer().Entity;
                     }
                 }
 
@@ -464,6 +466,8 @@ namespace FFXIV.Framework.XIVHelper
                     .Concat(result.CurrentMonsters.Values)
                         .Concat(result.CurrentNPCs.Values);
 
+            this.CurrentPlayer = this._memoryHandler.Reader.GetCurrentPlayer().Entity;
+
             if (!actors.Any())
             {
                 this.IsExistsActors = false;
@@ -495,16 +499,8 @@ namespace FFXIV.Framework.XIVHelper
                 this.ActorCombatantList.Clear();
                 this.ActorPCCombatantList.Clear();
 
-                var isFirst = true;
-
                 foreach (var actor in this.ActorList)
                 {
-                    if (isFirst)
-                    {
-                        this.CurrentPlayer = actor;
-                        isFirst = false;
-                    }
-
                     var combatatnt = this.ToCombatant(actor);
                     this.ActorCombatantList.Add(combatatnt);
 
