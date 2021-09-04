@@ -3,6 +3,7 @@ using FFXIV.Framework.Globalization;
 using Sharlayan;
 using Sharlayan.Core;
 using Sharlayan.Core.Enums;
+using Sharlayan.Enums;
 using Sharlayan.Models;
 using System;
 using System.Collections.Generic;
@@ -114,7 +115,8 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         private Process currentFFXIVProcess;
-        private string currentFFXIVLanguage;
+        private GameLanguage currentFFXIVLanguage;
+        private MemoryHandler _memoryHandler;
 
         private static readonly string[] LocalCacheFiles = new[]
         {
@@ -154,40 +156,44 @@ namespace FFXIV.Framework.XIVHelper
 
             var ffxivLanguage = XIVPluginHelper.Instance.LanguageID switch
             {
-                Locales.EN => "English",
-                Locales.JA => "Japanese",
-                Locales.FR => "French",
-                Locales.DE => "German",
-                _ => "English",
+                Locales.EN => GameLanguage.English,
+                Locales.JA => GameLanguage.Japanese,
+                Locales.FR => GameLanguage.French,
+                Locales.DE => GameLanguage.German,
+                _ => GameLanguage.English
             };
 
             lock (this)
             {
-                if (!MemoryHandler.Instance.IsAttached ||
+                if (this._memoryHandler == null ||
                     this.currentFFXIVProcess == null ||
                     this.currentFFXIVProcess.Id != ffxiv.Id ||
                     this.currentFFXIVLanguage != ffxivLanguage)
                 {
+                    if (this._memoryHandler != null)
+                    {
+                        SharlayanMemoryManager.Instance.RemoveHandler(this.currentFFXIVProcess.Id);
+                    }
+
                     this.currentFFXIVProcess = ffxiv;
                     this.currentFFXIVLanguage = ffxivLanguage;
 
-                    if (MemoryHandler.Instance.IsAttached)
-                    {
-                        MemoryHandler.Instance.UnsetProcess();
-                    }
-
                     var model = new ProcessModel
                     {
-                        Process = ffxiv,
-                        IsWin64 = true
+                        Process = ffxiv
                     };
 
                     ClearLocalCaches();
 
-                    MemoryHandler.Instance.SetProcess(
-                        model,
-                        gameLanguage: ffxivLanguage,
-                        useLocalCache: true);
+                    var config = new SharlayanConfiguration()
+                    {
+                        ProcessModel = model,
+                        GameLanguage = this.currentFFXIVLanguage,
+                        GameRegion = GameRegion.Global,
+                        UseLocalCache = true,
+                    };
+
+                    this._memoryHandler = SharlayanMemoryManager.Instance.AddHandler(config);
 
                     this.ClearData();
                 }
@@ -326,7 +332,7 @@ namespace FFXIV.Framework.XIVHelper
 
         private void ScanMemory()
         {
-            if (!MemoryHandler.Instance.IsAttached ||
+            if (this._memoryHandler != null ||
                 !XIVPluginHelper.Instance.IsAvailable)
             {
                 Thread.Sleep((int)ProcessSubscribeInterval);
@@ -368,7 +374,7 @@ namespace FFXIV.Framework.XIVHelper
                     if ((DateTime.Now - this.playerScanTimestamp).TotalMilliseconds > 500)
                     {
                         this.playerScanTimestamp = DateTime.Now;
-                        Reader.GetActors();
+                        this._memoryHandler.Reader.GetActors();
                     }
                 }
 
@@ -443,7 +449,7 @@ namespace FFXIV.Framework.XIVHelper
 
         private void GetActors()
         {
-            var result = Reader.GetActors();
+            var result = this._memoryHandler.Reader.GetActors();
 
             var actors = !this.IsScanNPC ?
                 result.CurrentPCs.Values
@@ -513,7 +519,7 @@ namespace FFXIV.Framework.XIVHelper
 
         private void GetTargetInfo()
         {
-            var result = Reader.GetTargetInfo();
+            var result = this._memoryHandler.Reader.GetTargetInfo();
 
             this.TargetInfo = result.TargetsFound ?
                 result.TargetInfo :
@@ -654,7 +660,7 @@ namespace FFXIV.Framework.XIVHelper
 
             this.partyListTimestamp = now;
 
-            var result = Reader.GetPartyMembers().PartyMembers.Keys;
+            var result = this._memoryHandler.Reader.GetPartyMembers().PartyMembers.Keys;
 
             foreach (var id in result)
             {
@@ -751,13 +757,13 @@ namespace FFXIV.Framework.XIVHelper
 
             this.lastActionsTimestamp = now;
 
-            if (!Reader.CanGetActions())
+            if (!this._memoryHandler.Reader.CanGetActions())
             {
                 clearActions();
                 return;
             }
 
-            var result = Reader.GetActions();
+            var result = this._memoryHandler.Reader.GetActions();
             if (result == null ||
                 result.ActionContainers == null ||
                 result.ActionContainers.Count < 1)

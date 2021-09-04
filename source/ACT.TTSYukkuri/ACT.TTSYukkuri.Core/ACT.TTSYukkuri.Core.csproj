@@ -522,7 +522,7 @@
       <Version>5.3.2</Version>
     </PackageReference>
     <PackageReference Include="Sharlayan">
-      <Version>5.0.6</Version>
+      <Version>7.0.1</Version>
     </PackageReference>
     <PackageReference Include="System.AppContext">
       <Version>4.3.0</Version>
