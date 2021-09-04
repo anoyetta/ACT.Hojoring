@@ -160,6 +160,9 @@ namespace FFXIV.Framework.XIVHelper
                 Locales.JA => GameLanguage.Japanese,
                 Locales.FR => GameLanguage.French,
                 Locales.DE => GameLanguage.German,
+                Locales.KO => GameLanguage.Korean,
+                Locales.CN => GameLanguage.Chinese,
+                Locales.TW => GameLanguage.Chinese,
                 _ => GameLanguage.English
             };
 
@@ -175,21 +178,24 @@ namespace FFXIV.Framework.XIVHelper
                         SharlayanMemoryManager.Instance.RemoveHandler(this.currentFFXIVProcess.Id);
                     }
 
+                    ClearLocalCaches();
+
                     this.currentFFXIVProcess = ffxiv;
                     this.currentFFXIVLanguage = ffxivLanguage;
 
-                    var model = new ProcessModel
-                    {
-                        Process = ffxiv
-                    };
-
-                    ClearLocalCaches();
-
                     var config = new SharlayanConfiguration()
                     {
-                        ProcessModel = model,
+                        ProcessModel = new ProcessModel()
+                        {
+                            Process = ffxiv
+                        },
                         GameLanguage = this.currentFFXIVLanguage,
-                        GameRegion = GameRegion.Global,
+                        GameRegion = this.currentFFXIVLanguage switch
+                        {
+                            GameLanguage.Korean => GameRegion.Korea,
+                            GameLanguage.Chinese => GameRegion.China,
+                            _ => GameRegion.Global
+                        },
                         UseLocalCache = true,
                     };
 
