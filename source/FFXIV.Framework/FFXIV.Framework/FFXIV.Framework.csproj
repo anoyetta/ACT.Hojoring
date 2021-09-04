@@ -171,7 +171,6 @@
     <Compile Include="XIVHelper\CombatantsManager.cs" />
     <Compile Include="XIVHelper\CombatantEx.cs" />
     <Compile Include="XIVHelper\EnmityEntry.cs" />
-    <Compile Include="XIVHelper\SharlayanHelper.ReaderEx.cs" />
     <Compile Include="XIVHelper\XIVLog.cs" />
     <Compile Include="XIVHelper\XIVPluginHelper.cs" />
     <Compile Include="XIVHelper\Jobs.cs" />

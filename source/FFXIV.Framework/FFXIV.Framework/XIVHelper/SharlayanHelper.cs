@@ -39,25 +39,6 @@ namespace FFXIV.Framework.XIVHelper
 
         public SharlayanHelper()
         {
-            ReaderEx.GetActorCallback = id =>
-            {
-                if (this.ActorDictionary.ContainsKey(id))
-                {
-                    return this.ActorDictionary[id];
-                }
-
-                return null;
-            };
-
-            ReaderEx.GetNPCActorCallback = id =>
-            {
-                if (this.NPCActorDictionary.ContainsKey(id))
-                {
-                    return this.NPCActorDictionary[id];
-                }
-
-                return null;
-            };
         }
 
         private ThreadWorker ffxivSubscriber;
@@ -208,8 +189,6 @@ namespace FFXIV.Framework.XIVHelper
                         gameLanguage: ffxivLanguage,
                         useLocalCache: true);
 
-                    ReaderEx.SetProcessModel(model);
-
                     this.ClearData();
                 }
             }
@@ -226,7 +205,7 @@ namespace FFXIV.Framework.XIVHelper
 
         public Func<uint, (int WorldID, string WorldName)> GetWorldInfoCallback { get; set; }
 
-        public ActorItem CurrentPlayer => ReaderEx.CurrentPlayer;
+        public ActorItem CurrentPlayer { get; private set; }
 
         public List<ActorItem> Actors => this.ActorList.ToList();
 
@@ -389,9 +368,7 @@ namespace FFXIV.Framework.XIVHelper
                     if ((DateTime.Now - this.playerScanTimestamp).TotalMilliseconds > 500)
                     {
                         this.playerScanTimestamp = DateTime.Now;
-                        ReaderEx.GetActorSimple(
-                            isScanNPC: false,
-                            isPlayerOnly: true);
+                        Reader.GetActors();
                     }
                 }
 
@@ -409,7 +386,7 @@ namespace FFXIV.Framework.XIVHelper
                 }
                 else
                 {
-                    this.GetActorsSimple();
+                    this.GetActors();
                 }
 
                 if (this.IsSkipTarget)
@@ -464,9 +441,16 @@ namespace FFXIV.Framework.XIVHelper
             this.IsSkipActions,
         };
 
-        private void GetActorsSimple()
+        private void GetActors()
         {
-            var actors = ReaderEx.GetActorSimple(this.IsScanNPC);
+            var result = Reader.GetActors();
+
+            var actors = !this.IsScanNPC ?
+                result.CurrentPCs.Values
+                    .Concat(result.CurrentMonsters.Values) :
+                result.CurrentPCs.Values
+                    .Concat(result.CurrentMonsters.Values)
+                        .Concat(result.CurrentNPCs.Values);
 
             if (!actors.Any())
             {
@@ -498,8 +482,17 @@ namespace FFXIV.Framework.XIVHelper
 
                 this.ActorCombatantList.Clear();
                 this.ActorPCCombatantList.Clear();
+
+                var isFirst = true;
+
                 foreach (var actor in this.ActorList)
                 {
+                    if (isFirst)
+                    {
+                        this.CurrentPlayer = actor;
+                        isFirst = false;
+                    }
+
                     var combatatnt = this.ToCombatant(actor);
                     this.ActorCombatantList.Add(combatatnt);
 
@@ -520,7 +513,7 @@ namespace FFXIV.Framework.XIVHelper
 
         private void GetTargetInfo()
         {
-            var result = ReaderEx.GetTargetInfoSimple(this.IsSkipEnmity);
+            var result = Reader.GetTargetInfo();
 
             this.TargetInfo = result.TargetsFound ?
                 result.TargetInfo :
@@ -640,9 +633,9 @@ namespace FFXIV.Framework.XIVHelper
             if (!this.IsExistsActors ||
                 string.IsNullOrEmpty(this.CurrentZoneName))
             {
-                if (ReaderEx.CurrentPlayer != null)
+                if (this.CurrentPlayer != null)
                 {
-                    newPartyList.Add(ReaderEx.CurrentPlayer);
+                    newPartyList.Add(this.CurrentPlayer);
                 }
 
                 this.PartyMemberList.Clear();
@@ -661,7 +654,7 @@ namespace FFXIV.Framework.XIVHelper
 
             this.partyListTimestamp = now;
 
-            var result = ReaderEx.GetPartyMemberIDs();
+            var result = Reader.GetPartyMembers().PartyMembers.Keys;
 
             foreach (var id in result)
             {
@@ -673,9 +666,9 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             if (!newPartyList.Any() &&
-                ReaderEx.CurrentPlayer != null)
+                this.CurrentPlayer != null)
             {
-                newPartyList.Add(ReaderEx.CurrentPlayer);
+                newPartyList.Add(this.CurrentPlayer);
             }
 
             if (this.PartyMemberList.Count != newPartyList.Count ||
@@ -865,8 +858,6 @@ namespace FFXIV.Framework.XIVHelper
             c.CurrentHP = (uint)actor.HPCurrent;
             c.MaxHP = (uint)actor.HPMax;
             c.CurrentMP = (uint)actor.MPCurrent;
-            c.CurrentTP = (uint)actor.TPCurrent;
-            c.MaxTP = (uint)actor.TPMax;
 
             c.CurrentCP = (uint)actor.CPCurrent;
             c.MaxCP = (uint)actor.CPMax;
