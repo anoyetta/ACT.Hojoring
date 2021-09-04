@@ -46,6 +46,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ACT.Hojoring.Activator\ACT.Hojoring.Activator.csproj">
+      <Project>{c1bc2d6e-e10d-4a7f-900b-5fd84f39bf0a}</Project>
+      <Name>ACT.Hojoring.Activator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ACT.Hojoring.Common\ACT.Hojoring.Common.csproj">
       <Project>{7e1502b5-db00-4b2e-bdba-19e3379670b3}</Project>
       <Name>ACT.Hojoring.Common</Name>
@@ -81,7 +85,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Costura.Fody">
-      <Version>4.1.0</Version>
+      <Version>5.5.0</Version>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,10 +1,10 @@
+using ACT.UltraScouter.Models.FFLogs;
+using FFXIV.Framework.Common;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using ACT.UltraScouter.Models.FFLogs;
-using FFXIV.Framework.Common;
 
 namespace FFLogsRankingDonwloader
 {
@@ -12,7 +12,6 @@ namespace FFLogsRankingDonwloader
     {
         static Program()
         {
-            CosturaUtility.Initialize();
             AssemblyResolver.Instance.Initialize();
         }
 

@@ -1,3 +1,7 @@
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Globalization;
+using FFXIV_ACT_Plugin.Logfile;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,11 +12,8 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using System.Xml.Serialization;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Globalization;
-using FFXIV_ACT_Plugin.Logfile;
-using Prism.Mvvm;
 
 namespace FFXIV.Framework
 {
@@ -111,9 +112,42 @@ namespace FFXIV.Framework
             var buffer = new StringBuilder();
             buffer.Append(File.ReadAllText(file, new UTF8Encoding(false)));
 
-            buffer.Replace("NetworkTargetMarker", "NetworkSignMarker");
+            var xdoc = XDocument.Parse(buffer.ToString());
+            var xelements = xdoc.Root.Elements();
 
-            File.WriteAllText(file, buffer.ToString(), new UTF8Encoding(false));
+            if (xelements.Any(x => x.Name == nameof(GlobalLogFilters)))
+            {
+                var filtersParent = xelements
+                    .FirstOrDefault(x => x.Name == nameof(GlobalLogFilters));
+
+                var filters = filtersParent.Elements();
+
+                var typeNames = Enum.GetNames(typeof(LogMessageType));
+
+                // 消滅したLogTypeを削除する
+                var toRemove = filters
+                    .Where(x => !typeNames.Contains(x.Attribute("Key").Value))
+                    .ToArray();
+
+                foreach (var e in toRemove)
+                {
+                    e.Remove();
+                }
+
+                // 新しく増えたLogTypeを追加する
+                var toAdd = typeNames
+                    .Where(x => !filters.Any(y => y.Attribute("Key").Value == x));
+
+                foreach (var key in toAdd)
+                {
+                    var e = new XElement("Filter");
+                    e.SetAttributeValue("Key", key);
+                    e.SetAttributeValue("Value", false);
+                    filtersParent.Add(e);
+                }
+            }
+
+            File.WriteAllText(file, xdoc.ToString(), new UTF8Encoding(false));
         }
 
         private static readonly Encoding DefaultEncoding = new UTF8Encoding(false);
@@ -373,7 +407,7 @@ namespace FFXIV.Framework
         [XmlArrayItem("Filter")]
         public ObservableKeyValue<LogMessageType, bool>[] GlobalLogFilters
         {
-            get => this.globalLogFilters;
+            get => this.globalLogFilters.OrderBy(x => x.Key).ToArray();
             set => this.SetProperty(ref this.globalLogFilters, value);
         }
 

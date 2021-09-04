@@ -131,6 +131,7 @@
   <ItemGroup>
     <PackageReference Include="Costura.Fody">
       <Version>4.1.0</Version>
+      <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NLog.Config">
       <Version>4.5.11</Version>

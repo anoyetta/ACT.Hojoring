@@ -1,6 +1,6 @@
+using Octokit;
 using System.Linq;
 using System.Net;
-using Octokit;
 
 namespace ACT.Hojoring
 {
@@ -8,7 +8,6 @@ namespace ACT.Hojoring
     {
         public UpdateChecker()
         {
-            CosturaUtility.Initialize();
         }
 
         public bool UsePreRelease { get; set; }
