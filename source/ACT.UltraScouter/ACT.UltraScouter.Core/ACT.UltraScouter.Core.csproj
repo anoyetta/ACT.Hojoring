@@ -486,7 +486,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommonServiceLocator">
-      <Version>2.0.4</Version>
+      <Version>2.0.6</Version>
     </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit">
       <Version>4.1.0</Version>

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using Windows.Media.Devices;
 
 namespace FFXIV.Framework.Common
 {
@@ -22,12 +23,17 @@ namespace FFXIV.Framework.Common
 
         private BufferedWavePlayer()
         {
+            this.Init();
         }
 
         public static void Free()
         {
-            instance?.Dispose();
-            instance = null;
+            if (instance != null)
+            {
+                MediaDevice.DefaultAudioRenderDeviceChanged -= instance.MediaDevice_DefaultAudioRenderDeviceChanged;
+                instance.Dispose();
+                instance = null;
+            }
         }
 
         #endregion Singleton
@@ -66,6 +72,11 @@ namespace FFXIV.Framework.Common
                 @"history.txt");
 
         private static readonly TimeSpan CacheToloadScope = TimeSpan.FromDays(10);
+
+        private void Init()
+        {
+            MediaDevice.DefaultAudioRenderDeviceChanged += this.MediaDevice_DefaultAudioRenderDeviceChanged;
+        }
 
         public void Dispose()
         {
@@ -179,16 +190,20 @@ namespace FFXIV.Framework.Common
         private PlayerSet GetPlayerSet(
             string deviceID)
         {
-            var defaultDevice = this.GetDefaultAudioDevice();
-            var defaultComDevice = this.GetDefaultComAudioDevice();
-
             var ps = default(PlayerSet);
-            var key = !string.IsNullOrEmpty(deviceID) ?
-                deviceID :
-                defaultDevice.ID;
 
             lock (this.players)
             {
+                if (this.defaultAudioDevice == null ||
+                    this.defaultComAudioDevice == null)
+                {
+                    this.UpdateDefaultAudioDevices();
+                }
+
+                var key = !string.IsNullOrEmpty(deviceID) ?
+                    deviceID :
+                    this.defaultAudioDevice.ID;
+
                 var isNew = false;
 
                 if (!this.players.ContainsKey(key))
@@ -202,12 +217,18 @@ namespace FFXIV.Framework.Common
                     switch (deviceID)
                     {
                         case PlayDevice.DefaultDeviceID:
-                            isNew = ps.DeviceID != defaultDevice.ID;
+                            isNew = ps.DeviceID != this.defaultAudioDevice.ID;
                             break;
 
                         case PlayDevice.DefaultComDeviceID:
-                            isNew = ps.DeviceID != defaultComDevice.ID;
+                            isNew = ps.DeviceID != this.defaultComAudioDevice.ID;
                             break;
+                    }
+
+                    if (isNew)
+                    {
+                        ps.Dispose();
+                        this.players.Remove(key);
                     }
                 }
 
@@ -215,8 +236,8 @@ namespace FFXIV.Framework.Common
                 {
                     var device = deviceID switch
                     {
-                        PlayDevice.DefaultDeviceID => defaultDevice,
-                        PlayDevice.DefaultComDeviceID => defaultComDevice,
+                        PlayDevice.DefaultDeviceID => this.GetDevices().FirstOrDefault(x => x.ID == this.defaultAudioDevice.ID),
+                        PlayDevice.DefaultComDeviceID => this.GetDevices().FirstOrDefault(x => x.ID == this.defaultComAudioDevice.ID),
                         _ => this.GetDevices().FirstOrDefault(x => x.ID == deviceID)
                     };
 
@@ -231,6 +252,25 @@ namespace FFXIV.Framework.Common
             }
 
             return ps;
+        }
+
+        private MMDevice defaultAudioDevice;
+        private MMDevice defaultComAudioDevice;
+
+        private void MediaDevice_DefaultAudioRenderDeviceChanged(
+            object sender,
+            DefaultAudioRenderDeviceChangedEventArgs args)
+        {
+            this.UpdateDefaultAudioDevices();
+        }
+
+        private void UpdateDefaultAudioDevices()
+        {
+            lock (this.players)
+            {
+                this.defaultAudioDevice = this.GetDefaultAudioDevice();
+                this.defaultComAudioDevice = this.GetDefaultComAudioDevice();
+            }
         }
 
         public class PlayerSet :
