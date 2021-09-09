@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{466C29AA-D69A-4D20-AA75-F559D9528634}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ACT.Hojoring.Debug</RootNamespace>
+    <AssemblyName>ACT.Hojoring.Debug</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>MSB3270</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>MSB3270</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ACT.Hojoring.Activator\ACT.Hojoring.Activator.csproj">
+      <Project>{c1bc2d6e-e10d-4a7f-900b-5fd84f39bf0a}</Project>
+      <Name>ACT.Hojoring.Activator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.Hojoring.Common\ACT.Hojoring.Common.csproj">
+      <Project>{7e1502b5-db00-4b2e-bdba-19e3379670b3}</Project>
+      <Name>ACT.Hojoring.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.Hojoring.Updater.Driver\ACT.Hojoring.Updater.Driver.csproj">
+      <Project>{be74a0ee-afcc-4b0f-9aba-698b5fea871c}</Project>
+      <Name>ACT.Hojoring.Updater.Driver</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.Hojoring.Updater\ACT.Hojoring.Updater.csproj">
+      <Project>{611cc237-0ac4-4ab1-9f31-6e1bf589ca14}</Project>
+      <Name>ACT.Hojoring.Updater</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.SpecialSpellTimer.RazorModel\ACT.SpecialSpellTimer.RazorModel.csproj">
+      <Project>{450f38fa-7f7d-41b9-9bbb-503efc6c0a72}</Project>
+      <Name>ACT.SpecialSpellTimer.RazorModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.SpecialSpellTimer\ACT.SpecialSpellTimer.Core\ACT.SpecialSpellTimer.Core.csproj">
+      <Project>{ea12d333-f0ed-4524-8bad-b986b0137ea5}</Project>
+      <Name>ACT.SpecialSpellTimer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.SpecialSpellTimer\ACT.SpecialSpellTimer\ACT.SpecialSpellTimer.csproj">
+      <Project>{ccf72089-92fa-4afb-bde7-869ca0e394f9}</Project>
+      <Name>ACT.SpecialSpellTimer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.TTSYukkuri\ACT.TTSYukkuri.Core\ACT.TTSYukkuri.Core.csproj">
+      <Project>{9a615561-6cec-4857-870f-88f6ff07764c}</Project>
+      <Name>ACT.TTSYukkuri.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.TTSYukkuri\ACT.TTSYukkuri\ACT.TTSYukkuri.csproj">
+      <Project>{f20b280b-35b9-4462-a71e-e187cc2a60e7}</Project>
+      <Name>ACT.TTSYukkuri</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.UltraScouter\ACT.UltraScouter.Core\ACT.UltraScouter.Core.csproj">
+      <Project>{6d17f2c1-f9bd-4c9c-96c9-1a60ad975e4b}</Project>
+      <Name>ACT.UltraScouter.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.UltraScouter\ACT.UltraScouter\ACT.UltraScouter.csproj">
+      <Project>{dda65b79-1b89-4223-ba81-c748755057e6}</Project>
+      <Name>ACT.UltraScouter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACT.XIVLog\ACT.XIVLog.csproj">
+      <Project>{d504e286-56ec-494f-82cd-fd71aefef606}</Project>
+      <Name>ACT.XIVLog</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FFLogsRankingDonwloader\FFLogsRankingDonwloader.csproj">
+      <Project>{cfc5e5e2-effe-4fc4-9efd-79d15b1abf45}</Project>
+      <Name>FFLogsRankingDonwloader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
+      <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>
+      <Name>FFXIV.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Costura.Fody">
+      <Version>5.6.0</Version>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FodyWeavers.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
