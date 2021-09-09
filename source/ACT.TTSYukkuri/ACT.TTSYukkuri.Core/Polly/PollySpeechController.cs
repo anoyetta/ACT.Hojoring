@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using ACT.TTSYukkuri.Config;
 using ACT.TTSYukkuri.SAPI5;
 using Amazon.Polly;
@@ -7,6 +5,8 @@ using Amazon.Polly.Model;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using FFXIV.Framework.Bridge;
+using System;
+using System.IO;
 
 namespace ACT.TTSYukkuri.Polly
 {

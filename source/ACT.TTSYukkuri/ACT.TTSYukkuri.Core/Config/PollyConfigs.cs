@@ -1,8 +1,9 @@
-using System.Xml.Serialization;
 using ACT.TTSYukkuri.SAPI5;
 using Amazon;
 using Amazon.Polly;
 using Prism.Mvvm;
+using System;
+using System.Xml.Serialization;
 
 namespace ACT.TTSYukkuri.Config
 {
@@ -90,5 +91,15 @@ namespace ACT.TTSYukkuri.Config
             $"{nameof(this.Rate)}:{this.Rate}," +
             $"{nameof(this.Volume)}:{this.Volume}," +
             $"{nameof(this.Pitch)}:{this.Pitch}";
+
+        [Serializable]
+        public class PollyVoice
+        {
+            [XmlAttribute(AttributeName = "Name")]
+            public string Name { get; set; }
+
+            [XmlAttribute(AttributeName = "Value")]
+            public string Value { get; set; }
+        }
     }
 }

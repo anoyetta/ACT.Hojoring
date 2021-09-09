@@ -22,6 +22,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.UltraScouter", "ACT.UltraScouter\ACT.UltraScouter\ACT.UltraScouter.csproj", "{DDA65B79-1B89-4223-BA81-C748755057E6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.Hojoring", "ACT.Hojoring\ACT.Hojoring.csproj", "{CC751668-0CB9-4BDE-AF31-BA99DA079E59}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EA12D333-F0ED-4524-8BAD-B986B0137EA5} = {EA12D333-F0ED-4524-8BAD-B986B0137EA5}
+		{9A615561-6CEC-4857-870F-88F6FF07764C} = {9A615561-6CEC-4857-870F-88F6FF07764C}
+		{6D17F2C1-F9BD-4C9C-96C9-1A60AD975E4B} = {6D17F2C1-F9BD-4C9C-96C9-1A60AD975E4B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.Hojoring.Common", "ACT.Hojoring.Common\ACT.Hojoring.Common.csproj", "{7E1502B5-DB00-4B2E-BDBA-19E3379670B3}"
 EndProject
@@ -36,6 +41,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.SpecialSpellTimer.RazorModel", "ACT.SpecialSpellTimer.RazorModel\ACT.SpecialSpellTimer.RazorModel.csproj", "{450F38FA-7F7D-41B9-9BBB-503EFC6C0A72}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.Hojoring.Activator", "ACT.Hojoring.Activator\ACT.Hojoring.Activator.csproj", "{C1BC2D6E-E10D-4A7F-900B-5FD84F39BF0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.Hojoring.Debug", "ACT.Hojoring.Debug\ACT.Hojoring.Debug.csproj", "{466C29AA-D69A-4D20-AA75-F559D9528634}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -165,6 +172,14 @@ Global
 		{C1BC2D6E-E10D-4A7F-900B-5FD84F39BF0A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C1BC2D6E-E10D-4A7F-900B-5FD84F39BF0A}.Release|x86.ActiveCfg = Release|Any CPU
 		{C1BC2D6E-E10D-4A7F-900B-5FD84F39BF0A}.Release|x86.Build.0 = Release|Any CPU
+		{466C29AA-D69A-4D20-AA75-F559D9528634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{466C29AA-D69A-4D20-AA75-F559D9528634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{466C29AA-D69A-4D20-AA75-F559D9528634}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{466C29AA-D69A-4D20-AA75-F559D9528634}.Debug|x86.Build.0 = Debug|Any CPU
+		{466C29AA-D69A-4D20-AA75-F559D9528634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{466C29AA-D69A-4D20-AA75-F559D9528634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{466C29AA-D69A-4D20-AA75-F559D9528634}.Release|x86.ActiveCfg = Release|Any CPU
+		{466C29AA-D69A-4D20-AA75-F559D9528634}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -183,7 +198,7 @@ Global
 		{C1BC2D6E-E10D-4A7F-900B-5FD84F39BF0A} = {EC98C548-6268-4B67-BC45-88DCD9B63960}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {91001FDF-B748-4513-A399-35F7E9BD37F8}
 		        SolutionGuid = {2A11DDD1-7A46-4236-969A-3942CBE6A01A}
+		SolutionGuid = {91001FDF-B748-4513-A399-35F7E9BD37F8}
 	EndGlobalSection
 EndGlobal

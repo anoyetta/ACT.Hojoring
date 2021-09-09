@@ -1,13 +1,14 @@
+using ACT.TTSYukkuri.Boyomichan;
+using ACT.TTSYukkuri.Discord.Models;
+using Amazon.Polly;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Globalization;
+using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
-using ACT.TTSYukkuri.Boyomichan;
-using ACT.TTSYukkuri.Discord.Models;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Globalization;
-using Prism.Mvvm;
 
 namespace ACT.TTSYukkuri.Config
 {
@@ -418,6 +419,36 @@ namespace ACT.TTSYukkuri.Config
         {
             get => this.pollySettingsExt3;
             set => this.SetProperty(ref this.pollySettingsExt3, value);
+        }
+
+        private ObservableCollection<PollyConfigs.PollyVoice> pollyVoices = new ObservableCollection<PollyConfigs.PollyVoice>
+        {
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Ivy.Value} (en-US, Female)", Value = VoiceId.Ivy.Value },
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Joanna.Value} (en-US, Female)", Value = VoiceId.Joanna.Value },
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Joey.Value} (en-US, Male)", Value = VoiceId.Joey.Value },
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Justin.Value} (en-US, Male)", Value = VoiceId.Justin.Value },
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Kendra.Value} (en-US, Female)", Value = VoiceId.Kendra.Value },
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Kimberly.Value} (en-US, Female)", Value = VoiceId.Kimberly.Value },
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Matthew.Value} (en-US, Male)", Value = VoiceId.Matthew.Value },
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Salli.Value} (en-US, Female)", Value = VoiceId.Salli.Value },
+
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Celine.Value} (fr-FR, Female)", Value = VoiceId.Celine.Value },
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Mathieu.Value} (fr-FR, Male)", Value = VoiceId.Mathieu.Value },
+
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Hans.Value} (de-DE, Male)", Value = VoiceId.Hans.Value },
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Marlene.Value} (de-DE, Female)", Value = VoiceId.Marlene.Value },
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Vicki.Value} (de-DE, Female)", Value = VoiceId.Vicki.Value },
+
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Mizuki.Value} (ja-JP, Female)", Value = VoiceId.Mizuki.Value },
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Takumi.Value} (ja-JP, Male)", Value = VoiceId.Takumi.Value },
+
+            new PollyConfigs.PollyVoice { Name = $"{VoiceId.Seoyeon.Value} (ko-KR, Female)", Value = VoiceId.Seoyeon.Value },
+        };
+
+        public ObservableCollection<PollyConfigs.PollyVoice> PollyVoices
+        {
+            get => this.pollyVoices;
+            set => this.SetProperty(ref this.pollyVoices, value);
         }
 
         /// <summary>
