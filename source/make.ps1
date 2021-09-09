@@ -51,7 +51,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
 '●Build ACT.Hojoring Release'
 Start-Sleep -m 500
-& $msbuild $sln /nologo /v:minimal /p:Configuration=Release /t:Rebuild | Write-Output
+& $msbuild $sln /nologo /v:minimal /p:Configuration=Release /t:"ACT_Hojoring:Rebuild" | Write-Output
 Start-Sleep -m 500
 
 '●Deploy Release'
