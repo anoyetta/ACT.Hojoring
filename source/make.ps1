@@ -111,8 +111,8 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Remove-Item resources\icon\Role\*.png
     Remove-Item resources\xivdb\*.csv
     Remove-Item resources\wav\*
-    Remove-Item resources\icon\Timeline_EN\*
-    Remove-Item resources\icon\Timeline_JP\*
+#    Remove-Item resources\icon\Timeline_EN\*
+#    Remove-Item resources\icon\Timeline_JP\*
     Remove-Item resources\timeline\wallpaper\*
 
     '●配布ファイルをアーカイブする'
