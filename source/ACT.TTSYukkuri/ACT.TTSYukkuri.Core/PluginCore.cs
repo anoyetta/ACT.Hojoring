@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.Integration;
 using ACT.TTSYukkuri.Config;
 using ACT.TTSYukkuri.Config.Views;
 using ACT.TTSYukkuri.Discord.Models;
@@ -19,6 +10,15 @@ using FFXIV.Framework.resources;
 using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 
 namespace ACT.TTSYukkuri
 {
@@ -60,41 +60,56 @@ namespace ACT.TTSYukkuri
 
         private void StopReplaceTTSMethodTimer()
         {
-            // タイマを止める
-            if (this.replaceTTSMethodTimer != null &&
-                this.replaceTTSMethodTimer.Enabled)
+            lock (this)
             {
-                this.replaceTTSMethodTimer.Stop();
-                this.replaceTTSMethodTimer.Dispose();
-                this.replaceTTSMethodTimer = null;
+                // タイマを止める
+                if (this.replaceTTSMethodTimer != null &&
+                    this.replaceTTSMethodTimer.Enabled)
+                {
+                    this.replaceTTSMethodTimer.Stop();
+                    this.replaceTTSMethodTimer.Dispose();
+                    this.replaceTTSMethodTimer = null;
+                }
             }
         }
 
         private void StartReplaceTTSMethodTimer()
         {
-            this.replaceTTSMethodTimer = new System.Timers.Timer()
+            lock (this)
             {
-                Interval = 3 * 1000,
-                AutoReset = true,
-            };
-
-            // 置き換え監視タイマを開始する
-            if (!this.replaceTTSMethodTimer.Enabled)
-            {
-                this.replaceTTSMethodTimer.Elapsed += (s, e) =>
+                this.replaceTTSMethodTimer = new System.Timers.Timer()
                 {
-                    if (this.replaceTTSMethodTimer.Enabled)
-                    {
-                        this.ReplaceTTSMethod();
-                    }
+                    Interval = 3 * 1000,
+                    AutoReset = true,
                 };
 
-                this.replaceTTSMethodTimer.Start();
+                // 置き換え監視タイマを開始する
+                if (!this.replaceTTSMethodTimer.Enabled)
+                {
+                    this.replaceTTSMethodTimer.Elapsed += (s, e) =>
+                    {
+                        lock (this)
+                        {
+                            if (this.replaceTTSMethodTimer.Enabled)
+                            {
+                                this.ReplaceTTSMethod();
+                            }
+                        }
+                    };
+
+                    this.replaceTTSMethodTimer.Start();
+                }
             }
         }
 
         private void ReplaceTTSMethod()
         {
+            if (ActGlobals.oFormActMain == null ||
+                ActGlobals.oFormActMain.IsDisposed)
+            {
+                return;
+            }
+
             // TTSメソッドを置き換える
             if (ActGlobals.oFormActMain.PlayTtsMethod != this.Speak)
             {
@@ -112,6 +127,12 @@ namespace ACT.TTSYukkuri
 
         private void RestoreTTSMethod()
         {
+            if (ActGlobals.oFormActMain == null ||
+                ActGlobals.oFormActMain.IsDisposed)
+            {
+                return;
+            }
+
             // 置き換えたTTSメソッドを元に戻す
             if (this.originalTTSMethod != null)
             {
