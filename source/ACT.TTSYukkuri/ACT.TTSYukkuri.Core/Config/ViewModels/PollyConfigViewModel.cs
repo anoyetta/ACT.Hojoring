@@ -103,6 +103,10 @@ namespace ACT.TTSYukkuri.Config.ViewModels
             if (string.IsNullOrEmpty(this.Config.AccessKey) ||
                 string.IsNullOrEmpty(this.Config.SecretKey))
             {
+                ModernMessageBox.ShowDialog(
+                    "Enter your access key and secret key.",
+                    "ACT.Hojoring");
+
                 return;
             }
 
