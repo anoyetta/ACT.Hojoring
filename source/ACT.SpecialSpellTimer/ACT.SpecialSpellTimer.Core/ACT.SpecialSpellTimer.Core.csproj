@@ -664,595 +664,595 @@
     <Content Include="resources\icon\Role\TANK.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\1.png">
+    <Content Include="resources\icon\Timeline_EN\1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\2.png">
+    <Content Include="resources\icon\Timeline_EN\2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\A.png">
+    <Content Include="resources\icon\Timeline_EN\A.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\AllRangeAttack.png">
+    <Content Include="resources\icon\Timeline_EN\AllRangeAttack.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Alpha.png">
+    <Content Include="resources\icon\Timeline_EN\Alpha.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Alpha2.png">
+    <Content Include="resources\icon\Timeline_EN\Alpha2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\AOE.png">
+    <Content Include="resources\icon\Timeline_EN\AOE.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\AOECross.png">
+    <Content Include="resources\icon\Timeline_EN\AOECross.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\AOEHorizontal.png">
+    <Content Include="resources\icon\Timeline_EN\AOEHorizontal.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\AOEInside.png">
+    <Content Include="resources\icon\Timeline_EN\AOEInside.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\AOEOutside.png">
+    <Content Include="resources\icon\Timeline_EN\AOEOutside.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\AOEPlus.png">
+    <Content Include="resources\icon\Timeline_EN\AOEPlus.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\AOEVertical.png">
+    <Content Include="resources\icon\Timeline_EN\AOEVertical.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Approach.png">
+    <Content Include="resources\icon\Timeline_EN\Approach.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Attack.png">
+    <Content Include="resources\icon\Timeline_EN\Attack.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Attention.png">
+    <Content Include="resources\icon\Timeline_EN\Attention.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Avoid.png">
+    <Content Include="resources\icon\Timeline_EN\Avoid.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\B.png">
+    <Content Include="resources\icon\Timeline_EN\B.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Beta.png">
+    <Content Include="resources\icon\Timeline_EN\Beta.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Beta2.png">
+    <Content Include="resources\icon\Timeline_EN\Beta2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Bomb.png">
+    <Content Include="resources\icon\Timeline_EN\Bomb.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Delta.png">
+    <Content Include="resources\icon\Timeline_EN\Delta.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Delta2.png">
+    <Content Include="resources\icon\Timeline_EN\Delta2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Dice1.png">
+    <Content Include="resources\icon\Timeline_EN\Dice1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Dice2.png">
+    <Content Include="resources\icon\Timeline_EN\Dice2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Dice3.png">
+    <Content Include="resources\icon\Timeline_EN\Dice3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Dice4.png">
+    <Content Include="resources\icon\Timeline_EN\Dice4.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Dice5.png">
+    <Content Include="resources\icon\Timeline_EN\Dice5.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Dice6.png">
+    <Content Include="resources\icon\Timeline_EN\Dice6.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Dice7.png">
+    <Content Include="resources\icon\Timeline_EN\Dice7.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Dice8.png">
+    <Content Include="resources\icon\Timeline_EN\Dice8.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Distance.png">
+    <Content Include="resources\icon\Timeline_EN\Distance.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\DontApproach.png">
+    <Content Include="resources\icon\Timeline_EN\DontApproach.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\DontEscape.png">
+    <Content Include="resources\icon\Timeline_EN\DontEscape.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\DontTouch.png">
+    <Content Include="resources\icon\Timeline_EN\DontTouch.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Explosion.png">
+    <Content Include="resources\icon\Timeline_EN\Explosion.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Branch.png">
+    <Content Include="resources\icon\Timeline_EN\Branch.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Buff.png">
+    <Content Include="resources\icon\Timeline_EN\Buff.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\C.png">
+    <Content Include="resources\icon\Timeline_EN\C.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\D.png">
+    <Content Include="resources\icon\Timeline_EN\D.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\DamageShare.png">
+    <Content Include="resources\icon\Timeline_EN\DamageShare.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Dialog.png">
+    <Content Include="resources\icon\Timeline_EN\Dialog.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\DontAction.png">
+    <Content Include="resources\icon\Timeline_EN\DontAction.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\DontMove.png">
+    <Content Include="resources\icon\Timeline_EN\DontMove.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\East.png">
+    <Content Include="resources\icon\Timeline_EN\East.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Eye.png">
+    <Content Include="resources\icon\Timeline_EN\Eye.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\FallingObject.png">
+    <Content Include="resources\icon\Timeline_EN\FallingObject.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\False.png">
+    <Content Include="resources\icon\Timeline_EN\False.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Fire.png">
+    <Content Include="resources\icon\Timeline_EN\Fire.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Flag.png">
+    <Content Include="resources\icon\Timeline_EN\Flag.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\ForceHP1.png">
+    <Content Include="resources\icon\Timeline_EN\ForceHP1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Free.png">
+    <Content Include="resources\icon\Timeline_EN\Free.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Gamma.png">
+    <Content Include="resources\icon\Timeline_EN\Gamma.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Gamma2.png">
+    <Content Include="resources\icon\Timeline_EN\Gamma2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\HardAllRangeAttack.png">
+    <Content Include="resources\icon\Timeline_EN\HardAllRangeAttack.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\HardAttack.png">
+    <Content Include="resources\icon\Timeline_EN\HardAttack.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\HoT.png">
+    <Content Include="resources\icon\Timeline_EN\HoT.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Ice.png">
+    <Content Include="resources\icon\Timeline_EN\Ice.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Invincibility.png">
+    <Content Include="resources\icon\Timeline_EN\Invincibility.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\KnockBack.png">
+    <Content Include="resources\icon\Timeline_EN\KnockBack.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\LB.png">
+    <Content Include="resources\icon\Timeline_EN\LB.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Leave.png">
+    <Content Include="resources\icon\Timeline_EN\Leave.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Lightning.png">
+    <Content Include="resources\icon\Timeline_EN\Lightning.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Magnet.png">
+    <Content Include="resources\icon\Timeline_EN\Magnet.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Marker.png">
+    <Content Include="resources\icon\Timeline_EN\Marker.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Nail.png">
+    <Content Include="resources\icon\Timeline_EN\Nail.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\North.png">
+    <Content Include="resources\icon\Timeline_EN\North.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\ObserveEscape.png">
+    <Content Include="resources\icon\Timeline_EN\ObserveEscape.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Pair.png">
+    <Content Include="resources\icon\Timeline_EN\Pair.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Potion.png">
+    <Content Include="resources\icon\Timeline_EN\Potion.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Pull.png">
+    <Content Include="resources\icon\Timeline_EN\Pull.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\PunishmentGlory.png">
+    <Content Include="resources\icon\Timeline_EN\PunishmentGlory.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\PunishmentGroup.png">
+    <Content Include="resources\icon\Timeline_EN\PunishmentGroup.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\PunishmentHevy.png">
+    <Content Include="resources\icon\Timeline_EN\PunishmentHevy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Slip.png">
+    <Content Include="resources\icon\Timeline_EN\Slip.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\South.png">
+    <Content Include="resources\icon\Timeline_EN\South.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\SpreadA.png">
+    <Content Include="resources\icon\Timeline_EN\SpreadA.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\SpreadB.png">
+    <Content Include="resources\icon\Timeline_EN\SpreadB.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Stack.png">
+    <Content Include="resources\icon\Timeline_EN\Stack.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\StackAOE.png">
+    <Content Include="resources\icon\Timeline_EN\StackAOE.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\StackBack.png">
+    <Content Include="resources\icon\Timeline_EN\StackBack.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\StackFront.png">
+    <Content Include="resources\icon\Timeline_EN\StackFront.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Switch.png">
+    <Content Include="resources\icon\Timeline_EN\Switch.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\TankShare.png">
+    <Content Include="resources\icon\Timeline_EN\TankShare.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Targetaoe.png">
+    <Content Include="resources\icon\Timeline_EN\Targetaoe.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Targetaoe01.png">
+    <Content Include="resources\icon\Timeline_EN\Targetaoe01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Targetaoe02.png">
+    <Content Include="resources\icon\Timeline_EN\Targetaoe02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Targetaoe03.png">
+    <Content Include="resources\icon\Timeline_EN\Targetaoe03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Thunder.png">
+    <Content Include="resources\icon\Timeline_EN\Thunder.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Timeout.png">
+    <Content Include="resources\icon\Timeline_EN\Timeout.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Timer.png">
+    <Content Include="resources\icon\Timeline_EN\Timer.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\TorF.png">
+    <Content Include="resources\icon\Timeline_EN\TorF.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Touch.png">
+    <Content Include="resources\icon\Timeline_EN\Touch.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\True.png">
+    <Content Include="resources\icon\Timeline_EN\True.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Twister.png">
+    <Content Include="resources\icon\Timeline_EN\Twister.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Virus.png">
+    <Content Include="resources\icon\Timeline_EN\Virus.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\Water.png">
+    <Content Include="resources\icon\Timeline_EN\Water.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline EN\West.png">
+    <Content Include="resources\icon\Timeline_EN\West.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\1マーカー.png">
+    <Content Include="resources\icon\Timeline_JP\1マーカー.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\2マーカー.png">
+    <Content Include="resources\icon\Timeline_JP\2マーカー.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\Aマーカー.png">
+    <Content Include="resources\icon\Timeline_JP\Aマーカー.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\Bマーカー.png">
+    <Content Include="resources\icon\Timeline_JP\Bマーカー.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\Cマーカー.png">
+    <Content Include="resources\icon\Timeline_JP\Cマーカー.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\Dマーカー.png">
+    <Content Include="resources\icon\Timeline_JP\Dマーカー.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\HOT.png">
+    <Content Include="resources\icon\Timeline_JP\HOT.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\HP1強制.png">
+    <Content Include="resources\icon\Timeline_JP\HP1強制.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\LB.png">
+    <Content Include="resources\icon\Timeline_JP\LB.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\X範囲攻撃.png">
+    <Content Include="resources\icon\Timeline_JP\X範囲攻撃.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\α.png">
+    <Content Include="resources\icon\Timeline_JP\α.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\α2.png">
+    <Content Include="resources\icon\Timeline_JP\α2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\β.png">
+    <Content Include="resources\icon\Timeline_JP\β.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\β2.png">
+    <Content Include="resources\icon\Timeline_JP\β2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\γ.png">
+    <Content Include="resources\icon\Timeline_JP\γ.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\γ2.png">
+    <Content Include="resources\icon\Timeline_JP\γ2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\δ.png">
+    <Content Include="resources\icon\Timeline_JP\δ.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\δ2.png">
+    <Content Include="resources\icon\Timeline_JP\δ2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\ウィルス系.png">
+    <Content Include="resources\icon\Timeline_JP\ウィルス系.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\サイコロ1.png">
+    <Content Include="resources\icon\Timeline_JP\サイコロ1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\サイコロ2.png">
+    <Content Include="resources\icon\Timeline_JP\サイコロ2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\サイコロ3.png">
+    <Content Include="resources\icon\Timeline_JP\サイコロ3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\サイコロ4.png">
+    <Content Include="resources\icon\Timeline_JP\サイコロ4.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\サイコロ5.png">
+    <Content Include="resources\icon\Timeline_JP\サイコロ5.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\サイコロ6.png">
+    <Content Include="resources\icon\Timeline_JP\サイコロ6.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\サイコロ7.png">
+    <Content Include="resources\icon\Timeline_JP\サイコロ7.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\サイコロ8.png">
+    <Content Include="resources\icon\Timeline_JP\サイコロ8.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\サンダー系.png">
+    <Content Include="resources\icon\Timeline_JP\サンダー系.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\スイッチ.png">
+    <Content Include="resources\icon\Timeline_JP\スイッチ.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\スリップ.png">
+    <Content Include="resources\icon\Timeline_JP\スリップ.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\セリフ.png">
+    <Content Include="resources\icon\Timeline_JP\セリフ.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\タイマー.png">
+    <Content Include="resources\icon\Timeline_JP\タイマー.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\タンク二人受け.png">
+    <Content Include="resources\icon\Timeline_JP\タンク二人受け.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\ツイスター.png">
+    <Content Include="resources\icon\Timeline_JP\ツイスター.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\ノックバック.png">
+    <Content Include="resources\icon\Timeline_JP\ノックバック.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\ファイア系.png">
+    <Content Include="resources\icon\Timeline_JP\ファイア系.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\フラッグ.png">
+    <Content Include="resources\icon\Timeline_JP\フラッグ.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\フルバフ.png">
+    <Content Include="resources\icon\Timeline_JP\フルバフ.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\ブリザド系.png">
+    <Content Include="resources\icon\Timeline_JP\ブリザド系.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\ベータ.png">
+    <Content Include="resources\icon\Timeline_JP\ベータ.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\ペア処理.png">
+    <Content Include="resources\icon\Timeline_JP\ペア処理.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\マグネット系.png">
+    <Content Include="resources\icon\Timeline_JP\マグネット系.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\マーカー.png">
+    <Content Include="resources\icon\Timeline_JP\マーカー.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\上12安置.png">
+    <Content Include="resources\icon\Timeline_JP\上12安置.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\下6安置.png">
+    <Content Include="resources\icon\Timeline_JP\下6安置.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\偽.png">
+    <Content Include="resources\icon\Timeline_JP\偽.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\全体強攻撃.png">
+    <Content Include="resources\icon\Timeline_JP\全体強攻撃.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\全体攻撃.png">
+    <Content Include="resources\icon\Timeline_JP\全体攻撃.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\内周範囲攻撃.png">
+    <Content Include="resources\icon\Timeline_JP\内周範囲攻撃.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\分岐.png">
+    <Content Include="resources\icon\Timeline_JP\分岐.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\加重罰.png">
+    <Content Include="resources\icon\Timeline_JP\加重罰.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\十字範囲攻撃.png">
+    <Content Include="resources\icon\Timeline_JP\十字範囲攻撃.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\単体強攻撃.png">
+    <Content Include="resources\icon\Timeline_JP\単体強攻撃.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\単体攻撃.png">
+    <Content Include="resources\icon\Timeline_JP\単体攻撃.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\右3安置.png">
+    <Content Include="resources\icon\Timeline_JP\右3安置.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\名誉罰.png">
+    <Content Include="resources\icon\Timeline_JP\名誉罰.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\塔踏み.png">
+    <Content Include="resources\icon\Timeline_JP\塔踏み.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\外周範囲攻撃.png">
+    <Content Include="resources\icon\Timeline_JP\外周範囲攻撃.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\対象範囲攻撃.png">
+    <Content Include="resources\icon\Timeline_JP\対象範囲攻撃.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\対象範囲攻撃01.png">
+    <Content Include="resources\icon\Timeline_JP\対象範囲攻撃01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\対象範囲攻撃02.png">
+    <Content Include="resources\icon\Timeline_JP\対象範囲攻撃02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\対象範囲攻撃03.png">
+    <Content Include="resources\icon\Timeline_JP\対象範囲攻撃03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\左9安置.png">
+    <Content Include="resources\icon\Timeline_JP\左9安置.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\床範囲.png">
+    <Content Include="resources\icon\Timeline_JP\床範囲.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\引き寄せ.png">
+    <Content Include="resources\icon\Timeline_JP\引き寄せ.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\接触保護.png">
+    <Content Include="resources\icon\Timeline_JP\接触保護.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\接触禁止.png">
+    <Content Include="resources\icon\Timeline_JP\接触禁止.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\接近強制.png">
+    <Content Include="resources\icon\Timeline_JP\接近強制.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\接近禁止.png">
+    <Content Include="resources\icon\Timeline_JP\接近禁止.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\散開A.png">
+    <Content Include="resources\icon\Timeline_JP\散開A.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\散開B.png">
+    <Content Include="resources\icon\Timeline_JP\散開B.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\時間切れ.png">
+    <Content Include="resources\icon\Timeline_JP\時間切れ.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\楔.png">
+    <Content Include="resources\icon\Timeline_JP\楔.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\横範囲攻撃.png">
+    <Content Include="resources\icon\Timeline_JP\横範囲攻撃.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\正面集合.png">
+    <Content Include="resources\icon\Timeline_JP\正面集合.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\水.png">
+    <Content Include="resources\icon\Timeline_JP\水.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\注意.png">
+    <Content Include="resources\icon\Timeline_JP\注意.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\無敵受け.png">
+    <Content Include="resources\icon\Timeline_JP\無敵受け.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\無職.png">
+    <Content Include="resources\icon\Timeline_JP\無職.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\爆弾.png">
+    <Content Include="resources\icon\Timeline_JP\爆弾.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\爆発系.png">
+    <Content Include="resources\icon\Timeline_JP\爆発系.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\真.png">
+    <Content Include="resources\icon\Timeline_JP\真.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\真偽.png">
+    <Content Include="resources\icon\Timeline_JP\真偽.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\移動禁止.png">
+    <Content Include="resources\icon\Timeline_JP\移動禁止.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\縦範囲攻撃.png">
+    <Content Include="resources\icon\Timeline_JP\縦範囲攻撃.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\背面集合.png">
+    <Content Include="resources\icon\Timeline_JP\背面集合.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\薬.png">
+    <Content Include="resources\icon\Timeline_JP\薬.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\行動禁止.png">
+    <Content Include="resources\icon\Timeline_JP\行動禁止.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\視線.png">
+    <Content Include="resources\icon\Timeline_JP\視線.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\距離減衰.png">
+    <Content Include="resources\icon\Timeline_JP\距離減衰.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\逃亡禁止.png">
+    <Content Include="resources\icon\Timeline_JP\逃亡禁止.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\逃亡観察.png">
+    <Content Include="resources\icon\Timeline_JP\逃亡観察.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\避ける.png">
+    <Content Include="resources\icon\Timeline_JP\避ける.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\重ね捨て.png">
+    <Content Include="resources\icon\Timeline_JP\重ね捨て.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\集合.png">
+    <Content Include="resources\icon\Timeline_JP\集合.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\集団罰.png">
+    <Content Include="resources\icon\Timeline_JP\集団罰.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\離れる.png">
+    <Content Include="resources\icon\Timeline_JP\離れる.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\雷.png">
+    <Content Include="resources\icon\Timeline_JP\雷.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\icon\Timeline JP\頭割り.png">
+    <Content Include="resources\icon\Timeline_JP\頭割り.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\images\Sample.png">

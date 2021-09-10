@@ -1,4 +1,4 @@
-﻿Start-Transcript update.log | Out-Null
+Start-Transcript update.log | Out-Null
 
 # アップデートチャンネル
 ## プレリリースを取得するか否か？
@@ -7,9 +7,9 @@ $isUsePreRelease = $FALSE
 
 '***************************************************'
 '* Hojoring Updater'
-'* UPDATE-Kun'
-'* rev15'
-'* (c) anoyetta, 2019'
+'* '
+'* rev16'
+'* (c) anoyetta, 2019-2021'
 '***************************************************'
 '* Start Update Hojoring'
 
@@ -30,8 +30,9 @@ function New-TemporaryDirectory {
 function Remove-Directory (
     [string] $path) {
     if (Test-Path $path) {
-        Remove-Item ($path + "\*") -Recurse -Force
-        Remove-Item $path -Recurse -Force
+        Get-ChildItem $path -File -Recurse | Sort-Object FullName -Descending | Remove-Item -Force -Confirm:$false;
+        Get-ChildItem $path -Directory -Recurse | Sort-Object FullName -Descending | Remove-Item -Force -Confirm:$false;
+        Remove-Item $path -Force;
     }
 }
 
@@ -196,7 +197,7 @@ if (Test-Path $updateDir) {
 ''
 '-> Backup Current Version'
 if (Test-Path ".\backup") {
-    Remove-Directory ".\backup"
+    & cmd /c rmdir ".\backup" /s /q
 }
 Start-Sleep -Milliseconds 10
 $temp = (New-TemporaryDirectory).FullName
@@ -245,10 +246,32 @@ if (Test-Path ".\*.dll") {
 }
 Remove-Item ".\bin\*" -Recurse -Include *.dll
 Remove-Item ".\bin\*" -Recurse -Include *.exe
-Remove-Directory ".\openJTalk"
-Remove-Directory ".\yukkuri"
-Remove-Directory ".\tools"
+Remove-Directory ".\openJTalk\"
+Remove-Directory ".\yukkuri\"
+Remove-Directory ".\tools\"
 # Clean <-
+
+# Migration ->
+if (Test-Path ".\resources\icon\Timeline EN") {
+    if (!(Test-Path ".\resources\icon\Timeline_EN")) {
+        $f = Resolve-Path(".\resources\icon\Timeline EN\")
+        Rename-Item $f "Timeline_EN"
+    } else {
+        Copy-Item ".\resources\icon\Timeline EN\*" -Destination ".\resources\icon\Timeline_EN\" -Recurse -Force
+        Remove-Directory ".\resources\icon\Timeline EN\"
+    }
+}
+
+if (Test-Path ".\resources\icon\Timeline JP") {
+    if (!(Test-Path ".\resources\icon\Timeline_JP")) {
+        $f = Resolve-Path(".\resources\icon\Timeline JP\")
+        Rename-Item $f "Timeline_JP"
+    } else {
+        Copy-Item ".\resources\icon\Timeline JP\*" -Destination ".\resources\icon\Timeline_JP\" -Recurse -Force
+        Remove-Directory ".\resources\icon\Timeline JP\"
+    }
+}
+# Migration <-
 
 ''
 '-> Update Assets'
