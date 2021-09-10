@@ -1,17 +1,17 @@
+using FFXIV.Framework.Common;
 using System;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
 using System.Reflection;
 using System.Threading.Tasks;
-using FFXIV.Framework.Common;
 
 namespace FFXIV.Framework.resources
 {
     public class ResourcesDownloader
     {
         private readonly bool IsDebugSkip = EnvironmentHelper.IsDebug ?
-            true :
+            false :
             false;
 
         #region Lazy Singleton
@@ -145,7 +145,7 @@ namespace FFXIV.Framework.resources
                         File.Delete(temp);
 
                         isDownloaded = true;
-                        await Task.Delay(TimeSpan.FromSeconds(0.1));
+                        await Task.Yield();
                     }
                 }
             }
