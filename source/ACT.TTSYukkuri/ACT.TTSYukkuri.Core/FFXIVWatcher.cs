@@ -1,10 +1,10 @@
-using System;
-using System.Threading;
 using ACT.TTSYukkuri.Config;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
 using NLog;
+using System;
+using System.Threading;
 
 namespace ACT.TTSYukkuri
 {
@@ -67,7 +67,7 @@ namespace ACT.TTSYukkuri
             {
                 if (instance != null)
                 {
-                    instance.watchWorker?.Abort();
+                    instance.watchWorker?.Abort(10);
                     instance.isRunning = false;
                     instance = null;
                 }
