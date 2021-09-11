@@ -1,4 +1,4 @@
-Start-Transcript update.log | Out-Null
+﻿Start-Transcript update.log | Out-Null
 
 # アップデートチャンネル
 ## プレリリースを取得するか否か？
