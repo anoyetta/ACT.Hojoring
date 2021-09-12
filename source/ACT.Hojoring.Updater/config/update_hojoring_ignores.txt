@@ -2,3 +2,5 @@
 _sample.txt
 update_hojoring_ignores.txt
 start_ffxiv_tools.ps1
+aq_user.dic
+sample_src_userdic.csv
