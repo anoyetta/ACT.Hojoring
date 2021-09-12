@@ -1,7 +1,8 @@
-﻿<Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
+<Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
   <Costura
     IncludeDebugSymbols="false">
     <PreloadOrder>
+      AqKanji2Koe
       AquesTalk
       AquesTalkDriver
     </PreloadOrder>
@@ -16,10 +17,12 @@
       FFXIV_ACT_Plugin.*
     </ExcludeAssemblies>
     <Unmanaged32Assemblies>
+      AqKanji2Koe
       AquesTalk
       AquesTalkDriver
     </Unmanaged32Assemblies>
     <Unmanaged64Assemblies>
+      AqKanji2Koe
       AquesTalk
       AquesTalkDriver
     </Unmanaged64Assemblies>
