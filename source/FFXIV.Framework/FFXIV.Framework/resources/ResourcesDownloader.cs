@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace FFXIV.Framework.resources
@@ -162,7 +161,7 @@ namespace FFXIV.Framework.resources
         private static string GetPath(
             string path)
             => Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly()?.Location),
+                DirectoryHelper.GetPluginRootDirectoryDelegate?.Invoke() ?? string.Empty,
                 path);
 
         private static string GetTempFileName()
