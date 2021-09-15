@@ -1,5 +1,6 @@
 using FFXIV.Framework.Common;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
@@ -30,132 +31,176 @@ namespace FFXIV.Framework.resources
         private static readonly Uri RemoteResourcesListUri =
             new Uri("https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources.txt" + $"?random={Random.Next()}");
 
-        private bool pass;
+        private bool isDownloading;
 
-        public async Task DownloadAsync()
+        public async Task<bool> DownloadAsync()
         {
             lock (Random)
             {
-                if (this.pass)
+                if (this.isDownloading)
                 {
-                    return;
+                    return true;
                 }
 
-                this.pass = true;
+                this.isDownloading = true;
             }
 
-            if (this.IsDebugSkip)
+            try
             {
-                return;
-            }
-
-            UpdateChecker.IsSustainSplash = true;
-
-            var isDownloaded = false;
-
-            using (var wc = new WebClient()
-            {
-                CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore)
-            })
-            {
-                var temp = GetTempFileName();
-
-                await wc.DownloadFileTaskAsync(RemoteResourcesListUri, temp);
-                var list = File.ReadAllText(temp);
-                File.Delete(temp);
-
-                using (var sr = new StringReader(list))
+                if (this.IsDebugSkip)
                 {
-                    while (sr.Peek() > -1)
+                    return false;
+                }
+
+                UpdateChecker.IsSustainSplash = true;
+
+                var isDownloaded = false;
+
+                using (var wc = new WebClient()
+                {
+                    CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore)
+                })
+                {
+                    var temp = GetTempFileName();
+
+                    await wc.DownloadFileTaskAsync(RemoteResourcesListUri, temp);
+                    var list = File.ReadAllText(temp);
+                    File.Delete(temp);
+
+                    using (var sr = new StringReader(list))
                     {
-                        var line = sr.ReadLine().Trim();
-
-                        if (string.IsNullOrEmpty(line) ||
-                            line.StartsWith("#"))
+                        while (sr.Peek() > -1)
                         {
-                            continue;
-                        }
+                            var line = sr.ReadLine().Trim();
 
-                        var values = line.Split(' ');
-                        if (values.Length < 2)
-                        {
-                            continue;
-                        }
-
-                        var local = GetPath(values[0]);
-                        var remote = values[1];
-                        var md5Remote = values.Length >= 3 ? values[2] : string.Empty;
-                        var isForceUpdate = false;
-
-                        if (values.Length >= 4)
-                        {
-                            bool.TryParse(values[3], out isForceUpdate);
-                        }
-
-                        if (File.Exists(local))
-                        {
-                            UpdateChecker.SetMessageToSplash($"Checking... {Path.GetFileName(local)}");
-
-                            if (isForceUpdate)
+                            if (string.IsNullOrEmpty(line) ||
+                                line.StartsWith("#"))
                             {
-                                // NO-OP
+                                continue;
                             }
-                            else
-                            {
-                                var md5Local = FileHelper.GetMD5(local);
 
-                                if (IsVerifyHash(md5Local, md5Remote))
+                            var values = line.Split(' ');
+                            if (values.Length < 2)
+                            {
+                                continue;
+                            }
+
+                            var local = GetPath(values[0]);
+                            var remote = values[1];
+                            var md5Remote = values.Length >= 3 ? values[2] : string.Empty;
+                            var isForceUpdate = false;
+
+                            if (values.Length >= 4)
+                            {
+                                bool.TryParse(values[3], out isForceUpdate);
+                            }
+
+                            if (File.Exists(local))
+                            {
+                                UpdateChecker.SetMessageToSplash($"Checking... {Path.GetFileName(local)}");
+
+                                if (isForceUpdate)
                                 {
-                                    if (!EnvironmentHelper.IsDebug)
+                                    // NO-OP
+                                }
+                                else
+                                {
+                                    var md5Local = FileHelper.GetMD5(local);
+
+                                    if (IsVerifyHash(md5Local, md5Remote))
                                     {
-                                        AppLog.DefaultLogger.Info($"Checking... {local}. It was up-to-date.");
-                                        continue;
+                                        if (!EnvironmentHelper.IsDebug)
+                                        {
+                                            AppLog.DefaultLogger.Info($"Checking... {local}. It was up-to-date.");
+                                            continue;
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        FileHelper.CreateDirectory(local);
+                            FileHelper.CreateDirectory(local);
 
-                        UpdateChecker.SetMessageToSplash($"Downloading... {Path.GetFileName(local)}");
+                            UpdateChecker.SetMessageToSplash($"Downloading... {Path.GetFileName(local)}");
 
-                        temp = GetTempFileName();
-                        await wc.DownloadFileTaskAsync(
-                            new Uri($"{remote}?random={Random.Next()}"),
-                            temp);
+                            temp = GetTempFileName();
+                            await wc.DownloadFileTaskAsync(
+                                new Uri($"{remote}?random={Random.Next()}"),
+                                temp);
 
-                        var md5New = FileHelper.GetMD5(temp);
+                            var md5New = FileHelper.GetMD5(temp);
 
-                        if (IsVerifyHash(md5New, md5Remote))
-                        {
-                            File.Copy(temp, local, true);
-                            AppLog.DefaultLogger.Info($"Downloaded... {local}, verify is completed.");
-                        }
-                        else
-                        {
-                            if (EnvironmentHelper.IsDebug)
+                            if (IsVerifyHash(md5New, md5Remote))
                             {
                                 File.Copy(temp, local, true);
+                                AppLog.DefaultLogger.Info($"Downloaded... {local}, verify is completed.");
+                            }
+                            else
+                            {
+                                if (EnvironmentHelper.IsDebug)
+                                {
+                                    File.Copy(temp, local, true);
+                                }
+
+                                AppLog.DefaultLogger.Info($"Downloaded... {local}. Error, it was an inccorrect hash.");
                             }
 
-                            AppLog.DefaultLogger.Info($"Downloaded... {local}. Error, it was an inccorrect hash.");
+                            File.Delete(temp);
+
+                            isDownloaded = true;
                         }
-
-                        File.Delete(temp);
-
-                        isDownloaded = true;
-                        await Task.Yield();
                     }
+                }
+
+                UpdateChecker.SetMessageToSplash($"Resources update is now complete.");
+                UpdateChecker.IsSustainSplash = false;
+
+                if (isDownloaded)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(0.3));
+                }
+            }
+            finally
+            {
+                lock (Random)
+                {
+                    this.isDownloading = false;
                 }
             }
 
-            UpdateChecker.SetMessageToSplash($"Resources update is now complete.");
-            UpdateChecker.IsSustainSplash = false;
+            return false;
+        }
 
-            if (isDownloaded)
+        public Task WaitDownloadingAsync()
+        {
+            return Task.Run(async () =>
             {
-                await Task.Delay(TimeSpan.FromSeconds(0.3));
-            }
+                var sw = Stopwatch.StartNew();
+
+                try
+                {
+                    while (true)
+                    {
+                        lock (Random)
+                        {
+                            if (!this.isDownloading)
+                            {
+                                return;
+                            }
+                        }
+
+                        if (sw.Elapsed > TimeSpan.FromMinutes(30))
+                        {
+                            return;
+                        }
+
+                        await Task.Delay(TimeSpan.FromSeconds(0.2));
+                    }
+                }
+                finally
+                {
+                    sw.Stop();
+                }
+            });
         }
 
         private static string GetPath(

@@ -203,7 +203,10 @@ namespace ACT.SpecialSpellTimer
                 UpdateChecker.ShowSplash();
 
                 // 外部リソースをダウンロードする
-                await ResourcesDownloader.Instance.DownloadAsync();
+                if (await ResourcesDownloader.Instance.DownloadAsync())
+                {
+                    await ResourcesDownloader.Instance.WaitDownloadingAsync();
+                }
 
                 // メイン設定ファイルを読み込む
                 Settings.Default.Load();

@@ -168,7 +168,10 @@ namespace ACT.UltraScouter
                 UpdateChecker.ShowSplash();
 
                 // 外部リソースをダウンロードする
-                await ResourcesDownloader.Instance.DownloadAsync();
+                if (await ResourcesDownloader.Instance.DownloadAsync())
+                {
+                    await ResourcesDownloader.Instance.WaitDownloadingAsync();
+                }
 
                 // 設定ファイルを読み込む
                 Settings.Instance.Load();
