@@ -415,7 +415,7 @@ namespace ACT.TTSYukkuri
                     this.GarbageTTSCache();
                 });
 
-                EnvironmentHelper.WaitInitActDone();
+                await EnvironmentHelper.WaitInitActDoneAsync();
 
                 await Task.Run(() =>
                 {

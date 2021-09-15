@@ -251,7 +251,7 @@ namespace ACT.SpecialSpellTimer
                     Font = pluginScreenSpace.Font,
                 });
 
-                EnvironmentHelper.WaitInitActDone();
+                await EnvironmentHelper.WaitInitActDoneAsync();
 
                 // ACTのメインウィンドウの表示まで待つ
                 await Task.Run(async () =>

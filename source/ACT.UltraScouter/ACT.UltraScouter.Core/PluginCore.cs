@@ -185,7 +185,7 @@ namespace ACT.UltraScouter
                     Settings.Instance.MobList.LoadTargetMobList();
                 });
 
-                EnvironmentHelper.WaitInitActDone();
+                await EnvironmentHelper.WaitInitActDoneAsync();
 
                 // FFXIVプラグインへのアクセスを開始する
                 await Task.Run(() =>

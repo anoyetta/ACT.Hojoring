@@ -62,7 +62,7 @@ namespace ACT.XIVLog
                 Dock = DockStyle.Fill,
             });
 
-            EnvironmentHelper.WaitInitActDone();
+            await EnvironmentHelper.WaitInitActDoneAsync();
 
             this.InitTask();
             this.pluginLabel.Text = "Plugin Started";
