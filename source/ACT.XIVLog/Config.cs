@@ -1,3 +1,5 @@
+using FFXIV.Framework.Common;
+using Prism.Mvvm;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -5,8 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Serialization;
-using FFXIV.Framework.Common;
-using Prism.Mvvm;
 
 namespace ACT.XIVLog
 {
@@ -151,6 +151,15 @@ namespace ACT.XIVLog
         {
             get => this.outputDirectory;
             set => this.SetProperty(ref this.outputDirectory, value);
+        }
+
+        private bool withBOM = true;
+
+        [DefaultValue(false)]
+        public bool WithBOM
+        {
+            get => this.withBOM;
+            set => this.SetProperty(ref this.withBOM, value);
         }
 
         private double writeInterval = WriteIntervalDefault;

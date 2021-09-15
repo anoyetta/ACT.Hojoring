@@ -139,9 +139,11 @@ namespace ACT.XIVLog
                 _ = FFXIV.Framework.Config.Instance;
             }
 
+            var config = Config.Instance;
+
             this.dumpLogTask = ThreadWorker.Run(
                 doWork,
-                TimeSpan.FromSeconds(Config.Instance.WriteInterval).TotalMilliseconds,
+                TimeSpan.FromSeconds(config.WriteInterval).TotalMilliseconds,
                 "XIVLog Worker",
                 ThreadPriority.Lowest);
 
@@ -152,9 +154,9 @@ namespace ACT.XIVLog
             {
                 var isNeedsFlush = false;
 
-                if (string.IsNullOrEmpty(Config.Instance.OutputDirectory))
+                if (string.IsNullOrEmpty(config.OutputDirectory))
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(Config.Instance.WriteInterval));
+                    Thread.Sleep(TimeSpan.FromSeconds(config.WriteInterval));
                     return;
                 }
 
@@ -167,13 +169,13 @@ namespace ACT.XIVLog
                     }
                     else
                     {
-                        Thread.Sleep(TimeSpan.FromSeconds(Config.Instance.WriteInterval));
+                        Thread.Sleep(TimeSpan.FromSeconds(config.WriteInterval));
                         return;
                     }
                 }
 
                 if ((DateTime.Now - this.lastFlushTimestamp).TotalSeconds
-                    >= Config.Instance.FlushInterval)
+                    >= config.FlushInterval)
                 {
                     isNeedsFlush = true;
                 }
@@ -193,9 +195,9 @@ namespace ACT.XIVLog
                         this.writter.Dispose();
                     }
 
-                    if (!Directory.Exists(Config.Instance.OutputDirectory))
+                    if (!Directory.Exists(config.OutputDirectory))
                     {
-                        Directory.CreateDirectory(Config.Instance.OutputDirectory);
+                        Directory.CreateDirectory(config.OutputDirectory);
                     }
 
                     this.writter = new StreamWriter(
@@ -204,7 +206,7 @@ namespace ACT.XIVLog
                             FileMode.Append,
                             FileAccess.Write,
                             FileShare.Read),
-                        new UTF8Encoding(false));
+                        new UTF8Encoding(config.WithBOM));
                     this.currentLogfileName = this.LogfileName;
 
                     this.RaisePropertyChanged(nameof(this.LogfileName));
@@ -258,6 +260,8 @@ namespace ACT.XIVLog
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void EndTask()
         {
+            Config.Save();
+
             ActGlobals.oFormActMain.OnLogLineRead -= this.OnLogLineRead;
 
             VideoCapture.Instance.FinishRecording();
