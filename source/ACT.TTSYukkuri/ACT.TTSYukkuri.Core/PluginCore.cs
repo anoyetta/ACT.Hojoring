@@ -333,7 +333,7 @@ namespace ACT.TTSYukkuri
         private bool isLoaded = false;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public void InitPlugin(
+        public async void InitPlugin(
             IActPluginV1 plugin,
             TabPage pluginScreenSpace,
             Label pluginStatusText)
@@ -344,171 +344,169 @@ namespace ACT.TTSYukkuri
             EnvironmentMigrater.Migrate();
             MasterFilePublisher.Publish();
             WPFHelper.Start();
-            WPFHelper.BeginInvoke(async () =>
+
+            AppLog.LoadConfiguration(AppLog.HojoringConfig);
+            this.Logger?.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+
+            try
             {
-                AppLog.LoadConfiguration(AppLog.HojoringConfig);
-                this.Logger?.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+                this.PluginStatusLabel = pluginStatusText;
 
-                try
+                if (!EnvironmentHelper.IsValidPluginLoadOrder())
                 {
-                    this.PluginStatusLabel = pluginStatusText;
-
-                    if (!EnvironmentHelper.IsValidPluginLoadOrder())
+                    if (pluginStatusText != null)
                     {
-                        if (pluginStatusText != null)
-                        {
-                            pluginStatusText.Text = "Plugin Initialize Error";
-                        }
-
-                        return;
+                        pluginStatusText.Text = "Plugin Initialize Error";
                     }
 
-                    EnvironmentHelper.GarbageLogs();
-                    EnvironmentHelper.StartActivator(() =>
-                    {
-                        ConfigBaseView.Instance.SetActivationStatus(false);
-                        this.DeInitPlugin();
-                    });
-
-                    this.Logger.Trace("[YUKKURI] Start InitPlugin");
-
-                    var pluginInfo = ActGlobals.oFormActMain.PluginGetSelfData(plugin);
-                    if (pluginInfo != null)
-                    {
-                        this.PluginDirectory = pluginInfo.pluginFile.DirectoryName;
-                    }
-
-                    // .NET FrameworkとOSのバージョンを確認する
-                    if (!UpdateChecker.IsAvailableDotNet() ||
-                        !UpdateChecker.IsAvailableWindows())
-                    {
-                        NotSupportedView.AddAndShow(pluginScreenSpace);
-                        return;
-                    }
-
-                    // FFXIV.Framework.config を読み込ませる
-                    lock (FFXIV.Framework.Config.ConfigBlocker)
-                    {
-                        _ = FFXIV.Framework.Config.Instance;
-                    }
-
-                    // HojoringのSplashを表示する
-                    UpdateChecker.ShowSplash();
-
-                    // 外部リソースをダウンロードする
-                    await ResourcesDownloader.Instance.DownloadAsync();
-
-                    // 設定ファイルを読み込む
-                    Settings.Default.Load();
-                    Settings.Default.StatusAlertSettings.EnabledTPAlert = false;
-
-                    // 設定ファイルをバックアップする
-                    await EnvironmentHelper.BackupFilesAsync(
-                        Settings.FilePath);
-
-                    // 漢字変換を初期化する
-                    KanjiTranslator.Default.Initialize();
-
-                    // TTSキャッシュの移行とGarbageを行う
-                    await Task.Run(() =>
-                    {
-                        this.MigrateTTSCache();
-                        this.GarbageTTSCache();
-                    });
-
-                    EnvironmentHelper.WaitInitActDone();
-
-                    await Task.Run(() =>
-                    {
-                        // TTSを初期化する
-                        SpeechController.Default.Initialize();
-
-                        // FF14監視スレッドを初期化する
-                        FFXIVWatcher.Initialize();
-                    });
-
-                    // 設定Panelを追加する
-                    pluginScreenSpace.Controls.Add(new ElementHost()
-                    {
-                        Child = new ConfigBaseView(),
-                        Dock = DockStyle.Fill,
-                    });
-
-                    // TTSメソッドを置き換える
-                    this.StartReplaceTTSMethodTimer();
-
-                    await Task.Run(() =>
-                    {
-                        // DISCORD BOT クライアントを初期化する
-                        DiscordClientModel.Model.Initialize();
-
-                        // AutoJoinがONならば接続する
-                        if (Settings.Default.DiscordSettings.AutoJoin)
-                        {
-                            DiscordClientModel.Model.Connect(true);
-                        }
-                    });
-
-                    await Task.Run(() =>
-                    {
-                        // VOICEROIDを起動する
-                        if (SpeechController.Default is VoiceroidSpeechController ctrl)
-                        {
-                            ctrl.Start();
-                        }
-                    });
-
-                    // Bridgeにメソッドを登録する
-                    PlayBridge.Instance.SetBothDelegate((message, voicePalette, isSync, volume) => this.Speak(message, PlayDevices.Both, voicePalette, isSync, volume));
-                    PlayBridge.Instance.SetMainDeviceDelegate((message, voicePalette, isSync, volume) => this.Speak(message, PlayDevices.Main, voicePalette, isSync, volume));
-                    PlayBridge.Instance.SetSubDeviceDelegate((message, voicePalette, isSync, volume) => this.Speak(message, PlayDevices.Sub, voicePalette, isSync, volume));
-                    PlayBridge.Instance.SetSyncStatusDelegate(() => Settings.Default.Player == WavePlayerTypes.WASAPIBuffered);
-
-                    // テキストコマンドの購読を登録する
-                    this.SubscribeTextCommands();
-
-                    // サウンドデバイスを初期化する
-                    SoundPlayerWrapper.Init();
-                    SoundPlayerWrapper.LoadTTSCache();
-
-                    // CeVIOをアイコン化する
-                    if (Settings.Default.TTS == TTSType.Sasara)
-                    {
-                        CevioTrayManager.Start();
-                        CevioTrayManager.ToIcon();
-                    }
-
-                    if (this.PluginStatusLabel != null)
-                    {
-                        this.PluginStatusLabel.Text = "Plugin Started";
-                    }
-
-                    this.Logger.Trace("[YUKKURI] End InitPlugin");
-
-                    // 共通ビューを追加する
-                    CommonViewHelper.Instance.AddCommonView(
-                       pluginScreenSpace.Parent as TabControl);
-
-                    this.isLoaded = true;
-
-                    // アップデートを確認する
-                    await Task.Run(() => this.Update());
+                    return;
                 }
-                catch (Exception ex)
+
+                EnvironmentHelper.GarbageLogs();
+                EnvironmentHelper.StartActivator(() =>
                 {
-                    this.Logger.Error(ex, "InitPlugin error.");
+                    ConfigBaseView.Instance.SetActivationStatus(false);
+                    this.DeInitPlugin();
+                });
 
-                    ModernMessageBox.ShowDialog(
-                        "Plugin init error !",
-                        "ACT.TTSYukkuri",
-                        System.Windows.MessageBoxButton.OK,
-                        ex);
+                this.Logger.Trace("[YUKKURI] Start InitPlugin");
 
-                    // TTSをゆっくりに戻す
-                    Settings.Default.TTS = TTSType.Yukkuri;
-                    Settings.Default.Save();
+                var pluginInfo = ActGlobals.oFormActMain.PluginGetSelfData(plugin);
+                if (pluginInfo != null)
+                {
+                    this.PluginDirectory = pluginInfo.pluginFile.DirectoryName;
                 }
-            });
+
+                // .NET FrameworkとOSのバージョンを確認する
+                if (!UpdateChecker.IsAvailableDotNet() ||
+                    !UpdateChecker.IsAvailableWindows())
+                {
+                    NotSupportedView.AddAndShow(pluginScreenSpace);
+                    return;
+                }
+
+                // FFXIV.Framework.config を読み込ませる
+                lock (FFXIV.Framework.Config.ConfigBlocker)
+                {
+                    _ = FFXIV.Framework.Config.Instance;
+                }
+
+                // HojoringのSplashを表示する
+                UpdateChecker.ShowSplash();
+
+                // 外部リソースをダウンロードする
+                await ResourcesDownloader.Instance.DownloadAsync();
+
+                // 設定ファイルを読み込む
+                Settings.Default.Load();
+                Settings.Default.StatusAlertSettings.EnabledTPAlert = false;
+
+                // 設定ファイルをバックアップする
+                await EnvironmentHelper.BackupFilesAsync(
+                    Settings.FilePath);
+
+                // 漢字変換を初期化する
+                KanjiTranslator.Default.Initialize();
+
+                // TTSキャッシュの移行とGarbageを行う
+                await Task.Run(() =>
+                {
+                    this.MigrateTTSCache();
+                    this.GarbageTTSCache();
+                });
+
+                EnvironmentHelper.WaitInitActDone();
+
+                await Task.Run(() =>
+                {
+                    // TTSを初期化する
+                    SpeechController.Default.Initialize();
+
+                    // FF14監視スレッドを初期化する
+                    FFXIVWatcher.Initialize();
+                });
+
+                // 設定Panelを追加する
+                pluginScreenSpace.Controls.Add(new ElementHost()
+                {
+                    Child = new ConfigBaseView(),
+                    Dock = DockStyle.Fill,
+                });
+
+                // TTSメソッドを置き換える
+                this.StartReplaceTTSMethodTimer();
+
+                await Task.Run(() =>
+                {
+                    // DISCORD BOT クライアントを初期化する
+                    DiscordClientModel.Model.Initialize();
+
+                    // AutoJoinがONならば接続する
+                    if (Settings.Default.DiscordSettings.AutoJoin)
+                    {
+                        DiscordClientModel.Model.Connect(true);
+                    }
+                });
+
+                await Task.Run(() =>
+                {
+                    // VOICEROIDを起動する
+                    if (SpeechController.Default is VoiceroidSpeechController ctrl)
+                    {
+                        ctrl.Start();
+                    }
+                });
+
+                // Bridgeにメソッドを登録する
+                PlayBridge.Instance.SetBothDelegate((message, voicePalette, isSync, volume) => this.Speak(message, PlayDevices.Both, voicePalette, isSync, volume));
+                PlayBridge.Instance.SetMainDeviceDelegate((message, voicePalette, isSync, volume) => this.Speak(message, PlayDevices.Main, voicePalette, isSync, volume));
+                PlayBridge.Instance.SetSubDeviceDelegate((message, voicePalette, isSync, volume) => this.Speak(message, PlayDevices.Sub, voicePalette, isSync, volume));
+                PlayBridge.Instance.SetSyncStatusDelegate(() => Settings.Default.Player == WavePlayerTypes.WASAPIBuffered);
+
+                // テキストコマンドの購読を登録する
+                this.SubscribeTextCommands();
+
+                // サウンドデバイスを初期化する
+                SoundPlayerWrapper.Init();
+                SoundPlayerWrapper.LoadTTSCache();
+
+                // CeVIOをアイコン化する
+                if (Settings.Default.TTS == TTSType.Sasara)
+                {
+                    CevioTrayManager.Start();
+                    CevioTrayManager.ToIcon();
+                }
+
+                if (this.PluginStatusLabel != null)
+                {
+                    this.PluginStatusLabel.Text = "Plugin Started";
+                }
+
+                this.Logger.Trace("[YUKKURI] End InitPlugin");
+
+                // 共通ビューを追加する
+                CommonViewHelper.Instance.AddCommonView(
+                   pluginScreenSpace.Parent as TabControl);
+
+                this.isLoaded = true;
+
+                // アップデートを確認する
+                await Task.Run(() => this.Update());
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Error(ex, "InitPlugin error.");
+
+                ModernMessageBox.ShowDialog(
+                    "Plugin init error !",
+                    "ACT.TTSYukkuri",
+                    System.Windows.MessageBoxButton.OK,
+                    ex);
+
+                // TTSをゆっくりに戻す
+                Settings.Default.TTS = TTSType.Yukkuri;
+                Settings.Default.Save();
+            }
         }
 
         public void DeInitPlugin()

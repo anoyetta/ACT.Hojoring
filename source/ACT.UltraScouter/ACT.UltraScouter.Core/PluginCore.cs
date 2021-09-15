@@ -1,9 +1,3 @@
-using System;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.Integration;
 using ACT.UltraScouter.Common;
 using ACT.UltraScouter.Config;
 using ACT.UltraScouter.Config.UI.Views;
@@ -20,6 +14,12 @@ using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
 using FFXIV.Framework.XIVHelper;
 using NLog;
+using System;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 
 namespace ACT.UltraScouter
 {
@@ -110,7 +110,7 @@ namespace ACT.UltraScouter
 
         private bool isLoaded = false;
 
-        public void StartPlugin(
+        public async void StartPlugin(
             TabPage pluginScreenSpace,
             Label pluginStatusText)
         {
@@ -122,115 +122,113 @@ namespace ACT.UltraScouter
             EnvironmentMigrater.Migrate();
             MasterFilePublisher.Publish();
             WPFHelper.Start();
-            WPFHelper.BeginInvoke(async () =>
+
+            AppLog.LoadConfiguration(AppLog.HojoringConfig);
+            this.Logger?.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+
+            try
             {
-                AppLog.LoadConfiguration(AppLog.HojoringConfig);
-                this.Logger?.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+                this.PluginTabPage = pluginScreenSpace;
+                this.PluginStatusLabel = pluginStatusText;
 
-                try
+                if (!EnvironmentHelper.IsValidPluginLoadOrder())
                 {
-                    this.PluginTabPage = pluginScreenSpace;
-                    this.PluginStatusLabel = pluginStatusText;
-
-                    if (!EnvironmentHelper.IsValidPluginLoadOrder())
+                    if (pluginStatusText != null)
                     {
-                        if (pluginStatusText != null)
-                        {
-                            pluginStatusText.Text = "Plugin Initialize Error";
-                        }
-
-                        return;
+                        pluginStatusText.Text = "Plugin Initialize Error";
                     }
 
-                    EnvironmentHelper.GarbageLogs();
-                    EnvironmentHelper.StartActivator(() =>
-                    {
-                        BaseView.Instance.SetActivationStatus(false);
-                        this.EndPlugin();
-                    });
-
-                    this.Logger.Trace("[ULTRA SCOUTER] Start InitPlugin");
-
-                    // .NET FrameworkとOSのバージョンを確認する
-                    if (!UpdateChecker.IsAvailableDotNet() ||
-                        !UpdateChecker.IsAvailableWindows())
-                    {
-                        NotSupportedView.AddAndShow(pluginScreenSpace);
-                        return;
-                    }
-
-                    // FFXIV.Framework.config を読み込ませる
-                    lock (FFXIV.Framework.Config.ConfigBlocker)
-                    {
-                        _ = FFXIV.Framework.Config.Instance;
-                    }
-
-                    // HojoringのSplashを表示する
-                    UpdateChecker.ShowSplash();
-
-                    // 外部リソースをダウンロードする
-                    await ResourcesDownloader.Instance.DownloadAsync();
-
-                    // 設定ファイルを読み込む
-                    Settings.Instance.Load();
-                    Settings.Instance.MPTicker.UpdateUnlockMPSync();
-
-                    // 設定ファイルをバックアップする
-                    await EnvironmentHelper.BackupFilesAsync(
-                        Settings.Instance.FileName);
-
-                    // 各種ファイルを読み込む
-                    await Task.Run(() =>
-                    {
-                        TTSDictionary.Instance.Load();
-                        Settings.Instance.MobList.LoadTargetMobList();
-                    });
-
-                    EnvironmentHelper.WaitInitActDone();
-
-                    // FFXIVプラグインへのアクセスを開始する
-                    await Task.Run(() =>
-                    {
-                        XIVPluginHelper.Instance.Start(
-                            Settings.Instance.PollingRate,
-                            Settings.Instance.FFXIVLocale);
-                    });
-
-                    // ターゲット情報ワーカを開始する
-                    MainWorker.Instance.Start();
-
-                    // タブページを登録する
-                    this.SetupPluginTabPages(pluginScreenSpace);
-
-                    // テキストコマンドの購読を追加する
-                    this.SubscribeTextCommands();
-
-                    if (this.PluginStatusLabel != null)
-                    {
-                        this.PluginStatusLabel.Text = "Plugin started.";
-                    }
-
-                    this.Logger.Trace("[ULTRA SCOUTER] End InitPlugin");
-
-                    // 共通ビューを追加する
-                    CommonViewHelper.Instance.AddCommonView(
-                       pluginScreenSpace.Parent as TabControl);
-
-                    this.isLoaded = true;
-
-                    // FFLogsの統計データベースをロードする
-                    StatisticsDatabase.Instance.Logger = Logger;
-                    await StatisticsDatabase.Instance.LoadAsync();
-
-                    // アップデートを確認する
-                    await Task.Run(() => this.Update());
+                    return;
                 }
-                catch (Exception ex)
+
+                EnvironmentHelper.GarbageLogs();
+                EnvironmentHelper.StartActivator(() =>
                 {
-                    this.Logger.Fatal(ex, "InitPlugin error.");
-                    this.ShowMessage("InitPlugin error.", ex);
+                    BaseView.Instance.SetActivationStatus(false);
+                    this.EndPlugin();
+                });
+
+                this.Logger.Trace("[ULTRA SCOUTER] Start InitPlugin");
+
+                // .NET FrameworkとOSのバージョンを確認する
+                if (!UpdateChecker.IsAvailableDotNet() ||
+                    !UpdateChecker.IsAvailableWindows())
+                {
+                    NotSupportedView.AddAndShow(pluginScreenSpace);
+                    return;
                 }
-            });
+
+                // FFXIV.Framework.config を読み込ませる
+                lock (FFXIV.Framework.Config.ConfigBlocker)
+                {
+                    _ = FFXIV.Framework.Config.Instance;
+                }
+
+                // HojoringのSplashを表示する
+                UpdateChecker.ShowSplash();
+
+                // 外部リソースをダウンロードする
+                await ResourcesDownloader.Instance.DownloadAsync();
+
+                // 設定ファイルを読み込む
+                Settings.Instance.Load();
+                Settings.Instance.MPTicker.UpdateUnlockMPSync();
+
+                // 設定ファイルをバックアップする
+                await EnvironmentHelper.BackupFilesAsync(
+                    Settings.Instance.FileName);
+
+                // 各種ファイルを読み込む
+                await Task.Run(() =>
+                {
+                    TTSDictionary.Instance.Load();
+                    Settings.Instance.MobList.LoadTargetMobList();
+                });
+
+                EnvironmentHelper.WaitInitActDone();
+
+                // FFXIVプラグインへのアクセスを開始する
+                await Task.Run(() =>
+                {
+                    XIVPluginHelper.Instance.Start(
+                        Settings.Instance.PollingRate,
+                        Settings.Instance.FFXIVLocale);
+                });
+
+                // ターゲット情報ワーカを開始する
+                MainWorker.Instance.Start();
+
+                // タブページを登録する
+                this.SetupPluginTabPages(pluginScreenSpace);
+
+                // テキストコマンドの購読を追加する
+                this.SubscribeTextCommands();
+
+                if (this.PluginStatusLabel != null)
+                {
+                    this.PluginStatusLabel.Text = "Plugin started.";
+                }
+
+                this.Logger.Trace("[ULTRA SCOUTER] End InitPlugin");
+
+                // 共通ビューを追加する
+                CommonViewHelper.Instance.AddCommonView(
+                   pluginScreenSpace.Parent as TabControl);
+
+                this.isLoaded = true;
+
+                // FFLogsの統計データベースをロードする
+                StatisticsDatabase.Instance.Logger = Logger;
+                await StatisticsDatabase.Instance.LoadAsync();
+
+                // アップデートを確認する
+                await Task.Run(() => this.Update());
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Fatal(ex, "InitPlugin error.");
+                this.ShowMessage("InitPlugin error.", ex);
+            }
         }
 
         /// <summary>

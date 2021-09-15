@@ -147,7 +147,7 @@ namespace ACT.SpecialSpellTimer
         /// <param name="pluginScreenSpace">Pluginタブ</param>
         /// <param name="pluginStatusText">Pluginステータスラベル</param>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public void InitPluginCore(
+        public async void InitPluginCore(
             TabPage pluginScreenSpace,
             Label pluginStatusText)
         {
@@ -157,154 +157,152 @@ namespace ACT.SpecialSpellTimer
             EnvironmentMigrater.Migrate();
             MasterFilePublisher.Publish();
             WPFHelper.Start();
-            WPFHelper.BeginInvoke(async () =>
+
+            AppLog.LoadConfiguration(AppLog.HojoringConfig);
+            this.AppLogger?.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+
+            try
             {
-                AppLog.LoadConfiguration(AppLog.HojoringConfig);
-                this.AppLogger?.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+                this.PluginStatusLabel = pluginStatusText;
 
-                try
+                if (!EnvironmentHelper.IsValidPluginLoadOrder())
                 {
-                    this.PluginStatusLabel = pluginStatusText;
-
-                    if (!EnvironmentHelper.IsValidPluginLoadOrder())
+                    if (pluginStatusText != null)
                     {
-                        if (pluginStatusText != null)
-                        {
-                            pluginStatusText.Text = "Plugin Initialize Error";
-                        }
-
-                        return;
+                        pluginStatusText.Text = "Plugin Initialize Error";
                     }
 
-                    EnvironmentHelper.GarbageLogs();
-                    EnvironmentHelper.StartActivator(() =>
-                    {
-                        BaseView.Instance.SetActivationStatus(false);
-                        this.DeInitPluginCore();
-                    });
-
-                    Logger.Init();
-                    Logger.Write("[SPESPE] Start InitPlugin");
-
-                    // .NET FrameworkとOSのバージョンを確認する
-                    if (!UpdateChecker.IsAvailableDotNet() ||
-                        !UpdateChecker.IsAvailableWindows())
-                    {
-                        NotSupportedView.AddAndShow(pluginScreenSpace);
-                        return;
-                    }
-
-                    // FFXIV.Framework.config を読み込ませる
-                    lock (FFXIV.Framework.Config.ConfigBlocker)
-                    {
-                        _ = FFXIV.Framework.Config.Instance;
-                    }
-
-                    // HojoringのSplashを表示する
-                    UpdateChecker.ShowSplash();
-
-                    // 外部リソースをダウンロードする
-                    await ResourcesDownloader.Instance.DownloadAsync();
-
-                    // メイン設定ファイルを読み込む
-                    Settings.Default.Load();
-                    Settings.Default.ApplyRenderMode();
-                    Settings.Default.StartAutoSave();
-
-                    // 最小化する？
-                    if (Settings.Default.IsMinimizeOnStart)
-                    {
-                        ActGlobals.oFormActMain.WindowState = FormWindowState.Minimized;
-                    }
-
-                    // 自身の場所を格納しておく
-                    var plugin = ActGlobals.oFormActMain.PluginGetSelfData(this.PluginRoot);
-                    if (plugin != null)
-                    {
-                        this.Location = plugin.pluginFile.DirectoryName;
-                    }
-
-                    // 設定ファイルを読み込む
-                    SpellPanelTable.Instance.Load();
-                    SpellTable.Instance.Load();
-                    TickerTable.Instance.Load();
-                    TagTable.Instance.Load();
-                    _ = TimelineSettings.Instance;
-
-                    // 設定ファイルをバックアップする
-                    await EnvironmentHelper.BackupFilesAsync(
-                        Settings.Default.FileName,
-                        SpellPanelTable.Instance.DefaultFile,
-                        SpellTable.Instance.DefaultFile,
-                        TickerTable.Instance.DefaultFile,
-                        TagTable.Instance.DefaultFile,
-                        TimelineSettings.FileName,
-                        FFXIV.Framework.Config.FileName);
-
-                    TTSDictionary.Instance.Load();
-
-                    // 設定Panelを追加する
-                    var baseView = new BaseView(pluginScreenSpace.Font);
-                    pluginScreenSpace.Controls.Add(new ElementHost()
-                    {
-                        Child = baseView,
-                        Dock = DockStyle.Fill,
-                        Font = pluginScreenSpace.Font,
-                    });
-
-                    EnvironmentHelper.WaitInitActDone();
-
-                    // ACTのメインウィンドウの表示まで待つ
-                    await Task.Run(async () =>
-                    {
-                        while (!ActGlobals.oFormActMain.CanFocus)
-                        {
-                            await Task.Delay(200);
-                        }
-                    });
-
-                    // 本体を開始する
-                    PluginMainWorker.Instance.Begin();
-                    TimelineController.Init();
-
-                    // 付加情報オーバーレイを表示する
-                    LPSView.ShowLPS();
-                    POSView.ShowPOS();
-
-                    this.SetSwitchVisibleButton();
-
-                    if (this.PluginStatusLabel != null)
-                    {
-                        this.PluginStatusLabel.Text = "Plugin Started";
-                    }
-
-                    Logger.Write("[SPESPE] End InitPlugin");
-
-                    // 共通ビューを追加する
-                    CommonViewHelper.Instance.AddCommonView(
-                       pluginScreenSpace.Parent as TabControl);
-
-                    this.isLoaded = true;
-
-                    // アップデートを確認する
-                    await Task.Run(() => this.Update());
+                    return;
                 }
-                catch (Exception ex)
+
+                EnvironmentHelper.GarbageLogs();
+                EnvironmentHelper.StartActivator(() =>
                 {
-                    Logger.Write("InitPlugin error.", ex);
+                    BaseView.Instance.SetActivationStatus(false);
+                    this.DeInitPluginCore();
+                });
 
-                    if (this.PluginStatusLabel != null)
-                    {
-                        this.PluginStatusLabel.Text = "Plugin Initialize Error";
-                    }
+                Logger.Init();
+                Logger.Write("[SPESPE] Start InitPlugin");
 
-                    ModernMessageBox.ShowDialog(
-                        "Plugin init error !",
-                        "ACT.SpecialSpellTimer",
-                        System.Windows.MessageBoxButton.OK,
-                        ex);
+                // .NET FrameworkとOSのバージョンを確認する
+                if (!UpdateChecker.IsAvailableDotNet() ||
+                    !UpdateChecker.IsAvailableWindows())
+                {
+                    NotSupportedView.AddAndShow(pluginScreenSpace);
+                    return;
                 }
-            });
+
+                // FFXIV.Framework.config を読み込ませる
+                lock (FFXIV.Framework.Config.ConfigBlocker)
+                {
+                    _ = FFXIV.Framework.Config.Instance;
+                }
+
+                // HojoringのSplashを表示する
+                UpdateChecker.ShowSplash();
+
+                // 外部リソースをダウンロードする
+                await ResourcesDownloader.Instance.DownloadAsync();
+
+                // メイン設定ファイルを読み込む
+                Settings.Default.Load();
+                Settings.Default.ApplyRenderMode();
+                Settings.Default.StartAutoSave();
+
+                // 最小化する？
+                if (Settings.Default.IsMinimizeOnStart)
+                {
+                    ActGlobals.oFormActMain.WindowState = FormWindowState.Minimized;
+                }
+
+                // 自身の場所を格納しておく
+                var plugin = ActGlobals.oFormActMain.PluginGetSelfData(this.PluginRoot);
+                if (plugin != null)
+                {
+                    this.Location = plugin.pluginFile.DirectoryName;
+                }
+
+                // 設定ファイルを読み込む
+                SpellPanelTable.Instance.Load();
+                SpellTable.Instance.Load();
+                TickerTable.Instance.Load();
+                TagTable.Instance.Load();
+                _ = TimelineSettings.Instance;
+
+                // 設定ファイルをバックアップする
+                await EnvironmentHelper.BackupFilesAsync(
+                    Settings.Default.FileName,
+                    SpellPanelTable.Instance.DefaultFile,
+                    SpellTable.Instance.DefaultFile,
+                    TickerTable.Instance.DefaultFile,
+                    TagTable.Instance.DefaultFile,
+                    TimelineSettings.FileName,
+                    FFXIV.Framework.Config.FileName);
+
+                TTSDictionary.Instance.Load();
+
+                // 設定Panelを追加する
+                var baseView = new BaseView(pluginScreenSpace.Font);
+                pluginScreenSpace.Controls.Add(new ElementHost()
+                {
+                    Child = baseView,
+                    Dock = DockStyle.Fill,
+                    Font = pluginScreenSpace.Font,
+                });
+
+                EnvironmentHelper.WaitInitActDone();
+
+                // ACTのメインウィンドウの表示まで待つ
+                await Task.Run(async () =>
+                {
+                    while (!ActGlobals.oFormActMain.CanFocus)
+                    {
+                        await Task.Delay(200);
+                    }
+                });
+
+                // 本体を開始する
+                PluginMainWorker.Instance.Begin();
+                TimelineController.Init();
+
+                // 付加情報オーバーレイを表示する
+                LPSView.ShowLPS();
+                POSView.ShowPOS();
+
+                this.SetSwitchVisibleButton();
+
+                if (this.PluginStatusLabel != null)
+                {
+                    this.PluginStatusLabel.Text = "Plugin Started";
+                }
+
+                Logger.Write("[SPESPE] End InitPlugin");
+
+                // 共通ビューを追加する
+                CommonViewHelper.Instance.AddCommonView(
+                   pluginScreenSpace.Parent as TabControl);
+
+                this.isLoaded = true;
+
+                // アップデートを確認する
+                await Task.Run(() => this.Update());
+            }
+            catch (Exception ex)
+            {
+                Logger.Write("InitPlugin error.", ex);
+
+                if (this.PluginStatusLabel != null)
+                {
+                    this.PluginStatusLabel.Text = "Plugin Initialize Error";
+                }
+
+                ModernMessageBox.ShowDialog(
+                    "Plugin init error !",
+                    "ACT.SpecialSpellTimer",
+                    System.Windows.MessageBoxButton.OK,
+                    ex);
+            }
         }
 
         #region SpeSpeButton
