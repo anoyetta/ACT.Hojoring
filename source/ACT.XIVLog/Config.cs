@@ -155,7 +155,6 @@ namespace ACT.XIVLog
 
         private bool withBOM = true;
 
-        [DefaultValue(false)]
         public bool WithBOM
         {
             get => this.withBOM;
