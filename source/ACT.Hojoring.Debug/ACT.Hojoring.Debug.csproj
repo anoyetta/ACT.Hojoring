@@ -129,7 +129,7 @@
   <PropertyGroup>
     <PostBuildEvent>@del /q /f $(TargetPath) &gt;nul
 
-@mkdir "$(TargetDir)bin" &gt;nul
+@mkdir "$(TargetDir)bin" &gt;nul 2&gt;&amp;1
 @move /y "$(TargetDir)*.dll" "$(TargetDir)bin"&gt;nul
 
 @move /y "$(TargetDir)bin\RazorEngine.dll" "$(TargetDir)"&gt;nul
