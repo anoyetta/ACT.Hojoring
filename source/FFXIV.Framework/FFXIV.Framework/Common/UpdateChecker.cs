@@ -392,35 +392,6 @@ namespace FFXIV.Framework.Common
                     Process.Start("https://www.microsoft.com/net/download/windows");
                 }
 
-#if !DEBUG
-                if (result)
-                {
-                    var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                    var references = Path.Combine(
-                        location,
-                        "bin");
-
-                    if (!Directory.Exists(references))
-                    {
-                        result = false;
-                        lastResult = false;
-
-                        var prompt = new StringBuilder();
-
-                        prompt.AppendLine("\"bin\" folder not found.");
-                        prompt.AppendLine("Your setup is not complete.");
-                        prompt.AppendLine(string.Empty);
-                        prompt.AppendLine("Please check deployment of plugin.");
-
-                        MessageBox.Show(
-                            prompt.ToString(),
-                            "ACT.Hojoring",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Exclamation);
-                    }
-                }
-#endif
-
                 return result;
             }
         }
