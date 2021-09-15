@@ -109,6 +109,7 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Move-Item tools .\bin\
 
     '●外部リソースを削除する'
+    Remove-Item bin\grpc_csharp_ext.*.dll
     Remove-Item bin\openJTalk\dic\sys.dic
     Remove-Item bin\openJTalk\voice\*
     Remove-Item bin\yukkuri\aq_dic\aqdic.bin
