@@ -60,21 +60,24 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     '●不要なロケールを削除する'
     $locales = @(
+        "cs",
+        "cs-CZ",
         "de",
-        "en",
         "es",
         "fr",
+        "hu",
         "it",
         "ja",
+        "ja-JP",
         "ko",
-        "ja",
-        "ru",
-        "zh-Hans",
-        "zh-Hant",
-        "hu",
+        "pl",
         "pt-BR",
         "ro",
-        "sv"
+        "ru",
+        "sv",
+        "tr",
+        "zh-Hans",
+        "zh-Hant"
     )
 
     foreach ($locale in $locales) {
@@ -84,12 +87,16 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     }
 
     '●外部参照用DLLを逃がす'
-    New-Item -ItemType Directory "bin" | Out-Null
+    if (!(Test-Path "bin")) {
+        New-Item -ItemType Directory "bin" | Out-Null
+    }
 
     '●不要なファイルを削除する'
     Remove-Item -Force *.pdb
     Remove-Item -Force *.xml
     Remove-Item -Force *.exe.config
+    Remove-Item -Force libgrpc_csharp_ext.*.so
+    Remove-Item -Force libgrpc_csharp_ext.*.dylib
 
     '●フォルダをリネームする'
     Rename-Item Yukkuri _yukkuri

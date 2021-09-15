@@ -1,7 +1,8 @@
+using ACT.Hojoring.Shared;
+using Advanced_Combat_Tracker;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
-using Advanced_Combat_Tracker;
 
 namespace ACT.TTSYukkuri
 {
@@ -13,7 +14,7 @@ namespace ACT.TTSYukkuri
         public Plugin()
         {
             CosturaUtility.Initialize();
-            AssemblyResolver.Instance.Initialize(this);
+            AssemblyResolver.Initialize(() => ActGlobals.oFormActMain?.PluginGetSelfData(this)?.pluginFile.DirectoryName);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

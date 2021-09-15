@@ -1,7 +1,8 @@
+using ACT.Hojoring.Shared;
+using Advanced_Combat_Tracker;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
-using Advanced_Combat_Tracker;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -15,7 +16,7 @@ namespace ACT.SpecialSpellTimer
         public Plugin()
         {
             CosturaUtility.Initialize();
-            AssemblyResolver.Instance.Initialize(this);
+            AssemblyResolver.Initialize(() => ActGlobals.oFormActMain?.PluginGetSelfData(this)?.pluginFile.DirectoryName);
         }
 
         /// <summary>
@@ -25,9 +26,7 @@ namespace ACT.SpecialSpellTimer
         void IActPluginV1.DeInitPlugin()
         {
             PluginCore.Instance?.DeInitPluginCore();
-
             PluginCore.Free();
-            AssemblyResolver.Free();
         }
 
         /// <summary>

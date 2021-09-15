@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{466C29AA-D69A-4D20-AA75-F559D9528634}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ACT.Hojoring.Debug</RootNamespace>
     <AssemblyName>ACT.Hojoring.Debug</AssemblyName>
@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>MSB3270</NoWarn>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -47,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dummy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -122,4 +126,21 @@
     <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>@del /q /f $(TargetPath) &gt;nul
+
+@mkdir "$(TargetDir)bin" &gt;nul
+@move /y "$(TargetDir)*.dll" "$(TargetDir)bin"&gt;nul
+
+@move /y "$(TargetDir)bin\RazorEngine.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\SLOBSharp.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.Hojoring.Common.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.Hojoring.Updater.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.SpecialSpellTimer.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.SpecialSpellTimer.RazorModel.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.TTSYukkuri.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.UltraScouter.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.XIVLog.dll" "$(TargetDir)"&gt;nul
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -78,7 +78,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyResolver.cs" />
     <Compile Include="ISpeak.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -124,6 +123,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <Import Project="..\..\ACT.Hojoring.Shared\ACT.Hojoring.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>@del /q *.so &gt;nul

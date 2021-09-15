@@ -1,7 +1,9 @@
+using ACT.Hojoring.Shared;
 using ACT.UltraScouter.Models.FFLogs;
 using FFXIV.Framework.Common;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -12,7 +14,7 @@ namespace FFLogsRankingDonwloader
     {
         static Program()
         {
-            AssemblyResolver.Instance.Initialize();
+            AssemblyResolver.Initialize(() => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

@@ -44,7 +44,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.Hojoring.Activator", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.Hojoring.Debug", "ACT.Hojoring.Debug\ACT.Hojoring.Debug.csproj", "{466C29AA-D69A-4D20-AA75-F559D9528634}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ACT.Hojoring.Shared", "ACT.Hojoring.Shared\ACT.Hojoring.Shared.shproj", "{9DD140FA-30BD-4E10-B61A-F8A5B8837643}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		ACT.Hojoring.Shared\ACT.Hojoring.Shared.projitems*{9dd140fa-30bd-4e10-b61a-f8a5b8837643}*SharedItemsImports = 13
+		ACT.Hojoring.Shared\ACT.Hojoring.Shared.projitems*{ccf72089-92fa-4afb-bde7-869ca0e394f9}*SharedItemsImports = 4
+		ACT.Hojoring.Shared\ACT.Hojoring.Shared.projitems*{cfc5e5e2-effe-4fc4-9efd-79d15b1abf45}*SharedItemsImports = 4
+		ACT.Hojoring.Shared\ACT.Hojoring.Shared.projitems*{d504e286-56ec-494f-82cd-fd71aefef606}*SharedItemsImports = 4
+		ACT.Hojoring.Shared\ACT.Hojoring.Shared.projitems*{dda65b79-1b89-4223-ba81-c748755057e6}*SharedItemsImports = 4
+		ACT.Hojoring.Shared\ACT.Hojoring.Shared.projitems*{f20b280b-35b9-4462-a71e-e187cc2a60e7}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
@@ -198,7 +208,7 @@ Global
 		{C1BC2D6E-E10D-4A7F-900B-5FD84F39BF0A} = {EC98C548-6268-4B67-BC45-88DCD9B63960}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		        SolutionGuid = {2A11DDD1-7A46-4236-969A-3942CBE6A01A}
 		SolutionGuid = {91001FDF-B748-4513-A399-35F7E9BD37F8}
+		        SolutionGuid = {2A11DDD1-7A46-4236-969A-3942CBE6A01A}
 	EndGlobalSection
 EndGlobal

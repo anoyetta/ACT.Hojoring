@@ -99,8 +99,20 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>DEL /F "$(TargetPath)" &gt; nul
-DEL /F *grpc_csharp_ext.* &gt; nul
+    <PostBuildEvent>@del /q /f $(TargetPath) &gt;nul
+
+@mkdir "$(TargetDir)bin" &gt;nul
+@move /y "$(TargetDir)*.dll" "$(TargetDir)bin"&gt;nul
+
+@move /y "$(TargetDir)bin\RazorEngine.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\SLOBSharp.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.Hojoring.Common.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.Hojoring.Updater.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.SpecialSpellTimer.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.SpecialSpellTimer.RazorModel.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.TTSYukkuri.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.UltraScouter.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\ACT.XIVLog.dll" "$(TargetDir)"&gt;nul
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>

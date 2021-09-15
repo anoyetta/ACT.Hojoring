@@ -64,7 +64,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyResolver.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -99,12 +98,12 @@
   </ItemGroup>
   <Target Name="EmbedSQLiteInteropFiles" BeforeTargets="ResolveReferences">
     <ItemGroup>
-        <!-- Condition on item metadata trick adapted from https://stackoverflow.com/questions/5103026/in-msbuild-can-i-use-the-string-replace-function-on-a-metadata-item/8904902#8904902 -->
-        <EmbeddedResource Include="@(SQLiteInteropFiles)">
-            <!-- Syntax could be simplified in the future in MSBuild, see [Metadata should support instance methods](https://github.com/microsoft/msbuild/issues/1155) -->
-            <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x86'))">costura32\%(Filename)%(Extension)</Link>
-            <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x64'))">costura64\%(Filename)%(Extension)</Link>
-        </EmbeddedResource>
+      <!-- Condition on item metadata trick adapted from https://stackoverflow.com/questions/5103026/in-msbuild-can-i-use-the-string-replace-function-on-a-metadata-item/8904902#8904902 -->
+      <EmbeddedResource Include="@(SQLiteInteropFiles)">
+        <!-- Syntax could be simplified in the future in MSBuild, see [Metadata should support instance methods](https://github.com/microsoft/msbuild/issues/1155) -->
+        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x86'))">costura32\%(Filename)%(Extension)</Link>
+        <Link Condition="$([MSBuild]::ValueOrDefault('%(Identity)', '').Contains('x64'))">costura64\%(Filename)%(Extension)</Link>
+      </EmbeddedResource>
     </ItemGroup>
   </Target>
   <ItemGroup>
@@ -116,6 +115,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <Import Project="..\..\ACT.Hojoring.Shared\ACT.Hojoring.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

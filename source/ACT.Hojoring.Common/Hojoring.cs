@@ -24,17 +24,6 @@ namespace ACT.Hojoring.Common
 
                 isSplashShown = true;
 
-#if false
-                var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                if (Directory.GetFiles(
-                    dir,
-                    "*NOSPLASH*",
-                    SearchOption.TopDirectoryOnly).Length > 0)
-                {
-                    return;
-                }
-#endif
-
                 this.splash = new SplashWindow();
                 this.splash.Loaded += (_, __) => this.splash.StartFadeOut();
                 this.splash.Show();

@@ -11,7 +11,7 @@ namespace FFXIV.Framework.resources
     public class ResourcesDownloader
     {
         private readonly bool IsDebugSkip = EnvironmentHelper.IsDebug ?
-            false :
+            true :
             false;
 
         #region Lazy Singleton

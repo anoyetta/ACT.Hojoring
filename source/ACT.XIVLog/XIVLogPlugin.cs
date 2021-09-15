@@ -1,3 +1,9 @@
+using ACT.Hojoring.Shared;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.XIVHelper;
+using Sharlayan.Core.Enums;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,11 +18,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.XIVHelper;
-using Sharlayan.Core.Enums;
 
 namespace ACT.XIVLog
 {
@@ -35,7 +36,7 @@ namespace ACT.XIVLog
         {
             instance = this;
             CosturaUtility.Initialize();
-            AssemblyResolver.Instance.Initialize(this);
+            AssemblyResolver.Initialize(() => ActGlobals.oFormActMain?.PluginGetSelfData(this)?.pluginFile.DirectoryName);
         }
 
         #endregion Singleton

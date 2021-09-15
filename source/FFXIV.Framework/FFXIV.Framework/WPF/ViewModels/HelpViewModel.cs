@@ -1,14 +1,3 @@
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Threading;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
@@ -20,6 +9,17 @@ using NLog;
 using NLog.Targets;
 using Prism.Commands;
 using Prism.Mvvm;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace FFXIV.Framework.WPF.ViewModels
 {
@@ -92,11 +92,10 @@ namespace FFXIV.Framework.WPF.ViewModels
                     }
                 }
 
-                var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var hojorin = Path.Combine(location, "ACT.Hojoring.Common.dll");
-                var spespe = Path.Combine(location, "ACT.SpecialSpellTimer.dll");
-                var ultra = Path.Combine(location, "ACT.UltraScouter.dll");
-                var yukkuri = Path.Combine(location, "ACT.TTSYukkuri.dll");
+                var hojorin = DirectoryHelper.FindFile("ACT.Hojoring.Common.dll");
+                var spespe = DirectoryHelper.FindFile("ACT.SpecialSpellTimer.dll");
+                var ultra = DirectoryHelper.FindFile("ACT.UltraScouter.dll");
+                var yukkuri = DirectoryHelper.FindFile("ACT.TTSYukkuri.dll");
 
                 if (File.Exists(hojorin))
                 {

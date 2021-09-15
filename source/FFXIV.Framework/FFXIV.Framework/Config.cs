@@ -39,8 +39,6 @@ namespace FFXIV.Framework
 
         #region Load & Save
 
-        private static string OldFileName => Assembly.GetExecutingAssembly().Location.Replace(".dll", ".config");
-
         public static string FileName => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "anoyetta",
@@ -51,12 +49,6 @@ namespace FFXIV.Framework
         {
             lock (ConfigBlocker)
             {
-                if (File.Exists(OldFileName) &&
-                    !File.Exists(FileName))
-                {
-                    File.Move(OldFileName, FileName);
-                }
-
                 if (!File.Exists(FileName))
                 {
                     return null;

@@ -1,3 +1,9 @@
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.WPF.Views;
+using Microsoft.Win32;
+using NLog;
+using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,12 +17,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.WPF.Views;
-using Microsoft.Win32;
-using NLog;
-using Octokit;
 
 namespace FFXIV.Framework.Common
 {
@@ -60,11 +60,19 @@ namespace FFXIV.Framework.Common
                     if (t == null)
                     {
                         var cd = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                        var hojoring = Path.Combine(cd, "ACT.Hojoring.Common.dll");
-                        if (File.Exists(hojoring))
+                        var hojorings = new[]
                         {
-                            var asm = Assembly.LoadFrom(hojoring);
-                            t = asm?.GetType(HojoringTypeName);
+                            Path.Combine(cd, "ACT.Hojoring.Common.dll"),
+                            Path.Combine(cd, "..", "ACT.Hojoring.Common.dll")
+                        };
+
+                        foreach (var hojoring in hojorings)
+                        {
+                            if (File.Exists(hojoring))
+                            {
+                                var asm = Assembly.LoadFrom(hojoring);
+                                t = asm?.GetType(HojoringTypeName);
+                            }
                         }
                     }
 
