@@ -52,6 +52,8 @@ namespace ACT.XIVLog
             pluginScreenSpace.Text = "XIVLog";
             this.pluginLabel = pluginStatusText;
 
+            DirectoryHelper.GetPluginRootDirectoryDelegate = () => ActGlobals.oFormActMain?.PluginGetSelfData(this)?.pluginFile.DirectoryName;
+
             // 設定ファイルをロードする
             _ = Config.Instance;
 

@@ -1,5 +1,6 @@
 using ACT.Hojoring.Shared;
 using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
@@ -30,6 +31,8 @@ namespace ACT.TTSYukkuri
             Label pluginStatusText)
         {
             Assembly.Load("FFXIV.Framework");
+
+            DirectoryHelper.GetPluginRootDirectoryDelegate = () => ActGlobals.oFormActMain?.PluginGetSelfData(this)?.pluginFile.DirectoryName;
 
             PluginCore.Instance.InitPlugin(
                 this,
