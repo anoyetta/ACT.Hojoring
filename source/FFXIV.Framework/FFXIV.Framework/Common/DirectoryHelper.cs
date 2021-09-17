@@ -11,10 +11,31 @@ namespace FFXIV.Framework.Common
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static string FindSubDirectory(
-            string subDirectoryName)
+            string path)
             => GetPluginRootDirectoryDelegate != null ?
-            Path.Combine(GetPluginRootDirectoryDelegate.Invoke(), subDirectoryName ?? string.Empty) :
-            subDirectoryName;
+            Path.Combine(GetPluginRootDirectoryDelegate.Invoke(), path) :
+            path;
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static string FindSubDirectory(
+            string path1, string path2)
+            => GetPluginRootDirectoryDelegate != null ?
+            Path.Combine(GetPluginRootDirectoryDelegate.Invoke(), path1, path2) :
+            Path.Combine(path1, path2);
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static string FindSubDirectory(
+            string path1, string path2, string path3)
+            => GetPluginRootDirectoryDelegate != null ?
+            Path.Combine(GetPluginRootDirectoryDelegate.Invoke(), path1, path2, path3) :
+            Path.Combine(path1, path2, path3);
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static string FindSubDirectory(
+            string path1, string path2, string path3, string path4)
+            => GetPluginRootDirectoryDelegate != null ?
+            Path.Combine(GetPluginRootDirectoryDelegate.Invoke(), path1, path2, path3, path4) :
+            Path.Combine(path1, path2, path3, path4);
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static string FindFile(
