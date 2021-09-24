@@ -1,7 +1,7 @@
-using System;
-using System.Runtime.InteropServices;
 using FFXIV.Framework.Common;
 using NLog;
+using System;
+using System.Runtime.InteropServices;
 
 namespace ACT.TTSYukkuri
 {
@@ -61,28 +61,38 @@ namespace ACT.TTSYukkuri
         {
             lock (lockObject)
             {
-                if (this.IFELang == null)
+                try
                 {
-                    this.IFELang = Activator.CreateInstance(Type.GetTypeFromProgID("MSIME.Japan")) as IFELanguage;
-
                     if (this.IFELang == null)
                     {
-                        this.Logger.Error("IFELANG IME initialize faild.");
-                    }
-                    else
-                    {
-                        var hr = this.IFELang.Open();
-                        if (hr != 0)
-                        {
-                            this.Logger.Error("IFELANG IME connection faild.");
-                            this.IFELang = null;
-                        }
+                        this.IFELang = Activator.CreateInstance(Type.GetTypeFromProgID("MSIME.Japan")) as IFELanguage;
 
-                        this.Logger.Trace("IFELANG IME Connected.");
+                        if (this.IFELang == null)
+                        {
+                            this.Logger.Warn("IFELANG IME initialize failed. Disabled IME reverse translation.");
+                        }
+                        else
+                        {
+                            var hr = this.IFELang.Open();
+                            if (hr != 0)
+                            {
+                                this.Logger.Warn("IFELANG IME connection failed. Disabled IME reverse translation.");
+                                this.IFELang = null;
+                            }
+
+                            this.Logger.Trace("IFELANG IME Connected.");
+                        }
                     }
+                }
+                catch (Exception)
+                {
+                    this.Logger.Warn("IFELANG IME initialize failed due to an unexpected exception. Disabled IME reverse translation.");
+                    this.IFELang = null;
                 }
             }
         }
+
+        private volatile bool hasWarned;
 
         /// <summary>
         /// 読みがなを取得する
@@ -110,7 +120,11 @@ namespace ACT.TTSYukkuri
             }
             else
             {
-                this.Logger.Error($"IFELANG IME not ready. text={text}");
+                if (!this.hasWarned)
+                {
+                    this.hasWarned = true;
+                    this.Logger.Warn($"IFELANG IME has been disabled. text={text}");
+                }
             }
 
             return yomigana;
