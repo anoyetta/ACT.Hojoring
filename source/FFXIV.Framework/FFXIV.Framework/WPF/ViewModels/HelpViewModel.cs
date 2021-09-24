@@ -60,6 +60,7 @@ namespace FFXIV.Framework.WPF.ViewModels
             RoutedEventArgs e)
         {
             this.timer.Start();
+            this.UpdateVersionInfo();
         }
 
         private void View_Unloaded(
@@ -71,70 +72,75 @@ namespace FFXIV.Framework.WPF.ViewModels
 
         #region VersionInfo
 
+        private string versionInfo;
+
         public string VersionInfo
         {
-            get
+            get => this.versionInfo;
+            set => this.SetProperty(ref this.versionInfo, value);
+        }
+
+        private void UpdateVersionInfo()
+        {
+            var text = new StringBuilder();
+
+            var ffxivPlugin = ActGlobals.oFormActMain?.ActPlugins?
+                .FirstOrDefault(x =>
+                    x.pluginFile.Name.ContainsIgnoreCase("FFXIV_ACT_Plugin") &&
+                    x.lblPluginStatus.Text.ContainsIgnoreCase("Started"))?
+                .pluginFile.FullName;
+
+            if (File.Exists(ffxivPlugin))
             {
-                var text = new StringBuilder();
-
-                var ffxivPlugin = ActGlobals.oFormActMain?.ActPlugins?
-                    .FirstOrDefault(x =>
-                        x.pluginFile.Name.ContainsIgnoreCase("FFXIV_ACT_Plugin") &&
-                        x.lblPluginStatus.Text.ContainsIgnoreCase("Started"))?
-                    .pluginFile.FullName;
-
-                if (File.Exists(ffxivPlugin))
+                var vi = FileVersionInfo.GetVersionInfo(ffxivPlugin);
+                if (vi != null)
                 {
-                    var vi = FileVersionInfo.GetVersionInfo(ffxivPlugin);
-                    if (vi != null)
-                    {
-                        text.AppendLine($"FFXIV_ACT_Plugin v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FileBuildPart}.{vi.FilePrivatePart}");
-                    }
+                    text.AppendLine($"FFXIV_ACT_Plugin v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FileBuildPart}.{vi.FilePrivatePart}");
                 }
-
-                var hojorin = DirectoryHelper.FindFile("ACT.Hojoring.Common.dll");
-                var spespe = DirectoryHelper.FindFile("ACT.SpecialSpellTimer.dll");
-                var ultra = DirectoryHelper.FindFile("ACT.UltraScouter.dll");
-                var yukkuri = DirectoryHelper.FindFile("ACT.TTSYukkuri.dll");
-
-                if (File.Exists(hojorin))
-                {
-                    var vi = FileVersionInfo.GetVersionInfo(hojorin);
-                    if (vi != null)
-                    {
-                        text.AppendLine($"ACT.Hojoring v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FilePrivatePart}");
-                    }
-                }
-
-                if (File.Exists(spespe))
-                {
-                    var vi = FileVersionInfo.GetVersionInfo(spespe);
-                    if (vi != null)
-                    {
-                        text.AppendLine($"ACT.SpecialSpellTimer v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FilePrivatePart}");
-                    }
-                }
-
-                if (File.Exists(ultra))
-                {
-                    var vi = FileVersionInfo.GetVersionInfo(ultra);
-                    if (vi != null)
-                    {
-                        text.AppendLine($"ACT.UltraScouter v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FilePrivatePart}");
-                    }
-                }
-
-                if (File.Exists(yukkuri))
-                {
-                    var vi = FileVersionInfo.GetVersionInfo(yukkuri);
-                    if (vi != null)
-                    {
-                        text.AppendLine($"ACT.TTSYukkuri v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FilePrivatePart}");
-                    }
-                }
-
-                return text.ToString().TrimEnd('\n', '\r');
             }
+
+            var hojorin = DirectoryHelper.FindFile("ACT.Hojoring.Common.dll");
+            var spespe = DirectoryHelper.FindFile("ACT.SpecialSpellTimer.dll");
+            var ultra = DirectoryHelper.FindFile("ACT.UltraScouter.dll");
+            var yukkuri = DirectoryHelper.FindFile("ACT.TTSYukkuri.dll");
+
+            if (File.Exists(hojorin))
+            {
+                var vi = FileVersionInfo.GetVersionInfo(hojorin);
+                if (vi != null)
+                {
+                    text.AppendLine($"ACT.Hojoring v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FilePrivatePart}");
+                }
+            }
+
+            if (File.Exists(spespe))
+            {
+                var vi = FileVersionInfo.GetVersionInfo(spespe);
+                if (vi != null)
+                {
+                    text.AppendLine($"ACT.SpecialSpellTimer v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FilePrivatePart}");
+                }
+            }
+
+            if (File.Exists(ultra))
+            {
+                var vi = FileVersionInfo.GetVersionInfo(ultra);
+                if (vi != null)
+                {
+                    text.AppendLine($"ACT.UltraScouter v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FilePrivatePart}");
+                }
+            }
+
+            if (File.Exists(yukkuri))
+            {
+                var vi = FileVersionInfo.GetVersionInfo(yukkuri);
+                if (vi != null)
+                {
+                    text.AppendLine($"ACT.TTSYukkuri v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FilePrivatePart}");
+                }
+            }
+
+            this.VersionInfo = text.ToString().TrimEnd('\n', '\r');
         }
 
         #endregion VersionInfo

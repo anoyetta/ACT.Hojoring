@@ -45,7 +45,7 @@ namespace FFXIV.Framework.Common
             var dirs = new[]
             {
                 GetPluginRootDirectoryDelegate?.Invoke(),
-                FindSubDirectory(subDirectoryName),
+                FindSubDirectory(subDirectoryName ?? string.Empty),
             };
 
             foreach (var dir in dirs)
