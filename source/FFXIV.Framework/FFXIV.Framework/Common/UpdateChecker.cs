@@ -313,7 +313,16 @@ namespace FFXIV.Framework.Common
         public static async void StartUpdateScript(
             bool usePreRelease = false)
         {
-            var cd = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var cd = DirectoryHelper.GetPluginRootDirectoryDelegate?.Invoke();
+            if (string.IsNullOrEmpty(cd))
+            {
+                cd = Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    "..");
+
+                cd = Path.GetFullPath(cd);
+            }
+
             var script = Path.Combine(cd, "update_hojoring.ps1");
 
             using (var web = new WebClient())
@@ -331,9 +340,9 @@ namespace FFXIV.Framework.Common
 
             if (File.Exists(script))
             {
-                var args = $"-NoLog  -NoProfile -ExecutionPolicy Unrestricted -File \"{script}\" {usePreRelease}";
+                var args = $"-NoLogo -NoProfile -ExecutionPolicy Unrestricted -File \"{script}\" {usePreRelease}";
 
-                Process.Start("powershell.exe", args);
+                Process.Start(EnvironmentHelper.Pwsh, args);
             }
         }
 

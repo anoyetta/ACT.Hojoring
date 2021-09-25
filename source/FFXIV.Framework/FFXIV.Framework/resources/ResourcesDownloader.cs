@@ -192,7 +192,7 @@ namespace FFXIV.Framework.resources
                 {
                     while (true)
                     {
-                        lock (Random)
+                        lock (Locker)
                         {
                             if (!this.isDownloading)
                             {
