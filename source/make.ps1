@@ -11,9 +11,9 @@ function EndMake() {
     exit
 }
 
-$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe"
-if (Test-Path "C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin\MSBuild.exe") {
-    $msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin\MSBuild.exe"
+$msbuild = "C:\Program Files\Microsoft Visual Studio\2022\Professional\Msbuild\Current\Bin\MSBuild.exe"
+if (!(Test-Path $msbuild)) {
+    $msbuild = "C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Current\Bin\MSBuild.exe"
 }
 
 $startdir = Get-Location
@@ -109,7 +109,6 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Move-Item tools .\bin\
 
     '●外部リソースを削除する'
-    Remove-Item bin\grpc_csharp_ext.*.dll
     Remove-Item bin\openJTalk\dic\sys.dic
     Remove-Item bin\openJTalk\voice\*
     Remove-Item bin\yukkuri\aq_dic\aqdic.bin

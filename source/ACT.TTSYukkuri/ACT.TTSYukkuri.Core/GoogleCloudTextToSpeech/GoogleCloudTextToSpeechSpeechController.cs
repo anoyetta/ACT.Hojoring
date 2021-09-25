@@ -108,6 +108,7 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
 
         public static void SetupLibrary()
         {
+            /*
             if (string.IsNullOrEmpty(PluginCore.Instance?.PluginDirectory))
             {
                 return;
@@ -135,6 +136,7 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
                     File.Copy(lib.src, lib.dst, true);
                 }
             }
+            */
         }
     }
 }
