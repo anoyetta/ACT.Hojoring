@@ -26,16 +26,16 @@ namespace FFXIV.Framework.resources
 
         #endregion Lazy Singleton
 
-        private static readonly Random Random = new Random();
+        private static readonly object Locker = new object();
 
         private static readonly Uri RemoteResourcesListUri =
-            new Uri("https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources.txt" + $"?random={Random.Next()}");
+            new Uri("https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources.txt");
 
         private bool isDownloading;
 
         public async Task<bool> DownloadAsync()
         {
-            lock (Random)
+            lock (Locker)
             {
                 if (this.isDownloading)
                 {
@@ -122,29 +122,41 @@ namespace FFXIV.Framework.resources
 
                             UpdateChecker.SetMessageToSplash($"Downloading... {Path.GetFileName(local)}");
 
-                            temp = GetTempFileName();
-                            await wc.DownloadFileTaskAsync(
-                                new Uri($"{remote}?random={Random.Next()}"),
-                                temp);
-
-                            var md5New = FileHelper.GetMD5(temp);
-
-                            if (IsVerifyHash(md5New, md5Remote))
+                            try
                             {
-                                File.Copy(temp, local, true);
-                                AppLog.DefaultLogger.Info($"Downloaded... {local}, verify is completed.");
-                            }
-                            else
-                            {
-                                if (EnvironmentHelper.IsDebug)
+                                temp = GetTempFileName();
+                                await wc.DownloadFileTaskAsync(
+                                    new Uri($"{remote}"),
+                                    temp);
+
+                                var md5New = FileHelper.GetMD5(temp);
+
+                                if (IsVerifyHash(md5New, md5Remote))
                                 {
                                     File.Copy(temp, local, true);
+                                    AppLog.DefaultLogger.Info($"Downloaded... {local}, verify is completed.");
                                 }
+                                else
+                                {
+                                    if (EnvironmentHelper.IsDebug)
+                                    {
+                                        File.Copy(temp, local, true);
+                                    }
 
-                                AppLog.DefaultLogger.Info($"Downloaded... {local}. Error, it was an inccorrect hash.");
+                                    AppLog.DefaultLogger.Info($"Downloaded... {local}. Error, it was an inccorrect hash.");
+                                }
                             }
-
-                            File.Delete(temp);
+                            catch (Exception)
+                            {
+                                AppLog.DefaultLogger.Info($"Download has failed, Skip a download this file.");
+                            }
+                            finally
+                            {
+                                if (File.Exists(temp))
+                                {
+                                    File.Delete(temp);
+                                }
+                            }
 
                             isDownloaded = true;
                         }
@@ -161,7 +173,7 @@ namespace FFXIV.Framework.resources
             }
             finally
             {
-                lock (Random)
+                lock (Locker)
                 {
                     this.isDownloading = false;
                 }
