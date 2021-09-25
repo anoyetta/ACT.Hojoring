@@ -314,3 +314,5 @@ Advanced Combat Tracker.exe
 source_dotnet5/
 
 resources/desktop.ini
+
+*.lnk
