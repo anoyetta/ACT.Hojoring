@@ -18,8 +18,16 @@ namespace ACT.TTSYukkuri.Config
                 return null;
             }
 
-            GoogleCloudTextToSpeechSpeechController.SetupLibrary();
-            return TextToSpeechClient.Create();
+            try
+            {
+                GoogleCloudTextToSpeechSpeechController.SetupLibrary();
+                return TextToSpeechClient.Create();
+            }
+            catch
+            {
+                // Log needed?
+                return null;
+            }
         });
 
         public static TextToSpeechClient TTSClient => LazyClient.Value;
