@@ -61,14 +61,8 @@ namespace FFXIV.Framework.XIVHelper
             dst.BNpcID = src.BNpcID;
             dst.TargetID = src.TargetID;
             dst.EffectiveDistance = src.EffectiveDistance;
-            dst.PartyType = src.PartyType;
             dst.Pointer = src.Pointer;
             dst.Order = src.Order;
-
-            dst.IncomingAbilities = src.IncomingAbilities;
-            dst.OutgoingAbility = src.OutgoingAbility;
-            dst.Effects = src.Effects;
-            dst.FlyingText = src.FlyingText;
 
             dst.SetName(src.Name);
             SetSkillName(dst);
@@ -114,14 +108,8 @@ namespace FFXIV.Framework.XIVHelper
             dst.BNpcID = src.BNpcID;
             dst.TargetID = src.TargetID;
             dst.EffectiveDistance = src.EffectiveDistance;
-            dst.PartyType = src.PartyType;
             dst.Pointer = src.Pointer;
             dst.Order = src.Order;
-
-            dst.IncomingAbilities = src.IncomingAbilities;
-            dst.OutgoingAbility = src.OutgoingAbility;
-            dst.Effects = src.Effects;
-            dst.FlyingText = src.FlyingText;
 
             dst.SetName(src.Name);
             dst.CastSkillName = src.CastSkillName;
@@ -657,12 +645,6 @@ namespace FFXIV.Framework.XIVHelper
             set;
         }
 
-        public PartyTypeEnum PartyType
-        {
-            get;
-            set;
-        }
-
         public IntPtr Pointer
         {
             get;
@@ -670,30 +652,6 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         public int Order
-        {
-            get;
-            set;
-        }
-
-        public IncomingAbility[] IncomingAbilities
-        {
-            get;
-            set;
-        }
-
-        public OutgoingAbility OutgoingAbility
-        {
-            get;
-            set;
-        }
-
-        public Effect[] Effects
-        {
-            get;
-            set;
-        }
-
-        public FlyingText FlyingText
         {
             get;
             set;
