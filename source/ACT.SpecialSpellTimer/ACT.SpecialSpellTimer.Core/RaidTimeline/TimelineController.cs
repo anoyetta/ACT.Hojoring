@@ -1040,12 +1040,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     continue;
                 }
 
-                // パーティメンバに対するHPログならばスキップする
-                if (LogBuffer.IsHPLogByPartyMember(logLine))
-                {
-                    continue;
-                }
-
                 // ツールチップシンボル, ワールド名を除去する
                 logLine = LogBuffer.RemoveTooltipSynbols(logLine);
                 logLine = LogBuffer.RemoveWorldName(logLine);

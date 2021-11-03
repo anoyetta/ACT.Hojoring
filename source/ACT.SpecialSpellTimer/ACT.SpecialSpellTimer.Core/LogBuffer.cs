@@ -282,33 +282,16 @@ namespace ACT.SpecialSpellTimer
         /// </summary>
         public static readonly string[] IgnoreDetailLogKeywords = new[]
         {
-            LogMessageType.CombatantHP.ToKeyword(),
-            LogMessageType.NetworkAbility.ToKeyword(),
-            LogMessageType.NetworkAOEAbility.ToKeyword(),
-            LogMessageType.NetworkCancelAbility.ToKeyword(),
-            LogMessageType.NetworkDoT.ToKeyword(),
-            LogMessageType.NetworkEffectResult.ToKeyword(),
-            LogMessageType.NetworkStatusList.ToKeyword(),
-            LogMessageType.NetworkUpdateHp.ToKeyword(),
+            LogMessageType.ActionEffect.ToKeyword(),
+            LogMessageType.AOEActionEffect.ToKeyword(),
+            LogMessageType.CancelAction.ToKeyword(),
+            LogMessageType.DoTHoT.ToKeyword(),
+            LogMessageType.EffectResult.ToKeyword(),
+            LogMessageType.StatusList.ToKeyword(),
+            LogMessageType.UpdateHp.ToKeyword(),
         };
 
         public bool IsEmpty => this.XIVLogQueue.IsEmpty;
-
-        /// <summary>
-        /// パーティメンバについてのHPログか？
-        /// </summary>
-        /// <param name="log"></param>
-        /// <returns></returns>
-        public static bool IsHPLogByPartyMember(
-            string log)
-        {
-            if (!log.Contains(LogMessageType.CombatantHP.ToKeyword()))
-            {
-                return false;
-            }
-
-            return TableCompiler.Instance?.SortedPartyList?.Any(x => log.Contains(x.Name)) ?? false;
-        }
 
         /// <summary>
         /// ログ行を返す
