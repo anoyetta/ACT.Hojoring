@@ -39,8 +39,6 @@ namespace FFXIV.Framework.XIVHelper
             dst.CurrentHP = src.CurrentHP;
             dst.MaxHP = src.MaxHP;
             dst.CurrentMP = src.CurrentMP;
-            dst.CurrentTP = src.CurrentTP;
-            dst.MaxTP = src.MaxTP;
             dst.CurrentCP = src.CurrentCP;
             dst.MaxCP = src.MaxCP;
             dst.CurrentGP = src.CurrentGP;
@@ -61,7 +59,7 @@ namespace FFXIV.Framework.XIVHelper
             dst.BNpcID = src.BNpcID;
             dst.TargetID = src.TargetID;
             dst.EffectiveDistance = src.EffectiveDistance;
-            dst.Pointer = src.Pointer;
+            dst.Address = src.Address;
             dst.Order = src.Order;
 
             dst.SetName(src.Name);
@@ -108,7 +106,7 @@ namespace FFXIV.Framework.XIVHelper
             dst.BNpcID = src.BNpcID;
             dst.TargetID = src.TargetID;
             dst.EffectiveDistance = src.EffectiveDistance;
-            dst.Pointer = src.Pointer;
+            dst.Address = src.Address;
             dst.Order = src.Order;
 
             dst.SetName(src.Name);
@@ -645,7 +643,7 @@ namespace FFXIV.Framework.XIVHelper
             set;
         }
 
-        public IntPtr Pointer
+        public IntPtr Address
         {
             get;
             set;
