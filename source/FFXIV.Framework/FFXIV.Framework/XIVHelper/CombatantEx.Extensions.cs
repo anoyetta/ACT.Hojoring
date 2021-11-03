@@ -21,6 +21,8 @@ namespace FFXIV.Framework.XIVHelper
                 return false;
             }
 
+            return false;
+#if false
             if (this.Effects == null)
             {
                 return false;
@@ -28,6 +30,7 @@ namespace FFXIV.Framework.XIVHelper
 
             return this.Effects.Any(x =>
                 TankStanceEffectIDs.Contains(x?.BuffID ?? 0));
+#endif
         }
     }
 }
