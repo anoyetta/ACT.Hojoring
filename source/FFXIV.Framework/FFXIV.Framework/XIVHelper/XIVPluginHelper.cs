@@ -521,7 +521,7 @@ namespace FFXIV.Framework.XIVHelper
         /// </summary>
         public static readonly string[] IgnoreLogKeywords = new[]
         {
-            LogMessageType.NetworkDoT.ToKeyword(),
+            LogMessageType.DoTHoT.ToKeyword(),
         };
 
         /*
