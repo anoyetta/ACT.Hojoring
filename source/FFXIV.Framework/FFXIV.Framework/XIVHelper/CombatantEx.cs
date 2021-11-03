@@ -59,6 +59,7 @@ namespace FFXIV.Framework.XIVHelper
             dst.BNpcID = src.BNpcID;
             dst.TargetID = src.TargetID;
             dst.EffectiveDistance = src.EffectiveDistance;
+            dst.PartyType = src.PartyType;
             dst.Address = src.Address;
             dst.Order = src.Order;
 
@@ -106,6 +107,7 @@ namespace FFXIV.Framework.XIVHelper
             dst.BNpcID = src.BNpcID;
             dst.TargetID = src.TargetID;
             dst.EffectiveDistance = src.EffectiveDistance;
+            dst.PartyType = src.PartyType;
             dst.Address = src.Address;
             dst.Order = src.Order;
 
@@ -638,6 +640,12 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         public byte EffectiveDistance
+        {
+            get;
+            set;
+        }
+
+        public PartyType PartyType
         {
             get;
             set;

@@ -199,7 +199,7 @@ namespace FFXIV.Framework.XIVHelper
                     if (isDummy)
                     {
                         ex.IsDummy = true;
-                        ex.PartyType = PartyTypeEnum.Party;
+                        ex.PartyType = PartyType.Party;
                     }
 
                     if (isFirstCombatant)
@@ -214,7 +214,7 @@ namespace FFXIV.Framework.XIVHelper
                         dic[key] = ex;
                     }
 
-                    if (ex.PartyType == PartyTypeEnum.Party)
+                    if (ex.PartyType == PartyType.Party)
                     {
                         partyIDList.Add(ex.ID);
                     }
