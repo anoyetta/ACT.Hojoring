@@ -49,7 +49,7 @@ namespace FFXIV.Framework.XIVHelper
                 "|",
                 new[]
                 {
-                    LogMessageType.LogLine.ToCode(),
+                    LogMessageType.ChatLog.ToCode(),
                     timestamp.ToString("O"),
                     "0000",
                     "Hojoring",

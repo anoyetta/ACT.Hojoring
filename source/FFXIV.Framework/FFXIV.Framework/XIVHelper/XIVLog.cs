@@ -13,7 +13,7 @@ namespace FFXIV.Framework.XIVHelper
             => new XIVLog()
             {
                 Seq = simulationSequence++,
-                MessageType = LogMessageType.LogLine,
+                MessageType = LogMessageType.ChatLog,
                 Timestamp = timestamp,
                 LogLine = logline,
             };
@@ -44,7 +44,7 @@ namespace FFXIV.Framework.XIVHelper
 
         public uint Seq { get; private set; } = 0;
 
-        public LogMessageType MessageType { get; set; } = LogMessageType.LogLine;
+        public LogMessageType MessageType { get; set; } = LogMessageType.ChatLog;
 
         public DateTime Timestamp { get; private set; } = DateTime.Now;
 

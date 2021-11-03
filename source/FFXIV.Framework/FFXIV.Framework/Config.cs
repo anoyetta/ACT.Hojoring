@@ -211,18 +211,16 @@ namespace FFXIV.Framework
                     FormatTextDelegate = (t, _) => FormatLogMessageType(t),
                     Value = type switch
                     {
-                        LogMessageType.CombatantHP => true,
-                        LogMessageType.NetworkDoT => true,
-                        LogMessageType.NetworkCancelAbility => true,
-                        LogMessageType.NetworkEffectResult => true,
-                        LogMessageType.NetworkUpdateHp => true,
+                        LogMessageType.DoTHoT => true,
+                        LogMessageType.CancelAction => true,
+                        LogMessageType.EffectResult => true,
+                        LogMessageType.UpdateHp => true,
                         LogMessageType.Settings => true,
                         LogMessageType.Process => true,
                         LogMessageType.Debug => true,
                         LogMessageType.PacketDump => true,
                         LogMessageType.Version => true,
                         LogMessageType.Error => true,
-                        LogMessageType.Timer => true,
                         _ => false,
                     }
                 });
