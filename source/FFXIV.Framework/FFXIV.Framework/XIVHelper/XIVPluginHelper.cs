@@ -193,9 +193,6 @@ namespace FFXIV.Framework.XIVHelper
 
                 this.MergeSkillList();
 
-                this.ComplementSkillList();
-                this.ComplementBuffList();
-
                 this.TranslateZoneList();
             },
             5000,
@@ -1673,118 +1670,6 @@ namespace FFXIV.Framework.XIVHelper
                         AppLogger.Trace("xivapi action list merged.");
                     }
                 }
-            }
-        }
-
-        private void ComplementSkillList()
-        {
-            if (this.isComplementedSkillList)
-            {
-                return;
-            }
-
-            if (this.plugin == null ||
-                this.IOCContainer == null)
-            {
-                return;
-            }
-
-            if (!XIVApi.Instance.ActionList.Any())
-            {
-                return;
-            }
-
-            var resourcesData = this.IOCContainer?.Resolve<IResourceData>();
-            var dataContainer = resourcesData?.GetType()
-                .GetField(
-                    "_skillList",
-                    BindingFlags.NonPublic | BindingFlags.Instance)
-                .GetValue(resourcesData);
-            var innerList = dataContainer?.GetType()
-                .GetField(
-                    "_SkillList",
-                    BindingFlags.NonPublic | BindingFlags.Instance)
-                .GetValue(dataContainer)
-                as SortedDictionary<uint, string>;
-
-            if (innerList == null)
-            {
-                this.isComplementedSkillList = true;
-                AppLogger.Error("skill list not found in XIVPlugin.");
-                return;
-            }
-
-            var added = false;
-            foreach (var entry in XIVApi.Instance.ActionList)
-            {
-                if (!innerList.ContainsKey(entry.Key))
-                {
-                    innerList[entry.Key] = entry.Value.Name;
-                    added = true;
-                }
-            }
-
-            this.isComplementedSkillList = true;
-
-            if (added)
-            {
-                AppLogger.Trace("skill list complemented to XIVPlugin.");
-            }
-        }
-
-        private void ComplementBuffList()
-        {
-            if (this.isComplementedBuffList)
-            {
-                return;
-            }
-
-            if (this.plugin == null ||
-                this.IOCContainer == null)
-            {
-                return;
-            }
-
-            if (!XIVApi.Instance.BuffList.Any())
-            {
-                return;
-            }
-
-            var resourcesData = this.IOCContainer?.Resolve<IResourceData>();
-            var dataContainer = resourcesData?.GetType()
-                .GetField(
-                    "_buffList",
-                    BindingFlags.NonPublic | BindingFlags.Instance)
-                .GetValue(resourcesData);
-            var innerList = dataContainer?.GetType()
-                .GetField(
-                    "_BuffList",
-                    BindingFlags.NonPublic | BindingFlags.Instance)
-                .GetValue(dataContainer)
-                as SortedDictionary<uint, string>;
-
-            if (innerList == null)
-            {
-                this.isComplementedBuffList = true;
-                AppLogger.Error("buff list not found in XIVPlugin.");
-                return;
-            }
-
-            var added = false;
-            foreach (var entry in XIVApi.Instance.BuffList)
-            {
-                if (!innerList.ContainsKey(entry.Key))
-                {
-                    innerList[entry.Key] = entry.Value.Name;
-                    added = true;
-                }
-            }
-
-            this.isComplementedBuffList = true;
-
-            if (added)
-            {
-                AppLogger.Trace("buff list complemented to XIVPlugin.");
             }
         }
 
