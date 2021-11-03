@@ -26,6 +26,14 @@ using System.Threading.Tasks;
 
 namespace FFXIV.Framework.XIVHelper
 {
+    public enum OverlayType
+    {
+        Target = 1,
+        FocusTarget,
+        HoverTarget,
+        TargetOfTarget
+    }
+
     public class XIVPluginHelper
     {
 #if !DEBUG
@@ -1167,18 +1175,46 @@ namespace FFXIV.Framework.XIVHelper
         public CombatantEx GetTargetInfo(
             OverlayType type)
         {
+            var targetEx = default(CombatantEx);
+
             if (!this.IsAvailable)
             {
-                return null;
+                return targetEx;
             }
 
-            var target = this.DataRepository?.GetCombatantByOverlayType(type);
-            if (target == null)
+            var player = CombatantsManager.Instance.Player;
+            if (player == null)
             {
-                return null;
+                return targetEx;
             }
 
-            var targetEx = CombatantsManager.Instance.GetCombatantMain(target.ID);
+            switch (type)
+            {
+                case OverlayType.Target:
+                    // Target はXIVプラグインから取得する
+                    targetEx = CombatantsManager.Instance.GetCombatantMain(player.TargetID);
+                    break;
+
+                case OverlayType.TargetOfTarget:
+                    // TargetOfTarget はXIVプラグインから取得する
+                    targetEx = CombatantsManager.Instance.GetCombatantMain(player.TargetOfTargetID);
+                    break;
+
+                case OverlayType.FocusTarget:
+                case OverlayType.HoverTarget:
+                    // FocusTarget, HoverTarget はsharlayan経由で取得する
+                    var targetInfo = SharlayanHelper.Instance.TargetInfo;
+                    if (targetInfo == null)
+                    {
+                        return targetEx;
+                    }
+
+                    targetEx = CombatantsManager.Instance.GetCombatantMain(
+                        type == OverlayType.FocusTarget ?
+                        targetInfo.FocusTarget.ID :
+                        targetInfo.MouseOverTarget.ID);
+                    break;
+            }
 
             return targetEx;
         }

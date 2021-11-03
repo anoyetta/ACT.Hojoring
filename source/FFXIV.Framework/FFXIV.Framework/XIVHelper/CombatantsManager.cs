@@ -88,6 +88,11 @@ namespace FFXIV.Framework.XIVHelper
         public CombatantEx GetCombatantMain(
             uint id)
         {
+            if (id == 0)
+            {
+                return null;
+            }
+
             lock (LockObject)
             {
                 return this.MainDictionary.ContainsKey(id) ?
