@@ -473,7 +473,7 @@ namespace FFXIV.Framework.XIVHelper
             var type = (LogMessageType)Enum.ToObject(typeof(LogMessageType), messagetype);
             switch (type)
             {
-                case LogMessageType.LogLine:
+                case LogMessageType.ChatLog:
                     // ダメージ系をカットする
                     if (DamageLogPattern.IsMatch(parsedLog))
                     {
