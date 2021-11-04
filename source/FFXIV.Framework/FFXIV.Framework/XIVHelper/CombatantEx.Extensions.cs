@@ -21,7 +21,7 @@ namespace FFXIV.Framework.XIVHelper
                 return false;
             }
 
-            var si = SharlayanHelper.Instance.CurrentPlayer.StatusItems;
+            var si = SharlayanHelper.Instance.CurrentPlayer?.StatusItems;
             if (si == null)
             {
                 return false;

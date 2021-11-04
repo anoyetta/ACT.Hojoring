@@ -116,7 +116,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
             // 食事効果を延長する
             if (this.Config.ExtendMealEffect.IsAvailable())
             {
-                var si = SharlayanHelper.Instance.CurrentPlayer.StatusItems;
+                var si = SharlayanHelper.Instance.CurrentPlayer?.StatusItems;
                 if (si != null)
                 {
                     var remainOfWellFed = si.FirstOrDefault(x =>

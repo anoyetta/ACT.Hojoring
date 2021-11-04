@@ -1,13 +1,3 @@
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Globalization;
-using FFXIV_ACT_Plugin.Common;
-using FFXIV_ACT_Plugin.Common.Models;
-using FFXIV_ACT_Plugin.Logfile;
-using FFXIV_ACT_Plugin.Resource;
-using Microsoft.MinIoC;
-using Microsoft.VisualBasic.FileIO;
-using Sharlayan.Core.Enums;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,6 +13,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Globalization;
+using FFXIV_ACT_Plugin.Common;
+using FFXIV_ACT_Plugin.Common.Models;
+using FFXIV_ACT_Plugin.Logfile;
+using Microsoft.VisualBasic.FileIO;
+using Sharlayan.Core.Enums;
 
 namespace FFXIV.Framework.XIVHelper
 {
@@ -899,7 +897,7 @@ namespace FFXIV.Framework.XIVHelper
             }
             else
             {
-                result = SharlayanHelper.Instance.CurrentPlayer.InCombat;
+                result = SharlayanHelper.Instance.CurrentPlayer?.InCombat ?? false;
             }
 
             this.InCombat = result;
