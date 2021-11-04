@@ -94,7 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Costura.Fody">
-      <Version>5.5.0</Version>
+      <Version>5.7.0</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit">
@@ -104,7 +104,7 @@
       <Version>1.0.4</Version>
     </PackageReference>
     <PackageReference Include="NLog.Config">
-      <Version>4.7.11</Version>
+      <Version>4.7.12</Version>
     </PackageReference>
     <PackageReference Include="Prism.Wpf">
       <Version>8.1.97</Version>

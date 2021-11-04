@@ -86,7 +86,7 @@
       <Version>4.0.2</Version>
     </PackageReference>
     <PackageReference Include="Costura.Fody">
-      <Version>5.5.0</Version>
+      <Version>5.7.0</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">

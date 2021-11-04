@@ -501,7 +501,7 @@
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="NLog.Config">
-      <Version>4.7.11</Version>
+      <Version>4.7.12</Version>
     </PackageReference>
     <PackageReference Include="NLog.StructuredEvents">
       <Version>0.4.0</Version>
