@@ -249,10 +249,10 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
         private static readonly string[] EngageLogs = new string[]
         {
-            "00:0039:戦闘開始",
-            "00:0039:Engage!",
-            "00:0039:전투 시작!",
-            "00:0039:战斗开始！",
+            "00:0039::戦闘開始",
+            "00:0039::Engage!",
+            "00:0039::전투 시작!",
+            "00:0039::战斗开始！",
         };
 
         /// <summary>食事効果のエフェクトID</summary>
