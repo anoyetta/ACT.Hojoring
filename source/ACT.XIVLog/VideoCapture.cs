@@ -39,7 +39,7 @@ namespace ACT.XIVLog
         private readonly InputSimulator Input = new InputSimulator();
 
         private static readonly Regex StartCountdownRegex = new Regex(
-            @"^00:...9:戦闘開始まで.+）$",
+            @"^00:...9::戦闘開始まで.+）$",
             RegexOptions.Compiled);
 
         private static readonly Regex FeastStartRegex = new Regex(
@@ -51,11 +51,11 @@ namespace ACT.XIVLog
             RegexOptions.Compiled);
 
         private static readonly Regex ContentStartLogRegex = new Regex(
-            @"^00:0839:「(?<content>.+)」の攻略を開始した。",
+            @"^00:0839::「(?<content>.+)」の攻略を開始した。",
             RegexOptions.Compiled);
 
         private static readonly Regex ContentEndLogRegex = new Regex(
-            @"^00:0839:.+を終了した。$",
+            @"^00:0839::.+を終了した。$",
             RegexOptions.Compiled);
 
         private static readonly Regex PlayerChangedLogRegex = new Regex(
