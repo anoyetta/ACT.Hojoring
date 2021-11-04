@@ -303,9 +303,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.entry, value);
         }
 
-        [XmlIgnore]
-        private static readonly Regex OldTypeStartKeywordRegex = new Regex("0039:(?<message>.+)", RegexOptions.Compiled);
-
         private string startTrigger = null;
 
         [XmlElement(ElementName = "start")]
@@ -314,15 +311,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             get => this.startTrigger;
             set
             {
-                if (!string.IsNullOrEmpty(value))
-                {
-                    var match = OldTypeStartKeywordRegex.Match(value);
-                    if (match.Success)
-                    {
-                        value = match.Result($"0039::{match.Groups["message"].Value}");
-                    }
-                }
-
                 if (this.SetProperty(ref this.startTrigger, value))
                 {
                     if (string.IsNullOrEmpty(this.startTrigger))
