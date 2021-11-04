@@ -198,7 +198,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region JA
 
-        private const string CombatStartNowJA = "0039:戦闘開始！";
+        private const string CombatStartNowJA = "0039::戦闘開始！";
+        private const string CombatStartRegexPattern = @"00:(0038|0039)::(?<discription>.+?)$";
+        private const string CombatEndRegexPattern = @"00:....::(?<discription>.+?)$";
 
         private static readonly IList<AnalyzeKeyword> KeywordsJA = new[]
         {
@@ -231,14 +233,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = ImportLog, Category = KewordTypes.Start },
             new AnalyzeKeyword() { Keyword = "/spespetime -a start", Category = KewordTypes.Start },
             new AnalyzeKeyword() { Keyword = "/analyze start", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039:戦闘開始", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039:戦闘開始まで5秒！", Category = KewordTypes.TimelineStart },
+            new AnalyzeKeyword() { Keyword = "00:0039::戦闘開始", Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = "00:0039::戦闘開始まで5秒！", Category = KewordTypes.TimelineStart },
             new AnalyzeKeyword() { Keyword = "/spespetime -a end", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "/analyze end", Category = KewordTypes.Start },
             new AnalyzeKeyword() { Keyword = "の攻略を終了した。", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "ロットを行ってください。", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "01:Changed Zone", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "00:0139:戦闘開始まで", Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = "00:0139::戦闘開始まで", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLog, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "レディチェックを開始しました。", Category = KewordTypes.End },
@@ -278,11 +280,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(CombatStartRegex),
-                CreateRegex(@"00:(0038|0039):(?<discription>.+?)$")
+                CreateRegex(CombatStartRegexPattern)
             },
             {
                 nameof(CombatEndRegex),
-                CreateRegex(@"00:....:(?<discription>.+?)$")
+                CreateRegex(CombatEndRegexPattern)
             },
             {
                 nameof(EffectRegex),
@@ -310,7 +312,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region EN
 
-        private const string CombatStartNowEN = "0039:Engage!";
+        private const string CombatStartNowEN = "0039::Engage!";
 
         private static readonly IList<AnalyzeKeyword> KeywordsEN = new[]
         {
@@ -344,14 +346,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = ImportLog, Category = KewordTypes.Start },
             new AnalyzeKeyword() { Keyword = "/spespetime -a start", Category = KewordTypes.Start },
             new AnalyzeKeyword() { Keyword = "/analyze start", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039:Engage!", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039:Battle commencing in 5 seconds!", Category = KewordTypes.TimelineStart },
+            new AnalyzeKeyword() { Keyword = "00:0039::Engage!", Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = "00:0039::Battle commencing in 5 seconds!", Category = KewordTypes.TimelineStart },
             new AnalyzeKeyword() { Keyword = "/spespetime -a end", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "/analyze end", Category = KewordTypes.Start },
             new AnalyzeKeyword() { Keyword = "has ended.", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "Cast your lot.", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "01:Changed Zone", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "00:0139:", Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = "00:0139::", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLog, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "uses", Category = KewordTypes.Action },    //not used in E1s and E2s instead of 'casts',considering deleting.
@@ -390,11 +392,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(CombatStartRegex),
-                CreateRegex(@"00:(0038|0039):(?<discription>.+?)$")
+                CreateRegex(CombatStartRegexPattern)
             },
             {
                 nameof(CombatEndRegex),
-                CreateRegex(@"00:....:(?<discription>.+?)$")
+                CreateRegex(CombatEndRegexPattern)
             },
             {
                 nameof(EffectRegex),
@@ -422,7 +424,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region KO
 
-        private const string CombatStartNowKO = "0039:전투 시작!";
+        private const string CombatStartNowKO = "0039::전투 시작!";
 
         private static readonly IList<AnalyzeKeyword> KeywordsKO = new[]
         {
@@ -449,14 +451,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = ImportLog, Category = KewordTypes.Start },
             new AnalyzeKeyword() { Keyword = "/spespetime -a start", Category = KewordTypes.Start },
             new AnalyzeKeyword() { Keyword = "/analyze start", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039:전투 시작!", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039:전투 시작 5초 전!", Category = KewordTypes.TimelineStart },
+            new AnalyzeKeyword() { Keyword = "00:0039::전투 시작!", Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = "00:0039::전투 시작 5초 전!", Category = KewordTypes.TimelineStart },
             new AnalyzeKeyword() { Keyword = "/spespetime -a end", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "/analyze end", Category = KewordTypes.Start },
             new AnalyzeKeyword() { Keyword = "공략을 종료했습니다.", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "입찰을 진행하십시오", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "01:Changed Zone", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "00:0139:", Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = "00:0139::", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLog, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "준비 확인을 시작했습니다.", Category = KewordTypes.End },
@@ -495,11 +497,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(CombatStartRegex),
-                CreateRegex(@"00:(0038|0039):(?<discription>.+?)$")
+                CreateRegex(CombatStartRegexPattern)
             },
             {
                 nameof(CombatEndRegex),
-                CreateRegex(@"00:....:(?<discription>.+?)$")
+                CreateRegex(CombatEndRegexPattern)
             },
             {
                 nameof(EffectRegex),
@@ -527,7 +529,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region CN
 
-        private const string CombatStartNowCN = "0039:战斗开始！";
+        private const string CombatStartNowCN = "0039::战斗开始！";
 
         private static readonly IList<AnalyzeKeyword> KeywordsCN = new[]
         {
@@ -556,14 +558,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = ImportLog, Category = KewordTypes.Start },
             new AnalyzeKeyword() { Keyword = "/spespetime -a start", Category = KewordTypes.Start },
             new AnalyzeKeyword() { Keyword = "/analyze start", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039:战斗开始！", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039:距离战斗开始还有5秒！", Category = KewordTypes.TimelineStart },
+            new AnalyzeKeyword() { Keyword = "00:0039::战斗开始！", Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = "00:0039::距离战斗开始还有5秒！", Category = KewordTypes.TimelineStart },
             new AnalyzeKeyword() { Keyword = "/spespetime -a end", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "/analyze end", Category = KewordTypes.Start },
             new AnalyzeKeyword() { Keyword = "结束了", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "00:0839:请掷骰。", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "01:Changed Zone", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "00:0139:", Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = "00:0139::", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLog, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "发动了", Category = KewordTypes.Action },
@@ -601,11 +603,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(CombatStartRegex),
-                CreateRegex(@"00:(0038|0039):(?<discription>.+?)$")
+                CreateRegex(CombatStartRegexPattern)
             },
             {
                 nameof(CombatEndRegex),
-                CreateRegex(@"00:....:(?<discription>.+?)$")
+                CreateRegex(CombatEndRegexPattern)
             },
             {
                 nameof(EffectRegex),
