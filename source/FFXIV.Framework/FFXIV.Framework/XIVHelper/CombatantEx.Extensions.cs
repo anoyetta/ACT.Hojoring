@@ -5,7 +5,7 @@ namespace FFXIV.Framework.XIVHelper
 {
     public partial class CombatantEx
     {
-        private static readonly uint[] TankStanceEffectIDs = new uint[]
+        private static readonly short[] TankStanceEffectIDs = new short[]
         {
             91,     // ディフェンダー
             1833,   // ロイヤルガード
@@ -21,16 +21,14 @@ namespace FFXIV.Framework.XIVHelper
                 return false;
             }
 
-            return false;
-#if false
-            if (this.Effects == null)
+            var si = SharlayanHelper.Instance.CurrentPlayer.StatusItems;
+            if (si == null)
             {
                 return false;
             }
 
-            return this.Effects.Any(x =>
-                TankStanceEffectIDs.Contains(x?.BuffID ?? 0));
-#endif
+            return si.Any(x =>
+                TankStanceEffectIDs.Contains(x?.StatusID ?? 0));
         }
     }
 }

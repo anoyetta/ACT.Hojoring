@@ -69,7 +69,6 @@ namespace ACT.UltraScouter.Workers.TextCommands
             var sendKeySetList = new List<KeyShortcut>();
 
             var player = CombatantsManager.Instance.Player;
-            var playerEffects = player.Effects;
             var partyCount = CombatantsManager.Instance.PartyCount;
 
             // タンクスタンスを復元する
@@ -117,13 +116,17 @@ namespace ACT.UltraScouter.Workers.TextCommands
             // 食事効果を延長する
             if (this.Config.ExtendMealEffect.IsAvailable())
             {
-                var remainOfWellFed = playerEffects.FirstOrDefault(x =>
-                    x != null &&
-                    x.BuffID == WellFedEffectID)?.Timer ?? 0;
-
-                if (0 < remainOfWellFed && remainOfWellFed < (this.Config.ExtendMealEffect.RemainingTimeThreshold * 60))
+                var si = SharlayanHelper.Instance.CurrentPlayer.StatusItems;
+                if (si != null)
                 {
-                    sendKeySetList.Add(this.Config.ExtendMealEffect.KeySet);
+                    var remainOfWellFed = si.FirstOrDefault(x =>
+                        x != null &&
+                        x.StatusID == WellFedEffectID)?.Duration ?? 0;
+
+                    if (0 < remainOfWellFed && remainOfWellFed < (this.Config.ExtendMealEffect.RemainingTimeThreshold * 60))
+                    {
+                        sendKeySetList.Add(this.Config.ExtendMealEffect.KeySet);
+                    }
                 }
             }
 
@@ -184,7 +187,6 @@ namespace ACT.UltraScouter.Workers.TextCommands
             var sendKeySetList = new List<KeyShortcut>();
 
             var player = CombatantsManager.Instance.Player;
-            var playerEffects = player.Effects;
 
             // タンクスタンスを復元する
             if (this.Config.RestoreTankStance.IsEnabled &&
@@ -254,7 +256,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
         };
 
         /// <summary>食事効果のエフェクトID</summary>
-        private static readonly uint WellFedEffectID = 48;
+        private static readonly short WellFedEffectID = 48;
 
         private bool? inTankStance;
 
@@ -272,7 +274,6 @@ namespace ACT.UltraScouter.Workers.TextCommands
             }
 
             var player = CombatantsManager.Instance.Player;
-            var playerEffects = player.Effects;
 
             if (player.Role != Roles.Tank)
             {
