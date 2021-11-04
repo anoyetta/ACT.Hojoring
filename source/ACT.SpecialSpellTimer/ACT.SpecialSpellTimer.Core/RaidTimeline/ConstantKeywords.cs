@@ -198,7 +198,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region JA
 
-        private const string CombatStartNowJA = "0039::戦闘開始！";
+        public const string CombatStartNowJA = "0039::戦闘開始！";
         private const string CombatStartRegexPattern = @"00:(0038|0039)::(?<discription>.+?)$";
         private const string CombatEndRegexPattern = @"00:....::(?<discription>.+?)$";
 
@@ -312,7 +312,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region EN
 
-        private const string CombatStartNowEN = "0039::Engage!";
+        public const string CombatStartNowEN = "0039::Engage!";
 
         private static readonly IList<AnalyzeKeyword> KeywordsEN = new[]
         {
@@ -424,7 +424,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region KO
 
-        private const string CombatStartNowKO = "0039::전투 시작!";
+        public const string CombatStartNowKO = "0039::전투 시작!";
 
         private static readonly IList<AnalyzeKeyword> KeywordsKO = new[]
         {
@@ -529,7 +529,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region CN
 
-        private const string CombatStartNowCN = "0039::战斗开始！";
+        public const string CombatStartNowCN = "0039::战斗开始！";
 
         private static readonly IList<AnalyzeKeyword> KeywordsCN = new[]
         {
