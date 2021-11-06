@@ -45,19 +45,10 @@ namespace FFXIV.Framework.XIVHelper
             DateTime timestamp,
             string log)
         {
-            var logline = string.Join(
-                "|",
-                new[]
-                {
-                    LogMessageType.ChatLog.ToCode(),
-                    timestamp.ToString("O"),
-                    "0000",
-                    "Hojoring",
-                    log,
-                    string.Empty
-                });
-
-            var action = new MethodInvoker(() => ActGlobals.oFormActMain.ParseRawLogLine(false, timestamp, logline));
+            var action = new MethodInvoker(() => ActGlobals.oFormActMain.ParseRawLogLine(
+                false,
+                timestamp,
+                $"Debug FB|Hojoring|{log}"));
 
             if (ActGlobals.oFormActMain.InvokeRequired)
             {
