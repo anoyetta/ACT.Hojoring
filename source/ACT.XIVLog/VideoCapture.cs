@@ -39,27 +39,27 @@ namespace ACT.XIVLog
         private readonly InputSimulator Input = new InputSimulator();
 
         private static readonly Regex StartCountdownRegex = new Regex(
-            @"00:...9::戦闘開始まで.+）$",
-            RegexOptions.Compiled);
-
-        private static readonly Regex FeastStartRegex = new Regex(
-            @"21:[0-9a-fA-F]{8}:40000001:168",
-            RegexOptions.Compiled);
-
-        private static readonly Regex FeastEndRegex = new Regex(
-            @"21:[0-9a-fA-F]{8}:80000004:257",
+            @" 00:...9::戦闘開始まで.+）$",
             RegexOptions.Compiled);
 
         private static readonly Regex ContentStartLogRegex = new Regex(
-            @"00:0839::「(?<content>.+)」の攻略を開始した。",
+            @" 00:0839::「(?<content>.+)」の攻略を開始した。",
             RegexOptions.Compiled);
 
         private static readonly Regex ContentEndLogRegex = new Regex(
-            @"00:0839::.+を終了した。$",
+            @" 00:0839::.+を終了した。$",
             RegexOptions.Compiled);
 
         private static readonly Regex PlayerChangedLogRegex = new Regex(
-            @"02:Changed primary player to (?<player>.+)\.",
+            @" 02:[0-9a-fA-F]{8}:(?<player>.+)",
+            RegexOptions.Compiled);
+
+        private static readonly Regex FeastStartRegex = new Regex(
+            @" 21:[0-9a-fA-F]{8}:40000001:168",
+            RegexOptions.Compiled);
+
+        private static readonly Regex FeastEndRegex = new Regex(
+            @" 21:[0-9a-fA-F]{8}:80000004:257",
             RegexOptions.Compiled);
 
         private static readonly string[] StopVideoKeywords = new string[]
@@ -69,7 +69,9 @@ namespace ACT.XIVLog
             "End-of-Timeline has been detected.",
         };
 
-        private string defeatedLog = "19:Naoki Yoshida was defeated";
+        private Regex defeatedLogRegex = new Regex(
+            @" 19:[0-9a-fA-F]{8}:Naoki Yoshida:",
+            RegexOptions.Compiled);
 
         private bool inFeast;
 
@@ -163,12 +165,14 @@ namespace ACT.XIVLog
             match = PlayerChangedLogRegex.Match(xivlog.Log);
             if (match.Success)
             {
-                this.defeatedLog = $"19:{match.Groups["player"]?.Value} was defeated";
+                this.defeatedLogRegex = new Regex(
+                    $@" 19:[0-9a-fA-F]{8}:{this.playerName}:",
+                    RegexOptions.Compiled);
                 return;
             }
 
             // Player defeated
-            if (xivlog.Log.StartsWith(this.defeatedLog))
+            if (this.defeatedLogRegex.IsMatch(xivlog.Log))
             {
                 this.deathCount++;
                 return;
