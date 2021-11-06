@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using Advanced_Combat_Tracker;
@@ -21,26 +20,6 @@ namespace FFXIV.Framework.XIVHelper
 
     public static class LogParser
     {
-        public static void RaiseLog(
-            DateTime timestamp,
-            LogMessageType type,
-            string[] data,
-            bool isImport = false)
-        {
-            var log = string.Join(
-                "|",
-                new[]
-                {
-                    type.ToCode(),
-                    timestamp.ToString("O")
-                }.Union(data));
-
-            ActGlobals.oFormActMain.BeginInvoke((MethodInvoker)delegate
-            {
-                ActGlobals.oFormActMain.ParseRawLogLine(isImport, timestamp, log);
-            });
-        }
-
         public static void RaiseLog(
             DateTime timestamp,
             string log)
