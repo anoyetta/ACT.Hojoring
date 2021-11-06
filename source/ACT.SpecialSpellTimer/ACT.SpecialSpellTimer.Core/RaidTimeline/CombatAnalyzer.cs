@@ -363,11 +363,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     preLogIndex = 0;
                 }
 
-                logs.Add(log);
+                logs.Add(log.Clone());
             }
 
             foreach (var log in logs)
             {
+                // ログメッセージタイプの文言を除去する
+                log.logLine = LogMessageTypeExtensions.RemoveLogMessageType(
+                    log.detectedType,
+                    log.logLine);
+
                 // ダメージ系の不要なログか？
                 if (XIVPluginHelper.IsDamageLog(log.logLine))
                 {

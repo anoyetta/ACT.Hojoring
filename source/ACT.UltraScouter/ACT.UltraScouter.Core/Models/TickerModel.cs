@@ -6,7 +6,6 @@ using ACT.UltraScouter.Config;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
-using FFXIV_ACT_Plugin.Common;
 using Prism.Mvvm;
 
 namespace ACT.UltraScouter.Models
@@ -250,26 +249,31 @@ namespace ACT.UltraScouter.Models
                         return;
                     }
 
+                    // メッセージタイプの文字列を除去する
+                    var logLine = LogMessageTypeExtensions.RemoveLogMessageType(
+                        logInfo.detectedType,
+                        logInfo.logLine);
+
                     var sync = false;
                     var target = string.Empty;
 
                     if (!string.IsNullOrEmpty(this.syncKeywordToHoT) &&
                         config.IsSyncHoT)
                     {
-                        sync = logInfo.logLine.Contains(this.syncKeywordToHoT);
+                        sync = logLine.Contains(this.syncKeywordToHoT);
                         target = "HoT";
                     }
 
                     if (!string.IsNullOrEmpty(this.syncKeywordToDoT) &&
                         config.IsSyncDoT)
                     {
-                        sync = logInfo.logLine.Contains(this.syncKeywordToDoT);
+                        sync = logLine.Contains(this.syncKeywordToDoT);
                         target = "DoT";
                     }
 
                     if (sync)
                     {
-                        this.Sync(logInfo.logLine, target);
+                        this.Sync(logLine, target);
                     }
                 });
             }

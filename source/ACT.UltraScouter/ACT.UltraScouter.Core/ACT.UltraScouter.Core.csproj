@@ -59,6 +59,9 @@
       <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="FFXIV_ACT_Plugin.LogFile">
+      <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.LogFile.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

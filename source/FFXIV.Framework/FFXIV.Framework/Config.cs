@@ -1,7 +1,3 @@
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Globalization;
-using FFXIV_ACT_Plugin.Logfile;
-using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,6 +10,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Globalization;
+using FFXIV.Framework.XIVHelper;
+using FFXIV_ACT_Plugin.Logfile;
+using Prism.Mvvm;
 
 namespace FFXIV.Framework
 {
@@ -114,7 +115,7 @@ namespace FFXIV.Framework
 
                 var filters = filtersParent.Elements();
 
-                var typeNames = Enum.GetNames(typeof(LogMessageType));
+                var typeNames = LogMessageTypeExtensions.GetNames();
 
                 // 消滅したLogTypeを削除する
                 var toRemove = filters
