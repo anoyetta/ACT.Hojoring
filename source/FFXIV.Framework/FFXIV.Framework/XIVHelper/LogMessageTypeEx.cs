@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using Advanced_Combat_Tracker;
@@ -24,10 +25,15 @@ namespace FFXIV.Framework.XIVHelper
             DateTime timestamp,
             string log)
         {
+            const string GameEchoChatCode = "0038";
+
+            var logLine = $"{(int)LogMessageType.ChatLog}|{timestamp:O}|{GameEchoChatCode}|Hojoring>{log}";
+
+            Debug.WriteLine($"RaiseLog -> {logLine}");
             var action = new MethodInvoker(() => ActGlobals.oFormActMain.ParseRawLogLine(
                 false,
                 timestamp,
-                $"251|{timestamp:O}|Hojoring|{log}"));
+                logLine));
 
             if (ActGlobals.oFormActMain.InvokeRequired)
             {

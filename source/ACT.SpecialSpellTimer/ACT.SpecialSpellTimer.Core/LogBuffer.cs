@@ -267,7 +267,8 @@ namespace ACT.SpecialSpellTimer
                 {
                     foreach (var combatant in e.NewCombatants)
                     {
-                        var log = $"[EX] Added new combatant. name={combatant.Name} X={combatant.PosXMap:N2} Y={combatant.PosYMap:N2} Z={combatant.PosZMap:N2} hp={combatant.CurrentHP}";
+                        // Added new combatant の拡張ログを発生させる
+                        var log = $"[EX] +Combatant name={combatant.Name} X={combatant.PosXMap:N2} Y={combatant.PosYMap:N2} Z={combatant.PosZMap:N2} hp={combatant.CurrentHP}";
                         LogParser.RaiseLog(now, log);
                     }
                 }
