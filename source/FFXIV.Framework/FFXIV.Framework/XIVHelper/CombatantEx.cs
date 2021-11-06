@@ -673,7 +673,7 @@ namespace FFXIV.Framework.XIVHelper
 
         #endregion ICloneable
 
-        public override string ToString() => $"{this.Name} {this.JobID}";
+        public override string ToString() => $"{this.Name} {this.JobID} ID={this.ID}";
     }
 
     public static class CombatantExtensions
