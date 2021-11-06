@@ -50,7 +50,13 @@ namespace FFXIV.Framework.XIVHelper
                 return result;
             }
 
-            result = $"{logLine.Substring(0, 14)} {logLine.Substring(15, type.ToStringEx().Length + 1)}";
+            var messageTypeNoIndex = 15 + type.ToStringEx().Length + 1;
+            if (logLine.Length < messageTypeNoIndex)
+            {
+                return result;
+            }
+
+            result = $"{logLine.Substring(0, 14)} {logLine.Substring(messageTypeNoIndex)}";
 
             return result;
         }

@@ -27,7 +27,7 @@ namespace FFXIV.Framework.XIVHelper
             var action = new MethodInvoker(() => ActGlobals.oFormActMain.ParseRawLogLine(
                 false,
                 timestamp,
-                $"Debug FB|Hojoring|{log}"));
+                $"251|{timestamp:O}|Hojoring|{log}"));
 
             if (ActGlobals.oFormActMain.InvokeRequired)
             {
