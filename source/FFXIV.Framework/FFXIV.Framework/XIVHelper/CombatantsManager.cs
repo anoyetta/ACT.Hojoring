@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -28,11 +29,9 @@ namespace FFXIV.Framework.XIVHelper
 
         #endregion Logger
 
-        private readonly IReadOnlyList<CombatantEx> EmptyCombatantList = new List<CombatantEx>();
-
         private static readonly object LockObject = new object();
 
-        private readonly Dictionary<uint, CombatantEx> MainDictionary = new Dictionary<uint, CombatantEx>(2560);
+        private readonly ConcurrentDictionary<uint, CombatantEx> MainDictionary = new ConcurrentDictionary<uint, CombatantEx>();
 
         private readonly List<CombatantEx> OtherList = new List<CombatantEx>(1024);
 
@@ -117,6 +116,8 @@ namespace FFXIV.Framework.XIVHelper
             IEnumerable<Combatant> source,
             bool isDummy = false)
         {
+            var news = default(IEnumerable<CombatantEx>);
+
             if (this.isWorking)
             {
                 return EmptyCombatants;
@@ -128,13 +129,15 @@ namespace FFXIV.Framework.XIVHelper
 
                 lock (LockObject)
                 {
-                    return this.RefreshCore(source, isDummy);
+                    news = this.RefreshCore(source, isDummy);
                 }
             }
             finally
             {
                 this.isWorking = false;
             }
+
+            return news;
         }
 
         private IEnumerable<CombatantEx> RefreshCore(
@@ -188,13 +191,21 @@ namespace FFXIV.Framework.XIVHelper
 
                     var dic = this.MainDictionary;
                     var key = combatant.ID;
-                    var isNew = !dic.ContainsKey(key);
 
-                    var ex = isNew ?
-                        new CombatantEx() :
-                        dic[key];
-
-                    CombatantEx.CopyToEx(combatant, ex);
+                    var ex = dic.AddOrUpdate(
+                        key,
+                        (key) =>
+                        {
+                            var add = new CombatantEx();
+                            CombatantEx.CopyToEx(combatant, add);
+                            addeds.Add(add);
+                            return add;
+                        },
+                        (key, current) =>
+                        {
+                            CombatantEx.CopyToEx(combatant, current);
+                            return current;
+                        });
 
                     if (isDummy)
                     {
@@ -206,12 +217,6 @@ namespace FFXIV.Framework.XIVHelper
                     {
                         isFirstCombatant = false;
                         CombatantEx.CopyToEx(ex, this.Player);
-                    }
-
-                    if (isNew)
-                    {
-                        addeds.Add(ex);
-                        dic[key] = ex;
                     }
 
                     if (ex.PartyType == PartyType.Party)
@@ -407,6 +412,8 @@ namespace FFXIV.Framework.XIVHelper
             return list;
         }
 
+        private DateTime lastClearTimestamp = DateTime.MinValue;
+
         public void Clear()
         {
             if (this.CombatantsMainCount <= 0)
@@ -416,6 +423,15 @@ namespace FFXIV.Framework.XIVHelper
 
             lock (LockObject)
             {
+                var now = DateTime.Now;
+
+                if ((now - this.lastClearTimestamp).TotalSeconds <= 8.0)
+                {
+                    return;
+                }
+
+                this.lastClearTimestamp = now;
+
                 this.CombatantsPCCount = 0;
                 this.CombatantsMainCount = 0;
                 this.CombatantsOtherCount = 0;
@@ -426,9 +442,11 @@ namespace FFXIV.Framework.XIVHelper
                 this.PartyList.Clear();
                 this.PartyComposition = PartyCompositions.Unknown;
             }
+
+            LogParser.RaiseLog(DateTime.Now, "[EX] Clear combatants.");
         }
 
-        private static readonly double GarbageThreshold = 3.0d;
+        private static readonly double GarbageThreshold = 10.0d;
         private DateTime lastGarbageTimestamp = DateTime.Now;
 
         private void TryGarbage()
@@ -452,7 +470,7 @@ namespace FFXIV.Framework.XIVHelper
 
                 foreach (var target in targets)
                 {
-                    this.MainDictionary.Remove(target.ID);
+                    this.MainDictionary.TryRemove(target.ID, out _);
                     Thread.Yield();
                 }
             }

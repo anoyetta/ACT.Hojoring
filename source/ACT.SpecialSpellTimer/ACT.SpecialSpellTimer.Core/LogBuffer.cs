@@ -257,20 +257,17 @@ namespace ACT.SpecialSpellTimer
             object sender,
             XIVPluginHelper.AddedCombatantsEventArgs e)
         {
-            lock (this)
-            {
-                var now = DateTime.Now;
+            var now = DateTime.Now;
 
-                if (e != null &&
-                    e.NewCombatants != null &&
-                    e.NewCombatants.Any())
+            if (e != null &&
+                e.NewCombatants != null &&
+                e.NewCombatants.Any())
+            {
+                foreach (var combatant in e.NewCombatants)
                 {
-                    foreach (var combatant in e.NewCombatants)
-                    {
-                        // Added new combatant の拡張ログを発生させる
-                        var log = $"[EX] +Combatant name={combatant.Name} X={combatant.PosXMap:N2} Y={combatant.PosYMap:N2} Z={combatant.PosZMap:N2} hp={combatant.CurrentHP}";
-                        LogParser.RaiseLog(now, log);
-                    }
+                    // Added new combatant の拡張ログを発生させる
+                    var log = $"[EX] +Combatant name={combatant.Name} X={combatant.PosXMap:N2} Y={combatant.PosYMap:N2} Z={combatant.PosZMap:N2} hp={combatant.CurrentHP} id={combatant.ID}";
+                    LogParser.RaiseLog(now, log);
                 }
             }
         }

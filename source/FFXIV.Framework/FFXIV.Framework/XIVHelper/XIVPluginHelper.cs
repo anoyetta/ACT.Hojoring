@@ -465,13 +465,11 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            // 明らかに使用しないログをカットする
-            // タイプによるカット
             var type = (LogMessageType)Enum.ToObject(typeof(LogMessageType), messagetype);
             switch (type)
             {
                 case LogMessageType.ChatLog:
-                    // ダメージ系をカットする
+                    // 明らかに使用しないダメージ系をカットする
                     if (DamageLogPattern.IsMatch(parsedLog))
                     {
                         return;
@@ -823,6 +821,9 @@ namespace FFXIV.Framework.XIVHelper
 
         private bool isFirst = true;
 
+        private DateTime lastAddedTimestamp = DateTime.MinValue;
+        private readonly List<CombatantEx> lastAddedList = new List<CombatantEx>();
+
         public void RefreshCombatantList()
         {
             if (!this.IsAvailable)
@@ -830,9 +831,11 @@ namespace FFXIV.Framework.XIVHelper
 #if true
                 if (IsDebug)
                 {
-                    CombatantsManager.Instance.Refresh(DummyCombatants, IsDebug);
                     this.TryActivation();
+                    /*
+                    CombatantsManager.Instance.Refresh(DummyCombatants, IsDebug);
                     raiseFirstCombatants();
+                    */
                 }
 #endif
 
@@ -855,9 +858,25 @@ namespace FFXIV.Framework.XIVHelper
 
             if (addeds.Any())
             {
-                this.AddedCombatants?.Invoke(
-                    this,
-                    new AddedCombatantsEventArgs(addeds));
+                if ((now - this.lastAddedTimestamp).TotalSeconds > 8.0)
+                {
+                    this.lastAddedList.Clear();
+                    this.lastAddedList.AddRange(addeds);
+
+                    this.AddedCombatants?.Invoke(
+                        this,
+                        new AddedCombatantsEventArgs(addeds));
+                }
+                else
+                {
+                    var toRaise = addeds
+                        .Where(x => !this.lastAddedList.Any(y => y.ID == x.ID))
+                        .ToArray();
+
+                    this.AddedCombatants?.Invoke(
+                        this,
+                        new AddedCombatantsEventArgs(toRaise));
+                }
             }
 
             raiseFirstCombatants();

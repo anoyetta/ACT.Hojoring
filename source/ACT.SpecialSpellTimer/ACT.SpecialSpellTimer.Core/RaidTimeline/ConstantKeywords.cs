@@ -256,7 +256,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(AddedRegex),
-                CreateRegex(@":[EX] \+Combatant name=(?<actor>.+) X=")
+                CreateRegex(@":\[EX\] \+Combatant name=(?<actor>.+) X=")
             },
             {
                 nameof(CastRegex),
@@ -368,7 +368,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(AddedRegex),
-                CreateRegex(@":[EX] \+Combatant name=(?<actor>.+) X=")
+                CreateRegex(@":\[EX\] \+Combatant name=(?<actor>.+) X=")
             },
             {
                 nameof(CastRegex),
@@ -473,7 +473,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(AddedRegex),
-                CreateRegex(@":[EX] \+Combatant name=(?<actor>.+) X=")
+                CreateRegex(@":\[EX\] \+Combatant name=(?<actor>.+) X=")
             },
             {
                 nameof(CastRegex),
@@ -579,7 +579,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(AddedRegex),
-                CreateRegex(@":[EX] \+Combatant name=(?<actor>.+) X=")
+                CreateRegex(@":\[EX\] \+Combatant name=(?<actor>.+) X=")
             },
             {
                 nameof(CastRegex),
