@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Models;
@@ -467,6 +468,10 @@ namespace ACT.SpecialSpellTimer
             "Du hast das Trainingsziel nicht erreicht ...",
         };
 
+        private static readonly Regex DefeatedLogRegex = new Regex(
+            $@" 19:[0-9a-fA-F]{8}:(?<player>.+):",
+            RegexOptions.Compiled);
+
         private bool IsDefeated(string logLine)
         {
             var result = false;
@@ -485,13 +490,19 @@ namespace ACT.SpecialSpellTimer
                 party = new[] { player };
             }
 
-            foreach (var combatant in party)
+            var match = DefeatedLogRegex.Match(logLine);
+            if (match.Success)
             {
-                result = logLine.Contains($"19:{combatant.Name} was defeated");
+                var defeatedPC = match.Groups["player"].Value;
 
-                if (result)
+                foreach (var combatant in party)
                 {
-                    break;
+                    result = defeatedPC == combatant.Name;
+
+                    if (result)
+                    {
+                        break;
+                    }
                 }
             }
 
