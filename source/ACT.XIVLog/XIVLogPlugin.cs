@@ -443,13 +443,19 @@ namespace ACT.XIVLog
 
             // ログの書式の例
             /*
+            旧形式：
             [08:20:19.383] 00:0000:clear stacks of Loading....
+            */
+
+            /*
+            新形式：
+            [00:40:19.102] AddCombatant 03:40000C94:木人:00:1:0000:00::541:901:44:44:0:10000:::94.38:55.71:7.07:2.43
             */
 
             var line = this.LogInfo.logLine;
 
-            // 18文字未満のログは書式エラーになるため無視する
-            if (line.Length < 18)
+            // 15文字未満のログは書式エラーになるため無視する
+            if (line.Length < 15)
             {
                 return;
             }
@@ -467,8 +473,19 @@ namespace ACT.XIVLog
                 return;
             }
 
-            this.LogType = line.Substring(15, 2);
-            this.Log = line.Substring(15);
+            // タイムスタンプの後を取り出す
+            var message = line.Substring(15);
+
+            // ログタイプを取り出す
+            var firstDelimiterIndex = message.IndexOf(':');
+            if (firstDelimiterIndex < 0)
+            {
+                return;
+            }
+
+            this.LogType = line.Substring(firstDelimiterIndex - 2, 2);
+
+            this.Log = message;
             this.ZoneName = !string.IsNullOrEmpty(logInfo.detectedZone) ?
                 logInfo.detectedZone :
                 "NO DATA";
