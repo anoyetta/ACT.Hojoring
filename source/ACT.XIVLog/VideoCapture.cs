@@ -39,27 +39,27 @@ namespace ACT.XIVLog
         private readonly InputSimulator Input = new InputSimulator();
 
         private static readonly Regex StartCountdownRegex = new Regex(
-            @"^00:...9::戦闘開始まで.+）$",
+            @"00:...9::戦闘開始まで.+）$",
             RegexOptions.Compiled);
 
         private static readonly Regex FeastStartRegex = new Regex(
-            @"^21:[0-9a-fA-F]{8}:40000001:168",
+            @"21:[0-9a-fA-F]{8}:40000001:168",
             RegexOptions.Compiled);
 
         private static readonly Regex FeastEndRegex = new Regex(
-            @"^21:[0-9a-fA-F]{8}:80000004:257",
+            @"21:[0-9a-fA-F]{8}:80000004:257",
             RegexOptions.Compiled);
 
         private static readonly Regex ContentStartLogRegex = new Regex(
-            @"^00:0839::「(?<content>.+)」の攻略を開始した。",
+            @"00:0839::「(?<content>.+)」の攻略を開始した。",
             RegexOptions.Compiled);
 
         private static readonly Regex ContentEndLogRegex = new Regex(
-            @"^00:0839::.+を終了した。$",
+            @"00:0839::.+を終了した。$",
             RegexOptions.Compiled);
 
         private static readonly Regex PlayerChangedLogRegex = new Regex(
-            @"^02:Changed primary player to (?<player>.+)\.",
+            @"02:Changed primary player to (?<player>.+)\.",
             RegexOptions.Compiled);
 
         private static readonly string[] StopVideoKeywords = new string[]
@@ -76,11 +76,11 @@ namespace ACT.XIVLog
         public void DetectCapture(
             XIVLog xivlog)
         {
-            if (!xivlog.Log.StartsWith("00:") &&
-                !xivlog.Log.StartsWith("01:") &&
-                !xivlog.Log.StartsWith("02:") &&
-                !xivlog.Log.StartsWith("19:") &&
-                !xivlog.Log.StartsWith("21:"))
+            if (!xivlog.Log.Contains(" 00:") &&
+                !xivlog.Log.Contains(" 01:") &&
+                !xivlog.Log.Contains(" 02:") &&
+                !xivlog.Log.Contains(" 19:") &&
+                !xivlog.Log.Contains(" 21:"))
             {
                 return;
             }
