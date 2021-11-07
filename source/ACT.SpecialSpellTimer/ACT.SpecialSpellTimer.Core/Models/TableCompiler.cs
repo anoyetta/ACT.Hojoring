@@ -88,7 +88,7 @@ namespace ACT.SpecialSpellTimer.Models
 
         public event EventHandler CompileConditionChanged;
 
-        private DateTime lastDumpPositionTimestamp = DateTime.MinValue;
+        private DateTime lastDumpPositionTimestamp = DateTime.Now.AddMinutes(5);
 
         private bool isQueueRecompile = false;
         private bool isQueueZoneChange = false;
