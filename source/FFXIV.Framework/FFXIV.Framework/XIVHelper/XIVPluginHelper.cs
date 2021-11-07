@@ -819,11 +819,6 @@ namespace FFXIV.Framework.XIVHelper
         private void OnAddedCombatants(
             AddedCombatantsEventArgs e) => this?.AddedCombatants?.Invoke(this, e);
 
-        private bool isFirst = true;
-
-        private DateTime lastAddedTimestamp = DateTime.MinValue;
-        private readonly List<CombatantEx> lastAddedList = new List<CombatantEx>();
-
         public void RefreshCombatantList()
         {
             if (!this.IsAvailable)
@@ -858,42 +853,14 @@ namespace FFXIV.Framework.XIVHelper
 
             if (addeds.Any())
             {
-                if ((now - this.lastAddedTimestamp).TotalSeconds > 8.0)
-                {
-                    this.lastAddedList.Clear();
-                    this.lastAddedList.AddRange(addeds);
-
-                    this.AddedCombatants?.Invoke(
-                        this,
-                        new AddedCombatantsEventArgs(addeds));
-                }
-                else
-                {
-                    var toRaise = addeds
-                        .Where(x => !this.lastAddedList.Any(y => y.ID == x.ID))
-                        .ToArray();
-
-                    this.AddedCombatants?.Invoke(
-                        this,
-                        new AddedCombatantsEventArgs(toRaise));
-                }
+                this.AddedCombatants?.Invoke(
+                    this,
+                    new AddedCombatantsEventArgs(addeds));
             }
-
-            raiseFirstCombatants();
 
             if (!this.isActivationAllowed)
             {
                 CombatantsManager.Instance.Clear();
-            }
-
-            void raiseFirstCombatants()
-            {
-                if (this.isFirst &&
-                    CombatantsManager.Instance.CombatantsMainCount > 0)
-                {
-                    this.isFirst = false;
-                    this.OnPrimaryPlayerChanged?.Invoke();
-                }
             }
         }
 

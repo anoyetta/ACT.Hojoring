@@ -42,6 +42,10 @@ namespace ACT.SpecialSpellTimer
 
         #endregion Constants
 
+#if DEBUG
+        private static readonly bool IsEnabledGetLogLinesDump = false;
+#endif
+
         private readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer = new Lazy<ConcurrentQueue<XIVLog>>(()
             => XIVPluginHelper.Instance.SubscribeXIVLog(() => true));
 
@@ -263,12 +267,11 @@ namespace ACT.SpecialSpellTimer
                 e.NewCombatants != null &&
                 e.NewCombatants.Any())
             {
-                foreach (var combatant in e.NewCombatants)
-                {
-                    // Added new combatant の拡張ログを発生させる
-                    var log = $"[EX] +Combatant name={combatant.Name} X={combatant.PosXMap:N2} Y={combatant.PosYMap:N2} Z={combatant.PosZMap:N2} hp={combatant.CurrentHP} id={combatant.ID}";
-                    LogParser.RaiseLog(now, log);
-                }
+                // Added new combatant の拡張ログを発生させる
+                LogParser.RaiseLog(
+                    now,
+                    e.NewCombatants.Select(x =>
+                        $"[EX] +Combatant name={x.Name} X={x.PosXMap:N2} Y={x.PosYMap:N2} Z={x.PosZMap:N2} hp={x.CurrentHP} id={x.ID}"));
             }
         }
 
@@ -413,7 +416,10 @@ namespace ACT.SpecialSpellTimer
 
 #if DEBUG
             sw.Stop();
-            System.Diagnostics.Debug.WriteLine($"★GetLogLines {sw.Elapsed.TotalMilliseconds:N1} ms");
+            if (IsEnabledGetLogLinesDump)
+            {
+                System.Diagnostics.Debug.WriteLine($"★GetLogLines {sw.Elapsed.TotalMilliseconds:N1} ms");
+            }
 #endif
             // 冒頭のタイムスタンプを除去して返す
             return list;

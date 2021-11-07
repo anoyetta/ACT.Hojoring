@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -25,11 +26,43 @@ namespace FFXIV.Framework.XIVHelper
 
         public static void RaiseLog(
             DateTime timestamp,
+            IEnumerable<string> logs)
+        {
+
+            var action = new MethodInvoker(() =>
+            {
+                foreach (var log in logs)
+                {
+                    ActGlobals.oFormActMain.ParseRawLogLine(
+                        false,
+                        timestamp,
+                        FormatLogLine(timestamp, log));
+                }
+            });
+
+            if (ActGlobals.oFormActMain.InvokeRequired)
+            {
+                ActGlobals.oFormActMain.BeginInvoke(action);
+            }
+            else
+            {
+                action.Invoke();
+            }
+
+#if DEBUG
+            foreach (var log in logs)
+            {
+                Debug.WriteLine($"RaiseLog -> {FormatLogLine(timestamp, log)}");
+            }
+#endif
+        }
+
+        public static void RaiseLog(
+            DateTime timestamp,
             string log)
         {
-            var logLine = $"{(int)LogMessageType.ChatLog}|{timestamp:O}|{GameEchoChatCode}|Hojoring>{log}";
+            var logLine = FormatLogLine(timestamp, log);
 
-            Debug.WriteLine($"RaiseLog -> {logLine}");
             var action = new MethodInvoker(() => ActGlobals.oFormActMain.ParseRawLogLine(
                 false,
                 timestamp,
@@ -43,7 +76,16 @@ namespace FFXIV.Framework.XIVHelper
             {
                 action.Invoke();
             }
+
+#if DEBUG
+            Debug.WriteLine($"RaiseLog -> {logLine}");
+#endif
         }
+
+        private static string FormatLogLine(
+            DateTime timestamp,
+            string log)
+            => $"{(int)LogMessageType.ChatLog}|{timestamp:O}|{GameEchoChatCode}|Hojoring>{log}";
     }
 
     [Serializable]
