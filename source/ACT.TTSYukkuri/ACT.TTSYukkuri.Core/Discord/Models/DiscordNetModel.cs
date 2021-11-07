@@ -1,11 +1,3 @@
-using ACT.TTSYukkuri.Config;
-using Discord;
-using Discord.Audio;
-using Discord.WebSocket;
-using FFXIV.Framework.Bridge;
-using FFXIV.Framework.Common;
-using NLog;
-using Prism.Mvvm;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -16,6 +8,14 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ACT.TTSYukkuri.Config;
+using Discord;
+using Discord.Audio;
+using Discord.WebSocket;
+using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
+using NLog;
+using Prism.Mvvm;
 
 namespace ACT.TTSYukkuri.Discord.Models
 {
@@ -171,8 +171,13 @@ namespace ACT.TTSYukkuri.Discord.Models
             DiscordBridge.Instance.SendMessageDelegate = null;
             DiscordBridge.Instance.SendSpeakingDelegate = null;
 
-            this.Disconnect();
+            if (this.isConnected)
+            {
+                this.Disconnect();
+            }
         }
+
+        private bool isConnected;
 
         public async void Connect(
             bool isInitialize = false)
@@ -207,6 +212,8 @@ namespace ACT.TTSYukkuri.Discord.Models
                     await this.discordClient.LoginAsync(TokenType.Bot, this.Config.Token);
                     await Task.Delay(TimeSpan.FromSeconds(0.25));
                     await this.discordClient.StartAsync();
+
+                    this.isConnected = true;
                 }
                 catch (Exception ex)
                 {
@@ -246,6 +253,8 @@ namespace ACT.TTSYukkuri.Discord.Models
                 this.discordClient?.Dispose();
                 this.discordClient = null;
             }
+
+            this.isConnected = false;
         }
 
         public async void JoinVoiceChannel()
