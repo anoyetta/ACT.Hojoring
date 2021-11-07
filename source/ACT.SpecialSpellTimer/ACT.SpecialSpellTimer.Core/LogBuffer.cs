@@ -473,11 +473,16 @@ namespace ACT.SpecialSpellTimer
         };
 
         private static readonly Regex DefeatedLogRegex = new Regex(
-            $@" 19:[0-9a-fA-F]{8}:(?<player>.+):",
+            @"19:[0-9a-fA-F]{8}:(?<player>.+?):",
             RegexOptions.Compiled);
 
         private bool IsDefeated(string logLine)
         {
+            if (!logLine.StartsWith("19:"))
+            {
+                return false;
+            }
+
             var result = false;
 
             var party = CombatantsManager.Instance.GetPartyList();
@@ -501,7 +506,10 @@ namespace ACT.SpecialSpellTimer
 
                 foreach (var combatant in party)
                 {
-                    result = defeatedPC == combatant.Name;
+                    result = string.Equals(
+                        defeatedPC,
+                        combatant.Name,
+                        StringComparison.OrdinalIgnoreCase);
 
                     if (result)
                     {
