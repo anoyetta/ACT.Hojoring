@@ -1,3 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 using ACT.TTSYukkuri.Config;
 using ACT.TTSYukkuri.Config.Views;
 using ACT.TTSYukkuri.Discord.Models;
@@ -10,15 +19,6 @@ using FFXIV.Framework.resources;
 using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
 using NLog;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.Integration;
 
 namespace ACT.TTSYukkuri
 {
@@ -476,8 +476,11 @@ namespace ACT.TTSYukkuri
                 // CeVIOをアイコン化する
                 if (Settings.Default.TTS == TTSType.Sasara)
                 {
-                    CevioTrayManager.Start();
-                    CevioTrayManager.ToIcon();
+                    if (Settings.Default.SasaraSettings.IsHideCevioWindow)
+                    {
+                        CevioTrayManager.Start();
+                        CevioTrayManager.ToIcon();
+                    }
                 }
 
                 if (this.PluginStatusLabel != null)
@@ -522,8 +525,11 @@ namespace ACT.TTSYukkuri
             try
             {
                 // CeVIO のアイコン化を解除する
-                CevioTrayManager.RestoreWindow();
-                CevioTrayManager.End();
+                if (Settings.Default.SasaraSettings.IsHideCevioWindow)
+                {
+                    CevioTrayManager.RestoreWindow();
+                    CevioTrayManager.End();
+                }
 
                 // 設定を保存する
                 Settings.Default.Save();
