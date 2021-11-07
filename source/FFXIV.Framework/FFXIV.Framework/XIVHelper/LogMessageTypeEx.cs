@@ -22,8 +22,6 @@ namespace FFXIV.Framework.XIVHelper
 
     public static class LogParser
     {
-        private const string GameEchoChatCode = "0038";
-
         public static void RaiseLog(
             DateTime timestamp,
             IEnumerable<string> logs)
@@ -82,10 +80,12 @@ namespace FFXIV.Framework.XIVHelper
 #endif
         }
 
+        private const string GameEchoChatCode = "0038";
+
         private static string FormatLogLine(
             DateTime timestamp,
             string log)
-            => $"{(int)LogMessageType.ChatLog}|{timestamp:O}|{GameEchoChatCode}|Hojoring>{log}";
+            => $"{(int)LogMessageType.ChatLog}|{timestamp:O}|{GameEchoChatCode}||Hojoring>{log}|";
     }
 
     [Serializable]
