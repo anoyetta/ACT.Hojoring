@@ -18,6 +18,7 @@ using FFXIV.Framework.Globalization;
 using FFXIV_ACT_Plugin.Common;
 using FFXIV_ACT_Plugin.Common.Models;
 using FFXIV_ACT_Plugin.Logfile;
+using Microsoft.MinIoC;
 using Microsoft.VisualBasic.FileIO;
 using Sharlayan.Core.Enums;
 
@@ -332,6 +333,9 @@ namespace FFXIV.Framework.XIVHelper
                         BindingFlags.NonPublic | BindingFlags.Instance)
                     .GetValue(ffxivPlugin) as Microsoft.MinIoC.Container;
 
+                this.LogFormat = this.IOCContainer.Resolve<ILogFormat>();
+                this.LogOutput = this.IOCContainer.Resolve<ILogOutput>();
+
                 this.SubscribeXIVPluginEvents();
                 this.SubscribeParsedLogLine();
 
@@ -340,6 +344,10 @@ namespace FFXIV.Framework.XIVHelper
                 this.ActPluginAttachedCallback?.Invoke();
             }
         }
+
+        public ILogFormat LogFormat { get; private set; }
+
+        public ILogOutput LogOutput { get; private set; }
 
         public PrimaryPlayerDelegate OnPrimaryPlayerChanged { get; set; }
 
