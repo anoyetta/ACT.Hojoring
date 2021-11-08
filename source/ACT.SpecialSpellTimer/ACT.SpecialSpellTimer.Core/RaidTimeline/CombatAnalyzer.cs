@@ -16,6 +16,7 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.Globalization;
 using FFXIV.Framework.XIVHelper;
+using FFXIV_ACT_Plugin.Logfile;
 using Microsoft.VisualBasic.FileIO;
 using NPOI.SS.UserModel;
 using Sharlayan.Core.Enums;
@@ -382,6 +383,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 // ツールチップシンボル, ワールド名を除去する
                 log.logLine = LogBuffer.RemoveTooltipSynbols(log.logLine);
                 log.logLine = LogBuffer.RemoveWorldName(log.logLine);
+
+                // ログの書式をパースする
+                log.logLine = LogParser.FormatLogLine(
+                    (LogMessageType)Enum.ToObject(typeof(LogMessageType), log.detectedType),
+                    log.logLine);
 
                 this.AnalyzeLogLine(log);
                 Thread.Yield();
