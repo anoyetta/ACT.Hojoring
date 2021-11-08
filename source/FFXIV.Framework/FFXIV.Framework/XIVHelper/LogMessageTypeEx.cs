@@ -26,6 +26,10 @@ namespace FFXIV.Framework.XIVHelper
             DateTime timestamp,
             IEnumerable<string> logs)
         {
+            if (!ActGlobals.oFormActMain.CanFocus)
+            {
+                return;
+            }
 
             var action = new MethodInvoker(() =>
             {
@@ -59,6 +63,11 @@ namespace FFXIV.Framework.XIVHelper
             DateTime timestamp,
             string log)
         {
+            if (!ActGlobals.oFormActMain.CanFocus)
+            {
+                return;
+            }
+
             var logLine = FormatLogLine(timestamp, log);
 
             var action = new MethodInvoker(() => ActGlobals.oFormActMain.ParseRawLogLine(
