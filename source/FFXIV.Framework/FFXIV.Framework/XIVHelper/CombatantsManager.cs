@@ -236,12 +236,18 @@ namespace FFXIV.Framework.XIVHelper
                 Thread.Yield();
             }
 
-            if (this.Player != null &&
-                this.Player.TargetID != 0 &&
-                this.MainDictionary.ContainsKey(this.Player.TargetID))
+            if (this.Player != null)
             {
-                var target = this.MainDictionary[this.Player.TargetID];
-                this.Player.TargetOfTargetID = target.TargetID;
+                if (this.Player.TargetID != 0 &&
+                    this.MainDictionary.ContainsKey(this.Player.TargetID))
+                {
+                    var target = this.MainDictionary[this.Player.TargetID];
+                    this.Player.TargetOfTargetID = target.TargetID;
+                }
+                else
+                {
+                    this.Player.TargetOfTargetID = 0;
+                }
             }
 
             if (partyIDList.Any())
