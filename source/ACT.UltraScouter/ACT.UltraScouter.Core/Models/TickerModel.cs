@@ -132,13 +132,8 @@ namespace ACT.UltraScouter.Models
             var player = CombatantsManager.Instance.Player;
             var target = XIVPluginHelper.Instance.GetTargetInfo(OverlayType.Target);
 
-            this.syncKeywordToHoT = player != null ?
-                $"18:HoT Tick on {player.Name}" :
-                string.Empty;
-
-            this.syncKeywordToDoT = target != null ?
-                $"18:DoT Tick on {target.Name}" :
-                string.Empty;
+            this.playerName = player?.Name ?? EmptyName;
+            this.targetName = target?.Name ?? EmptyName;
 
             if (Settings.Instance.MPTicker.IsSyncMP &&
                 Settings.Instance.MPTicker.IsUnlockMPSync)
@@ -202,8 +197,9 @@ namespace ACT.UltraScouter.Models
             this.previousMP = player.CurrentMP;
         }
 
-        private volatile string syncKeywordToHoT = string.Empty;
-        private volatile string syncKeywordToDoT = string.Empty;
+        private static readonly string EmptyName = "EMPTY";
+        private volatile string playerName = EmptyName;
+        private volatile string targetName = EmptyName;
 
         private volatile bool semaphore = false;
 
@@ -257,17 +253,15 @@ namespace ACT.UltraScouter.Models
                     var sync = false;
                     var target = string.Empty;
 
-                    if (!string.IsNullOrEmpty(this.syncKeywordToHoT) &&
-                        config.IsSyncHoT)
+                    if (config.IsSyncHoT)
                     {
-                        sync = logLine.Contains(this.syncKeywordToHoT);
+                        sync = logLine.Contains("18:") && logLine.Contains("HoT") && logLine.Contains(this.playerName);
                         target = "HoT";
                     }
 
-                    if (!string.IsNullOrEmpty(this.syncKeywordToDoT) &&
-                        config.IsSyncDoT)
+                    if (config.IsSyncDoT)
                     {
-                        sync = logLine.Contains(this.syncKeywordToDoT);
+                        sync = logLine.Contains("18:") && logLine.Contains("DoT") && logLine.Contains(this.targetName);
                         target = "DoT";
                     }
 
