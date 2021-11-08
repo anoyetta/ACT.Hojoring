@@ -1186,8 +1186,8 @@ namespace FFXIV.Framework.XIVHelper
 
                     targetEx = CombatantsManager.Instance.GetCombatantMain(
                         type == OverlayType.FocusTarget ?
-                        targetInfo.FocusTarget.ID :
-                        targetInfo.MouseOverTarget.ID);
+                        targetInfo.FocusTarget?.ID ?? 0 :
+                        targetInfo.MouseOverTarget?.ID ?? 0);
                     break;
             }
 
