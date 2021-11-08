@@ -1,0 +1,86 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Forms;
+using Advanced_Combat_Tracker;
+using FFXIV_ACT_Plugin.Logfile;
+
+namespace FFXIV.Framework.XIVHelper
+{
+    public static class LogParser
+    {
+        public static void RaiseLog(
+            DateTime timestamp,
+            IEnumerable<string> logs)
+        {
+            if (!ActGlobals.oFormActMain.CanFocus)
+            {
+                return;
+            }
+
+            var action = new MethodInvoker(() =>
+            {
+                foreach (var log in logs)
+                {
+                    ActGlobals.oFormActMain.ParseRawLogLine(
+                        false,
+                        timestamp,
+                        FormatLogLine(timestamp, log));
+                }
+            });
+
+            if (ActGlobals.oFormActMain.InvokeRequired)
+            {
+                ActGlobals.oFormActMain.BeginInvoke(action);
+            }
+            else
+            {
+                action.Invoke();
+            }
+
+#if DEBUG
+            foreach (var log in logs)
+            {
+                Debug.WriteLine($"RaiseLog -> {FormatLogLine(timestamp, log)}");
+            }
+#endif
+        }
+
+        public static void RaiseLog(
+            DateTime timestamp,
+            string log)
+        {
+            if (!ActGlobals.oFormActMain.CanFocus)
+            {
+                return;
+            }
+
+            var logLine = FormatLogLine(timestamp, log);
+
+            var action = new MethodInvoker(() => ActGlobals.oFormActMain.ParseRawLogLine(
+                false,
+                timestamp,
+                logLine));
+
+            if (ActGlobals.oFormActMain.InvokeRequired)
+            {
+                ActGlobals.oFormActMain.BeginInvoke(action);
+            }
+            else
+            {
+                action.Invoke();
+            }
+
+#if DEBUG
+            Debug.WriteLine($"RaiseLog -> {logLine}");
+#endif
+        }
+
+        private const string GameEchoChatCode = "0038";
+
+        private static string FormatLogLine(
+            DateTime timestamp,
+            string log)
+            => $"{(int)LogMessageType.ChatLog}|{timestamp:O}|{GameEchoChatCode}||Hojoring>{log}|";
+    }
+}

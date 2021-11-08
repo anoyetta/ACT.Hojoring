@@ -172,6 +172,7 @@
     <Compile Include="XIVHelper\CombatantEx.cs" />
     <Compile Include="XIVHelper\EnmityEntry.cs" />
     <Compile Include="XIVHelper\LogMessageTypeExtensions.cs" />
+    <Compile Include="XIVHelper\LogParser.cs" />
     <Compile Include="XIVHelper\XIVLog.cs" />
     <Compile Include="XIVHelper\XIVPluginHelper.cs" />
     <Compile Include="XIVHelper\Jobs.cs" />
