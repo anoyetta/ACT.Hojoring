@@ -304,44 +304,81 @@ namespace FFXIV.Framework.XIVHelper
 
         #region Attach FFXIV Plugin
 
+        private bool wasAttached;
+
         private void Attach()
         {
-            if (this.plugin != null ||
-                ActGlobals.oFormActMain == null ||
+            if (ActGlobals.oFormActMain == null ||
                 !ActGlobals.oFormActMain.InitActDone)
             {
                 return;
             }
 
-            var ffxivPlugin = (
-                from x in ActGlobals.oFormActMain.ActPlugins
-                where
-                x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper())
-                select
-                x.pluginObj).FirstOrDefault();
-
-            if (ffxivPlugin != null)
+            if (this.plugin == null)
             {
-                Thread.Sleep(500);
+                var ffxivPlugin = (
+                    from x in ActGlobals.oFormActMain.ActPlugins
+                    where
+                    x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper())
+                    select
+                    x.pluginObj).FirstOrDefault();
+
                 this.plugin = ffxivPlugin;
-                this.DataRepository = this.plugin.DataRepository;
-                this.DataSubscription = this.plugin.DataSubscription;
+            }
 
-                this.IOCContainer = ffxivPlugin.GetType()
-                    .GetField(
-                        "_iocContainer",
-                        BindingFlags.NonPublic | BindingFlags.Instance)
-                    .GetValue(ffxivPlugin) as Microsoft.MinIoC.Container;
+            if (this.plugin != null)
+            {
+                if (this.DataRepository == null)
+                {
+                    this.DataRepository = this.plugin.DataRepository;
+                }
 
-                this.LogFormat = this.IOCContainer.Resolve<ILogFormat>();
-                this.LogOutput = this.IOCContainer.Resolve<ILogOutput>();
+                if (this.DataSubscription == null)
+                {
+                    this.DataSubscription = this.plugin.DataSubscription;
+                }
 
-                this.SubscribeXIVPluginEvents();
-                this.SubscribeParsedLogLine();
+                if (this.IOCContainer == null)
+                {
+                    this.IOCContainer = this.plugin.GetType()
+                        .GetField(
+                            "_iocContainer",
+                            BindingFlags.NonPublic | BindingFlags.Instance)
+                        .GetValue(this.plugin) as Microsoft.MinIoC.Container;
+                }
 
-                AppLogger.Trace("attached ffxiv plugin.");
+                if (this.IOCContainer != null)
+                {
+                    if (this.LogFormat == null)
+                    {
+                        this.LogFormat = this.IOCContainer.Resolve<ILogFormat>();
+                    }
 
-                this.ActPluginAttachedCallback?.Invoke();
+                    if (this.LogOutput == null)
+                    {
+                        this.LogOutput = this.IOCContainer.Resolve<ILogOutput>();
+                    }
+                }
+            }
+
+            if (!this.wasAttached)
+            {
+                if (this.plugin != null &&
+                    this.DataRepository != null &&
+                    this.DataSubscription != null &&
+                    this.IOCContainer != null &&
+                    this.LogFormat != null &&
+                    this.LogOutput != null)
+                {
+                    this.wasAttached = true;
+
+                    this.SubscribeXIVPluginEvents();
+                    this.SubscribeParsedLogLine();
+
+                    AppLogger.Trace("attached ffxiv plugin.");
+
+                    this.ActPluginAttachedCallback?.Invoke();
+                }
             }
         }
 
