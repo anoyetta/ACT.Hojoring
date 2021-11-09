@@ -10,6 +10,11 @@ namespace FFXIV.Framework.XIVHelper
             LogMessageType type,
             string logLine)
         {
+            if (!Config.Instance.IsEnabledCompatibleLogFormat)
+            {
+                return logLine;
+            }
+
             var fmt = default(FormattableString);
             var f = default(string[]);
             var typeText = ((byte)type).ToString("X2");

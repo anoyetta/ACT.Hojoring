@@ -202,6 +202,7 @@ HEALER1 に me（自分）が含まれる場合にこのトリガが有効にな
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">ダメージ・回復に関するログをカットする</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">"15:", "16:" から始まる詳細なログをカットする</system:String>
   <system:String x:Key="Options_EnabledAutoIgnore">周囲のPCが多いとき自動的に詳細なログをカットする</system:String>
+  <system:String x:Key="Options_EnabledCompatibleFormat">ログを互換形式に変換する</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">"FC:" から始まるパケットダンプも解析対象にする（非推奨：高負荷）</system:String>
   <system:String x:Key="Options_ReadyText">正方向のスペルのカウント完了時のテキスト（既定値：Ready）</system:String>
   <system:String x:Key="Options_OverText">逆方向のスペルのカウント完了時のテキスト（既定値：Over）</system:String>
