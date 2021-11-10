@@ -986,6 +986,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 existsLog = true;
                 this.DetectLogs(logs);
+
+#if DEBUG
+                // v2.6.x初期対応のためのデバッグ出力
+                /*
+                foreach (var log in logs)
+                {
+                    System.Diagnostics.Debug.WriteLine($"TL-> {log.LogLine}");
+                }
+                */
+#endif
             }
             finally
             {

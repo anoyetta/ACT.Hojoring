@@ -94,6 +94,16 @@ namespace FFXIV.Framework.XIVHelper
                     posZ = f[10];
                     var heading = f[11];
 
+                    if (string.IsNullOrWhiteSpace(target))
+                    {
+                        target = CombatantsManager.Instance.GetCombatantMain(targetID)?.Name ?? string.Empty;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(source))
+                    {
+                        source = CombatantsManager.Instance.GetCombatantMain(sourceID)?.Name ?? string.Empty;
+                    }
+
                     // starts using については、Version 2.2.x.x系のログより情報を拡張した
                     fmt = $"{typeText}:{skillID:X4}:{source} starts using {skillName} on {target}. Duration: {duration} Pos: ({posX},{posY},{posZ}) Heading: {heading}";
                     break;
@@ -115,9 +125,20 @@ namespace FFXIV.Framework.XIVHelper
 
                     targetID = Convert.ToUInt32(f[6], 16);
                     target = f[7];
+                    sourceID = Convert.ToUInt32(f[4], 16);
                     source = f[5];
                     duration = f[3];
                     var buffName = f[2];
+
+                    if (string.IsNullOrWhiteSpace(target))
+                    {
+                        target = CombatantsManager.Instance.GetCombatantMain(targetID)?.Name ?? string.Empty;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(source))
+                    {
+                        source = CombatantsManager.Instance.GetCombatantMain(sourceID)?.Name ?? string.Empty;
+                    }
 
                     fmt = $"{typeText}:{targetID:X8}:{target} gains the effect of {buffName} from {source} for {duration} Seconds.";
                     break;
@@ -134,8 +155,19 @@ namespace FFXIV.Framework.XIVHelper
 
                     targetID = Convert.ToUInt32(f[6], 16);
                     target = f[7];
-                    buffName = f[2];
+                    sourceID = Convert.ToUInt32(f[4], 16);
                     source = f[5];
+                    buffName = f[2];
+
+                    if (string.IsNullOrWhiteSpace(target))
+                    {
+                        target = CombatantsManager.Instance.GetCombatantMain(targetID)?.Name ?? string.Empty;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(source))
+                    {
+                        source = CombatantsManager.Instance.GetCombatantMain(sourceID)?.Name ?? string.Empty;
+                    }
 
                     fmt = $"{typeText}:{targetID:X8}:{target} loses the effect of {buffName} from {source}.";
                     break;
