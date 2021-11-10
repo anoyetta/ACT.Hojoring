@@ -10,6 +10,11 @@ namespace FFXIV.Framework.XIVHelper
             LogMessageType type,
             string logLine)
         {
+            if (!Config.Instance.IsEnabledCompatibleLogFormat)
+            {
+                return logLine;
+            }
+
             var fmt = default(FormattableString);
             var f = default(string[]);
             var typeText = ((byte)type).ToString("X2");
@@ -59,16 +64,16 @@ namespace FFXIV.Framework.XIVHelper
                     var target = f[6];
                     var sourceID = Convert.ToUInt32(f[1], 16);
                     var source = f[2];
-                    var duration = Convert.ToDouble(f[7]);
+                    var duration = f[7];
                     var skillID = f[3];
                     var skillName = f[4];
-                    var posX = Convert.ToDouble(f[8]);
-                    var posY = Convert.ToDouble(f[9]);
-                    var posZ = Convert.ToDouble(f[10]);
-                    var heading = Convert.ToDouble(f[11]);
+                    var posX = f[8];
+                    var posY = f[9];
+                    var posZ = f[10];
+                    var heading = f[11];
 
                     // starts using については、Version 2.2.x.x系のログより情報を拡張した
-                    fmt = $"{typeText}:{skillID:X4}:{source} starts using {skillName} on {target} for {duration:D2} Seconds. Pos: ({posX:D2},{posY:D2},{posZ:D2}) Heading: {heading:D2}";
+                    fmt = $"{typeText}:{skillID:X4}:{source} starts using {skillName} on {target} for {duration} Seconds. Pos: ({posX},{posY},{posZ}) Heading: {heading}";
                     break;
 
                 case LogMessageType.Death:
@@ -89,10 +94,10 @@ namespace FFXIV.Framework.XIVHelper
                     targetID = Convert.ToUInt32(f[6], 16);
                     target = f[7];
                     source = f[5];
-                    duration = Convert.ToDouble(f[3]);
+                    duration = f[3];
                     var buffName = f[2];
 
-                    fmt = $"{typeText}:{targetID:X8}:{target} gains the effect of {buffName} from {source} for {duration:D2} Seconds.";
+                    fmt = $"{typeText}:{targetID:X8}:{target} gains the effect of {buffName} from {source} for {duration} Seconds.";
                     break;
 
                 case LogMessageType.StatusRemove:
@@ -119,9 +124,17 @@ namespace FFXIV.Framework.XIVHelper
                     break;
             }
 
-            return fmt != null ?
+            var formatedLogLine = fmt != null ?
                 fmt.ToString(CultureInfo.InvariantCulture) :
                 logLine;
+
+            // 終端の:を除去する
+            if (formatedLogLine.EndsWith(":"))
+            {
+                formatedLogLine = formatedLogLine.Substring(0, formatedLogLine.Length - 1);
+            }
+
+            return formatedLogLine;
         }
     }
 

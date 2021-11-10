@@ -298,6 +298,14 @@ namespace FFXIV.Framework
                 _ => Locales.EN,
             };
 
+        private bool isEnabledCompatibleLogFormat = true;
+
+        public bool IsEnabledCompatibleLogFormat
+        {
+            get => this.isEnabledCompatibleLogFormat;
+            set => this.SetProperty(ref this.isEnabledCompatibleLogFormat, value);
+        }
+
         private bool isEnabledSharlayan = true;
 
         public bool IsEnabledSharlayan

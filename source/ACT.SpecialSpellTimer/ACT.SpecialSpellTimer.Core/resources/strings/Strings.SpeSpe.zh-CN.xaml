@@ -202,6 +202,7 @@
   <system:String x:Key="Options_EnabledIgnoreDamageLogs">忽略伤害和治疗日志</system:String>
   <system:String x:Key="Options_EnabledIgnoreDetailLogs">忽略15:或 16:开头日志</system:String>
   <system:String x:Key="Options_EnabledAutoIgnore">角色过多时自动过滤</system:String>
+  <system:String x:Key="Options_EnabledCompatibleFormat">Convert logs to compatible format.</system:String>
   <system:String x:Key="Options_EnabledDetectPacketDump">检测 FC:开头数据 (不推荐)</system:String>
   <system:String x:Key="Options_ReadyText">正向计时器完成时显示文字 (默认: "Ready")</system:String>
   <system:String x:Key="Options_OverText">反向计时器完成时显示文字 (默认: "Over")</system:String>
