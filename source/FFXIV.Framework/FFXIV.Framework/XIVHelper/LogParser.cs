@@ -124,9 +124,17 @@ namespace FFXIV.Framework.XIVHelper
                     break;
             }
 
-            return fmt != null ?
+            var formatedLogLine = fmt != null ?
                 fmt.ToString(CultureInfo.InvariantCulture) :
                 logLine;
+
+            // 終端の:を除去する
+            if (formatedLogLine.EndsWith(":"))
+            {
+                formatedLogLine = formatedLogLine.Substring(0, formatedLogLine.Length - 1);
+            }
+
+            return formatedLogLine;
         }
     }
 
