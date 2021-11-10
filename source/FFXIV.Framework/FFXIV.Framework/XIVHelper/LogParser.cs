@@ -16,38 +16,60 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             var fmt = default(FormattableString);
-            var f = default(string[]);
             var typeText = ((byte)type).ToString("X2");
 
             switch (type)
             {
                 case LogMessageType.AddCombatant:
                     // 03:4000102A:Added new combatant 木人.  Job: N/A Level: 60 Max HP: 16000 Max MP: 10000 Pos: (-787.0482,-707.5104,20.02) (54100000006133).
-                    f = logLine.Split(':');
+                    // $"03|{CombatantID:X8}|{CombatantName}|{JobID:X2}|{Level:X1}|{OwnerID:X4}|{WorldID:X2}|{WorldName}|{BNpcNameID}|{BNpcID}|{currentHp}|{maxHp}|{currentMp}|{maxMp}|{damageShield}|{posX:0.00}|{posY:0.00}|{posZ:0.00}|{heading:0.00}";
+                    // 03|40000c94|木人|0|1|0|0||541|901|44|44|0|10000|0|0|94.37677|55.711|7.070179|2.434896||6c1e2c671c62ff55a0c29bb6d5d65be9
+                    var f = logLine.Split(':');
 
-                    if (f.Length < (19 + 1))
+                    if (f.Length < (18 + 1))
                     {
                         break;
                     }
 
-                    var id = Convert.ToUInt32(f[2], 16);
-                    var b = Convert.ToByte(f[4], 16);
+                    var id = Convert.ToUInt32(f[1], 16);
+                    var combatantName = f[2].ToProperCase();
+
+                    var b = Convert.ToByte(f[3], 16);
                     var job = b < 0 ? "N/A" : ((JobIDs)b).ToString();
 
-                    fmt = $"{typeText}:{id:X8}:Added new combatant {f[3].ToProperCase()}{(!string.IsNullOrWhiteSpace(f[8]) ? $"({f[8]})" : String.Empty)}.  Job: {job} Level: {Convert.ToByte(f[5], 16)} Max HP: {Convert.ToUInt32(f[12])} Max MP: {Convert.ToUInt32(f[14])} Pos: ({f[17]},{f[18]},{f[19]}) ({f[9].PadRight(7, '0')}{f[10].PadLeft(7, '0')}).";
+                    var world = f[7];
+                    world = !string.IsNullOrWhiteSpace(world) ? $"({world})" : string.Empty;
+
+                    var level = Convert.ToByte(f[4], 16);
+                    var maxHP = Convert.ToUInt32(f[11]);
+                    var maxMP = Convert.ToUInt32(f[13]);
+                    var posX = f[16];
+                    var posY = f[17];
+                    var posZ = f[18];
+                    var bNpcNameID = f[8].PadRight(7, '0');
+                    var bNpcID = f[9].PadRight(7, '0');
+
+                    fmt = $"{typeText}:{id:X8}:Added new combatant {combatantName}{world}.  Job: {job} Level: {level} Max HP: {maxHP} Max MP: {maxMP} Pos: ({posX},{posY},{posZ}) ({bNpcNameID}{bNpcID}).";
                     break;
 
                 case LogMessageType.RemoveCombatant:
                     // 04:40001456:Removing combatant 小型二足.  Max HP: 670440. Pos: (884.9468,674.0366,-700).
                     f = logLine.Split(':');
 
-                    if (f.Length < (19 + 1))
+                    if (f.Length < (18 + 1))
                     {
                         break;
                     }
 
-                    id = Convert.ToUInt32(f[2], 16);
-                    fmt = $"{typeText}:{id:X8}:Removing combatant {f[3].ToProperCase()}.  Max HP: {Convert.ToUInt32(f[12])} Pos: ({f[17]},{f[18]},{f[19]}).";
+                    id = Convert.ToUInt32(f[1], 16);
+                    combatantName = f[2].ToProperCase();
+
+                    maxHP = Convert.ToUInt32(f[11]);
+                    posX = f[16];
+                    posY = f[17];
+                    posZ = f[18];
+
+                    fmt = $"{typeText}:{id:X8}:Removing combatant {combatantName}.  Max HP: {maxHP} Pos: ({posX},{posY},{posZ}).";
                     break;
 
                 case LogMessageType.StartsCasting:
@@ -65,15 +87,15 @@ namespace FFXIV.Framework.XIVHelper
                     var sourceID = Convert.ToUInt32(f[1], 16);
                     var source = f[2];
                     var duration = f[7];
-                    var skillID = f[3];
+                    var skillID = Convert.ToUInt32(f[3], 16);
                     var skillName = f[4];
-                    var posX = f[8];
-                    var posY = f[9];
-                    var posZ = f[10];
+                    posX = f[8];
+                    posY = f[9];
+                    posZ = f[10];
                     var heading = f[11];
 
                     // starts using については、Version 2.2.x.x系のログより情報を拡張した
-                    fmt = $"{typeText}:{skillID:X4}:{source} starts using {skillName} on {target} for {duration} Seconds. Pos: ({posX},{posY},{posZ}) Heading: {heading}";
+                    fmt = $"{typeText}:{skillID:X4}:{source} starts using {skillName} on {target}. Duration: {duration} Pos: ({posX},{posY},{posZ}) Heading: {heading}";
                     break;
 
                 case LogMessageType.Death:

@@ -529,7 +529,7 @@ namespace FFXIV.Framework.XIVHelper
                     }
 
                     // ログの書式をパースする
-                    message = LogParser.FormatLogLine(type, message);
+                    parsedLog = LogParser.FormatLogLine(type, parsedLog);
                     break;
             }
 
