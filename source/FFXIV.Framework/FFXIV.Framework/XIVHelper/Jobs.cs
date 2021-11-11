@@ -260,8 +260,35 @@ namespace FFXIV.Framework.XIVHelper
 
     public static class JobIDExtenstions
     {
+        private static readonly Lazy<Dictionary<JobIDs, string>> LazyJobIDDictionary = new Lazy<Dictionary<JobIDs, string>>(() =>
+        {
+            var d = new Dictionary<JobIDs, string>();
+
+            foreach (JobIDs e in Enum.GetValues(typeof(JobIDs)))
+            {
+                d.Add(e, e.ToString());
+            }
+
+            return d;
+        });
+
         public static Job GetInfo(
             this JobIDs id)
             => Jobs.Find(id);
+
+        public static string ToStringEx(
+            this JobIDs id)
+        {
+            var d = LazyJobIDDictionary.Value;
+
+            if (d.ContainsKey(id))
+            {
+                return d[id];
+            }
+            else
+            {
+                return d[JobIDs.Unknown];
+            }
+        }
     }
 }

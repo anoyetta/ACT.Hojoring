@@ -31,18 +31,18 @@ namespace FFXIV.Framework.XIVHelper
                         break;
                     }
 
-                    var id = Convert.ToUInt32(f[1], 16);
+                    var id = Hex2Uint(f[1]);
                     var combatantName = f[2].ToProperCase();
 
-                    var b = Convert.ToByte(f[3], 16);
-                    var job = b < 0 ? "N/A" : ((JobIDs)b).ToString();
+                    var jobID = Jobs.IntToID(Hex2Byte(f[3]));
+                    var job = jobID == JobIDs.Unknown ? "N/A" : jobID.ToStringEx();
 
                     var world = f[7];
                     world = !string.IsNullOrWhiteSpace(world) ? $"({world})" : string.Empty;
 
-                    var level = Convert.ToByte(f[4], 16);
-                    var maxHP = Convert.ToUInt32(f[11]);
-                    var maxMP = Convert.ToUInt32(f[13]);
+                    var level = Hex2Byte(f[4]);
+                    var maxHP = Dec2Uint(f[11]);
+                    var maxMP = Dec2Uint(f[13]);
                     var posX = f[16];
                     var posY = f[17];
                     var posZ = f[18];
@@ -61,10 +61,10 @@ namespace FFXIV.Framework.XIVHelper
                         break;
                     }
 
-                    id = Convert.ToUInt32(f[1], 16);
+                    id = Hex2Uint(f[1]);
                     combatantName = f[2].ToProperCase();
 
-                    maxHP = Convert.ToUInt32(f[11]);
+                    maxHP = Dec2Uint(f[11]);
                     posX = f[16];
                     posY = f[17];
                     posZ = f[18];
@@ -82,12 +82,12 @@ namespace FFXIV.Framework.XIVHelper
                         break;
                     }
 
-                    var targetID = Convert.ToUInt32(f[5], 16);
+                    var targetID = Hex2Uint(f[5]);
                     var target = f[6];
-                    var sourceID = Convert.ToUInt32(f[1], 16);
+                    var sourceID = Hex2Uint(f[1]);
                     var source = f[2];
                     var duration = f[7];
-                    var skillID = Convert.ToUInt32(f[3], 16);
+                    var skillID = Hex2Uint(f[3]);
                     var skillName = f[4];
                     posX = f[8];
                     posY = f[9];
@@ -123,9 +123,9 @@ namespace FFXIV.Framework.XIVHelper
                         break;
                     }
 
-                    targetID = Convert.ToUInt32(f[6], 16);
+                    targetID = Hex2Uint(f[6]);
                     target = f[7];
-                    sourceID = Convert.ToUInt32(f[4], 16);
+                    sourceID = Hex2Uint(f[4]);
                     source = f[5];
                     duration = f[3];
                     var buffName = f[2];
@@ -153,9 +153,9 @@ namespace FFXIV.Framework.XIVHelper
                         break;
                     }
 
-                    targetID = Convert.ToUInt32(f[6], 16);
+                    targetID = Hex2Uint(f[6]);
                     target = f[7];
-                    sourceID = Convert.ToUInt32(f[4], 16);
+                    sourceID = Hex2Uint(f[4]);
                     source = f[5];
                     buffName = f[2];
 
@@ -189,6 +189,42 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             return formatedLogLine;
+        }
+
+        private static uint Hex2Uint(string hex)
+        {
+            if (uint.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint v))
+            {
+                return v;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        private static uint Dec2Uint(string dec)
+        {
+            if (uint.TryParse(dec, NumberStyles.Number, CultureInfo.InvariantCulture, out uint v))
+            {
+                return v;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        private static byte Hex2Byte(string hex)
+        {
+            if (byte.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte v))
+            {
+                return v;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 
