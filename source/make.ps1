@@ -11,9 +11,16 @@ function EndMake() {
     exit
 }
 
-$msbuild = "C:\Program Files\Microsoft Visual Studio\2022\Professional\Msbuild\Current\Bin\MSBuild.exe"
-if (!(Test-Path $msbuild)) {
-    $msbuild = "C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Current\Bin\MSBuild.exe"
+$msbuild = ""
+foreach ($f in (
+    "C:\Program Files\Microsoft Visual Studio\2022\Professional\Msbuild\Current\Bin\MSBuild.exe",
+    "C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe",
+    "C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Current\Bin\MSBuild.exe")) {
+
+    if ((Test-Path $f)) {
+        $msbuild = $f
+        break
+    }
 }
 
 $startdir = Get-Location
