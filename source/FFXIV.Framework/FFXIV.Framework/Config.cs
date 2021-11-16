@@ -330,6 +330,15 @@ namespace FFXIV.Framework
             set => this.SetProperty(ref this.isForceFlushSharlayanResources, value);
         }
 
+
+        private bool isEnabledOutputDebugLog;
+
+        public bool IsEnabledOutputDebugLog
+        {
+            get => this.isEnabledOutputDebugLog;
+            set => this.SetProperty(ref this.isEnabledOutputDebugLog, value);
+        }
+
         [XmlIgnore]
         public bool SupportWin7 => SupportWin7Default;
 

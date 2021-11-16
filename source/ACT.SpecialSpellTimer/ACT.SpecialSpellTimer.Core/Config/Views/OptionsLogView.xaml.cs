@@ -27,6 +27,8 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
         public Settings Config => Settings.Default;
 
+        public FFXIV.Framework.Config FrameworkConfig => FFXIV.Framework.Config.Instance;
+
         private System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog()
         {
             Description = "ログの保存先を選択してください。",

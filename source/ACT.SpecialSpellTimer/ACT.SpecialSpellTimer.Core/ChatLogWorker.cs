@@ -91,6 +91,11 @@ namespace ACT.SpecialSpellTimer
 
             this.worker.Elapsed += (x, y) => this.Write();
             this.worker.Start();
+
+            LogParser.WriteLineDebugLogDelegate = (timestamp, line) =>
+            {
+                this.LogBuffer.AppendLine($"[{timestamp:HH:mm:ss.fff}] {line} [DEBUG]");
+            };
         }
 
         public void End()

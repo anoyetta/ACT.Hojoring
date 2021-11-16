@@ -214,6 +214,7 @@
   <system:String x:Key="Options_EnabledLog">保存日志</system:String>
   <system:String x:Key="Options_LogDirectory">保存位置</system:String>
   <system:String x:Key="Options_Browse">浏览</system:String>
+  <system:String x:Key="Options_EnabledOutputDebugLog">Output internal logs (for DEBUG)</system:String>
 
   <system:String x:Key="Options_ResetOnWipeout">灭团重置计时器.</system:String>
   <system:String x:Key="Options_ResetNotifyToACT">重置时向ACT发送通知</system:String>

@@ -7,6 +7,8 @@ namespace FFXIV.Framework.XIVHelper
 {
     public static partial class LogParser
     {
+        public static Action<DateTime, string> WriteLineDebugLogDelegate { get; set; }
+
         public static void RaiseLog(
             DateTime timestamp,
             IEnumerable<string> logs)
@@ -24,7 +26,9 @@ namespace FFXIV.Framework.XIVHelper
 
             foreach (var log in logs)
             {
-                output.WriteLine(LogMessageType.ChatLog, timestamp, FormatLogLine(log));
+                var line = FormatLogLine(log);
+                WriteLineDebugLogDelegate?.Invoke(timestamp, $"00|{line}");
+                output.WriteLine(LogMessageType.ChatLog, timestamp, line);
             }
         }
 
@@ -43,7 +47,9 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            output.WriteLine(LogMessageType.ChatLog, timestamp, FormatLogLine(log));
+            var line = FormatLogLine(log);
+            WriteLineDebugLogDelegate?.Invoke(timestamp, $"00|{line}");
+            output.WriteLine(LogMessageType.ChatLog, timestamp, line);
         }
 
         private const string GameEchoChatCode = "0038";

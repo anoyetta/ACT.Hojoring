@@ -214,6 +214,7 @@
   <system:String x:Key="Options_EnabledLog">로그 저장</system:String>
   <system:String x:Key="Options_LogDirectory">로그 저장 폴더</system:String>
   <system:String x:Key="Options_Browse">찾아보기</system:String>
+  <system:String x:Key="Options_EnabledOutputDebugLog">Output internal logs (for DEBUG)</system:String>
 
   <system:String x:Key="Options_ResetOnWipeout">전멸 시 카운터 재설정</system:String>
   <system:String x:Key="Options_ResetNotifyToACT">리셋 시 ACT 본체에 "end" 전송</system:String>
