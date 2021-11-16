@@ -530,18 +530,6 @@ namespace ACT.SpecialSpellTimer
         }
 
         /// <summary>
-        /// ツールチップのサフィックス
-        /// </summary>
-        /// <remarks>
-        /// ツールチップは計4charsで構成されるが先頭1文字目が可変で残り3文字が固定となっている</remarks>
-        public const string TooltipSuffix = "\u0001\u0001\uFFFD";
-
-        /// <summary>
-        /// ツールチップで残るリプレースメントキャラ
-        /// </summary>
-        public const string TooltipReplacementChar = "\uFFFD";
-
-        /// <summary>
         /// ツールチップシンボルを除去する
         /// </summary>
         /// <param name="logLine"></param>
@@ -551,30 +539,28 @@ namespace ACT.SpecialSpellTimer
         {
             var result = logLine;
 
-            // エフェクトに付与されるツールチップ文字を除去する
-            if (Settings.Default.RemoveTooltipSymbols)
+            if (!Settings.Default.RemoveTooltipSymbols)
             {
-                DumpTooltipLogSample(result);
-
-                // 4文字分のツールチップ文字を除去する
-                int index;
-                if ((index = result.IndexOf(
-                    TooltipSuffix,
-                    0,
-                    StringComparison.Ordinal)) > -1)
-                {
-                    const int removeLength = 4;
-                    var startIndex = index - 1;
-
-                    if (startIndex >= 0)
-                    {
-                        result = result.Remove(startIndex, removeLength);
-                    }
-                }
-
-                // 残ったReplacementCharを除去する
-                result = result.Replace(TooltipReplacementChar, string.Empty);
+                return result;
             }
+
+            if (!logLine.StartsWith($"{LogMessageType.ChatLog.ToHex()}:"))
+            {
+                return result;
+            }
+
+            DumpTooltipLogSample(result);
+
+            // U+E000-U+EFFF の特殊文字を除去する
+            result = result
+                .Where(x => x < '\uE000' || '\uEFFF' < x)
+                .Select(c => c.ToString())
+                .Aggregate((a, b) => $"{a}{b}");
+
+            // Trimをかける
+            var parts = result.Split(':');
+            parts[parts.Length - 1] = parts[parts.Length - 1].Trim();
+            result = string.Join(":", parts);
 
             return result;
         }
