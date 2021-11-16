@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <timeline>
   <name>極ツクヨミ討滅戦</name>
-  <rev>rev1</rev>
+  <rev>rev2</rev>
   <description>
     極ツクヨミ討滅戦向けのスペスペたいむ定義です。
   </description>
@@ -9,7 +9,7 @@
   <zone>Castrum Fluminis,The Minstrel's Ballad: Tsukuyomi's Pain</zone>
   <locale>JA</locale>
   <entry>ENTRY</entry>
-  <start>0039:戦闘開始！</start>
+  <start>0039::戦闘開始！</start>
 
   <t text="自分にマーカ" sync="(1B:.{8}:[mex]:|[mex]に「マーキング」の効果。)" notice="自分にマーカー。">
     <v-notice
