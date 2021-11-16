@@ -27,7 +27,12 @@ namespace FFXIV.Framework.XIVHelper
             foreach (var log in logs)
             {
                 var line = FormatLogLine(log);
-                WriteLineDebugLogDelegate?.Invoke(timestamp, $"00|{line}");
+
+                if (Config.Instance.IsEnabledOutputDebugLog)
+                {
+                    WriteLineDebugLogDelegate?.Invoke(timestamp, $"00|{line}");
+                }
+
                 output.WriteLine(LogMessageType.ChatLog, timestamp, line);
             }
         }
@@ -48,7 +53,12 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             var line = FormatLogLine(log);
-            WriteLineDebugLogDelegate?.Invoke(timestamp, $"00|{line}");
+
+            if (Config.Instance.IsEnabledOutputDebugLog)
+            {
+                WriteLineDebugLogDelegate?.Invoke(timestamp, $"00|{line}");
+            }
+
             output.WriteLine(LogMessageType.ChatLog, timestamp, line);
         }
 
