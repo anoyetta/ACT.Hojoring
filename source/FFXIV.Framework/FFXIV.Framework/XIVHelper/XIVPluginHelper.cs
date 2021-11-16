@@ -20,6 +20,7 @@ using FFXIV_ACT_Plugin.Common.Models;
 using FFXIV_ACT_Plugin.Logfile;
 using Microsoft.MinIoC;
 using Microsoft.VisualBasic.FileIO;
+using Sharlayan.Core;
 using Sharlayan.Core.Enums;
 
 namespace FFXIV.Framework.XIVHelper
@@ -484,7 +485,7 @@ namespace FFXIV.Framework.XIVHelper
                 // メッセージタイプを抽出する
                 var messagetype = logInfo.detectedType;
 
-                // メッセージタイプの文字列を除去する    
+                // メッセージタイプの文字列を除去する
                 line = LogMessageTypeExtensions.RemoveLogMessageType(messagetype, line);
 
                 // メッセージ部分だけを抽出する
@@ -1198,6 +1199,7 @@ namespace FFXIV.Framework.XIVHelper
             OverlayType type)
         {
             var targetEx = default(CombatantEx);
+            var targetInfo = default(TargetInfo);
 
             if (!this.IsAvailable)
             {
@@ -1213,8 +1215,23 @@ namespace FFXIV.Framework.XIVHelper
             switch (type)
             {
                 case OverlayType.Target:
-                    // Target はXIVプラグインから取得する
-                    targetEx = CombatantsManager.Instance.GetCombatantMain(player.TargetID);
+                    if (player.TargetID != 0)
+                    {
+                        // TargetID に明確な値が入っている場合はそのまま使用する
+                        targetEx = CombatantsManager.Instance.GetCombatantMain(player.TargetID);
+                    }
+                    else
+                    {
+                        // TargetID が0だった場合はsharlayanのTarget情報も参照する
+                        targetInfo = SharlayanHelper.Instance.TargetInfo;
+                        if (targetInfo == null)
+                        {
+                            return targetEx;
+                        }
+
+                        targetEx = CombatantsManager.Instance.GetCombatantMain(targetInfo.CurrentTargetID);
+                    }
+
                     break;
 
                 case OverlayType.TargetOfTarget:
@@ -1225,7 +1242,7 @@ namespace FFXIV.Framework.XIVHelper
                 case OverlayType.FocusTarget:
                 case OverlayType.HoverTarget:
                     // FocusTarget, HoverTarget はsharlayan経由で取得する
-                    var targetInfo = SharlayanHelper.Instance.TargetInfo;
+                    targetInfo = SharlayanHelper.Instance.TargetInfo;
                     if (targetInfo == null)
                     {
                         return targetEx;
