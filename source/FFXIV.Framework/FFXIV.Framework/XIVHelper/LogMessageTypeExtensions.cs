@@ -29,6 +29,10 @@ namespace FFXIV.Framework.XIVHelper
         public static LogMessageType[] GetValues()
             => LazyLogMessageTypeTextStore.Value.Select(x => x.Key).ToArray();
 
+        public static string ToHex(
+            this LogMessageType type)
+            => ((byte)type).ToString("X2");
+
         public static string RemoveLogMessageType(
             LogMessageType type,
             string logLine)

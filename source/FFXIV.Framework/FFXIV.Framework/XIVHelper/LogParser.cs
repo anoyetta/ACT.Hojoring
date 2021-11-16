@@ -16,7 +16,7 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             var fmt = default(FormattableString);
-            var typeText = ((byte)type).ToString("X2");
+            var typeText = type.ToHex();
 
             switch (type)
             {
