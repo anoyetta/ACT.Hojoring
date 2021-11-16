@@ -21,33 +21,17 @@ namespace ACT.SpecialSpellTimer
     public class LogBuffer :
         IDisposable
     {
-        #region Constants
-
         /// <summary>
         /// 空のログリスト
         /// </summary>
         public static readonly List<XIVLog> EmptyLogLineList = new List<XIVLog>();
-
-        /// <summary>
-        /// ツールチップのサフィックス
-        /// </summary>
-        /// <remarks>
-        /// ツールチップは計4charsで構成されるが先頭1文字目が可変で残り3文字が固定となっている</remarks>
-        public const string TooltipSuffix = "\u0001\u0001\uFFFD";
-
-        /// <summary>
-        /// ツールチップで残るリプレースメントキャラ
-        /// </summary>
-        public const string TooltipReplacementChar = "\uFFFD";
-
-        #endregion Constants
 
 #if DEBUG
         private static readonly bool IsEnabledGetLogLinesDump = false;
 #endif
 
         private readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer = new Lazy<ConcurrentQueue<XIVLog>>(()
-            => XIVPluginHelper.Instance.SubscribeXIVLog(() => true));
+                    => XIVPluginHelper.Instance.SubscribeXIVLog(() => true));
 
         public ConcurrentQueue<XIVLog> XIVLogQueue => LazyXIVLogBuffer.Value;
 
@@ -544,6 +528,18 @@ namespace ACT.SpecialSpellTimer
 
             return IgnoreDetailLogKeywords.Any(x => logLine.Contains(x));
         }
+
+        /// <summary>
+        /// ツールチップのサフィックス
+        /// </summary>
+        /// <remarks>
+        /// ツールチップは計4charsで構成されるが先頭1文字目が可変で残り3文字が固定となっている</remarks>
+        public const string TooltipSuffix = "\u0001\u0001\uFFFD";
+
+        /// <summary>
+        /// ツールチップで残るリプレースメントキャラ
+        /// </summary>
+        public const string TooltipReplacementChar = "\uFFFD";
 
         /// <summary>
         /// ツールチップシンボルを除去する
