@@ -570,7 +570,7 @@ namespace ACT.SpecialSpellTimer
         {
 #if !DEBUG
             return;
-#endif
+#else
             if (!logLine.EndsWith("の効果。"))
             {
                 return;
@@ -592,6 +592,7 @@ namespace ACT.SpecialSpellTimer
 
                 System.Diagnostics.Debug.WriteLine($"Tooltip-> {chars.Aggregate((a, b) => $"{a} {b}")}");
             }
+#endif
         }
 
         public static string RemoveWorldName(
