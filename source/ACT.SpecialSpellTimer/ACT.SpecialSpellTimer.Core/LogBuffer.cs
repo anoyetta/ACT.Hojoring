@@ -31,7 +31,7 @@ namespace ACT.SpecialSpellTimer
 #endif
 
         private readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer = new Lazy<ConcurrentQueue<XIVLog>>(()
-                    => XIVPluginHelper.Instance.SubscribeXIVLog(() => true));
+                                                        => XIVPluginHelper.Instance.SubscribeXIVLog(() => true));
 
         public ConcurrentQueue<XIVLog> XIVLogQueue => LazyXIVLogBuffer.Value;
 
@@ -554,6 +554,8 @@ namespace ACT.SpecialSpellTimer
             // エフェクトに付与されるツールチップ文字を除去する
             if (Settings.Default.RemoveTooltipSymbols)
             {
+                DumpTooltipLogSample(result);
+
                 // 4文字分のツールチップ文字を除去する
                 int index;
                 if ((index = result.IndexOf(
@@ -577,6 +579,35 @@ namespace ACT.SpecialSpellTimer
             return result;
         }
 
+        private unsafe static void DumpTooltipLogSample(
+            string logLine)
+        {
+#if !DEBUG
+            return;
+#endif
+            if (!logLine.EndsWith("の効果。"))
+            {
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"Tooltip-> {logLine}");
+
+            fixed (char* ps = logLine)
+            {
+                var chars = new List<string>();
+
+                var p = (byte*)ps;
+                for (int i = 0; i < logLine.Length * 2; i += 2)
+                {
+                    var bL = *(p + i);
+                    var bH = *(p + i + 1);
+                    chars.Add($"U+{bH:X2}{bL:X2}");
+                }
+
+                System.Diagnostics.Debug.WriteLine($"Tooltip-> {chars.Aggregate((a, b) => $"{a} {b}")}");
+            }
+        }
+
         public static string RemoveWorldName(
             string logLine)
         {
@@ -598,9 +629,9 @@ namespace ACT.SpecialSpellTimer
             return result;
         }
 
-        #endregion ログ処理
+#endregion ログ処理
 
-        #region その他のメソッド
+#region その他のメソッド
 
         private static (float X, float Y, float Z) previousPos = (0, 0, 0);
 
@@ -689,6 +720,6 @@ namespace ACT.SpecialSpellTimer
             }
         }
 
-        #endregion その他のメソッド
+#endregion その他のメソッド
     }
 }
