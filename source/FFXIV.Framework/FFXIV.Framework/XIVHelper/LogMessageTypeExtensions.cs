@@ -7,17 +7,18 @@ namespace FFXIV.Framework.XIVHelper
 {
     public static class LogMessageTypeExtensions
     {
-        private static readonly Lazy<Dictionary<LogMessageType, string>> LazyLogMessageTypeTextStore = new Lazy<Dictionary<LogMessageType, string>>(() =>
-        {
-            var d = new Dictionary<LogMessageType, string>();
-
-            foreach (LogMessageType e in Enum.GetValues(typeof(LogMessageType)))
+        private static readonly Lazy<Dictionary<LogMessageType, string>> LazyLogMessageTypeTextStore =
+            new Lazy<Dictionary<LogMessageType, string>>(() =>
             {
-                d.Add(e, e.ToString());
-            }
+                var d = new Dictionary<LogMessageType, string>();
 
-            return d;
-        });
+                foreach (LogMessageType e in Enum.GetValues(typeof(LogMessageType)))
+                {
+                    d.Add(e, e.ToString());
+                }
+
+                return d;
+            });
 
         public static string ToStringEx(
             this LogMessageType type)
@@ -32,6 +33,10 @@ namespace FFXIV.Framework.XIVHelper
         public static string ToHex(
             this LogMessageType type)
             => ((byte)type).ToString("X2");
+
+        public static string ToKeyword(
+           this LogMessageType type)
+            => $"] {type.ToHex()}:";
 
         public static string RemoveLogMessageType(
             LogMessageType type,

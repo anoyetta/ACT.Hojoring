@@ -177,7 +177,6 @@
     <Compile Include="XIVHelper\XIVLog.cs" />
     <Compile Include="XIVHelper\XIVPluginHelper.cs" />
     <Compile Include="XIVHelper\Jobs.cs" />
-    <Compile Include="XIVHelper\LogMessageTypeEx.cs" />
     <Compile Include="XIVHelper\NameStyles.cs" />
     <Compile Include="XIVHelper\PCNameDictionary.cs" />
     <Compile Include="XIVHelper\PCOrder.cs" />
