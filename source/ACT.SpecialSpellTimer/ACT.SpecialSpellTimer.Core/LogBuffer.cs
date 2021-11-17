@@ -30,8 +30,8 @@ namespace ACT.SpecialSpellTimer
         private static readonly bool IsEnabledGetLogLinesDump = false;
 #endif
 
-        private readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer = new Lazy<ConcurrentQueue<XIVLog>>(()
-                                                        => XIVPluginHelper.Instance.SubscribeXIVLog(() => true));
+        private readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer =
+            new Lazy<ConcurrentQueue<XIVLog>>(() => XIVPluginHelper.Instance.SubscribeXIVLog(() => true));
 
         public ConcurrentQueue<XIVLog> XIVLogQueue => LazyXIVLogBuffer.Value;
 
@@ -457,12 +457,12 @@ namespace ACT.SpecialSpellTimer
         };
 
         private static readonly Regex DefeatedLogRegex = new Regex(
-            @"19:[0-9a-fA-F]{8}:(?<player>.+?):",
+            LogMessageType.Death.ToHex() + @":[0-9a-fA-F]{8}:(?<player>.+?):",
             RegexOptions.Compiled);
 
         private bool IsDefeated(string logLine)
         {
-            if (!logLine.StartsWith("19:"))
+            if (!logLine.StartsWith($"{LogMessageType.Death.ToHex()}:"))
             {
                 return false;
             }
@@ -565,7 +565,7 @@ namespace ACT.SpecialSpellTimer
             return result;
         }
 
-        private unsafe static void DumpTooltipLogSample(
+        private static unsafe void DumpTooltipLogSample(
             string logLine)
         {
 #if !DEBUG
@@ -599,14 +599,15 @@ namespace ACT.SpecialSpellTimer
             string logLine)
         {
             var result = logLine;
+            var code = LogMessageType.ChatLog.ToHex();
 
             if (!Settings.Default.RemoveWorldName)
             {
                 return result;
             }
 
-            if (!logLine.Contains("] 00:") &&
-                !logLine.StartsWith("00:"))
+            if (!logLine.Contains($"] {code}:") &&
+                !logLine.StartsWith($"{code}:"))
             {
                 return result;
             }
@@ -616,9 +617,9 @@ namespace ACT.SpecialSpellTimer
             return result;
         }
 
-#endregion ログ処理
+        #endregion ログ処理
 
-#region その他のメソッド
+        #region その他のメソッド
 
         private static (float X, float Y, float Z) previousPos = (0, 0, 0);
 
@@ -707,6 +708,6 @@ namespace ACT.SpecialSpellTimer
             }
         }
 
-#endregion その他のメソッド
+        #endregion その他のメソッド
     }
 }
