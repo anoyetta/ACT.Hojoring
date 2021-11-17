@@ -615,7 +615,7 @@ namespace FFXIV.Framework.XIVHelper
         /// </remarks>
         private static readonly Regex DamageLogPattern =
             new Regex(
-                @"^00:..(29|a9|2d|ad):",
+                $@"^{LogMessageType.ChatLog.ToHex()}:..(29|a9|2d|ad):",
                 RegexOptions.Compiled |
                 RegexOptions.IgnoreCase |
                 RegexOptions.ExplicitCapture);
@@ -628,7 +628,7 @@ namespace FFXIV.Framework.XIVHelper
         public static bool IsDamageLog(
             string logLine)
         {
-            if (!logLine.StartsWith("00:"))
+            if (!logLine.StartsWith($"{LogMessageType.ChatLog.ToHex()}:"))
             {
                 return false;
             }

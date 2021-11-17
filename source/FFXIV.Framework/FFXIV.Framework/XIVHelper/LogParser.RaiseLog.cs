@@ -30,7 +30,7 @@ namespace FFXIV.Framework.XIVHelper
 
                 if (Config.Instance.IsEnabledOutputDebugLog)
                 {
-                    WriteLineDebugLogDelegate?.Invoke(timestamp, $"00|{line}");
+                    WriteLineDebugLogDelegate?.Invoke(timestamp, $"{LogMessageType.ChatLog.ToHex()}|{line}");
                 }
 
                 output.WriteLine(LogMessageType.ChatLog, timestamp, line);
@@ -56,7 +56,7 @@ namespace FFXIV.Framework.XIVHelper
 
             if (Config.Instance.IsEnabledOutputDebugLog)
             {
-                WriteLineDebugLogDelegate?.Invoke(timestamp, $"00|{line}");
+                WriteLineDebugLogDelegate?.Invoke(timestamp, $"{LogMessageType.ChatLog.ToHex()}|{line}");
             }
 
             output.WriteLine(LogMessageType.ChatLog, timestamp, line);
