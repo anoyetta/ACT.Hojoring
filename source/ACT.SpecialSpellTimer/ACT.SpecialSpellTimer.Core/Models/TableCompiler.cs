@@ -124,6 +124,9 @@ namespace ACT.SpecialSpellTimer.Models
             {
                 lock (this)
                 {
+                    // sharlayanにReloadを要求する
+                    SharlayanHelper.Instance.EnqueueReload();
+
                     this.isQueueRecompile = true;
                     this.lastQueueTimestamp = DateTime.Now;
                 }
