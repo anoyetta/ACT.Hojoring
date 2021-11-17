@@ -4,6 +4,8 @@ using System.Windows.Media;
 using ACT.SpecialSpellTimer.Config;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
+using FFXIV.Framework.XIVHelper;
+using FFXIV_ACT_Plugin.Logfile;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -196,17 +198,84 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #endregion Common
 
+        #region Common Keywords
+
+        public static class CommonKeywords
+        {
+            public static readonly string CountdownStartPrefix = $"{LogMessageType.ChatLog.ToHex()}:0139::";
+            public static readonly string CombatStartPrefix = $"{LogMessageType.ChatLog.ToHex()}:0039::";
+
+            public static readonly string ExAddedCombatant = "[EX] +Combatant";
+            public static readonly string ExPos = "[EX] POS";
+            public static readonly string ExBeacon = "[EX] Beacon";
+            public static readonly string StartsUsing = "starts using";
+            public static readonly string HpAt = "HP at";
+            public static readonly string Marker1B = $"] {LogMessageType.TargetIcon.ToHex()}:";
+            public static readonly string Effect1A = $"] {LogMessageType.StatusAdd.ToHex()}:";
+            public static readonly string Ability15 = $"] {LogMessageType.ActionEffect.ToHex()}:";
+            public static readonly string AOE16 = $"] {LogMessageType.AOEActionEffect.ToHex()}:";
+            public static readonly string ChatDialog0044 = $"{LogMessageType.ChatLog.ToHex()}:0044:";
+            public static readonly string ChatDialog0839 = $"{LogMessageType.ChatLog.ToHex()}:0839:";
+            public static readonly string SpespeTimeStart = "/spespetime -a start";
+            public static readonly string SpespeTimeEnd = "/spespetime -a end";
+            public static readonly string AnalyzeTimeStart = "/analyze start";
+            public static readonly string AnalyzeTimeEnd = "/analyze end";
+            public static readonly string ChangedZone = $"] {LogMessageType.Territory.ToHex()}:";
+
+            public static readonly string AddedRegexPattern
+                = $@"\[EX\] \+Combatant name=(?<actor>.+) X=";
+
+            public static readonly string HPRateRegexPattern
+                = $@"\[.+?\] ..:(?<actor>.+?) HP at (?<hprate>\d+?)%";
+
+            public static readonly string StartsUsingRegexPattern
+                = LogMessageType.StartsCasting.ToHex()
+                + @":[0-9a-fA-F]{4}:(?<actor>.+?) starts using (?<skill>.+?) on (?<target>.+?)\.";
+
+            public static readonly string StartsUsingUnknownRegexPattern
+                = LogMessageType.StartsCasting.ToHex()
+                + @":[0-9a-fA-F]{4}:(?<actor>.+?) starts using (?<skill>.+?) on Unknown\.";
+
+            public static readonly string DialogRegexPattern
+                = LogMessageType.ChatLog.ToHex()
+                + @":(0044|0839):(?<speaker>[^:]+?):(?<dialog>.+?)$";
+
+            public static readonly string CombatStartRegexPattern
+                = LogMessageType.ChatLog.ToHex()
+                + @":(0038|0039)::(?<discription>.+?)$";
+
+            public static readonly string CombatEndRegexPattern
+                = LogMessageType.ChatLog.ToHex()
+                + @":[0-9a-fA-F]{4}::(?<discription>.+?)$";
+
+            public static readonly string EffectRegexPattern
+                = LogMessageType.StatusAdd.ToHex()
+                + @":(?<id>[0-9a-fA-F]{8}):(?<victim>[^:]+?) gains the effect of (?<effect>.+?) from (?<actor>.*?) for (?<duration>[0-9\.]*?) Seconds\.";
+
+            public static readonly string MarkerRegexPattern
+                = LogMessageType.TargetIcon.ToHex()
+                + @":(?<id>[0-9a-fA-F]{8}):(?<target>[^:]+?):[0-9a-fA-F]{4}:[0-9a-fA-F]{4}:(?<type>[0-9a-fA-F]{4}):[0-9a-fA-F]{4}:[0-9a-fA-F]{4}:[0-9a-fA-F]{4}";
+
+            public static readonly string NetworkAbilityRegexPattern
+                = LogMessageType.ActionEffect.ToHex()
+                + @":(?<id>[0-9a-fA-F]{8}):(?<actor>[^:]*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>[^:]+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>[^:]*?):";
+
+            public static readonly string NetworkAOEAbilityRegexPattern
+                = LogMessageType.AOEActionEffect.ToHex()
+                + @":(?<id>[0-9a-fA-F]{8}):(?<actor>[^:]*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>[^:]+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>[^:]*?):";
+        }
+
+        #endregion Common Keywords
+
         #region JA
 
-        public const string CombatStartNowJA = "0039::戦闘開始！";
-        private const string CombatStartRegexPattern = @"00:(0038|0039)::(?<discription>.+?)$";
-        private const string CombatEndRegexPattern = @"00:....::(?<discription>.+?)$";
+        public static readonly string CombatStartNowJA = $"{CommonKeywords.CombatStartPrefix}戦闘開始！";
 
         private static readonly IList<AnalyzeKeyword> KeywordsJA = new[]
         {
-            new AnalyzeKeyword() { Keyword = "[EX] +Combatant", Category = KewordTypes.Record },
-            new AnalyzeKeyword() { Keyword = "[EX] POS", Category = KewordTypes.Record },
-            new AnalyzeKeyword() { Keyword = "[EX] Beacon", Category = KewordTypes.Record },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExAddedCombatant, Category = KewordTypes.Record },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExPos, Category = KewordTypes.Record },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExBeacon, Category = KewordTypes.Record },
             new AnalyzeKeyword() { Keyword = "・エギ", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "フェアリー・", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "カーバンクル・", Category = KewordTypes.Pet },
@@ -220,27 +289,27 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "分身", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "を唱えた。", Category = KewordTypes.Cast },
             new AnalyzeKeyword() { Keyword = "の構え。", Category = KewordTypes.Cast },
-            new AnalyzeKeyword() { Keyword = "starts using", Category = KewordTypes.Cast },
-            new AnalyzeKeyword() { Keyword = "HP at", Category = KewordTypes.HPRate },
-            new AnalyzeKeyword() { Keyword = "[EX] +Combatant", Category = KewordTypes.Added },
-            new AnalyzeKeyword() { Keyword = "] 1B:", Category = KewordTypes.Marker },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.StartsUsing, Category = KewordTypes.Cast },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.HpAt, Category = KewordTypes.HPRate },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExAddedCombatant, Category = KewordTypes.Added },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.Marker1B, Category = KewordTypes.Marker },
             new AnalyzeKeyword() { Keyword = "「マーキング」", Category = KewordTypes.Marker },
-            new AnalyzeKeyword() { Keyword = "] 1A:", Category = KewordTypes.Effect },
-            new AnalyzeKeyword() { Keyword = "] 15:", Category = KewordTypes.NetworkAbility },
-            new AnalyzeKeyword() { Keyword = "] 16:", Category = KewordTypes.NetworkAOEAbility },
-            new AnalyzeKeyword() { Keyword = "00:0044:", Category = KewordTypes.Dialogue },
-            new AnalyzeKeyword() { Keyword = "00:0839:", Category = KewordTypes.Dialogue },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.Effect1A, Category = KewordTypes.Effect },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.Ability15, Category = KewordTypes.NetworkAbility },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.AOE16, Category = KewordTypes.NetworkAOEAbility },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ChatDialog0044, Category = KewordTypes.Dialogue },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ChatDialog0839, Category = KewordTypes.Dialogue },
             new AnalyzeKeyword() { Keyword = ImportLog, Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "/spespetime -a start", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "/analyze start", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039::戦闘開始", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039::戦闘開始まで5秒！", Category = KewordTypes.TimelineStart },
-            new AnalyzeKeyword() { Keyword = "/spespetime -a end", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "/analyze end", Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.SpespeTimeStart, Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.AnalyzeTimeStart, Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = CombatStartNowJA, Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = $"{CommonKeywords.CombatStartPrefix}戦闘開始まで5秒！", Category = KewordTypes.TimelineStart },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.SpespeTimeEnd, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.AnalyzeTimeEnd, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "の攻略を終了した。", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "ロットを行ってください。", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "01:Changed Zone", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "00:0139::戦闘開始まで", Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ChangedZone, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = $"{CommonKeywords.CountdownStartPrefix}戦闘開始まで", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLog, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "レディチェックを開始しました。", Category = KewordTypes.End },
@@ -256,7 +325,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(AddedRegex),
-                CreateRegex(@":\[EX\] \+Combatant name=(?<actor>.+) X=")
+                CreateRegex(CommonKeywords.AddedRegexPattern)
             },
             {
                 nameof(CastRegex),
@@ -264,35 +333,35 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(HPRateRegex),
-                CreateRegex(@"\[.+?\] ..:(?<actor>.+?) HP at (?<hprate>\d+?)%")
+                CreateRegex(CommonKeywords.HPRateRegexPattern)
             },
             {
                 nameof(StartsUsingRegex),
-                CreateRegex(@"14:....:(?<actor>.+?) starts using (?<skill>.+?) on (?<target>.+?)\.$")
+                CreateRegex(CommonKeywords.StartsUsingRegexPattern)
             },
             {
                 nameof(StartsUsingUnknownRegex),
-                CreateRegex(@"14:....:(?<actor>.+?) starts using (?<skill>.+?) on Unknown\.$")
+                CreateRegex(CommonKeywords.StartsUsingUnknownRegexPattern)
             },
             {
                 nameof(DialogRegex),
-                CreateRegex(@"00:(0044|0839):(?<speaker>.+?):(?<dialog>.+?)$")
+                CreateRegex(CommonKeywords.DialogRegexPattern)
             },
             {
                 nameof(CombatStartRegex),
-                CreateRegex(CombatStartRegexPattern)
+                CreateRegex(CommonKeywords.CombatStartRegexPattern)
             },
             {
                 nameof(CombatEndRegex),
-                CreateRegex(CombatEndRegexPattern)
+                CreateRegex(CommonKeywords.CombatEndRegexPattern)
             },
             {
                 nameof(EffectRegex),
-                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.*?) for (?<duration>[0-9\.]*?) Seconds.$")
+                CreateRegex(CommonKeywords.EffectRegexPattern)
             },
             {
                 nameof(MarkerRegex),
-                CreateRegex(@"1B:(?<id>.{8}):(?<target>.+?):0000:....:(?<type>....):0000:0000:0000:$")
+                CreateRegex(CommonKeywords.MarkerRegexPattern)
             },
             {
                 nameof(MarkingRegex),
@@ -300,11 +369,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(NetworkAbility),
-                CreateRegex(@"15:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+                CreateRegex(CommonKeywords.NetworkAbilityRegexPattern)
             },
             {
                 nameof(NetworkAOEAbility),
-                CreateRegex(@"16:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+                CreateRegex(CommonKeywords.NetworkAOEAbilityRegexPattern)
             },
         };
 
@@ -312,13 +381,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region EN
 
-        public const string CombatStartNowEN = "0039::Engage!";
+        public static readonly string CombatStartNowEN = $"{CommonKeywords.CombatStartPrefix}Engage!";
 
         private static readonly IList<AnalyzeKeyword> KeywordsEN = new[]
         {
-            new AnalyzeKeyword() { Keyword = "[EX] +Combatant", Category = KewordTypes.Record },
-            new AnalyzeKeyword() { Keyword = "[EX] POS", Category = KewordTypes.Record },
-            new AnalyzeKeyword() { Keyword = "[EX] Beacon", Category = KewordTypes.Record },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExAddedCombatant, Category = KewordTypes.Record },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExPos, Category = KewordTypes.Record },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExBeacon, Category = KewordTypes.Record },
             new AnalyzeKeyword() { Keyword = "-Egi", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "Eos", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "Selene", Category = KewordTypes.Pet },
@@ -333,27 +402,27 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "Bunshin", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "begins casting", Category = KewordTypes.Cast },
             new AnalyzeKeyword() { Keyword = "readies", Category = KewordTypes.Cast },
-            new AnalyzeKeyword() { Keyword = "starts using", Category = KewordTypes.Cast },
-            new AnalyzeKeyword() { Keyword = "HP at", Category = KewordTypes.HPRate },
-            new AnalyzeKeyword() { Keyword = "[EX] +Combatant", Category = KewordTypes.Added },
-            new AnalyzeKeyword() { Keyword = "] 1B:", Category = KewordTypes.Marker },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.StartsUsing, Category = KewordTypes.Cast },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.HpAt, Category = KewordTypes.HPRate },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExAddedCombatant, Category = KewordTypes.Added },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.Marker1B, Category = KewordTypes.Marker },
             new AnalyzeKeyword() { Keyword = "suffers the effect of Prey.", Category = KewordTypes.Marker },
-            new AnalyzeKeyword() { Keyword = "] 1A:", Category = KewordTypes.Effect },
-            new AnalyzeKeyword() { Keyword = "] 15:", Category = KewordTypes.NetworkAbility },
-            new AnalyzeKeyword() { Keyword = "] 16:", Category = KewordTypes.NetworkAOEAbility },
-            new AnalyzeKeyword() { Keyword = "00:0044:", Category = KewordTypes.Dialogue },
-            new AnalyzeKeyword() { Keyword = "00:0839:", Category = KewordTypes.Dialogue },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.Effect1A, Category = KewordTypes.Effect },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.Ability15, Category = KewordTypes.NetworkAbility },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.AOE16, Category = KewordTypes.NetworkAOEAbility },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ChatDialog0044, Category = KewordTypes.Dialogue },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ChatDialog0839, Category = KewordTypes.Dialogue },
             new AnalyzeKeyword() { Keyword = ImportLog, Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "/spespetime -a start", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "/analyze start", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039::Engage!", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039::Battle commencing in 5 seconds!", Category = KewordTypes.TimelineStart },
-            new AnalyzeKeyword() { Keyword = "/spespetime -a end", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "/analyze end", Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.SpespeTimeStart, Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.AnalyzeTimeStart, Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = CombatStartNowEN, Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = $"{CommonKeywords.CombatStartPrefix}Battle commencing in 5 seconds!", Category = KewordTypes.TimelineStart },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.SpespeTimeEnd, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.AnalyzeTimeEnd, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "has ended.", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "Cast your lot.", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "01:Changed Zone", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "00:0139::", Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ChangedZone, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.CountdownStartPrefix, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLog, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "uses", Category = KewordTypes.Action },    //not used in E1s and E2s instead of 'casts',considering deleting.
@@ -368,7 +437,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(AddedRegex),
-                CreateRegex(@":\[EX\] \+Combatant name=(?<actor>.+) X=")
+                CreateRegex(CommonKeywords.AddedRegexPattern)
             },
             {
                 nameof(CastRegex),
@@ -376,35 +445,35 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(HPRateRegex),
-                CreateRegex(@"\[.+?\] ..:(?<actor>.+?) HP at (?<hprate>\d+?)%")
+                CreateRegex(CommonKeywords.HPRateRegexPattern)
             },
             {
                 nameof(StartsUsingRegex),
-                CreateRegex(@"14:....:(?<actor>.+?) starts using (?<skill>.+?) on (?<target>.+?)\.$")
+                CreateRegex(CommonKeywords.StartsUsingRegexPattern)
             },
             {
                 nameof(StartsUsingUnknownRegex),
-                CreateRegex(@"14:....:(?<actor>.+?) starts using (?<skill>.+?) on Unknown\.$")
+                CreateRegex(CommonKeywords.StartsUsingUnknownRegexPattern)
             },
             {
                 nameof(DialogRegex),
-                CreateRegex(@"00:(0044|0839):(?<speaker>.+?):(?<dialog>.+?)$")
+                CreateRegex(CommonKeywords.DialogRegexPattern)
             },
             {
                 nameof(CombatStartRegex),
-                CreateRegex(CombatStartRegexPattern)
+                CreateRegex(CommonKeywords.CombatStartRegexPattern)
             },
             {
                 nameof(CombatEndRegex),
-                CreateRegex(CombatEndRegexPattern)
+                CreateRegex(CommonKeywords.CombatEndRegexPattern)
             },
             {
                 nameof(EffectRegex),
-                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.*?) for (?<duration>[0-9\.]*?) Seconds.$")
+                CreateRegex(CommonKeywords.EffectRegexPattern)
             },
             {
                 nameof(MarkerRegex),
-                CreateRegex(@"1B:(?<id>.{8}):(?<target>.+?):0000:....:(?<type>....):0000:0000:0000:$")
+                CreateRegex(CommonKeywords.MarkerRegexPattern)
             },
             {
                 nameof(MarkingRegex),
@@ -412,11 +481,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(NetworkAbility),
-                CreateRegex(@"15:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+                CreateRegex(CommonKeywords.NetworkAbilityRegexPattern)
             },
             {
                 nameof(NetworkAOEAbility),
-                CreateRegex(@"16:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+                CreateRegex(CommonKeywords.NetworkAOEAbilityRegexPattern)
             },
         };
 
@@ -424,13 +493,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region KO
 
-        public const string CombatStartNowKO = "0039::전투 시작!";
+        public static readonly string CombatStartNowKO = $"{CommonKeywords.CombatStartPrefix}전투 시작!";
 
         private static readonly IList<AnalyzeKeyword> KeywordsKO = new[]
         {
-            new AnalyzeKeyword() { Keyword = "[EX] +Combatant", Category = KewordTypes.Record },
-            new AnalyzeKeyword() { Keyword = "[EX] POS", Category = KewordTypes.Record },
-            new AnalyzeKeyword() { Keyword = "[EX] Beacon", Category = KewordTypes.Record },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExAddedCombatant, Category = KewordTypes.Record },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExPos, Category = KewordTypes.Record },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExBeacon, Category = KewordTypes.Record },
             new AnalyzeKeyword() { Keyword = "에기", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "요정", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "카벙클" , Category = KewordTypes.Pet },
@@ -438,27 +507,27 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "데미바하무트", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "지상의 별", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "시전합니다.", Category = KewordTypes.Cast },
-            new AnalyzeKeyword() { Keyword = "starts using", Category = KewordTypes.Cast },
-            new AnalyzeKeyword() { Keyword = "HP at", Category = KewordTypes.HPRate },
-            new AnalyzeKeyword() { Keyword = "[EX] +Combatant", Category = KewordTypes.Added },
-            new AnalyzeKeyword() { Keyword = "] 1B:", Category = KewordTypes.Marker },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.StartsUsing, Category = KewordTypes.Cast },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.HpAt, Category = KewordTypes.HPRate },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExAddedCombatant, Category = KewordTypes.Added },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.Marker1B, Category = KewordTypes.Marker },
             new AnalyzeKeyword() { Keyword = "표식 효과를", Category = KewordTypes.Marker },
-            new AnalyzeKeyword() { Keyword = "] 1A:", Category = KewordTypes.Effect },
-            new AnalyzeKeyword() { Keyword = "] 15:", Category = KewordTypes.NetworkAbility },
-            new AnalyzeKeyword() { Keyword = "] 16:", Category = KewordTypes.NetworkAOEAbility },
-            new AnalyzeKeyword() { Keyword = "00:0044:", Category = KewordTypes.Dialogue },
-            new AnalyzeKeyword() { Keyword = "00:0839:", Category = KewordTypes.Dialogue },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.Effect1A, Category = KewordTypes.Effect },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.Ability15, Category = KewordTypes.NetworkAbility },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.AOE16, Category = KewordTypes.NetworkAOEAbility },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ChatDialog0044, Category = KewordTypes.Dialogue },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ChatDialog0839, Category = KewordTypes.Dialogue },
             new AnalyzeKeyword() { Keyword = ImportLog, Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "/spespetime -a start", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "/analyze start", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039::전투 시작!", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039::전투 시작 5초 전!", Category = KewordTypes.TimelineStart },
-            new AnalyzeKeyword() { Keyword = "/spespetime -a end", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "/analyze end", Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.SpespeTimeStart, Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.AnalyzeTimeStart, Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = CombatStartNowKO, Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = $"{CommonKeywords.CombatStartPrefix}전투 시작 5초 전!", Category = KewordTypes.TimelineStart },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.SpespeTimeEnd, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.AnalyzeTimeEnd, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "공략을 종료했습니다.", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "입찰을 진행하십시오", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "01:Changed Zone", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "00:0139::", Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ChangedZone, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.CountdownStartPrefix, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLog, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "준비 확인을 시작했습니다.", Category = KewordTypes.End },
@@ -473,7 +542,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(AddedRegex),
-                CreateRegex(@":\[EX\] \+Combatant name=(?<actor>.+) X=")
+                CreateRegex(CommonKeywords.AddedRegexPattern)
             },
             {
                 nameof(CastRegex),
@@ -481,35 +550,35 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(HPRateRegex),
-                CreateRegex(@"\[.+?\] ..:(?<actor>.+?) HP at (?<hprate>\d+?)%")
+                CreateRegex(CommonKeywords.HPRateRegexPattern)
             },
             {
                 nameof(StartsUsingRegex),
-                CreateRegex(@"14:....:(?<actor>.+?) starts using (?<skill>.+?) on (?<target>.+?)\.$")
+                CreateRegex(CommonKeywords.StartsUsingRegexPattern)
             },
             {
                 nameof(StartsUsingUnknownRegex),
-                CreateRegex(@"14:....:(?<actor>.+?) starts using (?<skill>.+?) on Unknown\.$")
+                CreateRegex(CommonKeywords.StartsUsingUnknownRegexPattern)
             },
             {
                 nameof(DialogRegex),
-                CreateRegex(@"00:(0044|0839):(?<speaker>.+?):(?<dialog>.+?)$")
+                CreateRegex(CommonKeywords.DialogRegexPattern)
             },
             {
                 nameof(CombatStartRegex),
-                CreateRegex(CombatStartRegexPattern)
+                CreateRegex(CommonKeywords.CombatStartRegexPattern)
             },
             {
                 nameof(CombatEndRegex),
-                CreateRegex(CombatEndRegexPattern)
+                CreateRegex(CommonKeywords.CombatEndRegexPattern)
             },
             {
                 nameof(EffectRegex),
-                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.*?) for (?<duration>[0-9\.]*?) Seconds.$")
+                CreateRegex(CommonKeywords.EffectRegexPattern)
             },
             {
                 nameof(MarkerRegex),
-                CreateRegex(@"1B:(?<id>.{8}):(?<target>.+?):0000:....:(?<type>....):0000:0000:0000:$")
+                CreateRegex(CommonKeywords.MarkerRegexPattern)
             },
             {
                 nameof(MarkingRegex),
@@ -517,11 +586,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(NetworkAbility),
-                CreateRegex(@"15:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+                CreateRegex(CommonKeywords.NetworkAbilityRegexPattern)
             },
             {
                 nameof(NetworkAOEAbility),
-                CreateRegex(@"16:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+                CreateRegex(CommonKeywords.NetworkAOEAbilityRegexPattern)
             },
         };
 
@@ -529,13 +598,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         #region CN
 
-        public const string CombatStartNowCN = "0039::战斗开始！";
+        public static readonly string CombatStartNowCN = $"{CommonKeywords.CombatStartPrefix}战斗开始！";
 
         private static readonly IList<AnalyzeKeyword> KeywordsCN = new[]
         {
-            new AnalyzeKeyword() { Keyword = "[EX] +Combatant", Category = KewordTypes.Record },
-            new AnalyzeKeyword() { Keyword = "[EX] POS", Category = KewordTypes.Record },
-            new AnalyzeKeyword() { Keyword = "[EX] Beacon", Category = KewordTypes.Record },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExAddedCombatant, Category = KewordTypes.Record },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExPos, Category = KewordTypes.Record },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExBeacon, Category = KewordTypes.Record },
             new AnalyzeKeyword() { Keyword = "之灵", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "朝日小仙女", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "夕月小仙女", Category = KewordTypes.Pet },
@@ -545,27 +614,27 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "地星", Category = KewordTypes.Pet },
             new AnalyzeKeyword() { Keyword = "正在咏唱", Category = KewordTypes.Cast },
             new AnalyzeKeyword() { Keyword = "正在发动", Category = KewordTypes.Cast },
-            new AnalyzeKeyword() { Keyword = "starts using", Category = KewordTypes.Cast },
-            new AnalyzeKeyword() { Keyword = "HP at", Category = KewordTypes.HPRate },
-            new AnalyzeKeyword() { Keyword = "[EX] +Combatant", Category = KewordTypes.Added },
-            new AnalyzeKeyword() { Keyword = "] 1B:", Category = KewordTypes.Marker },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.StartsUsing, Category = KewordTypes.Cast },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.HpAt, Category = KewordTypes.HPRate },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ExAddedCombatant, Category = KewordTypes.Added },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.Marker1B, Category = KewordTypes.Marker },
             new AnalyzeKeyword() { Keyword = "陷入了“猎物”效果", Category = KewordTypes.Marker },
-            new AnalyzeKeyword() { Keyword = "] 1A:", Category = KewordTypes.Effect },
-            new AnalyzeKeyword() { Keyword = "] 15:", Category = KewordTypes.NetworkAbility },
-            new AnalyzeKeyword() { Keyword = "] 16:", Category = KewordTypes.NetworkAOEAbility },
-            new AnalyzeKeyword() { Keyword = "00:0044:", Category = KewordTypes.Dialogue },
-            new AnalyzeKeyword() { Keyword = "00:0839:", Category = KewordTypes.Dialogue },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.Effect1A, Category = KewordTypes.Effect },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.Ability15, Category = KewordTypes.NetworkAbility },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.AOE16, Category = KewordTypes.NetworkAOEAbility },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ChatDialog0044, Category = KewordTypes.Dialogue },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ChatDialog0839, Category = KewordTypes.Dialogue },
             new AnalyzeKeyword() { Keyword = ImportLog, Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "/spespetime -a start", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "/analyze start", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039::战斗开始！", Category = KewordTypes.Start },
-            new AnalyzeKeyword() { Keyword = "00:0039::距离战斗开始还有5秒！", Category = KewordTypes.TimelineStart },
-            new AnalyzeKeyword() { Keyword = "/spespetime -a end", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "/analyze end", Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.SpespeTimeStart, Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.AnalyzeTimeStart, Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = CombatStartNowCN, Category = KewordTypes.Start },
+            new AnalyzeKeyword() { Keyword = $"{CommonKeywords.CombatStartPrefix}距离战斗开始还有5秒！", Category = KewordTypes.TimelineStart },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.SpespeTimeEnd, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.AnalyzeTimeEnd, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "结束了", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "00:0839:请掷骰。", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "01:Changed Zone", Category = KewordTypes.End },
-            new AnalyzeKeyword() { Keyword = "00:0139::", Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.ChangedZone, Category = KewordTypes.End },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.CountdownStartPrefix, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLog, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = WipeoutKeywords.WipeoutLogEcho, Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "发动了", Category = KewordTypes.Action },
@@ -579,7 +648,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(AddedRegex),
-                CreateRegex(@":\[EX\] \+Combatant name=(?<actor>.+) X=")
+                CreateRegex(CommonKeywords.AddedRegexPattern)
             },
             {
                 nameof(CastRegex),
@@ -587,35 +656,35 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(HPRateRegex),
-                CreateRegex(@"\[.+?\] ..:(?<actor>.+?) HP at (?<hprate>\d+?)%")
+                CreateRegex(CommonKeywords.HPRateRegexPattern)
             },
             {
                 nameof(StartsUsingRegex),
-                CreateRegex(@"14:....:(?<actor>.+?) starts using (?<skill>.+?) on (?<target>.+?)\.$")
+                CreateRegex(CommonKeywords.StartsUsingRegexPattern)
             },
             {
                 nameof(StartsUsingUnknownRegex),
-                CreateRegex(@"14:....:(?<actor>.+?) starts using (?<skill>.+?) on Unknown\.$")
+                CreateRegex(CommonKeywords.StartsUsingUnknownRegexPattern)
             },
             {
                 nameof(DialogRegex),
-                CreateRegex(@"00:(0044|0839):(?<speaker>.+?):(?<dialog>.+?)$")
+                CreateRegex(CommonKeywords.DialogRegexPattern)
             },
             {
                 nameof(CombatStartRegex),
-                CreateRegex(CombatStartRegexPattern)
+                CreateRegex(CommonKeywords.CombatStartRegexPattern)
             },
             {
                 nameof(CombatEndRegex),
-                CreateRegex(CombatEndRegexPattern)
+                CreateRegex(CommonKeywords.CombatEndRegexPattern)
             },
             {
                 nameof(EffectRegex),
-                CreateRegex(@"1A:(?<id>[0-9a-fA-F]{8}):(?<victim>.+?) gains the effect of (?<effect>.+?) from (?<actor>.*?) for (?<duration>[0-9\.]*?) Seconds.$")
+                CreateRegex(CommonKeywords.EffectRegexPattern)
             },
             {
                 nameof(MarkerRegex),
-                CreateRegex(@"1B:(?<id>.{8}):(?<target>.+?):0000:....:(?<type>....):0000:0000:0000:$")
+                CreateRegex(CommonKeywords.MarkerRegexPattern)
             },
             {
                 nameof(MarkingRegex),
@@ -623,11 +692,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(NetworkAbility),
-                CreateRegex(@"15:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+                CreateRegex(CommonKeywords.NetworkAbilityRegexPattern)
             },
             {
                 nameof(NetworkAOEAbility),
-                CreateRegex(@"16:(?<id>[0-9a-fA-F]{8}):(?<actor>.*?):(?<skill_id>[0-9a-fA-F]{2,4}):(?<skill>.+?):(?<victim_id>[0-9a-fA-F]{8}):(?<victim>.*?):")
+                CreateRegex(CommonKeywords.NetworkAOEAbilityRegexPattern)
             },
         };
 
