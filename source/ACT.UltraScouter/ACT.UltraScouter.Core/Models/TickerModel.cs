@@ -6,7 +6,6 @@ using ACT.UltraScouter.Config;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
-using FFXIV_ACT_Plugin.Logfile;
 using Prism.Mvvm;
 
 namespace ACT.UltraScouter.Models
@@ -220,9 +219,10 @@ namespace ACT.UltraScouter.Models
         };
 
         private static volatile uint HealerInCombatMPRecoverValue;
-        private static readonly string DoTHoTCode = LogMessageType.DoTHoT.ToHex();
 
-        private async void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
+        private void OnLogLineRead(
+            bool isImport,
+            LogLineEventArgs logInfo)
         {
             if (isImport)
             {
@@ -238,43 +238,41 @@ namespace ACT.UltraScouter.Models
 
                 this.semaphore = true;
 
-                await Task.Run(() =>
+                var config = Settings.Instance.MPTicker;
+
+                if ((DateTime.Now - this.lastSyncTimestamp).TotalSeconds <= config.ResyncInterval)
                 {
-                    var config = Settings.Instance.MPTicker;
+                    return;
+                }
 
-                    if ((DateTime.Now - this.lastSyncTimestamp).TotalSeconds <= config.ResyncInterval)
-                    {
-                        return;
-                    }
+                var sync = false;
+                var target = string.Empty;
+                var logLine = string.Empty;
 
+                if (logInfo.detectedType == 18)
+                {
                     // メッセージタイプの文字列を除去する
-                    var logLine = LogMessageTypeExtensions.RemoveLogMessageType(
+                    logLine = LogMessageTypeExtensions.RemoveLogMessageType(
                         logInfo.detectedType,
                         logInfo.logLine);
 
-                    var sync = false;
-                    var target = string.Empty;
-
-                    if (logInfo.detectedType == (int)LogMessageType.DoTHoT)
+                    if (config.IsSyncHoT)
                     {
-                        if (config.IsSyncHoT)
-                        {
-                            sync = logLine.Contains($"{DoTHoTCode}:") && logLine.Contains("HoT") && logLine.Contains(this.playerName);
-                            target = "HoT";
-                        }
-
-                        if (config.IsSyncDoT)
-                        {
-                            sync = logLine.Contains($"{DoTHoTCode}:") && logLine.Contains("DoT") && logLine.Contains(this.targetName);
-                            target = "DoT";
-                        }
+                        sync = logLine.Contains($"18:") && logLine.Contains("HoT") && logLine.Contains(this.playerName);
+                        target = "HoT";
                     }
 
-                    if (sync)
+                    if (config.IsSyncDoT)
                     {
-                        this.Sync(logLine, target);
+                        sync = logLine.Contains($"18:") && logLine.Contains("DoT") && logLine.Contains(this.targetName);
+                        target = "DoT";
                     }
-                });
+                }
+
+                if (sync)
+                {
+                    this.Sync(logLine, target);
+                }
             }
             finally
             {
