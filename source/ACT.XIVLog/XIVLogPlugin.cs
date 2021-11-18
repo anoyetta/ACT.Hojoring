@@ -284,7 +284,7 @@ namespace ACT.XIVLog
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private async void OnLogLineRead(
+        private void OnLogLineRead(
             bool isImport,
             LogLineEventArgs logInfo)
         {
@@ -295,24 +295,19 @@ namespace ACT.XIVLog
                 return;
             }
 
-            var xivlog = default(XIVLog);
-
-            await Task.Run(() =>
+            var xivlog = new XIVLog(isImport, logInfo);
+            if (string.IsNullOrEmpty(xivlog.Log))
             {
-                xivlog = new XIVLog(isImport, logInfo);
-                if (string.IsNullOrEmpty(xivlog.Log))
-                {
-                    return;
-                }
+                return;
+            }
 
-                LogQueue.Enqueue(xivlog);
+            LogQueue.Enqueue(xivlog);
 
-                if (!isImport)
-                {
-                    this.OpenXIVLog(logInfo.logLine);
-                    VideoCapture.Instance.DetectCapture(xivlog);
-                }
-            });
+            if (!isImport)
+            {
+                this.OpenXIVLog(logInfo.logLine);
+                VideoCapture.Instance.DetectCapture(xivlog);
+            }
         }
 
         public void EnqueueLogLine(
