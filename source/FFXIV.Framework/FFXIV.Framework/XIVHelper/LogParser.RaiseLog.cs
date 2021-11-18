@@ -26,11 +26,22 @@ namespace FFXIV.Framework.XIVHelper
 
             foreach (var log in logs)
             {
+                if (string.IsNullOrEmpty(log))
+                {
+                    continue;
+                }
+
                 var line = FormatLogLine(log);
+
+                // 念のため改行コードを除去する
+                line = line
+                    .Replace("\r\n", "\\n")
+                    .Replace("\r", "\\n")
+                    .Replace("\n", "\\n");
 
                 if (Config.Instance.IsEnabledOutputDebugLog)
                 {
-                    WriteLineDebugLogDelegate?.Invoke(timestamp, $"{LogMessageType.ChatLog.ToHex()}|{line}");
+                    WriteLineDebugLogDelegate?.Invoke(timestamp, $"{ChatLogCode}|{line}");
                 }
 
                 output.WriteLine(LogMessageType.ChatLog, timestamp, line);
@@ -52,17 +63,29 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
+            if (string.IsNullOrEmpty(log))
+            {
+                return;
+            }
+
             var line = FormatLogLine(log);
+
+            // 念のため改行コードを除去する
+            line = line
+                .Replace("\r\n", "\\n")
+                .Replace("\r", "\\n")
+                .Replace("\n", "\\n");
 
             if (Config.Instance.IsEnabledOutputDebugLog)
             {
-                WriteLineDebugLogDelegate?.Invoke(timestamp, $"{LogMessageType.ChatLog.ToHex()}|{line}");
+                WriteLineDebugLogDelegate?.Invoke(timestamp, $"{ChatLogCode}|{line}");
             }
 
             output.WriteLine(LogMessageType.ChatLog, timestamp, line);
         }
 
-        private const string GameEchoChatCode = "0038";
+        private static readonly string ChatLogCode = LogMessageType.ChatLog.ToHex();
+        private static readonly string GameEchoChatCode = "0038";
 
         private static string FormatLogLine(
             string log)
