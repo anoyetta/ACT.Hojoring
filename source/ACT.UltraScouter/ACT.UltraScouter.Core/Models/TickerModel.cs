@@ -6,6 +6,7 @@ using ACT.UltraScouter.Config;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
+using FFXIV_ACT_Plugin.Logfile;
 using Prism.Mvvm;
 
 namespace ACT.UltraScouter.Models
@@ -219,6 +220,7 @@ namespace ACT.UltraScouter.Models
         };
 
         private static volatile uint HealerInCombatMPRecoverValue;
+        private static readonly string DoTHoTCode = LogMessageType.DoTHoT.ToHex();
 
         private async void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
         {
@@ -253,16 +255,19 @@ namespace ACT.UltraScouter.Models
                     var sync = false;
                     var target = string.Empty;
 
-                    if (config.IsSyncHoT)
+                    if (logInfo.detectedType == (int)LogMessageType.DoTHoT)
                     {
-                        sync = logLine.Contains("18:") && logLine.Contains("HoT") && logLine.Contains(this.playerName);
-                        target = "HoT";
-                    }
+                        if (config.IsSyncHoT)
+                        {
+                            sync = logLine.Contains($"{DoTHoTCode}:") && logLine.Contains("HoT") && logLine.Contains(this.playerName);
+                            target = "HoT";
+                        }
 
-                    if (config.IsSyncDoT)
-                    {
-                        sync = logLine.Contains("18:") && logLine.Contains("DoT") && logLine.Contains(this.targetName);
-                        target = "DoT";
+                        if (config.IsSyncDoT)
+                        {
+                            sync = logLine.Contains($"{DoTHoTCode}:") && logLine.Contains("DoT") && logLine.Contains(this.targetName);
+                            target = "DoT";
+                        }
                     }
 
                     if (sync)
