@@ -249,7 +249,8 @@ namespace ACT.UltraScouter.Models
                 var target = string.Empty;
                 var logLine = string.Empty;
 
-                if (logInfo.detectedType == 18)
+                // 0x18 DoTHoTのとき
+                if (logInfo.detectedType == 0x18)
                 {
                     // メッセージタイプの文字列を除去する
                     logLine = LogMessageTypeExtensions.RemoveLogMessageType(
@@ -258,13 +259,13 @@ namespace ACT.UltraScouter.Models
 
                     if (config.IsSyncHoT)
                     {
-                        sync = logLine.Contains($"18:") && logLine.Contains("HoT") && logLine.Contains(this.playerName);
+                        sync = logLine.Contains("HoT") && logLine.Contains(this.playerName);
                         target = "HoT";
                     }
 
                     if (config.IsSyncDoT)
                     {
-                        sync = logLine.Contains($"18:") && logLine.Contains("DoT") && logLine.Contains(this.targetName);
+                        sync = logLine.Contains("DoT") && logLine.Contains(this.targetName);
                         target = "DoT";
                     }
                 }
