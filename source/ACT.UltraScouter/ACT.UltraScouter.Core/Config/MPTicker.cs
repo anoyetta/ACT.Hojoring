@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
@@ -13,6 +14,34 @@ namespace ACT.UltraScouter.Config
     public class MPTicker :
         BindableBase
     {
+        public MPTicker()
+        {
+            this.PropertyChanged += this.MPTicker_PropertyChanged;
+        }
+
+        public bool IsSuspendPropertyChanged { get; set; }
+
+        private void MPTicker_PropertyChanged(
+            object sender,
+            PropertyChangedEventArgs e)
+        {
+            if (this.IsSuspendPropertyChanged)
+            {
+                return;
+            }
+
+            switch (e.PropertyName)
+            {
+                case nameof(this.IsSyncDoT):
+                case nameof(this.IsSyncHoT):
+                case nameof(this.IsSyncMP):
+                    this.OnSyncTargetChanged?.Invoke(this, new EventArgs());
+                    break;
+            }
+        }
+
+        public EventHandler OnSyncTargetChanged { get; set; }
+
         private bool testMode;
 
         /// <summary>
