@@ -1076,9 +1076,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             this.TimelineName = tl.TimelineName;
             this.Revision = tl.Revision;
             this.Description = tl.Description;
+            this.Author = tl.Author;
+            this.License = tl.License;
             this.Zone = tl.Zone;
             this.Locale = tl.Locale;
             this.Entry = tl.Entry;
+            this.StartTrigger = tl.StartTrigger;
             this.EndTrigger = tl.EndTrigger;
             this.CompiledText = tl.CompiledText;
             this.HasError = tl.HasError;
