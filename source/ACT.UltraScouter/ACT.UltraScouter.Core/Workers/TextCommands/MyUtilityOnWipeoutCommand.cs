@@ -23,11 +23,6 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
         #endregion Lazy Singleton
 
-        private static readonly string WipeoutLog = "wipeout";
-
-        private static readonly string ChangedZoneLog = "01:Changed Zone to";
-        private static readonly string ContentStartLog = "の攻略を開始した。";
-
         public MyUtility Config => Settings.Instance.MyUtility;
 
         public void Subscribe()
@@ -56,7 +51,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
             this.StoreTankStance(logLine);
 
-            return logLine.Contains(WipeoutLog);
+            return logLine.Contains(WipeoutKeywords.Wipeout);
         }
 
         private void OnWipeout(
@@ -146,6 +141,17 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
         private volatile bool isZoneChanged;
 
+        /// <summary>
+        /// ChangedZoneRegex
+        /// </summary>
+        /// <remarks>
+        /// 01:153:Mist</remarks>
+        private static readonly Regex ChangedZoneRegex = new Regex(
+            "^01:[0-9]+:[^:]+$",
+            RegexOptions.Compiled);
+
+        private static readonly string ContentStartLog = "の攻略を開始した。";
+
         private bool WasZoneChanged(
             string logLine,
             out Match match)
@@ -160,7 +166,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
                 return false;
             }
 
-            if (logLine.Contains(ChangedZoneLog))
+            if (ChangedZoneRegex.IsMatch(logLine))
             {
                 this.isZoneChanged = true;
                 return true;
