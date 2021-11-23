@@ -1,7 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
+using ACT.UltraScouter.Config.UI.ViewModels;
 using ACT.UltraScouter.resources;
-using ACT.UltraScouter.ViewModels;
 using FFXIV.Framework.Globalization;
 
 namespace ACT.UltraScouter.Config.UI.Views
@@ -23,36 +23,48 @@ namespace ACT.UltraScouter.Config.UI.Views
             object sender,
             RoutedEventArgs e)
         {
-            var vm = this.DataContext as MPTickerViewModel;
+            var vm = this.DataContext as MPTickerConfigViewModel;
             if (vm == null)
             {
                 return;
             }
 
-            var config = vm.Config;
+            var config = vm.MPTicker;
 
-            config.OnSyncTargetChanged += (_, _) =>
+            config.OnSyncTargetChanged += (changedPropertyName) =>
             {
                 try
                 {
                     config.IsSuspendPropertyChanged = true;
 
-                    if (config.IsSyncDoT)
+                    switch (changedPropertyName)
                     {
-                        config.IsSyncHoT = false;
-                        config.IsSyncMP = false;
-                    }
+                        case nameof(MPTicker.IsSyncDoT):
+                            if (config.IsSyncDoT)
+                            {
+                                config.IsSyncHoT = false;
+                                config.IsSyncMP = false;
+                            }
 
-                    if (config.IsSyncHoT)
-                    {
-                        config.IsSyncDoT = false;
-                        config.IsSyncMP = false;
-                    }
+                            break;
 
-                    if (config.IsSyncMP)
-                    {
-                        config.IsSyncHoT = false;
-                        config.IsSyncDoT = false;
+                        case nameof(MPTicker.IsSyncHoT):
+                            if (config.IsSyncHoT)
+                            {
+                                config.IsSyncDoT = false;
+                                config.IsSyncMP = false;
+                            }
+
+                            break;
+
+                        case nameof(MPTicker.IsSyncMP):
+                            if (config.IsSyncMP)
+                            {
+                                config.IsSyncHoT = false;
+                                config.IsSyncDoT = false;
+                            }
+
+                            break;
                     }
                 }
                 finally

@@ -19,6 +19,7 @@ namespace ACT.UltraScouter.Config
             this.PropertyChanged += this.MPTicker_PropertyChanged;
         }
 
+        [XmlIgnore]
         public bool IsSuspendPropertyChanged { get; set; }
 
         private void MPTicker_PropertyChanged(
@@ -35,12 +36,13 @@ namespace ACT.UltraScouter.Config
                 case nameof(this.IsSyncDoT):
                 case nameof(this.IsSyncHoT):
                 case nameof(this.IsSyncMP):
-                    this.OnSyncTargetChanged?.Invoke(this, new EventArgs());
+                    this.OnSyncTargetChanged?.Invoke(e.PropertyName);
                     break;
             }
         }
 
-        public EventHandler OnSyncTargetChanged { get; set; }
+        [XmlIgnore]
+        public Action<string> OnSyncTargetChanged { get; set; }
 
         private bool testMode;
 
