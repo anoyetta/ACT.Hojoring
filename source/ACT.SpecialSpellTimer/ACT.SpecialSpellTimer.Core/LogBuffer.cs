@@ -571,6 +571,9 @@ namespace ACT.SpecialSpellTimer
 #if !DEBUG
             return;
 #else
+            // Tooltipシンボルをダンプするコード
+            // 重いので殺しておく
+#if false
             if (!logLine.EndsWith("の効果。"))
             {
                 return;
@@ -592,6 +595,8 @@ namespace ACT.SpecialSpellTimer
 
                 System.Diagnostics.Debug.WriteLine($"Tooltip-> {chars.Aggregate((a, b) => $"{a} {b}")}");
             }
+#endif
+            return;
 #endif
         }
 
