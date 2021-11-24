@@ -129,6 +129,8 @@ namespace FFXIV.Framework.XIVHelper
                     source = f[5];
                     duration = f[3];
                     var buffName = f[2];
+                    var buffID = f[1].PadLeft(4, '0');
+                    var buffExtraID = f[8].PadLeft(2, '0');
 
                     if (string.IsNullOrWhiteSpace(target))
                     {
@@ -140,7 +142,7 @@ namespace FFXIV.Framework.XIVHelper
                         source = CombatantsManager.Instance.GetCombatantMain(sourceID)?.Name ?? string.Empty;
                     }
 
-                    fmt = $"{typeText}:{targetID:X8}:{target} gains the effect of {buffName} from {source} for {duration} Seconds.";
+                    fmt = $"{typeText}:{targetID:X8}:{target} gains the effect of {buffName} from {source} for {duration} Seconds. BuffID: {buffID}-{buffExtraID}";
                     break;
 
                 case LogMessageType.StatusRemove:
@@ -158,6 +160,8 @@ namespace FFXIV.Framework.XIVHelper
                     sourceID = Hex2Uint(f[4]);
                     source = f[5];
                     buffName = f[2];
+                    buffID = f[1].PadLeft(4, '0');
+                    buffExtraID = f[8].PadLeft(2, '0');
 
                     if (string.IsNullOrWhiteSpace(target))
                     {
@@ -169,7 +173,7 @@ namespace FFXIV.Framework.XIVHelper
                         source = CombatantsManager.Instance.GetCombatantMain(sourceID)?.Name ?? string.Empty;
                     }
 
-                    fmt = $"{typeText}:{targetID:X8}:{target} loses the effect of {buffName} from {source}.";
+                    fmt = $"{typeText}:{targetID:X8}:{target} loses the effect of {buffName} from {source}. BuffID: {buffID}-{buffExtraID}";
                     break;
 
                 case LogMessageType.Gauge:
