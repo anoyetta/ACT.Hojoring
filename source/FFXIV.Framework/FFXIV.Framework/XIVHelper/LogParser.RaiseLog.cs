@@ -24,6 +24,8 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
+            var config = Config.Instance;
+
             foreach (var log in logs)
             {
                 if (string.IsNullOrEmpty(log))
@@ -39,7 +41,7 @@ namespace FFXIV.Framework.XIVHelper
                     .Replace("\r", "\\n")
                     .Replace("\n", "\\n");
 
-                if (Config.Instance.IsEnabledOutputDebugLog)
+                if (config.IsEnabledOutputDebugLog)
                 {
                     WriteLineDebugLogDelegate?.Invoke(timestamp, $"{ChatLogCode}|{line}");
                 }
