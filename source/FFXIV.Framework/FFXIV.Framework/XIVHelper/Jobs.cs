@@ -47,6 +47,8 @@ namespace FFXIV.Framework.XIVHelper
         BLU = 36,
         GNB = 37,
         DNC = 38,
+        SGE = 39,
+        RPR = 40
     }
 
     public enum Roles
@@ -195,9 +197,11 @@ namespace FFXIV.Framework.XIVHelper
             new Job() {ID = JobIDs.AST, Role = Roles.Healer, NameEN = "Astrologian", NameJA = "占星術師", NameFR = "Astromancien", NameDE = "Astrologe" , NameCN = "占星术士", NameKO = "점성술사", IsPopular = true},
             new Job() {ID = JobIDs.SAM, Role = Roles.MeleeDPS, NameEN = "Samurai", NameJA = "侍", NameFR = "Samoura\u00ef", NameDE = "Samurai" , NameCN = "武士", NameKO = "사무라이", IsPopular = true},
             new Job() {ID = JobIDs.RDM, Role = Roles.MagicDPS, NameEN = "Red Mage", NameJA = "赤魔道士", NameFR = "Mage Rouge", NameDE = "Rotmagier" , NameCN = "赤魔法师", NameKO = "적마도사", IsPopular = true},
-            new Job() {ID = JobIDs.BLU, Role = Roles.MagicDPS, NameEN = "Blue Mage", NameJA = "青魔道士", NameFR = "Mage Bleu", NameDE = "Blaumagier" , NameCN = "青魔法师", NameKO = "청마도사", IsPopular = false},
+            new Job() {ID = JobIDs.BLU, Role = Roles.MagicDPS, NameEN = "Blue Mage", NameJA = "青魔道士", NameFR = "Mage Bleu", NameDE = "Blaumagier" , NameCN = "青魔法师", NameKO = "청마도사", IsPopular = true},
             new Job() {ID = JobIDs.GNB, Role = Roles.Tank, NameEN = "Gunbreaker", NameJA = "ガンブレイカー", NameFR = "Pistosabreur", NameDE = "Revolverklinge" , NameCN = "绝枪战士", NameKO = "Gunbreaker", IsPopular = true},
             new Job() {ID = JobIDs.DNC, Role = Roles.RangeDPS, NameEN = "Dancer", NameJA = "踊り子", NameFR = "Danseur", NameDE = "Tänzer" , NameCN = "舞者", NameKO = "Dancer", IsPopular = true},
+            new Job() {ID = JobIDs.SGE, Role = Roles.Healer, NameEN = "Sage", NameJA = "賢者", NameFR = "Sage", NameDE = "Weiser" , NameCN = "賢者", NameKO = "Sage", IsPopular = true},
+            new Job() {ID = JobIDs.RPR, Role = Roles.MeleeDPS, NameEN = "Reaper", NameJA = "リーパー", NameFR = "Faucheur", NameDE = "Schnitter" , NameCN = "Reaper", NameKO = "Reaper", IsPopular = true},
         };
 
         public static IEnumerable<JobIDs> PopularJobIDs =>
@@ -260,17 +264,18 @@ namespace FFXIV.Framework.XIVHelper
 
     public static class JobIDExtenstions
     {
-        private static readonly Lazy<Dictionary<JobIDs, string>> LazyJobIDDictionary = new Lazy<Dictionary<JobIDs, string>>(() =>
-        {
-            var d = new Dictionary<JobIDs, string>();
-
-            foreach (JobIDs e in Enum.GetValues(typeof(JobIDs)))
+        private static readonly Lazy<Dictionary<JobIDs, string>> LazyJobIDDictionary
+            = new Lazy<Dictionary<JobIDs, string>>(() =>
             {
-                d.Add(e, e.ToString());
-            }
+                var d = new Dictionary<JobIDs, string>();
 
-            return d;
-        });
+                foreach (JobIDs e in Enum.GetValues(typeof(JobIDs)))
+                {
+                    d.Add(e, e.ToString());
+                }
+
+                return d;
+            });
 
         public static Job GetInfo(
             this JobIDs id)
