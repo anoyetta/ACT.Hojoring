@@ -124,7 +124,6 @@ namespace ACT.XIVLog
         private static readonly ConcurrentQueue<XIVLog> LogQueue = new ConcurrentQueue<XIVLog>();
         private ThreadWorker dumpLogTask;
         private StreamWriter writter;
-        private readonly StringBuilder writeBuffer = new StringBuilder(5120);
         private DateTime lastFlushTimestamp = DateTime.MinValue;
         private volatile bool isForceFlush = false;
         private int wipeoutCounter = 1;
@@ -186,12 +185,6 @@ namespace ACT.XIVLog
                 {
                     if (this.writter != null)
                     {
-                        if (this.writeBuffer.Length > 0)
-                        {
-                            this.writter.Write(this.writeBuffer.ToString());
-                            this.writeBuffer.Clear();
-                        }
-
                         this.writter.Flush();
                         this.writter.Close();
                         this.writter.Dispose();
@@ -207,7 +200,8 @@ namespace ACT.XIVLog
                             this.LogfileName,
                             FileMode.Append,
                             FileAccess.Write,
-                            FileShare.Read),
+                            FileShare.Read,
+                            64 * 1024),
                         new UTF8Encoding(config.WithBOM));
                     this.currentLogfileName = this.LogfileName;
 
@@ -234,21 +228,14 @@ namespace ACT.XIVLog
                         isNeedsFlush = true;
                     }
 
-                    this.writeBuffer.AppendLine(xivlog.ToCSVLine());
+                    this.writter.WriteLine(xivlog.ToCSVLine());
                     this.lastWroteTimestamp = DateTime.Now;
                     Thread.Yield();
                 }
 
                 if (isNeedsFlush ||
-                    this.isForceFlush ||
-                    this.writeBuffer.Length > 5000)
+                    this.isForceFlush)
                 {
-                    if (this.writeBuffer.Length > 0)
-                    {
-                        this.writter.Write(this.writeBuffer.ToString());
-                        this.writeBuffer.Clear();
-                    }
-
                     if (isNeedsFlush || this.isForceFlush)
                     {
                         this.isForceFlush = false;
