@@ -70,38 +70,47 @@ namespace ACT.SpecialSpellTimer
 
         public void Begin()
         {
-            if (this.worker != null)
+            lock (this)
             {
-                this.worker.Stop();
-                this.worker.Dispose();
-                this.worker = null;
+                if (this.worker != null)
+                {
+                    this.worker.Stop();
+                    this.worker.Dispose();
+                    this.worker = null;
+                }
+
+                this.worker = new System.Timers.Timer(PollingInterval.TotalMilliseconds)
+                {
+                    AutoReset = true,
+                };
+
+                LogParser.WriteLineDebugLogDelegate = (timestamp, line) =>
+                {
+                    lock (this)
+                    {
+                        this.outputStream?.WriteLine($"[{timestamp:HH:mm:ss.fff}] {line} [DEBUG]");
+                    }
+                };
+
+                this.worker.Elapsed += (_, _) => this.Flush();
+                this.worker.Start();
             }
-
-            this.worker = new System.Timers.Timer(PollingInterval.TotalMilliseconds)
-            {
-                AutoReset = true,
-            };
-
-            this.worker.Elapsed += (_, _) => this.Flush();
-            this.worker.Start();
-
-            LogParser.WriteLineDebugLogDelegate = (timestamp, line) =>
-            {
-                this.outputStream?.WriteLine($"[{timestamp:HH:mm:ss.fff}] {line} [DEBUG]");
-            };
         }
 
         public void End()
         {
-            if (this.worker != null)
+            lock (this)
             {
-                this.worker.Stop();
-                this.worker.Dispose();
-                this.worker = null;
-            }
+                if (this.worker != null)
+                {
+                    this.worker.Stop();
+                    this.worker.Dispose();
+                    this.worker = null;
+                }
 
-            this.Flush();
-            this.Close();
+                this.Flush();
+                this.Close();
+            }
         }
 
         public void Open()
@@ -155,9 +164,9 @@ namespace ACT.SpecialSpellTimer
             {
                 if (this.worker != null)
                 {
-                    if (this.worker.Interval != IdlePollingInterval.Milliseconds)
+                    if (this.worker.Interval != IdlePollingInterval.TotalMilliseconds)
                     {
-                        this.worker.Interval = IdlePollingInterval.Milliseconds;
+                        this.worker.Interval = IdlePollingInterval.TotalMilliseconds;
                     }
                 }
 
@@ -184,6 +193,9 @@ namespace ACT.SpecialSpellTimer
                 }
             }
             catch (Exception)
+            {
+            }
+            finally
             {
                 if (this.worker != null)
                 {
