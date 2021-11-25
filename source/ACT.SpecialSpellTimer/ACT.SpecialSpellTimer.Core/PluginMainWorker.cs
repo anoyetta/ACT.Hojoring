@@ -645,6 +645,9 @@ namespace ACT.SpecialSpellTimer
                         CommonSounds.Instance.PlayWipeout();
                     }
 
+                    // ChatログをFlushする
+                    ParsedLogWorker.Instance.Flush(true);
+
                     Thread.Sleep(TimeSpan.FromSeconds(1));
 
                     // ACT本体に戦闘終了を通知する

@@ -211,8 +211,8 @@ HEALER1 に me（自分）が含まれる場合にこのトリガが有効にな
   <system:String x:Key="Options_VisibleLPS">ログ密度（LPS）を表示する</system:String>
   <system:String x:Key="Options_LPSOverlayScale">LPSオーバーレイのスケール</system:String>
   <system:String x:Key="Options_LPSOverlayLocation">LPSオーバーレイの位置</system:String>
-  <system:String x:Key="Options_EnabledLog">ログを保存する</system:String>
-  <system:String x:Key="Options_LogDirectory">ログの保存先フォルダ</system:String>
+  <system:String x:Key="Options_EnabledLog">解析後（Parsed）ログを保存する</system:String>
+  <system:String x:Key="Options_LogDirectory">保存先フォルダ</system:String>
   <system:String x:Key="Options_Browse">参照</system:String>
   <system:String x:Key="Options_EnabledOutputDebugLog">内部ログを出力する（デバッグ用）</system:String>
 

@@ -2,26 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using ACT.SpecialSpellTimer.Config;
 using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer
 {
-    public class ChatLogWorker
+    public class ParsedLogWorker
     {
         #region Singleton
 
-        private static ChatLogWorker instance = new ChatLogWorker();
+        private static ParsedLogWorker instance = new ParsedLogWorker();
 
-        public static ChatLogWorker Instance => instance;
+        public static ParsedLogWorker Instance => instance;
 
         #endregion Singleton
 
-        private readonly TimeSpan FlushInterval = TimeSpan.FromSeconds(3);
+        private readonly TimeSpan PollingInterval = TimeSpan.FromSeconds(5);
+        private readonly TimeSpan IdlePollingInterval = TimeSpan.FromSeconds(15);
+        private readonly TimeSpan FlushInterval = TimeSpan.FromMinutes(15);
+
         private readonly Encoding UTF8Encoding = new UTF8Encoding(false);
-        private readonly StringBuilder LogBuffer = new StringBuilder(128 * 5120);
 
         private System.Timers.Timer worker;
 
@@ -35,7 +36,7 @@ namespace ACT.SpecialSpellTimer
             !string.IsNullOrEmpty(OutputDirectory) ?
             Path.Combine(
                 this.OutputDirectory,
-                $@"CombatLog.{DateTime.Now.ToString("yyyy-MM-dd")}.log") :
+                $@"ParsedLog.{DateTime.Now.ToString("yyyy-MM-dd")}.log") :
             string.Empty;
 
         public Task AppendLinesAsync(
@@ -54,14 +55,11 @@ namespace ACT.SpecialSpellTimer
                     return;
                 }
 
-                lock (this.LogBuffer)
+                lock (this)
                 {
-                    Thread.Sleep(5);
-
                     foreach (var log in logList)
                     {
-                        this.LogBuffer.AppendLine(log.OriginalLogLine);
-                        Thread.Yield();
+                        this.outputStream?.WriteLine(log.OriginalLogLine);
                     }
                 }
             }
@@ -72,11 +70,6 @@ namespace ACT.SpecialSpellTimer
 
         public void Begin()
         {
-            lock (this.LogBuffer)
-            {
-                this.LogBuffer.Clear();
-            }
-
             if (this.worker != null)
             {
                 this.worker.Stop();
@@ -84,17 +77,17 @@ namespace ACT.SpecialSpellTimer
                 this.worker = null;
             }
 
-            this.worker = new System.Timers.Timer(FlushInterval.TotalMilliseconds)
+            this.worker = new System.Timers.Timer(PollingInterval.TotalMilliseconds)
             {
                 AutoReset = true,
             };
 
-            this.worker.Elapsed += (x, y) => this.Write();
+            this.worker.Elapsed += (_, _) => this.Flush();
             this.worker.Start();
 
             LogParser.WriteLineDebugLogDelegate = (timestamp, line) =>
             {
-                this.LogBuffer.AppendLine($"[{timestamp:HH:mm:ss.fff}] {line} [DEBUG]");
+                this.outputStream?.WriteLine($"[{timestamp:HH:mm:ss.fff}] {line} [DEBUG]");
             };
         }
 
@@ -107,13 +100,13 @@ namespace ACT.SpecialSpellTimer
                 this.worker = null;
             }
 
-            this.Write();
+            this.Flush();
             this.Close();
         }
 
         public void Open()
         {
-            lock (this.LogBuffer)
+            lock (this)
             {
                 if (this.outputStream == null)
                 {
@@ -130,7 +123,8 @@ namespace ACT.SpecialSpellTimer
                             this.OutputFile,
                             FileMode.Append,
                             FileAccess.Write,
-                            FileShare.Read),
+                            FileShare.Read,
+                            64 * 1024),
                         UTF8Encoding);
                 }
             }
@@ -138,7 +132,7 @@ namespace ACT.SpecialSpellTimer
 
         public void Close()
         {
-            lock (this.LogBuffer)
+            lock (this)
             {
                 if (this.outputStream != null)
                 {
@@ -154,58 +148,49 @@ namespace ACT.SpecialSpellTimer
 
         private DateTime lastFlushTimestamp = DateTime.MinValue;
 
-        public void Write(
+        public void Flush(
             bool isForceFlush = false)
         {
-            const double LongInterval = 10 * 1000;
+            if (!this.OutputEnabled)
+            {
+                if (this.worker != null)
+                {
+                    if (this.worker.Interval != IdlePollingInterval.Milliseconds)
+                    {
+                        this.worker.Interval = IdlePollingInterval.Milliseconds;
+                    }
+                }
+
+                return;
+            }
 
             try
             {
-                if (this.LogBuffer.Length <= 0 ||
-                    !this.OutputEnabled)
-                {
-                    if (this.worker != null)
-                    {
-                        if (this.worker.Interval != LongInterval)
-                        {
-                            this.worker.Interval = LongInterval;
-                        }
-                    }
-
-                    return;
-                }
-
                 this.Open();
 
-                lock (this.LogBuffer)
+                if (!isForceFlush)
                 {
-                    this.outputStream?.Write(this.LogBuffer.ToString());
-                    this.LogBuffer.Clear();
-
-                    if ((DateTime.Now - this.lastFlushTimestamp).TotalMinutes >= 15.0)
+                    if ((DateTime.Now - this.lastFlushTimestamp) < FlushInterval)
                     {
-                        this.lastFlushTimestamp = DateTime.Now;
-                        this.outputStream?.Flush();
+                        return;
                     }
+                }
 
-                    if (this.worker != null)
-                    {
-                        if (this.worker.Interval != FlushInterval.TotalMilliseconds)
-                        {
-                            this.worker.Interval = FlushInterval.TotalMilliseconds;
-                        }
-                    }
+                this.lastFlushTimestamp = DateTime.Now;
+
+                lock (this)
+                {
+                    this.outputStream?.Flush();
                 }
             }
             catch (Exception)
             {
-            }
-            finally
-            {
-                if (isForceFlush)
+                if (this.worker != null)
                 {
-                    this.lastFlushTimestamp = DateTime.Now;
-                    this.outputStream?.Flush();
+                    if (this.worker.Interval != PollingInterval.TotalMilliseconds)
+                    {
+                        this.worker.Interval = PollingInterval.TotalMilliseconds;
+                    }
                 }
             }
         }

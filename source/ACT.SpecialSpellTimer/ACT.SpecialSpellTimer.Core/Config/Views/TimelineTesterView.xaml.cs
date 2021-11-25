@@ -118,7 +118,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                         this.prevTestTimestamp = DateTime.MinValue;
                     }
 
-                    ChatLogWorker.Instance?.Write(true);
+                    ParsedLogWorker.Instance?.Flush(true);
                 });
 
                 TimelineController.CurrentController?.EndActivityLine();

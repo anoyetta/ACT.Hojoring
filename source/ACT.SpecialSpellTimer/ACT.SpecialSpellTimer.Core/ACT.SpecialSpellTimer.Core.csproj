@@ -86,7 +86,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChatLogWorker.cs" />
+    <Compile Include="ParsedLogWorker.cs" />
     <Compile Include="Config\Models\PartyComposiotionSelector.cs" />
     <Compile Include="Config\Settings.Defaults.cs" />
     <Compile Include="Config\Views\CalendarView.xaml.cs">

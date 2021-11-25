@@ -53,7 +53,7 @@ namespace ACT.SpecialSpellTimer
             XIVPluginHelper.Instance.AddedCombatants += this.OnAddedCombatants;
 
             // 生ログの書き出しバッファを開始する
-            ChatLogWorker.Instance.Begin();
+            ParsedLogWorker.Instance.Begin();
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace ACT.SpecialSpellTimer
             XIVPluginHelper.Instance.AddedCombatants -= this.OnAddedCombatants;
 
             // 生ログの書き出しバッファを停止する
-            ChatLogWorker.Instance.End();
+            ParsedLogWorker.Instance.End();
         }
 
         #endregion コンストラクター/デストラクター/Dispose
@@ -395,7 +395,7 @@ namespace ACT.SpecialSpellTimer
             // ログファイルに出力する
             if (Settings.Default.SaveLogEnabled)
             {
-                ChatLogWorker.Instance.AppendLinesAsync(list);
+                ParsedLogWorker.Instance.AppendLinesAsync(list);
             }
 
 #if DEBUG

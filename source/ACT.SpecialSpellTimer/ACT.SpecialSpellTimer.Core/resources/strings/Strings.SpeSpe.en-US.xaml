@@ -211,7 +211,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Options_VisibleLPS">Show log density overlay (LPS)</system:String>
   <system:String x:Key="Options_LPSOverlayScale">LPS Overlay scale</system:String>
   <system:String x:Key="Options_LPSOverlayLocation">LPS Overlay location</system:String>
-  <system:String x:Key="Options_EnabledLog">Save log</system:String>
+  <system:String x:Key="Options_EnabledLog">Save parsed log</system:String>
   <system:String x:Key="Options_LogDirectory">Save folder</system:String>
   <system:String x:Key="Options_Browse">Browse</system:String>
   <system:String x:Key="Options_EnabledOutputDebugLog">Output internal logs (for DEBUG)</system:String>

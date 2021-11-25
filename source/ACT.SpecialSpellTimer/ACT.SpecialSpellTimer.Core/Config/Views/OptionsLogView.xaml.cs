@@ -53,7 +53,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
         public ICommand OpenLogCommand =>
             this.openLogCommand ?? (this.openLogCommand = new DelegateCommand(() =>
             {
-                var file = ChatLogWorker.Instance.OutputFile;
+                var file = ParsedLogWorker.Instance.OutputFile;
                 if (File.Exists(file))
                 {
                     Process.Start(file);

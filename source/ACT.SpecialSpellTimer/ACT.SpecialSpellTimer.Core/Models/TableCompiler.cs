@@ -189,6 +189,9 @@ namespace ACT.SpecialSpellTimer.Models
 
                 if (this.isQueueZoneChange)
                 {
+                    // チャットログをフラッシュする
+                    ParsedLogWorker.Instance.Flush(true);
+
                     // インスタンススペルを消去する
                     SpellTable.Instance.RemoveInstanceSpellsAll();
 

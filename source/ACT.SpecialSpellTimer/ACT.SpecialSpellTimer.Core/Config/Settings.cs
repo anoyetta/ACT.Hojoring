@@ -508,8 +508,8 @@ namespace ACT.SpecialSpellTimer.Config
                 {
                     if (!this.saveLogEnabled)
                     {
-                        ChatLogWorker.Instance.Write(true);
-                        ChatLogWorker.Instance.Close();
+                        ParsedLogWorker.Instance.Flush(true);
+                        ParsedLogWorker.Instance.Close();
                     }
                 }
             }

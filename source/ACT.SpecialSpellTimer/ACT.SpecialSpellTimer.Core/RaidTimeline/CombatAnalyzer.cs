@@ -568,7 +568,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
 
                     this.AutoSaveToSpreadsheetAsync();
-                    ChatLogWorker.Instance?.Write(true);
+                    ParsedLogWorker.Instance?.Flush(true);
 
                     Logger.Write("End Combat");
                 }
