@@ -35,7 +35,7 @@ namespace FFXIV.Framework.XIVHelper
                     var combatantName = f[2].ToProperCase();
 
                     var jobID = Jobs.IntToID(Hex2Byte(f[3]));
-                    var job = jobID == JobIDs.Unknown ? "N/A" : jobID.ToStringEx();
+                    var job = jobID == JobIDs.Unknown || jobID == JobIDs.ADV ? "N/A" : jobID.ToStringEx();
 
                     var world = f[7];
                     world = !string.IsNullOrWhiteSpace(world) ? $"({world})" : string.Empty;
