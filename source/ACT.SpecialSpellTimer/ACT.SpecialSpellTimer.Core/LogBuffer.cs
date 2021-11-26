@@ -255,7 +255,7 @@ namespace ACT.SpecialSpellTimer
                 LogParser.RaiseLog(
                     now,
                     e.NewCombatants.Select(x =>
-                        $"[EX] +Combatant name={x.Name} X={x.PosXMap:N2} Y={x.PosYMap:N2} Z={x.PosZMap:N2} hp={x.CurrentHP} id={x.ID}"));
+                        $"[EX] +Combatant name={x.Name} X={x.PosXMap:N2} Y={x.PosYMap:N2} Z={x.PosZMap:N2} hp={x.CurrentHP} id={x.ID:X8}"));
             }
         }
 
