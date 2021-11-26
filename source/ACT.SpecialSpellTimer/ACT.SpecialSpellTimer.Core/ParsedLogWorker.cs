@@ -72,6 +72,25 @@ namespace ACT.SpecialSpellTimer
         {
             lock (this)
             {
+                LogParser.WriteLineDebugLogDelegate = (timestamp, line) =>
+                {
+                    lock (this)
+                    {
+                        this.outputStream?.WriteLine($"[{timestamp:HH:mm:ss.fff}] {line} [DEBUG]");
+                    }
+                };
+
+                LogParser.WriteLinesDebugLogDelegate = (timestamp, lines) =>
+                {
+                    lock (this)
+                    {
+                        foreach (var line in lines)
+                        {
+                            this.outputStream?.WriteLine($"[{timestamp:HH:mm:ss.fff}] {line} [DEBUG]");
+                        }
+                    }
+                };
+
                 if (this.worker != null)
                 {
                     this.worker.Stop();
@@ -82,14 +101,6 @@ namespace ACT.SpecialSpellTimer
                 this.worker = new System.Timers.Timer(PollingInterval.TotalMilliseconds)
                 {
                     AutoReset = true,
-                };
-
-                LogParser.WriteLineDebugLogDelegate = (timestamp, line) =>
-                {
-                    lock (this)
-                    {
-                        this.outputStream?.WriteLine($"[{timestamp:HH:mm:ss.fff}] {line} [DEBUG]");
-                    }
                 };
 
                 this.worker.Elapsed += (_, _) => this.Flush();

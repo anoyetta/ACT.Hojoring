@@ -10,7 +10,7 @@ namespace FFXIV.Framework.XIVHelper
     {
         public static Action<DateTime, string> WriteLineDebugLogDelegate { get; set; }
 
-        public static Action<DateTime, IEnumerable<string>, Action<string>> WriteLinesDebugLogDelegate { get; set; }
+        public static Action<DateTime, IEnumerable<string>> WriteLinesDebugLogDelegate { get; set; }
 
         public static void RaiseLog(
             DateTime timestamp,
@@ -42,21 +42,19 @@ namespace FFXIV.Framework.XIVHelper
                         .Replace("\n", "\\n");
 
                     return line;
-                });
+                })
+                .ToArray();
 
             if (config.IsEnabledOutputDebugLog)
             {
                 WriteLinesDebugLogDelegate?.Invoke(
                     timestamp,
-                    lines.Select(x => $"{ChatLogCode}|{x}"),
-                    (line) => output.WriteLine(LogMessageType.ChatLog, timestamp, line));
+                    lines.Select(x => $"{ChatLogCode}|{x}"));
             }
-            else
+
+            foreach (var line in lines)
             {
-                foreach (var line in lines)
-                {
-                    output.WriteLine(LogMessageType.ChatLog, timestamp, line);
-                }
+                output.WriteLine(LogMessageType.ChatLog, timestamp, line);
             }
         }
 
