@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Advanced_Combat_Tracker;
 using FFXIV_ACT_Plugin.Logfile;
 
@@ -8,6 +9,8 @@ namespace FFXIV.Framework.XIVHelper
     public static partial class LogParser
     {
         public static Action<DateTime, string> WriteLineDebugLogDelegate { get; set; }
+
+        public static Action<DateTime, IEnumerable<string>, Action<string>> WriteLinesDebugLogDelegate { get; set; }
 
         public static void RaiseLog(
             DateTime timestamp,
@@ -26,27 +29,34 @@ namespace FFXIV.Framework.XIVHelper
 
             var config = Config.Instance;
 
-            foreach (var log in logs)
+            var lines = logs
+                .Where(log => !string.IsNullOrEmpty(log))
+                .Select(log =>
+                {
+                    var line = FormatLogLine(log);
+
+                    // 念のため改行コードを除去する
+                    line = line
+                        .Replace("\r\n", "\\n")
+                        .Replace("\r", "\\n")
+                        .Replace("\n", "\\n");
+
+                    return line;
+                });
+
+            if (config.IsEnabledOutputDebugLog)
             {
-                if (string.IsNullOrEmpty(log))
+                WriteLinesDebugLogDelegate?.Invoke(
+                    timestamp,
+                    lines.Select(x => $"{ChatLogCode}|{x}"),
+                    (line) => output.WriteLine(LogMessageType.ChatLog, timestamp, line));
+            }
+            else
+            {
+                foreach (var line in lines)
                 {
-                    continue;
+                    output.WriteLine(LogMessageType.ChatLog, timestamp, line);
                 }
-
-                var line = FormatLogLine(log);
-
-                // 念のため改行コードを除去する
-                line = line
-                    .Replace("\r\n", "\\n")
-                    .Replace("\r", "\\n")
-                    .Replace("\n", "\\n");
-
-                if (config.IsEnabledOutputDebugLog)
-                {
-                    WriteLineDebugLogDelegate?.Invoke(timestamp, $"{ChatLogCode}|{line}");
-                }
-
-                output.WriteLine(LogMessageType.ChatLog, timestamp, line);
             }
         }
 
