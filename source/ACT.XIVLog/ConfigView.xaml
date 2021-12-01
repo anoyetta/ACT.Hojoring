@@ -1,9 +1,9 @@
 <UserControl
   x:Class="ACT.XIVLog.ConfigView"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   xmlns:local="clr-namespace:ACT.XIVLog"
   mc:Ignorable="d"
@@ -51,6 +51,7 @@
           <Button Margin="25 0 0 0" BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Open Directory" Command="{Binding OpenLogDirectoryCommand, Mode=OneWay}" />
         </StackPanel>
         <CheckBox Margin="0 10 0 0" Content="Replace PC name to Job name" IsChecked="{Binding Path=Config.IsReplacePCName, Mode=TwoWay}" />
+        <CheckBox Margin="0 3 0 0" Content="Also outputs raw log line" IsChecked="{Binding Path=Config.IsAlsoOutputsRawLogLine, Mode=TwoWay}" />
       </StackPanel>
 
       <Label Margin="0 20 0 0" Content="Video" FontWeight="Bold" />

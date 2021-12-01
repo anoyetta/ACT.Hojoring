@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Media;
@@ -227,6 +228,9 @@ namespace ACT.XIVLog
                         this.fileNo++;
                         isNeedsFlush = true;
                     }
+
+                    // ログをParseする
+                    xivlog.Parse();
 
                     this.writter.WriteLine(xivlog.ToCSVLine());
                     this.lastWroteTimestamp = DateTime.Now;
@@ -493,7 +497,20 @@ namespace ACT.XIVLog
 
         public string ZoneName { get; private set; }
 
-        public string Log { get; private set; }
+        /// <summary>
+        /// FFXIV_ACT_Plugin からの生のログ
+        /// </summary>
+        public string Log { get; private set; } = string.Empty;
+
+        /// <summary>
+        /// Log に対してPC名を無読化置換したログ
+        /// </summary>
+        public string LogReplacedPCName { get; private set; } = string.Empty;
+
+        /// <summary>
+        /// LogReplacedPCName に対してHojoring内の判定で使用している形式にParseしたログ
+        /// </summary>
+        public string ParsedLog { get; private set; } = string.Empty;
 
         public LogLineEventArgs LogInfo { get; set; }
 
@@ -550,11 +567,42 @@ namespace ACT.XIVLog
             }
         }
 
-        public string GetReplacedLog()
+        public void Parse()
+        {
+            // PC名を置換する
+            this.ReplacePCName();
+
+            var log = this.LogReplacedPCName;
+
+            int.TryParse(
+                this.LogType,
+                NumberStyles.HexNumber,
+                CultureInfo.InvariantCulture,
+                out int detectedType);
+
+            // ログメッセージタイプの文言を除去する
+            log = LogMessageTypeExtensions.RemoveLogMessageType(
+                detectedType,
+                log,
+                true);
+
+            // ツールチップシンボル, ワールド名を除去する
+            log = LogParser.RemoveTooltipSynbols(log);
+            log = LogParser.RemoveWorldName(log);
+
+            // ログを互換形式に変換する
+            log = LogParser.FormatLogLine(
+                detectedType,
+                log);
+
+            this.ParsedLog = log;
+        }
+
+        public void ReplacePCName()
         {
             if (!Config.Instance.IsReplacePCName)
             {
-                return this.Log;
+                return;
             }
 
             var result = this.Log;
@@ -572,22 +620,32 @@ namespace ACT.XIVLog
                 {
                     entry.Value.Timestamp = DateTime.Now;
                 }
-
-                Thread.Yield();
             }
 
-            return result;
+            this.LogReplacedPCName = result;
         }
 
-        public string ToCSVLine() =>
-            $"{this.No:000000000}," +
-            $"{this.Timestamp:yyyy-MM-dd HH:mm:ss.fff}," +
-            $"{(this.IsImport ? 1 : 0)}," +
-            $"\"{this.LogType}\"," +
-            $"\"{this.GetReplacedLog()}\"," +
-            $"\"{this.ZoneName}\"";
+        public string ToCSVLine()
+        {
+            var csv =
+                $"{this.No:000000000}," +
+                $"{this.Timestamp:yyyy-MM-dd HH:mm:ss.fff}," +
+                $"{(this.IsImport ? 1 : 0)}," +
+                $"\"{this.LogType}\"," +
+                $"\"{this.ParsedLog}\"," +
+                $"\"{this.ZoneName}\"";
 
-        public override string ToString() => this.GetReplacedLog();
+            if (Config.Instance.IsAlsoOutputsRawLogLine)
+            {
+                csv += $",\"{this.Log}\"";
+            }
+
+            return csv;
+        }
+
+        public override string ToString() => string.IsNullOrEmpty(this.LogReplacedPCName) ?
+            this.Log :
+            this.LogReplacedPCName;
 
         public class Alias
         {

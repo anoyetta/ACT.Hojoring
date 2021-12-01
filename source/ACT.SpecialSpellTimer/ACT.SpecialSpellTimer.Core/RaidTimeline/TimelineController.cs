@@ -872,9 +872,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         #region Log 関係のスレッド
 
         private static readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer = new Lazy<ConcurrentQueue<XIVLog>>(()
-                                 => XIVPluginHelper.Instance.SubscribeXIVLog(() =>
-                                     TimelineManager.Instance.IsLoading ||
-                                     (CurrentController != null && CurrentController.IsReady)));
+                                             => XIVPluginHelper.Instance.SubscribeXIVLog(() =>
+                                                 TimelineManager.Instance.IsLoading ||
+                                                 (CurrentController != null && CurrentController.IsReady)));
 
         public static ConcurrentQueue<XIVLog> XIVLogQueue => LazyXIVLogBuffer.Value;
 
@@ -1051,8 +1051,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 // ツールチップシンボル, ワールド名を除去する
-                logLine = LogBuffer.RemoveTooltipSynbols(logLine);
-                logLine = LogBuffer.RemoveWorldName(logLine);
+                if (!Settings.Default.RemoveTooltipSymbols)
+                {
+                    logLine = LogParser.RemoveTooltipSynbols(logLine);
+                }
+
+                if (!Settings.Default.RemoveWorldName)
+                {
+                    logLine = LogParser.RemoveWorldName(logLine);
+                }
+
                 xivlog.LogLine = logLine;
 
                 list.Add(xivlog);
@@ -1982,11 +1990,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private static DispatcherTimer TimelineTimer => LazyTimelineTimer.Value;
 
         private static readonly Lazy<DispatcherTimer> LazyTimelineTimer = new Lazy<DispatcherTimer>(() =>
-                             {
-                                 var timer = new DispatcherTimer(TimelineSettings.Instance.TimelineThreadPriority);
-                                 timer.Tick += TimelineTimer_Tick;
-                                 return timer;
-                             });
+                                         {
+                                             var timer = new DispatcherTimer(TimelineSettings.Instance.TimelineThreadPriority);
+                                             timer.Tick += TimelineTimer_Tick;
+                                             return timer;
+                                         });
 
         private static void TimelineTimer_Tick(
             object sender,

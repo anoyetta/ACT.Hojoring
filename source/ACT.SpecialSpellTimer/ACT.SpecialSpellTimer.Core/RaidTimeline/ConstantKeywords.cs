@@ -230,7 +230,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             public static readonly string StartsUsingRegexPattern
                 = LogMessageType.StartsCasting.ToHex()
-                + @":[0-9a-fA-F]{4}:(?<actor>.+?) starts using (?<skill>.+?) on (?<target>.+?)\.";
+                + @":[0-9a-fA-F]{4}:(?<actor>.+?) starts using (?<skill>.+?) on (?<target>[^\.]*?)\.";
 
             public static readonly string StartsUsingUnknownRegexPattern
                 = LogMessageType.StartsCasting.ToHex()
@@ -321,7 +321,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             {
                 nameof(ActionRegex),
-                CreateRegex(@"\[.+?\] 00:....:(?<actor>.+?)の「(?<skill>.+?)」$")
+                CreateRegex(@"\[.+?\] 00:....::(?<actor>.+?)の「(?<skill>.+?)」$")
             },
             {
                 nameof(AddedRegex),
@@ -329,7 +329,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(CastRegex),
-                CreateRegex(@"\[.+?\] 00:....:(?<actor>.+?)は「(?<skill>.+?)」(を唱えた。|の構え。)$")
+                CreateRegex(@"\[.+?\] 00:....::(?<actor>.+?)は「(?<skill>.+?)」(を唱えた。|の構え。)$")
             },
             {
                 nameof(HPRateRegex),
@@ -365,7 +365,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(MarkingRegex),
-                CreateRegex(@"00:(?<id>....):(?<target>.+?)に「マーキング」の効果。")
+                CreateRegex(@"00:(?<id>....)::(?<target>.+?)に「マーキング」の効果。")
             },
             {
                 nameof(NetworkAbility),
@@ -433,7 +433,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             {
                 nameof(ActionRegex),
-                CreateRegex(@"\[.+?\] 00:....:(?<actor>.+?) (casts|uses) (?<skill>.+?)\.$")
+                CreateRegex(@"\[.+?\] 00:....::(?<actor>.+?) (casts|uses) (?<skill>.+?)\.$")
             },
             {
                 nameof(AddedRegex),
@@ -441,7 +441,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(CastRegex),
-                CreateRegex(@"\[.+?\] 00:....:(?<actor>.+?) (readies|begins casting) (?<skill>.+?)\.$")
+                CreateRegex(@"\[.+?\] 00:....::(?<actor>.+?) (readies|begins casting) (?<skill>.+?)\.$")
             },
             {
                 nameof(HPRateRegex),
@@ -477,7 +477,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(MarkingRegex),
-                CreateRegex(@"00:(?<id>....):(?<target>.+?) suffers the effect of Prey\.$")
+                CreateRegex(@"00:(?<id>....)::(?<target>.+?) suffers the effect of Prey\.$")
             },
             {
                 nameof(NetworkAbility),
@@ -538,7 +538,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             {
                 nameof(ActionRegex),
-                CreateRegex(@"\[.+?\] 00:....:(?<actor>.+?)(이|가) (?<skill>.+?)(을|를) 시전했습니다.$")
+                CreateRegex(@"\[.+?\] 00:....::(?<actor>.+?)(이|가) (?<skill>.+?)(을|를) 시전했습니다.$")
             },
             {
                 nameof(AddedRegex),
@@ -546,7 +546,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(CastRegex),
-                CreateRegex(@"\[.+?\] 00:....:(?<actor>.+?)(이|가) (?<skill>.+?)(을|를) 시전합니다.$")
+                CreateRegex(@"\[.+?\] 00:....::(?<actor>.+?)(이|가) (?<skill>.+?)(을|를) 시전합니다.$")
             },
             {
                 nameof(HPRateRegex),
@@ -582,7 +582,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(MarkingRegex),
-                CreateRegex(@"00:(?<id>....):(?<target>.+?)가 표식 효과를 받았습니다.")
+                CreateRegex(@"00:(?<id>....)::(?<target>.+?)가 표식 효과를 받았습니다.")
             },
             {
                 nameof(NetworkAbility),
@@ -644,7 +644,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             {
                 nameof(ActionRegex),
-                CreateRegex(@"\[.+?\] 00:....:(?<actor>.+?)发动了\“(?<skill>.+?)\”\。$")
+                CreateRegex(@"\[.+?\] 00:....::(?<actor>.+?)发动了\“(?<skill>.+?)\”\。$")
             },
             {
                 nameof(AddedRegex),
@@ -652,7 +652,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(CastRegex),
-                CreateRegex(@"\[.+?\] 00:....:(?<actor>.+?)(正在发动|正在咏唱)\“(?<skill>.+?)\”\。$")
+                CreateRegex(@"\[.+?\] 00:....::(?<actor>.+?)(正在发动|正在咏唱)\“(?<skill>.+?)\”\。$")
             },
             {
                 nameof(HPRateRegex),
@@ -688,7 +688,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             },
             {
                 nameof(MarkingRegex),
-                CreateRegex(@"00:(?<id>....):(?<target>.+?)陷入了“猎物”效果\。$")
+                CreateRegex(@"00:(?<id>....)::(?<target>.+?)陷入了“猎物”效果\。$")
             },
             {
                 nameof(NetworkAbility),

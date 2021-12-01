@@ -40,13 +40,15 @@ namespace FFXIV.Framework.XIVHelper
 
         public static string RemoveLogMessageType(
             LogMessageType type,
-            string logLine)
+            string logLine,
+            bool withoutTimestamp = false)
         {
             /*
             新しいログの書式
             [00:32:16.798] ActionEffect 15:102DB8BA:Naoki Yoshida:BA:士気高揚の策:102DB8BA:Naoki Yoshida:...
             */
 
+            var timestampLength = withoutTimestamp ? 0 : 15;
             var result = logLine;
 
             if (string.IsNullOrEmpty(result))
@@ -54,27 +56,31 @@ namespace FFXIV.Framework.XIVHelper
                 return result;
             }
 
-            if (logLine.Length < 15)
+            if (logLine.Length < timestampLength)
             {
                 return result;
             }
 
-            var messageTypeNoIndex = 15 + type.ToStringEx().Length + 1;
+            var messageTypeNoIndex = timestampLength + type.ToStringEx().Length + 1;
             if (logLine.Length < messageTypeNoIndex)
             {
                 return result;
             }
 
-            result = $"{logLine.Substring(0, 14)} {logLine.Substring(messageTypeNoIndex)}";
+            result = !withoutTimestamp ?
+                $"{logLine.Substring(0, timestampLength - 1)} {logLine.Substring(messageTypeNoIndex)}" :
+                logLine.Substring(messageTypeNoIndex);
 
             return result;
         }
 
         public static string RemoveLogMessageType(
             int type,
-            string logLine)
+            string logLine,
+            bool withoutTimestamp = false)
             => RemoveLogMessageType(
                 (LogMessageType)Enum.ToObject(typeof(LogMessageType), type),
-                logLine);
+                logLine,
+                withoutTimestamp);
     }
 }

@@ -342,8 +342,16 @@ namespace ACT.SpecialSpellTimer
                 }
 
                 // ツールチップシンボル, ワールド名を除去する
-                logLine = RemoveTooltipSynbols(logLine);
-                logLine = RemoveWorldName(logLine);
+                if (!Settings.Default.RemoveTooltipSymbols)
+                {
+                    logLine = LogParser.RemoveTooltipSynbols(logLine);
+                }
+
+                if (!Settings.Default.RemoveWorldName)
+                {
+                    logLine = LogParser.RemoveWorldName(logLine);
+                }
+
                 xivlog.LogLine = logLine;
 
                 // ペットジョブで召喚をしたか？
@@ -527,99 +535,6 @@ namespace ACT.SpecialSpellTimer
             }
 
             return IgnoreDetailLogKeywords.Any(x => logLine.Contains(x));
-        }
-
-        /// <summary>
-        /// ツールチップシンボルを除去する
-        /// </summary>
-        /// <param name="logLine"></param>
-        /// <returns>編集後のLogLine</returns>
-        public static string RemoveTooltipSynbols(
-            string logLine)
-        {
-            var result = logLine;
-
-            if (!Settings.Default.RemoveTooltipSymbols)
-            {
-                return result;
-            }
-
-            if (!logLine.StartsWith($"{LogMessageType.ChatLog.ToHex()}:"))
-            {
-                return result;
-            }
-
-            DumpTooltipLogSample(result);
-
-            // U+E000-U+EFFF の特殊文字を除去する
-            result = result
-                .Where(x => x < '\uE000' || '\uEFFF' < x)
-                .Select(c => c.ToString())
-                .Aggregate((a, b) => $"{a}{b}");
-
-            // Trimをかける
-            var parts = result.Split(':');
-            parts[parts.Length - 1] = parts[parts.Length - 1].Trim();
-            result = string.Join(":", parts);
-
-            return result;
-        }
-
-        private static unsafe void DumpTooltipLogSample(
-            string logLine)
-        {
-#if !DEBUG
-            return;
-#else
-            // Tooltipシンボルをダンプするコード
-            // 重いので殺しておく
-#if false
-            if (!logLine.EndsWith("の効果。"))
-            {
-                return;
-            }
-
-            System.Diagnostics.Debug.WriteLine($"Tooltip-> {logLine}");
-
-            fixed (char* ps = logLine)
-            {
-                var chars = new List<string>();
-
-                var p = (byte*)ps;
-                for (int i = 0; i < logLine.Length * 2; i += 2)
-                {
-                    var bL = *(p + i);
-                    var bH = *(p + i + 1);
-                    chars.Add($"U+{bH:X2}{bL:X2}");
-                }
-
-                System.Diagnostics.Debug.WriteLine($"Tooltip-> {chars.Aggregate((a, b) => $"{a} {b}")}");
-            }
-#endif
-            return;
-#endif
-        }
-
-        public static string RemoveWorldName(
-            string logLine)
-        {
-            var result = logLine;
-            var code = LogMessageType.ChatLog.ToHex();
-
-            if (!Settings.Default.RemoveWorldName)
-            {
-                return result;
-            }
-
-            if (!logLine.Contains($"] {code}:") &&
-                !logLine.StartsWith($"{code}:"))
-            {
-                return result;
-            }
-
-            result = XIVPluginHelper.Instance.RemoveWorldName(logLine);
-
-            return result;
         }
 
         #endregion ログ処理
