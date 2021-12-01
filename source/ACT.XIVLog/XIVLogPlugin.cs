@@ -602,6 +602,7 @@ namespace ACT.XIVLog
         {
             if (!Config.Instance.IsReplacePCName)
             {
+                this.LogReplacedPCName = this.Log;
                 return;
             }
 
