@@ -1191,14 +1191,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 this.isImporting = true;
 
-                // 冒頭にインポートを示すログを発生させる
-                this.AnalyzeLogLine(new LogLineEventArgs(
-                    $"[00:00:00.000] {ConstantKeywords.ImportLog}",
-                    0,
-                    DateTime.Now,
-                    string.Empty,
-                    true));
-
                 // 各種初期化
                 this.inCombat = false;
                 this.CurrentCombatLogList.Clear();
@@ -1206,6 +1198,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.partyNames = null;
                 this.combatants = null;
                 this.no = 1;
+
+                // 冒頭にインポートを示すログを発生させる
+                this.AnalyzeLogLine(new LogLineEventArgs(
+                    $"[00:00:00.000] {ConstantKeywords.ImportLog}",
+                    0,
+                    DateTime.Now,
+                    string.Empty,
+                    true));
 
                 var preLog = new string[3];
                 var preLogIndex = 0;
