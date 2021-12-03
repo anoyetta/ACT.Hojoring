@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <timeline>
   <name>次元の狭間オメガ零式：アルファ編（ノーマル）</name>
-  <rev>rev1</rev>
+  <rev>rev2</rev>
   <description>
     次元の狭間オメガ零式：アルファ編（ノーマル）向けのトリガセットです。
   </description>
@@ -9,7 +9,7 @@
   <zone>Alphascape (V1.0),Alphascape (V2.0),Alphascape (V3.0),Alphascape (V4.0)</zone>
   <locale>JA</locale>
   <entry>ENTRY</entry>
-  <start>0039:戦闘開始！</start>
+  <start>0039::戦闘開始！</start>
 
   <!-- 1回転目の定義 start -->
   <t text="横回転" sync="^15:[id8]:ミドガルズオルム:31C7" notice="横回転。">

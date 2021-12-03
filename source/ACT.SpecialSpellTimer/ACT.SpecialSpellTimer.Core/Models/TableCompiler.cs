@@ -88,7 +88,7 @@ namespace ACT.SpecialSpellTimer.Models
 
         public event EventHandler CompileConditionChanged;
 
-        private DateTime lastDumpPositionTimestamp = DateTime.MinValue;
+        private DateTime lastDumpPositionTimestamp = DateTime.Now.AddMinutes(5);
 
         private bool isQueueRecompile = false;
         private bool isQueueZoneChange = false;
@@ -124,6 +124,9 @@ namespace ACT.SpecialSpellTimer.Models
             {
                 lock (this)
                 {
+                    // sharlayanにReloadを要求する
+                    SharlayanHelper.Instance.EnqueueReload();
+
                     this.isQueueRecompile = true;
                     this.lastQueueTimestamp = DateTime.Now;
                 }
@@ -186,6 +189,9 @@ namespace ACT.SpecialSpellTimer.Models
 
                 if (this.isQueueZoneChange)
                 {
+                    // チャットログをフラッシュする
+                    ParsedLogWorker.Instance.Flush(true);
+
                     // インスタンススペルを消去する
                     SpellTable.Instance.RemoveInstanceSpellsAll();
 

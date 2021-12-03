@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using ACT.SpecialSpellTimer.RazorModel;
@@ -173,15 +172,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-#if DEBUG
-            if (logLine.Contains("1B:"))
-            {
-                Debug.WriteLine("TryRefresh1BSignOrigin");
-            }
-#endif
-
-            if (!logLine.StartsWith("1B:") &&
-                !logLine.StartsWith("00:0000:Hojoring:1B:"))
+            if (!logLine.StartsWith("1B:"))
             {
                 return;
             }

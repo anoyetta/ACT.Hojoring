@@ -604,14 +604,7 @@ namespace ACT.TTSYukkuri.Discord.Models
             }
 
             var entryDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            var libDirectory = new[]
-            {
-                Path.Combine(PluginCore.Instance.PluginDirectory, "bin", "lib"),
-                Path.Combine(PluginCore.Instance.PluginDirectory, "lib"),
-            }.FirstOrDefault(x => Directory.Exists(x));
-
-            var opus = Path.Combine(entryDirectory, "opus.dll");
-            var sodium = Path.Combine(entryDirectory, "libsodium.dll");
+            var libDirectory = DirectoryHelper.FindSubDirectory("bin", "lib");
 
             var targets = new[]
             {

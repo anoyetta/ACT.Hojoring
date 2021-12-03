@@ -1,3 +1,6 @@
+using ACT.SpecialSpellTimer.Config;
+using FFXIV.Framework.Common;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,9 +14,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml.Serialization;
-using ACT.SpecialSpellTimer.Config;
-using FFXIV.Framework.Common;
-using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -498,6 +498,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     !Directory.Exists(dir))
                 {
                     dir = DirectoryHelper.FindSubDirectory(@"resources\timeline");
+                    dir = Path.GetFullPath(dir);
                 }
 
                 return dir;

@@ -1,20 +1,9 @@
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Globalization;
-using FFXIV_ACT_Plugin.Common;
-using FFXIV_ACT_Plugin.Common.Models;
-using FFXIV_ACT_Plugin.Logfile;
-using FFXIV_ACT_Plugin.Resource;
-using Microsoft.MinIoC;
-using Microsoft.VisualBasic.FileIO;
-using Sharlayan.Core.Enums;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -23,9 +12,27 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Globalization;
+using FFXIV_ACT_Plugin.Common;
+using FFXIV_ACT_Plugin.Common.Models;
+using FFXIV_ACT_Plugin.Logfile;
+using Microsoft.MinIoC;
+using Microsoft.VisualBasic.FileIO;
+using Sharlayan.Core;
+using Sharlayan.Core.Enums;
 
 namespace FFXIV.Framework.XIVHelper
 {
+    public enum OverlayType
+    {
+        Target = 1,
+        FocusTarget,
+        HoverTarget,
+        TargetOfTarget
+    }
+
     public class XIVPluginHelper
     {
 #if !DEBUG
@@ -185,9 +192,6 @@ namespace FFXIV.Framework.XIVHelper
 
                 this.MergeSkillList();
 
-                this.ComplementSkillList();
-                this.ComplementBuffList();
-
                 this.TranslateZoneList();
             },
             5000,
@@ -301,43 +305,87 @@ namespace FFXIV.Framework.XIVHelper
 
         #region Attach FFXIV Plugin
 
+        private bool wasAttached;
+
         private void Attach()
         {
-            if (this.plugin != null ||
-                ActGlobals.oFormActMain == null ||
+            if (ActGlobals.oFormActMain == null ||
                 !ActGlobals.oFormActMain.InitActDone)
             {
                 return;
             }
 
-            var ffxivPlugin = (
-                from x in ActGlobals.oFormActMain.ActPlugins
-                where
-                x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper())
-                select
-                x.pluginObj).FirstOrDefault();
-
-            if (ffxivPlugin != null)
+            if (this.plugin == null)
             {
-                Thread.Sleep(500);
+                var ffxivPlugin = (
+                    from x in ActGlobals.oFormActMain.ActPlugins
+                    where
+                    x.pluginFile.Name.ToUpper().Contains("FFXIV_ACT_Plugin".ToUpper())
+                    select
+                    x.pluginObj).FirstOrDefault();
+
                 this.plugin = ffxivPlugin;
-                this.DataRepository = this.plugin.DataRepository;
-                this.DataSubscription = this.plugin.DataSubscription;
+            }
 
-                this.IOCContainer = ffxivPlugin.GetType()
-                    .GetField(
-                        "_iocContainer",
-                        BindingFlags.NonPublic | BindingFlags.Instance)
-                    .GetValue(ffxivPlugin) as Microsoft.MinIoC.Container;
+            if (this.plugin != null)
+            {
+                if (this.DataRepository == null)
+                {
+                    this.DataRepository = this.plugin.DataRepository;
+                }
 
-                this.SubscribeXIVPluginEvents();
-                this.SubscribeParsedLogLine();
+                if (this.DataSubscription == null)
+                {
+                    this.DataSubscription = this.plugin.DataSubscription;
+                }
 
-                AppLogger.Trace("attached ffxiv plugin.");
+                if (this.IOCContainer == null)
+                {
+                    this.IOCContainer = this.plugin.GetType()
+                        .GetField(
+                            "_iocContainer",
+                            BindingFlags.NonPublic | BindingFlags.Instance)
+                        .GetValue(this.plugin) as Microsoft.MinIoC.Container;
+                }
 
-                this.ActPluginAttachedCallback?.Invoke();
+                if (this.IOCContainer != null)
+                {
+                    if (this.LogFormat == null)
+                    {
+                        this.LogFormat = this.IOCContainer.Resolve<ILogFormat>();
+                    }
+
+                    if (this.LogOutput == null)
+                    {
+                        this.LogOutput = this.IOCContainer.Resolve<ILogOutput>();
+                    }
+                }
+            }
+
+            if (!this.wasAttached)
+            {
+                if (this.plugin != null &&
+                    this.DataRepository != null &&
+                    this.DataSubscription != null &&
+                    this.IOCContainer != null &&
+                    this.LogFormat != null &&
+                    this.LogOutput != null)
+                {
+                    this.wasAttached = true;
+
+                    this.SubscribeXIVPluginEvents();
+                    this.SubscribeParsedLogLine();
+
+                    AppLogger.Trace("attached ffxiv plugin.");
+
+                    this.ActPluginAttachedCallback?.Invoke();
+                }
             }
         }
+
+        public ILogFormat LogFormat { get; private set; }
+
+        public ILogOutput LogOutput { get; private set; }
 
         public PrimaryPlayerDelegate OnPrimaryPlayerChanged { get; set; }
 
@@ -417,42 +465,34 @@ namespace FFXIV.Framework.XIVHelper
 
         private uint sequence = 1;
 
-        private async void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
+        private void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
         {
             if (!this.isActivationAllowed)
             {
                 return;
             }
 
-            await Task.Run(() =>
+            var line = logInfo.logLine;
+
+            // 18文字未満のログは書式エラーになるため無視する
+            if (line.Length < 18)
             {
-                var line = logInfo.logLine;
+                return;
+            }
 
-                // 18文字未満のログは書式エラーになるため無視する
-                if (line.Length < 18)
-                {
-                    return;
-                }
+            // メッセージタイプを抽出する
+            var messagetype = logInfo.detectedType;
 
-                // メッセージタイプを抽出する
-                var messagetypeText = line.Substring(15, 2);
-                if (!int.TryParse(
-                    messagetypeText,
-                    NumberStyles.HexNumber,
-                    CultureInfo.InvariantCulture,
-                    out int messagetype))
-                {
-                    return;
-                }
+            // メッセージタイプの文字列を除去する
+            line = LogMessageTypeExtensions.RemoveLogMessageType(messagetype, line);
 
-                // メッセージ部分だけを抽出する
-                var message = line.Substring(15);
+            // メッセージ部分だけを抽出する
+            var message = line.Substring(15);
 
-                this.OnParsedLogLine(
-                    this.sequence++,
-                    messagetype,
-                    message);
-            });
+            this.OnParsedLogLine(
+                this.sequence++,
+                messagetype,
+                message);
         }
 
         private void OnParsedLogLine(
@@ -468,13 +508,11 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            // 明らかに使用しないログをカットする
-            // タイプによるカット
             var type = (LogMessageType)Enum.ToObject(typeof(LogMessageType), messagetype);
             switch (type)
             {
-                case LogMessageType.LogLine:
-                    // ダメージ系をカットする
+                case LogMessageType.ChatLog:
+                    // 明らかに使用しないダメージ系をカットする
                     if (DamageLogPattern.IsMatch(parsedLog))
                     {
                         return;
@@ -488,6 +526,8 @@ namespace FFXIV.Framework.XIVHelper
                         return;
                     }
 
+                    // ログの書式をパースする
+                    parsedLog = LogParser.FormatLogLine(type, parsedLog);
                     break;
             }
 
@@ -521,7 +561,7 @@ namespace FFXIV.Framework.XIVHelper
         /// </summary>
         public static readonly string[] IgnoreLogKeywords = new[]
         {
-            LogMessageType.NetworkDoT.ToKeyword(),
+            LogMessageType.DoTHoT.ToKeyword(),
         };
 
         /*
@@ -572,7 +612,7 @@ namespace FFXIV.Framework.XIVHelper
         /// </remarks>
         private static readonly Regex DamageLogPattern =
             new Regex(
-                @"^00:..(29|a9|2d|ad):",
+                $@"^{LogMessageType.ChatLog.ToHex()}:..(29|a9|2d|ad):",
                 RegexOptions.Compiled |
                 RegexOptions.IgnoreCase |
                 RegexOptions.ExplicitCapture);
@@ -585,7 +625,7 @@ namespace FFXIV.Framework.XIVHelper
         public static bool IsDamageLog(
             string logLine)
         {
-            if (!logLine.StartsWith("00:"))
+            if (!logLine.StartsWith($"{LogMessageType.ChatLog.ToHex()}:"))
             {
                 return false;
             }
@@ -751,8 +791,6 @@ namespace FFXIV.Framework.XIVHelper
             CurrentHP = 30000,
             MaxMP = 12000,
             CurrentMP = 12000,
-            MaxTP = 3000,
-            CurrentTP = 3000,
             Job = (int)JobIDs.PLD,
             type = (byte)Actor.Type.PC,
         };
@@ -769,8 +807,6 @@ namespace FFXIV.Framework.XIVHelper
                 CurrentHP = 30000,
                 MaxMP = 12000,
                 CurrentMP = 12000,
-                MaxTP = 3000,
-                CurrentTP = 3000,
                 Job = (int)JobIDs.WAR,
                 type = (byte)Actor.Type.PC,
             },
@@ -783,8 +819,6 @@ namespace FFXIV.Framework.XIVHelper
                 CurrentHP = 30000,
                 MaxMP = 12000,
                 CurrentMP = 12000,
-                MaxTP = 3000,
-                CurrentTP = 3000,
                 Job = (int)JobIDs.WHM,
                 type = (byte)Actor.Type.PC,
             },
@@ -797,8 +831,6 @@ namespace FFXIV.Framework.XIVHelper
                 CurrentHP = 30000,
                 MaxMP = 12000,
                 CurrentMP = 12000,
-                MaxTP = 3000,
-                CurrentTP = 3000,
                 Job = (int)JobIDs.AST,
                 type = (byte)Actor.Type.PC,
             },
@@ -832,8 +864,6 @@ namespace FFXIV.Framework.XIVHelper
         private void OnAddedCombatants(
             AddedCombatantsEventArgs e) => this?.AddedCombatants?.Invoke(this, e);
 
-        private bool isFirst = true;
-
         public void RefreshCombatantList()
         {
             if (!this.IsAvailable)
@@ -841,9 +871,11 @@ namespace FFXIV.Framework.XIVHelper
 #if true
                 if (IsDebug)
                 {
-                    CombatantsManager.Instance.Refresh(DummyCombatants, IsDebug);
                     this.TryActivation();
+                    /*
+                    CombatantsManager.Instance.Refresh(DummyCombatants, IsDebug);
                     raiseFirstCombatants();
+                    */
                 }
 #endif
 
@@ -871,21 +903,9 @@ namespace FFXIV.Framework.XIVHelper
                     new AddedCombatantsEventArgs(addeds));
             }
 
-            raiseFirstCombatants();
-
             if (!this.isActivationAllowed)
             {
                 CombatantsManager.Instance.Clear();
-            }
-
-            void raiseFirstCombatants()
-            {
-                if (this.isFirst &&
-                    CombatantsManager.Instance.CombatantsMainCount > 0)
-                {
-                    this.isFirst = false;
-                    this.OnPrimaryPlayerChanged?.Invoke();
-                }
             }
         }
 
@@ -902,7 +922,7 @@ namespace FFXIV.Framework.XIVHelper
             }
             else
             {
-                result = SharlayanHelper.Instance.CurrentPlayer.InCombat;
+                result = SharlayanHelper.Instance.CurrentPlayer?.InCombat ?? false;
             }
 
             this.InCombat = result;
@@ -1175,18 +1195,62 @@ namespace FFXIV.Framework.XIVHelper
         public CombatantEx GetTargetInfo(
             OverlayType type)
         {
+            var targetEx = default(CombatantEx);
+            var targetInfo = default(TargetInfo);
+
             if (!this.IsAvailable)
             {
-                return null;
+                return targetEx;
             }
 
-            var target = this.DataRepository?.GetCombatantByOverlayType(type);
-            if (target == null)
+            var player = CombatantsManager.Instance.Player;
+            if (player == null)
             {
-                return null;
+                return targetEx;
             }
 
-            var targetEx = CombatantsManager.Instance.GetCombatantMain(target.ID);
+            switch (type)
+            {
+                case OverlayType.Target:
+                    if (player.TargetID != 0)
+                    {
+                        // TargetID に明確な値が入っている場合はそのまま使用する
+                        targetEx = CombatantsManager.Instance.GetCombatantMain(player.TargetID);
+                    }
+                    else
+                    {
+                        // TargetID が0だった場合はsharlayanのTarget情報も参照する
+                        targetInfo = SharlayanHelper.Instance.TargetInfo;
+                        if (targetInfo == null)
+                        {
+                            return targetEx;
+                        }
+
+                        targetEx = CombatantsManager.Instance.GetCombatantMain(targetInfo.CurrentTargetID);
+                    }
+
+                    break;
+
+                case OverlayType.TargetOfTarget:
+                    // TargetOfTarget はXIVプラグインから取得する
+                    targetEx = CombatantsManager.Instance.GetCombatantMain(player.TargetOfTargetID);
+                    break;
+
+                case OverlayType.FocusTarget:
+                case OverlayType.HoverTarget:
+                    // FocusTarget, HoverTarget はsharlayan経由で取得する
+                    targetInfo = SharlayanHelper.Instance.TargetInfo;
+                    if (targetInfo == null)
+                    {
+                        return targetEx;
+                    }
+
+                    targetEx = CombatantsManager.Instance.GetCombatantMain(
+                        type == OverlayType.FocusTarget ?
+                        targetInfo.FocusTarget?.ID ?? 0 :
+                        targetInfo.MouseOverTarget?.ID ?? 0);
+                    break;
+            }
 
             return targetEx;
         }
@@ -1258,10 +1322,6 @@ namespace FFXIV.Framework.XIVHelper
 
             return r;
         }
-
-        public ReadOnlyCollection<Effect> GetEffects(
-            uint id)
-            => this.DataRepository?.GetEffectsForCombatants(id);
 
         #endregion Get Misc
 
@@ -1649,118 +1709,6 @@ namespace FFXIV.Framework.XIVHelper
                         AppLogger.Trace("xivapi action list merged.");
                     }
                 }
-            }
-        }
-
-        private void ComplementSkillList()
-        {
-            if (this.isComplementedSkillList)
-            {
-                return;
-            }
-
-            if (this.plugin == null ||
-                this.IOCContainer == null)
-            {
-                return;
-            }
-
-            if (!XIVApi.Instance.ActionList.Any())
-            {
-                return;
-            }
-
-            var resourcesData = this.IOCContainer?.Resolve<IResourceData>();
-            var dataContainer = resourcesData?.GetType()
-                .GetField(
-                    "_skillList",
-                    BindingFlags.NonPublic | BindingFlags.Instance)
-                .GetValue(resourcesData);
-            var innerList = dataContainer?.GetType()
-                .GetField(
-                    "_SkillList",
-                    BindingFlags.NonPublic | BindingFlags.Instance)
-                .GetValue(dataContainer)
-                as SortedDictionary<uint, string>;
-
-            if (innerList == null)
-            {
-                this.isComplementedSkillList = true;
-                AppLogger.Error("skill list not found in XIVPlugin.");
-                return;
-            }
-
-            var added = false;
-            foreach (var entry in XIVApi.Instance.ActionList)
-            {
-                if (!innerList.ContainsKey(entry.Key))
-                {
-                    innerList[entry.Key] = entry.Value.Name;
-                    added = true;
-                }
-            }
-
-            this.isComplementedSkillList = true;
-
-            if (added)
-            {
-                AppLogger.Trace("skill list complemented to XIVPlugin.");
-            }
-        }
-
-        private void ComplementBuffList()
-        {
-            if (this.isComplementedBuffList)
-            {
-                return;
-            }
-
-            if (this.plugin == null ||
-                this.IOCContainer == null)
-            {
-                return;
-            }
-
-            if (!XIVApi.Instance.BuffList.Any())
-            {
-                return;
-            }
-
-            var resourcesData = this.IOCContainer?.Resolve<IResourceData>();
-            var dataContainer = resourcesData?.GetType()
-                .GetField(
-                    "_buffList",
-                    BindingFlags.NonPublic | BindingFlags.Instance)
-                .GetValue(resourcesData);
-            var innerList = dataContainer?.GetType()
-                .GetField(
-                    "_BuffList",
-                    BindingFlags.NonPublic | BindingFlags.Instance)
-                .GetValue(dataContainer)
-                as SortedDictionary<uint, string>;
-
-            if (innerList == null)
-            {
-                this.isComplementedBuffList = true;
-                AppLogger.Error("buff list not found in XIVPlugin.");
-                return;
-            }
-
-            var added = false;
-            foreach (var entry in XIVApi.Instance.BuffList)
-            {
-                if (!innerList.ContainsKey(entry.Key))
-                {
-                    innerList[entry.Key] = entry.Value.Name;
-                    added = true;
-                }
-            }
-
-            this.isComplementedBuffList = true;
-
-            if (added)
-            {
-                AppLogger.Trace("buff list complemented to XIVPlugin.");
             }
         }
 

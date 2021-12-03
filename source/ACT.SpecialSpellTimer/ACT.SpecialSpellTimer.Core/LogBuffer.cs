@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Models;
@@ -20,29 +21,17 @@ namespace ACT.SpecialSpellTimer
     public class LogBuffer :
         IDisposable
     {
-        #region Constants
-
         /// <summary>
         /// 空のログリスト
         /// </summary>
         public static readonly List<XIVLog> EmptyLogLineList = new List<XIVLog>();
 
-        /// <summary>
-        /// ツールチップのサフィックス
-        /// </summary>
-        /// <remarks>
-        /// ツールチップは計4charsで構成されるが先頭1文字目が可変で残り3文字が固定となっている</remarks>
-        public const string TooltipSuffix = "\u0001\u0001\uFFFD";
+#if DEBUG
+        private static readonly bool IsEnabledGetLogLinesDump = false;
+#endif
 
-        /// <summary>
-        /// ツールチップで残るリプレースメントキャラ
-        /// </summary>
-        public const string TooltipReplacementChar = "\uFFFD";
-
-        #endregion Constants
-
-        private readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer = new Lazy<ConcurrentQueue<XIVLog>>(()
-            => XIVPluginHelper.Instance.SubscribeXIVLog(() => true));
+        private readonly Lazy<ConcurrentQueue<XIVLog>> LazyXIVLogBuffer =
+            new Lazy<ConcurrentQueue<XIVLog>>(() => XIVPluginHelper.Instance.SubscribeXIVLog(() => true));
 
         public ConcurrentQueue<XIVLog> XIVLogQueue => LazyXIVLogBuffer.Value;
 
@@ -64,7 +53,7 @@ namespace ACT.SpecialSpellTimer
             XIVPluginHelper.Instance.AddedCombatants += this.OnAddedCombatants;
 
             // 生ログの書き出しバッファを開始する
-            ChatLogWorker.Instance.Begin();
+            ParsedLogWorker.Instance.Begin();
         }
 
         /// <summary>
@@ -85,7 +74,7 @@ namespace ACT.SpecialSpellTimer
             XIVPluginHelper.Instance.AddedCombatants -= this.OnAddedCombatants;
 
             // 生ログの書き出しバッファを停止する
-            ChatLogWorker.Instance.End();
+            ParsedLogWorker.Instance.End();
         }
 
         #endregion コンストラクター/デストラクター/Dispose
@@ -256,20 +245,17 @@ namespace ACT.SpecialSpellTimer
             object sender,
             XIVPluginHelper.AddedCombatantsEventArgs e)
         {
-            lock (this)
-            {
-                var now = DateTime.Now;
+            var now = DateTime.Now;
 
-                if (e != null &&
-                    e.NewCombatants != null &&
-                    e.NewCombatants.Any())
-                {
-                    foreach (var combatant in e.NewCombatants)
-                    {
-                        var log = $"[EX] Added new combatant. name={combatant.Name} X={combatant.PosXMap:N2} Y={combatant.PosYMap:N2} Z={combatant.PosZMap:N2} hp={combatant.CurrentHP}";
-                        LogParser.RaiseLog(now, log);
-                    }
-                }
+            if (e != null &&
+                e.NewCombatants != null &&
+                e.NewCombatants.Any())
+            {
+                // Added new combatant の拡張ログを発生させる
+                LogParser.RaiseLog(
+                    now,
+                    e.NewCombatants.Select(x =>
+                        $"[EX] +Combatant name={x.Name} X={x.PosXMap:N2} Y={x.PosYMap:N2} Z={x.PosZMap:N2} hp={x.CurrentHP} id={x.ID:X8}"));
             }
         }
 
@@ -282,33 +268,16 @@ namespace ACT.SpecialSpellTimer
         /// </summary>
         public static readonly string[] IgnoreDetailLogKeywords = new[]
         {
-            LogMessageType.CombatantHP.ToKeyword(),
-            LogMessageType.NetworkAbility.ToKeyword(),
-            LogMessageType.NetworkAOEAbility.ToKeyword(),
-            LogMessageType.NetworkCancelAbility.ToKeyword(),
-            LogMessageType.NetworkDoT.ToKeyword(),
-            LogMessageType.NetworkEffectResult.ToKeyword(),
-            LogMessageType.NetworkStatusList.ToKeyword(),
-            LogMessageType.NetworkUpdateHp.ToKeyword(),
+            LogMessageType.ActionEffect.ToKeyword(),
+            LogMessageType.AOEActionEffect.ToKeyword(),
+            LogMessageType.CancelAction.ToKeyword(),
+            LogMessageType.DoTHoT.ToKeyword(),
+            LogMessageType.EffectResult.ToKeyword(),
+            LogMessageType.StatusList.ToKeyword(),
+            LogMessageType.UpdateHp.ToKeyword(),
         };
 
         public bool IsEmpty => this.XIVLogQueue.IsEmpty;
-
-        /// <summary>
-        /// パーティメンバについてのHPログか？
-        /// </summary>
-        /// <param name="log"></param>
-        /// <returns></returns>
-        public static bool IsHPLogByPartyMember(
-            string log)
-        {
-            if (!log.Contains(LogMessageType.CombatantHP.ToKeyword()))
-            {
-                return false;
-            }
-
-            return TableCompiler.Instance?.SortedPartyList?.Any(x => log.Contains(x.Name)) ?? false;
-        }
 
         /// <summary>
         /// ログ行を返す
@@ -373,8 +342,16 @@ namespace ACT.SpecialSpellTimer
                 }
 
                 // ツールチップシンボル, ワールド名を除去する
-                logLine = RemoveTooltipSynbols(logLine);
-                logLine = RemoveWorldName(logLine);
+                if (!Settings.Default.RemoveTooltipSymbols)
+                {
+                    logLine = LogParser.RemoveTooltipSynbols(logLine);
+                }
+
+                if (!Settings.Default.RemoveWorldName)
+                {
+                    logLine = LogParser.RemoveWorldName(logLine);
+                }
+
                 xivlog.LogLine = logLine;
 
                 // ペットジョブで召喚をしたか？
@@ -426,12 +403,15 @@ namespace ACT.SpecialSpellTimer
             // ログファイルに出力する
             if (Settings.Default.SaveLogEnabled)
             {
-                ChatLogWorker.Instance.AppendLinesAsync(list);
+                ParsedLogWorker.Instance.AppendLinesAsync(list);
             }
 
 #if DEBUG
             sw.Stop();
-            System.Diagnostics.Debug.WriteLine($"★GetLogLines {sw.Elapsed.TotalMilliseconds:N1} ms");
+            if (IsEnabledGetLogLinesDump)
+            {
+                System.Diagnostics.Debug.WriteLine($"★GetLogLines {sw.Elapsed.TotalMilliseconds:N1} ms");
+            }
 #endif
             // 冒頭のタイムスタンプを除去して返す
             return list;
@@ -484,8 +464,17 @@ namespace ACT.SpecialSpellTimer
             "Du hast das Trainingsziel nicht erreicht ...",
         };
 
+        private static readonly Regex DefeatedLogRegex = new Regex(
+            LogMessageType.Death.ToHex() + @":[0-9a-fA-F]{8}:(?<player>.+?):",
+            RegexOptions.Compiled);
+
         private bool IsDefeated(string logLine)
         {
+            if (!logLine.StartsWith($"{LogMessageType.Death.ToHex()}:"))
+            {
+                return false;
+            }
+
             var result = false;
 
             var party = CombatantsManager.Instance.GetPartyList();
@@ -502,13 +491,22 @@ namespace ACT.SpecialSpellTimer
                 party = new[] { player };
             }
 
-            foreach (var combatant in party)
+            var match = DefeatedLogRegex.Match(logLine);
+            if (match.Success)
             {
-                result = logLine.Contains($"19:{combatant.Name} was defeated");
+                var defeatedPC = match.Groups["player"].Value;
 
-                if (result)
+                foreach (var combatant in party)
                 {
-                    break;
+                    result = string.Equals(
+                        defeatedPC,
+                        combatant.Name,
+                        StringComparison.OrdinalIgnoreCase);
+
+                    if (result)
+                    {
+                        break;
+                    }
                 }
             }
 
@@ -537,63 +535,6 @@ namespace ACT.SpecialSpellTimer
             }
 
             return IgnoreDetailLogKeywords.Any(x => logLine.Contains(x));
-        }
-
-        /// <summary>
-        /// ツールチップシンボルを除去する
-        /// </summary>
-        /// <param name="logLine"></param>
-        /// <returns>編集後のLogLine</returns>
-        public static string RemoveTooltipSynbols(
-            string logLine)
-        {
-            var result = logLine;
-
-            // エフェクトに付与されるツールチップ文字を除去する
-            if (Settings.Default.RemoveTooltipSymbols)
-            {
-                // 4文字分のツールチップ文字を除去する
-                int index;
-                if ((index = result.IndexOf(
-                    TooltipSuffix,
-                    0,
-                    StringComparison.Ordinal)) > -1)
-                {
-                    const int removeLength = 4;
-                    var startIndex = index - 1;
-
-                    if (startIndex >= 0)
-                    {
-                        result = result.Remove(startIndex, removeLength);
-                    }
-                }
-
-                // 残ったReplacementCharを除去する
-                result = result.Replace(TooltipReplacementChar, string.Empty);
-            }
-
-            return result;
-        }
-
-        public static string RemoveWorldName(
-            string logLine)
-        {
-            var result = logLine;
-
-            if (!Settings.Default.RemoveWorldName)
-            {
-                return result;
-            }
-
-            if (!logLine.Contains("] 00:") &&
-                !logLine.StartsWith("00:"))
-            {
-                return result;
-            }
-
-            result = XIVPluginHelper.Instance.RemoveWorldName(logLine);
-
-            return result;
         }
 
         #endregion ログ処理

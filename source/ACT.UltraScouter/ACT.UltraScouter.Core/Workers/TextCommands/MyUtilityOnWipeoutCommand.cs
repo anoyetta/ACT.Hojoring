@@ -23,11 +23,6 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
         #endregion Lazy Singleton
 
-        private static readonly string WipeoutLog = "wipeout";
-
-        private static readonly string ChangedZoneLog = "01:Changed Zone to";
-        private static readonly string ContentStartLog = "の攻略を開始した。";
-
         public MyUtility Config => Settings.Instance.MyUtility;
 
         public void Subscribe()
@@ -56,7 +51,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
             this.StoreTankStance(logLine);
 
-            return logLine.Contains(WipeoutLog);
+            return logLine.Contains(WipeoutKeywords.Wipeout);
         }
 
         private void OnWipeout(
@@ -69,7 +64,6 @@ namespace ACT.UltraScouter.Workers.TextCommands
             var sendKeySetList = new List<KeyShortcut>();
 
             var player = CombatantsManager.Instance.Player;
-            var playerEffects = player.Effects;
             var partyCount = CombatantsManager.Instance.PartyCount;
 
             // タンクスタンスを復元する
@@ -117,13 +111,17 @@ namespace ACT.UltraScouter.Workers.TextCommands
             // 食事効果を延長する
             if (this.Config.ExtendMealEffect.IsAvailable())
             {
-                var remainOfWellFed = playerEffects.FirstOrDefault(x =>
-                    x != null &&
-                    x.BuffID == WellFedEffectID)?.Timer ?? 0;
-
-                if (0 < remainOfWellFed && remainOfWellFed < (this.Config.ExtendMealEffect.RemainingTimeThreshold * 60))
+                var si = SharlayanHelper.Instance.CurrentPlayer?.StatusItems;
+                if (si != null)
                 {
-                    sendKeySetList.Add(this.Config.ExtendMealEffect.KeySet);
+                    var remainOfWellFed = si.FirstOrDefault(x =>
+                        x != null &&
+                        x.StatusID == WellFedEffectID)?.Duration ?? 0;
+
+                    if (0 < remainOfWellFed && remainOfWellFed < (this.Config.ExtendMealEffect.RemainingTimeThreshold * 60))
+                    {
+                        sendKeySetList.Add(this.Config.ExtendMealEffect.KeySet);
+                    }
                 }
             }
 
@@ -143,6 +141,17 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
         private volatile bool isZoneChanged;
 
+        /// <summary>
+        /// ChangedZoneRegex
+        /// </summary>
+        /// <remarks>
+        /// 01:153:Mist</remarks>
+        private static readonly Regex ChangedZoneRegex = new Regex(
+            "^01:[0-9]+:[^:]+$",
+            RegexOptions.Compiled);
+
+        private static readonly string ContentStartLog = "の攻略を開始した。";
+
         private bool WasZoneChanged(
             string logLine,
             out Match match)
@@ -157,7 +166,7 @@ namespace ACT.UltraScouter.Workers.TextCommands
                 return false;
             }
 
-            if (logLine.Contains(ChangedZoneLog))
+            if (ChangedZoneRegex.IsMatch(logLine))
             {
                 this.isZoneChanged = true;
                 return true;
@@ -184,7 +193,6 @@ namespace ACT.UltraScouter.Workers.TextCommands
             var sendKeySetList = new List<KeyShortcut>();
 
             var player = CombatantsManager.Instance.Player;
-            var playerEffects = player.Effects;
 
             // タンクスタンスを復元する
             if (this.Config.RestoreTankStance.IsEnabled &&
@@ -247,14 +255,14 @@ namespace ACT.UltraScouter.Workers.TextCommands
 
         private static readonly string[] EngageLogs = new string[]
         {
-            "00:0039:戦闘開始",
-            "00:0039:Engage!",
-            "00:0039:전투 시작!",
-            "00:0039:战斗开始！",
+            "00:0039::戦闘開始",
+            "00:0039::Engage!",
+            "00:0039::전투 시작!",
+            "00:0039::战斗开始！",
         };
 
         /// <summary>食事効果のエフェクトID</summary>
-        private static readonly uint WellFedEffectID = 48;
+        private static readonly short WellFedEffectID = 48;
 
         private bool? inTankStance;
 
@@ -272,7 +280,6 @@ namespace ACT.UltraScouter.Workers.TextCommands
             }
 
             var player = CombatantsManager.Instance.Player;
-            var playerEffects = player.Effects;
 
             if (player.Role != Roles.Tank)
             {

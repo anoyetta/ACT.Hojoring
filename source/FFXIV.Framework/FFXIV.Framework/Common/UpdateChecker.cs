@@ -1,3 +1,9 @@
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.WPF.Views;
+using Microsoft.Win32;
+using NLog;
+using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,12 +17,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.WPF.Views;
-using Microsoft.Win32;
-using NLog;
-using Octokit;
 
 namespace FFXIV.Framework.Common
 {
@@ -60,11 +60,19 @@ namespace FFXIV.Framework.Common
                     if (t == null)
                     {
                         var cd = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                        var hojoring = Path.Combine(cd, "ACT.Hojoring.Common.dll");
-                        if (File.Exists(hojoring))
+                        var hojorings = new[]
                         {
-                            var asm = Assembly.LoadFrom(hojoring);
-                            t = asm?.GetType(HojoringTypeName);
+                            Path.Combine(cd, "ACT.Hojoring.Common.dll"),
+                            Path.Combine(cd, "..", "ACT.Hojoring.Common.dll")
+                        };
+
+                        foreach (var hojoring in hojorings)
+                        {
+                            if (File.Exists(hojoring))
+                            {
+                                var asm = Assembly.LoadFrom(hojoring);
+                                t = asm?.GetType(HojoringTypeName);
+                            }
                         }
                     }
 
@@ -305,7 +313,16 @@ namespace FFXIV.Framework.Common
         public static async void StartUpdateScript(
             bool usePreRelease = false)
         {
-            var cd = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var cd = DirectoryHelper.GetPluginRootDirectoryDelegate?.Invoke();
+            if (string.IsNullOrEmpty(cd))
+            {
+                cd = Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    "..");
+
+                cd = Path.GetFullPath(cd);
+            }
+
             var script = Path.Combine(cd, "update_hojoring.ps1");
 
             using (var web = new WebClient())
@@ -323,9 +340,9 @@ namespace FFXIV.Framework.Common
 
             if (File.Exists(script))
             {
-                var args = $"-NoLog  -NoProfile -ExecutionPolicy Unrestricted -File \"{script}\" {usePreRelease}";
+                var args = $"-NoLogo -NoProfile -ExecutionPolicy Unrestricted -File \"{script}\" {usePreRelease}";
 
-                Process.Start("powershell.exe", args);
+                Process.Start(EnvironmentHelper.Pwsh, args);
             }
         }
 
@@ -383,35 +400,6 @@ namespace FFXIV.Framework.Common
 
                     Process.Start("https://www.microsoft.com/net/download/windows");
                 }
-
-#if !DEBUG
-                if (result)
-                {
-                    var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                    var references = Path.Combine(
-                        location,
-                        "bin");
-
-                    if (!Directory.Exists(references))
-                    {
-                        result = false;
-                        lastResult = false;
-
-                        var prompt = new StringBuilder();
-
-                        prompt.AppendLine("\"bin\" folder not found.");
-                        prompt.AppendLine("Your setup is not complete.");
-                        prompt.AppendLine(string.Empty);
-                        prompt.AppendLine("Please check deployment of plugin.");
-
-                        MessageBox.Show(
-                            prompt.ToString(),
-                            "ACT.Hojoring",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Exclamation);
-                    }
-                }
-#endif
 
                 return result;
             }

@@ -176,7 +176,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// </summary>
         /// <param name="isImport">Importか？</param>
         /// <param name="logInfo">ログ情報</param>
-        private async void FormActMain_OnLogLineRead(
+        private void FormActMain_OnLogLineRead(
             bool isImport,
             LogLineEventArgs logInfo)
         {
@@ -187,7 +187,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     return;
                 }
 
-                await Task.Run(() => this.logInfoQueue.Enqueue(logInfo));
+                this.logInfoQueue.Enqueue(logInfo);
             }
             catch (Exception ex)
             {
@@ -363,11 +363,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     preLogIndex = 0;
                 }
 
-                logs.Add(log);
+                logs.Add(log.Clone());
             }
 
             foreach (var log in logs)
             {
+                // ログメッセージタイプの文言を除去する
+                log.logLine = LogMessageTypeExtensions.RemoveLogMessageType(
+                    log.detectedType,
+                    log.logLine);
+
                 // ダメージ系の不要なログか？
                 if (XIVPluginHelper.IsDamageLog(log.logLine))
                 {
@@ -375,8 +380,20 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 // ツールチップシンボル, ワールド名を除去する
-                log.logLine = LogBuffer.RemoveTooltipSynbols(log.logLine);
-                log.logLine = LogBuffer.RemoveWorldName(log.logLine);
+                if (!Settings.Default.RemoveTooltipSymbols)
+                {
+                    log.logLine = LogParser.RemoveTooltipSynbols(log.logLine);
+                }
+
+                if (!Settings.Default.RemoveWorldName)
+                {
+                    log.logLine = LogParser.RemoveWorldName(log.logLine);
+                }
+
+                // ログの書式をパースする
+                log.logLine = LogParser.FormatLogLine(
+                    log.detectedType,
+                    log.logLine);
 
                 this.AnalyzeLogLine(log);
                 Thread.Yield();
@@ -410,20 +427,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     break;
 
                 case KewordTypes.Cast:
+                case KewordTypes.CastStartsUsing:
                     if (this.inCombat)
                     {
                         this.StoreCastLog(logLine);
                     }
-                    break;
-
-                case KewordTypes.CastStartsUsing:
-                    /*
-                    starts using は準備動作とかぶるので無視する
-                    if (this.inCombat)
-                    {
-                        this.StoreCastStartsUsingLog(log);
-                    }
-                    */
                     break;
 
                 case KewordTypes.Action:
@@ -557,7 +565,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     }
 
                     this.AutoSaveToSpreadsheetAsync();
-                    ChatLogWorker.Instance?.Write(true);
+                    ParsedLogWorker.Instance?.Flush(true);
 
                     Logger.Write("End Combat");
                 }
@@ -660,7 +668,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             };
 
             log.Text = log.Skill;
-            log.SyncKeyword = log.RawWithoutTimestamp.Substring(8);
+            log.SyncKeyword = log.RawWithoutTimestamp.Substring(9);
 
             if (this.ToStoreActor(log.Actor))
             {
@@ -706,6 +714,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         private void StoreCastLog(
             LogLineEventArgs logInfo)
         {
+            var fromChatLog = true;
             var match = ConstantKeywords.CastRegex.Match(logInfo.logLine);
             if (!match.Success)
             {
@@ -714,12 +723,24 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 {
                     return;
                 }
+
+                fromChatLog = false;
+            }
+
+            var victim = match.Groups["target"].ToString();
+            var victimJobName = this.ToNameToJob(victim);
+
+            var raw = logInfo.logLine;
+
+            if (!string.IsNullOrEmpty(victim))
+            {
+                raw = raw.Replace(victim, victimJobName);
             }
 
             var log = new CombatLog()
             {
                 TimeStamp = logInfo.detectedTime,
-                Raw = logInfo.logLine,
+                Raw = raw,
                 Actor = match.Groups["actor"].ToString(),
                 Activity = $"{match.Groups["skill"].ToString()} Start",
                 Skill = match.Groups["skill"].ToString(),
@@ -727,39 +748,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             };
 
             log.Text = log.Skill;
-            log.SyncKeyword = log.RawWithoutTimestamp.Substring(8);
-
-            if (this.ToStoreActor(log.Actor))
-            {
-                this.StoreLog(log, logInfo);
-            }
-        }
-
-        /// <summary>
-        /// キャストログを格納する
-        /// </summary>
-        /// <param name="logInfo">ログ情報</param>
-        private void StoreCastStartsUsingLog(
-            LogLineEventArgs logInfo)
-        {
-            var match = ConstantKeywords.StartsUsingRegex.Match(logInfo.logLine);
-            if (!match.Success)
-            {
-                return;
-            }
-
-            var log = new CombatLog()
-            {
-                TimeStamp = logInfo.detectedTime,
-                Raw = logInfo.logLine,
-                Actor = match.Groups["actor"].ToString(),
-                Activity = $"starts using {match.Groups["skill"].ToString()}",
-                Skill = match.Groups["skill"].ToString(),
-                LogType = LogTypes.CastStart
-            };
-
-            log.Text = log.Skill;
-            log.SyncKeyword = log.RawWithoutTimestamp.Substring(6);
+            log.SyncKeyword = fromChatLog ?
+                log.RawWithoutTimestamp.Substring(9) :
+                log.RawWithoutTimestamp;
 
             if (this.ToStoreActor(log.Actor))
             {
@@ -1015,7 +1006,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             };
 
             log.Text = null;
-            log.SyncKeyword = log.RawWithoutTimestamp.Substring(8);
+            log.SyncKeyword = log.RawWithoutTimestamp.Substring(9);
 
             this.StoreLog(log, logInfo);
         }
@@ -1200,14 +1191,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 this.isImporting = true;
 
-                // 冒頭にインポートを示すログを発生させる
-                this.AnalyzeLogLine(new LogLineEventArgs(
-                    $"[00:00:00.000] {ConstantKeywords.ImportLog}",
-                    0,
-                    DateTime.Now,
-                    string.Empty,
-                    true));
-
                 // 各種初期化
                 this.inCombat = false;
                 this.CurrentCombatLogList.Clear();
@@ -1215,6 +1198,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 this.partyNames = null;
                 this.combatants = null;
                 this.no = 1;
+
+                // 冒頭にインポートを示すログを発生させる
+                this.AnalyzeLogLine(new LogLineEventArgs(
+                    $"[00:00:00.000] {ConstantKeywords.ImportLog}",
+                    0,
+                    DateTime.Now,
+                    string.Empty,
+                    true));
 
                 var preLog = new string[3];
                 var preLogIndex = 0;
@@ -1254,6 +1245,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
 
                         var detectTime = DateTime.Parse(fields[1]);
+                        $"0x{fields[3]}".TryParse0xString2Int(out int detectedType);
                         var log = fields[4];
                         var zone = fields[5];
 
@@ -1271,25 +1263,24 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                             preLogIndex = 0;
                         }
 
-                        // 無効なログ？
-                        // ログ種別だけのゴミ？, 不要なログキーワード？, TLシンボルあり？, ダメージ系ログ？
-                        if (log.Length <= 3 ||
-                            log.Contains(TimelineConstants.LogSymbol) ||
-                            XIVPluginHelper.IsDamageLog(log))
+                        // TLシンボルありならば捨てる
+                        if (log.Contains(TimelineConstants.LogSymbol))
                         {
                             continue;
                         }
 
-                        // ツールチップシンボル, ワールド名を除去する
-                        log = LogBuffer.RemoveTooltipSynbols(log);
-                        log = LogBuffer.RemoveWorldName(log);
+                        // ダメージ系の不要なログか？
+                        if (XIVPluginHelper.IsDamageLog(log))
+                        {
+                            continue;
+                        }
 
                         // タイムスタンプを付与し直す
                         log = $"[{detectTime.ToString("HH:mm:ss.fff")}] {log}";
 
                         var arg = new LogLineEventArgs(
                             log,
-                            0,
+                            detectedType,
                             detectTime,
                             zone,
                             true);

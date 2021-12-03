@@ -328,7 +328,7 @@ namespace ACT.SpecialSpellTimer
             if (switchValue == "open")
             {
                 r = true;
-                var file = ChatLogWorker.Instance.OutputFile;
+                var file = ParsedLogWorker.Instance.OutputFile;
                 if (File.Exists(file))
                 {
                     Process.Start(file);
@@ -338,7 +338,7 @@ namespace ACT.SpecialSpellTimer
             if (switchValue == "flush")
             {
                 r = true;
-                ChatLogWorker.Instance.Write(true);
+                ParsedLogWorker.Instance.Flush(true);
             }
 
             return r;

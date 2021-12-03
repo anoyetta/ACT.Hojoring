@@ -6,7 +6,6 @@ using ACT.UltraScouter.Config;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
-using FFXIV_ACT_Plugin.Common;
 using Prism.Mvvm;
 
 namespace ACT.UltraScouter.Models
@@ -133,13 +132,8 @@ namespace ACT.UltraScouter.Models
             var player = CombatantsManager.Instance.Player;
             var target = XIVPluginHelper.Instance.GetTargetInfo(OverlayType.Target);
 
-            this.syncKeywordToHoT = player != null ?
-                $"18:HoT Tick on {player.Name}" :
-                string.Empty;
-
-            this.syncKeywordToDoT = target != null ?
-                $"18:DoT Tick on {target.Name}" :
-                string.Empty;
+            this.playerName = player?.Name ?? EmptyName;
+            this.targetName = target?.Name ?? EmptyName;
 
             if (Settings.Instance.MPTicker.IsSyncMP &&
                 Settings.Instance.MPTicker.IsUnlockMPSync)
@@ -203,8 +197,9 @@ namespace ACT.UltraScouter.Models
             this.previousMP = player.CurrentMP;
         }
 
-        private volatile string syncKeywordToHoT = string.Empty;
-        private volatile string syncKeywordToDoT = string.Empty;
+        private static readonly string EmptyName = "EMPTY";
+        private volatile string playerName = EmptyName;
+        private volatile string targetName = EmptyName;
 
         private volatile bool semaphore = false;
 
@@ -225,7 +220,9 @@ namespace ACT.UltraScouter.Models
 
         private static volatile uint HealerInCombatMPRecoverValue;
 
-        private async void OnLogLineRead(bool isImport, LogLineEventArgs logInfo)
+        private void OnLogLineRead(
+            bool isImport,
+            LogLineEventArgs logInfo)
         {
             if (isImport)
             {
@@ -241,37 +238,42 @@ namespace ACT.UltraScouter.Models
 
                 this.semaphore = true;
 
-                await Task.Run(() =>
+                var config = Settings.Instance.MPTicker;
+
+                if ((DateTime.Now - this.lastSyncTimestamp).TotalSeconds <= config.ResyncInterval)
                 {
-                    var config = Settings.Instance.MPTicker;
+                    return;
+                }
 
-                    if ((DateTime.Now - this.lastSyncTimestamp).TotalSeconds <= config.ResyncInterval)
+                var sync = false;
+                var target = string.Empty;
+                var logLine = string.Empty;
+
+                // 0x18 DoTHoTのとき
+                if (logInfo.detectedType == 0x18)
+                {
+                    // メッセージタイプの文字列を除去する
+                    logLine = LogMessageTypeExtensions.RemoveLogMessageType(
+                        logInfo.detectedType,
+                        logInfo.logLine);
+
+                    if (config.IsSyncHoT)
                     {
-                        return;
-                    }
-
-                    var sync = false;
-                    var target = string.Empty;
-
-                    if (!string.IsNullOrEmpty(this.syncKeywordToHoT) &&
-                        config.IsSyncHoT)
-                    {
-                        sync = logInfo.logLine.Contains(this.syncKeywordToHoT);
+                        sync = logLine.Contains("HoT") && logLine.Contains(this.playerName);
                         target = "HoT";
                     }
 
-                    if (!string.IsNullOrEmpty(this.syncKeywordToDoT) &&
-                        config.IsSyncDoT)
+                    if (config.IsSyncDoT)
                     {
-                        sync = logInfo.logLine.Contains(this.syncKeywordToDoT);
+                        sync = logLine.Contains("DoT") && logLine.Contains(this.targetName);
                         target = "DoT";
                     }
+                }
 
-                    if (sync)
-                    {
-                        this.Sync(logInfo.logLine, target);
-                    }
-                });
+                if (sync)
+                {
+                    this.Sync(logLine, target);
+                }
             }
             finally
             {

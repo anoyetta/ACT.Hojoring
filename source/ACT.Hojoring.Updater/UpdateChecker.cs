@@ -6,8 +6,9 @@ namespace ACT.Hojoring
 {
     public class UpdateChecker
     {
-        public UpdateChecker()
+        static UpdateChecker()
         {
+            CosturaUtility.Initialize();
         }
 
         public bool UsePreRelease { get; set; }

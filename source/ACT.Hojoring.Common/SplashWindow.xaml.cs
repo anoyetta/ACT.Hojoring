@@ -23,7 +23,7 @@ namespace ACT.Hojoring.Common
         private static readonly bool IsDebug = false;
 #endif
 
-        public string FFXIVVersion => "for patch 5.4x";
+        public string FFXIVVersion => "for ENDWALKER";
 
         public static Version HojoringVersion => Assembly.GetExecutingAssembly()?.GetName()?.Version;
 

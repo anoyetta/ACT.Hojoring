@@ -2,20 +2,16 @@
   <Costura
     IncludeDebugSymbols="false">
     <PreloadOrder>
+      ACT.Hojoring.Activator
       AqKanji2Koe
       AquesTalk
       AquesTalkDriver
+      CeVIO.*
     </PreloadOrder>
-    <ExcludeAssemblies>
-      Advanced Combat Tracker
-      ACT.Hojoring.Common
-      ACT.SpecialSpellTimer.RazorModel
-      FFXIV.Framework
-      FFXIV.Framework.TTS.Server*
-      RazorEngine
-      FFXIV_ACT_Plugin
-      FFXIV_ACT_Plugin.*
-    </ExcludeAssemblies>
+    <IncludeAssemblies>
+      ACT.Hojoring.Activator
+      CeVIO.*
+    </IncludeAssemblies>
     <Unmanaged32Assemblies>
       AqKanji2Koe
       AquesTalk

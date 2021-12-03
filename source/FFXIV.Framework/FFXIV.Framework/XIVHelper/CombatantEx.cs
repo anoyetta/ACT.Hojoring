@@ -39,8 +39,6 @@ namespace FFXIV.Framework.XIVHelper
             dst.CurrentHP = src.CurrentHP;
             dst.MaxHP = src.MaxHP;
             dst.CurrentMP = src.CurrentMP;
-            dst.CurrentTP = src.CurrentTP;
-            dst.MaxTP = src.MaxTP;
             dst.CurrentCP = src.CurrentCP;
             dst.MaxCP = src.MaxCP;
             dst.CurrentGP = src.CurrentGP;
@@ -62,13 +60,8 @@ namespace FFXIV.Framework.XIVHelper
             dst.TargetID = src.TargetID;
             dst.EffectiveDistance = src.EffectiveDistance;
             dst.PartyType = src.PartyType;
-            dst.Pointer = src.Pointer;
+            dst.Address = src.Address;
             dst.Order = src.Order;
-
-            dst.IncomingAbilities = src.IncomingAbilities;
-            dst.OutgoingAbility = src.OutgoingAbility;
-            dst.Effects = src.Effects;
-            dst.FlyingText = src.FlyingText;
 
             dst.SetName(src.Name);
             SetSkillName(dst);
@@ -115,13 +108,8 @@ namespace FFXIV.Framework.XIVHelper
             dst.TargetID = src.TargetID;
             dst.EffectiveDistance = src.EffectiveDistance;
             dst.PartyType = src.PartyType;
-            dst.Pointer = src.Pointer;
+            dst.Address = src.Address;
             dst.Order = src.Order;
-
-            dst.IncomingAbilities = src.IncomingAbilities;
-            dst.OutgoingAbility = src.OutgoingAbility;
-            dst.Effects = src.Effects;
-            dst.FlyingText = src.FlyingText;
 
             dst.SetName(src.Name);
             dst.CastSkillName = src.CastSkillName;
@@ -657,43 +645,19 @@ namespace FFXIV.Framework.XIVHelper
             set;
         }
 
-        public PartyTypeEnum PartyType
+        public PartyType PartyType
         {
             get;
             set;
         }
 
-        public IntPtr Pointer
+        public IntPtr Address
         {
             get;
             set;
         }
 
         public int Order
-        {
-            get;
-            set;
-        }
-
-        public IncomingAbility[] IncomingAbilities
-        {
-            get;
-            set;
-        }
-
-        public OutgoingAbility OutgoingAbility
-        {
-            get;
-            set;
-        }
-
-        public Effect[] Effects
-        {
-            get;
-            set;
-        }
-
-        public FlyingText FlyingText
         {
             get;
             set;
@@ -709,7 +673,7 @@ namespace FFXIV.Framework.XIVHelper
 
         #endregion ICloneable
 
-        public override string ToString() => $"{this.Name} {this.JobID}";
+        public override string ToString() => $"{this.Name} {this.JobID} ID={this.ID}";
     }
 
     public static class CombatantExtensions

@@ -1,9 +1,9 @@
+using FFXIV.Framework.Common;
 using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using FFXIV.Framework.Common;
 
 namespace ACT.TTSYukkuri.Yukkuri
 {
@@ -18,6 +18,7 @@ namespace ACT.TTSYukkuri.Yukkuri
 
         public static string YukkuriDirectory => new[]
         {
+            DirectoryHelper.FindSubDirectory("bin", "Yukkuri"),
             Path.Combine(PluginCore.Instance.PluginDirectory, "bin", "Yukkuri"),
             Path.Combine(PluginCore.Instance.PluginDirectory, "Yukkuri"),
         }.FirstOrDefault(x => Directory.Exists(x));

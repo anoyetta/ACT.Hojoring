@@ -1,19 +1,11 @@
 <Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
   <Costura
-    IncludeDebugSymbols="false">
-    <ExcludeAssemblies>
-      ACT.SpecialSpellTimer*
-      ACT.TTSYukkuri*
-      ACT.UltraScouter*
-      ACT.XIVLog*
-      FFXIV.Framework
-      FFXIV.Framework.TTS.Server*
-      ACT.Hojoring.Common
-      ACT.Hojoring.Updater
-      RazorEngine
-      SLOBSharp
-      FFXIV_ACT_Plugin
-      FFXIV_ACT_Plugin.*
-    </ExcludeAssemblies>
+    IncludeDebugSymbols="true">
+    <PreloadOrder>
+      ACT.Hojoring.Activator
+    </PreloadOrder>
+    <IncludeAssemblies>
+      ACT.Hojoring.Activator
+    </IncludeAssemblies>
   </Costura>
 </Weavers>

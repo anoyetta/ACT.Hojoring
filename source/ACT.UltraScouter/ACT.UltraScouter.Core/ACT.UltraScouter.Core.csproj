@@ -59,6 +59,10 @@
       <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="FFXIV_ACT_Plugin.LogFile">
+      <HintPath>..\..\ThirdParty\SDK\FFXIV_ACT_Plugin.LogFile.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -501,7 +505,7 @@
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="NLog.Config">
-      <Version>4.7.11</Version>
+      <Version>4.7.12</Version>
     </PackageReference>
     <PackageReference Include="NLog.StructuredEvents">
       <Version>0.4.0</Version>

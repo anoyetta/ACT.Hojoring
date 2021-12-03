@@ -43,6 +43,10 @@
       <HintPath>..\ThirdParty\SDK\FFXIV_ACT_Plugin.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="FFXIV_ACT_Plugin.LogFile">
+      <HintPath>..\ThirdParty\SDK\FFXIV_ACT_Plugin.LogFile.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -65,7 +69,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyResolver.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ConfigView.xaml.cs">
       <DependentUpon>ConfigView.xaml</DependentUpon>
@@ -95,7 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Costura.Fody">
-      <Version>5.5.0</Version>
+      <Version>5.7.0</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit">
@@ -105,7 +108,7 @@
       <Version>1.0.4</Version>
     </PackageReference>
     <PackageReference Include="NLog.Config">
-      <Version>4.7.11</Version>
+      <Version>4.7.12</Version>
     </PackageReference>
     <PackageReference Include="Prism.Wpf">
       <Version>8.1.97</Version>
@@ -131,5 +134,6 @@
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
+  <Import Project="..\ACT.Hojoring.Shared\ACT.Hojoring.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

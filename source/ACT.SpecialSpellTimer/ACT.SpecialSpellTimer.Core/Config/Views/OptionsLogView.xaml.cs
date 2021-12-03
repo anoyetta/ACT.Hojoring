@@ -27,6 +27,8 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
         public Settings Config => Settings.Default;
 
+        public FFXIV.Framework.Config FrameworkConfig => FFXIV.Framework.Config.Instance;
+
         private System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog()
         {
             Description = "ログの保存先を選択してください。",
@@ -51,7 +53,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
         public ICommand OpenLogCommand =>
             this.openLogCommand ?? (this.openLogCommand = new DelegateCommand(() =>
             {
-                var file = ChatLogWorker.Instance.OutputFile;
+                var file = ParsedLogWorker.Instance.OutputFile;
                 if (File.Exists(file))
                 {
                     Process.Start(file);

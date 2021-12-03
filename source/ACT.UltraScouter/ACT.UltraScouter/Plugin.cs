@@ -1,8 +1,9 @@
+using ACT.Hojoring.Shared;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
-
-using Advanced_Combat_Tracker;
 
 namespace ACT.UltraScouter
 {
@@ -16,7 +17,7 @@ namespace ACT.UltraScouter
         public Plugin()
         {
             CosturaUtility.Initialize();
-            AssemblyResolver.Instance.Initialize(this);
+            AssemblyResolver.Initialize(() => ActGlobals.oFormActMain?.PluginGetSelfData(this)?.pluginFile.DirectoryName);
         }
 
         private PluginCore core;
@@ -31,8 +32,6 @@ namespace ACT.UltraScouter
         void IActPluginV1.DeInitPlugin()
         {
             this.core?.EndPlugin();
-
-            AssemblyResolver.Free();
             this.core?.Dispose();
             this.core = null;
         }
@@ -50,6 +49,8 @@ namespace ACT.UltraScouter
             Label pluginStatusText)
         {
             Assembly.Load("FFXIV.Framework");
+
+            DirectoryHelper.GetPluginRootDirectoryDelegate = () => ActGlobals.oFormActMain?.PluginGetSelfData(this)?.pluginFile.DirectoryName;
 
             this.GetPluginLocation();
 
