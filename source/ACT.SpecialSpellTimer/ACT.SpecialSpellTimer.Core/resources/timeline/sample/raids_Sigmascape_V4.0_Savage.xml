@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <timeline>
   <name>次元の狭間オメガ零式：シグマ編4</name>
-  <rev>rev3</rev>
+  <rev>rev4</rev>
   <zone>Sigmascape V4.0 (Savage)</zone>
   <description>
     シグマ零式4層の実用可能なタイムラインです。
@@ -10,7 +10,7 @@
   <author>anoyetta with Hojoring Forum</author>
   <locale>JA</locale>
   <entry>ENTRY</entry>
-  <start>0039:戦闘開始！</start>
+  <start>0039::戦闘開始！</start>
 
   <default target-element="Activity" target-attr="notice-d" value="Both" />
   <default target-element="Activity" target-attr="notice-o" value="-3" />

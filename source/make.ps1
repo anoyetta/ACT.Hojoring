@@ -11,9 +11,16 @@ function EndMake() {
     exit
 }
 
-$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe"
-if (Test-Path "C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin\MSBuild.exe") {
-    $msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin\MSBuild.exe"
+$msbuild = ""
+foreach ($f in (
+    "C:\Program Files\Microsoft Visual Studio\2022\Professional\Msbuild\Current\Bin\MSBuild.exe",
+    "C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe",
+    "C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Current\Bin\MSBuild.exe")) {
+
+    if ((Test-Path $f)) {
+        $msbuild = $f
+        break
+    }
 }
 
 $startdir = Get-Location
@@ -60,21 +67,24 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
 
     '●不要なロケールを削除する'
     $locales = @(
+        "cs",
+        "cs-CZ",
         "de",
-        "en",
         "es",
         "fr",
+        "hu",
         "it",
         "ja",
+        "ja-JP",
         "ko",
-        "ja",
-        "ru",
-        "zh-Hans",
-        "zh-Hant",
-        "hu",
+        "pl",
         "pt-BR",
         "ro",
-        "sv"
+        "ru",
+        "sv",
+        "tr",
+        "zh-Hans",
+        "zh-Hant"
     )
 
     foreach ($locale in $locales) {
@@ -84,12 +94,16 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     }
 
     '●外部参照用DLLを逃がす'
-    New-Item -ItemType Directory "bin" | Out-Null
+    if (!(Test-Path "bin")) {
+        New-Item -ItemType Directory "bin" | Out-Null
+    }
 
     '●不要なファイルを削除する'
     Remove-Item -Force *.pdb
     Remove-Item -Force *.xml
     Remove-Item -Force *.exe.config
+    Remove-Item -Force libgrpc_csharp_ext.*.so
+    Remove-Item -Force libgrpc_csharp_ext.*.dylib
 
     '●フォルダをリネームする'
     Rename-Item Yukkuri _yukkuri
@@ -112,8 +126,8 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Remove-Item resources\xivdb\*.csv
     Remove-Item resources\timeline\wallpaper\*
     Remove-Item resources\wav\* -Exclude _asterisk.wav,_beep.wav,_wipeout.wav
-#    Remove-Item resources\icon\Timeline_EN\*
-#    Remove-Item resources\icon\Timeline_JP\*
+    Remove-Item resources\icon\Timeline_EN\*
+    Remove-Item resources\icon\Timeline_JP\*
 
     '●配布ファイルをアーカイブする'
     $archive = "ACT.Hojoring-" + $versionShort

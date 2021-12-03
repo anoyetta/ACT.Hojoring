@@ -1,36 +1,63 @@
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace FFXIV.Framework.Common
 {
     public class DirectoryHelper
     {
+        public delegate string GetPluginRootDirectory();
+
+        public static GetPluginRootDirectory GetPluginRootDirectoryDelegate;
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static string FindSubDirectory(
-            string subDirectoryName)
+            string path)
+            => GetPluginRootDirectoryDelegate != null ?
+            Path.Combine(GetPluginRootDirectoryDelegate.Invoke(), path) :
+            path;
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static string FindSubDirectory(
+            string path1, string path2)
+            => GetPluginRootDirectoryDelegate != null ?
+            Path.Combine(GetPluginRootDirectoryDelegate.Invoke(), path1, path2) :
+            Path.Combine(path1, path2);
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static string FindSubDirectory(
+            string path1, string path2, string path3)
+            => GetPluginRootDirectoryDelegate != null ?
+            Path.Combine(GetPluginRootDirectoryDelegate.Invoke(), path1, path2, path3) :
+            Path.Combine(path1, path2, path3);
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static string FindSubDirectory(
+            string path1, string path2, string path3, string path4)
+            => GetPluginRootDirectoryDelegate != null ?
+            Path.Combine(GetPluginRootDirectoryDelegate.Invoke(), path1, path2, path3, path4) :
+            Path.Combine(path1, path2, path3, path4);
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static string FindFile(
+            string fileName,
+            string subDirectoryName = null)
         {
-            var basePathes = new string[]
+            var dirs = new[]
             {
-                Assembly.GetEntryAssembly()?.Location,
-                Assembly.GetExecutingAssembly()?.Location
+                GetPluginRootDirectoryDelegate?.Invoke(),
+                FindSubDirectory(subDirectoryName ?? string.Empty),
             };
 
-            var dirs = basePathes
-                .Where(x => !string.IsNullOrEmpty(x))
-                .Select(x => Path.GetDirectoryName(x));
-
-            foreach (var parentDir in dirs)
+            foreach (var dir in dirs)
             {
-                var dir = Path.Combine(parentDir, subDirectoryName);
-                if (Directory.Exists(dir))
+                var f = Path.Combine(dir, fileName);
+                if (File.Exists(f))
                 {
-                    return dir;
+                    return f;
                 }
             }
 
-            return string.Empty;
+            return fileName;
         }
 
         public static void DirectoryCopy(string sourcePath, string destinationPath)

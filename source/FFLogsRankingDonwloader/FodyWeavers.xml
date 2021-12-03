@@ -1,12 +1,13 @@
-﻿<Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
+<Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
   <Costura
     IncludeDebugSymbols="false">
-    <ExcludeAssemblies>
-      ACT.Hojoring.Common
-      ACT.SpecialSpellTimer.RazorModel
-      FFXIV.Framework.TTS.Server*
-      RazorEngine
-    </ExcludeAssemblies>
+    <PreloadOrder>
+      ACT.Hojoring.Activator
+      SQLite.Interop
+    </PreloadOrder>
+    <IncludeAssemblies>
+      ACT.Hojoring.Activator
+    </IncludeAssemblies>
     <Unmanaged32Assemblies>
       SQLite.Interop
     </Unmanaged32Assemblies>

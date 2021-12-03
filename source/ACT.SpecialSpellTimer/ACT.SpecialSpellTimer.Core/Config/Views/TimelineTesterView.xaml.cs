@@ -118,7 +118,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                         this.prevTestTimestamp = DateTime.MinValue;
                     }
 
-                    ChatLogWorker.Instance?.Write(true);
+                    ParsedLogWorker.Instance?.Flush(true);
                 });
 
                 TimelineController.CurrentController?.EndActivityLine();
@@ -211,7 +211,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     // ダミー戦闘開始5秒前を挿入する
                     var head = list.First();
                     list.Insert(0, new TestLog(
-                        $"[{head.Timestamp.AddSeconds(-5):HH:mm:ss.fff}] 00:0039:戦闘開始まで5秒！ [DUMMY]"));
+                        $"[{head.Timestamp.AddSeconds(-5):HH:mm:ss.fff}] 00:0039::戦闘開始まで5秒！ [DUMMY]"));
 
                     // xivlog flush を挿入する
                     var last = list.Last();
@@ -297,7 +297,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void RaisePropertyChanged(
-            [CallerMemberName]string propertyName = null)
+            [CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(
                 this,
@@ -307,7 +307,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
         protected virtual bool SetProperty<T>(
             ref T field,
             T value,
-            [CallerMemberName]string propertyName = null)
+            [CallerMemberName] string propertyName = null)
         {
             if (Equals(field, value))
             {

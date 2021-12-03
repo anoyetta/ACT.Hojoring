@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Media;
@@ -12,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+using ACT.Hojoring.Shared;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
@@ -35,7 +37,7 @@ namespace ACT.XIVLog
         {
             instance = this;
             CosturaUtility.Initialize();
-            AssemblyResolver.Instance.Initialize(this);
+            AssemblyResolver.Initialize(() => ActGlobals.oFormActMain?.PluginGetSelfData(this)?.pluginFile.DirectoryName);
         }
 
         #endregion Singleton
@@ -51,6 +53,8 @@ namespace ACT.XIVLog
             pluginScreenSpace.Text = "XIVLog";
             this.pluginLabel = pluginStatusText;
 
+            DirectoryHelper.GetPluginRootDirectoryDelegate = () => ActGlobals.oFormActMain?.PluginGetSelfData(this)?.pluginFile.DirectoryName;
+
             // 設定ファイルをロードする
             _ = Config.Instance;
 
@@ -61,7 +65,7 @@ namespace ACT.XIVLog
                 Dock = DockStyle.Fill,
             });
 
-            EnvironmentHelper.WaitInitActDone();
+            await EnvironmentHelper.WaitInitActDoneAsync();
 
             this.InitTask();
             this.pluginLabel.Text = "Plugin Started";
@@ -121,7 +125,6 @@ namespace ACT.XIVLog
         private static readonly ConcurrentQueue<XIVLog> LogQueue = new ConcurrentQueue<XIVLog>();
         private ThreadWorker dumpLogTask;
         private StreamWriter writter;
-        private readonly StringBuilder writeBuffer = new StringBuilder(5120);
         private DateTime lastFlushTimestamp = DateTime.MinValue;
         private volatile bool isForceFlush = false;
         private int wipeoutCounter = 1;
@@ -138,9 +141,11 @@ namespace ACT.XIVLog
                 _ = FFXIV.Framework.Config.Instance;
             }
 
+            var config = Config.Instance;
+
             this.dumpLogTask = ThreadWorker.Run(
                 doWork,
-                TimeSpan.FromSeconds(Config.Instance.WriteInterval).TotalMilliseconds,
+                TimeSpan.FromSeconds(config.WriteInterval).TotalMilliseconds,
                 "XIVLog Worker",
                 ThreadPriority.Lowest);
 
@@ -151,9 +156,9 @@ namespace ACT.XIVLog
             {
                 var isNeedsFlush = false;
 
-                if (string.IsNullOrEmpty(Config.Instance.OutputDirectory))
+                if (string.IsNullOrEmpty(config.OutputDirectory))
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(Config.Instance.WriteInterval));
+                    Thread.Sleep(TimeSpan.FromSeconds(config.WriteInterval));
                     return;
                 }
 
@@ -166,13 +171,13 @@ namespace ACT.XIVLog
                     }
                     else
                     {
-                        Thread.Sleep(TimeSpan.FromSeconds(Config.Instance.WriteInterval));
+                        Thread.Sleep(TimeSpan.FromSeconds(config.WriteInterval));
                         return;
                     }
                 }
 
                 if ((DateTime.Now - this.lastFlushTimestamp).TotalSeconds
-                    >= Config.Instance.FlushInterval)
+                    >= config.FlushInterval)
                 {
                     isNeedsFlush = true;
                 }
@@ -181,20 +186,14 @@ namespace ACT.XIVLog
                 {
                     if (this.writter != null)
                     {
-                        if (this.writeBuffer.Length > 0)
-                        {
-                            this.writter.Write(this.writeBuffer.ToString());
-                            this.writeBuffer.Clear();
-                        }
-
                         this.writter.Flush();
                         this.writter.Close();
                         this.writter.Dispose();
                     }
 
-                    if (!Directory.Exists(Config.Instance.OutputDirectory))
+                    if (!Directory.Exists(config.OutputDirectory))
                     {
-                        Directory.CreateDirectory(Config.Instance.OutputDirectory);
+                        Directory.CreateDirectory(config.OutputDirectory);
                     }
 
                     this.writter = new StreamWriter(
@@ -202,8 +201,9 @@ namespace ACT.XIVLog
                             this.LogfileName,
                             FileMode.Append,
                             FileAccess.Write,
-                            FileShare.Read),
-                        new UTF8Encoding(false));
+                            FileShare.Read,
+                            64 * 1024),
+                        new UTF8Encoding(config.WithBOM));
                     this.currentLogfileName = this.LogfileName;
 
                     this.RaisePropertyChanged(nameof(this.LogfileName));
@@ -229,21 +229,17 @@ namespace ACT.XIVLog
                         isNeedsFlush = true;
                     }
 
-                    this.writeBuffer.AppendLine(xivlog.ToCSVLine());
+                    // ログをParseする
+                    xivlog.Parse();
+
+                    this.writter.WriteLine(xivlog.ToCSVLine());
                     this.lastWroteTimestamp = DateTime.Now;
                     Thread.Yield();
                 }
 
                 if (isNeedsFlush ||
-                    this.isForceFlush ||
-                    this.writeBuffer.Length > 5000)
+                    this.isForceFlush)
                 {
-                    if (this.writeBuffer.Length > 0)
-                    {
-                        this.writter.Write(this.writeBuffer.ToString());
-                        this.writeBuffer.Clear();
-                    }
-
                     if (isNeedsFlush || this.isForceFlush)
                     {
                         this.isForceFlush = false;
@@ -257,6 +253,8 @@ namespace ACT.XIVLog
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void EndTask()
         {
+            Config.Save();
+
             ActGlobals.oFormActMain.OnLogLineRead -= this.OnLogLineRead;
 
             VideoCapture.Instance.FinishRecording();
@@ -277,7 +275,7 @@ namespace ACT.XIVLog
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private async void OnLogLineRead(
+        private void OnLogLineRead(
             bool isImport,
             LogLineEventArgs logInfo)
         {
@@ -288,24 +286,19 @@ namespace ACT.XIVLog
                 return;
             }
 
-            var xivlog = default(XIVLog);
-
-            await Task.Run(() =>
+            var xivlog = new XIVLog(isImport, logInfo);
+            if (string.IsNullOrEmpty(xivlog.Log))
             {
-                xivlog = new XIVLog(isImport, logInfo);
-                if (string.IsNullOrEmpty(xivlog.Log))
-                {
-                    return;
-                }
+                return;
+            }
 
-                LogQueue.Enqueue(xivlog);
+            LogQueue.Enqueue(xivlog);
 
-                if (!isImport)
-                {
-                    this.OpenXIVLog(logInfo.logLine);
-                    VideoCapture.Instance.DetectCapture(xivlog);
-                }
-            });
+            if (!isImport)
+            {
+                this.OpenXIVLog(logInfo.logLine);
+                VideoCapture.Instance.DetectCapture(xivlog);
+            }
         }
 
         public void EnqueueLogLine(
@@ -436,13 +429,19 @@ namespace ACT.XIVLog
 
             // ログの書式の例
             /*
+            旧形式：
             [08:20:19.383] 00:0000:clear stacks of Loading....
+            */
+
+            /*
+            新形式：
+            [00:40:19.102] AddCombatant 03:40000C94:木人:00:1:0000:00::541:901:44:44:0:10000:::94.38:55.71:7.07:2.43
             */
 
             var line = this.LogInfo.logLine;
 
-            // 18文字未満のログは書式エラーになるため無視する
-            if (line.Length < 18)
+            // 15文字未満のログは書式エラーになるため無視する
+            if (line.Length < 15)
             {
                 return;
             }
@@ -460,8 +459,19 @@ namespace ACT.XIVLog
                 return;
             }
 
-            this.LogType = line.Substring(15, 2);
-            this.Log = line.Substring(15);
+            // タイムスタンプの後を取り出す
+            var message = line.Substring(15);
+
+            // ログタイプを取り出す
+            var firstDelimiterIndex = message.IndexOf(':');
+            if (firstDelimiterIndex < 0)
+            {
+                return;
+            }
+
+            this.LogType = message.Substring(firstDelimiterIndex - 2, 2);
+
+            this.Log = message;
             this.ZoneName = !string.IsNullOrEmpty(logInfo.detectedZone) ?
                 logInfo.detectedZone :
                 "NO DATA";
@@ -487,7 +497,20 @@ namespace ACT.XIVLog
 
         public string ZoneName { get; private set; }
 
-        public string Log { get; private set; }
+        /// <summary>
+        /// FFXIV_ACT_Plugin からの生のログ
+        /// </summary>
+        public string Log { get; private set; } = string.Empty;
+
+        /// <summary>
+        /// Log に対してPC名を無読化置換したログ
+        /// </summary>
+        public string LogReplacedPCName { get; private set; } = string.Empty;
+
+        /// <summary>
+        /// LogReplacedPCName に対してHojoring内の判定で使用している形式にParseしたログ
+        /// </summary>
+        public string ParsedLog { get; private set; } = string.Empty;
 
         public LogLineEventArgs LogInfo { get; set; }
 
@@ -544,11 +567,43 @@ namespace ACT.XIVLog
             }
         }
 
-        public string GetReplacedLog()
+        public void Parse()
+        {
+            // PC名を置換する
+            this.ReplacePCName();
+
+            var log = this.LogReplacedPCName;
+
+            int.TryParse(
+                this.LogType,
+                NumberStyles.HexNumber,
+                CultureInfo.InvariantCulture,
+                out int detectedType);
+
+            // ログメッセージタイプの文言を除去する
+            log = LogMessageTypeExtensions.RemoveLogMessageType(
+                detectedType,
+                log,
+                true);
+
+            // ツールチップシンボル, ワールド名を除去する
+            log = LogParser.RemoveTooltipSynbols(log);
+            log = LogParser.RemoveWorldName(log);
+
+            // ログを互換形式に変換する
+            log = LogParser.FormatLogLine(
+                detectedType,
+                log);
+
+            this.ParsedLog = log;
+        }
+
+        public void ReplacePCName()
         {
             if (!Config.Instance.IsReplacePCName)
             {
-                return this.Log;
+                this.LogReplacedPCName = this.Log;
+                return;
             }
 
             var result = this.Log;
@@ -566,22 +621,32 @@ namespace ACT.XIVLog
                 {
                     entry.Value.Timestamp = DateTime.Now;
                 }
-
-                Thread.Yield();
             }
 
-            return result;
+            this.LogReplacedPCName = result;
         }
 
-        public string ToCSVLine() =>
-            $"{this.No:000000000}," +
-            $"{this.Timestamp:yyyy-MM-dd HH:mm:ss.fff}," +
-            $"{(this.IsImport ? 1 : 0)}," +
-            $"\"{this.LogType}\"," +
-            $"\"{this.GetReplacedLog()}\"," +
-            $"\"{this.ZoneName}\"";
+        public string ToCSVLine()
+        {
+            var csv =
+                $"{this.No:000000000}," +
+                $"{this.Timestamp:yyyy-MM-dd HH:mm:ss.fff}," +
+                $"{(this.IsImport ? 1 : 0)}," +
+                $"\"{this.LogType}\"," +
+                $"\"{this.ParsedLog}\"," +
+                $"\"{this.ZoneName}\"";
 
-        public override string ToString() => this.GetReplacedLog();
+            if (Config.Instance.IsAlsoOutputsRawLogLine)
+            {
+                csv += $",\"{this.Log}\"";
+            }
+
+            return csv;
+        }
+
+        public override string ToString() => string.IsNullOrEmpty(this.LogReplacedPCName) ?
+            this.Log :
+            this.LogReplacedPCName;
 
         public class Alias
         {

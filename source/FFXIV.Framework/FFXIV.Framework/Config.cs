@@ -1,7 +1,3 @@
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Globalization;
-using FFXIV_ACT_Plugin.Logfile;
-using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,6 +10,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Globalization;
+using FFXIV.Framework.XIVHelper;
+using FFXIV_ACT_Plugin.Logfile;
+using Prism.Mvvm;
 
 namespace FFXIV.Framework
 {
@@ -39,8 +40,6 @@ namespace FFXIV.Framework
 
         #region Load & Save
 
-        private static string OldFileName => Assembly.GetExecutingAssembly().Location.Replace(".dll", ".config");
-
         public static string FileName => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "anoyetta",
@@ -51,12 +50,6 @@ namespace FFXIV.Framework
         {
             lock (ConfigBlocker)
             {
-                if (File.Exists(OldFileName) &&
-                    !File.Exists(FileName))
-                {
-                    File.Move(OldFileName, FileName);
-                }
-
                 if (!File.Exists(FileName))
                 {
                     return null;
@@ -122,7 +115,7 @@ namespace FFXIV.Framework
 
                 var filters = filtersParent.Elements();
 
-                var typeNames = Enum.GetNames(typeof(LogMessageType));
+                var typeNames = LogMessageTypeExtensions.GetNames();
 
                 // 消滅したLogTypeを削除する
                 var toRemove = filters
@@ -219,18 +212,16 @@ namespace FFXIV.Framework
                     FormatTextDelegate = (t, _) => FormatLogMessageType(t),
                     Value = type switch
                     {
-                        LogMessageType.CombatantHP => true,
-                        LogMessageType.NetworkDoT => true,
-                        LogMessageType.NetworkCancelAbility => true,
-                        LogMessageType.NetworkEffectResult => true,
-                        LogMessageType.NetworkUpdateHp => true,
+                        LogMessageType.DoTHoT => true,
+                        LogMessageType.CancelAction => true,
+                        LogMessageType.EffectResult => true,
+                        LogMessageType.UpdateHp => true,
                         LogMessageType.Settings => true,
                         LogMessageType.Process => true,
                         LogMessageType.Debug => true,
                         LogMessageType.PacketDump => true,
                         LogMessageType.Version => true,
                         LogMessageType.Error => true,
-                        LogMessageType.Timer => true,
                         _ => false,
                     }
                 });
@@ -307,6 +298,14 @@ namespace FFXIV.Framework
                 _ => Locales.EN,
             };
 
+        private bool isEnabledCompatibleLogFormat = true;
+
+        public bool IsEnabledCompatibleLogFormat
+        {
+            get => this.isEnabledCompatibleLogFormat;
+            set => this.SetProperty(ref this.isEnabledCompatibleLogFormat, value);
+        }
+
         private bool isEnabledSharlayan = true;
 
         public bool IsEnabledSharlayan
@@ -329,6 +328,15 @@ namespace FFXIV.Framework
         {
             get => this.isForceFlushSharlayanResources;
             set => this.SetProperty(ref this.isForceFlushSharlayanResources, value);
+        }
+
+
+        private bool isEnabledOutputDebugLog;
+
+        public bool IsEnabledOutputDebugLog
+        {
+            get => this.isEnabledOutputDebugLog;
+            set => this.SetProperty(ref this.isEnabledOutputDebugLog, value);
         }
 
         [XmlIgnore]

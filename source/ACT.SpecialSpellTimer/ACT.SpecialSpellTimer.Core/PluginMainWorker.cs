@@ -1,3 +1,8 @@
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Config.Models;
 using ACT.SpecialSpellTimer.Models;
@@ -6,11 +11,6 @@ using ACT.SpecialSpellTimer.Utility;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -22,6 +22,10 @@ namespace ACT.SpecialSpellTimer
         private const int INVALID = 1;
 
         private const int VALID = 0;
+
+#if DEBUG
+        private static readonly bool IsEnabledDetectLogsDump = false;
+#endif
 
         #region Singleton
 
@@ -364,8 +368,12 @@ namespace ACT.SpecialSpellTimer
             {
                 var time = sw.ElapsedMilliseconds;
                 var count = xivlogs.Count;
-                System.Diagnostics.Debug.WriteLine(
-                    $"●DetectLogs\t{time:N1} ms\t{count:N0} lines\tavg {time / count:N2}");
+
+                if (IsEnabledDetectLogsDump)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        $"●DetectLogs\t{time:N1} ms\t{count:N0} lines\tavg {time / count:N2}");
+                }
             }
 #endif
 
@@ -636,6 +644,9 @@ namespace ACT.SpecialSpellTimer
                     {
                         CommonSounds.Instance.PlayWipeout();
                     }
+
+                    // ChatログをFlushする
+                    ParsedLogWorker.Instance.Flush(true);
 
                     Thread.Sleep(TimeSpan.FromSeconds(1));
 

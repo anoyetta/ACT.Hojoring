@@ -128,7 +128,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
                     }
 
                     PluginMainWorker.Instance.InSimulation = false;
-                    ChatLogWorker.Instance?.Write(true);
+                    ParsedLogWorker.Instance?.Flush(true);
                 });
 
                 // インスタンススペルを消去する

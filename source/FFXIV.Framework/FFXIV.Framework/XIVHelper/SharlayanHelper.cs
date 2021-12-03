@@ -1,10 +1,3 @@
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Globalization;
-using Sharlayan;
-using Sharlayan.Core;
-using Sharlayan.Core.Enums;
-using Sharlayan.Enums;
-using Sharlayan.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Globalization;
+using Sharlayan;
+using Sharlayan.Core;
+using Sharlayan.Core.Enums;
+using Sharlayan.Enums;
+using Sharlayan.Models;
 using ActorItem = Sharlayan.Core.ActorItem;
 using TargetInfo = Sharlayan.Core.TargetInfo;
 
@@ -106,6 +106,16 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
+        private bool enqueueReload;
+
+        public void EnqueueReload()
+        {
+            lock (this)
+            {
+                this.enqueueReload = true;
+            }
+        }
+
         private void ClearData()
         {
             lock (this.ActorList)
@@ -173,8 +183,11 @@ namespace FFXIV.Framework.XIVHelper
                 if (this._memoryHandler == null ||
                     this.currentFFXIVProcess == null ||
                     this.currentFFXIVProcess.Id != ffxiv.Id ||
-                    this.currentFFXIVLanguage != ffxivLanguage)
+                    this.currentFFXIVLanguage != ffxivLanguage ||
+                    this.enqueueReload)
                 {
+                    this.enqueueReload = false;
+
                     if (this._memoryHandler != null)
                     {
                         SharlayanMemoryManager.Instance.RemoveHandler(this.currentFFXIVProcess.Id);

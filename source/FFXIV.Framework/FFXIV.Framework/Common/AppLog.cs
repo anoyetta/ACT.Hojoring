@@ -1,12 +1,12 @@
+using NLog;
+using NLog.Config;
+using NLog.Targets.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using NLog;
-using NLog.Config;
-using NLog.Targets.Wrappers;
 
 namespace FFXIV.Framework.Common
 {
@@ -20,8 +20,7 @@ namespace FFXIV.Framework.Common
 
         public static string HojoringConfig => new[]
         {
-            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config", HojoringConfigFileName),
-            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), HojoringConfigFileName),
+            DirectoryHelper.FindFile(HojoringConfigFileName, "config")
         }.FirstOrDefault(x => File.Exists(x));
 
         public static readonly object locker = new object();
@@ -152,7 +151,7 @@ namespace FFXIV.Framework.Common
                 var dirs = new[]
                 {
                     Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                 };
 
                 foreach (var dir in dirs)

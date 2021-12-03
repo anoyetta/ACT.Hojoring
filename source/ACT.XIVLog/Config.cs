@@ -52,7 +52,7 @@ namespace ACT.XIVLog
         #region Load & Save
 
         private static readonly object Locker = new object();
-        private volatile static bool isInitializing = false;
+        private static volatile bool isInitializing = false;
 
         public static string FileName =>
             Path.Combine(
@@ -141,6 +141,7 @@ namespace ACT.XIVLog
         private const double WriteIntervalDefault = 30;
         private const double FlushIntervalDefault = 600;
         private const bool IsReplacePCNameDefault = false;
+        private const bool IsAlsoOutputsRawLogLineDefault = false;
 
         #endregion Default Values
 
@@ -151,6 +152,14 @@ namespace ACT.XIVLog
         {
             get => this.outputDirectory;
             set => this.SetProperty(ref this.outputDirectory, value);
+        }
+
+        private bool withBOM = true;
+
+        public bool WithBOM
+        {
+            get => this.withBOM;
+            set => this.SetProperty(ref this.withBOM, value);
         }
 
         private double writeInterval = WriteIntervalDefault;
@@ -178,6 +187,15 @@ namespace ACT.XIVLog
         {
             get => this.isReplacePCName;
             set => this.SetProperty(ref this.isReplacePCName, value);
+        }
+
+        private bool isAlsoOutputsRawLogLine;
+
+        [DefaultValue(IsAlsoOutputsRawLogLineDefault)]
+        public bool IsAlsoOutputsRawLogLine
+        {
+            get => this.isAlsoOutputsRawLogLine;
+            set => this.SetProperty(ref this.isAlsoOutputsRawLogLine, value);
         }
 
         private bool isEnabledRecording;

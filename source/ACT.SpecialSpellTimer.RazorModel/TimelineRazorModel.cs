@@ -1,19 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Threading;
+using ACT.Hojoring.Shared;
 using FFXIV.Framework.Extensions;
 using Hjson;
 using Newtonsoft.Json.Linq;
 using Prism.Mvvm;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace ACT.SpecialSpellTimer.RazorModel
 {
     public class TimelineRazorModel
     {
+        static TimelineRazorModel()
+        {
+            AssemblyResolver.Initialize(() => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+        }
+
         #region Lazy Singleton
 
         private static readonly Lazy<TimelineRazorModel> LazyInstance = new Lazy<TimelineRazorModel>(() => new TimelineRazorModel());

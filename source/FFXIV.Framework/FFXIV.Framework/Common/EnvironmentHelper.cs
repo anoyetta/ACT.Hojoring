@@ -290,7 +290,7 @@ namespace FFXIV.Framework.Common
         private static readonly object WaitLocker = new object();
         private static volatile int waitCounter;
 
-        public static async void WaitInitActDone()
+        public static Task WaitInitActDoneAsync()
         {
             var delay = 0;
 
@@ -300,7 +300,7 @@ namespace FFXIV.Framework.Common
                 delay = 200 * waitCounter;
             }
 
-            await Task.Run(async () =>
+            return Task.Run(async () =>
             {
                 while (!ActGlobals.oFormActMain.InitActDone)
                 {

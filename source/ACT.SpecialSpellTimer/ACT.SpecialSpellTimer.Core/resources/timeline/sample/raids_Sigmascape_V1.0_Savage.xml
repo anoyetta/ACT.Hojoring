@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <timeline>
   <name>次元の狭間オメガ零式：シグマ編1</name>
-  <rev>rev3</rev>
+  <rev>rev4</rev>
   <description>
     シグマ1層向けのタイムラインです。
     既存のタイムラインをスペスペたいむに変換するとこのような感じになると思います。
@@ -10,7 +10,7 @@
   <zone>Sigmascape V1.0 (Savage)</zone>
   <locale>JA</locale>
   <entry>前半フェーズ</entry>
-  <start>0039:戦闘開始！</start>
+  <start>0039::戦闘開始！</start>
 
   <default target-element="Activity" target-attr="notice-d" value="Both" />
   <default target-element="Activity" target-attr="notice-o" value="-5" />

@@ -1,11 +1,10 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using ACT.TTSYukkuri.Config;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using Google.Cloud.TextToSpeech.V1;
+using System;
+using System.IO;
+using System.Reflection;
 
 namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
 {
@@ -109,17 +108,14 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
 
         public static void SetupLibrary()
         {
+            /*
             if (string.IsNullOrEmpty(PluginCore.Instance?.PluginDirectory))
             {
                 return;
             }
 
             var entryDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            var libDirectory = new[]
-            {
-                Path.Combine(PluginCore.Instance.PluginDirectory, "bin", "lib"),
-                Path.Combine(PluginCore.Instance.PluginDirectory, "lib"),
-            }.FirstOrDefault(x => Directory.Exists(x));
+            var libDirectory = DirectoryHelper.FindSubDirectory("bin", "lib");
 
             var libs = new (string dst, string src)[]
             {
@@ -140,6 +136,7 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
                     File.Copy(lib.src, lib.dst, true);
                 }
             }
+            */
         }
     }
 }

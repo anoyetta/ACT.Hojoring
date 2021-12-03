@@ -1,3 +1,9 @@
+using ACT.SpecialSpellTimer.Models;
+using ACT.SpecialSpellTimer.RaidTimeline.Views;
+using ACT.SpecialSpellTimer.RazorModel;
+using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -5,12 +11,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ACT.SpecialSpellTimer.Models;
-using ACT.SpecialSpellTimer.RaidTimeline.Views;
-using ACT.SpecialSpellTimer.RazorModel;
-using FFXIV.Framework.Bridge;
-using FFXIV.Framework.Common;
-using NLog;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
@@ -214,7 +214,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var existsSamples =
                 CommonHelper.IsDebugMode ||
-                !Directory.EnumerateFiles(dir).Where(x =>
+                !Directory.EnumerateFiles(sampleDirectory).Where(x =>
                     x.ToLower().EndsWith(".xml") ||
                     x.ToLower().EndsWith(".cshtml")).Any();
 
