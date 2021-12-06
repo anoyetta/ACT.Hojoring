@@ -184,10 +184,6 @@ namespace FFXIV.Framework.XIVHelper
 
                 this.LoadSkillList();
                 this.LoadZoneList();
-                /*
-                ゾーンの追加を廃止する
-                this.LoadZoneListFromTerritory();
-                */
                 this.LoadWorldList();
 
                 this.MergeSkillList();
@@ -1606,43 +1602,6 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
-        private volatile bool isLoadedZoneFromTerritory = false;
-
-        private void LoadZoneListFromTerritory()
-        {
-            if (this.isLoadedZoneFromTerritory)
-            {
-                return;
-            }
-
-            if (!XIVApi.Instance.TerritoryList.Any())
-            {
-                return;
-            }
-
-            this.isLoadedZoneFromTerritory = true;
-
-            var added = false;
-            foreach (var territory in XIVApi.Instance.TerritoryList)
-            {
-                if (!this.zoneList.Any(x => x.ID == territory.ID))
-                {
-                    this.zoneList.Add(new Zone()
-                    {
-                        ID = territory.ID,
-                        Name = territory.Name,
-                    });
-
-                    added = true;
-                }
-            }
-
-            if (added)
-            {
-                AppLogger.Trace($"zone list added from territory.");
-            }
-        }
-
         private void TranslateZoneList()
         {
             if (this.isZoneListTranslated ||
@@ -1651,27 +1610,28 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            if (!XIVApi.Instance.TerritoryList.Any())
+            var d = XIVApi.Instance.TerritoryList.ToDictionary(x => x.ID);
+            if (!d.Any())
             {
                 return;
             }
 
-            var territoryDictionary = XIVApi.Instance.TerritoryList
-                .ToDictionary(x => x.ID);
-
             foreach (var zone in this.ZoneList)
             {
-                if (territoryDictionary.ContainsKey(zone.ID))
+                if (d.ContainsKey(zone.ID))
                 {
-                    var t = territoryDictionary[zone.ID];
+                    var territory = d[zone.ID];
 
                     if (XIVApi.Instance.FFXIVLocale != Locales.EN)
                     {
-                        zone.Name = $"{zone.Name} ({t.Name})";
+                        if (!string.IsNullOrEmpty(territory.Name))
+                        {
+                            zone.Name = territory.Name;
+                        }
                     }
 
-                    zone.IDonDB = t.IntendedUse;
-                    zone.Rank = Zone.ToRank(t.IntendedUse, zone.Name);
+                    zone.IDonDB = territory.IntendedUse;
+                    zone.Rank = Zone.ToRank(territory.IntendedUse, zone.Name);
                 }
             }
 
