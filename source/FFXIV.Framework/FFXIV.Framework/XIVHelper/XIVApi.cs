@@ -36,10 +36,6 @@ namespace FFXIV.Framework.XIVHelper
             this.ResourcesDirectory + @"\xivdb",
             $@"TerritoryType.{this.FFXIVLocale.ToResourcesName()}.csv");
 
-        public string TerritoryENFile => Path.Combine(
-            this.ResourcesDirectory + @"\xivdb",
-            $@"TerritoryType.en-US.csv");
-
         public string SkillFile => Path.Combine(
             this.ResourcesDirectory + @"\xivdb",
             $@"Action.{this.FFXIVLocale.ToResourcesName()}.csv");
@@ -115,27 +111,13 @@ namespace FFXIV.Framework.XIVHelper
             _ = sw.Elapsed.TotalSeconds;
         }
 
-        private static readonly int AddtionalTerritoryStartID = 0;
-
         private void LoadTerritory()
         {
-            var en = this.LoadTerritoryCore(this.TerritoryENFile);
             var la = this.LoadTerritoryCore(this.TerritoryFile);
 
-            if (en == null ||
-                la == null)
+            if (la == null)
             {
                 return;
-            }
-
-            var dic = en.ToDictionary(x => x.ID);
-
-            foreach (var item in la)
-            {
-                if (dic.ContainsKey(item.ID))
-                {
-                    item.NameEn = dic[item.ID].Name;
-                }
             }
 
             this.territoryList.Clear();
@@ -149,43 +131,52 @@ namespace FFXIV.Framework.XIVHelper
                 return null;
             }
 
-            var list = new List<Area>(2048);
+            var list = new List<Area>(2048) { new Area() { ID = 0, Name = "DUMMY" } };
 
             var lines = CSVParser.LoadFromPath(file, encoding: new UTF8Encoding(true));
 
-            Parallel.ForEach(lines, (fields) =>
+            var lineNo = 0;
+            var indexID = 0;
+            var indexName = 0;
+            var indexIndented = 0;
+            var indexResident = 0;
+
+            foreach (var fields in lines)
             {
-                if (fields.Count < 5)
+                lineNo++;
+
+                // 2行目がフィールド名
+                if (lineNo == 2)
                 {
-                    return;
+                    indexID = fields.IndexOf("#");
+                    indexName = fields.IndexOf("ContentFinderCondition");
+                    indexIndented = fields.IndexOf("TerritoryIntendedUse");
+                    indexResident = fields.IndexOf("Resident");
                 }
 
-                if (!int.TryParse(fields[0], out int id) ||
-                    string.IsNullOrEmpty(fields[6]) ||
-                    !int.TryParse(fields[10], out int indented) ||
-                    !int.TryParse(fields[11], out int order))
+                if (indexID < 0 || indexName < 0 || indexIndented < 0 || indexResident < 0)
                 {
-                    return;
+                    continue;
                 }
 
-                if (id < AddtionalTerritoryStartID)
+                if (!int.TryParse(fields[indexID], out int id) ||
+                    string.IsNullOrEmpty(fields[indexName]) ||
+                    !int.TryParse(fields[indexIndented], out int indented) ||
+                    !int.TryParse(fields[indexResident], out int order))
                 {
-                    return;
+                    continue;
                 }
 
                 var entry = new Area()
                 {
                     ID = id,
-                    Name = fields[6],
+                    Name = fields[indexName],
                     IntendedUse = indented,
                     Order = order,
                 };
 
-                lock (list)
-                {
-                    list.Add(entry);
-                }
-            });
+                list.Add(entry);
+            }
 
             return list;
         }
@@ -201,24 +192,23 @@ namespace FFXIV.Framework.XIVHelper
 
             var userList = this.UserActionList;
 
-            var obj = new object();
             lock (this.actionList)
             {
                 this.actionList.Clear();
 
                 var lines = CSVParser.LoadFromPath(this.SkillFile, encoding: new UTF8Encoding(true));
 
-                Parallel.ForEach(lines, (fields) =>
+                foreach (var fields in lines)
                 {
                     if (fields.Count < 2)
                     {
-                        return;
+                        continue;
                     }
 
                     if (!uint.TryParse(fields[0], out uint id) ||
                         string.IsNullOrEmpty(fields[1]))
                     {
-                        return;
+                        continue;
                     }
 
                     var entry = new XIVApiAction()
@@ -235,11 +225,8 @@ namespace FFXIV.Framework.XIVHelper
                         entry.Name = userList[entry.ID].Name;
                     }
 
-                    lock (obj)
-                    {
-                        this.actionList[entry.ID] = entry;
-                    }
-                });
+                    this.actionList[entry.ID] = entry;
+                }
             }
 
             sw.Stop();
@@ -260,17 +247,17 @@ namespace FFXIV.Framework.XIVHelper
 
             var lines = CSVParser.LoadFromPath(this.UserSkillFile, encoding: new UTF8Encoding(false));
 
-            Parallel.ForEach(lines, (fields) =>
+            foreach (var fields in lines)
             {
                 if (fields.Count < 2)
                 {
-                    return;
+                    continue;
                 }
 
                 if (!uint.TryParse(fields[0], out uint id) ||
                     string.IsNullOrEmpty(fields[1]))
                 {
-                    return;
+                    continue;
                 }
 
                 var entry = new XIVApiAction()
@@ -279,11 +266,8 @@ namespace FFXIV.Framework.XIVHelper
                     Name = fields[1],
                 };
 
-                lock (list)
-                {
-                    list[entry.ID] = entry;
-                }
-            });
+                list[entry.ID] = entry;
+            }
 
             this.AppLogger.Trace($"user action list loaded.");
 
@@ -299,23 +283,22 @@ namespace FFXIV.Framework.XIVHelper
 
             var lines = CSVParser.LoadFromPath(this.BuffFile, encoding: new UTF8Encoding(true));
 
-            var obj = new object();
             lock (this.buffList)
             {
                 this.buffList.Clear();
 
-                Parallel.ForEach(lines, (fields) =>
+                foreach (var fields in lines)
                 {
                     if (fields.Count < 2)
                     {
-                        return;
+                        continue;
                     }
 
                     uint id;
                     if (!uint.TryParse(fields[0], out id) ||
                         string.IsNullOrEmpty(fields[1]))
                     {
-                        return;
+                        continue;
                     }
 
                     var entry = new Buff()
@@ -324,11 +307,8 @@ namespace FFXIV.Framework.XIVHelper
                         Name = fields[1]
                     };
 
-                    lock (obj)
-                    {
-                        this.buffList[entry.ID] = entry;
-                    }
-                });
+                    this.buffList[entry.ID] = entry;
+                }
             }
 
             this.AppLogger.Trace($"xivapi status list loaded. {this.BuffFile}");
