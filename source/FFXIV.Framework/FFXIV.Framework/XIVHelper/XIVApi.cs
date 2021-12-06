@@ -198,11 +198,22 @@ namespace FFXIV.Framework.XIVHelper
 
                 var lines = CSVParser.LoadFromPath(this.SkillFile, encoding: new UTF8Encoding(true));
 
+                var lineNo = 0;
+                var indexAttackType = 0;
+
                 foreach (var fields in lines)
                 {
+                    lineNo++;
+
                     if (fields.Count < 2)
                     {
                         continue;
+                    }
+
+                    // 2行目のヘッダを探す
+                    if (lineNo == 2)
+                    {
+                        indexAttackType = fields.IndexOf("AttackType");
                     }
 
                     if (!uint.TryParse(fields[0], out uint id) ||
@@ -215,7 +226,7 @@ namespace FFXIV.Framework.XIVHelper
                     {
                         ID = id,
                         Name = fields[1],
-                        AttackTypeName = fields[XIVApiAction.AttackTypeIndex]
+                        AttackTypeName = indexAttackType < 0 ? string.Empty : fields[indexAttackType]
                     };
 
                     entry.SetAttackTypeEnum();
@@ -282,20 +293,21 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             var lines = CSVParser.LoadFromPath(this.BuffFile, encoding: new UTF8Encoding(true));
-
             lock (this.buffList)
             {
                 this.buffList.Clear();
 
+                var lineNo = 0;
                 foreach (var fields in lines)
                 {
+                    lineNo++;
+
                     if (fields.Count < 2)
                     {
                         continue;
                     }
 
-                    uint id;
-                    if (!uint.TryParse(fields[0], out id) ||
+                    if (!uint.TryParse(fields[0], out uint id) ||
                         string.IsNullOrEmpty(fields[1]))
                     {
                         continue;
@@ -340,8 +352,6 @@ namespace FFXIV.Framework.XIVHelper
         /// </summary>
         public class XIVApiAction
         {
-            public static readonly int AttackTypeIndex = 43;
-
             public uint ID { get; set; }
             public string Name { get; set; }
             public string AttackTypeName { get; set; }
