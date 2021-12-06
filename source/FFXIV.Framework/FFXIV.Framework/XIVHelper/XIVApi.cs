@@ -20,7 +20,7 @@ namespace FFXIV.Framework.XIVHelper
 
         #region Singleton
 
-        private readonly static Lazy<XIVApi> LazyInstance = new Lazy<XIVApi>(() => new XIVApi());
+        private static readonly Lazy<XIVApi> LazyInstance = new Lazy<XIVApi>(() => new XIVApi());
 
         public static XIVApi Instance => LazyInstance.Value;
 
@@ -40,18 +40,6 @@ namespace FFXIV.Framework.XIVHelper
             this.ResourcesDirectory + @"\xivdb",
             $@"TerritoryType.en-US.csv");
 
-        public string AreaFile => Path.Combine(
-            this.ResourcesDirectory + @"\xivdb",
-            $@"Instance.{this.FFXIVLocale.ToResourcesName()}.csv");
-
-        public string AreaENFile => Path.Combine(
-            this.ResourcesDirectory + @"\xivdb",
-            $@"Instance.en-US.csv");
-
-        public string PlacenameFile => Path.Combine(
-            this.ResourcesDirectory + @"\xivdb",
-            $@"Placename.{this.FFXIVLocale.ToResourcesName()}.csv");
-
         public string SkillFile => Path.Combine(
             this.ResourcesDirectory + @"\xivdb",
             $@"Action.{this.FFXIVLocale.ToResourcesName()}.csv");
@@ -69,12 +57,10 @@ namespace FFXIV.Framework.XIVHelper
         #region Resources Lists
 
         private readonly List<Area> territoryList = new List<Area>(2048);
-        private readonly List<Area> areaList = new List<Area>(65535);
         private readonly Dictionary<uint, XIVApiAction> actionList = new Dictionary<uint, XIVApiAction>(20480);
         private readonly Dictionary<uint, Buff> buffList = new Dictionary<uint, Buff>(2560);
 
         public IReadOnlyList<Area> TerritoryList => this.territoryList;
-        public IReadOnlyList<Area> AreaList => this.areaList;
         public IReadOnlyDictionary<uint, XIVApiAction> ActionList => this.actionList;
         public IReadOnlyDictionary<uint, Buff> BuffList => this.buffList;
 
@@ -122,7 +108,6 @@ namespace FFXIV.Framework.XIVHelper
 
             Task.WaitAll(
                 Task.Run(() => this.LoadTerritory()),
-                Task.Run(() => this.LoadArea()),
                 Task.Run(() => this.LoadAction()),
                 Task.Run(() => this.LoadBuff()));
 
@@ -204,145 +189,6 @@ namespace FFXIV.Framework.XIVHelper
 
             return list;
         }
-
-        private void LoadArea()
-        {
-            if (!File.Exists(this.AreaFile))
-            {
-                return;
-            }
-
-            // 英語辞書として英語版リストをロードしておく
-            var en = this.AreaENDictionary;
-
-            var current = new List<Area>(256);
-
-            var lines = CSVParser.LoadFromPath(this.AreaFile, encoding: new UTF8Encoding(true));
-
-            Parallel.ForEach(lines, (fields) =>
-            {
-                if (fields.Count < 5)
-                {
-                    return;
-                }
-
-                if (!int.TryParse(fields[0], out int id) ||
-                    string.IsNullOrEmpty(fields[4]))
-                {
-                    return;
-                }
-
-                var entry = new Area()
-                {
-                    ID = id,
-                    NameEn = en[id]?.Name ?? string.Empty,
-                    Name = fields[4]
-                };
-
-                lock (current)
-                {
-                    current.Add(entry);
-                }
-            });
-
-            lock (this.areaList)
-            {
-                this.areaList.Clear();
-                this.areaList.AddRange(current);
-            }
-
-            this.AppLogger.Trace($"xivapi area list loaded. {this.AreaFile}");
-        }
-
-        private Dictionary<int, Area> _areaENDictionary;
-
-        private Dictionary<int, Area> AreaENDictionary => this._areaENDictionary ??= this.LoadAreaEN();
-
-        private Dictionary<int, Area> LoadAreaEN()
-        {
-            var dic = new Dictionary<int, Area>()
-            {
-                { 0, new Area() {ID = 0, NameEn = "dummy", Name = "dummy"} }
-            };
-
-            if (!File.Exists(this.AreaENFile))
-            {
-                return dic;
-            }
-
-            var lines = CSVParser.LoadFromPath(this.AreaENFile, encoding: new UTF8Encoding(true));
-
-            Parallel.ForEach(lines, (fields) =>
-            {
-                if (fields.Count < 5)
-                {
-                    return;
-                }
-
-                if (!int.TryParse(fields[0], out int id) ||
-                    string.IsNullOrEmpty(fields[4]))
-                {
-                    return;
-                }
-
-                var entry = new Area()
-                {
-                    ID = id,
-                    NameEn = fields[4],
-                    Name = fields[4]
-                };
-
-                lock (dic)
-                {
-                    dic[entry.ID] = entry;
-                }
-            });
-
-            this.AppLogger.Trace($"xivapi area list loaded. {this.AreaENFile}");
-
-            return dic;
-        }
-
-#if false
-        private void LoadPlacename()
-        {
-            if (!File.Exists(this.PlacenameFile))
-            {
-                return;
-            }
-
-            lock (this.placenameList)
-            {
-                this.placenameList.Clear();
-
-                using (var sr = new StreamReader(this.PlacenameFile, new UTF8Encoding(false)))
-                {
-                    // ヘッダを飛ばす
-                    sr.ReadLine();
-
-                    while (!sr.EndOfStream)
-                    {
-                        var line = sr.ReadLine();
-
-                        var values = line.Split(',');
-                        if (values.Length >= 3)
-                        {
-                            var entry = new Placename()
-                            {
-                                ID = int.Parse(values[0]),
-                                NameEn = values[1],
-                                Name = values[2]
-                            };
-
-                            this.placenameList.Add(entry);
-                        }
-                    }
-                }
-            }
-
-            this.AppLogger.Trace($"xivapi placement list loaded. {this.PlacenameFile}");
-        }
-#endif
 
         private void LoadAction()
         {
