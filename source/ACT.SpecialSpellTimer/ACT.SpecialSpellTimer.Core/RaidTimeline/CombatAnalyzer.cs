@@ -993,6 +993,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             var dialog = match.Groups["dialog"].ToString();
+            var speaker = match.Groups["speaker"].ToString();
 
             var isSystem = logInfo.logLine.Contains(":0839");
 
@@ -1000,13 +1001,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 TimeStamp = logInfo.detectedTime,
                 Raw = logInfo.logLine,
-                Actor = string.Empty,
+                Actor = speaker,
                 Activity = isSystem ? "System" : "Dialog",
                 LogType = LogTypes.Dialog
             };
 
             log.Text = null;
-            log.SyncKeyword = log.RawWithoutTimestamp.Substring(9);
+            log.SyncKeyword = $"{speaker}:{dialog}";
 
             this.StoreLog(log, logInfo);
         }
