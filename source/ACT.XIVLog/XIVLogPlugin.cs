@@ -143,6 +143,12 @@ namespace ACT.XIVLog
 
             var config = Config.Instance;
 
+            // WriteIntervalの初期値をマイグレーションする
+            if (config.WriteInterval >= 30)
+            {
+                config.WriteInterval = Config.WriteIntervalDefault;
+            }
+
             this.dumpLogTask = ThreadWorker.Run(
                 doWork,
                 TimeSpan.FromSeconds(config.WriteInterval).TotalMilliseconds,
@@ -171,8 +177,11 @@ namespace ACT.XIVLog
                     }
                     else
                     {
-                        Thread.Sleep(TimeSpan.FromSeconds(config.WriteInterval));
-                        return;
+                        if (!this.isForceFlush)
+                        {
+                            Thread.Sleep(TimeSpan.FromSeconds(config.WriteInterval));
+                            return;
+                        }
                     }
                 }
 
@@ -366,8 +375,23 @@ namespace ACT.XIVLog
 
             if (logLine.ContainsIgnoreCase(CommandKeywordOpen))
             {
-                SystemSounds.Beep.Play();
-                Task.Run(() => Process.Start(this.LogfileName));
+                this.isForceFlush = true;
+
+                Task.Run(async () =>
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (!this.isForceFlush)
+                        {
+                            break;
+                        }
+
+                        await Task.Delay(TimeSpan.FromSeconds(0.1));
+                    }
+
+                    Process.Start(this.LogfileName);
+                    SystemSounds.Beep.Play();
+                });
             }
 
             if (logLine.ContainsIgnoreCase(CommandKeywordFlush))
@@ -377,6 +401,27 @@ namespace ACT.XIVLog
                 return;
             }
         }
+
+        public async Task ForceFlushAsync()
+            => await Task.Run(() =>
+        {
+            this.isForceFlush = true;
+
+            Task.Run(async () =>
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    if (!this.isForceFlush)
+                    {
+                        break;
+                    }
+
+                    await Task.Delay(TimeSpan.FromSeconds(0.1));
+                }
+
+                SystemSounds.Beep.Play();
+            });
+        });
 
         #region INotifyPropertyChanged
 
