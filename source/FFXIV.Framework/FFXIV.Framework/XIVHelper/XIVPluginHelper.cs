@@ -914,7 +914,7 @@ namespace FFXIV.Framework.XIVHelper
                 Config.Instance.IsSimplifiedInCombat ||
                 SharlayanHelper.Instance.CurrentPlayer == null)
             {
-                refreshInCombatByParty();
+                result = refreshInCombatByParty();
             }
             else
             {
@@ -923,24 +923,28 @@ namespace FFXIV.Framework.XIVHelper
 
             this.InCombat = result;
 
-            void refreshInCombatByParty()
+            bool refreshInCombatByParty()
             {
                 const uint MaxMP = 10000;
 
-                var player = CombatantsManager.Instance.Player;
-                if (player != null)
+                var r = ActGlobals.oFormActMain?.InCombat ?? false;
+
+                if (!r)
                 {
-                    result =
-                        player.CurrentHP != player.MaxHP ||
-                        player.CurrentMP != MaxMP;
+                    var player = CombatantsManager.Instance.Player;
+                    if (player != null)
+                    {
+                        r = player.CurrentHP != player.MaxHP ||
+                            player.CurrentMP != MaxMP;
+                    }
                 }
 
-                if (!result)
+                if (!r)
                 {
                     if (party != null &&
                         party.Any())
                     {
-                        result = (
+                        r = (
                             from x in party
                             where
                             x.CurrentHP != x.MaxHP ||
@@ -949,6 +953,8 @@ namespace FFXIV.Framework.XIVHelper
                             x).Any();
                     }
                 }
+
+                return r;
             }
         }
 
