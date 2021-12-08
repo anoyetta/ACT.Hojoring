@@ -16,6 +16,12 @@ namespace ACT.SpecialSpellTimer.Config.Views
             this.InitializeComponent();
             this.SetLocale(Settings.Default.UILocale);
             this.LoadConfigViewResources();
+
+            this.Loaded += (_, _) =>
+            {
+                // InCombatの検出を簡易版に限定する
+                this.FrameworkConfig.IsSimplifiedInCombat = true;
+            };
         }
 
         public void SetLocale(Locales locale) => this.ReloadLocaleDictionary(locale);
