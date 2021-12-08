@@ -1,14 +1,3 @@
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Bridge;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.WPF.Views;
-using FFXIV.Framework.XIVHelper;
-using Microsoft.VisualBasic.FileIO;
-using NLog;
-using NLog.Targets;
-using Prism.Commands;
-using Prism.Mvvm;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -20,6 +9,17 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
+using Microsoft.VisualBasic.FileIO;
+using NLog;
+using NLog.Targets;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace FFXIV.Framework.WPF.ViewModels
 {
@@ -501,7 +501,9 @@ namespace FFXIV.Framework.WPF.ViewModels
 
             using (var p = new Process())
             {
-                var here = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var here = Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    "..");
                 p.StartInfo.FileName = "powershell.exe";
                 p.StartInfo.Arguments =
                     $@"-nologo -command ""Get-ChildItem '{here}' -Recurse | ?{{$_.FullName -notmatch 'backup'}} | Format-Table -AutoSize | Out-File -Encoding utf8 '{temp}\file_list_Hojoring.txt'";
