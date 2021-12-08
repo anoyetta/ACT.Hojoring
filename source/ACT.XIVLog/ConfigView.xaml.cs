@@ -43,6 +43,11 @@ namespace ACT.XIVLog
             }
         }
 
+        private ICommand flushLogCommand;
+
+        public ICommand FlushLogCommand =>
+            this.flushLogCommand ?? (this.flushLogCommand = new DelegateCommand(async () => await XIVLogPlugin.Instance.ForceFlushAsync()));
+
         private ICommand oepnLogCommand;
 
         public ICommand OpenLogCommand =>

@@ -47,7 +47,8 @@
         <TextBox HorizontalAlignment="Left" Width="600" Text="{Binding Path=Config.OutputDirectory, Mode=TwoWay}" />
         <Label Content="{Binding Path=Plugin.LogfileNameWithoutParent, Mode=OneWay}" Height="30" VerticalContentAlignment="Center" />
         <StackPanel Orientation="Horizontal">
-          <Button BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Open Log" Command="{Binding OpenLogCommand, Mode=OneWay}" />
+          <Button BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Flush Log" Command="{Binding FlushLogCommand, Mode=OneWay}" />
+          <Button Margin="25 0 0 0" BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Open Log" Command="{Binding OpenLogCommand, Mode=OneWay}" />
           <Button Margin="25 0 0 0" BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Content="Open Directory" Command="{Binding OpenLogDirectoryCommand, Mode=OneWay}" />
         </StackPanel>
         <CheckBox Margin="0 10 0 0" Content="Replace PC name to Job name" IsChecked="{Binding Path=Config.IsReplacePCName, Mode=TwoWay}" />

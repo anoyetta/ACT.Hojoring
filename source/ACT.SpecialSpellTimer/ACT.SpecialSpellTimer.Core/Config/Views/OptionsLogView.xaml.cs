@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ACT.SpecialSpellTimer.resources;
 using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using Prism.Commands;
 
@@ -51,13 +53,28 @@ namespace ACT.SpecialSpellTimer.Config.Views
         private ICommand openLogCommand;
 
         public ICommand OpenLogCommand =>
-            this.openLogCommand ?? (this.openLogCommand = new DelegateCommand(() =>
+            this.openLogCommand ?? (this.openLogCommand = new DelegateCommand(async () =>
             {
                 var file = ParsedLogWorker.Instance.OutputFile;
                 if (File.Exists(file))
                 {
+                    await Task.Run(() => ParsedLogWorker.Instance.Flush(true));
                     Process.Start(file);
                 }
             }));
+
+        private DelegateCommand flushLogCommand;
+
+        public DelegateCommand FlushLogCommand =>
+            this.flushLogCommand ?? (this.flushLogCommand = new DelegateCommand(this.ExecuteFlushLogCommand));
+
+        private async void ExecuteFlushLogCommand()
+        {
+            await Task.Run(() =>
+            {
+                ParsedLogWorker.Instance.Flush(true);
+                CommonSounds.Instance.PlayAsterisk();
+            });
+        }
     }
 }
