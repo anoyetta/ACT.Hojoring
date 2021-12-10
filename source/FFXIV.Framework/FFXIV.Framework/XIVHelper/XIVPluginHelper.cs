@@ -1405,12 +1405,32 @@ namespace FFXIV.Framework.XIVHelper
                 newList.Add(entry.ID, entry);
             }
 
+            // 有効なワールド番号の範囲を定義する
+            var min = 0;
+            var max = 0;
+
+            switch (XIVApi.Instance.FFXIVLocale)
+            {
+                case Locales.KO:
+                    min = 2048;
+                    max = 2080;
+                    break;
+
+                case Locales.TW:
+                case Locales.CN:
+                    min = 1040;
+                    max = 1179;
+                    break;
+
+                default:
+                    min = 21;
+                    max = 99;
+                    break;
+            }
+
             // ワールド名置換用正規表現を生成する
             var names = newList.Values
-                .Where(x =>
-                    (x.ID >= 23 && x.ID <= 99) ||
-                    (x.ID >= 1040 && x.ID <= 1172) ||
-                    (x.ID >= 2048 && x.ID <= 2079))
+                .Where(x => x.ID >= min && x.ID <= max)
                 .Select(x => x.Name);
             this.WorldNameRemoveRegex = new Regex(
                 $@"(?<name>[A-Za-z'\-\.]+ [A-Za-z'\-\.]+)(?<world>{string.Join("|", names)})",

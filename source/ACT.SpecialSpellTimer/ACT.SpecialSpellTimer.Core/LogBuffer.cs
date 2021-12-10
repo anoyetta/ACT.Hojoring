@@ -341,13 +341,14 @@ namespace ACT.SpecialSpellTimer
                     continue;
                 }
 
-                // ツールチップシンボル, ワールド名を除去する
-                if (!Settings.Default.RemoveTooltipSymbols)
+                // ツールチップシンボルを除去する
+                if (Settings.Default.RemoveTooltipSymbols)
                 {
                     logLine = LogParser.RemoveTooltipSynbols(logLine);
                 }
 
-                if (!Settings.Default.RemoveWorldName)
+                // ワールド名を除去する
+                if (Settings.Default.RemoveWorldName)
                 {
                     logLine = LogParser.RemoveWorldName(logLine);
                 }

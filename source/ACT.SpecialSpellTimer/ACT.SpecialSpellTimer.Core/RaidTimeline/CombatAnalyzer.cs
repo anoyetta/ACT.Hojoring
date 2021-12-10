@@ -379,13 +379,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     continue;
                 }
 
-                // ツールチップシンボル, ワールド名を除去する
-                if (!Settings.Default.RemoveTooltipSymbols)
+                // ツールチップシンボルを除去する
+                if (Settings.Default.RemoveTooltipSymbols)
                 {
                     log.logLine = LogParser.RemoveTooltipSynbols(log.logLine);
                 }
 
-                if (!Settings.Default.RemoveWorldName)
+                // ワールド名を除去する
+                if (Settings.Default.RemoveWorldName)
                 {
                     log.logLine = LogParser.RemoveWorldName(log.logLine);
                 }
