@@ -14,11 +14,13 @@ namespace ACT.TTSYukkuri.Config
         WhiteMage,
         Scholar,
         Astrologian,
+        Sage,
 
         Monk,
         Dragoon,
         Ninja,
         Samurai,
+        Reaper,
 
         Bard,
         Machinist,
@@ -76,6 +78,8 @@ namespace ACT.TTSYukkuri.Config
             { "Blue Mage",      "あおまどうし",      "Blue Mage",       "Blue Mage",      "Blue Mage",         "Blue Mage",},
             { "Gunbreaker",     "がんぶれいかー",    "Pistosabreur",    "Revolverklinge", "Gunbreaker",        "Gunbreaker",},
             { "Dancer",         "おどりこ",          "Danseur",         "Tänzer",        "Dancer",            "Dancer",},
+            { "Reaper",         "りーぱー",          "Faucheur",        "Schnitter",      "Reaper",            "Reaper",},
+            { "Sage",           "けんじゃ",          "Sage",            "Weiser",         "Sage",              "Sage",},
         };
 
         public static readonly AlertCategories[] JobAlertCategories = new AlertCategories[]
@@ -119,6 +123,8 @@ namespace ACT.TTSYukkuri.Config
             AlertCategories.BlueMage,
             AlertCategories.Gunbreaker,
             AlertCategories.Dancer,
+            AlertCategories.Reaper,
+            AlertCategories.Sage,
         };
 
         public static string GetPhonetic(
@@ -145,10 +151,12 @@ namespace ACT.TTSYukkuri.Config
             { "White Mage/Conjurer", "白魔道士・幻術士","White Mage/Conjurer","White Mage/Conjurer","White Mage/Conjurer","白魔", },
             { "Scholar", "学者","Scholar","Scholar","Scholar","学者", },
             { "Astrologian", "占星術師","Astrologian","Astrologian","Astrologian","占星", },
+            { "Sage", "賢者", "Sage", "Weiser", "Sage", "Sage", },
             { "Monk/Pugilist", "モンク・拳闘士","Monk/Pugilist","Monk/Pugilist","Monk/Pugilist","武僧", },
             { "Dragoon/Lancer", "竜騎士・槍術士","Dragoon/Lancer","Dragoon/Lancer","Dragoon/Lancer","龙骑", },
             { "Ninja/Rogue", "忍者・双剣士","Ninja/Rogue","Ninja/Rogue","Ninja/Rogue","忍者", },
             { "Samurai", "侍","Samurai","Samurai","Samurai","武士", },
+            { "Reaper", "リーパー", "Faucheur", "Schnitter", "Reaper", "Reaper", },
             { "Bard/Archer", "吟遊詩人・弓術士","Bard/Archer","Bard/Archer","Bard/Archer","诗人", },
             { "Machinist", "機工士","Machinist","Machinist","Machinist","机工", },
             { "Dancer", "踊り子","Dancer","Dancer","Dancer","Dancer", },
