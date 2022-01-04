@@ -1,14 +1,14 @@
+using System;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Text;
+using System.Xml.Serialization;
 using ACT.TTSYukkuri.Boyomichan;
 using ACT.TTSYukkuri.Discord.Models;
 using Amazon.Polly;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using Prism.Mvvm;
-using System;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Text;
-using System.Xml.Serialization;
 
 namespace ACT.TTSYukkuri.Config
 {
@@ -660,9 +660,6 @@ namespace ACT.TTSYukkuri.Config
                 {
                     Directory.CreateDirectory(dir);
                 }
-
-                // ステータスアラートの対象を初期化する
-                this.StatusAlertSettings.SetDefaultAlertTargets();
 
                 var ns = new XmlSerializerNamespaces();
                 ns.Add(string.Empty, string.Empty);
