@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Data;
 using System.Xml.Serialization;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Extensions;
@@ -352,23 +353,43 @@ namespace ACT.TTSYukkuri.Config
 
             var missingTargetsHP = defaultTargets.Where(x =>
                 !this.AlertTargetsHP.Any(y => y.Category == x.Category));
-            this.AlertTargetsHP.AddRange(missingTargetsHP);
-            this.AlertTargetsHP.Sort((x, y) => compareAlertTarget(x, y));
+
+            if (missingTargetsHP.Any())
+            {
+                BindingOperations.EnableCollectionSynchronization(this.AlertTargetsHP, new object());
+                this.AlertTargetsHP.AddRange(missingTargetsHP);
+                this.AlertTargetsHP.Sort((x, y) => compareAlertTarget(x, y));
+            }
 
             var missingTargetsMP = defaultTargets.Where(x =>
                 !this.AlertTargetsMP.Any(y => y.Category == x.Category));
-            this.AlertTargetsMP.AddRange(missingTargetsMP);
-            this.AlertTargetsMP.Sort((x, y) => compareAlertTarget(x, y));
+
+            if (missingTargetsMP.Any())
+            {
+                BindingOperations.EnableCollectionSynchronization(this.AlertTargetsMP, new object());
+                this.AlertTargetsMP.AddRange(missingTargetsMP);
+                this.AlertTargetsMP.Sort((x, y) => compareAlertTarget(x, y));
+            }
 
             var missingTargetsTP = defaultTargets.Where(x =>
                 !this.AlertTargetsTP.Any(y => y.Category == x.Category));
-            this.AlertTargetsTP.AddRange(missingTargetsTP);
-            this.AlertTargetsTP.Sort((x, y) => compareAlertTarget(x, y));
+
+            if (missingTargetsTP.Any())
+            {
+                BindingOperations.EnableCollectionSynchronization(this.AlertTargetsTP, new object());
+                this.AlertTargetsTP.AddRange(missingTargetsTP);
+                this.AlertTargetsTP.Sort((x, y) => compareAlertTarget(x, y));
+            }
 
             var missingTargetsGP = defaultTargets.Where(x =>
                 !this.AlertTargetsGP.Any(y => y.Category == x.Category));
-            this.AlertTargetsGP.AddRange(missingTargetsGP);
-            this.AlertTargetsGP.Sort((x, y) => compareAlertTarget(x, y));
+
+            if (missingTargetsGP.Any())
+            {
+                BindingOperations.EnableCollectionSynchronization(this.AlertTargetsGP, new object());
+                this.AlertTargetsGP.AddRange(missingTargetsGP);
+                this.AlertTargetsGP.Sort((x, y) => compareAlertTarget(x, y));
+            }
         }
     }
 }
