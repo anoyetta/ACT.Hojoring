@@ -311,9 +311,7 @@ namespace ACT.XIVLog
         }
 
         public void EnqueueLogLine(
-            string logMessageType,
-            string message,
-            string zone = null)
+            string message)
         {
             if (string.IsNullOrEmpty(Config.Instance.OutputDirectory) &&
                 !Config.Instance.IsEnabledRecording &&
@@ -322,16 +320,7 @@ namespace ACT.XIVLog
                 return;
             }
 
-            zone ??= this.currentZoneName;
-
-            var log = new LogLineEventArgs(
-                $"[{DateTime.Now:HH:mm:ss.fff}] {logMessageType}:{message}",
-                int.Parse(logMessageType),
-                DateTime.Now,
-                zone,
-                true);
-
-            LogQueue.Enqueue(new XIVLog(false, log));
+            LogParser.RaiseLog(DateTime.Now, message);
         }
 
         /*
