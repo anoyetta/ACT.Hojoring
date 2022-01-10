@@ -147,6 +147,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     $"{TimelineConstants.LogSymbol} set VAR['{ZoneID}'] = {zoneID}");
                 TimelineController.RaiseLog(
                     $"{TimelineConstants.LogSymbol} set VAR['{ZoneName}'] = {zoneName}");
+
+                // ゾーンが変わったならば1BOriginをリセットする
+                Reset1BSignOrigin();
             }
         }
 
@@ -226,6 +229,19 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 SetVariable(Origin1B, newSignValue, TimelineController.CurrentController?.CurrentZoneName);
             }
+        }
+
+        /// <summary>
+        /// 1B Sign の最小値をリセットする（0xFFFF）
+        /// </summary>
+        public static void Reset1BSignOrigin()
+        {
+            const int SignInitialValue = 0xFFFF;
+
+            TimelineController.RaiseLog(
+                $"{TimelineConstants.LogSymbol} set VAR['{Origin1B}'] = {SignInitialValue} ({SignInitialValue:X4})");
+
+            SetVariable(Origin1B, SignInitialValue, TimelineController.CurrentController?.CurrentZoneName);
         }
 
         /// <summary>
