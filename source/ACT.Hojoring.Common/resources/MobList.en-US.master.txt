@@ -18,6 +18,47 @@
 # # is comment line.
 #
 
+# 6.0 ENDWALKER
+
+## Rank SS
+Ker			S 
+"Ker Shroud"		S 
+
+## Rank S
+Armstrong		S 
+Ruminator		S 
+Narrow-rift		S 
+Ophioneus		S 
+"Burfurlur the Canny"	S 
+Sphatika		S 
+
+## Rank A
+Hulder			A 
+Storsie 		A 
+Sugriva 		A 
+Yilan 			A 
+Aegeiros 		A 
+Minerva 		A 
+Petalodus 		A 
+Gurangatch 		A 
+"Mousse Princess" 	A 
+"Lunatender Queen"	A 
+Arch-Eta 		A 
+"Fan Ail" 		A 
+
+## Rank B
+"Ü-u-ü-u" 		B 
+Iravati 		B 
+Vajrakumara 		B 
+"Emperor's Rose" 	B 
+Warmonger 		B 
+"Genesis Rock" 		B 
+"Daphnia Magna" 	B 
+Shockmaw 		B 
+Yumcax 			B 
+"Oskh Rhei" 		B 
+"Level Cheater"		B 
+
 # 5.0 SHADOWBRINGERS 
 ## Rank EX 
 ## Rank S 
