@@ -320,10 +320,13 @@ namespace ACT.SpecialSpellTimer.Models
 
             sb.Replace("utf-16", "utf-8");
 
-            File.WriteAllText(
-                file,
-                sb.ToString() + Environment.NewLine,
-                DefaultEncoding);
+            if (sb.Length > 0)
+            {
+                File.WriteAllText(
+                    file,
+                    sb.ToString() + Environment.NewLine,
+                    DefaultEncoding);
+            }
         }
 
         public IList<Spell> LoadFromFile(

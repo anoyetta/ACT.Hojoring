@@ -181,10 +181,13 @@ namespace FFXIV.Framework
 
                 sb.Replace("utf-16", "utf-8");
 
-                File.WriteAllText(
-                    FileName,
-                    sb.ToString() + Environment.NewLine,
-                    DefaultEncoding);
+                if (sb.Length > 0)
+                {
+                    File.WriteAllText(
+                        FileName,
+                        sb.ToString() + Environment.NewLine,
+                        DefaultEncoding);
+                }
 
                 lastSaveTimestamp = now;
             }
@@ -329,7 +332,6 @@ namespace FFXIV.Framework
             get => this.isForceFlushSharlayanResources;
             set => this.SetProperty(ref this.isForceFlushSharlayanResources, value);
         }
-
 
         private bool isEnabledOutputDebugLog;
 
