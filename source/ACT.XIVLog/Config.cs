@@ -127,10 +127,13 @@ namespace ACT.XIVLog
 
                 sb.Replace("utf-16", "utf-8");
 
-                File.WriteAllText(
-                    FileName,
-                    sb.ToString(),
-                    new UTF8Encoding(false));
+                if (sb.Length > 0)
+                {
+                    File.WriteAllText(
+                        FileName,
+                        sb.ToString(),
+                        new UTF8Encoding(false));
+                }
             }
         }
 

@@ -169,10 +169,13 @@ namespace ACT.UltraScouter.Config
 
                 buffer.Replace("utf-16", "utf-8");
 
-                File.WriteAllText(
-                    this.FileName,
-                    buffer.ToString() + Environment.NewLine,
-                    DefaultEncoding);
+                if (buffer.Length > 0)
+                {
+                    File.WriteAllText(
+                        this.FileName,
+                        buffer.ToString() + Environment.NewLine,
+                        DefaultEncoding);
+                }
             }
         }
 

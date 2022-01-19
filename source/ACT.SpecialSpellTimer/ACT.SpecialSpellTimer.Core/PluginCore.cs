@@ -1,3 +1,11 @@
+using System;
+using System.Drawing;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Forms.Integration;
+using System.Windows.Threading;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.RaidTimeline;
@@ -9,14 +17,6 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.resources;
 using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
-using System;
-using System.Drawing;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.Integration;
-using System.Windows.Threading;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -77,15 +77,15 @@ namespace ACT.SpecialSpellTimer
         /// すべての設定を保存する
         /// </summary>
         public async void SaveSettingsAsync() => await WPFHelper.InvokeAsync(async () =>
-        {
-            SpellPanelTable.Instance.Save();
-            SpellTable.Instance.Save();
-            TickerTable.Instance.Save();
-            TagTable.Instance.Save();
-            TimelineSettings.Save();
-            Settings.Default.Save();
-            await Task.Delay(50);
-        },
+          {
+              SpellPanelTable.Instance.Save();
+              SpellTable.Instance.Save();
+              TickerTable.Instance.Save();
+              TagTable.Instance.Save();
+              TimelineSettings.Save();
+              Settings.Default.Save();
+              await Task.Delay(50);
+          },
         DispatcherPriority.Background);
 
         /// <summary>

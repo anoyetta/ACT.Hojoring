@@ -159,10 +159,13 @@ namespace ACT.SpecialSpellTimer.Models
 
                 sb.Replace("utf-16", "utf-8");
 
-                File.WriteAllText(
-                    this.DefaultFile,
-                    sb.ToString() + Environment.NewLine,
-                    DefaultEncoding);
+                if (sb.Length > 0)
+                {
+                    File.WriteAllText(
+                        this.DefaultFile,
+                        sb.ToString() + Environment.NewLine,
+                        DefaultEncoding);
+                }
             }
         }
     }
