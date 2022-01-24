@@ -258,11 +258,13 @@ namespace ACT.SpecialSpellTimer
             }
 
             // 延長をマッチングする
-            if (spell.MatchDateTime > DateTime.MinValue)
+            if (spell.MatchDateTime > DateTime.MinValue || spell.ToInstance)
             {
-                var keywords = new string[] { spell.KeywordForExtendReplaced1, spell.KeywordForExtendReplaced2, spell.KeywordForExtendReplaced3 };
-                var regexes = new Regex[] { spell.RegexForExtend1, spell.RegexForExtend2, spell.RegexForExtend3 };
-                var timeToExtends = new double[] { spell.RecastTimeExtending1, spell.RecastTimeExtending2, spell.RecastTimeExtending3 };
+                var targetSpell = spell;
+
+                var keywords = new string[] { targetSpell.KeywordForExtendReplaced1, targetSpell.KeywordForExtendReplaced2, targetSpell.KeywordForExtendReplaced3 };
+                var regexes = new Regex[] { targetSpell.RegexForExtend1, targetSpell.RegexForExtend2, targetSpell.RegexForExtend3 };
+                var timeToExtends = new double[] { targetSpell.RecastTimeExtending1, targetSpell.RecastTimeExtending2, targetSpell.RecastTimeExtending3 };
 
                 for (int i = 0; i < keywords.Length; i++)
                 {
@@ -271,40 +273,65 @@ namespace ACT.SpecialSpellTimer
                     var timeToExtend = timeToExtends[i];
 
                     // マッチングする
-                    var exntended = false;
+                    var extended = false;
 
-                    if (!spell.RegexEnabled ||
+                    if (!targetSpell.RegexEnabled ||
                         regexToExtend == null)
                     {
                         if (!string.IsNullOrWhiteSpace(keywordToExtend))
                         {
-                            exntended = logLine.Contains(keywordToExtend, StringComparison.OrdinalIgnoreCase);
+                            extended = logLine.Contains(keywordToExtend, StringComparison.OrdinalIgnoreCase);
                         }
                     }
                     else
                     {
                         var match = regexToExtend.Match(logLine);
-                        exntended = match.Success;
+                        extended = match.Success;
 
-                        if (exntended)
+                        if (extended)
                         {
+                            // ヒットしたログを格納する
+                            targetSpell.MatchedLog = logLine;
+
+                            // スペル名（表示テキスト）を置換する
+                            var replacedTitle = match.Result(ConditionUtility.GetReplacedTitle(targetSpell));
+
+                            // PC名を置換する
+                            replacedTitle = XIVPluginHelper.Instance.ReplacePartyMemberName(
+                                replacedTitle,
+                                Settings.Default.PCNameInitialOnDisplayStyle);
+
+                            // インスタンス化する？
+                            if (targetSpell.ToInstance)
+                            {
+                                // 同じタイトルのインスタンススペルを探す
+                                // 存在すればそれを使用して、なければ新しいインスタンスを生成する
+                                targetSpell = SpellTable.Instance.GetOrAddInstance(
+                                    replacedTitle,
+                                    targetSpell);
+                            }
+                            else
+                            {
+                                targetSpell.SpellTitleReplaced = replacedTitle;
+                            }
+
                             // targetをキャプチャーしている？
-                            if (!string.IsNullOrWhiteSpace(spell.TargetName))
+                            if (!string.IsNullOrWhiteSpace(targetSpell.TargetName))
                             {
                                 var targetName = match.Groups["target"].Value;
                                 if (!string.IsNullOrWhiteSpace(targetName))
                                 {
                                     // targetが当初のマッチングと一致するか確認する
-                                    if (spell.TargetName != targetName)
+                                    if (targetSpell.TargetName != targetName)
                                     {
-                                        exntended = false;
+                                        extended = false;
                                     }
                                 }
                             }
                         }
                     }
 
-                    if (!exntended)
+                    if (!extended)
                     {
                         continue;
                     }
@@ -312,45 +339,45 @@ namespace ACT.SpecialSpellTimer
                     var now = DateTime.Now;
 
                     // リキャストタイムを延長する
-                    var newSchedule = spell.CompleteScheduledTime.AddSeconds(timeToExtend);
-                    spell.BeforeDone = false;
-                    spell.UpdateDone = false;
+                    var newSchedule = targetSpell.CompleteScheduledTime.AddSeconds(timeToExtend);
+                    targetSpell.BeforeDone = false;
+                    targetSpell.UpdateDone = false;
 
-                    if (spell.ExtendBeyondOriginalRecastTime)
+                    if (targetSpell.ExtendBeyondOriginalRecastTime)
                     {
-                        if (spell.UpperLimitOfExtension > 0)
+                        if (targetSpell.UpperLimitOfExtension > 0)
                         {
                             var newDuration = (newSchedule - now).TotalSeconds;
-                            if (newDuration > (double)spell.UpperLimitOfExtension)
+                            if (newDuration > (double)targetSpell.UpperLimitOfExtension)
                             {
                                 newSchedule = newSchedule.AddSeconds(
-                                    (newDuration - (double)spell.UpperLimitOfExtension) * -1);
+                                    (newDuration - (double)targetSpell.UpperLimitOfExtension) * -1);
                             }
                         }
                     }
                     else
                     {
                         var newDuration = (newSchedule - now).TotalSeconds;
-                        if (newDuration > (double)spell.RecastTime)
+                        if (newDuration > (double)targetSpell.RecastTime)
                         {
                             newSchedule = newSchedule.AddSeconds(
-                                (newDuration - (double)spell.RecastTime) * -1);
+                                (newDuration - (double)targetSpell.RecastTime) * -1);
                         }
                     }
 
-                    spell.CompleteScheduledTime = newSchedule;
+                    targetSpell.CompleteScheduledTime = newSchedule;
 
-                    if (!spell.IsNotResetBarOnExtended)
+                    if (!targetSpell.IsNotResetBarOnExtended)
                     {
-                        spell.MatchDateTime = now;
+                        targetSpell.MatchDateTime = now;
                     }
 
                     notifyNeeded = true;
 
                     // 遅延サウンドタイマを開始(更新)する
-                    spell.StartOverSoundTimer();
-                    spell.StartBeforeSoundTimer();
-                    spell.StartTimeupSoundTimer();
+                    targetSpell.StartOverSoundTimer();
+                    targetSpell.StartBeforeSoundTimer();
+                    targetSpell.StartTimeupSoundTimer();
                 }
             }
             // end if 延長マッチング
