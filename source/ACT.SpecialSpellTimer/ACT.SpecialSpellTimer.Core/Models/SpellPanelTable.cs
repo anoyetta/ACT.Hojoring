@@ -150,21 +150,11 @@ namespace ACT.SpecialSpellTimer.Models
                 var ns = new XmlSerializerNamespaces();
                 ns.Add(string.Empty, string.Empty);
 
-                var sb = new StringBuilder();
-                using (var sw = new StringWriter(sb))
+                using (var sw = new StreamWriter(this.DefaultFile, false, DefaultEncoding))
                 {
                     var xs = new XmlSerializer(this.table.GetType());
                     xs.Serialize(sw, this.table, ns);
-                }
-
-                sb.Replace("utf-16", "utf-8");
-
-                if (sb.Length > 0)
-                {
-                    File.WriteAllText(
-                        this.DefaultFile,
-                        sb.ToString() + Environment.NewLine,
-                        DefaultEncoding);
+                    sw.Close();
                 }
             }
         }

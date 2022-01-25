@@ -62,20 +62,13 @@ namespace FFXIV.Framework.Common
 
             this.isAbort = true;
 
-            if (timeout == 0)
-            {
-                timeout = (int)this.Interval;
-
-                // 最大で500msまでしか待たない
-                if (timeout > 500)
-                {
-                    timeout = 500;
-                }
-            }
-
             if (this.thread != null)
             {
-                this.thread.Join(timeout);
+                if (timeout > 0)
+                {
+                    this.thread.Join(timeout);
+                }
+
                 if (this.thread.IsAlive)
                 {
                     this.thread.Abort();

@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
@@ -27,7 +26,7 @@ namespace FFXIV.Framework
 
         #region Singleton
 
-        private static Config instance;
+        private static volatile Config instance;
 
         public static Config Instance =>
             instance ?? (instance = (Load() ?? new Config()));
@@ -46,6 +45,8 @@ namespace FFXIV.Framework
             "ACT",
             Path.GetFileName(Assembly.GetExecutingAssembly().Location.Replace(".dll", ".config")));
 
+        private static readonly Encoding DefaultEncoding = new UTF8Encoding(false);
+
         public static Config Load()
         {
             lock (ConfigBlocker)
@@ -63,7 +64,7 @@ namespace FFXIV.Framework
 
                 MigrateConfig(FileName);
 
-                using (var sr = new StreamReader(FileName, new UTF8Encoding(false)))
+                using (var sr = new StreamReader(FileName, DefaultEncoding))
                 {
                     if (sr.BaseStream.Length > 0)
                     {
@@ -140,56 +141,50 @@ namespace FFXIV.Framework
                 }
             }
 
-            File.WriteAllText(file, xdoc.ToString(), new UTF8Encoding(false));
+            File.WriteAllText(file, xdoc.ToString(), DefaultEncoding);
         }
 
-        private static readonly Encoding DefaultEncoding = new UTF8Encoding(false);
-
-        private static DateTime lastSaveTimestamp;
+        private static volatile bool isSaving;
 
         public static void Save()
         {
-            lock (ConfigBlocker)
+            if (isSaving)
             {
-                if (instance == null)
+                return;
+            }
+
+            isSaving = true;
+
+            try
+            {
+                lock (ConfigBlocker)
                 {
-                    return;
+                    if (instance == null)
+                    {
+                        return;
+                    }
+
+                    var directoryName = Path.GetDirectoryName(FileName);
+
+                    if (!Directory.Exists(directoryName))
+                    {
+                        Directory.CreateDirectory(directoryName);
+                    }
+
+                    var ns = new XmlSerializerNamespaces();
+                    ns.Add(string.Empty, string.Empty);
+
+                    using (var sw = new StreamWriter(FileName, false, DefaultEncoding))
+                    {
+                        var xs = new XmlSerializer(instance.GetType());
+                        xs.Serialize(sw, instance, ns);
+                        sw.Close();
+                    }
                 }
-
-                var now = DateTime.Now;
-                if ((now - lastSaveTimestamp).TotalSeconds < 5)
-                {
-                    return;
-                }
-
-                var directoryName = Path.GetDirectoryName(FileName);
-
-                if (!Directory.Exists(directoryName))
-                {
-                    Directory.CreateDirectory(directoryName);
-                }
-
-                var ns = new XmlSerializerNamespaces();
-                ns.Add(string.Empty, string.Empty);
-
-                var sb = new StringBuilder();
-                using (var sw = new StringWriter(sb))
-                {
-                    var xs = new XmlSerializer(instance.GetType());
-                    xs.Serialize(sw, instance, ns);
-                }
-
-                sb.Replace("utf-16", "utf-8");
-
-                if (sb.Length > 0)
-                {
-                    File.WriteAllText(
-                        FileName,
-                        sb.ToString() + Environment.NewLine,
-                        DefaultEncoding);
-                }
-
-                lastSaveTimestamp = now;
+            }
+            finally
+            {
+                isSaving = false;
             }
         }
 
@@ -262,7 +257,7 @@ namespace FFXIV.Framework
 
                     this.UILocaleChanged?.Invoke(this, new EventArgs());
 
-                    Task.Run(() => Save());
+                    Save();
                 }
             }
         }

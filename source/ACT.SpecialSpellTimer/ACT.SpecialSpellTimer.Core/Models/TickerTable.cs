@@ -238,21 +238,11 @@ namespace ACT.SpecialSpellTimer.Models
             var ns = new XmlSerializerNamespaces();
             ns.Add(string.Empty, string.Empty);
 
-            var sb = new StringBuilder();
-            using (var sw = new StringWriter(sb))
+            using (var sw = new StreamWriter(file, false, DefaultEncoding))
             {
                 var xs = new XmlSerializer(list.GetType());
                 xs.Serialize(sw, list, ns);
-            }
-
-            sb.Replace("utf-16", "utf-8");
-
-            if (sb.Length > 0)
-            {
-                File.WriteAllText(
-                    file,
-                    sb.ToString() + Environment.NewLine,
-                    DefaultEncoding);
+                sw.Close();
             }
         }
 
