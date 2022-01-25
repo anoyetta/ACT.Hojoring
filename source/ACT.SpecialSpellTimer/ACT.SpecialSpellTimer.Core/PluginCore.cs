@@ -76,17 +76,18 @@ namespace ACT.SpecialSpellTimer
         /// <summary>
         /// すべての設定を保存する
         /// </summary>
-        public async void SaveSettingsAsync() => await WPFHelper.InvokeAsync(async () =>
-          {
-              SpellPanelTable.Instance.Save();
-              SpellTable.Instance.Save();
-              TickerTable.Instance.Save();
-              TagTable.Instance.Save();
-              TimelineSettings.Save();
-              Settings.Default.Save();
-              await Task.Delay(50);
-          },
-        DispatcherPriority.Background);
+        public async void SaveSettingsAsync() => await WPFHelper.InvokeAsync
+            (async () =>
+            {
+                SpellPanelTable.Instance.Save();
+                SpellTable.Instance.Save();
+                TickerTable.Instance.Save();
+                TagTable.Instance.Save();
+                TimelineSettings.Save();
+                Settings.Default.Save();
+                await Task.Delay(50);
+            },
+            DispatcherPriority.Background);
 
         /// <summary>
         /// 後片付けをする
@@ -101,8 +102,6 @@ namespace ACT.SpecialSpellTimer
             try
             {
                 // 設定ファイルを保存する
-                Settings.Default.Save();
-                Settings.Default.DeInit();
                 FFXIV.Framework.Config.Save();
 
                 // 付加情報オーバーレイを閉じる

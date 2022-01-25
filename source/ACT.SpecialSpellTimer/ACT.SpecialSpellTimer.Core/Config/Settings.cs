@@ -820,21 +820,11 @@ namespace ACT.SpecialSpellTimer.Config
                 var ns = new XmlSerializerNamespaces();
                 ns.Add(string.Empty, string.Empty);
 
-                var buffer = new StringBuilder();
-                using (var sw = new StringWriter(buffer))
+                using (var sw = new StreamWriter(this.FileName, false, DefaultEncoding))
                 {
                     var xs = new XmlSerializer(this.GetType());
                     xs.Serialize(sw, this, ns);
-                }
-
-                buffer.Replace("utf-16", "utf-8");
-
-                if (buffer.Length > 0)
-                {
-                    File.WriteAllText(
-                        this.FileName,
-                        buffer.ToString() + Environment.NewLine,
-                        DefaultEncoding);
+                    sw.Close();
                 }
             }
         }

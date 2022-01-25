@@ -1,6 +1,3 @@
-using ACT.SpecialSpellTimer.Config;
-using FFXIV.Framework.Common;
-using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,6 +11,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml.Serialization;
+using ACT.SpecialSpellTimer.Config;
+using FFXIV.Framework.Common;
+using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -591,9 +591,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             try
             {
                 this.isSaving = true;
-            }
-            finally
-            {
+
                 lock (Locker)
                 {
                     FileHelper.CreateDirectory(file);
@@ -601,22 +599,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     var ns = new XmlSerializerNamespaces();
                     ns.Add(string.Empty, string.Empty);
 
-                    var buffer = new StringBuilder();
-                    using (var sw = new StringWriter(buffer))
+                    using (var sw = new StreamWriter(file, false, new UTF8Encoding(false)))
                     {
                         var xs = new XmlSerializer(this.GetType());
                         xs.Serialize(sw, this, ns);
-                    }
-
-                    buffer.Replace("utf-16", "utf-8");
-
-                    using (var sw = new StreamWriter(file, false, new UTF8Encoding(false)))
-                    {
-                        sw.Write(buffer.ToString() + Environment.NewLine);
-                        sw.Flush();
+                        sw.Close();
                     }
                 }
-
+            }
+            finally
+            {
                 this.isSaving = false;
             }
         }

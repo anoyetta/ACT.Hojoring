@@ -664,21 +664,11 @@ namespace ACT.TTSYukkuri.Config
                 var ns = new XmlSerializerNamespaces();
                 ns.Add(string.Empty, string.Empty);
 
-                var buffer = new StringBuilder();
-                using (var sw = new StringWriter(buffer))
+                using (var sw = new StreamWriter(file, false, DefaultEncoding))
                 {
                     var xs = new XmlSerializer(typeof(Settings));
                     xs.Serialize(sw, Default, ns);
-                }
-
-                buffer.Replace("utf-16", "utf-8");
-
-                if (buffer.Length > 0)
-                {
-                    File.WriteAllText(
-                        file,
-                        buffer.ToString() + Environment.NewLine,
-                        DefaultEncoding);
+                    sw.Close();
                 }
             }
         }

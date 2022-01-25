@@ -118,21 +118,11 @@ namespace ACT.XIVLog
                 var ns = new XmlSerializerNamespaces();
                 ns.Add(string.Empty, string.Empty);
 
-                var sb = new StringBuilder();
-                using (var sw = new StringWriter(sb))
+                using (var sw = new StreamWriter(FileName, false, new UTF8Encoding(false)))
                 {
                     var xs = new XmlSerializer(instance.GetType());
                     xs.Serialize(sw, instance, ns);
-                }
-
-                sb.Replace("utf-16", "utf-8");
-
-                if (sb.Length > 0)
-                {
-                    File.WriteAllText(
-                        FileName,
-                        sb.ToString(),
-                        new UTF8Encoding(false));
+                    sw.Close();
                 }
             }
         }
