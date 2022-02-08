@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Threading;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
 
@@ -171,17 +170,13 @@ namespace FFXIV.Framework.WPF.Views
 
         private static readonly object ZOrderLocker = new object();
 
-        private static readonly Lazy<DispatcherTimer> LazyZOrderCorrector = new Lazy<DispatcherTimer>(() =>
-        {
-            var timer = new DispatcherTimer(DispatcherPriority.ContextIdle)
+        private static readonly Lazy<System.Timers.Timer> LazyZOrderCorrector =
+            new Lazy<System.Timers.Timer>(() =>
             {
-                Interval = TimeSpan.FromSeconds(1.5),
-            };
-
-            timer.Tick += ZOrderCorrectorOnTick;
-
-            return timer;
-        });
+                var timer = new System.Timers.Timer(1500);
+                timer.Elapsed += ZOrderCorrectorOnTick;
+                return timer;
+            });
 
         private static readonly List<IOverlay> ToCorrectOverlays = new List<IOverlay>(64);
 
@@ -194,6 +189,9 @@ namespace FFXIV.Framework.WPF.Views
         {
             lock (ZOrderLocker)
             {
+                // ハンドルを登録する
+                _ = overlay.GetHandle();
+
                 if (overlay is Window window)
                 {
                     window.Closing += (x, y) =>
@@ -224,6 +222,9 @@ namespace FFXIV.Framework.WPF.Views
         {
             lock (ZOrderLocker)
             {
+                // ハンドルの登録を解除する
+                Handles.Remove(overlay);
+
                 ToCorrectOverlays.Remove(overlay);
 
                 if (!ToCorrectOverlays.Any())
@@ -243,6 +244,12 @@ namespace FFXIV.Framework.WPF.Views
             {
                 try
                 {
+                    var xivHandle = OverlayExtensions.GetGameWindowHandle();
+                    if (xivHandle == IntPtr.Zero)
+                    {
+                        return;
+                    }
+
                     lock (ZOrderLocker)
                     {
                         foreach (var overlay in ToCorrectOverlays)
@@ -252,19 +259,15 @@ namespace FFXIV.Framework.WPF.Views
                                 continue;
                             }
 
-                            if (overlay is Window window &&
-                                window.IsLoaded)
+                            if (!XIVPluginHelper.Instance.IsAvailable)
                             {
-                                if (!XIVPluginHelper.Instance.IsAvailable)
-                                {
-                                    overlay.EnsureTopMost();
-                                    continue;
-                                }
+                                overlay.EnsureTopMost();
+                                continue;
+                            }
 
-                                if (!overlay.IsOverlaysGameWindow())
-                                {
-                                    overlay.EnsureTopMost();
-                                }
+                            if (!overlay.IsOverlaysGameWindow(xivHandle))
+                            {
+                                overlay.EnsureTopMost();
                             }
                         }
                     }
@@ -276,9 +279,22 @@ namespace FFXIV.Framework.WPF.Views
             }
         }
 
+        private static readonly Dictionary<IOverlay, IntPtr> Handles = new Dictionary<IOverlay, IntPtr>();
+
         public static IntPtr GetHandle(
-            this IOverlay overlay) =>
-            new WindowInteropHelper(overlay as Window).Handle;
+            this IOverlay overlay)
+        {
+            if (Handles.ContainsKey(overlay))
+            {
+                return Handles[overlay];
+            }
+            else
+            {
+                var handle = new WindowInteropHelper(overlay as Window).Handle;
+                Handles.Add(overlay, handle);
+                return handle;
+            }
+        }
 
         /// <summary>
         /// FFXIVより前面にいるか？
@@ -286,9 +302,9 @@ namespace FFXIV.Framework.WPF.Views
         /// <param name="overlay"></param>
         /// <returns></returns>
         public static bool IsOverlaysGameWindow(
-            this IOverlay overlay)
+            this IOverlay overlay,
+            IntPtr xivHandle)
         {
-            var xivHandle = GetGameWindowHandle();
             var handle = overlay.GetHandle();
 
             while (handle != IntPtr.Zero)
@@ -325,7 +341,7 @@ namespace FFXIV.Framework.WPF.Views
         private static Process xivProc;
         private static DateTime lastTry;
 
-        private static IntPtr GetGameWindowHandle()
+        public static IntPtr GetGameWindowHandle()
         {
             lock (xivProcLocker)
             {
