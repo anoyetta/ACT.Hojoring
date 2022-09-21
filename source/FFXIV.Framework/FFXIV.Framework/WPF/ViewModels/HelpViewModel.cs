@@ -29,7 +29,7 @@ namespace FFXIV.Framework.WPF.ViewModels
         public HelpViewModel()
         {
             AppLog.AppendedLog += (x, y) => this.RaisePropertyChanged(nameof(this.Log));
-            this.timer.Tick += this.Timer_Tick;
+            this.timer.Elapsed += this.Timer_Tick;
         }
 
         private HelpView view;
@@ -179,24 +179,39 @@ namespace FFXIV.Framework.WPF.ViewModels
             set => this.SetProperty(ref this.zone, value);
         }
 
-        private DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.ContextIdle)
-        {
-            Interval = TimeSpan.FromSeconds(0.25),
-        };
+        private System.Timers.Timer timer = new System.Timers.Timer(250);
+        private volatile bool inTick;
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (this.View?.IsLoaded ?? false)
+            if (this.inTick)
             {
-                var now = DateTimeOffset.Now;
+                return;
+            }
 
-                this.UTC = $"(UTC) {now.ToUniversalTime():yyyy/MM/dd HH:mm:ss}";
-                this.LocalTime = $" (LT) {now:yyyy/MM/dd HH:mm:ss K}";
-                this.EorzeaTime = $" (ET) {now.ToEorzeaTime()}";
+            try
+            {
+                this.inTick = true;
 
-                var zoneID = XIVPluginHelper.Instance?.GetCurrentZoneID();
-                var zoneName = ActGlobals.oFormActMain?.CurrentZone;
-                this.Zone = $"ZONE: {zoneID}\n{zoneName}";
+                WPFHelper.Invoke(() =>
+                {
+                    if (this.View?.IsLoaded ?? false)
+                    {
+                        var now = DateTimeOffset.Now;
+                        var zoneID = XIVPluginHelper.Instance?.GetCurrentZoneID();
+                        var zoneName = ActGlobals.oFormActMain?.CurrentZone;
+
+                        this.UTC = $"(UTC) {now.ToUniversalTime():yyyy/MM/dd HH:mm:ss}";
+                        this.LocalTime = $" (LT) {now:yyyy/MM/dd HH:mm:ss K}";
+                        this.EorzeaTime = $" (ET) {now.ToEorzeaTime()}";
+                        this.Zone = $"ZONE: {zoneID}\n{zoneName}";
+                    }
+                },
+                DispatcherPriority.ContextIdle);
+            }
+            finally
+            {
+                this.inTick = false;
             }
         }
 
