@@ -22,7 +22,9 @@ namespace FFXIV.Framework.XIVHelper
 
         public static string ToStringEx(
             this LogMessageType type)
-            => LazyLogMessageTypeTextStore.Value[type];
+            => LazyLogMessageTypeTextStore.Value.ContainsKey(type) ?
+                LazyLogMessageTypeTextStore.Value[type] :
+                "Unknown";
 
         public static string[] GetNames()
             => LazyLogMessageTypeTextStore.Value.Select(x => x.Value).ToArray();

@@ -479,6 +479,13 @@ namespace FFXIV.Framework.XIVHelper
             // メッセージタイプを抽出する
             var messagetype = logInfo.detectedType;
 
+            // 255を超えるメッセージタイプは無視する
+            // OverlayPluginなどが発生させる
+            if (messagetype > 0xFF)
+            {
+                return;
+            }
+
             // メッセージタイプの文字列を除去する
             line = LogMessageTypeExtensions.RemoveLogMessageType(messagetype, line);
 
