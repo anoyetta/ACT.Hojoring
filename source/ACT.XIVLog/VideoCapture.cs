@@ -10,6 +10,7 @@ using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
 using NLog;
+using OBS.WebSockets.Core;
 using SLOBSharp.Client;
 using SLOBSharp.Client.Requests;
 using WindowsInput;
@@ -435,25 +436,36 @@ namespace ACT.XIVLog
         [MethodImpl(MethodImplOptions.NoInlining)]
         private async void SendToggleRecording()
         {
-            var p = Process.GetProcessesByName("Streamlabs OBS");
-            if (p == null ||
-                p.Length < 1)
+            if (Config.Instance.UseObs)
             {
-                this.Logger.Info("Tried to record, but Streamlabs OBS is not found.");
-                return;
+                OBS.WebSockets.Core.OBSWebsocket obs;
+                obs = new OBSWebsocket { WSTimeout = TimeSpan.FromMinutes(10) };
+                obs.Connect("ws://127.0.0.1:4444", "");
+                obs.ToggleRecording();
+                obs.Disconnect();
             }
+            else
+            {
+                var p = Process.GetProcessesByName("Streamlabs OBS");
+                if (p == null ||
+                    p.Length < 1)
+                {
+                    this.Logger.Info("Tried to record, but Streamlabs OBS is not found.");
+                    return;
+                }
 
-            var client = this.LazySLOBSClient.Value as SlobsPipeClient;
+                var client = this.LazySLOBSClient.Value as SlobsPipeClient;
 
-            var req = SlobsRequestBuilder
-                .NewRequest()
-                .SetMethod("toggleRecording")
-                .SetResource("StreamingService")
-                .BuildRequest();
+                var req = SlobsRequestBuilder
+                    .NewRequest()
+                    .SetMethod("toggleRecording")
+                    .SetResource("StreamingService")
+                    .BuildRequest();
 
-            await client
-                .ExecuteRequestAsync(req)
-                .ConfigureAwait(false);
+                await client
+                    .ExecuteRequestAsync(req)
+                    .ConfigureAwait(false);
+            }
         }
     }
 }
