@@ -441,8 +441,11 @@ namespace ACT.XIVLog
                 OBS.WebSockets.Core.OBSWebsocket obs;
                 obs = new OBSWebsocket { WSTimeout = TimeSpan.FromMinutes(10) };
                 obs.Connect("ws://127.0.0.1:4444", "");
-                obs.ToggleRecording();
-                obs.Disconnect();
+                if (obs.IsConnected)
+                {
+                    obs.ToggleRecording();
+                    obs.Disconnect();
+                }
             }
             else
             {
