@@ -446,6 +446,10 @@ namespace ACT.XIVLog
                     obs.ToggleRecording();
                     obs.Disconnect();
                 }
+                else
+                {
+                    this.Logger.Info("Tried to record, but OBS Websocket connect faild.");
+                }
             }
             else
             {
