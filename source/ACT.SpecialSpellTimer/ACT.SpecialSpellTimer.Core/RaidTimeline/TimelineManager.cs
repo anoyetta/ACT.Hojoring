@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using static ACT.SpecialSpellTimer.Models.TableCompiler;
+using ACT.TTSYukkuri;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -115,10 +116,17 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <summary>
         /// 現在のタイムラインをロードする
         /// </summary>
+        private Logger Logger => AppLog.DefaultLogger;
         public void LoadCurrentTimeline()
         {
             lock (this)
             {
+                // TTSYukkuriをリセットする
+                SoundPlayerWrapper.Init();
+                WPFHelper.DelayTask(10);
+                SoundPlayerWrapper.LoadTTSCache();
+                Logger.Info("Reset WASAPI Player, and Reload TTS chache.");
+
                 WPFHelper.Invoke(() =>
                 {
                     TimelineNoticeOverlay.CloseNotice();

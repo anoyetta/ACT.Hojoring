@@ -481,10 +481,11 @@ namespace FFXIV.Framework.XIVHelper
 
             // 255を超えるメッセージタイプは無視する
             // OverlayPluginなどが発生させる
-            if (messagetype > 0xFF)
-            {
-                return;
-            }
+            // ※処理するように変更
+            //if (messagetype > 0xFF)
+            //{
+            //    return;
+            //}
 
             // メッセージタイプの文字列を除去する
             line = LogMessageTypeExtensions.RemoveLogMessageType(messagetype, line);
