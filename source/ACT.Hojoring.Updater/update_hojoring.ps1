@@ -78,7 +78,7 @@ Set-Location $cd
 # ACT本体と同じディレクトリに配置されている？
 $act = Join-Path $cd "Advanced Combat Tracker.exe"
 if (Test-Path $act) {
-    Write-Error ("-> ERROR! Cannot update. Hojoring instration directory is wrong. Hojoring and ACT are in same directory.")
+    Write-Error ("-> ERROR! Cannot update. Hojoring installation directory is wrong. Hojoring and ACT are in same directory.")
     Write-Error ("-> You can re-setup following this site.")
     Write-Error ("-> https://www.anoyetta.com/entry/hojoring-setup")
     Exit-Update 1
@@ -117,7 +117,7 @@ for ($i = 0; $i -lt 60; $i++) {
             Write-Warning ("-> Advanced Combat Tracker の終了を待機しています。Advanced Combat Tracker を手動で終了してください。")
         }
         else {
-            Write-Warning ("-> Please shutdown Advanced Combat Tracker.")
+            Write-Warning ("-> Please shut down Advanced Combat Tracker.")
         }
     }
 
@@ -158,17 +158,17 @@ if (!(Test-Path $updater)) {
 }
 
 ''
-'-> Check Lastest Release'
+'-> Check Latest Release'
 $info = Get-NewerVersion($isUsePreRelease)
 
 if ([string]::IsNullOrEmpty($info.Version)) {
-    Write-Error ("-> Not found any releases.")
+    Write-Error ("-> No releases found.")
     Exit-Update 0
 }
 
 # 新しいバージョンを表示する
 ''
-Write-Host ("Available Lastest Version")
+Write-Host ("Latest Available Version")
 Write-Host ("version : " + $info.Version)
 Write-Host ("tag     : " + $info.Tag)
 Write-Host ($info.Note)
@@ -176,7 +176,7 @@ Write-Host ($info.ReleasePageUrl)
 
 do {
     ''
-    $in = Read-Host "Are you sure to update? [y] or [n]"
+    $in = Read-Host "Are you sure you want to update? [y] or [n]"
     $in = $in.ToUpper()
 
     if ($in -eq "Y") {
@@ -205,7 +205,7 @@ Copy-Item .\ $temp -Recurse -Force
 Move-Item $temp ".\backup" -Force
 
 ''
-'-> Download Lastest Version'
+'-> Download Latest Version'
 New-Item $updateDir -ItemType Directory
 Start-Sleep -Milliseconds 200
 Invoke-WebRequest -Uri $info.AssetUrl -OutFile (Join-Path $updateDir $info.AssetName)

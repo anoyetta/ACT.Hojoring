@@ -23,7 +23,7 @@ Advanced Combat Tracker の FFXIV向けプラグインの詰合せです。
 ACT本体のTTS機能をゆっくり実況などで有名な AquesTalk&trade; などに置き換えます。ほぼすべてのTTSエンジンを網羅しています。またTTSをDISCORD BOTを経由してDISCORDのボイスチャットとして通知することもできます。
 
 ## 最新リリース
-### **[DOWNLOAD Lastest-Release](https://github.com/anoyetta/ACT.Hojoring/releases/latest)**
+### **[DOWNLOAD Latest-Release](https://github.com/anoyetta/ACT.Hojoring/releases/latest)**
 [pre-release](https://github.com/anoyetta/ACT.Hojoring/releases)
 
 ## インストール

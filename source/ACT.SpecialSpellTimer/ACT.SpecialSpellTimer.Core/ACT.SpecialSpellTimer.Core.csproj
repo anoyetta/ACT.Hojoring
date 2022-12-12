@@ -1535,6 +1535,14 @@
       <Project>{450f38fa-7f7d-41b9-9bbb-503efc6c0a72}</Project>
       <Name>ACT.SpecialSpellTimer.RazorModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ACT.TTSYukkuri\ACT.TTSYukkuri.Core\ACT.TTSYukkuri.Core.csproj">
+      <Project>{9a615561-6cec-4857-870f-88f6ff07764c}</Project>
+      <Name>ACT.TTSYukkuri.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ACT.TTSYukkuri\ACT.TTSYukkuri\ACT.TTSYukkuri.csproj">
+      <Project>{f20b280b-35b9-4462-a71e-e187cc2a60e7}</Project>
+      <Name>ACT.TTSYukkuri</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
       <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>
       <Name>FFXIV.Framework</Name>
