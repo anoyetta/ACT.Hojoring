@@ -503,8 +503,8 @@ namespace ACT.XIVLog
                 return;
             }
 
-            //this.LogType = message.Substring(firstDelimiterIndex - 2, 2);
-            this.LogType = message.Substring(firstDelimiterIndex - logInfo.detectedType.ToString().Length, logInfo.detectedType.ToString().Length);
+            var typeString = message.Substring(0, firstDelimiterIndex);
+            this.LogType = typeString.Substring(typeString.LastIndexOf(" "));
 
             this.Log = message;
             this.ZoneName = !string.IsNullOrEmpty(logInfo.detectedZone) ?
