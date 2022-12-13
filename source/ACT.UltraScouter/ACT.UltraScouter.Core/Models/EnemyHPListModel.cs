@@ -1,12 +1,12 @@
+using ACT.UltraScouter.Config;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.XIVHelper;
+using Sharlayan.Core.Enums;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
-using ACT.UltraScouter.Config;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.XIVHelper;
-using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Models
 {
@@ -71,7 +71,8 @@ namespace ACT.UltraScouter.Models
                 from x in CombatantsManager.Instance.GetCombatants()
                 where
                 x.ActorType == Actor.Type.Monster &&
-                x.MaxHP > 0 &&
+                x.OwnerID == 0 &&
+                x.MaxHP > 1 &&
                 x.CurrentHP > 0 &&
                 x.CurrentHP < x.MaxHP &&
                 (x.PosX + x.PosY + x.PosZ) != 0
