@@ -61,13 +61,13 @@ namespace FFXIV.Framework.XIVHelper
             }
 
             // ログタイプを除去する
-            var i = message.IndexOf(' ');
+            var i = message.IndexOf(" ");
             if (i < 0)
             {
                 return result;
             }
 
-            message = message.Substring(i);
+            message = message.Substring(i + 1);
 
             result = withoutTimestamp ?
                 message :

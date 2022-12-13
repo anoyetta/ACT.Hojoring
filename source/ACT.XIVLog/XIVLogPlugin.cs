@@ -496,17 +496,17 @@ namespace ACT.XIVLog
             // タイムスタンプの後を取り出す
             var message = line.Substring(15);
 
-            // ログタイプを取り出す
-            var firstDelimiterIndex = message.IndexOf(':');
-            if (firstDelimiterIndex < 0)
+            // ログタイプを除去する
+            var i = message.IndexOf(" ");
+            if (i < 0)
             {
                 return;
             }
 
-            var typeString = message.Substring(0, firstDelimiterIndex);
-            this.LogType = typeString.Substring(typeString.LastIndexOf(" "));
+            message = message.Substring(i + 1);
 
-            this.Log = $"{this.LogType}:{message.Substring(firstDelimiterIndex)}";
+            this.LogType = message.Substring(0, message.IndexOf(":"));
+            this.Log = message;
             this.ZoneName = !string.IsNullOrEmpty(logInfo.detectedZone) ?
                 logInfo.detectedZone :
                 "NO DATA";
@@ -614,12 +614,6 @@ namespace ACT.XIVLog
                 NumberStyles.HexNumber,
                 CultureInfo.InvariantCulture,
                 out int detectedType);
-
-            // ログメッセージタイプの文言を除去する
-            log = LogMessageTypeExtensions.RemoveLogMessageType(
-                detectedType,
-                log,
-                true);
 
             // ツールチップシンボル, ワールド名を除去する
             log = LogParser.RemoveTooltipSynbols(log);
