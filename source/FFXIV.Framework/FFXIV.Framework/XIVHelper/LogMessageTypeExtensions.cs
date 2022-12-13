@@ -1,7 +1,7 @@
-﻿using System;
+﻿using FFXIV_ACT_Plugin.Logfile;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using FFXIV_ACT_Plugin.Logfile;
 
 namespace FFXIV.Framework.XIVHelper
 {
@@ -20,12 +20,6 @@ namespace FFXIV.Framework.XIVHelper
                 return d;
             });
 
-        public static string ToStringEx(
-            this LogMessageType type)
-            => LazyLogMessageTypeTextStore.Value.ContainsKey(type) ?
-                LazyLogMessageTypeTextStore.Value[type] :
-                type.ToString();
-
         public static string[] GetNames()
             => LazyLogMessageTypeTextStore.Value.Select(x => x.Value).ToArray();
 
@@ -34,14 +28,14 @@ namespace FFXIV.Framework.XIVHelper
 
         public static string ToHex(
             this LogMessageType type)
-            => ((byte)type).ToString("X2");
+            => ((int)type).ToString("X2");
 
         public static string ToKeyword(
            this LogMessageType type)
             => $"] {type.ToHex()}:";
 
         public static string RemoveLogMessageType(
-            LogMessageType type,
+            int type,
             string logLine,
             bool withoutTimestamp = false)
         {
@@ -50,39 +44,36 @@ namespace FFXIV.Framework.XIVHelper
             [00:32:16.798] ActionEffect 15:102DB8BA:Naoki Yoshida:BA:士気高揚の策:102DB8BA:Naoki Yoshida:...
             */
 
-            var timestampLength = withoutTimestamp ? 0 : 15;
+            const int TimestampLength = 15;
             var result = logLine;
 
-            if (string.IsNullOrEmpty(result))
+            if (logLine.Length < TimestampLength)
             {
                 return result;
             }
 
-            if (logLine.Length < timestampLength)
+            var timestamp = logLine.Substring(0, TimestampLength);
+            var message = logLine.Substring(TimestampLength);
+
+            if (string.IsNullOrEmpty(message))
             {
                 return result;
             }
 
-            var messageTypeNoIndex = timestampLength + type.ToStringEx().Length + 1;
-            if (logLine.Length < messageTypeNoIndex)
+            // ログタイプを除去する
+            var i = message.IndexOf(" ");
+            if (i < 0)
             {
                 return result;
             }
 
-            result = !withoutTimestamp ?
-                $"{logLine.Substring(0, timestampLength - 1)} {logLine.Substring(messageTypeNoIndex)}" :
-                logLine.Substring(messageTypeNoIndex);
+            message = message.Substring(i + 1);
+
+            result = withoutTimestamp ?
+                message :
+                $"{timestamp}{message}";
 
             return result;
         }
-
-        public static string RemoveLogMessageType(
-            int type,
-            string logLine,
-            bool withoutTimestamp = false)
-            => RemoveLogMessageType(
-                (LogMessageType)Enum.ToObject(typeof(LogMessageType), type),
-                logLine,
-                withoutTimestamp);
     }
 }

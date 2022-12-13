@@ -1,3 +1,9 @@
+using ACT.Hojoring.Shared;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.XIVHelper;
+using Sharlayan.Core.Enums;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -13,12 +19,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
-using ACT.Hojoring.Shared;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.XIVHelper;
-using Sharlayan.Core.Enums;
 
 namespace ACT.XIVLog
 {
@@ -496,16 +496,16 @@ namespace ACT.XIVLog
             // タイムスタンプの後を取り出す
             var message = line.Substring(15);
 
-            // ログタイプを取り出す
-            var firstDelimiterIndex = message.IndexOf(':');
-            if (firstDelimiterIndex < 0)
+            // ログタイプを除去する
+            var i = message.IndexOf(" ");
+            if (i < 0)
             {
                 return;
             }
 
-            //this.LogType = message.Substring(firstDelimiterIndex - 2, 2);
-            this.LogType = message.Substring(firstDelimiterIndex - logInfo.detectedType.ToString().Length, logInfo.detectedType.ToString().Length);
+            message = message.Substring(i + 1);
 
+            this.LogType = message.Substring(0, message.IndexOf(":"));
             this.Log = message;
             this.ZoneName = !string.IsNullOrEmpty(logInfo.detectedZone) ?
                 logInfo.detectedZone :
@@ -614,12 +614,6 @@ namespace ACT.XIVLog
                 NumberStyles.HexNumber,
                 CultureInfo.InvariantCulture,
                 out int detectedType);
-
-            // ログメッセージタイプの文言を除去する
-            log = LogMessageTypeExtensions.RemoveLogMessageType(
-                detectedType,
-                log,
-                true);
 
             // ツールチップシンボル, ワールド名を除去する
             log = LogParser.RemoveTooltipSynbols(log);
