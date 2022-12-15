@@ -89,6 +89,7 @@ namespace ACT.XIVLog
             WipeoutKeywords.WipeoutLog,
             WipeoutKeywords.WipeoutLogEcho,
             "の攻略を終了した。",
+            "クロスワールドパーティが解散されました。",
             "End-of-Timeline has been detected.",
         };
 
