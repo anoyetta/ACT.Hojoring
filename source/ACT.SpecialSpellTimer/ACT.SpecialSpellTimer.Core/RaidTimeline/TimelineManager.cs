@@ -115,6 +115,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <summary>
         /// 現在のタイムラインをロードする
         /// </summary>
+        private Logger Logger => AppLog.DefaultLogger;
         public void LoadCurrentTimeline()
         {
             lock (this)

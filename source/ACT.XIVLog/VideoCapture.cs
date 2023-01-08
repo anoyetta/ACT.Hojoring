@@ -1,3 +1,10 @@
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.XIVHelper;
+using NLog;
+using OBS.WebSockets.Core;
+using SLOBSharp.Client;
+using SLOBSharp.Client.Requests;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -6,12 +13,6 @@ using System.Media;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.XIVHelper;
-using NLog;
-using SLOBSharp.Client;
-using SLOBSharp.Client.Requests;
 using WindowsInput;
 
 namespace ACT.XIVLog
@@ -39,27 +40,27 @@ namespace ACT.XIVLog
         private readonly InputSimulator Input = new InputSimulator();
 
         private static readonly Regex StartCountdownRegex = new Regex(
-            @" 00:...9::戦闘開始まで.+）$",
+            @"^00:...9::戦闘開始まで.+）$",
             RegexOptions.Compiled);
 
         private static readonly Regex ContentStartLogRegex = new Regex(
-            @" 00:0839::「(?<content>.+)」の攻略を開始した。",
+            @"^00:0839::「(?<content>.+)」の攻略を開始した。",
             RegexOptions.Compiled);
 
         private static readonly Regex ContentEndLogRegex = new Regex(
-            @" 00:0839::.+を終了した。$",
+            @"^00:0839::.+を終了した。$",
             RegexOptions.Compiled);
 
         private static readonly Regex PlayerChangedLogRegex = new Regex(
-            @" 02:[0-9a-fA-F]{8}:(?<player>.+)",
+            @"^02:[0-9a-fA-F]{8}:(?<player>.+)",
             RegexOptions.Compiled);
 
         private static readonly Regex FeastStartRegex = new Regex(
-            @" 21:[0-9a-fA-F]{8}:40000001:168",
+            @"^21:[0-9a-fA-F]{8}:40000001:168",
             RegexOptions.Compiled);
 
         private static readonly Regex FeastEndRegex = new Regex(
-            @" 21:[0-9a-fA-F]{8}:80000004:257",
+            @"^21:[0-9a-fA-F]{8}:80000004:257",
             RegexOptions.Compiled);
 
         private static readonly string[] StopVideoKeywords = new string[]
@@ -69,20 +70,22 @@ namespace ACT.XIVLog
             "End-of-Timeline has been detected.",
         };
 
-        private Regex defeatedLogRegex = new Regex(
-            @" 19:[0-9a-fA-F]{8}:Naoki Yoshida:",
+        private static Regex CreateDefeatedLogRegex(string playerName) => new Regex(
+            $@"^19:[0-9a-fA-F]{8}:{playerName}:",
             RegexOptions.Compiled);
+
+        private Regex defeatedLogRegex = CreateDefeatedLogRegex("Naoki Yoshida");
 
         private bool inFeast;
 
         public void DetectCapture(
             XIVLog xivlog)
         {
-            if (!xivlog.Log.Contains(" 00:") &&
-                !xivlog.Log.Contains(" 01:") &&
-                !xivlog.Log.Contains(" 02:") &&
-                !xivlog.Log.Contains(" 19:") &&
-                !xivlog.Log.Contains(" 21:"))
+            if (!xivlog.Log.StartsWith("00:") &&
+                !xivlog.Log.StartsWith("01:") &&
+                !xivlog.Log.StartsWith("02:") &&
+                !xivlog.Log.StartsWith("19:") &&
+                !xivlog.Log.StartsWith("21:"))
             {
                 return;
             }
@@ -165,9 +168,7 @@ namespace ACT.XIVLog
             match = PlayerChangedLogRegex.Match(xivlog.Log);
             if (match.Success)
             {
-                this.defeatedLogRegex = new Regex(
-                    $@" 19:[0-9a-fA-F]{8}:{this.playerName}:",
-                    RegexOptions.Compiled);
+                this.defeatedLogRegex = CreateDefeatedLogRegex(this.playerName);
                 return;
             }
 
@@ -435,25 +436,43 @@ namespace ACT.XIVLog
         [MethodImpl(MethodImplOptions.NoInlining)]
         private async void SendToggleRecording()
         {
-            var p = Process.GetProcessesByName("Streamlabs OBS");
-            if (p == null ||
-                p.Length < 1)
+            if (Config.Instance.UseObsWS)
             {
-                this.Logger.Info("Tried to record, but Streamlabs OBS is not found.");
-                return;
+                OBS.WebSockets.Core.OBSWebsocket obs;
+                obs = new OBSWebsocket { WSTimeout = TimeSpan.FromMinutes(10) };
+                obs.Connect("ws://127.0.0.1:4444", "");
+                if (obs.IsConnected)
+                {
+                    obs.ToggleRecording();
+                    obs.Disconnect();
+                }
+                else
+                {
+                    this.Logger.Info("Tried to record, but OBS Websocket connect faild.");
+                }
             }
+            else
+            {
+                var p = Process.GetProcessesByName("Streamlabs OBS");
+                if (p == null ||
+                    p.Length < 1)
+                {
+                    this.Logger.Info("Tried to record, but Streamlabs OBS is not found.");
+                    return;
+                }
 
-            var client = this.LazySLOBSClient.Value as SlobsPipeClient;
+                var client = this.LazySLOBSClient.Value as SlobsPipeClient;
 
-            var req = SlobsRequestBuilder
-                .NewRequest()
-                .SetMethod("toggleRecording")
-                .SetResource("StreamingService")
-                .BuildRequest();
+                var req = SlobsRequestBuilder
+                    .NewRequest()
+                    .SetMethod("toggleRecording")
+                    .SetResource("StreamingService")
+                    .BuildRequest();
 
-            await client
-                .ExecuteRequestAsync(req)
-                .ConfigureAwait(false);
+                await client
+                    .ExecuteRequestAsync(req)
+                    .ConfigureAwait(false);
+            }
         }
     }
 }

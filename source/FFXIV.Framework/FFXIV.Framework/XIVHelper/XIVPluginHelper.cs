@@ -480,7 +480,6 @@ namespace FFXIV.Framework.XIVHelper
             var messagetype = logInfo.detectedType;
 
             // 255を超えるメッセージタイプは無視する
-            // OverlayPluginなどが発生させる
             if (messagetype > 0xFF)
             {
                 return;

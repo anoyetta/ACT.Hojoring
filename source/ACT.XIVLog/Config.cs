@@ -345,6 +345,21 @@ namespace ACT.XIVLog
         [XmlIgnore]
         public bool NotUseObsRpc => !this.UseObsRpc;
 
+        private bool useObsWS;
+        public bool UseObsWS
+        {
+            get => this.useObsWS;
+            set
+            {
+                if (this.SetProperty(ref this.useObsWS, value))
+                {
+                    this.RaisePropertyChanged(nameof(this.NotUseObsWS));
+                }
+            }
+        }
+        [XmlIgnore]
+        public bool NotUseObsWS => !this.UseObsWS;
+
         private string videFilePrefix = "FFXIV";
 
         public string VideFilePrefix

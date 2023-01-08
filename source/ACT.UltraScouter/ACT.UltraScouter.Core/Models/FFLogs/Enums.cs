@@ -8,7 +8,8 @@ namespace ACT.UltraScouter.Models.FFLogs
         NA,
         EU,
         CN,
-        KR
+        KR,
+        OC
     }
 
     public enum FFLogsPartitions
