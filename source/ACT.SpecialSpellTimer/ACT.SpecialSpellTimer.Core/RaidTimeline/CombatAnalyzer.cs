@@ -392,9 +392,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 // ログの書式をパースする
+                var datetime = log.logLine.Substring(0, 15);
+                log.logLine = log.logLine.Substring(15);
                 log.logLine = LogParser.FormatLogLine(
                     log.detectedType,
                     log.logLine);
+                log.logLine = datetime + log.logLine;
 
                 this.AnalyzeLogLine(log);
                 Thread.Yield();
