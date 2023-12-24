@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using ACT.TTSYukkuri.Config;
@@ -26,7 +27,18 @@ namespace ACT.TTSYukkuri.Discord.ViewModels
         public ICommand ConnectCommand =>
             this.connectCommand ?? (this.connectCommand = new DelegateCommand(async () =>
             {
-                this.Model.Connect();
+                Action action = () =>
+                {
+                    this.Model.Connect();
+                };
+                try
+                {
+                    action();
+                } catch (TypeLoadException e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+ //               this.Model.Connect();
                 await Task.Delay(TimeSpan.FromMilliseconds(100));
             }));
 
