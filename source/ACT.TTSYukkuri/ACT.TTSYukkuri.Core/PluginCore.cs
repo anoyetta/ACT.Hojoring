@@ -478,11 +478,16 @@ namespace ACT.TTSYukkuri
                 {
                     if (Settings.Default.SasaraSettings.IsHideCevioWindow)
                     {
-                        if (Settings.Default.SasaraSettings.IsHideCevioWindow)
-                        {
-                            CevioTrayManager.Start();
-                            CevioTrayManager.ToIcon();
-                        }
+                        CevioTrayManager.Start();
+                        CevioTrayManager.ToIcon();
+                    }
+                }
+                if (Settings.Default.TTS == TTSType.CevioAI)
+                {
+                    if (Settings.Default.CevioAISettings.IsHideCevioWindow)
+                    {
+                        CevioTrayManager.Start();
+                        CevioTrayManager.ToIcon();
                     }
                 }
 

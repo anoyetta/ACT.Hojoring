@@ -136,6 +136,10 @@ namespace ACT.TTSYukkuri.Config.Views
             return Task.Run(() =>
             {
                 var ps = Process.GetProcessesByName("CeVIO Creative Studio");
+                if (ps == null)
+                {
+                    ps = Process.GetProcessesByName("CeVIO AI");
+                }
                 if (ps == null ||
                     ps.Length < 1)
                 {
