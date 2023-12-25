@@ -29,7 +29,7 @@
       VerticalContentAlignment="Center"
       Height="30"
       Width="400"
-      MaxLength="18"
+      MaxLength="20"
       TextChanged="ClientIDTextBox_TextChanged" />
 
     <TextBox
