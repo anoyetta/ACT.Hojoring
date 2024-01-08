@@ -29,7 +29,7 @@ namespace FFXIV.Framework.resources
         private static readonly object Locker = new object();
 
         private static readonly Uri RemoteResourcesListUri =
-            new Uri("https://raw.githubusercontent.com/wbonbon/ACT.Hojoring.Resources/master/resources.txt");
+            new Uri("https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources.txt");
 
         private bool isDownloading;
 
