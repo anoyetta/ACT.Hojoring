@@ -411,12 +411,34 @@ namespace ACT.XIVLog
                                 tf.Save();
                             }
 
-                            File.Move(
-                                original,
-                                dest);
+                            int i = 0;
+                            bool result = false;
+                            do
+                            {
+                                try
+                                {
+                                    File.Move(
+                                        original,
+                                        dest);
+                                    result = true;
+                                    break;
+                                }
+                                catch (Exception ex)
+                                {
+                                    XIVLogPlugin.Instance.EnqueueLogLine(
+                                        $"[XIVLog] rename failed, retry... {ex.Message}");
+                                    await Task.Delay(5);
+                                    i++;
+                                }
+                            } while (i < 5);
 
                             XIVLogPlugin.Instance.EnqueueLogLine(
                                 $"[XIVLog] The video was saved. {Path.GetFileName(dest)}");
+                            if (!result)
+                            {
+                                XIVLogPlugin.Instance.EnqueueLogLine(
+                                    $"[XIVLog] rename failed.");
+                            }
                         }
                     }
                 });
