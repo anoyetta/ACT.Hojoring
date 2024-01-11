@@ -439,17 +439,8 @@ namespace ACT.TTSYukkuri
                 // TTSメソッドを置き換える
                 this.StartReplaceTTSMethodTimer();
 
-                await Task.Run(() =>
-                {
-                    // DISCORD BOT クライアントを初期化する
-                    DiscordClientModel.Model.Initialize();
-
-                    // AutoJoinがONならば接続する
-                    if (Settings.Default.DiscordSettings.AutoJoin)
-                    {
-                        DiscordClientModel.Model.Connect(true);
-                    }
-                });
+                // DISCORD BOTの初期化もう少し後に行う
+                // 移動
 
                 await Task.Run(() =>
                 {
@@ -490,6 +481,18 @@ namespace ACT.TTSYukkuri
                         CevioTrayManager.ToIcon();
                     }
                 }
+
+                await Task.Run(() =>
+                {
+                    // DISCORD BOT クライアントを初期化する
+                    DiscordClientModel.Model.Initialize();
+
+                    // AutoJoinがONならば接続する
+                    if (Settings.Default.DiscordSettings.AutoJoin)
+                    {
+                        DiscordClientModel.Model.Connect(true);
+                    }
+                });
 
                 if (this.PluginStatusLabel != null)
                 {

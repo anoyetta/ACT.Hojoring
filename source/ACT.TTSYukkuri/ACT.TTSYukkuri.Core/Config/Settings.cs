@@ -42,7 +42,7 @@ namespace ACT.TTSYukkuri.Config
                     if (instance == null)
                     {
                         instance = new Settings();
-                        instance.Load();
+                        //instance.Load();
                     }
 
                     return instance;
