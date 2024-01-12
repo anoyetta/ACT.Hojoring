@@ -92,6 +92,14 @@ namespace FFXIV.Framework.XIVHelper
                 rank = 60;
             }
 
+            // ヴァリアントダンジョン・アナザーダンジョン
+            if (intendedUse == (int)TerritoryIntendedUse.VDungeon ||
+                intendedUse == (int)TerritoryIntendedUse.ADungeon ||
+                intendedUse == (int)TerritoryIntendedUse.ADungeonS)
+            {
+                rank = 65;
+            }
+
             // PvP
             if (intendedUse == (int)TerritoryIntendedUse.PvP1 ||
                 intendedUse == (int)TerritoryIntendedUse.PvP2 ||
@@ -107,6 +115,9 @@ namespace FFXIV.Framework.XIVHelper
     public enum TerritoryIntendedUse
     {
         Dungeon = 3,
+        VDungeon = 4,
+        ADungeon = 57,
+        ADungeonS = 58,
         Raid24 = 8,
         Raid8 = 17,
         Trial = 10,

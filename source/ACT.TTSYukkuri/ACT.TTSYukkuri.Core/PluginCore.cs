@@ -439,17 +439,8 @@ namespace ACT.TTSYukkuri
                 // TTSメソッドを置き換える
                 this.StartReplaceTTSMethodTimer();
 
-                await Task.Run(() =>
-                {
-                    // DISCORD BOT クライアントを初期化する
-                    DiscordClientModel.Model.Initialize();
-
-                    // AutoJoinがONならば接続する
-                    if (Settings.Default.DiscordSettings.AutoJoin)
-                    {
-                        DiscordClientModel.Model.Connect(true);
-                    }
-                });
+                // DISCORD BOTの初期化もう少し後に行う
+                // 移動
 
                 await Task.Run(() =>
                 {
@@ -478,13 +469,30 @@ namespace ACT.TTSYukkuri
                 {
                     if (Settings.Default.SasaraSettings.IsHideCevioWindow)
                     {
-                        if (Settings.Default.SasaraSettings.IsHideCevioWindow)
-                        {
-                            CevioTrayManager.Start();
-                            CevioTrayManager.ToIcon();
-                        }
+                        CevioTrayManager.Start();
+                        CevioTrayManager.ToIcon();
                     }
                 }
+                if (Settings.Default.TTS == TTSType.CevioAI)
+                {
+                    if (Settings.Default.CevioAISettings.IsHideCevioWindow)
+                    {
+                        CevioTrayManager.Start();
+                        CevioTrayManager.ToIcon();
+                    }
+                }
+
+                await Task.Run(() =>
+                {
+                    // DISCORD BOT クライアントを初期化する
+                    DiscordClientModel.Model.Initialize();
+
+                    // AutoJoinがONならば接続する
+                    if (Settings.Default.DiscordSettings.AutoJoin)
+                    {
+                        DiscordClientModel.Model.Connect(true);
+                    }
+                });
 
                 if (this.PluginStatusLabel != null)
                 {

@@ -192,7 +192,11 @@ namespace ACT.TTSYukkuri.Discord.Models
             {
                 try
                 {
-                    this.discordClient = new DiscordSocketClient();
+                    var config = new DiscordSocketConfig
+                    {
+                        GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMessages | GatewayIntents.GuildVoiceStates
+                    };
+                    this.discordClient = new DiscordSocketClient(config);
 
                     this.discordClient.Ready += this.DiscordClientOnReady;
                     this.discordClient.LoggedOut += this.DiscordClientOnLoggedOut;

@@ -369,9 +369,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             foreach (var log in logs)
             {
                 // ログメッセージタイプの文言を除去する
-                log.logLine = LogMessageTypeExtensions.RemoveLogMessageType(
-                    log.detectedType,
-                    log.logLine);
+                if (log.detectedType <= 0xFF)
+                {
+                    log.logLine = LogMessageTypeExtensions.RemoveLogMessageType(
+                        log.detectedType,
+                        log.logLine);
+                }
 
                 // ダメージ系の不要なログか？
                 if (XIVPluginHelper.IsDamageLog(log.logLine))
@@ -392,9 +395,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 }
 
                 // ログの書式をパースする
+                var datetime = log.logLine.Substring(0, 15);
+                log.logLine = log.logLine.Substring(15);
                 log.logLine = LogParser.FormatLogLine(
                     log.detectedType,
                     log.logLine);
+                log.logLine = datetime + log.logLine;
 
                 this.AnalyzeLogLine(log);
                 Thread.Yield();

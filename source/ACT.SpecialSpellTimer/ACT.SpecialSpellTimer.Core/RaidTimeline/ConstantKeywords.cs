@@ -202,6 +202,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public static class CommonKeywords
         {
+            public static readonly string OverlayPluginMapEffectPrefix = $"] 101:";
+
             public static readonly string CountdownStartPrefix = $"{LogMessageType.ChatLog.ToHex()}:0139::";
             public static readonly string CombatStartPrefix = $"{LogMessageType.ChatLog.ToHex()}:0039::";
 
@@ -273,6 +275,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private static readonly IList<AnalyzeKeyword> KeywordsJA = new[]
         {
+            new AnalyzeKeyword() { Keyword = CommonKeywords.OverlayPluginMapEffectPrefix, Category = KewordTypes.Record},
             new AnalyzeKeyword() { Keyword = CommonKeywords.ExAddedCombatant, Category = KewordTypes.Record },
             new AnalyzeKeyword() { Keyword = CommonKeywords.ExPos, Category = KewordTypes.Record },
             new AnalyzeKeyword() { Keyword = CommonKeywords.ExBeacon, Category = KewordTypes.Record },

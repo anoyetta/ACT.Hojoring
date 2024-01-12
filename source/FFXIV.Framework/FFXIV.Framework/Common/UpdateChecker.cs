@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -453,17 +454,23 @@ namespace FFXIV.Framework.Common
 
         private static void DumpEnvironment()
         {
-            var productName = GetRegistryValue(
-                @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion",
-                "ProductName");
+            var productName = "";
+            var buildNo = "";
+            using (var managementClass = new ManagementClass("Win32_OperatingSystem"))
+            {
+                using (var managementObjectCollection = managementClass.GetInstances())
+                {
+                    foreach (var managementObject in managementObjectCollection)
+                    {
+                        productName = managementObject["caption"].ToString().Substring("Microsoft ".Length);
+                        buildNo = managementObject["BuildNumber"].ToString();
+                    }
+                }
+            }
 
-            var releaseId = GetRegistryValue(
+            var DisplayVersion = GetRegistryValue(
                 @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion",
-                "ReleaseId");
-
-            var buildNo = GetRegistryValue(
-                @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion",
-                "CurrentBuild");
+                "DisplayVersion");
 
             var dotNetVersion = GetRegistryValue(
                 @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full",
@@ -479,8 +486,8 @@ namespace FFXIV.Framework.Common
                 osBuildNo = i;
             }
 
-            Logger.Info($"{productName} v{releaseId}, build {buildNo}");
-            Logger.Info($".NET Framework v{dotNetVersion}, release {dotNetReleaseID}");
+            Logger.Info($"{productName} Version {DisplayVersion}, build {buildNo}");
+            Logger.Info($".NET Framework Version {dotNetVersion}, release {dotNetReleaseID}");
         }
 
         public static bool IsWindowsNewer =>

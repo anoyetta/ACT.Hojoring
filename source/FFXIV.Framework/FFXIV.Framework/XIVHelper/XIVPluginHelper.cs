@@ -480,13 +480,16 @@ namespace FFXIV.Framework.XIVHelper
             var messagetype = logInfo.detectedType;
 
             // 255を超えるメッセージタイプは無視する
-            if (messagetype > 0xFF)
-            {
-                return;
-            }
+            //if (messagetype > 0xFF)
+            //{
+            //    return;
+            //}
 
             // メッセージタイプの文字列を除去する
-            line = LogMessageTypeExtensions.RemoveLogMessageType(messagetype, line);
+            if (messagetype <= 0xFF)
+            {
+                line = LogMessageTypeExtensions.RemoveLogMessageType(messagetype, line);
+            }
 
             // メッセージ部分だけを抽出する
             var message = line.Substring(15);
@@ -510,27 +513,30 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            var type = (LogMessageType)Enum.ToObject(typeof(LogMessageType), messagetype);
-            switch (type)
+            if (messagetype <= 0xFF)
             {
-                case LogMessageType.ChatLog:
-                    // 明らかに使用しないダメージ系をカットする
-                    if (DamageLogPattern.IsMatch(parsedLog))
-                    {
-                        return;
-                    }
+                var type = (LogMessageType)Enum.ToObject(typeof(LogMessageType), messagetype);
+                switch (type)
+                {
+                    case LogMessageType.ChatLog:
+                        // 明らかに使用しないダメージ系をカットする
+                        if (DamageLogPattern.IsMatch(parsedLog))
+                        {
+                            return;
+                        }
 
-                    break;
+                        break;
 
-                default:
-                    if (Config.Instance.IsFilterdLog(type))
-                    {
-                        return;
-                    }
+                    default:
+                        if (Config.Instance.IsFilterdLog(type))
+                        {
+                            return;
+                        }
 
-                    // ログの書式をパースする
-                    parsedLog = LogParser.FormatLogLine(type, parsedLog);
-                    break;
+                        // ログの書式をパースする
+                        parsedLog = LogParser.FormatLogLine(type, parsedLog);
+                        break;
+                }
             }
 
             var currentZoneName = this.GetCurrentZoneName();

@@ -139,6 +139,11 @@ namespace ACT.TTSYukkuri.Config.Views
                 if (ps == null ||
                     ps.Length < 1)
                 {
+                    ps = Process.GetProcessesByName("CeVIO AI");
+                }
+                if (ps == null ||
+                    ps.Length < 1)
+                {
                     return IntPtr.Zero;
                 }
 
