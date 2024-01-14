@@ -2,7 +2,7 @@
 [![Downloads](https://img.shields.io/github/downloads/anoyetta/ACT.Hojoring/total.svg)](https://github.com/anoyetta/ACT.Hojoring/releases)
 [![License](https://img.shields.io/badge/license-BSD--3--Clause-blue.svg)](https://github.com/anoyetta/ACT.Hojoring/blob/master/LICENSE)
 
-# **[※ OverlayPluginアップデート後にACTがフリーズする件について ※](https://github.com/anoyetta/ACT.Hojoring/issues/384)**
+## **[※ OverlayPluginアップデート後にACTがフリーズする件について ※](https://github.com/anoyetta/ACT.Hojoring/issues/384)**
 ___
 インストール方法は **[こちら](https://www.anoyetta.com/entry/hojoring-setup)** から
 
