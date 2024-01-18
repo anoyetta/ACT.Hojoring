@@ -32,11 +32,18 @@ namespace FFXIV.Framework.resources
             new Uri("https://raw.githubusercontent.com/anoyetta/ACT.Hojoring.Resources/master/resources.txt");
 
         private bool isDownloading;
+        private static bool isDownloadCompleted = false;
 
         public async Task<bool> DownloadAsync()
         {
             lock (Locker)
             {
+                if (isDownloadCompleted)
+                {
+                    AppLog.DefaultLogger.Info($"Already downloaded, skip.");
+                    return false;
+                }
+
                 if (this.isDownloading)
                 {
                     return true;
@@ -157,7 +164,6 @@ namespace FFXIV.Framework.resources
                                     File.Delete(temp);
                                 }
                             }
-
                             isDownloaded = true;
                         }
                     }
@@ -165,6 +171,7 @@ namespace FFXIV.Framework.resources
 
                 UpdateChecker.SetMessageToSplash($"Resources update is now complete.");
                 UpdateChecker.IsSustainSplash = false;
+                isDownloadCompleted = true;
 
                 if (isDownloaded)
                 {

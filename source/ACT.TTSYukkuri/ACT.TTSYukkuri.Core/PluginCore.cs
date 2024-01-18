@@ -439,9 +439,19 @@ namespace ACT.TTSYukkuri
                 // TTSメソッドを置き換える
                 this.StartReplaceTTSMethodTimer();
 
-                // DISCORD BOTの初期化もう少し後に行う
+                this.Logger.Trace("[YUKKURI] START Discord BOT INIT");
+                // DISCORD BOT クライアントを初期化する
+                DiscordClientModel.Model.Initialize();
+                // AutoJoinがONならば接続する
+                if (Settings.Default.DiscordSettings.AutoJoin)
+                {
+                    DiscordClientModel.Model.Connect(true);
+                }
+                this.Logger.Trace("[YUKKURI] END Discord BOT INIT");
+/*
                 await Task.Run(() =>
                 {
+                    this.Logger.Trace("[YUKKURI] START Discord BOT INIT");
                     // DISCORD BOT クライアントを初期化する
                     DiscordClientModel.Model.Initialize();
 
@@ -450,8 +460,9 @@ namespace ACT.TTSYukkuri
                     {
                         DiscordClientModel.Model.Connect(true);
                     }
+                    this.Logger.Trace("[YUKKURI] END Discord BOT INIT");
                 });
-
+*/
                 await Task.Run(() =>
                 {
                     // VOICEROIDを起動する
