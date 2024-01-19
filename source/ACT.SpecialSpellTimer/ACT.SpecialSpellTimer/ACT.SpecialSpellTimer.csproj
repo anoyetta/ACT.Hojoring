@@ -84,7 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next.StrongName">
-      <Version>4.0.2</Version>
+      <Version>4.0.3</Version>
     </PackageReference>
     <PackageReference Include="Costura.Fody">
       <Version>5.7.0</Version>
