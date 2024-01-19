@@ -456,15 +456,40 @@ namespace FFXIV.Framework.Common
         {
             var productName = "";
             var buildNo = "";
-            using (var managementClass = new ManagementClass("Win32_OperatingSystem"))
+            try
             {
-                using (var managementObjectCollection = managementClass.GetInstances())
+                using (var managementClass = new ManagementClass("Win32_OperatingSystem"))
                 {
-                    foreach (var managementObject in managementObjectCollection)
+                    using (var managementObjectCollection = managementClass.GetInstances())
                     {
-                        productName = managementObject["caption"].ToString().Substring("Microsoft ".Length);
-                        buildNo = managementObject["BuildNumber"].ToString();
+                        foreach (var managementObject in managementObjectCollection)
+                        {
+                            productName = managementObject["caption"].ToString().Substring("Microsoft ".Length);
+                            buildNo = managementObject["BuildNumber"].ToString();
+                        }
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Info($"faild get WMI, {ex}");
+                buildNo = GetRegistryValue(
+                @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion",
+                "CurrentBuild");
+                int intBuildNo = 0;
+                Int32.TryParse( buildNo, out intBuildNo);
+                if (intBuildNo >= 20000)
+                {
+                    productName = "Windows11 or later ";
+                    productName += GetRegistryValue(
+                    @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion",
+                    "EditionID");
+                } else
+                {
+                    productName = "Windows10 ";
+                    productName += GetRegistryValue(
+                    @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion",
+                    "EditionID");
                 }
             }
 

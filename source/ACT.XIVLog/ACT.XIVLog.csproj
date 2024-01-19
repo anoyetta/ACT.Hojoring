@@ -107,8 +107,8 @@
     <PackageReference Include="InputSimulator">
       <Version>1.0.4</Version>
     </PackageReference>
-    <PackageReference Include="NLog.Config">
-      <Version>4.7.12</Version>
+    <PackageReference Include="NLog">
+      <Version>5.2.8</Version>
     </PackageReference>
     <PackageReference Include="OBS.WebSockets.Core">
       <Version>1.0.0</Version>
@@ -126,7 +126,7 @@
       <Version>4.3.1</Version>
     </PackageReference>
     <PackageReference Include="TagLibSharp">
-      <Version>2.2.0</Version>
+      <Version>2.3.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
