@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
 using Prism.Mvvm;
@@ -108,6 +109,29 @@ namespace ACT.SpecialSpellTimer.Models
 
                             this.ItemTags.AddRange(data.ItemTags);
                             this.Tags.AddRange(data.Tags);
+                        }
+                    }
+                } catch (Exception ex)
+                {
+                    var info = ex.GetType().ToString() + Environment.NewLine + Environment.NewLine;
+                    info += ex.Message + Environment.NewLine;
+                    info += ex.StackTrace.ToString();
+
+                    if (ex.InnerException != null)
+                    {
+                        info += Environment.NewLine + Environment.NewLine;
+                        info += "Inner Exception :" + Environment.NewLine;
+                        info += ex.InnerException.GetType().ToString() + Environment.NewLine + Environment.NewLine;
+                        info += ex.InnerException.Message + Environment.NewLine;
+                        info += ex.InnerException.StackTrace.ToString();
+                    }
+
+                    var result = MessageBox.Show("faild config load\n\n" + DefaultFile + "\n" + info + "\n\ntry to load backup?", "error!", MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        if (EnvironmentHelper.RestoreFile(DefaultFile))
+                        {
+                            Load();
                         }
                     }
                 }

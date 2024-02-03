@@ -9,7 +9,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace FFXIV.Framework.Common
 {
@@ -25,6 +27,34 @@ namespace FFXIV.Framework.Common
 
         private static readonly int BackupDays = 7;
 
+        public static bool RestoreFile(params string[] files)
+        {
+            lock (LockObject)
+            {
+                foreach (var file in files)
+                {
+                    if (!File.Exists(file))
+                    {
+                        continue;
+                    }
+                    Match ret = Regex.Match(file, "(?<=\\\\)([^\\\\]+(?=\\.))");
+                    if (ret.Success)
+                    {
+                        var searchfilename = ret.Groups[1].Value + "*.bak";
+                        var finfo = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(file), "backup")).EnumerateFiles(searchfilename)
+                            .OrderByDescending(_file => _file.CreationTime)
+                            .FirstOrDefault();
+                        if (finfo != null)
+                        {
+                            finfo.CopyTo(file, true);
+                            return true;
+                        }
+                    }
+                }
+                MessageBox.Show("backup file did not exist", "caution", MessageBoxButton.OK);
+                return false;
+            }
+        }
         public static async Task BackupFilesAsync(
             params string[] files)
         {
