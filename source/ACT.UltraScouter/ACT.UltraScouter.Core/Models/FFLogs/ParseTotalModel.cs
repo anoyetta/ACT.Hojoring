@@ -25,7 +25,7 @@ namespace ACT.UltraScouter.Models.FFLogs
     {
         #region Logger
 
-        private static Logger Logger => AppLog.DefaultLogger;
+        private static Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -406,7 +406,7 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         private const int CheckLimit = 2500;
         private const int CheckInterval = 250;
-        private static readonly Random Random = new Random(DateTime.Now.Second);
+        private static readonly Random Random = new Random(DateTime.UtcNow.Second);
         private FFLogsPartitions previousPartition = FFLogsPartitions.Current;
 
         private static readonly string ServerPrefixKR = "Kr";
@@ -557,7 +557,7 @@ namespace ACT.UltraScouter.Models.FFLogs
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(
+                    AppLogger.Error(
                         ex,
                         $"Error FFLogs API. charactername={characterName} server={server} region={region} uri={uri}");
 

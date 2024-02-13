@@ -59,7 +59,7 @@ namespace ACT.UltraScouter.Workers
         {
             lock (this.TargetInfoLock)
             {
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
                 if ((now - this.combatantsTimestamp).TotalMilliseconds
                     < Settings.Instance.MobList.RefreshRateMin)
                 {

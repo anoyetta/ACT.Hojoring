@@ -239,6 +239,10 @@ namespace FFXIV.Framework.XIVHelper
             SharlayanHelper.Instance.IsSkipActor = true;
             SharlayanHelper.Instance.IsSkipParty = true;
 
+            var config = new Sharlayan.SharlayanConfiguration();
+
+            AppLogger.Trace("Sharlayan JSONCacheDirectory = " + config.JSONCacheDirectory.ToString());
+
             var tasksG1 = new System.Action[]
             {
                 () => XIVApi.Instance.Load(),
@@ -480,16 +484,12 @@ namespace FFXIV.Framework.XIVHelper
             var messagetype = logInfo.detectedType;
 
             // 255を超えるメッセージタイプは無視する
-            //if (messagetype > 0xFF)
-            //{
-            //    return;
-            //}
-
-            // メッセージタイプの文字列を除去する
-            if (messagetype <= 0xFF)
+            if (messagetype > 0xFF)
             {
-                line = LogMessageTypeExtensions.RemoveLogMessageType(messagetype, line);
+                return;
             }
+
+            line = LogMessageTypeExtensions.RemoveLogMessageType(messagetype, line);
 
             // メッセージ部分だけを抽出する
             var message = line.Substring(15);
@@ -672,10 +672,10 @@ namespace FFXIV.Framework.XIVHelper
             {
                 this.lineCountTimer.Stop();
 
-                var secounds = this.lineCountTimer.Elapsed.TotalSeconds;
-                if (secounds > 0)
+                var seconds = this.lineCountTimer.Elapsed.TotalSeconds;
+                if (seconds > 0)
                 {
-                    var lps = this.currentLineCount / secounds;
+                    var lps = this.currentLineCount / seconds;
                     if (lps > 0)
                     {
                         if (this.currentLpsIndex > this.lpss.GetUpperBound(0))
@@ -709,7 +709,7 @@ namespace FFXIV.Framework.XIVHelper
         /// </summary>
         private void RefreshActive()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             if ((now - this.detectedActiveTimestamp).TotalSeconds <= 5.0)
             {
@@ -890,7 +890,7 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             if ((now - this.inCombatTimestamp).TotalSeconds >= 1.0)
             {
                 this.inCombatTimestamp = now;

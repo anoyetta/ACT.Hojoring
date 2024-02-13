@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
+using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Serialization;
@@ -123,13 +124,40 @@ namespace ACT.UltraScouter.Config
                 text.Replace("Avalable", "Available");
                 File.WriteAllText(file, text.ToString(), utf8);
 
-                using (var xr = XmlReader.Create(file))
+                try
                 {
-                    var data = this.Serializer.Deserialize(xr) as Settings;
-                    if (data != null)
+                    using (var xr = XmlReader.Create(file))
                     {
-                        this.Migrate(data);
-                        instance = data;
+                        var data = this.Serializer.Deserialize(xr) as Settings;
+                        if (data != null)
+                        {
+                            this.Migrate(data);
+                            instance = data;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var info = ex.GetType().ToString() + Environment.NewLine + Environment.NewLine;
+                    info += ex.Message + Environment.NewLine;
+                    info += ex.StackTrace.ToString();
+
+                    if (ex.InnerException != null)
+                    {
+                        info += Environment.NewLine + Environment.NewLine;
+                        info += "Inner Exception :" + Environment.NewLine;
+                        info += ex.InnerException.GetType().ToString() + Environment.NewLine + Environment.NewLine;
+                        info += ex.InnerException.Message + Environment.NewLine;
+                        info += ex.InnerException.StackTrace.ToString();
+                    }
+
+                    var result = MessageBox.Show("faild config load\n\n" + file + "\n" + info + "\n\ntry to load backup?", "error!", MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        if (EnvironmentHelper.RestoreFile(file))
+                        {
+                            Load();
+                        }
                     }
                 }
             }

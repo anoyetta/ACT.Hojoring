@@ -38,7 +38,7 @@ namespace ACT.TTSYukkuri.Discord.Models
 
         #region Logger
 
-        private Logger Logger => AppLog.DefaultLogger;
+        private Logger AppLogger => AppLog.DefaultLogger;
 
         private readonly StringBuilder log = new StringBuilder();
 
@@ -63,11 +63,11 @@ namespace ACT.TTSYukkuri.Discord.Models
             var log = $"[DISCORD] {message}";
             if (ex == null && !err)
             {
-                this.Logger.Trace(log);
+                this.AppLogger.Trace(log);
             }
             else
             {
-                this.Logger.Error(ex, log);
+                this.AppLogger.Error(ex, log);
             }
         }
 

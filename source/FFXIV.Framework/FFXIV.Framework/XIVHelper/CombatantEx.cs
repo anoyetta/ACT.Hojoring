@@ -124,9 +124,9 @@ namespace FFXIV.Framework.XIVHelper
 
         public bool IsDummy { get; set; } = false;
 
-        public DateTime Timestamp { get; } = DateTime.Now;
+        public DateTime Timestamp { get; } = DateTime.UtcNow;
 
-        public DateTime LastUpdateTimestamp { get; private set; } = DateTime.Now;
+        public DateTime LastUpdateTimestamp { get; private set; } = DateTime.UtcNow;
 
         public ActorItemBase ActorItem { get; set; }
 

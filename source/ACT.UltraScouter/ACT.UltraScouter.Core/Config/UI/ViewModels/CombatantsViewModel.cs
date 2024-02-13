@@ -67,12 +67,12 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
                 return;
             }
 
-            if ((DateTime.Now - lastUpdateDatetime).TotalSeconds <= 3.0d)
+            if ((DateTime.UtcNow - lastUpdateDatetime).TotalSeconds <= 3.0d)
             {
                 return;
             }
 
-            lastUpdateDatetime = DateTime.Now;
+            lastUpdateDatetime = DateTime.UtcNow;
 
             var combatants = Combatants;
 

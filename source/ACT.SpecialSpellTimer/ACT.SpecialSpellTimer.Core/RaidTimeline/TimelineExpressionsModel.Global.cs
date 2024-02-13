@@ -45,9 +45,9 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         TimelineController.RaiseLog(
                             $"{TimelineConstants.LogSymbol} set VAR['{name}'] = {value}");
 
-                        if ((DateTime.Now - totChangedTimestamp) > TimeSpan.FromSeconds(2))
+                        if ((DateTime.UtcNow - totChangedTimestamp) > TimeSpan.FromSeconds(2))
                         {
-                            totChangedTimestamp = DateTime.Now;
+                            totChangedTimestamp = DateTime.UtcNow;
                             TimelineController.RaiseLog(
                                 $"Target-of-Target has been changed.");
                         }

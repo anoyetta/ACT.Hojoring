@@ -28,7 +28,7 @@ namespace FFXIV.Framework.Common
     {
         #region Logger
 
-        private static Logger Logger => AppLog.DefaultLogger;
+        private static Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -131,7 +131,7 @@ namespace FFXIV.Framework.Common
             {
                 // エントリアセンブリのパスを出力する
                 var entry = Assembly.GetEntryAssembly().Location;
-                Logger.Trace($"Entry {entry}");
+                AppLogger.Trace($"Entry {entry}");
 
                 // ついでにFFXIV_ACT_Pluginのバージョンを出力する
                 var ffxivPlugin = ActGlobals.oFormActMain?.ActPlugins?
@@ -144,7 +144,7 @@ namespace FFXIV.Framework.Common
                     var vi = FileVersionInfo.GetVersionInfo(ffxivPlugin);
                     if (vi != null)
                     {
-                        Logger.Trace($"FFXIV_ACT_Plugin v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FileBuildPart}.{vi.FilePrivatePart}");
+                        AppLogger.Trace($"FFXIV_ACT_Plugin v{vi.FileMajorPart}.{vi.FileMinorPart}.{vi.FileBuildPart}.{vi.FilePrivatePart}");
                     }
                 }
 
@@ -155,7 +155,7 @@ namespace FFXIV.Framework.Common
                     var ver = hojoring.Version as Version;
                     if (ver != null)
                     {
-                        Logger.Trace($"Hojoring v{ver.Major}.{ver.Minor}.{ver.Revision}");
+                        AppLogger.Trace($"Hojoring v{ver.Major}.{ver.Minor}.{ver.Revision}");
                     }
 
                     hojoring.ShowSplash("initializing...");
@@ -253,7 +253,7 @@ namespace FFXIV.Framework.Common
                     var match = ReleaseVersionTitleRegex.Match(lastestReleaseVersion);
                     if (!match.Success)
                     {
-                        Logger.Trace($"Update checker. Unknown release version.");
+                        AppLogger.Trace($"Update checker. Unknown release version.");
                         return r;
                     }
 
@@ -266,7 +266,7 @@ namespace FFXIV.Framework.Common
 
                     if (remoteVersion <= currentVersion)
                     {
-                        Logger.Trace($"Update checker. up to date.");
+                        AppLogger.Trace($"Update checker. up to date.");
                         return r;
                     }
                 }
@@ -379,7 +379,7 @@ namespace FFXIV.Framework.Common
                 var result = IsDotNet471();
                 lastResult = result;
 
-                Logger.Info(
+                AppLogger.Info(
                     result ?
                     $".NET Framework is Available." :
                     $".NET Framework is OLD.");
@@ -472,7 +472,7 @@ namespace FFXIV.Framework.Common
             }
             catch (Exception ex)
             {
-                Logger.Info($"faild get WMI, {ex}");
+                AppLogger.Info($"faild get WMI, {ex}");
                 buildNo = GetRegistryValue(
                 @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion",
                 "CurrentBuild");
@@ -511,8 +511,8 @@ namespace FFXIV.Framework.Common
                 osBuildNo = i;
             }
 
-            Logger.Info($"{productName} Version {DisplayVersion}, build {buildNo}");
-            Logger.Info($".NET Framework Version {dotNetVersion}, release {dotNetReleaseID}");
+            AppLogger.Info($"{productName} Version {DisplayVersion}, build {buildNo}");
+            AppLogger.Info($".NET Framework Version {dotNetVersion}, release {dotNetReleaseID}");
         }
 
         public static bool IsWindowsNewer =>
@@ -540,8 +540,8 @@ namespace FFXIV.Framework.Common
                     if (!shownWindowsIsOld)
                     {
                         shownWindowsIsOld = true;
-                        Logger.Warn($"{prompt1} {prompt2}");
-                        Logger.Warn($"Support Win7 manualy, but you'd better update to Windows 10. https://www.microsoft.com/software-download/windows10");
+                        AppLogger.Warn($"{prompt1} {prompt2}");
+                        AppLogger.Warn($"Support Win7 manualy, but you'd better update to Windows 10. https://www.microsoft.com/software-download/windows10");
                     }
                 }
                 else
@@ -549,7 +549,7 @@ namespace FFXIV.Framework.Common
                     if (!shownWindowsIsOld)
                     {
                         shownWindowsIsOld = true;
-                        Logger.Error($"{prompt1} {prompt2}");
+                        AppLogger.Error($"{prompt1} {prompt2}");
                         WPFHelper.BeginInvoke(
                             () => ModernMessageBox.ShowDialog(
                                 $"{prompt1}\n{prompt2}",

@@ -8,7 +8,7 @@ namespace FFXIV.Framework.Common
     {
         #region Logger
 
-        private static Logger Logger => AppLog.DefaultLogger;
+        private static Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -61,7 +61,7 @@ namespace FFXIV.Framework.Common
                 this.timer = null;
             }
 
-            Logger.Trace($"TimerWorker - {this.Name} end.");
+            AppLogger.Trace($"TimerWorker - {this.Name} end.");
         }
 
         public void Run()
@@ -73,7 +73,7 @@ namespace FFXIV.Framework.Common
             this.timer.Elapsed += this.Elapsed;
             this.timer.Start();
 
-            Logger.Trace($"TimerWorker - {this.Name} start.");
+            AppLogger.Trace($"TimerWorker - {this.Name} start.");
         }
 
         private void Elapsed(object sender, ElapsedEventArgs e)
@@ -88,7 +88,7 @@ namespace FFXIV.Framework.Common
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(ex, $"TimerWorker - {this.Name} error.");
+                    AppLogger.Error(ex, $"TimerWorker - {this.Name} error.");
                 }
             }
         }

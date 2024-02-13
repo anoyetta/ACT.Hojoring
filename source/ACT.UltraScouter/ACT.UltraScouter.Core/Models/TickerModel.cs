@@ -168,7 +168,7 @@ namespace ACT.UltraScouter.Models
                 return;
             }
 
-            if ((DateTime.Now - this.lastSyncTimestamp).TotalSeconds <= config.ResyncInterval)
+            if ((DateTime.UtcNow - this.lastSyncTimestamp).TotalSeconds <= config.ResyncInterval)
             {
                 return;
             }
@@ -189,7 +189,7 @@ namespace ACT.UltraScouter.Models
             if (mpDiff == HealerInCombatMPRecoverValue ||
                 StandardMPRecoveryValues.Contains(mpDiff))
             {
-                this.lastSyncTimestamp = DateTime.Now;
+                this.lastSyncTimestamp = DateTime.UtcNow;
                 this.RestartTickerCallback?.Invoke();
                 this.AppLogger.Trace($"3s ticker synced to MP. diff={mpDiff}");
             }
@@ -240,7 +240,7 @@ namespace ACT.UltraScouter.Models
 
                 var config = Settings.Instance.MPTicker;
 
-                if ((DateTime.Now - this.lastSyncTimestamp).TotalSeconds <= config.ResyncInterval)
+                if ((DateTime.UtcNow - this.lastSyncTimestamp).TotalSeconds <= config.ResyncInterval)
                 {
                     return;
                 }
@@ -314,7 +314,7 @@ namespace ACT.UltraScouter.Models
                 return;
             }
 
-            this.lastSyncTimestamp = DateTime.Now;
+            this.lastSyncTimestamp = DateTime.UtcNow;
 
             Task.Run(() =>
             {

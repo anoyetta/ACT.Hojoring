@@ -190,10 +190,10 @@ namespace ACT.TTSYukkuri
                         if (hpp <= (decimal)config.HPThreshold &&
                             previousePartyMember.HPRate > (decimal)config.HPThreshold)
                         {
-                            if ((DateTime.Now - this.lastHPNotice).TotalSeconds >= NoticeInterval)
+                            if ((DateTime.UtcNow - this.lastHPNotice).TotalSeconds >= NoticeInterval)
                             {
                                 this.Speak(hpTextToSpeak, config.NoticeDeviceForHP, config.NoticeVoicePaletteForHP);
-                                this.lastHPNotice = DateTime.Now;
+                                this.lastHPNotice = DateTime.UtcNow;
                             }
                         }
                         else
@@ -201,7 +201,7 @@ namespace ACT.TTSYukkuri
                             if (hpp <= decimal.Zero && previousePartyMember.HPRate != decimal.Zero)
                             {
                                 this.SpeakEmpty("HP", deadman, config.NoticeDeviceForHP, config.NoticeVoicePaletteForHP);
-                                this.lastHPNotice = DateTime.Now;
+                                this.lastHPNotice = DateTime.UtcNow;
                             }
                         }
                     }
@@ -218,10 +218,10 @@ namespace ACT.TTSYukkuri
                             if (mpp <= (decimal)config.MPThreshold &&
                                 previousePartyMember.MPRate > (decimal)config.MPThreshold)
                             {
-                                if ((DateTime.Now - this.lastMPNotice).TotalSeconds >= NoticeInterval)
+                                if ((DateTime.UtcNow - this.lastMPNotice).TotalSeconds >= NoticeInterval)
                                 {
                                     this.Speak(mpTextToSpeak, config.NoticeDeviceForMP, config.NoticeVoicePaletteForMP);
-                                    this.lastMPNotice = DateTime.Now;
+                                    this.lastMPNotice = DateTime.UtcNow;
                                 }
                             }
                             else
@@ -229,7 +229,7 @@ namespace ACT.TTSYukkuri
                                 if (mpp <= decimal.Zero && previousePartyMember.MPRate != decimal.Zero)
                                 {
                                     this.SpeakEmpty("MP", deadman, config.NoticeDeviceForMP, config.NoticeVoicePaletteForMP);
-                                    this.lastMPNotice = DateTime.Now;
+                                    this.lastMPNotice = DateTime.UtcNow;
                                 }
                             }
                         }
@@ -247,10 +247,10 @@ namespace ACT.TTSYukkuri
                             if (tpp <= (decimal)config.TPThreshold &&
                                 previousePartyMember.TPRate > (decimal)config.TPThreshold)
                             {
-                                if ((DateTime.Now - this.lastTPNotice).TotalSeconds >= NoticeInterval)
+                                if ((DateTime.UtcNow - this.lastTPNotice).TotalSeconds >= NoticeInterval)
                                 {
                                     this.Speak(tpTextToSpeak, config.NoticeDeviceForTP, config.NoticeVoicePaletteForTP);
-                                    this.lastTPNotice = DateTime.Now;
+                                    this.lastTPNotice = DateTime.UtcNow;
                                 }
                             }
                             else
@@ -258,7 +258,7 @@ namespace ACT.TTSYukkuri
                                 if (tpp <= decimal.Zero && previousePartyMember.TPRate != decimal.Zero)
                                 {
                                     this.SpeakEmpty("TP", deadman, config.NoticeDeviceForTP, config.NoticeVoicePaletteForTP);
-                                    this.lastTPNotice = DateTime.Now;
+                                    this.lastTPNotice = DateTime.UtcNow;
                                 }
                             }
                         }
@@ -277,10 +277,10 @@ namespace ACT.TTSYukkuri
                             if (gpp >= (decimal)config.GPThreshold &&
                                 previousePartyMember.GPRate < (decimal)config.GPThreshold)
                             {
-                                if ((DateTime.Now - this.lastGPNotice).TotalSeconds >= NoticeInterval)
+                                if ((DateTime.UtcNow - this.lastGPNotice).TotalSeconds >= NoticeInterval)
                                 {
                                     this.Speak(gpTextToSpeak, config.NoticeDeviceForGP, config.NoticeVoicePaletteForGP);
-                                    this.lastGPNotice = DateTime.Now;
+                                    this.lastGPNotice = DateTime.UtcNow;
                                 }
                             }
                             else
@@ -288,7 +288,7 @@ namespace ACT.TTSYukkuri
                                 if (gpp >= 100m && previousePartyMember.GPRate < 100m)
                                 {
                                     this.SpeakEmpty("GP", deadman, config.NoticeDeviceForGP, config.NoticeVoicePaletteForGP);
-                                    this.lastGPNotice = DateTime.Now;
+                                    this.lastGPNotice = DateTime.UtcNow;
                                 }
                             }
                         }

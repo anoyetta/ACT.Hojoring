@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
@@ -77,20 +78,46 @@ namespace ACT.XIVLog
                     {
                         return null;
                     }
-
-                    using (var sr = new StreamReader(FileName, new UTF8Encoding(false)))
+                    try
                     {
-                        if (sr.BaseStream.Length > 0)
+                        using (var sr = new StreamReader(FileName, new UTF8Encoding(false)))
                         {
-                            var xs = new XmlSerializer(typeof(Config));
-                            if (xs.Deserialize(sr) is Config data)
+                            if (sr.BaseStream.Length > 0)
                             {
-                                instance = data;
+                                var xs = new XmlSerializer(typeof(Config));
+                                if (xs.Deserialize(sr) is Config data)
+                                {
+                                    instance = data;
+                                }
                             }
                         }
+                        return instance;
                     }
+                    catch (Exception ex)
+                    {
+                        var info = ex.GetType().ToString() + Environment.NewLine + Environment.NewLine;
+                        info += ex.Message + Environment.NewLine;
+                        info += ex.StackTrace.ToString();
 
-                    return instance;
+                        if (ex.InnerException != null)
+                        {
+                            info += Environment.NewLine + Environment.NewLine;
+                            info += "Inner Exception :" + Environment.NewLine;
+                            info += ex.InnerException.GetType().ToString() + Environment.NewLine + Environment.NewLine;
+                            info += ex.InnerException.Message + Environment.NewLine;
+                            info += ex.InnerException.StackTrace.ToString();
+                        }
+
+                        var result = MessageBox.Show("faild config load\n\n" + FileName + "\n" + info + "\n\ntry to load backup?", "error!", MessageBoxButton.YesNo);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            if (EnvironmentHelper.RestoreFile(FileName))
+                            {
+                                return Load();
+                            }
+                        }
+                        return null;
+                    }
                 }
                 finally
                 {

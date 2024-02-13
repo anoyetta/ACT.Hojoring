@@ -110,10 +110,10 @@ namespace ACT.UltraScouter.ViewModels
                     if (this.previousCombatStat != inCombat)
                     {
                         this.previousCombatStat = inCombat;
-                        this.endCombatTimestamp = DateTime.Now;
+                        this.endCombatTimestamp = DateTime.UtcNow;
                     }
 
-                    if ((DateTime.Now - this.endCombatTimestamp).TotalSeconds >=
+                    if ((DateTime.UtcNow - this.endCombatTimestamp).TotalSeconds >=
                         this.Config.ExplationTimeForDisplay)
                     {
                         return false;

@@ -100,7 +100,7 @@ namespace ACT.UltraScouter.Models
         {
             this.MaxHP = DummyMaxHP;
 
-            var rate = (double)(((DateTime.Now.Second % 10) + 1)) / 10d;
+            var rate = (double)(((DateTime.UtcNow.Second % 10) + 1)) / 10d;
 
             var currentHP = (uint)(DummyMaxHP * rate);
             var currentMP = (uint)(this.MaxMP * rate);

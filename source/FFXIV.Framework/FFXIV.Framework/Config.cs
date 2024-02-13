@@ -7,10 +7,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
+using FFXIV.Framework.WPF.Views;
 using FFXIV.Framework.XIVHelper;
 using FFXIV_ACT_Plugin.Logfile;
 using Prism.Mvvm;
@@ -46,6 +48,7 @@ namespace FFXIV.Framework
             Path.GetFileName(Assembly.GetExecutingAssembly().Location.Replace(".dll", ".config")));
 
         private static readonly Encoding DefaultEncoding = new UTF8Encoding(false);
+        private static bool bSaved = false;
 
         public static Config Load()
         {
@@ -62,41 +65,69 @@ namespace FFXIV.Framework
                     return null;
                 }
 
-                MigrateConfig(FileName);
-
-                using (var sr = new StreamReader(FileName, DefaultEncoding))
+                try
                 {
-                    if (sr.BaseStream.Length > 0)
+                    MigrateConfig(FileName);
+
+                    using (var sr = new StreamReader(FileName, DefaultEncoding))
                     {
-                        var xs = new XmlSerializer(typeof(Config));
-                        var data = xs.Deserialize(sr) as Config;
-                        if (data != null)
+                        if (sr.BaseStream.Length > 0)
                         {
-                            instance = data;
+                            var xs = new XmlSerializer(typeof(Config));
+                            var data = xs.Deserialize(sr) as Config;
+                            if (data != null)
+                            {
+                                instance = data;
+                            }
                         }
                     }
-                }
 
-                foreach (var item in instance.globalLogFilters)
-                {
-                    item.FormatTextDelegate = (t, _) => FormatLogMessageType(t);
-                }
-
-                instance.globalLogFilterDictionary = instance.globalLogFilters.ToDictionary(x => x.Key);
-
-                if (instance.RegexCacheSize != RegexCacheSizeDefault)
-                {
-                    if (instance.RegexCacheSize < RegexCacheSizeDefault)
+                    foreach (var item in instance.globalLogFilters)
                     {
-                        instance.RegexCacheSize = instance.RegexCacheSize <= 0 ?
-                            RegexCacheSizeDefaultOverride :
-                            RegexCacheSizeDefault;
+                        item.FormatTextDelegate = (t, _) => FormatLogMessageType(t);
                     }
 
-                    instance.ApplyRegexCacheSize();
-                }
+                    instance.globalLogFilterDictionary = instance.globalLogFilters.ToDictionary(x => x.Key);
 
-                return instance;
+                    if (instance.RegexCacheSize != RegexCacheSizeDefault)
+                    {
+                        if (instance.RegexCacheSize < RegexCacheSizeDefault)
+                        {
+                            instance.RegexCacheSize = instance.RegexCacheSize <= 0 ?
+                                RegexCacheSizeDefaultOverride :
+                                RegexCacheSizeDefault;
+                        }
+
+                        instance.ApplyRegexCacheSize();
+                    }
+
+                    return instance;
+                }
+                catch(Exception ex)
+                {
+                    var info = ex.GetType().ToString() + Environment.NewLine + Environment.NewLine;
+                    info += ex.Message + Environment.NewLine;
+                    info += ex.StackTrace.ToString();
+
+                    if (ex.InnerException != null)
+                    {
+                        info += Environment.NewLine + Environment.NewLine;
+                        info += "Inner Exception :" + Environment.NewLine;
+                        info += ex.InnerException.GetType().ToString() + Environment.NewLine + Environment.NewLine;
+                        info += ex.InnerException.Message + Environment.NewLine;
+                        info += ex.InnerException.StackTrace.ToString();
+                    }
+
+                    var result = MessageBox.Show("faild config load\n\n"+ FileName +"\n" + info + "\n\ntry to load backup?", "error!", MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        if (EnvironmentHelper.RestoreFile(FileName))
+                        {
+                            return Load();
+                        }
+                    }
+                    return null;
+                }
             }
         }
 
@@ -146,8 +177,15 @@ namespace FFXIV.Framework
 
         private static volatile bool isSaving;
 
-        public static void Save()
+        public static void Save(bool bForce = false)
         {
+            if (bSaved)
+            {
+                if (!bForce)
+                {
+                    return;
+                }
+            }
             if (isSaving)
             {
                 return;
@@ -180,6 +218,7 @@ namespace FFXIV.Framework
                         xs.Serialize(sw, instance, ns);
                         sw.Close();
                     }
+                    bSaved = true;
                 }
             }
             finally
@@ -257,7 +296,7 @@ namespace FFXIV.Framework
 
                     this.UILocaleChanged?.Invoke(this, new EventArgs());
 
-                    Save();
+                    Save(true);
                 }
             }
         }

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Interop;
 using System.Xml;
 using System.Xml.Serialization;
@@ -105,7 +106,7 @@ namespace ACT.SpecialSpellTimer.Config
                         }
                         else
                         {
-                            button.BackColor = SystemColors.Control;
+                            button.BackColor = System.Drawing.SystemColors.Control;
                             button.ForeColor = Color.Black;
                         }
                     }
@@ -723,9 +724,9 @@ namespace ACT.SpecialSpellTimer.Config
                 DateTime d;
                 if (DateTime.TryParse(value, out d))
                 {
-                    if (d > DateTime.Now)
+                    if (d > DateTime.UtcNow)
                     {
-                        d = DateTime.Now;
+                        d = DateTime.UtcNow;
                     }
 
                     this.lastUpdateDateTime = d;
@@ -737,9 +738,9 @@ namespace ACT.SpecialSpellTimer.Config
                     var decrypt = Crypter.DecryptString(value);
                     if (DateTime.TryParse(decrypt, out d))
                     {
-                        if (d > DateTime.Now)
+                        if (d > DateTime.UtcNow)
                         {
-                            d = DateTime.Now;
+                            d = DateTime.UtcNow;
                         }
 
                         this.lastUpdateDateTime = d;
@@ -783,16 +784,43 @@ namespace ACT.SpecialSpellTimer.Config
                     return;
                 }
 
-                using (var sr = new StreamReader(this.FileName, new UTF8Encoding(false)))
+                try
                 {
-                    if (sr.BaseStream.Length > 0)
+                    using (var sr = new StreamReader(this.FileName, new UTF8Encoding(false)))
                     {
-                        var xs = new XmlSerializer(this.GetType());
-                        var data = xs.Deserialize(sr) as Settings;
-                        if (data != null)
+                        if (sr.BaseStream.Length > 0)
                         {
-                            instance = data;
-                            instance.isLoaded = true;
+                            var xs = new XmlSerializer(this.GetType());
+                            var data = xs.Deserialize(sr) as Settings;
+                            if (data != null)
+                            {
+                                instance = data;
+                                instance.isLoaded = true;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var info = ex.GetType().ToString() + Environment.NewLine + Environment.NewLine;
+                    info += ex.Message + Environment.NewLine;
+                    info += ex.StackTrace.ToString();
+
+                    if (ex.InnerException != null)
+                    {
+                        info += Environment.NewLine + Environment.NewLine;
+                        info += "Inner Exception :" + Environment.NewLine;
+                        info += ex.InnerException.GetType().ToString() + Environment.NewLine + Environment.NewLine;
+                        info += ex.InnerException.Message + Environment.NewLine;
+                        info += ex.InnerException.StackTrace.ToString();
+                    }
+
+                    var result = MessageBox.Show("faild config load\n\n" + FileName + "\n" + info + "\n\ntry to load backup?", "error!", MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        if (EnvironmentHelper.RestoreFile(FileName))
+                        {
+                            Load();
                         }
                     }
                 }
@@ -835,7 +863,7 @@ namespace ACT.SpecialSpellTimer.Config
         {
             this.PropertyChanged += async (_, __) =>
             {
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
 
                 if ((now - this.lastAutoSaveTimestamp).TotalSeconds > 20)
                 {

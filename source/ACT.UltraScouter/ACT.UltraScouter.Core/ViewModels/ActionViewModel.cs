@@ -23,7 +23,7 @@ namespace ACT.UltraScouter.ViewModels
     {
         #region Logger
 
-        private Logger logger = AppLog.DefaultLogger;
+        private Logger AppLogger = AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -182,7 +182,7 @@ namespace ACT.UltraScouter.ViewModels
 
             var message =
                 $"{args.Actor} starts using {args.CastSkillName}. duration={args.CastDurationMax}, id={args.CastSkillID}";
-            this.logger.Info(message);
+            this.AppLogger.Info(message);
         }
 
         private void CountdownTimer_Tick(

@@ -171,7 +171,7 @@ namespace ACT.XIVLog
 
                 if (LogQueue.IsEmpty)
                 {
-                    if ((DateTime.Now - this.lastWroteTimestamp).TotalSeconds > 10)
+                    if ((DateTime.UtcNow - this.lastWroteTimestamp).TotalSeconds > 10)
                     {
                         this.lastWroteTimestamp = DateTime.MaxValue;
                         isNeedsFlush = true;
@@ -186,7 +186,7 @@ namespace ACT.XIVLog
                     }
                 }
 
-                if ((DateTime.Now - this.lastFlushTimestamp).TotalSeconds
+                if ((DateTime.UtcNow - this.lastFlushTimestamp).TotalSeconds
                     >= config.FlushInterval)
                 {
                     isNeedsFlush = true;
@@ -243,7 +243,7 @@ namespace ACT.XIVLog
                     xivlog.Parse();
 
                     this.writter.WriteLine(xivlog.ToCSVLine());
-                    this.lastWroteTimestamp = DateTime.Now;
+                    this.lastWroteTimestamp = DateTime.UtcNow;
                     Thread.Yield();
                 }
 
@@ -253,7 +253,7 @@ namespace ACT.XIVLog
                     if (isNeedsFlush || this.isForceFlush)
                     {
                         this.isForceFlush = false;
-                        this.lastFlushTimestamp = DateTime.Now;
+                        this.lastFlushTimestamp = DateTime.UtcNow;
                         this.writter?.Flush();
                     }
                 }
@@ -581,9 +581,10 @@ namespace ACT.XIVLog
                 return;
             }
 
+            var now = DateTime.Now;
             // 古くなったエントリを削除する
             var olds = PCNameDictionary.Where(x =>
-                (DateTime.Now - x.Value.Timestamp).TotalMinutes >= 10.0)
+                (now - x.Value.Timestamp).TotalMinutes >= 10.0)
                 .ToArray();
             foreach (var toRemove in olds)
             {
@@ -595,7 +596,7 @@ namespace ACT.XIVLog
             {
                 var alias = new Alias(
                     $"{com.JobInfo?.NameEN.Replace(" ", string.Empty) ?? "Unknown"} {JobAliases[com.Job % 10]}",
-                    DateTime.Now);
+                    now);
                 PCNameDictionary[com.Name] = alias;
                 PCNameDictionary[com.NameFI] = alias;
                 PCNameDictionary[com.NameIF] = alias;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
+using System.Windows;
 using System.Xml.Serialization;
 using ACT.TTSYukkuri.Boyomichan;
 using ACT.TTSYukkuri.Discord.Models;
@@ -609,12 +610,39 @@ namespace ACT.TTSYukkuri.Config
 
                     if (File.Exists(file))
                     {
-                        using (var sr = new StreamReader(file, new UTF8Encoding(false)))
+                        try
                         {
-                            var xs = new XmlSerializer(typeof(Settings));
-                            instance = (Settings)xs.Deserialize(sr);
+                            using (var sr = new StreamReader(file, new UTF8Encoding(false)))
+                            {
+                                var xs = new XmlSerializer(typeof(Settings));
+                                instance = (Settings)xs.Deserialize(sr);
 
-                            activeConfig = instance;
+                                activeConfig = instance;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            var info = ex.GetType().ToString() + Environment.NewLine + Environment.NewLine;
+                            info += ex.Message + Environment.NewLine;
+                            info += ex.StackTrace.ToString();
+
+                            if (ex.InnerException != null)
+                            {
+                                info += Environment.NewLine + Environment.NewLine;
+                                info += "Inner Exception :" + Environment.NewLine;
+                                info += ex.InnerException.GetType().ToString() + Environment.NewLine + Environment.NewLine;
+                                info += ex.InnerException.Message + Environment.NewLine;
+                                info += ex.InnerException.StackTrace.ToString();
+                            }
+
+                            var result = MessageBox.Show("faild config load\n\n" + file + "\n" + info + "\n\ntry to load backup?", "error!", MessageBoxButton.YesNo);
+                            if (result == MessageBoxResult.Yes)
+                            {
+                                if (EnvironmentHelper.RestoreFile(file))
+                                {
+                                    Load();
+                                }
+                            }
                         }
                     }
 

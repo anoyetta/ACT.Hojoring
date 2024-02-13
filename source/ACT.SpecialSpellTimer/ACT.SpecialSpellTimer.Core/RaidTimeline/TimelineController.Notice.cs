@@ -121,7 +121,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            var now = DateTime.Now;
+            //var now = DateTime.Now;
             var offset = this.CurrentTime - act.Time;
 
             var from = new[] { act.Name, act.TextReplaced, act.SyncKeyword }.FirstOrDefault(x => !string.IsNullOrEmpty(x));
@@ -249,7 +249,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 return;
             }
 
-            var now = DateTime.Now;
+            //var now = DateTime.Now;
 
             var from = new[] { tri.Name, tri.TextReplaced, tri.SyncKeyword }.FirstOrDefault(x => !string.IsNullOrEmpty(x));
             var log = $"{TimelineConstants.LogSymbol} notice \"{tri.NoticeReplaced}\" from \"{from}\"";

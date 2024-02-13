@@ -180,6 +180,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             bool isImport,
             LogLineEventArgs logInfo)
         {
+#if true
+            if (!Settings.Default.AutoCombatLogAnalyze)
+            {
+                return;
+            }
+
+            this.logInfoQueue.Enqueue(logInfo);
+#else
             try
             {
                 if (!Settings.Default.AutoCombatLogAnalyze)
@@ -195,6 +203,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                     "catch exception at Timeline Analyzer OnLogLineRead.",
                     ex);
             }
+#endif
         }
 
         #region PC Name

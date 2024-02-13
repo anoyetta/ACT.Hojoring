@@ -24,7 +24,7 @@ namespace ACT.TTSYukkuri.Config
     {
         #region Logger
 
-        private Logger Logger => AppLog.DefaultLogger;
+        private Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -343,11 +343,11 @@ namespace ACT.TTSYukkuri.Config
             switch (result)
             {
                 case HostStartResult.Succeeded:
-                    this.Logger.Info($"CeVIO RPC start.");
+                    this.AppLogger.Info($"CeVIO RPC start.");
                     break;
 
                 case HostStartResult.AlreadyStarted:
-                    this.Logger.Info($"CeVIO RPC already started, connect to CeVIO.");
+                    this.AppLogger.Info($"CeVIO RPC already started, connect to CeVIO.");
                     break;
 
                 case HostStartResult.NotRegistered:
@@ -439,7 +439,7 @@ namespace ACT.TTSYukkuri.Config
 
                 if (!ServiceControl2.IsHostStarted)
                 {
-                    this.Logger.Info($"CeVIO RPC close.");
+                    this.AppLogger.Info($"CeVIO RPC close.");
                 }
             }
 

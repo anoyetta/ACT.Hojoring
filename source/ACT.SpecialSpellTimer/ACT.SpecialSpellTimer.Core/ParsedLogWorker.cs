@@ -190,13 +190,13 @@ namespace ACT.SpecialSpellTimer
 
                 if (!isForceFlush)
                 {
-                    if ((DateTime.Now - this.lastFlushTimestamp) < FlushInterval)
+                    if ((DateTime.UtcNow - this.lastFlushTimestamp) < FlushInterval)
                     {
                         return;
                     }
                 }
 
-                this.lastFlushTimestamp = DateTime.Now;
+                this.lastFlushTimestamp = DateTime.UtcNow;
 
                 lock (this)
                 {

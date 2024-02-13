@@ -429,7 +429,7 @@ namespace FFXIV.Framework.XIVHelper
 
             lock (LockObject)
             {
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
 
                 if ((now - this.lastClearTimestamp).TotalSeconds <= 8.0)
                 {
@@ -453,11 +453,11 @@ namespace FFXIV.Framework.XIVHelper
         }
 
         private static readonly double GarbageThreshold = 10.0d;
-        private DateTime lastGarbageTimestamp = DateTime.Now;
+        private DateTime lastGarbageTimestamp = DateTime.UtcNow;
 
         private void TryGarbage()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             if ((now - this.lastGarbageTimestamp).TotalSeconds >= GarbageThreshold)
             {

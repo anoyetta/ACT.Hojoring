@@ -522,12 +522,12 @@ namespace ACT.SpecialSpellTimer.Models
 
         public void StartMatching()
         {
-            this.matchingStartDateTime = DateTime.Now;
+            this.matchingStartDateTime = DateTime.UtcNow;
         }
 
         public void EndMatching()
         {
-            var ticks = (DateTime.Now - this.matchingStartDateTime).Ticks;
+            var ticks = (DateTime.UtcNow - this.matchingStartDateTime).Ticks;
             if (ticks == 0)
             {
                 return;
@@ -582,7 +582,7 @@ namespace ACT.SpecialSpellTimer.Models
             }
 
             var timeToPlay = this.MatchDateTime.AddSeconds(this.Delay);
-            var duration = (timeToPlay - DateTime.Now).TotalMilliseconds;
+            var duration = (timeToPlay - DateTime.UtcNow).TotalMilliseconds;
 
             if (duration > 0d)
             {
@@ -686,7 +686,7 @@ namespace ACT.SpecialSpellTimer.Models
 
         public void SimulateMatch()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             // 擬似的にマッチ状態にする
             this.IsTest = true;

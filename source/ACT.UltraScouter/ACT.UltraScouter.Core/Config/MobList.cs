@@ -43,7 +43,7 @@ namespace ACT.UltraScouter.Config
     {
         #region Logger
 
-        private Logger logger = AppLog.DefaultLogger;
+        private Logger AppLogger = AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -401,7 +401,7 @@ namespace ACT.UltraScouter.Config
                 }
             }
 
-            this.logger.Info($"MobList loaded. {this.MobListFile}");
+            this.AppLogger.Info($"MobList loaded. {this.MobListFile}");
         }
 
         #endregion Target MobList
