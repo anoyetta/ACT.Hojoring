@@ -23,7 +23,7 @@ namespace ACT.TTSYukkuri
     {
         #region Logger
 
-        private static NLog.Logger Logger => AppLog.DefaultLogger;
+        private static NLog.Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -72,7 +72,7 @@ namespace ACT.TTSYukkuri
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Playback stream initialize faild. Play mute.wav.");
+                AppLogger.Error(ex, "Playback stream initialize faild. Play mute.wav.");
             }
         }
 
@@ -184,7 +184,7 @@ namespace ACT.TTSYukkuri
                 isSync);
         }
 
-        private static readonly Random Random = new Random((int)DateTime.Now.Ticks);
+        //private static readonly Random Random = new Random((int)DateTime.Now.Ticks);
 
         public static void LoadTTSCache()
         {
@@ -204,13 +204,17 @@ namespace ACT.TTSYukkuri
 
                 try
                 {
-                    Logger.Info("Started loading TTS caches.");
+                    AppLogger.Info("Started loading TTS caches.");
                     BufferedWavePlayer.PlayerSet.LoadTTSHistory();
                     count = BufferedWavePlayer.Instance.BufferWaves(volume);
                 }
+                catch(Exception ex)
+                {
+                    AppLogger.Error(ex, "check cache folder or clear cache.");
+                }
                 finally
                 {
-                    Logger.Info($"Completed loading TTS caches. {count} files has loaded.");
+                    AppLogger.Info($"Completed loading TTS caches. {count} files has loaded.");
                 }
             }));
         }

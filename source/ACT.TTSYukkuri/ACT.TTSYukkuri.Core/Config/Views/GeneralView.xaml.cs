@@ -20,7 +20,7 @@ namespace ACT.TTSYukkuri.Config.Views
     {
         #region Logger
 
-        private Logger Logger => AppLog.DefaultLogger;
+        private Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -194,7 +194,7 @@ namespace ACT.TTSYukkuri.Config.Views
             Exception ex = null,
             bool modal = true)
         {
-            this.Logger.Error(ex, message);
+            this.AppLogger.Error(ex, message);
 
             var prompt = message;
             if (ex != null)

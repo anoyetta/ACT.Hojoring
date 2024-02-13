@@ -373,6 +373,7 @@ namespace ACT.SpecialSpellTimer.Views
                 controls = this.spellControls.ToArray();
             }
 
+            var now = DateTime.Now;
             var isActive = false;
             foreach (var control in controls)
             {
@@ -388,7 +389,7 @@ namespace ACT.SpecialSpellTimer.Views
                     }
                     else
                     {
-                        if ((DateTime.Now - spell.CompleteScheduledTime).TotalSeconds > 1.0d)
+                        if ((now - spell.CompleteScheduledTime).TotalSeconds > 1.0d)
                         {
                             spell.MatchDateTime = DateTime.MinValue;
                         }
@@ -404,7 +405,7 @@ namespace ACT.SpecialSpellTimer.Views
                 }
                 else
                 {
-                    control.RecastTime = (spell.CompleteScheduledTime - DateTime.Now).TotalSeconds;
+                    control.RecastTime = (spell.CompleteScheduledTime - now).TotalSeconds;
                     if (control.RecastTime < 0)
                     {
                         control.RecastTime = 0;

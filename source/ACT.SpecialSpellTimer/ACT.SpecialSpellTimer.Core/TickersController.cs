@@ -272,10 +272,11 @@ namespace ACT.SpecialSpellTimer
 
                 if (telop.MatchDateTime > DateTime.MinValue)
                 {
+                    var now = DateTime.Now;
                     var start = telop.MatchDateTime.AddSeconds(telop.Delay);
                     var end = telop.MatchDateTime.AddSeconds(telop.Delay + telop.DisplayTime);
 
-                    if (start <= DateTime.Now && DateTime.Now <= end)
+                    if (start <= now && now <= end)
                     {
                         w.Refresh();
                         w.ShowOverlay();
@@ -285,7 +286,7 @@ namespace ACT.SpecialSpellTimer
                     {
                         w.HideOverlay();
 
-                        if (DateTime.Now > end)
+                        if (now > end)
                         {
                             telop.MatchDateTime = DateTime.MinValue;
                             telop.MessageReplaced = string.Empty;

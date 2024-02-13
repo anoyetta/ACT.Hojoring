@@ -46,7 +46,7 @@ namespace ACT.UltraScouter
 
         #region Logger
 
-        private Logger Logger => AppLog.DefaultLogger;
+        private Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -71,7 +71,7 @@ namespace ACT.UltraScouter
 
             try
             {
-                this.Logger.Trace("start DeInitPlugin");
+                this.AppLogger.Trace("start DeInitPlugin");
 
                 // 設定ファイルを保存する
                 Settings.Instance.Save();
@@ -95,11 +95,11 @@ namespace ACT.UltraScouter
                     this.PluginStatusLabel.Text = "Plugin exited.";
                 }
 
-                this.Logger.Trace("end DeInitPlugin. succeeded.");
+                this.AppLogger.Trace("end DeInitPlugin. succeeded.");
             }
             catch (Exception ex)
             {
-                this.Logger.Fatal(ex, "DeInitPlugin error.");
+                this.AppLogger.Fatal(ex, "DeInitPlugin error.");
                 this.ShowMessage("DeInitPlugin error.", ex);
             }
             finally
@@ -124,7 +124,7 @@ namespace ACT.UltraScouter
             WPFHelper.Start();
 
             AppLog.LoadConfiguration(AppLog.HojoringConfig);
-            this.Logger?.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+            this.AppLogger?.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
 
             try
             {
@@ -148,7 +148,7 @@ namespace ACT.UltraScouter
                     this.EndPlugin();
                 });
 
-                this.Logger.Trace("[ULTRA SCOUTER] Start InitPlugin");
+                this.AppLogger.Trace("[ULTRA SCOUTER] Start InitPlugin");
 
                 // .NET FrameworkとOSのバージョンを確認する
                 if (!UpdateChecker.IsAvailableDotNet() ||
@@ -182,21 +182,15 @@ namespace ACT.UltraScouter
                     Settings.Instance.FileName);
 
                 // 各種ファイルを読み込む
-                await Task.Run(() =>
-                {
-                    TTSDictionary.Instance.Load();
-                    Settings.Instance.MobList.LoadTargetMobList();
-                });
+                TTSDictionary.Instance.Load();
+                Settings.Instance.MobList.LoadTargetMobList();
 
                 await EnvironmentHelper.WaitInitActDoneAsync();
 
                 // FFXIVプラグインへのアクセスを開始する
-                await Task.Run(() =>
-                {
-                    XIVPluginHelper.Instance.Start(
-                        Settings.Instance.PollingRate,
-                        Settings.Instance.FFXIVLocale);
-                });
+                XIVPluginHelper.Instance.Start(
+                    Settings.Instance.PollingRate,
+                    Settings.Instance.FFXIVLocale);
 
                 // ターゲット情報ワーカを開始する
                 MainWorker.Instance.Start();
@@ -212,7 +206,7 @@ namespace ACT.UltraScouter
                     this.PluginStatusLabel.Text = "Plugin started.";
                 }
 
-                this.Logger.Trace("[ULTRA SCOUTER] End InitPlugin");
+                this.AppLogger.Trace("[ULTRA SCOUTER] End InitPlugin");
 
                 // 共通ビューを追加する
                 CommonViewHelper.Instance.AddCommonView(
@@ -221,7 +215,7 @@ namespace ACT.UltraScouter
                 this.isLoaded = true;
 
                 // FFLogsの統計データベースをロードする
-                StatisticsDatabase.Instance.Logger = Logger;
+                StatisticsDatabase.Instance.AppLogger = AppLogger;
                 await StatisticsDatabase.Instance.LoadAsync();
 
                 // アップデートを確認する
@@ -229,7 +223,7 @@ namespace ACT.UltraScouter
             }
             catch (Exception ex)
             {
-                this.Logger.Fatal(ex, "InitPlugin error.");
+                this.AppLogger.Fatal(ex, "InitPlugin error.");
                 this.ShowMessage("InitPlugin error.", ex);
             }
         }
@@ -289,7 +283,7 @@ namespace ACT.UltraScouter
                     Assembly.GetExecutingAssembly());
                 if (!string.IsNullOrWhiteSpace(message))
                 {
-                    this.Logger.Fatal(message);
+                    this.AppLogger.Fatal(message);
                 }
 
                 Settings.Instance.LastUpdateDateTime = DateTime.Now;

@@ -146,12 +146,12 @@ namespace ACT.UltraScouter.ViewModels
                 this.Config.ProgressBar.OutlineColor;
 
             // HPバーの進捗率を更新する
-            if ((DateTime.Now - this.lastHPBarUpdateDateTime).TotalSeconds >= 0.1d)
+            if ((DateTime.UtcNow - this.lastHPBarUpdateDateTime).TotalSeconds >= 0.1d)
             {
                 var view = this.View as HPBarView;
                 if (view != null)
                 {
-                    this.lastHPBarUpdateDateTime = DateTime.Now;
+                    this.lastHPBarUpdateDateTime = DateTime.UtcNow;
 
                     // HPバーを描画する
                     view.UpdateHPBar(this.Model.CurrentHPRate);

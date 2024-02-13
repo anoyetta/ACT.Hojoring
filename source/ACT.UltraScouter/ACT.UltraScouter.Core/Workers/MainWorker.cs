@@ -61,7 +61,7 @@ namespace ACT.UltraScouter.Workers
 
         #region Logger
 
-        private Logger logger = AppLog.DefaultLogger;
+        private Logger AppLogger = AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -182,7 +182,7 @@ namespace ACT.UltraScouter.Workers
                     }
                     catch (Exception ex)
                     {
-                        this.logger.Fatal(ex, "GetOverlayData error.");
+                        this.AppLogger.Fatal(ex, "GetOverlayData error.");
                     }
                 },
                 Settings.Instance.PollingRate,

@@ -379,7 +379,7 @@ namespace FFXIV.Framework.XIVHelper
                 if (this.CurrentZoneName != currentZoneName)
                 {
                     this.CurrentZoneName = currentZoneName;
-                    this.ZoneChangedTimestamp = DateTime.Now;
+                    this.ZoneChangedTimestamp = DateTime.UtcNow;
 
                     this.IsExistsActors = false;
                     this.ActorList.Clear();
@@ -392,9 +392,9 @@ namespace FFXIV.Framework.XIVHelper
                 if (!this.IsSkipPlayer &&
                     this.IsSkipActor)
                 {
-                    if ((DateTime.Now - this.playerScanTimestamp).TotalMilliseconds > 500)
+                    if ((DateTime.UtcNow - this.playerScanTimestamp).TotalMilliseconds > 500)
                     {
-                        this.playerScanTimestamp = DateTime.Now;
+                        this.playerScanTimestamp = DateTime.UtcNow;
                         this.CurrentPlayer = this._memoryHandler.Reader.GetCurrentPlayer().Entity;
                     }
                 }
@@ -667,7 +667,7 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             if ((now - this.partyListTimestamp).TotalSeconds <= 0.5)
             {
                 return;
@@ -696,7 +696,7 @@ namespace FFXIV.Framework.XIVHelper
                 newPartyList.Except(this.PartyMemberList).Any() ||
                 this.PartyMemberList.Except(newPartyList).Any())
             {
-                this.PartyListChangedTimestamp = DateTime.Now;
+                this.PartyListChangedTimestamp = DateTime.UtcNow;
             }
 
             this.PartyMemberList.Clear();
@@ -764,7 +764,7 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             if ((now - this.lastActionsTimestamp).TotalMilliseconds <= this.ActionsPollingInterval)
             {
                 return;
@@ -935,9 +935,9 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            if ((DateTime.Now - this.lastestGarbageTimestamp) >= TimeSpan.FromMinutes(3))
+            if ((DateTime.UtcNow - this.lastestGarbageTimestamp) >= TimeSpan.FromMinutes(3))
             {
-                this.lastestGarbageTimestamp = DateTime.Now;
+                this.lastestGarbageTimestamp = DateTime.UtcNow;
                 this.GarbageCombatantsDictionary();
             }
         }
@@ -949,7 +949,7 @@ namespace FFXIV.Framework.XIVHelper
                 {
                     var dic = this.CombatantsDictionary;
                     var keys = dic
-                        .Where(x => (DateTime.Now - x.Value.Timestamp) >= TimeSpan.FromMinutes(2.9))
+                        .Where(x => (DateTime.UtcNow - x.Value.Timestamp) >= TimeSpan.FromMinutes(2.9))
                         .Select(x => x.Key)
                         .ToArray();
 
@@ -962,7 +962,7 @@ namespace FFXIV.Framework.XIVHelper
                 {
                     var dic = this.NPCCombatantsDictionary;
                     var keys = dic
-                        .Where(x => (DateTime.Now - x.Value.Timestamp) >= TimeSpan.FromMinutes(2.9))
+                        .Where(x => (DateTime.UtcNow - x.Value.Timestamp) >= TimeSpan.FromMinutes(2.9))
                         .Select(x => x.Key)
                         .ToArray();
 

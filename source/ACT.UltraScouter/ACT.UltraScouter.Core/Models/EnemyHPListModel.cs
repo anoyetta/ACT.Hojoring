@@ -167,7 +167,7 @@ namespace ACT.UltraScouter.Models
             var liquid = DesignModeEnemyList[0];
             var hand = DesignModeEnemyList[1];
 
-            var rate = (double)(60 - DateTime.Now.Second) / 60d;
+            var rate = (double)(60 - DateTime.UtcNow.Second) / 60d;
 
             liquid.CurrentHP = (uint)(liquid.MaxHP * rate);
             hand.CurrentHP = (uint)(hand.MaxHP * (rate * 0.9d));

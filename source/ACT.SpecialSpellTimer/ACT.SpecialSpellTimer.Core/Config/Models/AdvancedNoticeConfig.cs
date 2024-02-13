@@ -246,7 +246,7 @@ namespace ACT.SpecialSpellTimer.Config.Models
                 var interval = Settings.Default.WaitingTimeToSyncTTS / 4d;
 
                 SyncList.Add(new SyncTTS(SyncList.Count, priority, tts, config));
-                SyncListTimestamp = DateTime.Now;
+                SyncListTimestamp = DateTime.UtcNow;
                 SyncListCount = SyncList.Count;
 
                 SyncSpeakTimer.Interval = interval;
@@ -271,7 +271,7 @@ namespace ACT.SpecialSpellTimer.Config.Models
             var syncs = default(IEnumerable<SyncTTS>);
             lock (SyncList)
             {
-                if ((DateTime.Now - SyncListTimestamp).TotalMilliseconds < Settings.Default.WaitingTimeToSyncTTS)
+                if ((DateTime.UtcNow - SyncListTimestamp).TotalMilliseconds < Settings.Default.WaitingTimeToSyncTTS)
                 {
                     return;
                 }

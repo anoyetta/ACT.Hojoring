@@ -24,7 +24,7 @@ namespace ACT.UltraScouter.Common
 
         #region Logger
 
-        private Logger logger = AppLog.DefaultLogger;
+        private Logger AppLogger = AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -97,7 +97,7 @@ namespace ACT.UltraScouter.Common
                 }
             }
 
-            this.logger.Info($"TTSDictionary loaded. {this.SourceFile}");
+            this.AppLogger.Info($"TTSDictionary loaded. {this.SourceFile}");
         }
     }
 }

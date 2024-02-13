@@ -59,7 +59,7 @@ namespace ACT.SpecialSpellTimer
 
         public bool IsFFXIVActive => XIVPluginHelper.Instance.IsFFXIVActive;
 
-        private DateTime lastSaveTickerTableDateTime = DateTime.Now;
+        private DateTime lastSaveTickerTableDateTime = DateTime.UtcNow;
 
         public LogBuffer LogBuffer { get; private set; }
 
@@ -256,9 +256,9 @@ namespace ACT.SpecialSpellTimer
                 XIVPluginHelper.Instance.CurrentFFXIVProcess != null &&
                 !XIVPluginHelper.Instance.CurrentFFXIVProcess.HasExited;
 
-            if ((DateTime.Now - this.lastSaveTickerTableDateTime).TotalMinutes >= 1)
+            if ((DateTime.UtcNow - this.lastSaveTickerTableDateTime).TotalMinutes >= 1)
             {
-                this.lastSaveTickerTableDateTime = DateTime.Now;
+                this.lastSaveTickerTableDateTime = DateTime.UtcNow;
 
                 if (this.existFFXIVProcess)
                 {

@@ -18,7 +18,7 @@ namespace ACT.TTSYukkuri.Config.ViewModels
     {
         #region Logger
 
-        private Logger Logger => AppLog.DefaultLogger;
+        private Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -128,7 +128,7 @@ namespace ACT.TTSYukkuri.Config.ViewModels
         private void ExecuteClearBufferCommand()
         {
             BufferedWavePlayer.Instance?.ClearBuffers();
-            this.Logger.Info("Playback buffers cleared.");
+            this.AppLogger.Info("Playback buffers cleared.");
         }
 
         private DelegateCommand resetWasapiDeviceCommand;
@@ -142,7 +142,7 @@ namespace ACT.TTSYukkuri.Config.ViewModels
             await Task.Delay(10);
             SoundPlayerWrapper.LoadTTSCache();
 
-            this.Logger.Info("Reset WASAPI Player, and Reload TTS chache.");
+            this.AppLogger.Info("Reset WASAPI Player, and Reload TTS chache.");
         }
     }
 }

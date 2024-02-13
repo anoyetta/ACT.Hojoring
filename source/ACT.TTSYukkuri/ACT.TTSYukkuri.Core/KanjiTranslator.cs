@@ -12,7 +12,7 @@ namespace ACT.TTSYukkuri
     {
         #region Logger
 
-        private Logger Logger => AppLog.DefaultLogger;
+        private Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -69,24 +69,24 @@ namespace ACT.TTSYukkuri
 
                         if (this.IFELang == null)
                         {
-                            this.Logger.Warn("IFELANG IME initialize failed. Disabled IME reverse translation.");
+                            this.AppLogger.Warn("IFELANG IME initialize failed. Disabled IME reverse translation.");
                         }
                         else
                         {
                             var hr = this.IFELang.Open();
                             if (hr != 0)
                             {
-                                this.Logger.Warn("IFELANG IME connection failed. Disabled IME reverse translation.");
+                                this.AppLogger.Warn("IFELANG IME connection failed. Disabled IME reverse translation.");
                                 this.IFELang = null;
                             }
 
-                            this.Logger.Trace("IFELANG IME Connected.");
+                            this.AppLogger.Trace("IFELANG IME Connected.");
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    this.Logger.Warn("IFELANG IME initialize failed due to an unexpected exception. Disabled IME reverse translation.");
+                    this.AppLogger.Warn("IFELANG IME initialize failed due to an unexpected exception. Disabled IME reverse translation.");
                     this.IFELang = null;
                 }
             }
@@ -112,7 +112,7 @@ namespace ACT.TTSYukkuri
                 var hr = ifelang.GetPhonetic(text, 1, -1, out t);
                 if (hr != 0)
                 {
-                    this.Logger.Error($"IFELANG IME translate to phonetic faild. text={text}");
+                    this.AppLogger.Error($"IFELANG IME translate to phonetic faild. text={text}");
                     return yomigana;
                 }
 
@@ -123,7 +123,7 @@ namespace ACT.TTSYukkuri
                 if (!this.hasWarned)
                 {
                     this.hasWarned = true;
-                    this.Logger.Warn($"IFELANG IME has been disabled. text={text}");
+                    this.AppLogger.Warn($"IFELANG IME has been disabled. text={text}");
                 }
             }
 

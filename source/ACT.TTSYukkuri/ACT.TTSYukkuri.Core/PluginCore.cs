@@ -47,7 +47,7 @@ namespace ACT.TTSYukkuri
 
         #region Logger
 
-        private Logger Logger => AppLog.DefaultLogger;
+        private Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -320,7 +320,7 @@ namespace ACT.TTSYukkuri
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex, "SpeakTTS で例外が発生しました。");
+                this.AppLogger.Error(ex, "SpeakTTS で例外が発生しました。");
             }
         }
 
@@ -346,7 +346,7 @@ namespace ACT.TTSYukkuri
             WPFHelper.Start();
 
             AppLog.LoadConfiguration(AppLog.HojoringConfig);
-            this.Logger?.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
+            this.AppLogger?.Trace(Assembly.GetExecutingAssembly().GetName().ToString() + " start.");
 
             try
             {
@@ -369,7 +369,7 @@ namespace ACT.TTSYukkuri
                     this.DeInitPlugin();
                 });
 
-                this.Logger.Trace("[YUKKURI] Start InitPlugin");
+                this.AppLogger.Trace("[YUKKURI] Start InitPlugin");
 
                 var pluginInfo = ActGlobals.oFormActMain.PluginGetSelfData(plugin);
                 if (pluginInfo != null)
@@ -412,22 +412,16 @@ namespace ACT.TTSYukkuri
                 KanjiTranslator.Default.Initialize();
 
                 // TTSキャッシュの移行とGarbageを行う
-                await Task.Run(() =>
-                {
-                    this.MigrateTTSCache();
-                    this.GarbageTTSCache();
-                });
+                this.MigrateTTSCache();
+                this.GarbageTTSCache();
 
                 await EnvironmentHelper.WaitInitActDoneAsync();
 
-                await Task.Run(() =>
-                {
-                    // TTSを初期化する
-                    SpeechController.Default.Initialize();
+                // TTSを初期化する
+                SpeechController.Default.Initialize();
 
-                    // FF14監視スレッドを初期化する
-                    FFXIVWatcher.Initialize();
-                });
+                // FF14監視スレッドを初期化する
+                FFXIVWatcher.Initialize();
 
                 // 設定Panelを追加する
                 pluginScreenSpace.Controls.Add(new ElementHost()
@@ -439,7 +433,7 @@ namespace ACT.TTSYukkuri
                 // TTSメソッドを置き換える
                 this.StartReplaceTTSMethodTimer();
 
-                this.Logger.Trace("[YUKKURI] START Discord BOT INIT");
+                this.AppLogger.Trace("[YUKKURI] START Discord BOT INIT");
                 // DISCORD BOT クライアントを初期化する
                 DiscordClientModel.Model.Initialize();
                 // AutoJoinがONならば接続する
@@ -447,30 +441,13 @@ namespace ACT.TTSYukkuri
                 {
                     DiscordClientModel.Model.Connect(true);
                 }
-                this.Logger.Trace("[YUKKURI] END Discord BOT INIT");
-/*
-                await Task.Run(() =>
-                {
-                    this.Logger.Trace("[YUKKURI] START Discord BOT INIT");
-                    // DISCORD BOT クライアントを初期化する
-                    DiscordClientModel.Model.Initialize();
+                this.AppLogger.Trace("[YUKKURI] END Discord BOT INIT");
 
-                    // AutoJoinがONならば接続する
-                    if (Settings.Default.DiscordSettings.AutoJoin)
-                    {
-                        DiscordClientModel.Model.Connect(true);
-                    }
-                    this.Logger.Trace("[YUKKURI] END Discord BOT INIT");
-                });
-*/
-                await Task.Run(() =>
+                // VOICEROIDを起動する
+                if (SpeechController.Default is VoiceroidSpeechController ctrl)
                 {
-                    // VOICEROIDを起動する
-                    if (SpeechController.Default is VoiceroidSpeechController ctrl)
-                    {
-                        ctrl.Start();
-                    }
-                });
+                    ctrl.Start();
+                }
 
                 // Bridgeにメソッドを登録する
                 PlayBridge.Instance.SetBothDelegate((message, voicePalette, isSync, volume) => this.Speak(message, PlayDevices.Both, voicePalette, isSync, volume));
@@ -508,7 +485,7 @@ namespace ACT.TTSYukkuri
                     this.PluginStatusLabel.Text = "Plugin Started";
                 }
 
-                this.Logger.Trace("[YUKKURI] End InitPlugin");
+                this.AppLogger.Trace("[YUKKURI] End InitPlugin");
 
                 // 共通ビューを追加する
                 CommonViewHelper.Instance.AddCommonView(
@@ -521,7 +498,7 @@ namespace ACT.TTSYukkuri
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex, "InitPlugin error.");
+                this.AppLogger.Error(ex, "InitPlugin error.");
 
                 ModernMessageBox.ShowDialog(
                     "Plugin init error !",
@@ -611,7 +588,7 @@ namespace ACT.TTSYukkuri
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex, "DeInitPlugin error.");
+                this.AppLogger.Error(ex, "DeInitPlugin error.");
             }
         }
 
@@ -639,7 +616,7 @@ namespace ACT.TTSYukkuri
             (string logLine, Match match) =>
             {
                 BufferedWavePlayer.Instance?.ClearBuffers();
-                this.Logger.Info("Playback buffers cleared.");
+                this.AppLogger.Info("Playback buffers cleared.");
             })
             {
                 IsSilent = true,
@@ -728,7 +705,7 @@ namespace ACT.TTSYukkuri
                     Assembly.GetExecutingAssembly());
                 if (!string.IsNullOrWhiteSpace(message))
                 {
-                    this.Logger.Error(message);
+                    this.AppLogger.Error(message);
                 }
 
                 Settings.Default.LastUpdateDateTime = DateTime.Now;

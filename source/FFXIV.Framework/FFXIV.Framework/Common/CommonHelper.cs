@@ -15,7 +15,7 @@ namespace FFXIV.Framework.Common
         public static bool IsDebugMode => false;
 #endif
 
-        private static readonly Random random = new Random((int)DateTime.Now.Ticks);
+        private static readonly Random random = new Random((int)DateTime.UtcNow.Ticks);
 
         public static Random Random => random;
 

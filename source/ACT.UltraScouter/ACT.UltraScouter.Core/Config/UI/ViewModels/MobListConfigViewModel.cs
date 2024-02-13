@@ -17,7 +17,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
     {
         #region Logger
 
-        private Logger logger = AppLog.DefaultLogger;
+        private Logger AppLogger = AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -53,7 +53,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
                 if (!File.Exists(f))
                 {
-                    this.logger.Error($"TargetMobList not found. {f}");
+                    this.AppLogger.Error($"TargetMobList not found. {f}");
                     return;
                 }
 
@@ -69,7 +69,7 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
                 if (!File.Exists(f))
                 {
-                    this.logger.Error($"TargetMobList not found. {f}");
+                    this.AppLogger.Error($"TargetMobList not found. {f}");
                     return;
                 }
 

@@ -157,10 +157,11 @@ namespace ACT.SpecialSpellTimer.Utility
         {
             if (telop.MatchDateTime > DateTime.MinValue && !telop.ForceHide)
             {
+                var now = DateTime.Now;
                 var start = telop.MatchDateTime.AddSeconds(telop.Delay);
                 var end = telop.MatchDateTime.AddSeconds(telop.Delay + telop.DisplayTime);
 
-                if (start <= DateTime.Now && DateTime.Now <= end)
+                if (start <= now && now <= end)
                 {
                     return true;
                 }

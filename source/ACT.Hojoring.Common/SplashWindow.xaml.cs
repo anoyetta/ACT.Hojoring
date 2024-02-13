@@ -55,7 +55,7 @@ namespace ACT.Hojoring.Common
             {
                 if (this.SetProperty(ref this.message, value))
                 {
-                    this.FadeOutStartTime = DateTime.Now.Add(SplashDuration);
+                    this.FadeOutStartTime = DateTime.UtcNow.Add(SplashDuration);
                 }
             }
         }
@@ -183,11 +183,11 @@ namespace ACT.Hojoring.Common
 
         public async void StartFadeOut()
         {
-            this.FadeOutStartTime = DateTime.Now.Add(SplashDuration);
+            this.FadeOutStartTime = DateTime.UtcNow.Add(SplashDuration);
 
             await Task.Run(async () =>
             {
-                while (DateTime.Now <= this.FadeOutStartTime || this.IsSustainFadeOut)
+                while (DateTime.UtcNow <= this.FadeOutStartTime || this.IsSustainFadeOut)
                 {
                     await Task.Delay(200);
                 }

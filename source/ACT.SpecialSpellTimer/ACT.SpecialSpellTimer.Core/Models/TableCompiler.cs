@@ -88,7 +88,7 @@ namespace ACT.SpecialSpellTimer.Models
 
         public event EventHandler CompileConditionChanged;
 
-        private DateTime lastDumpPositionTimestamp = DateTime.Now.AddMinutes(5);
+        private DateTime lastDumpPositionTimestamp = DateTime.UtcNow.AddMinutes(5);
 
         private bool isQueueRecompile = false;
         private bool isQueueZoneChange = false;
@@ -128,7 +128,7 @@ namespace ACT.SpecialSpellTimer.Models
                     SharlayanHelper.Instance.EnqueueReload();
 
                     this.isQueueRecompile = true;
-                    this.lastQueueTimestamp = DateTime.Now;
+                    this.lastQueueTimestamp = DateTime.UtcNow;
                 }
             }
 
@@ -138,7 +138,7 @@ namespace ACT.SpecialSpellTimer.Models
                 {
                     this.isQueueRecompile = true;
                     this.isQueueZoneChange = true;
-                    this.lastQueueTimestamp = DateTime.Now;
+                    this.lastQueueTimestamp = DateTime.UtcNow;
                 }
             }
         }
@@ -147,7 +147,7 @@ namespace ACT.SpecialSpellTimer.Models
         {
             lock (this)
             {
-                if ((DateTime.Now - this.lastQueueTimestamp).TotalMilliseconds <= CompileHandlerInterval)
+                if ((DateTime.UtcNow - this.lastQueueTimestamp).TotalMilliseconds <= CompileHandlerInterval)
                 {
                     return;
                 }
@@ -228,9 +228,9 @@ namespace ACT.SpecialSpellTimer.Models
             LogBuffer.DumpMyPetDistance();
 
             // 定期的に自分の座標をダンプする
-            if ((DateTime.Now - this.lastDumpPositionTimestamp).TotalSeconds >= 60.0)
+            if ((DateTime.UtcNow - this.lastDumpPositionTimestamp).TotalSeconds >= 60.0)
             {
-                this.lastDumpPositionTimestamp = DateTime.Now;
+                this.lastDumpPositionTimestamp = DateTime.UtcNow;
                 LogBuffer.DumpPosition(true);
             }
         }

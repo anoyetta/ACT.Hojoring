@@ -724,9 +724,9 @@ namespace ACT.SpecialSpellTimer.Config
                 DateTime d;
                 if (DateTime.TryParse(value, out d))
                 {
-                    if (d > DateTime.Now)
+                    if (d > DateTime.UtcNow)
                     {
-                        d = DateTime.Now;
+                        d = DateTime.UtcNow;
                     }
 
                     this.lastUpdateDateTime = d;
@@ -738,9 +738,9 @@ namespace ACT.SpecialSpellTimer.Config
                     var decrypt = Crypter.DecryptString(value);
                     if (DateTime.TryParse(decrypt, out d))
                     {
-                        if (d > DateTime.Now)
+                        if (d > DateTime.UtcNow)
                         {
-                            d = DateTime.Now;
+                            d = DateTime.UtcNow;
                         }
 
                         this.lastUpdateDateTime = d;
@@ -863,7 +863,7 @@ namespace ACT.SpecialSpellTimer.Config
         {
             this.PropertyChanged += async (_, __) =>
             {
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
 
                 if ((now - this.lastAutoSaveTimestamp).TotalSeconds > 20)
                 {

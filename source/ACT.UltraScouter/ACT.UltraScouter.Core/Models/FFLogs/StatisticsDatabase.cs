@@ -33,7 +33,7 @@ namespace ACT.UltraScouter.Models.FFLogs
 
         public string APIKey { get; set; }
 
-        public Logger Logger { get; set; }
+        public Logger AppLogger { get; set; }
 
         private ZonesModel[] zones;
         private ClassesModel classes;
@@ -433,7 +433,7 @@ namespace ACT.UltraScouter.Models.FFLogs
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "[FFLogs] error downloding statistics database.");
+                AppLogger.Error(ex, "[FFLogs] error downloding statistics database.");
             }
             finally
             {
@@ -623,12 +623,12 @@ namespace ACT.UltraScouter.Models.FFLogs
         {
             if (ex == null)
             {
-                this.Logger?.Trace(message);
+                this.AppLogger?.Trace(message);
                 Console.WriteLine(message);
             }
             else
             {
-                this.Logger?.Error(ex, message);
+                this.AppLogger?.Error(ex, message);
                 Console.WriteLine(message);
                 Console.WriteLine(ex);
             }
@@ -640,12 +640,12 @@ namespace ACT.UltraScouter.Models.FFLogs
         {
             if (ex == null)
             {
-                this.Logger?.Error(ex, message);
+                this.AppLogger?.Error(ex, message);
                 Console.WriteLine(message);
             }
             else
             {
-                this.Logger?.Error(ex, message);
+                this.AppLogger?.Error(ex, message);
                 Console.WriteLine(message);
                 Console.WriteLine(ex);
             }

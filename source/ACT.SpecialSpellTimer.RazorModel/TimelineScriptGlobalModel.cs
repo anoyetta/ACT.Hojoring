@@ -220,7 +220,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
         {
             lock (this.ScriptingBlocker)
             {
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
 
                 var scripts = this.Scripts.Where(x =>
                 {
@@ -264,7 +264,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
         {
             lock (this.ScriptingBlocker)
             {
-                var now = DateTime.Now;
+                //var now = DateTime.UtcNow;
 
 #if DEBUG
                 if (currentSubRoutine == "応用フェーズ")

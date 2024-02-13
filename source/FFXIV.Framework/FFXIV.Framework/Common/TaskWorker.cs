@@ -9,7 +9,7 @@ namespace FFXIV.Framework.Common
     {
         #region Logger
 
-        private static Logger Logger => AppLog.DefaultLogger;
+        private static Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -74,13 +74,13 @@ namespace FFXIV.Framework.Common
             Thread.CurrentThread.IsBackground = true;
 
             Thread.Sleep((int)this.Interval);
-            Logger.Trace($"TaskWorker - {this.Name} start.");
+            AppLogger.Trace($"TaskWorker - {this.Name} start.");
 
             while (true)
             {
                 if (token.IsCancellationRequested)
                 {
-                    Logger.Trace($"TaskWorker - {this.Name} cancel.");
+                    AppLogger.Trace($"TaskWorker - {this.Name} cancel.");
                     return;
                 }
 
@@ -90,7 +90,7 @@ namespace FFXIV.Framework.Common
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(ex, $"TaskWorker - {this.Name} error.");
+                    AppLogger.Error(ex, $"TaskWorker - {this.Name} error.");
                 }
 
                 Thread.Sleep((int)this.Interval);

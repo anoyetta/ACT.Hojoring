@@ -426,7 +426,7 @@ namespace ACT.UltraScouter.Models
                 return;
             }
 
-            if ((DateTime.Now - MobInfo.beforeTTSTimestamp).TotalSeconds >= 3.0)
+            if ((DateTime.UtcNow - MobInfo.beforeTTSTimestamp).TotalSeconds >= 3.0)
             {
                 MobInfo.beforeTTS = string.Empty;
             }
@@ -444,7 +444,7 @@ namespace ACT.UltraScouter.Models
                 }
 
                 MobInfo.beforeTTS = tts;
-                MobInfo.beforeTTSTimestamp = DateTime.Now;
+                MobInfo.beforeTTSTimestamp = DateTime.UtcNow;
             }
         }
 

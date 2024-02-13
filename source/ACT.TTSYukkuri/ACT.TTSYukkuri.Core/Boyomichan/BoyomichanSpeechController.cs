@@ -130,14 +130,14 @@ namespace ACT.TTSYukkuri.Boyomichan
             }
 
             if (this.lastText == text &&
-                (DateTime.Now - this.lastTextTimestamp).TotalSeconds
+                (DateTime.UtcNow - this.lastTextTimestamp).TotalSeconds
                 <= Settings.Default.GlobalSoundInterval)
             {
                 return;
             }
 
             this.lastText = text;
-            this.lastTextTimestamp = DateTime.Now;
+            this.lastTextTimestamp = DateTime.UtcNow;
 
             this.Queue.Enqueue(text.Trim());
         }

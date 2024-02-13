@@ -354,7 +354,7 @@ namespace FFXIV.Framework.WPF.Views
                     }
 
                     // プロセス情報がなく、tryIntervalよりも時間が経っているときは新たに取得を試みる
-                    if (xivProc == null && (DateTime.Now - lastTry) > TryInterval)
+                    if (xivProc == null && (DateTime.UtcNow - lastTry) > TryInterval)
                     {
                         xivProc = XIVPluginHelper.Instance.CurrentFFXIVProcess;
 
@@ -368,7 +368,7 @@ namespace FFXIV.Framework.WPF.Views
                             }
                         }
 
-                        lastTry = DateTime.Now;
+                        lastTry = DateTime.UtcNow;
                     }
 
                     if (xivProc != null)

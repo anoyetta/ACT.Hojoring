@@ -655,12 +655,13 @@ namespace ACT.UltraScouter.Models
                 return;
             }
 
+            var now = DateTime.Now;
             var ttl = Settings.Instance.FFLogs.RefreshInterval * 1.5d * -1;
 
             lock (ParseTotalDictionary)
             {
                 var targets = ParseTotalDictionary
-                    .Where(x => x.Value.Timestamp < DateTime.Now.AddMinutes(ttl))
+                    .Where(x => x.Value.Timestamp < now.AddMinutes(ttl))
                     .ToArray();
 
                 foreach (var item in targets)
@@ -669,7 +670,7 @@ namespace ACT.UltraScouter.Models
                 }
             }
 
-            this.lastGarbageTimestamp = DateTime.Now;
+            this.lastGarbageTimestamp = now;
         }
 
         private static System.Timers.Timer textCommandTTLTimer;

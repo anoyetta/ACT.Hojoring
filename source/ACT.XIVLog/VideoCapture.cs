@@ -33,7 +33,7 @@ namespace ACT.XIVLog
 
         #region Logger
 
-        private Logger Logger => AppLog.DefaultLogger;
+        private Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -101,7 +101,7 @@ namespace ACT.XIVLog
                     ActGlobals.oFormActMain.CurrentZone;
 
                 if (Config.Instance.TryCountContentName != contentName ||
-                    (DateTime.Now - Config.Instance.TryCountTimestamp) >=
+                    (DateTime.UtcNow - Config.Instance.TryCountTimestamp) >=
                     TimeSpan.FromHours(Config.Instance.TryCountResetInterval))
                 {
                     this.TryCount = 0;
@@ -131,7 +131,7 @@ namespace ACT.XIVLog
                     this.contentName = ActGlobals.oFormActMain.CurrentZone;
 
                     if (Config.Instance.TryCountContentName != this.contentName ||
-                        (DateTime.Now - Config.Instance.TryCountTimestamp) >=
+                        (DateTime.UtcNow - Config.Instance.TryCountTimestamp) >=
                         TimeSpan.FromHours(Config.Instance.TryCountResetInterval))
                     {
                         this.TryCount = 0;
@@ -191,7 +191,7 @@ namespace ACT.XIVLog
             set => WPFHelper.Invoke(() =>
             {
                 Config.Instance.VideoTryCount = value;
-                Config.Instance.TryCountTimestamp = DateTime.Now;
+                Config.Instance.TryCountTimestamp = DateTime.UtcNow;
 
                 var contentName = !string.IsNullOrEmpty(this.contentName) ?
                     this.contentName :
@@ -229,13 +229,13 @@ namespace ACT.XIVLog
             {
                 if (!inCombat)
                 {
-                    this.endCombatDateTime = DateTime.Now;
+                    this.endCombatDateTime = DateTime.UtcNow;
                 }
             }
 
             if (!inCombat)
             {
-                if ((DateTime.Now - this.endCombatDateTime) >= TimeSpan.FromMinutes(min))
+                if ((DateTime.UtcNow - this.endCombatDateTime) >= TimeSpan.FromMinutes(min))
                 {
                     this.FinishRecording();
                 }
@@ -314,7 +314,7 @@ namespace ACT.XIVLog
                         this.StopRecordingSubscriber.Elapsed += (_, __) => this.DetectStopRecording();
                     }
 
-                    this.endCombatDateTime = DateTime.Now;
+                    this.endCombatDateTime = DateTime.UtcNow;
                     this.StopRecordingSubscriber.Start();
                 }
             }
@@ -470,7 +470,7 @@ namespace ACT.XIVLog
                 }
                 else
                 {
-                    this.Logger.Info("Tried to record, but OBS Websocket connect faild.");
+                    this.AppLogger.Info("Tried to record, but OBS Websocket connect faild.");
                 }
             }
             else
@@ -479,7 +479,7 @@ namespace ACT.XIVLog
                 if (p == null ||
                     p.Length < 1)
                 {
-                    this.Logger.Info("Tried to record, but Streamlabs OBS is not found.");
+                    this.AppLogger.Info("Tried to record, but Streamlabs OBS is not found.");
                     return;
                 }
 

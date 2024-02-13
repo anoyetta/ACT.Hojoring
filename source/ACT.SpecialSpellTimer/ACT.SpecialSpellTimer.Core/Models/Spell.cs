@@ -1183,12 +1183,12 @@ namespace ACT.SpecialSpellTimer.Models
 
         public void StartMatching()
         {
-            this.matchingStartDateTime = DateTime.Now;
+            this.matchingStartDateTime = DateTime.UtcNow;
         }
 
         public void EndMatching()
         {
-            var ticks = (DateTime.Now - this.matchingStartDateTime).Ticks;
+            var ticks = (DateTime.UtcNow - this.matchingStartDateTime).Ticks;
             if (ticks == 0)
             {
                 return;

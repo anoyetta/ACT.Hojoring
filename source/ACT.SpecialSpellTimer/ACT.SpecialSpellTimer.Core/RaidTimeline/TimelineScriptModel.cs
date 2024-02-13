@@ -255,7 +255,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
             finally
             {
-                this.LastExecutedTimestamp = DateTime.Now;
+                this.LastExecutedTimestamp = DateTime.UtcNow;
             }
 
             return result;
