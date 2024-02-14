@@ -284,7 +284,7 @@ namespace ACT.XIVLog
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        //[MethodImpl(MethodImplOptions.NoInlining)]
         private void OnLogLineRead(
             bool isImport,
             LogLineEventArgs logInfo)
@@ -306,8 +306,11 @@ namespace ACT.XIVLog
 
             if (!isImport)
             {
-                this.OpenXIVLog(logInfo.logLine);
-                VideoCapture.Instance.DetectCapture(xivlog);
+                Task.Run(() =>
+                {
+                    this.OpenXIVLog(logInfo.logLine);
+                    VideoCapture.Instance.DetectCapture(xivlog);
+                });
             }
         }
 
