@@ -78,6 +78,8 @@ namespace ACT.XIVLog
 
         private bool inFeast;
 
+        private bool ignoreWipeout = false;
+
         public void DetectCapture(
             XIVLog xivlog)
         {
@@ -148,6 +150,17 @@ namespace ACT.XIVLog
                 return;
             }
 
+            // 録画を止めないようにする
+            if (xivlog.Log.Contains("reset-on-wipeout disabled"))
+            {
+                ignoreWipeout = true;
+            }
+            // 元に戻す
+            if (xivlog.Log.Contains("reset-on-wipeout enabled"))
+            {
+                ignoreWipeout = false;
+            }
+
             var isCancel = xivlog.Log.EndsWith("戦闘開始カウントがキャンセルされました。");
             if (isCancel)
             {
@@ -159,9 +172,12 @@ namespace ACT.XIVLog
                 StopVideoKeywords.Any(x => xivlog.Log.Contains(x)) ||
                 (this.inFeast && FeastEndRegex.IsMatch(xivlog.Log)))
             {
-                this.FinishRecording();
-                SystemSounds.Beep.Play();
-                return;
+                if (!ignoreWipeout)
+                {
+                    this.FinishRecording();
+                    SystemSounds.Beep.Play();
+                    return;
+                }
             }
 
             // Player change
