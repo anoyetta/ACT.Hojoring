@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.Sound;
+using ACT.SpecialSpellTimer.Utility;
 using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer
@@ -380,6 +381,8 @@ namespace ACT.SpecialSpellTimer
                 "on" => true,
                 _ => false,
             };
+
+            Logger.Write("[TL] " + option + " " + value.ToString());
 
             optionCommands.FirstOrDefault(x => x.keyword == command).change?.Invoke(value);
 
