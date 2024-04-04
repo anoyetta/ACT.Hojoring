@@ -202,7 +202,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public static class CommonKeywords
         {
-            public static readonly string SpespeResetOnWipeoutChange = "/spespe reset-on-wipeout"; // reset-on-wipeoutを切り替えるときにタイムラインのリロードが走っては困る
+            public static readonly string SpespeResetOnWipeoutChange = "/spespe reset-on-wipe-out"; // reset-on-wipeoutを切り替えるときにタイムラインのリロードが走っては困る
             public static readonly string OverlayPluginMapEffectPrefix = $"] 101:";
 
             public static readonly string CountdownStartPrefix = $"{LogMessageType.ChatLog.ToHex()}:0139::";

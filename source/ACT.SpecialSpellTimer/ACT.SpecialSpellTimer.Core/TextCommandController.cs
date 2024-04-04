@@ -56,7 +56,7 @@ namespace ACT.SpecialSpellTimer
         /// </summary>
         private static readonly (string keyword, Action<bool> change)[] optionCommands = new[]
         {
-            ("reset-on-wipeout", new Action<bool>((value) => Settings.Default.ResetOnWipeOut = value))
+            ("reset-on-wipe-out", new Action<bool>((value) => Settings.Default.ResetOnWipeOut = value))
         };
 
         /// <summary>
