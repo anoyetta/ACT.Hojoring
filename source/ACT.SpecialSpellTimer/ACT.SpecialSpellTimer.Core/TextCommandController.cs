@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using ACT.SpecialSpellTimer.Config;
 using ACT.SpecialSpellTimer.Models;
 using ACT.SpecialSpellTimer.Sound;
+using ACT.SpecialSpellTimer.Utility;
 using FFXIV.Framework.XIVHelper;
 
 namespace ACT.SpecialSpellTimer
@@ -55,7 +56,7 @@ namespace ACT.SpecialSpellTimer
         /// </summary>
         private static readonly (string keyword, Action<bool> change)[] optionCommands = new[]
         {
-            ("reset-on-wipeout", new Action<bool>((value) => Settings.Default.ResetOnWipeOut = value))
+            ("reset-on-wipe-out", new Action<bool>((value) => Settings.Default.ResetOnWipeOut = value))
         };
 
         /// <summary>
@@ -380,6 +381,8 @@ namespace ACT.SpecialSpellTimer
                 "on" => true,
                 _ => false,
             };
+
+            Logger.Write("[TL] " + option + " " + value.ToString());
 
             optionCommands.FirstOrDefault(x => x.keyword == command).change?.Invoke(value);
 

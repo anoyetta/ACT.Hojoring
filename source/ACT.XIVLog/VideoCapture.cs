@@ -151,12 +151,12 @@ namespace ACT.XIVLog
             }
 
             // 録画を止めないようにする
-            if (xivlog.Log.Contains("reset-on-wipeout disabled"))
+            if (xivlog.Log.Contains("reset-on-wipe-out disabled"))
             {
                 ignoreWipeout = true;
             }
             // 元に戻す
-            if (xivlog.Log.Contains("reset-on-wipeout enabled"))
+            if (xivlog.Log.Contains("reset-on-wipe-out enabled"))
             {
                 ignoreWipeout = false;
             }

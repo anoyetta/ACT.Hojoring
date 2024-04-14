@@ -202,6 +202,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         public static class CommonKeywords
         {
+            public static readonly string SpespeResetOnWipeoutChange = "/spespe reset-on-wipe-out"; // reset-on-wipeoutを切り替えるときにタイムラインのリロードが走っては困る
             public static readonly string OverlayPluginMapEffectPrefix = $"] 101:";
 
             public static readonly string CountdownStartPrefix = $"{LogMessageType.ChatLog.ToHex()}:0139::";
@@ -275,6 +276,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         private static readonly IList<AnalyzeKeyword> KeywordsJA = new[]
         {
+            new AnalyzeKeyword() { Keyword = CommonKeywords.SpespeResetOnWipeoutChange, Category = KewordTypes.Record },
             new AnalyzeKeyword() { Keyword = CommonKeywords.OverlayPluginMapEffectPrefix, Category = KewordTypes.Record},
             new AnalyzeKeyword() { Keyword = CommonKeywords.ExAddedCombatant, Category = KewordTypes.Record },
             new AnalyzeKeyword() { Keyword = CommonKeywords.ExPos, Category = KewordTypes.Record },
