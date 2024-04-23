@@ -422,6 +422,9 @@ namespace ACT.TTSYukkuri.Config
             set => this.SetProperty(ref this.pollySettingsExt3, value);
         }
 
+#if true
+        private ObservableCollection<PollyConfigs.PollyVoice> pollyVoices;
+#else
         private ObservableCollection<PollyConfigs.PollyVoice> pollyVoices = new ObservableCollection<PollyConfigs.PollyVoice>
         {
             new PollyConfigs.PollyVoice { Name = $"{VoiceId.Ivy.Value} (en-US, Female)", Value = VoiceId.Ivy.Value },
@@ -445,6 +448,7 @@ namespace ACT.TTSYukkuri.Config
 
             new PollyConfigs.PollyVoice { Name = $"{VoiceId.Seoyeon.Value} (ko-KR, Female)", Value = VoiceId.Seoyeon.Value },
         };
+#endif
 
         public ObservableCollection<PollyConfigs.PollyVoice> PollyVoices
         {
