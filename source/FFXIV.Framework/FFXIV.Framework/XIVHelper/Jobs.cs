@@ -48,7 +48,9 @@ namespace FFXIV.Framework.XIVHelper
         GNB = 37,
         DNC = 38,
         RPR = 39,
-        SGE = 40
+        SGE = 40,
+        VPR = 41,
+        PCT = 42
     }
 
     public enum Roles
@@ -202,6 +204,8 @@ namespace FFXIV.Framework.XIVHelper
             new Job() {ID = JobIDs.DNC, Role = Roles.RangeDPS, NameEN = "Dancer", NameJA = "踊り子", NameFR = "Danseur", NameDE = "Tänzer" , NameCN = "舞者", NameKO = "Dancer", IsPopular = true},
             new Job() {ID = JobIDs.RPR, Role = Roles.MeleeDPS, NameEN = "Reaper", NameJA = "リーパー", NameFR = "Faucheur", NameDE = "Schnitter" , NameCN = "Reaper", NameKO = "Reaper", IsPopular = true},
             new Job() {ID = JobIDs.SGE, Role = Roles.Healer, NameEN = "Sage", NameJA = "賢者", NameFR = "Sage", NameDE = "Weiser" , NameCN = "賢者", NameKO = "Sage", IsPopular = true},
+            new Job() {ID = JobIDs.VPR, Role = Roles.MeleeDPS, NameEN = "Viper", NameJA = "ヴァイパー", NameFR = "Rôdeur vipère", NameDE = "Viper", NameCN = "Viper", NameKO = "Viper", IsPopular = true},
+            new Job() {ID = JobIDs.PCT, Role = Roles.MagicDPS, NameEN = "Pictomancer", NameJA = "ピクトマンサー", NameFR = "Pictomancien", NameDE = "Piktomant", NameCN = "Pictomancer", NameKO = "Pictomancer", IsPopular = true}
         };
 
         public static IEnumerable<JobIDs> PopularJobIDs =>
