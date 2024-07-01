@@ -362,7 +362,7 @@
       <Version>2.0.7</Version>
     </PackageReference>
     <PackageReference Include="Fody">
-      <Version>6.6.0</Version>
+      <Version>6.8.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="FontAwesome.WPF">
