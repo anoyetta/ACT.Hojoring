@@ -212,6 +212,7 @@ namespace FFXIV.Framework.XIVHelper
                             _ => GameRegion.Global
                         },
                         UseLocalCache = true,
+                        //APIBaseURL = "https://raw.githubusercontent.com/wbonbon/sharlayan-resources/dawntrail-7.0",
                     };
 
                     this._memoryHandler = SharlayanMemoryManager.Instance.AddHandler(config);

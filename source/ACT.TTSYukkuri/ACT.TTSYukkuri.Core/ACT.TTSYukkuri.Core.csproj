@@ -309,6 +309,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\sharlayan\Sharlayan\Sharlayan.csproj">
+      <Project>{4c436487-78ff-4899-9f19-2323ab0ca6bc}</Project>
+      <Name>Sharlayan</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
       <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>
       <Name>FFXIV.Framework</Name>
@@ -508,9 +512,6 @@
     </PackageReference>
     <PackageReference Include="ReactiveProperty">
       <Version>9.3.4</Version>
-    </PackageReference>
-    <PackageReference Include="Sharlayan">
-      <Version>7.0.1</Version>
     </PackageReference>
     <PackageReference Include="System.AppContext">
       <Version>4.3.0</Version>
