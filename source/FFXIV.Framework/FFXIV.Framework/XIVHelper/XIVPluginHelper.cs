@@ -236,7 +236,7 @@ namespace FFXIV.Framework.XIVHelper
             // sharlayanを設定する
             // Actor を取得しない
             // Party を取得しない
-            SharlayanHelper.Instance.IsSkipActor = true;
+            //SharlayanHelper.Instance.IsSkipActor = true;
             SharlayanHelper.Instance.IsSkipParty = true;
 
             var config = new Sharlayan.SharlayanConfiguration();

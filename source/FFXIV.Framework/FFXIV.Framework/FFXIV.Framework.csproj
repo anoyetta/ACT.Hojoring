@@ -343,6 +343,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\sharlayan\Sharlayan\Sharlayan.csproj">
+      <Project>{4c436487-78ff-4899-9f19-2323ab0ca6bc}</Project>
+      <Name>Sharlayan</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ACT.Hojoring.Activator\ACT.Hojoring.Activator.csproj">
       <Project>{c1bc2d6e-e10d-4a7f-900b-5fd84f39bf0a}</Project>
       <Name>ACT.Hojoring.Activator</Name>
@@ -413,9 +417,6 @@
     <PackageReference Include="PropertyChanged.Fody">
       <Version>3.4.0</Version>
       <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Sharlayan">
-      <Version>7.0.1</Version>
     </PackageReference>
     <PackageReference Include="System.Text.RegularExpressions">
       <Version>4.3.1</Version>
