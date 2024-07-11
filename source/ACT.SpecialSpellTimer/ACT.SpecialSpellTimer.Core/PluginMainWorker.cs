@@ -128,7 +128,7 @@ namespace ACT.SpecialSpellTimer
         public void BeginOverlaysThread()
         {
             // スペルのスレッドを開始する
-            this.refreshSpellOverlaysWorker = new DispatcherTimer(DispatcherPriority.Background)
+            this.refreshSpellOverlaysWorker = new DispatcherTimer(DispatcherPriority.Normal)
             {
                 Interval = TimeSpan.FromMilliseconds(Settings.Default.RefreshInterval)
             };
