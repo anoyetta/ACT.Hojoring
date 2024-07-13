@@ -22,6 +22,53 @@ namespace FFXIV.Framework.XIVHelper
             (obj) => obj.GetHashCode());
 
         public static void CopyToEx(
+            ActorItem actor,
+            CombatantEx destination)
+        {
+            var src = actor;
+            var dst = destination;
+
+            dst.LastUpdateTimestamp = DateTime.Now;
+
+            dst.ID = src.ID;
+            dst.OwnerID = src.OwnerID;
+            dst.Type = (byte)src.Type;
+            dst.Job = (int)src.Job;
+            dst.Level = src.Level;
+            dst.Name = src.Name;
+            dst.CurrentHP = (uint)src.HPCurrent;
+            dst.MaxHP = (uint)src.HPMax;
+            dst.CurrentMP = (uint)src.MPCurrent;
+            dst.CurrentCP = (uint)src.CPCurrent;
+            dst.MaxCP = (uint)src.CPMax;
+            dst.CurrentGP = (uint)src.GPCurrent;
+            dst.MaxGP = (uint)src.GPMax;
+            dst.IsCasting = src.IsCasting;
+            dst.CastBuffID = (uint)src.CastingID;
+            dst.CastTargetID = (uint)src.CastingTargetID;
+            dst.CastDurationCurrent = src.CastingProgress;
+            dst.CastDurationMax = src.CastingTime;
+            dst.PosX = (float)src.X;
+            dst.PosY = (float)src.Y;
+            dst.PosZ = (float)src.Z;
+            dst.Heading = src.Heading;
+            dst.CurrentWorldID = 0;
+            dst.WorldID = 0;
+            dst.WorldName = "";
+            dst.BNpcNameID = src.NPCID1;
+            dst.BNpcID = src.NPCID2;
+            dst.TargetID = (uint)src.TargetID;
+            dst.EffectiveDistance = src.Distance;
+            dst.PartyType = 0;
+            dst.Address = (IntPtr)0;
+            dst.Order = 0;
+            dst.SetName(src.Name);
+
+
+
+
+        }
+        public static void CopyToEx(
             Combatant source,
             CombatantEx destination)
         {

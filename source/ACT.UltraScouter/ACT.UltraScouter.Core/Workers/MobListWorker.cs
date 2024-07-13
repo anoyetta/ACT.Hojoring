@@ -10,6 +10,8 @@ using ACT.UltraScouter.Views;
 using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
+using FFXIV_ACT_Plugin.Common.Models;
+using NPOI.SS.Formula.Functions;
 using Sharlayan.Core.Enums;
 
 namespace ACT.UltraScouter.Workers
@@ -211,6 +213,8 @@ namespace ACT.UltraScouter.Workers
             // モブを検出する
             IEnumerable<MobInfo> GetTargetMobs()
             {
+                var actorsInfo = SharlayanHelper.Instance.Actors;
+
                 foreach (var x in combatants)
                 {
                     if (string.IsNullOrEmpty(x?.Name))
@@ -242,6 +246,29 @@ namespace ACT.UltraScouter.Workers
                         MaxDistance = targetInfo.MaxDistance,
                         TTSEnabled = targetInfo.TTSEnabled,
                     };
+                }
+
+                // 風脈の泉を検出する
+                foreach (var actor in actorsInfo)
+                {
+                    if (actor.Name == "風脈の泉")
+                    {
+                        var targetInfo = Settings.Instance.MobList.GetTargetMobInfo(actor.Name);
+                        if (string.IsNullOrEmpty(targetInfo.Name))
+                        {
+                            break;
+                        }
+                        CombatantEx combatant = new CombatantEx();
+                        CombatantEx.CopyToEx(actor, combatant);
+                        yield return new MobInfo()
+                        {
+                            Name = actor.Name,
+                            Combatant = combatant,
+                            Rank = targetInfo.Rank,
+                            MaxDistance = targetInfo.MaxDistance,
+                            TTSEnabled= targetInfo.TTSEnabled,
+                        };
+                    }
                 }
             }
 

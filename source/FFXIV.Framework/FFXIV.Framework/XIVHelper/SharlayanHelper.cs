@@ -447,7 +447,7 @@ namespace FFXIV.Framework.XIVHelper
             }
         }
 
-        public bool IsScanNPC { get; set; } = false;
+        public bool IsScanNPC { get; set; } = true;
 
         public bool IsSkipPlayer { get; set; } = false;
 
