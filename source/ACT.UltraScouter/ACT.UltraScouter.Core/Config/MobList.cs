@@ -62,10 +62,18 @@ namespace ACT.UltraScouter.Config
         [XmlIgnore] private bool ttsEnabled = false;
         [XmlIgnore] private bool dumpCombatants = false;
         [XmlIgnore] private bool isScanNPC = true;
+        [XmlIgnore] private bool bDisableAether = false;
 
         /// <summary>
         /// 表示？
         /// </summary>
+        [DataMember]
+        public bool DisableAether
+        {
+            get => this.bDisableAether;
+            set => this.SetProperty(ref this.bDisableAether, value);
+        }
+
         [DataMember]
         public bool Visible
         {
