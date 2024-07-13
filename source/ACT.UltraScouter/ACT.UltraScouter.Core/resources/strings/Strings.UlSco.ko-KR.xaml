@@ -117,6 +117,7 @@
   <system:String x:Key="MobList_SimpleView">간략하게 표시</system:String>
   <system:String x:Key="MobList_UngroupSameNameMobs">같은 이름을 가진 몹에 대한 그룹화 해제</system:String>
   <system:String x:Key="MobList_VisibleZPosition">Z축 표시</system:String>
+  <system:String x:Key="MobList_DisableAether">Disable Aether</system:String>
   <system:String x:Key="MobList_DirectionOrigin">방향 표시 기준</system:String>
   <system:String x:Key="MobList_DirectionAdjustmentAngle">방향 보정 각도</system:String>
   <system:String x:Key="MobList_DirectionOriginDescription">Me, Camera를 사용할 경우 FFXIV_MemoryReader가 필요합니다.</system:String>

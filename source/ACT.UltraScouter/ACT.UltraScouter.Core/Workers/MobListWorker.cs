@@ -249,25 +249,27 @@ namespace ACT.UltraScouter.Workers
                 }
 
                 // 風脈の泉を検出する
-                foreach (var actor in actorsInfo)
-                {
-                    if (actor.Name == "風脈の泉")
+                if (!Settings.Instance.MobList.DisableAether) {
+                    foreach (var actor in actorsInfo)
                     {
-                        var targetInfo = Settings.Instance.MobList.GetTargetMobInfo(actor.Name);
-                        if (string.IsNullOrEmpty(targetInfo.Name))
+                        if (actor.Name == "風脈の泉")
                         {
-                            break;
+                            var targetInfo = Settings.Instance.MobList.GetTargetMobInfo(actor.Name);
+                            if (string.IsNullOrEmpty(targetInfo.Name))
+                            {
+                                break;
+                            }
+                            CombatantEx combatant = new CombatantEx();
+                            CombatantEx.CopyToEx(actor, combatant);
+                            yield return new MobInfo()
+                            {
+                                Name = actor.Name,
+                                Combatant = combatant,
+                                Rank = targetInfo.Rank,
+                                MaxDistance = targetInfo.MaxDistance,
+                                TTSEnabled = targetInfo.TTSEnabled,
+                            };
                         }
-                        CombatantEx combatant = new CombatantEx();
-                        CombatantEx.CopyToEx(actor, combatant);
-                        yield return new MobInfo()
-                        {
-                            Name = actor.Name,
-                            Combatant = combatant,
-                            Rank = targetInfo.Rank,
-                            MaxDistance = targetInfo.MaxDistance,
-                            TTSEnabled= targetInfo.TTSEnabled,
-                        };
                     }
                 }
             }

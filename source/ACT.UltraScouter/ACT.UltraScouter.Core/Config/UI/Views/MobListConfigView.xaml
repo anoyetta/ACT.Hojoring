@@ -72,7 +72,12 @@
         IsChecked="{Binding MobList.VisibleZ, Mode=TwoWay}"
         Visibility="{Binding MobList.IsNotSimple, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
 
-      <StackPanel Margin="0 5 0 0" Orientation="Horizontal">
+      <CheckBox
+        Margin="0 5 0 0"
+          Content="{DynamicResource MobList_DisableAether}"
+          IsChecked="{Binding MobList.DisableAether, Mode=TwoWay}" />
+
+            <StackPanel Margin="0 5 0 0" Orientation="Horizontal">
         <StackPanel>
           <Label
             Content="{DynamicResource MobList_DirectionOrigin}" />

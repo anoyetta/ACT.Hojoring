@@ -724,6 +724,7 @@ namespace ACT.UltraScouter.Config
                 DisplayCount = 10,
                 NearDistance = 20,
                 TTSEnabled = true,
+                DisableAether = false,
                 Location = new Location() { X = 0, Y = 0 },
 
                 MeDisplayText = new DisplayText()
