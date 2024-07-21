@@ -43,6 +43,8 @@ namespace ACT.TTSYukkuri
         /// </summary>
         private volatile List<PreviousPartyMemberStatus> previouseParyMemberList = new List<PreviousPartyMemberStatus>();
 
+        private List<CombatantEx> pList = new List<CombatantEx>();
+
         /// <summary>
         /// パーティを監視する
         /// </summary>
@@ -50,7 +52,16 @@ namespace ACT.TTSYukkuri
         {
             // パーティメンバの情報を取得する
             var player = CombatantsManager.Instance.Player;
-            var partyList = CombatantsManager.Instance.GetPartyList();
+            IEnumerable<CombatantEx> partyList = CombatantsManager.Instance.GetPartyList();
+
+            // ソロの時でも動くようにする
+            if (!partyList.Any())
+            {
+                pList.Clear();
+                pList.Add(player);
+                partyList = pList;
+            }
+
 
             // パーティリストに存在しないメンバの前回の状態を消去する
             this.previouseParyMemberList.RemoveAll(x =>
