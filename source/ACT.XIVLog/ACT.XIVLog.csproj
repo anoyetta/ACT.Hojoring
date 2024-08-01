@@ -81,10 +81,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\sharlayan\Sharlayan\Sharlayan.csproj">
-      <Project>{4c436487-78ff-4899-9f19-2323ab0ca6bc}</Project>
-      <Name>Sharlayan</Name>
-    </ProjectReference>
     <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
       <Project>{22EBF8A4-EED1-4CD1-99EB-99665163A315}</Project>
       <Name>FFXIV.Framework</Name>

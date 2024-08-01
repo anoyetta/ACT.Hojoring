@@ -17,6 +17,7 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using FFXIV_ACT_Plugin.Common;
 using FFXIV_ACT_Plugin.Common.Models;
+using static FFXIV.Framework.XIVHelper.LogMessageTypeExtensions;
 using FFXIV_ACT_Plugin.Logfile;
 using Microsoft.MinIoC;
 using Microsoft.VisualBasic.FileIO;
@@ -483,10 +484,9 @@ namespace FFXIV.Framework.XIVHelper
             // メッセージタイプを抽出する
             var messagetype = logInfo.detectedType;
 
-            // 255を超えるメッセージタイプは無視する
-            if (messagetype > 0xFF)
+            if (messagetype > LogMessageTypeExtensions.max_messagetype)
             {
-                return;
+                    return;
             }
 
             line = LogMessageTypeExtensions.RemoveLogMessageType(messagetype, line);
@@ -513,12 +513,12 @@ namespace FFXIV.Framework.XIVHelper
                 return;
             }
 
-            if (messagetype <= 0xFF)
+            if (messagetype <= LogMessageTypeExtensions.max_messagetype)
             {
-                var type = (LogMessageType)Enum.ToObject(typeof(LogMessageType), messagetype);
+                var type = (LogMessageTypeExtensions.LogMessageType)Enum.ToObject(typeof(LogMessageTypeExtensions.LogMessageType), messagetype);
                 switch (type)
                 {
-                    case LogMessageType.ChatLog:
+                    case LogMessageTypeExtensions.LogMessageType.ChatLog:
                         // 明らかに使用しないダメージ系をカットする
                         if (DamageLogPattern.IsMatch(parsedLog))
                         {
@@ -569,7 +569,7 @@ namespace FFXIV.Framework.XIVHelper
         /// </summary>
         public static readonly string[] IgnoreLogKeywords = new[]
         {
-            LogMessageType.DoTHoT.ToKeyword(),
+            LogMessageTypeExtensions.LogMessageType.DoTHoT.ToKeyword(),
         };
 
         /*
@@ -620,7 +620,7 @@ namespace FFXIV.Framework.XIVHelper
         /// </remarks>
         private static readonly Regex DamageLogPattern =
             new Regex(
-                $@"^{LogMessageType.ChatLog.ToHex()}:..(29|a9|2d|ad):",
+                $@"^{LogMessageTypeExtensions.LogMessageType.ChatLog.ToHex()}:..(29|a9|2d|ad):",
                 RegexOptions.Compiled |
                 RegexOptions.IgnoreCase |
                 RegexOptions.ExplicitCapture);
@@ -633,7 +633,7 @@ namespace FFXIV.Framework.XIVHelper
         public static bool IsDamageLog(
             string logLine)
         {
-            if (!logLine.StartsWith($"{LogMessageType.ChatLog.ToHex()}:"))
+            if (!logLine.StartsWith($"{LogMessageTypeExtensions.LogMessageType.ChatLog.ToHex()}:"))
             {
                 return false;
             }

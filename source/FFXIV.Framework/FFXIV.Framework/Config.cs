@@ -14,7 +14,7 @@ using FFXIV.Framework.Common;
 using FFXIV.Framework.Globalization;
 using FFXIV.Framework.WPF.Views;
 using FFXIV.Framework.XIVHelper;
-using FFXIV_ACT_Plugin.Logfile;
+using static FFXIV.Framework.XIVHelper.LogMessageTypeExtensions;
 using Prism.Mvvm;
 
 namespace FFXIV.Framework

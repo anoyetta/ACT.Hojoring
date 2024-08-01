@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using FFXIV_ACT_Plugin.Logfile;
+using static FFXIV.Framework.XIVHelper.LogMessageTypeExtensions;
 
 namespace FFXIV.Framework.XIVHelper
 {

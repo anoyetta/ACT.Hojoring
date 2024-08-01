@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Advanced_Combat_Tracker;
-using FFXIV_ACT_Plugin.Logfile;
+using static FFXIV.Framework.XIVHelper.LogMessageTypeExtensions;
+
 
 namespace FFXIV.Framework.XIVHelper
 {
@@ -54,7 +55,7 @@ namespace FFXIV.Framework.XIVHelper
 
             foreach (var line in lines)
             {
-                output.WriteLine(LogMessageType.ChatLog, timestamp, line);
+                output.WriteLine(FFXIV_ACT_Plugin.Logfile.LogMessageType.ChatLog, timestamp, line);
             }
         }
 
@@ -91,7 +92,7 @@ namespace FFXIV.Framework.XIVHelper
                 WriteLineDebugLogDelegate?.Invoke(timestamp, $"{ChatLogCode}|{line}");
             }
 
-            output.WriteLine(LogMessageType.ChatLog, timestamp, line);
+            output.WriteLine(FFXIV_ACT_Plugin.Logfile.LogMessageType.ChatLog, timestamp, line);
         }
 
         private static readonly string ChatLogCode = LogMessageType.ChatLog.ToHex();
