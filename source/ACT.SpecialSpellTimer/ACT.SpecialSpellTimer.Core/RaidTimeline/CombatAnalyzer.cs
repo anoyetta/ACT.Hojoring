@@ -378,7 +378,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             foreach (var log in logs)
             {
                 // ログメッセージタイプの文言を除去する
-                if (log.detectedType <= 0xFF)
+                if (log.detectedType <= LogMessageTypeExtensions.max_messagetype)
                 {
                     log.logLine = LogMessageTypeExtensions.RemoveLogMessageType(
                         log.detectedType,

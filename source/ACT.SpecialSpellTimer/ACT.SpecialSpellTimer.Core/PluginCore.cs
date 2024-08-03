@@ -1,5 +1,7 @@
 using System;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -35,6 +37,23 @@ namespace ACT.SpecialSpellTimer
         public static void Initialize(
             IActPluginV1 plugin)
         {
+            try
+            {
+                DirectoryInfo temp = new DirectoryInfo(Path.GetTempPath());
+
+                var folders = temp.EnumerateDirectories("RazorEngine_*");
+
+                foreach (var folder in folders)
+                {
+                    Directory.Delete(temp.FullName + folder.Name, true);
+                }
+
+            }
+            catch
+            {
+                Logger.Write("FAILD delete temp RazorEngine folder");
+            }
+
             instance = new PluginCore();
             instance.PluginRoot = plugin;
         }

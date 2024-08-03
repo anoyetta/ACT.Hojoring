@@ -11,7 +11,7 @@ using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.XIVHelper;
-using FFXIV_ACT_Plugin.Logfile;
+using static FFXIV.Framework.XIVHelper.LogMessageTypeExtensions;
 
 namespace ACT.SpecialSpellTimer
 {

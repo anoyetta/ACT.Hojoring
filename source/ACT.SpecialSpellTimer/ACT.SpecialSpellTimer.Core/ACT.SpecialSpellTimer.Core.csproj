@@ -337,6 +337,9 @@
     <PackageReference Include="RazorEngine">
       <Version>3.10.0</Version>
     </PackageReference>
+    <PackageReference Include="Sharlayan">
+      <Version>8.0.1</Version>
+    </PackageReference>
     <PackageReference Include="System.Text.RegularExpressions">
       <Version>4.3.1</Version>
     </PackageReference>
@@ -1525,10 +1528,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\sharlayan\Sharlayan\Sharlayan.csproj">
-      <Project>{4c436487-78ff-4899-9f19-2323ab0ca6bc}</Project>
-      <Name>Sharlayan</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\ACT.SpecialSpellTimer.RazorModel\ACT.SpecialSpellTimer.RazorModel.csproj">
       <Project>{450f38fa-7f7d-41b9-9bbb-503efc6c0a72}</Project>
       <Name>ACT.SpecialSpellTimer.RazorModel</Name>

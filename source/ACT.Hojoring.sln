@@ -46,8 +46,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.Hojoring.Debug", "ACT.H
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ACT.Hojoring.Shared", "ACT.Hojoring.Shared\ACT.Hojoring.Shared.shproj", "{9DD140FA-30BD-4E10-B61A-F8A5B8837643}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharlayan", "..\..\sharlayan\Sharlayan\Sharlayan.csproj", "{4C436487-78FF-4899-9F19-2323AB0CA6BC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -184,14 +182,6 @@ Global
 		{466C29AA-D69A-4D20-AA75-F559D9528634}.Release|Any CPU.Build.0 = Release|Any CPU
 		{466C29AA-D69A-4D20-AA75-F559D9528634}.Release|x86.ActiveCfg = Release|Any CPU
 		{466C29AA-D69A-4D20-AA75-F559D9528634}.Release|x86.Build.0 = Release|Any CPU
-		{4C436487-78FF-4899-9F19-2323AB0CA6BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C436487-78FF-4899-9F19-2323AB0CA6BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C436487-78FF-4899-9F19-2323AB0CA6BC}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4C436487-78FF-4899-9F19-2323AB0CA6BC}.Debug|x86.Build.0 = Debug|Any CPU
-		{4C436487-78FF-4899-9F19-2323AB0CA6BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C436487-78FF-4899-9F19-2323AB0CA6BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C436487-78FF-4899-9F19-2323AB0CA6BC}.Release|x86.ActiveCfg = Release|Any CPU
-		{4C436487-78FF-4899-9F19-2323AB0CA6BC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -210,8 +200,8 @@ Global
 		{C1BC2D6E-E10D-4A7F-900B-5FD84F39BF0A} = {EC98C548-6268-4B67-BC45-88DCD9B63960}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {91001FDF-B748-4513-A399-35F7E9BD37F8}
 		        SolutionGuid = {2A11DDD1-7A46-4236-969A-3942CBE6A01A}
+		SolutionGuid = {91001FDF-B748-4513-A399-35F7E9BD37F8}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ACT.Hojoring.Shared\ACT.Hojoring.Shared.projitems*{450f38fa-7f7d-41b9-9bbb-503efc6c0a72}*SharedItemsImports = 4

@@ -17,13 +17,14 @@ namespace ACT.TTSYukkuri.Config.Views
         private static CevioTrayWindow trayWindow;
 
         private static SasaraConfig Config => Settings.Default.SasaraSettings;
+        private static CevioAIConfig CeVIOAI_Config => Settings.Default.CevioAISettings;
 
         private static readonly double Interval = 5 * 1000;
         private static readonly double IdleInterval = 15 * 1000;
 
         private static readonly ThreadWorker CevioSubscriber = new ThreadWorker(() =>
         {
-            if (!Config.IsHideCevioWindow)
+            if (!Config.IsHideCevioWindow && !CeVIOAI_Config.IsHideCevioWindow)
             {
                 CevioSubscriber.Interval = IdleInterval;
                 return;
@@ -55,7 +56,7 @@ namespace ACT.TTSYukkuri.Config.Views
                 CevioSubscriber.Run();
             }
 
-            if (!Config.IsHideCevioWindow)
+            if (!Config.IsHideCevioWindow && !CeVIOAI_Config.IsHideCevioWindow)
             {
                 return;
             }
@@ -99,7 +100,7 @@ namespace ACT.TTSYukkuri.Config.Views
 
         public static void ToIcon()
         {
-            if (!Config.IsHideCevioWindow)
+            if (!Config.IsHideCevioWindow && !CeVIOAI_Config.IsHideCevioWindow)
             {
                 return;
             }

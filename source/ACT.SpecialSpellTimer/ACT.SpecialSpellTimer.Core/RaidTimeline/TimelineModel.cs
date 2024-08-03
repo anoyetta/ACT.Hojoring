@@ -27,6 +27,7 @@ using RazorEngine;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
 using RazorEngine.Text;
+using static Sharlayan.Core.Enums.Actor;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -688,6 +689,15 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             config.Namespaces.Add("FFXIV.Framework.Common");
             config.Namespaces.Add("FFXIV.Framework.Extensions");
             config.Namespaces.Add("ACT.SpecialSpellTimer.RazorModel");
+
+            //You can use config.DisableTempFileLocking = true as well.
+            //This will work in any AppDomain (including the default one).
+            //To remove the RazorEngine warnings you can additionally use config.CachingProvider = new DefaultCachingProvider(t => {}).
+            // See also https://github.com/Antaris/RazorEngine/issues/244 for more details.
+
+//            config.DisableTempFileLocking = true;
+//            config.CachingProvider = new DefaultCachingProvider(t => { });
+
 
             config.EncodedStringFactory = new RawStringFactory();
 

@@ -29,6 +29,12 @@ namespace ACT.XIVLog
         {
             this.PropertyChanged += async (_, __) =>
             {
+                // 初期化中に自動保存しない
+                if (isInitializing)
+                {
+                    return;
+                }
+
                 if (this.isAutoSaving)
                 {
                     return;

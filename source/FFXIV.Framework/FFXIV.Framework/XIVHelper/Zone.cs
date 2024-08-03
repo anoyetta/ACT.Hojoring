@@ -86,6 +86,15 @@ namespace FFXIV.Framework.XIVHelper
                 rank = 50;
             }
 
+            // エウレカ等
+            if (intendedUse == (int)TerritoryIntendedUse.Eukrea ||
+                intendedUse == (int)TerritoryIntendedUse.Bozja ||
+                intendedUse == (int)TerritoryIntendedUse.DR ||
+                intendedUse == (int)TerritoryIntendedUse.DRS)
+            {
+                rank = 55;
+            }
+
             // ディープダンジョン
             if (intendedUse == (int)TerritoryIntendedUse.DeepDungeon)
             {
@@ -125,5 +134,9 @@ namespace FFXIV.Framework.XIVHelper
         PvP2 = 39,
         PvP3 = 42,
         DeepDungeon = 31,
+        Eukrea = 41,
+        Bozja = 48,
+        DR = 52,
+        DRS = 53,
     }
 }
