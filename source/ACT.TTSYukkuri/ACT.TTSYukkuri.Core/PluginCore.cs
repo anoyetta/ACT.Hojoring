@@ -522,7 +522,7 @@ namespace ACT.TTSYukkuri
             try
             {
                 // CeVIO のアイコン化を解除する
-                if (Settings.Default.SasaraSettings.IsHideCevioWindow)
+                if (Settings.Default.SasaraSettings.IsHideCevioWindow || Settings.Default.CevioAISettings.IsHideCevioWindow)
                 {
                     CevioTrayManager.RestoreWindow();
                     CevioTrayManager.End();
