@@ -60,6 +60,9 @@ namespace ACT.TTSYukkuri.HOYA
                 case VoicePalettes.Ext2:
                     config = Settings.Default.HOYASettingsExt2;
                     break;
+                case VoicePalettes.Ext3:
+                    config = Settings.Default.HOYASettingsExt3;
+                    break;
                 default:
                     config = Settings.Default.HOYASettings;
                     break;
@@ -74,7 +77,7 @@ namespace ACT.TTSYukkuri.HOYA
             this.CreateWaveWrapper(wave, () =>
             {
                 if (string.IsNullOrWhiteSpace(
-                    Settings.Default.HOYASettings.APIKey))
+                    config.APIKey))
                 {
                     return;
                 }

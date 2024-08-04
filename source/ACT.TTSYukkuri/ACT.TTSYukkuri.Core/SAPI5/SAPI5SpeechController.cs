@@ -134,11 +134,31 @@ namespace ACT.TTSYukkuri.SAPI5
                 return;
             }
 
+            SAPI5Configs config;
+            switch (voicePalette)
+            {
+                case VoicePalettes.Default:
+                    config = Settings.Default.SAPI5Settings;
+                    break;
+                case VoicePalettes.Ext1:
+                    config = Settings.Default.SAPI5SettingsExt1;
+                    break;
+                case VoicePalettes.Ext2:
+                    config = Settings.Default.SAPI5SettingsExt2;
+                    break;
+                case VoicePalettes.Ext3:
+                    config = Settings.Default.SAPI5SettingsExt3;
+                    break;
+                default:
+                    config = Settings.Default.SAPI5Settings;
+                    break;
+            }
+
             // 現在の条件をハッシュ化してWAVEファイル名を作る
             var wave = this.GetCacheFileName(
                 Settings.Default.TTS,
                 text,
-                this.Config.ToString());
+                config.ToString());
 
             this.CreateWaveWrapper(wave, () =>
             {
@@ -146,7 +166,7 @@ namespace ACT.TTSYukkuri.SAPI5
                 using (var synth = new SpeechSynthesizer())
                 {
                     // VOICEを設定する
-                    var voice = this.GetSynthesizer(this.Config.VoiceID);
+                    var voice = this.GetSynthesizer(config.VoiceID);
                     if (voice == null)
                     {
                         return;

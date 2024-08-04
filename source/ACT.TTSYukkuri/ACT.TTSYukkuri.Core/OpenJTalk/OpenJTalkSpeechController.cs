@@ -57,6 +57,26 @@ namespace ACT.TTSYukkuri.OpenJTalk
                 return;
             }
 
+            OpenJTalkConfig config;
+            switch (voicePalette)
+            {
+                case VoicePalettes.Default:
+                    config = Settings.Default.OpenJTalkSettings;
+                    break;
+                case VoicePalettes.Ext1:
+                    config = Settings.Default.OpenJTalkSettingsExt1;
+                    break;
+                case VoicePalettes.Ext2:
+                    config = Settings.Default.OpenJTalkSettingsExt2;
+                    break;
+                case VoicePalettes.Ext3:
+                    config = Settings.Default.OpenJTalkSettingsExt3;
+                    break;
+                default:
+                    config = Settings.Default.OpenJTalkSettings;
+                    break;
+            }
+
             // テキストをユーザ辞書で置き換える
             text = this.ReplaceByUserDictionary(text);
 
@@ -64,7 +84,7 @@ namespace ACT.TTSYukkuri.OpenJTalk
             var wave = this.GetCacheFileName(
                 Settings.Default.TTS,
                 text.Replace(Environment.NewLine, "+"),
-                this.Config.ToString());
+                config.ToString());
 
             this.CreateWaveWrapper(wave, () =>
             {

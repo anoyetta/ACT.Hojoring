@@ -51,6 +51,25 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
             {
                 return;
             }
+            GoogleCloudTextToSpeechConfig config;
+            switch (voicePalette)
+            {
+                case VoicePalettes.Default:
+                    config = Settings.Default.GoogleCloudTextToSpeechSettings;
+                    break;
+                case VoicePalettes.Ext1:
+                    config = Settings.Default.GoogleCloudTextToSpeechSettingsExt1;
+                    break;
+                case VoicePalettes.Ext2:
+                    config = Settings.Default.GoogleCloudTextToSpeechSettingsExt2;
+                    break;
+                case VoicePalettes.Ext3:
+                    config = Settings.Default.GoogleCloudTextToSpeechSettingsExt3;
+                    break;
+                default:
+                    config = Settings.Default.GoogleCloudTextToSpeechSettings;
+                    break;
+            }
 
             var client = GoogleCloudTextToSpeechConfig.TTSClient;
             if (client == null)
@@ -62,7 +81,7 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
             var wave = this.GetCacheFileName(
                     Settings.Default.TTS,
                     text.Replace(Environment.NewLine, "+"),
-                    Settings.Default.GoogleCloudTextToSpeechSettings.ToString());
+                    config.ToString());
 
             this.CreateWaveWrapper(wave, () =>
             {
@@ -74,17 +93,17 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
 
                 VoiceSelectionParams voice = new VoiceSelectionParams
                 {
-                    LanguageCode = Settings.Default.GoogleCloudTextToSpeechSettings.LanguageCode,
-                    Name = Settings.Default.GoogleCloudTextToSpeechSettings.Name,
+                    LanguageCode = config.LanguageCode,
+                    Name = config.Name,
                 };
 
-                AudioConfig config = new AudioConfig
+                AudioConfig audioconfig = new AudioConfig
                 {
                     AudioEncoding = AudioEncoding.Linear16,
-                    VolumeGainDb = Settings.Default.GoogleCloudTextToSpeechSettings.VolumeGainDb,
-                    Pitch = Settings.Default.GoogleCloudTextToSpeechSettings.Pitch,
-                    SpeakingRate = Settings.Default.GoogleCloudTextToSpeechSettings.SpeakingRate,
-                    SampleRateHertz = Settings.Default.GoogleCloudTextToSpeechSettings.SampleRateHertz,
+                    VolumeGainDb = config.VolumeGainDb,
+                    Pitch = config.Pitch,
+                    SpeakingRate = config.SpeakingRate,
+                    SampleRateHertz = config.SampleRateHertz,
                 };
 
                 // 音声合成リクエストを送信する
@@ -92,7 +111,7 @@ namespace ACT.TTSYukkuri.GoogleCloudTextToSpeech
                 {
                     Input = input,
                     Voice = voice,
-                    AudioConfig = config
+                    AudioConfig = audioconfig
                 });
 
                 // 合成した音声をファイルに書き出す
