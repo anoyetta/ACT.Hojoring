@@ -73,18 +73,38 @@ namespace ACT.TTSYukkuri.Yukkuri
                 return;
             }
 
+            YukkuriConfig config;
+            switch (voicePalette)
+            {
+                case VoicePalettes.Default:
+                    config = Settings.Default.YukkuriSettings;
+                    break;
+                case VoicePalettes.Ext1:
+                    config = Settings.Default.YukkuriSettingsExt1;
+                    break;
+                case VoicePalettes.Ext2:
+                    config = Settings.Default.YukkuriSettingsExt2;
+                    break;
+                case VoicePalettes.Ext3:
+                    config = Settings.Default.YukkuriSettingsExt3;
+                    break;
+                default:
+                    config = Settings.Default.YukkuriSettings;
+                    break;
+            }
+
             // 現在の条件をハッシュ化してWAVEファイル名を作る
             var wave = this.GetCacheFileName(
                 Settings.Default.TTS,
                 text.Replace(Environment.NewLine, "+"),
-                Settings.Default.YukkuriSettings.ToString());
+                config.ToString());
 
             this.CreateWaveWrapper(wave, () =>
             {
                 // よみがなに変換する
                 var tts = text;
 
-                if (Settings.Default.YukkuriSettings.UseKanji2Koe)
+                if (config.UseKanji2Koe)
                 {
                     tts = this.ConvertToPhoneticByKanji2Koe(tts);
                 }
@@ -99,7 +119,7 @@ namespace ACT.TTSYukkuri.Yukkuri
                 AquesTalk.Instance.TextToWave(
                     tts,
                     wave,
-                    Settings.Default.YukkuriSettings.ToParameter());
+                    config.ToParameter());
             });
 
             // 再生する

@@ -50,12 +50,31 @@ namespace ACT.TTSYukkuri.Polly
             {
                 return;
             }
+            PollyConfigs config;
+            switch (voicePalette)
+            {
+                case VoicePalettes.Default:
+                    config = Settings.Default.PollySettings;
+                    break;
+                case VoicePalettes.Ext1:
+                    config = Settings.Default.PollySettingsExt1;
+                    break;
+                case VoicePalettes.Ext2:
+                    config = Settings.Default.PollySettingsExt2;
+                    break;
+                case VoicePalettes.Ext3:
+                    config = Settings.Default.PollySettingsExt3;
+                    break;
+                default:
+                    config = Settings.Default.PollySettingsExt1;
+                    break;
+            }
 
             // 現在の条件をハッシュ化してWAVEファイル名を作る
             var wave = this.GetCacheFileName(
                 Settings.Default.TTS,
                 text.Replace(Environment.NewLine, "+"),
-                Settings.Default.PollySettings.ToString(),
+                config.ToString(),
                 true);
 
             this.CreateWaveWrapper(wave, () =>
