@@ -582,7 +582,7 @@ namespace ACT.SpecialSpellTimer.Models
             }
 
             var timeToPlay = this.MatchDateTime.AddSeconds(this.Delay);
-            var duration = (timeToPlay - DateTime.UtcNow).TotalMilliseconds;
+            var duration = (timeToPlay - DateTime.Now).TotalMilliseconds;
 
             if (duration > 0d)
             {
