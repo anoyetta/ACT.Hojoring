@@ -686,7 +686,7 @@ namespace ACT.SpecialSpellTimer.Models
 
         public void SimulateMatch()
         {
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
 
             // 擬似的にマッチ状態にする
             this.IsTest = true;
