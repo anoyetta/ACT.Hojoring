@@ -200,8 +200,8 @@ Global
 		{C1BC2D6E-E10D-4A7F-900B-5FD84F39BF0A} = {EC98C548-6268-4B67-BC45-88DCD9B63960}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		        SolutionGuid = {2A11DDD1-7A46-4236-969A-3942CBE6A01A}
 		SolutionGuid = {91001FDF-B748-4513-A399-35F7E9BD37F8}
+		        SolutionGuid = {2A11DDD1-7A46-4236-969A-3942CBE6A01A}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ACT.Hojoring.Shared\ACT.Hojoring.Shared.projitems*{450f38fa-7f7d-41b9-9bbb-503efc6c0a72}*SharedItemsImports = 4
