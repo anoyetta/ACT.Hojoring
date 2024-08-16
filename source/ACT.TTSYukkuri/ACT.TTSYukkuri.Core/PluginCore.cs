@@ -621,6 +621,36 @@ namespace ACT.TTSYukkuri
             {
                 IsSilent = true,
             });
+
+            // ミュートを解除されたときにサウンドデバイスを初期化する
+            TextCommandBridge.Instance.Subscribe(new TextCommand(
+            (string logLine, out Match match) =>
+            {
+                var result = false;
+                match = null;
+
+                if (!string.IsNullOrEmpty(logLine))
+                {
+                    if (logLine.Contains(UnMuteKeywords.UnMuteJP) ||
+                    logLine.Contains(UnMuteKeywords.UnMuteEN) ||
+                    logLine.Contains(UnMuteKeywords.UnMuteDE) ||
+                    logLine.Contains(UnMuteKeywords.UnMuteFR)
+                    )
+                    {
+                        result = true;
+                    }
+                }
+
+                return result;
+            },
+            (string logLine, Match match) =>
+            {
+                SoundPlayerWrapper.Init();
+                this.AppLogger.Info("Playback stream initialized.");
+            })
+            {
+                IsSilent = true,
+            });
         }
 
         /// <summary>
