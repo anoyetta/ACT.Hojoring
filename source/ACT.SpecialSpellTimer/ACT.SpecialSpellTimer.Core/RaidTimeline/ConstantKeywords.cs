@@ -224,6 +224,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             public static readonly string AnalyzeTimeStart = "/analyze start";
             public static readonly string AnalyzeTimeEnd = "/analyze end";
             public static readonly string ChangedZone = $"] {LogMessageType.Territory.ToHex()}:";
+            public static readonly string NetworkStatusEffect26 = $"] {LogMessageType.StatusList.ToHex()}:";
 
             public static readonly string AddedRegexPattern
                 = $@"\[EX\] \+Combatant name=(?<actor>.+) X=";
@@ -320,6 +321,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             new AnalyzeKeyword() { Keyword = "レディチェックを開始しました。", Category = KewordTypes.End },
             new AnalyzeKeyword() { Keyword = "「", Category = KewordTypes.Action },
             new AnalyzeKeyword() { Keyword = "」", Category = KewordTypes.Action },
+            new AnalyzeKeyword() { Keyword = CommonKeywords.NetworkStatusEffect26, Category = KewordTypes.Record },
         };
 
         private static readonly Dictionary<string, Regex> AnalyzeRegexesJA = new Dictionary<string, Regex>()
