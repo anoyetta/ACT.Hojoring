@@ -283,6 +283,7 @@
   <system:String x:Key="Timeline_CircleStyle">원형 스타일</system:String>
   <system:String x:Key="Timeline_TestTimeline">타임라인 테스트</system:String>
   <system:String x:Key="Timeline_TimelineTester">타임라인 테스터</system:String>
+  <system:String x:Key="Timeline_TestTimeline2">Test timeline by ParsedLog</system:String>
   <system:String x:Key="Timeline_ShowActivitiesCount">표시할 액티비티 수</system:String>
   <system:String x:Key="Timeline_Header">헤더</system:String>
   <system:String x:Key="Timeline_ShowHeader">헤더 표시</system:String>

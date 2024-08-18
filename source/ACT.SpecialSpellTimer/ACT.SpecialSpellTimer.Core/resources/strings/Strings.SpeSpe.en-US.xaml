@@ -281,7 +281,8 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Timeline_Styles">Activity style</system:String>
   <system:String x:Key="Timeline_StyleName">Style name</system:String>
   <system:String x:Key="Timeline_CircleStyle">Circle style</system:String>
-  <system:String x:Key="Timeline_TestTimeline">Test timeline</system:String>
+  <system:String x:Key="Timeline_TestTimeline">Test timeline by Autolog</system:String>
+  <system:String x:Key="Timeline_TestTimeline2">Test timeline by ParsedLog</system:String>
   <system:String x:Key="Timeline_TimelineTester">Timeline Tester</system:String>
   <system:String x:Key="Timeline_ShowActivitiesCount">Number of activities to show</system:String>
   <system:String x:Key="Timeline_Header">Header</system:String>
