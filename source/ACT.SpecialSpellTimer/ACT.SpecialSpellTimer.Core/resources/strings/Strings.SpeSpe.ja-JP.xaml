@@ -281,7 +281,8 @@ HEALER1 に me（自分）が含まれる場合にこのトリガが有効にな
   <system:String x:Key="Timeline_Styles">アクティビティの表示スタイル</system:String>
   <system:String x:Key="Timeline_StyleName">スタイルの名前</system:String>
   <system:String x:Key="Timeline_CircleStyle">サークルスタイル</system:String>
-  <system:String x:Key="Timeline_TestTimeline">過去の戦闘ログを使用して スペスペたいむ™ をシミュレーションする</system:String>
+  <system:String x:Key="Timeline_TestTimeline">Autologで スペスペたいむ™ をシミュレーションする</system:String>
+  <system:String x:Key="Timeline_TestTimeline2">ParsedLogで スペスペたいむ™ をシミュレーションする</system:String>
   <system:String x:Key="Timeline_TimelineTester">スペスペたいむ™ シミュレータ</system:String>
   <system:String x:Key="Timeline_ShowActivitiesCount">表示するアクティビティの数</system:String>
   <system:String x:Key="Timeline_Header">ヘッダ</system:String>

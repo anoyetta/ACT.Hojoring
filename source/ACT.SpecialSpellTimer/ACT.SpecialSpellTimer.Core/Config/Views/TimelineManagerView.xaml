@@ -113,6 +113,7 @@
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
                   <Button Content="Open" Command="{Binding OpenTimelineFolderCommand, Mode=OneWay}" />
                   <Button Margin="10 0 0 0" Content="Reload" Command="{Binding ReloadTimelineFolderCommand, Mode=OneWay}" />
+                  <Button Margin="10 0 0 0" Content="Split" Command="{Binding SplitParsedLogCommand, Mode=OneWay}" />
                 </StackPanel>
                 <Button
                   Grid.Column="1"
@@ -345,6 +346,13 @@
               Padding="5 0 5 0"
               Content="{DynamicResource Timeline_TestTimeline}"
               Command="{Binding TestTimelineCommand, Mode=OneWay}" />
+            <Button
+              HorizontalAlignment="Left"
+              Margin="0 10 0 0"
+              Padding="5 0 5 0"
+              Content="{DynamicResource Timeline_TestTimeline2}"
+              Command="{Binding TestTimelineCommand2, Mode=OneWay}" />
+
           </StackPanel>
         </Grid>
       </Border>

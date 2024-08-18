@@ -28,7 +28,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
         INotifyPropertyChanged
     {
         public TimelineTesterView(
-            string logFile)
+            string logFile, bool isReal = false)
         {
             this.LogFile = logFile;
 
@@ -41,7 +41,10 @@ namespace ACT.SpecialSpellTimer.Config.Views
 #endif
 
             // Simulationモードにする
-            TimelineManager.Instance.InSimulation = true;
+            if (!isReal)
+            {
+                TimelineManager.Instance.InSimulation = true;
+            }
 
             // ウィンドウのスタート位置を決める
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -51,7 +54,10 @@ namespace ACT.SpecialSpellTimer.Config.Views
             this.Closed += async (x, y) =>
             {
                 // Simulationモードを解除する
-                TimelineManager.Instance.InSimulation = false;
+                if (!isReal)
+                {
+                    TimelineManager.Instance.InSimulation = false;
+                }
 
                 await Dispatcher.InvokeAsync(() => TimelineController.CurrentController?.Load());
             };

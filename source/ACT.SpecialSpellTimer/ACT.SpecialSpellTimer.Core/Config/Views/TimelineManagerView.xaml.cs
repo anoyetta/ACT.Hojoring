@@ -5,8 +5,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -209,6 +212,56 @@ namespace ACT.SpecialSpellTimer.Config.Views
             this.reloadTimelineFolderCommand ?? (this.reloadTimelineFolderCommand = new DelegateCommand(() =>
                 this.LoadTimelineModels()));
 
+        private static readonly string SplitScriptUrl = "https://raw.githubusercontent.com/anoyetta/ACT.Hojoring/master/source/ACT.Hojoring.Common/resources/split.ps1";
+
+        private ICommand splitParsedLogCommand;
+        public ICommand SplitParsedLogCommand =>
+            this.splitParsedLogCommand ?? (this.splitParsedLogCommand = new DelegateCommand(async () =>
+                {
+                    var result = this.openFileDialog.ShowDialog(ActGlobals.oFormActMain);
+                    if (result != System.Windows.Forms.DialogResult.OK)
+                    {
+                        return;
+                    }
+                    await AsyncSplitParsedLog(openFileDialog.FileName);
+                }));
+
+        private async Task AsyncSplitParsedLog(string parsedlog)
+        {
+            var cd = DirectoryHelper.GetPluginRootDirectoryDelegate?.Invoke();
+            if (string.IsNullOrEmpty(cd))
+            {
+                cd = Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    "..");
+
+                cd = Path.GetFullPath(cd);
+            }
+
+            var script = Path.Combine(cd, "split.ps1");
+
+            using (var web = new WebClient())
+            {
+                var temp = Path.GetTempFileName();
+                File.Delete(temp);
+
+                await web.DownloadFileTaskAsync(
+                    SplitScriptUrl,
+                    temp);
+
+                Thread.Sleep(10);
+                File.Copy(temp, script, true);
+            }
+
+            if (File.Exists(script))
+            {
+                var args = $"-NoLogo -NoProfile -ExecutionPolicy Unrestricted -File \"{script}\" {parsedlog}";
+
+                Process.Start(EnvironmentHelper.Pwsh, args);
+            }
+        }
+
+
         private ICommand getMoreSampleCommand;
 
         public ICommand GetMoreSampleCommand =>
@@ -253,11 +306,17 @@ namespace ACT.SpecialSpellTimer.Config.Views
             }));
 
         private ICommand testTimelineCommand;
+        private ICommand testTimelineCommand2;
 
         public ICommand TestTimelineCommand =>
             this.testTimelineCommand ?? (this.testTimelineCommand = new DelegateCommand(() =>
             {
                 this.TestTimeline();
+            }));
+        public ICommand TestTimelineCommand2 =>
+            this.testTimelineCommand2 ?? (this.testTimelineCommand2 = new DelegateCommand(() =>
+            {
+                this.TestTimeline2();
             }));
 
         private System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog()
@@ -280,10 +339,23 @@ namespace ACT.SpecialSpellTimer.Config.Views
                 return;
             }
 
-            var view = new TimelineTesterView(this.openFileDialog.FileName);
+            var view = new TimelineTesterView(this.openFileDialog.FileName, false);
             view.Show();
         }
+        /// <summary>
+        /// タイムラインをテストする
+        /// </summary>
+        private void TestTimeline2()
+        {
+            var result = this.openFileDialog.ShowDialog(ActGlobals.oFormActMain);
+            if (result != System.Windows.Forms.DialogResult.OK)
+            {
+                return;
+            }
 
+            var view = new TimelineTesterView(this.openFileDialog.FileName, true);
+            view.Show();
+        }
         #endregion Commands 左側ペイン
 
         #region Commands 右側ペイン

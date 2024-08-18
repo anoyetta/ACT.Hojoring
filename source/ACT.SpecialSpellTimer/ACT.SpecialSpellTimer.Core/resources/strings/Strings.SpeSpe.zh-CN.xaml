@@ -283,6 +283,7 @@
   <system:String x:Key="Timeline_CircleStyle">圆形样式</system:String>
   <system:String x:Key="Timeline_TestTimeline">测试时间轴</system:String>
   <system:String x:Key="Timeline_TimelineTester">时间轴测试器</system:String>
+  <system:String x:Key="Timeline_TestTimeline2">Test timeline by ParsedLog</system:String>
   <system:String x:Key="Timeline_ShowActivitiesCount">显示数量</system:String>
   <system:String x:Key="Timeline_Header">标题</system:String>
   <system:String x:Key="Timeline_ShowHeader">显示标题</system:String>
