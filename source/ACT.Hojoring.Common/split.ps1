@@ -15,8 +15,8 @@ try {
         if ($line -match "00:0039::戦闘開始！") {
             $copying = $true
 
-            $fileName = $inputFile.Substring(10, 10) + "_" + $line.Substring(1, 2) + $line.Substring(4, 2) + $line.Substring(7, 2) + ".log"
-            $outputFile = ".\" + $fileName
+            $fileName = $inputFile.Substring(0, $inputFile.Length-4) + "." + $line.Substring(1, 2) + $line.Substring(4, 2) + $line.Substring(7, 2) + ".log"
+            $outputFile = $fileName
 
 			Write-Host $outputFile
 			Write-Host $line
