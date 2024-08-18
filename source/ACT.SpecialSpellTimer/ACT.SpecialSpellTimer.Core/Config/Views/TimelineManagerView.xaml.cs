@@ -212,7 +212,7 @@ namespace ACT.SpecialSpellTimer.Config.Views
             this.reloadTimelineFolderCommand ?? (this.reloadTimelineFolderCommand = new DelegateCommand(() =>
                 this.LoadTimelineModels()));
 
-        private static readonly string SplitScriptUrl = "https://raw.githubusercontent.com/anoyetta/ACT.Hojoring/master/source/ACT.Hojoring.Common/resources/split.ps1";
+        private static readonly string SplitScriptUrl = "https://raw.githubusercontent.com/anoyetta/ACT.Hojoring/master/source/ACT.Hojoring.Common/split.ps1";
 
         private ICommand splitParsedLogCommand;
         public ICommand SplitParsedLogCommand =>
