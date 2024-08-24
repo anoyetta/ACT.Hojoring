@@ -238,6 +238,14 @@ namespace FFXIV.Framework
         private const int RegexCacheSizeDefault = 15;
         private const int RegexCacheSizeDefaultOverride = 128;
 
+        private bool bAllowHyphen = false;
+
+        public bool AllowHyphen
+        {
+            get { return bAllowHyphen; }
+            set { bAllowHyphen = value; }
+        }
+
         private static ObservableKeyValue<LogMessageType, bool>[] GetDefaultGlobalLogFilter()
         {
             var filters = new List<ObservableKeyValue<LogMessageType, bool>>();

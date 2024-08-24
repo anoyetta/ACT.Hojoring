@@ -415,18 +415,33 @@ namespace FFXIV.Framework.XIVHelper
         {
             get
             {
-                var result = this.Names
-                    .Replace(@".", @"\.")
-                    .Replace(@"-", @"\-");
-
-                // 記号が含まれている？
-                if (result.IndexOfAny(PCNameValidSymbols) > -1)
+                if (Config.Instance.AllowHyphen)
                 {
-                    // i オプションを付与する
-                    result = $"(?i:{result})";
-                }
+                    var result = this.Names
+                        .Replace(@".", @"\.");
 
-                return result;
+                    // 記号が含まれている？
+                    if (result.IndexOfAny(PCNameValidSymbols) > -1)
+                    {
+                        // i オプションを付与する
+                        result = $"(?i:{result})";
+                    }
+                    return result;
+                }
+                else
+                {
+                    var result = this.Names
+                        .Replace(@".", @"\.")
+                        .Replace(@"-", @"\-");
+
+                    // 記号が含まれている？
+                    if (result.IndexOfAny(PCNameValidSymbols) > -1)
+                    {
+                        // i オプションを付与する
+                        result = $"(?i:{result})";
+                    }
+                    return result;
+                }
             }
         }
 
