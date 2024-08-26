@@ -10,7 +10,7 @@ try {
     $outputBuffer = New-Object System.Collections.ArrayList
 
     $startPattern = [regex]::new("00:0039::戦闘開始！", [System.Text.RegularExpressions.RegexOptions]::Compiled)
-    $endPatterns = [regex]::new("00:0038::Hojoring>WIPEOUT|ブラックキャットを倒した。|ハニー・B・ラブリーを倒した。|ブルートボンバーを倒した。|ウィケッドサンダーを倒した。", [System.Text.RegularExpressions.RegexOptions]::Compiled)
+    $endPatterns = [regex]::new("00:0038::Hojoring>WIPEOUT|00:0044:メテムの実況:実況はメテムでお送りしました！", [System.Text.RegularExpressions.RegexOptions]::Compiled)
 
     foreach ($line in $content) {
         if ($startPattern.IsMatch($line)) {

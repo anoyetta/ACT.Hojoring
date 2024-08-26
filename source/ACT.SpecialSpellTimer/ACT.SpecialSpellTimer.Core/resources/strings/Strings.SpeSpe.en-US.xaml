@@ -183,6 +183,7 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Options_VisiblePOSDebugInfo">Show Debug Info on POS Overlay</system:String>
 
   <system:String x:Key="Options_PCNameDisplayStyle">PC name display style</system:String>
+  <system:String x:Key="Options_PCNameAllowHyphen">PC name Allow Hyphen</system:String>
   <system:String x:Key="Options_TextStrokeThickenessGain">Text blur rates</system:String>
   <system:String x:Key="Options_TextBlurGain">Text outline thickness rates</system:String>
   <system:String x:Key="Options_IconBrightnessInRecasting">During the recast time reduce brightness of icon (%)</system:String>

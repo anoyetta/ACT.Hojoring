@@ -183,6 +183,7 @@
   <system:String x:Key="Options_VisiblePOSDebugInfo">在位置界面上显示Debug信息</system:String>
 
   <system:String x:Key="Options_PCNameDisplayStyle">角色名显示方式</system:String>
+  <system:String x:Key="Options_PCNameAllowHyphen">PC name Allow Hyphen</system:String>
   <system:String x:Key="Options_TextStrokeThickenessGain">文字轮廓加粗率</system:String>
   <system:String x:Key="Options_TextBlurGain">文字模糊率</system:String>
   <system:String x:Key="Options_IconBrightnessInRecasting">复唱时间中降低图标亮度 (%)</system:String>
