@@ -183,6 +183,7 @@
   <system:String x:Key="Options_VisiblePOSDebugInfo">디버깅 정보 표시</system:String>
 
   <system:String x:Key="Options_PCNameDisplayStyle">플레이어 캐릭터 이름 표시 스타일</system:String>
+  <system:String x:Key="Options_PCNameAllowHyphen">PC name Allow Hyphen</system:String>
   <system:String x:Key="Options_TextStrokeThickenessGain">글자 윤곽선 두깨 비율</system:String>
   <system:String x:Key="Options_TextBlurGain">글자 흐림 효과 비율</system:String>
   <system:String x:Key="Options_IconBrightnessInRecasting">재사용 대기 중인 아이콘 밝기 (%)</system:String>

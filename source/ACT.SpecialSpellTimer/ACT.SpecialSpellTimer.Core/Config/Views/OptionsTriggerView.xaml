@@ -76,6 +76,7 @@
     <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledSimplyRegex}" IsChecked="{Binding Config.SimpleRegex, Mode=TwoWay}" />
     <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledRemoveTooltipSymbol}" IsChecked="{Binding Config.RemoveTooltipSymbols, Mode=TwoWay}" />
     <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledRemoveWorldName}" IsChecked="{Binding Config.RemoveWorldName, Mode=TwoWay}" />
+    <CheckBox Margin="0 20 0 0" Content="{DynamicResource Options_PCNameAllowHyphen}" IsChecked="{Binding Config.AllowHyphen, Mode=TwoWay}" />
     <!--
     <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledCompleteUnknownSkill}" IsChecked="{Binding Config.ToComplementUnknownSkill, Mode=TwoWay}" />
     <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_EnabledIgnoreDamageLogs}" IsChecked="{Binding Config.IgnoreDamageLogs, Mode=TwoWay}" />

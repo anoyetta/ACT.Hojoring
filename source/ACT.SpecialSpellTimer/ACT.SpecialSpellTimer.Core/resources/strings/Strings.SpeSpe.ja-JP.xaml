@@ -183,6 +183,7 @@ HEALER1 に me（自分）が含まれる場合にこのトリガが有効にな
   <system:String x:Key="Options_VisiblePOSDebugInfo">デバッグ情報を表示する</system:String>
 
   <system:String x:Key="Options_PCNameDisplayStyle">PC名の表示スタイル</system:String>
+  <system:String x:Key="Options_PCNameAllowHyphen">PC名を文字列処理する時にハイフンを許容する</system:String>
   <system:String x:Key="Options_TextStrokeThickenessGain">テキストのアウトライン増幅率</system:String>
   <system:String x:Key="Options_TextBlurGain">テキストのブラー増幅率</system:String>
   <system:String x:Key="Options_IconBrightnessInRecasting">リキャスト中のアイコンの明るさ(%)</system:String>

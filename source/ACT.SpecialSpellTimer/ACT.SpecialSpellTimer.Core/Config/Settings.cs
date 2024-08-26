@@ -87,6 +87,12 @@ namespace ACT.SpecialSpellTimer.Config
 
         public Locales FFXIVLocale => FFXIV.Framework.Config.Instance.XIVLocale;
 
+        public bool AllowHyphen
+        {
+            get => FFXIV.Framework.Config.Instance.AllowHyphen;
+            set => FFXIV.Framework.Config.Instance.AllowHyphen = value;
+        }
+
         private bool overlayVisible;
 
         public bool OverlayVisible
