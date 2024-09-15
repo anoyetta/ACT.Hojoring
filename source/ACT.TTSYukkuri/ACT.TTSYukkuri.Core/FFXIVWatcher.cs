@@ -83,6 +83,7 @@ namespace ACT.TTSYukkuri
             {
                 if (instance != null)
                 {
+                    instance.Start(); // instance作成直後はStartに成功しないことがあるのでInitializeを呼び出すたびにStartを試みる
                     return;
                 }
 

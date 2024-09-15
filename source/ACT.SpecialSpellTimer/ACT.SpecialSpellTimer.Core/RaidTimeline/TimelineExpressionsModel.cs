@@ -572,14 +572,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 text = string.Empty;
             }
 
-            var placeholders = TimelineManager.Instance.GetPlaceholders();
-            foreach (var ph in placeholders)
-            {
-                text = text.Replace(
-                    ph.Placeholder,
-                    ph.ReplaceString);
-            }
-
             foreach (var item in GetVariables())
             {
                 var variable = item.Value;
@@ -609,6 +601,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                         }
                     }
                 }
+            }
+
+            var placeholders = TimelineManager.Instance.GetPlaceholders();
+            foreach (var ph in placeholders)
+            {
+                text = text.Replace(
+                    ph.Placeholder,
+                    ph.ReplaceString);
             }
 
             return text;

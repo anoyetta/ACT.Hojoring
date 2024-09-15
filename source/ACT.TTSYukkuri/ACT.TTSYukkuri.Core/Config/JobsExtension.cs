@@ -21,6 +21,7 @@ namespace ACT.TTSYukkuri.Config
         Ninja,
         Samurai,
         Reaper,
+        Viper,
 
         Bard,
         Machinist,
@@ -29,6 +30,7 @@ namespace ACT.TTSYukkuri.Config
         BlackMage,
         Summoner,
         RedMage,
+        Pictomancer,
         BlueMage,
 
         CrafterAndGatherer,
@@ -80,6 +82,8 @@ namespace ACT.TTSYukkuri.Config
             { "Dancer",         "おどりこ",          "Danseur",         "Tänzer",        "Dancer",            "Dancer",},
             { "Reaper",         "りーぱー",          "Faucheur",        "Schnitter",      "Reaper",            "Reaper",},
             { "Sage",           "けんじゃ",          "Sage",            "Weiser",         "Sage",              "Sage",},
+            { "Viper",           "う゛ぁいぱー",     "Rôdeur vipèr",    "Viper",          "Viper",             "Viper",},
+            { "Pictomancer",     "ぴくとまんさー",   "Pictomancien",    "Piktomant",      "Pictomancer",       "Pictomancer",},
         };
 
         public static readonly AlertCategories[] JobAlertCategories = new AlertCategories[]
@@ -125,6 +129,8 @@ namespace ACT.TTSYukkuri.Config
             AlertCategories.Dancer,
             AlertCategories.Reaper,
             AlertCategories.Sage,
+            AlertCategories.Viper,
+            AlertCategories.Pictomancer,
         };
 
         public static string GetPhonetic(
@@ -157,12 +163,14 @@ namespace ACT.TTSYukkuri.Config
             { "Ninja/Rogue", "忍者・双剣士","Ninja/Rogue","Ninja/Rogue","Ninja/Rogue","忍者", },
             { "Samurai", "侍","Samurai","Samurai","Samurai","武士", },
             { "Reaper", "リーパー", "Faucheur", "Schnitter", "Reaper", "Reaper", },
+            { "Viper", "ヴァイパー", "Rôdeur vipèr", "Viper", "Viper", "Viper", },
             { "Bard/Archer", "吟遊詩人・弓術士","Bard/Archer","Bard/Archer","Bard/Archer","诗人", },
             { "Machinist", "機工士","Machinist","Machinist","Machinist","机工", },
             { "Dancer", "踊り子","Dancer","Dancer","Dancer","Dancer", },
             { "Black Mage/Thaumaturge", "黒魔道士・呪術師","Black Mage/Thaumaturge","Black Mage/Thaumaturge","Black Mage/Thaumaturge","黑魔", },
             { "Summoner/Arcanist", "召喚士・巴術士","Summoner/Arcanist","Summoner/Arcanist","Summoner/Arcanist","召唤", },
             { "Red Mage", "赤魔道士","Red Mage","Red Mage","Red Mage","赤魔", },
+            { "Pictomancer", "ピクトマンサー","Pictomancien","Piktomant","Pictomancer","Pictomancer", },
             { "Blue Mage", "青魔道士","Blue Mage","Blue Mage","Blue Mage","Blue Mage", },
             { "Crafter/Gatherer", "クラフター・ギャザラー","Crafter/Gatherer","Crafter/Gatherer","Crafter/Gatherer","采集/制造", },
         };

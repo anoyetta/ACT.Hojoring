@@ -112,6 +112,8 @@ namespace ACT.TTSYukkuri.Config
         private StatusAlertConfig statusAlertSettings = new StatusAlertConfig();
         private DiscordSettings discordSettings = new DiscordSettings();
 
+        private string temporarySwitchSoundDevice;
+
         /// <summary>
         /// プラグインのUIのロケール
         /// </summary>
@@ -586,6 +588,13 @@ namespace ACT.TTSYukkuri.Config
         /// サウンド再生のインターバル
         /// </summary>
         public double GlobalSoundInterval { get; set; } = 0.4d;
+
+
+        public string TemporarySwitchSoundDevice
+        {
+            get => this.temporarySwitchSoundDevice;
+            set => this.SetProperty(ref this.temporarySwitchSoundDevice, value);
+        }
 
         /// <summary>
         /// 設定をロードする
