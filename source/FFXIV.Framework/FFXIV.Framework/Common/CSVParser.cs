@@ -124,7 +124,7 @@ namespace FFXIV.Framework.Common
                     {
                         insideQuoteCell = true;
                     }
-                    else
+                    else if (character != '\r')
                     {
                         cell.Append(character);
                     }
