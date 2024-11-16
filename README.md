@@ -2,7 +2,7 @@
 [![Downloads](https://img.shields.io/github/downloads/anoyetta/ACT.Hojoring/total.svg)](https://github.com/anoyetta/ACT.Hojoring/releases)
 [![License](https://img.shields.io/badge/license-BSD--3--Clause-blue.svg)](https://github.com/anoyetta/ACT.Hojoring/blob/master/LICENSE)
 
-## **[10.3.8以降の補助輪でSPESPEトリガーが動作しないらしい件について](https://github.com/anoyetta/ACT.Hojoring/issues/418)**
+## [resourceのCSVファイル](https://github.com/anoyetta/ACT.Hojoring.Resources/tree/master/resources/xivdb)を生成するプログラムを[作りました](https://github.com/wbonbon/HojoringSupportTool)
 ___
 インストール方法は **[こちら](https://www.anoyetta.com/entry/hojoring-setup)** から
 
