@@ -50,7 +50,7 @@ namespace FFXIV.Framework.XIVHelper
             var rank = 0;
 
             // レイド
-            if (intendedUse == (int)TerritoryIntendedUse.Raid8)
+            if (intendedUse == (int)TerritoryIntendedUse.Raid8 || intendedUse == (int)TerritoryIntendedUse.Raid8Easy)
             {
                 if (name.Contains("絶") ||
                     name.Contains("Ultimate") ||
@@ -128,6 +128,7 @@ namespace FFXIV.Framework.XIVHelper
         ADungeon = 57,
         ADungeonS = 58,
         Raid24 = 8,
+        Raid8Easy = 16,
         Raid8 = 17,
         Trial = 10,
         PvP1 = 18,
