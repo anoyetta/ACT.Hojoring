@@ -66,7 +66,7 @@ namespace ACT.TTSYukkuri.Config
             { "Dragoon",        "りゅうきし",        "Chevalier Dragon",  "Dragoon",           "용기사",            "龙骑",},
             { "Bard",           "ぎんゆうしじん",    "Barde",             "Barde",             "음유시인",          "诗人",},
             { "White Mage",     "しろまどうし",      "Mage Blanc",        "Weißmagier",        "백마도사",          "白魔",},
-            { "Black Mage",     "くろまどうし",      "Mage Noir",         "Schwarzmagier"      "흑마도사",          "黑魔",},
+            { "Black Mage",     "くろまどうし",      "Mage Noir",         "Schwarzmagier",     "흑마도사",          "黑魔",},
             { "Arcanist",       "はじゅつし",        "Arcaniste",         "Hermetiker",        "비술사",            "秘术师",},
             { "Summoner",       "しょうかんし",      "Invocateur",        "Beschwörer",        "소환사",            "召唤",},
             { "Scholar",        "がくしゃ",          "érudit",            "Gelehrter",         "학자",              "学者",},
