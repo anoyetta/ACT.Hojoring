@@ -242,6 +242,7 @@ namespace ACT.UltraScouter.Config
                 FromCommandTTL = 14.0d,
                 CategoryColors = FFLogs.DefaultCategoryColors,
                 Partition = FFLogsPartitions.Standard,
+                Metric = FFLogsMetric.rdps,
             }},
 
             #endregion Target

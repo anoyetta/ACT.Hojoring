@@ -42,7 +42,7 @@
     </ResourceDictionary>
   </Page.Resources>
 
-  <ScrollViewer>
+  <ScrollViewer Height="1074">
     <StackPanel Margin="20">
       <CheckBox
         Margin="0 0 0 0"
@@ -161,8 +161,17 @@
         Width="120"
         ItemsSource="{Binding FFLogsDifficulties, Mode=OneWay}"
         SelectedItem="{Binding FFLogs.Difficulty, Mode=TwoWay}" />
-
+        
       <Label
+        Margin="0 10 0 0"
+        Content="FFLogs metric" />
+      <ComboBox
+        HorizontalAlignment="Left"
+        Width="80"
+        ItemsSource="{Binding FFLogsMetrics, Mode=OneWay}"
+        SelectedItem="{Binding FFLogs.Metric, Mode=TwoWay}" />
+
+            <Label
         Margin="0 25 0 0"
         Content="FFLogs API Tester" />
       <StackPanel Margin="8 0 0 0">
