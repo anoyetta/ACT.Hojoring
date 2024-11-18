@@ -24,6 +24,8 @@ namespace ACT.UltraScouter.Config.UI.ViewModels
 
         public IEnumerable<FFLogsDifficulty> FFLogsDifficulties => Enum.GetValues(typeof(FFLogsDifficulty)).Cast<FFLogsDifficulty>();
 
+        public IEnumerable<FFLogsMetric> FFLogsMetrics => Enum.GetValues(typeof(FFLogsMetric)).Cast<FFLogsMetric>();
+
         private ICommand ffLogsDisplayTextFontCommand;
         private ICommand ffLogsDisplayTextColorCommand;
         private ICommand ffLogsDisplayTextOutlineColorCommand;

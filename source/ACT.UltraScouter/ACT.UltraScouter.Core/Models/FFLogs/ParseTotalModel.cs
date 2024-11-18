@@ -512,6 +512,7 @@ namespace ACT.UltraScouter.Models.FFLogs
 
                 var query = HttpUtility.ParseQueryString(string.Empty);
                 query["timeframe"] = "historical";
+                query["metric"] = Settings.Instance.FFLogs.Metric.ToString();
                 query["api_key"] = Settings.Instance.FFLogs.ApiKey;
 
                 if (partition != FFLogsPartitions.Current)

@@ -35,4 +35,16 @@ namespace ACT.UltraScouter.Models.FFLogs
         Normal = 100,
         Savage = 101,
     }
+
+    public enum FFLogsMetric
+    {
+        [Display(Name = "rDPS")]
+        rdps = 0,
+        [Display(Name = "aDPS")]
+        adps = 1,
+        [Display(Name = "nDPS")]
+        ndps = 2,
+        [Display(Name = "cDPS")]
+        cdps = 3,
+    }
 }

@@ -110,6 +110,14 @@ namespace ACT.UltraScouter.Config
             set => this.SetProperty(ref this.difficulty, value);
         }
 
+        private FFLogsMetric metric = FFLogsMetric.rdps;
+        [DataMember]
+        public FFLogsMetric Metric
+        {
+            get => this.metric;
+            set => this.SetProperty(ref this.metric, value);
+        }
+
         private double refreshInterval = 8.0d;
 
         [DataMember]
