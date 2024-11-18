@@ -7,7 +7,7 @@
   <system:String x:Key="UILanguage">UI 언어 (* 재시작 필요)</system:String>
   <system:String x:Key="FFXIVLanguage">FFXIV 언어 (* 재시작 필요)</system:String>
 
-  <system:String x:Key="GeneralConfig_LockAllOverlayOnHojoring">Lock all overlays on Hojoring</system:String>
+  <system:String x:Key="GeneralConfig_LockAllOverlayOnHojoring">Hojoring의 모든 오버레이 잠그기</system:String>
   <system:String x:Key="GeneralConfig_ClickThrough">클릭 무시</system:String>
   <system:String x:Key="GeneralConfig_Opacity">불투명도</system:String>
   <system:String x:Key="GeneralConfig_LogPollingRate">메모리 스캔 간격 (msec)</system:String>
@@ -99,19 +99,19 @@
   <system:String x:Key="MPTicker_SwapBarAndText">바 위치와 텍스트 위치 바꾸기</system:String>
   <system:String x:Key="MPTicker_ExplationTimeForDisplay1">MP 변화 없이 아래의 시간이 경과하면 숨깁니다 (초)</system:String>
   <system:String x:Key="MPTicker_ExplationTimeForDisplay2">※0이면 무한. 항상 표시합니다</system:String>
-  <system:String x:Key="MPTicker_TargetJobs">자신이 아래의 직업 때 표시</system:String>
+  <system:String x:Key="MPTicker_TargetJobs">자신이 아래의 직업일 때 표시</system:String>
 
-  <system:String x:Key="MyUtility_OnRestart">On the restart</system:String>
-  <system:String x:Key="MyUtility_DelayFromWipeout">Delay seconds from wipeout</system:String>
-  <system:String x:Key="MyUtility_OnlyForRAIDParty">Only in RAID party</system:String>
-  <system:String x:Key="MyUtility_SendOnZoneChanged">Send a key on zone changed</system:String>
-  <system:String x:Key="MyUtility_ExtendMealEffect">Extend duration of "Well Fed" effect</system:String>
-  <system:String x:Key="MyUtility_RemainingTimeThreshold">threshold to extend duration of "Well Fed" effect (min)</system:String>
-  <system:String x:Key="MyUtility_RestoreTankStance">Restore TANK stance</system:String>
-  <system:String x:Key="MyUtility_RestoreTankStanceDescription">Restore the tank stance from the last time the battle began.</system:String>
-  <system:String x:Key="MyUtility_SummonFairy">Summon SCH's fairy</system:String>
-  <system:String x:Key="MyUtility_DrawCard">Draw AST's card</system:String>
-  <system:String x:Key="MyUtility_SummonEgi">Summon SMN's egi</system:String>
+  <system:String x:Key="MyUtility_OnRestart">재시작 시</system:String>
+  <system:String x:Key="MyUtility_DelayFromWipeout">초기화 후 지연 시간(초)</system:String>
+  <system:String x:Key="MyUtility_OnlyForRAIDParty">레이드 파티에서만</system:String>
+  <system:String x:Key="MyUtility_SendOnZoneChanged">지역 변경 시 키 입력 전송</system:String>
+  <system:String x:Key="MyUtility_ExtendMealEffect">"식사" 효과의 지속 시간 늘리기</system:String>
+  <system:String x:Key="MyUtility_RemainingTimeThreshold">늘어난 "식사" 효과 지속 시간의 임계값(분)</system:String>
+  <system:String x:Key="MyUtility_RestoreTankStance">탱커 스탠스 복원</system:String>
+  <system:String x:Key="MyUtility_RestoreTankStanceDescription">직전 전투 시작 시점의 탱커 스탠스로 돌아갑니다.</system:String>
+  <system:String x:Key="MyUtility_SummonFairy">학자의 요정 소환</system:String>
+  <system:String x:Key="MyUtility_DrawCard">점성술사의 카드 뽑기</system:String>
+  <system:String x:Key="MyUtility_SummonEgi">소환사의 에기 소환</system:String>
 
   <system:String x:Key="MobList_VisibleMePosition">내 좌표 표시</system:String>
   <system:String x:Key="MobList_SimpleView">간략하게 표시</system:String>
