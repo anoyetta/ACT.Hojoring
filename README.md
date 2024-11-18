@@ -3,6 +3,8 @@
 [![License](https://img.shields.io/badge/license-BSD--3--Clause-blue.svg)](https://github.com/anoyetta/ACT.Hojoring/blob/master/LICENSE)
 
 ## [resourceのCSVファイル](https://github.com/anoyetta/ACT.Hojoring.Resources/tree/master/resources/xivdb)を生成するプログラムを[作りました](https://github.com/wbonbon/HojoringSupportTool)
+
+#### [メモリを読むのに使っているライブラリ](https://github.com/FFXIVAPP/sharlayan-resources)がまだ7.1に対応していないため、一部の機能が動作しません
 ___
 インストール方法は **[こちら](https://www.anoyetta.com/entry/hojoring-setup)** から
 
