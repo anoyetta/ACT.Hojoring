@@ -197,12 +197,18 @@
               </StackPanel>
             </StackPanel>
 
-            <!-- Recast Time from HotbarInfo -->
+            <!-- Recast Time from Action.csv -->
+            <StackPanel>
+              <CheckBox Content="{DynamicResource Spell_UseActionCsvRecastTime}" IsChecked="{Binding Model.UseActionCsvRecastTime, Mode=TwoWay}" Margin="0 10 0 0" />
+              <Label Content="{DynamicResource Spell_ActionCsvItemName}" VerticalAlignment="Center" Margin="0 5 0 0" HorizontalAlignment="Left" Visibility="{Binding Model.UseActionCsvRecastTime, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
+              <TextBox Text="{Binding Model.HotbarName, Mode=TwoWay}" Width="300" Margin="0 2 0 0" HorizontalAlignment="Left"  Visibility="{Binding Model.UseActionCsvRecastTime, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
+            </StackPanel>
+            <!-- Recast Time from HotbarInfo
             <StackPanel>
               <CheckBox Content="{DynamicResource Spell_UseHotbrRecastTime}" IsChecked="{Binding Model.UseHotbarRecastTime, Mode=TwoWay}" Margin="0 10 0 0" />
               <Label Content="{DynamicResource Spell_HotbarItemName}" VerticalAlignment="Center" Margin="0 5 0 0" HorizontalAlignment="Left" Visibility="{Binding Model.UseHotbarRecastTime, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
               <TextBox Text="{Binding Model.HotbarName, Mode=TwoWay}" Width="300" Margin="0 2 0 0" HorizontalAlignment="Left"  Visibility="{Binding Model.UseHotbarRecastTime, Converter={StaticResource VisibilityConverter}, Mode=OneWay}" />
-            </StackPanel>
+            </StackPanel> -->
 
             <!-- 延長のマッチングワード -->
             <Label Margin="0 15 0 0" Content="{DynamicResource Spell_TextToExtend}" />

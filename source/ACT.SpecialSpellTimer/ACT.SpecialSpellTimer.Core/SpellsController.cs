@@ -409,6 +409,12 @@ namespace ACT.SpecialSpellTimer
         {
             var result = false;
 
+            // Action.csvモードの時は同期処理を行わない
+            if (spell.UseActionCsvRecastTime)
+            {
+                return result;
+            }
+
             if (!spell.UseHotbarRecastTime ||
                 string.IsNullOrEmpty(spell.HotbarName))
             {
@@ -582,7 +588,24 @@ namespace ACT.SpecialSpellTimer
             var result = false;
             recastTime = 0;
 
-            if (spell.UseHotbarRecastTime &&
+            // 先にAction.csvからの読み取りにトライする
+            if (spell.UseActionCsvRecastTime &&
+                !string.IsNullOrEmpty(spell.HotbarName))
+            {
+                var actions = XIVApi.Instance.ActionList;
+                if (actions != null)
+                {
+                    foreach (var item in actions)
+                    {
+                        if (item.Value.Name == spell.HotbarName && item.Value.Recast100ms != 0)
+                        {
+                            recastTime = item.Value.Recast100ms / 10.0;
+                            result = true;
+                            break;
+                        }
+                    }
+                }
+            } else if (spell.UseHotbarRecastTime &&
                 !string.IsNullOrEmpty(spell.HotbarName))
             {
                 var actions = this.GetHotbarInfo();

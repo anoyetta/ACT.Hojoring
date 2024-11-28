@@ -112,7 +112,9 @@ HEALER1 に me（自分）が含まれる場合にこのトリガが有効にな
   <system:String x:Key="Spell_RecastTime">リキャスト時間</system:String>
   <system:String x:Key="Spell_DelayToShow">ディレイ表示</system:String>
   <system:String x:Key="Spell_UseHotbrRecastTime">ホットバーからリキャスト時間を取得する</system:String>
+  <system:String x:Key="Spell_UseActionCsvRecastTime">Action.csvからリキャスト時間を取得する</system:String>
   <system:String x:Key="Spell_HotbarItemName">ホットバーの登録名称</system:String>
+  <system:String x:Key="Spell_ActionCsvItemName">Action.csvの登録名称</system:String>
   <system:String x:Key="Spell_TextToExtend">延長マッチングワード</system:String>
   <system:String x:Key="Spell_Secounds">秒</system:String>
   <system:String x:Key="Spell_ExtendSecounds">秒延長する</system:String>
