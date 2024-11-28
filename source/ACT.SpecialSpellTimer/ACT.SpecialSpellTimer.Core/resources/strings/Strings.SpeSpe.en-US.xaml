@@ -112,7 +112,9 @@ This trigger is enabled when "HEALER1" contains "me (player)".</system:String>
   <system:String x:Key="Spell_RecastTime">Recast time</system:String>
   <system:String x:Key="Spell_DelayToShow">Delay to show</system:String>
   <system:String x:Key="Spell_UseHotbrRecastTime">Use Hotbar Recast Time</system:String>
+  <system:String x:Key="Spell_UseActionCsvRecastTime">Use Action.csv Recast Time</system:String>
   <system:String x:Key="Spell_HotbarItemName">Name of Hotbar Item</system:String>
+  <system:String x:Key="Spell_ActionCsvItemName">Name of Action.csv Item</system:String>
   <system:String x:Key="Spell_TextToExtend">Keyword to extend</system:String>
   <system:String x:Key="Spell_Secounds">seconds</system:String>
   <system:String x:Key="Spell_ExtendSecounds">seconds, extend.</system:String>

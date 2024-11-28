@@ -200,6 +200,7 @@ namespace FFXIV.Framework.XIVHelper
 
                 var lineNo = 0;
                 var indexAttackType = 0;
+                var indexRecast100ms = 0;
 
                 foreach (var fields in lines)
                 {
@@ -214,6 +215,7 @@ namespace FFXIV.Framework.XIVHelper
                     if (lineNo == 2)
                     {
                         indexAttackType = fields.IndexOf("AttackType");
+                        indexRecast100ms = fields.IndexOf("Recast100ms");
                     }
 
                     if (!uint.TryParse(fields[0], out uint id) ||
@@ -226,7 +228,8 @@ namespace FFXIV.Framework.XIVHelper
                     {
                         ID = id,
                         Name = fields[1],
-                        AttackTypeName = indexAttackType < 0 ? string.Empty : fields[indexAttackType]
+                        AttackTypeName = indexAttackType < 0 ? string.Empty : fields[indexAttackType],
+                        Recast100ms = string.IsNullOrEmpty(fields[indexRecast100ms]) == true ? 0 : Int32.Parse(fields[indexRecast100ms])
                     };
 
                     entry.SetAttackTypeEnum();
@@ -356,6 +359,8 @@ namespace FFXIV.Framework.XIVHelper
             public string Name { get; set; }
             public string AttackTypeName { get; set; }
             public AttackTypes AttackType { get; private set; }
+
+            public int Recast100ms { get; set; }
 
             public void SetAttackTypeEnum()
                 => this.AttackType = ((AttackTypes[])Enum.GetValues(typeof(AttackTypes)))

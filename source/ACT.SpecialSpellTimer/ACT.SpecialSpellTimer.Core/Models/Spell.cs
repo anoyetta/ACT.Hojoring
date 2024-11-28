@@ -848,6 +848,13 @@ namespace ACT.SpecialSpellTimer.Models
             set => this.SetProperty(ref this.useHotbarRecastTime, value);
         }
 
+        private bool useActionCsvRecastTime = false;
+        public bool UseActionCsvRecastTime
+        {
+            get => this.useActionCsvRecastTime;
+            set => this.SetProperty(ref this.useActionCsvRecastTime, value);
+        }
+
         private string hotbarName = string.Empty;
 
         public string HotbarName
