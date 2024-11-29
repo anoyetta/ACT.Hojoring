@@ -215,7 +215,7 @@ namespace FFXIV.Framework.XIVHelper
                     if (lineNo == 2)
                     {
                         indexAttackType = fields.IndexOf("AttackType");
-                        indexRecast100ms = fields.IndexOf("Recast100ms");
+                        indexRecast100ms = fields.IndexOf("Recast<100ms>");
                     }
 
                     if (!uint.TryParse(fields[0], out uint id) ||
