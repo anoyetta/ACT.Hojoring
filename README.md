@@ -2,6 +2,10 @@
 [![Downloads](https://img.shields.io/github/downloads/anoyetta/ACT.Hojoring/total.svg)](https://github.com/anoyetta/ACT.Hojoring/releases)
 [![License](https://img.shields.io/badge/license-BSD--3--Clause-blue.svg)](https://github.com/anoyetta/ACT.Hojoring/blob/master/LICENSE)
 
+# 10.4.3は韓国語と中国語で動作しない作りにしてしまいました
+10.4.3rev2にアップデートしてください  
+互換性を維持するためにresource\xivdbのcsvを修正したため10.4.3はもう使えません
+
 ## [resourceのCSVファイル](https://github.com/anoyetta/ACT.Hojoring.Resources/tree/master/resources/xivdb)を生成するプログラムを[作りました](https://github.com/wbonbon/HojoringSupportTool)
 
 #### [メモリを読むのに使っているライブラリ](https://github.com/FFXIVAPP/sharlayan-resources)がまだ7.1に対応していないため、一部の機能が動作しません
