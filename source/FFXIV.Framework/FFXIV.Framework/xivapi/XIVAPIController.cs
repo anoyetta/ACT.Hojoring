@@ -124,6 +124,8 @@ namespace FFXIV.Framework.xivapi
                     x.ActionCategory.ID != (int)ActionCategory.Mount &&
                     x.ActionCategory.ID != (int)ActionCategory.Glamour &&
                     x.ActionCategory.ID != (int)ActionCategory.AdrenalineRush &&
+                    //x.IsPlayerAction.HasValue &&
+                    //x.IsPlayerAction != 0 &&
                     !string.IsNullOrEmpty(x.Name)
                     select
                     x);
@@ -158,6 +160,7 @@ namespace FFXIV.Framework.xivapi
                 System.Diagnostics.Debug.WriteLine(action.ToString());
             }
 #endif
+            
             return sorted;
         }
 
@@ -201,8 +204,7 @@ namespace FFXIV.Framework.xivapi
                         from x in actions
                         where
                         x.ContainsJob(jobID.ID)
-                        group x by
-                        x.Name;
+                        select x;
 
                     var dirName = $"{jobID.No:00}_{jobID.Name}";
                     var dir = Path.Combine(iconBaseDirectory, dirName);
@@ -212,10 +214,8 @@ namespace FFXIV.Framework.xivapi
                     }
 
                     var current = 1;
-                    foreach (var group in actionsByJob)
+                    foreach (var action in actionsByJob)
                     {
-                        var action = group.First();
-
                         var fileName = $"{(action.ID ?? 0):0000}_{action.Name}.png";
 
                         // ファイル名に使えない文字を除去する

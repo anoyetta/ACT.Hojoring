@@ -4,7 +4,7 @@ namespace FFXIV.Framework.xivapi.Models
 {
     public class ActionModel
     {
-        public readonly static string HandledColumns = $"{nameof(ID)},{nameof(Name)},{nameof(ActionCategory)}.ID,{nameof(ClassJobCategory)}.ID,{nameof(ClassJobCategory)}.Name_en,{nameof(ClassJob)}.ID,{nameof(Icon)}";
+        public readonly static string HandledColumns = $"{nameof(ID)},{nameof(Name)},{nameof(ActionCategory)}.ID,{nameof(ClassJobCategory)}.ID,{nameof(ClassJobCategory)}.Name_en,{nameof(ClassJob)}.ID,{nameof(Icon)},{nameof(IsPlayerAction)}";
 
         public int? ID { get; set; }
         public string Name { get; set; }
@@ -12,6 +12,7 @@ namespace FFXIV.Framework.xivapi.Models
         public ClassJobCategoryModel ClassJobCategory { get; set; }
         public ClassJobModel ClassJob { get; set; }
         public string Icon { get; set; }
+        public int? IsPlayerAction { get; set; }
 
         public bool ContainsJob(
             JobIDs jobID)
