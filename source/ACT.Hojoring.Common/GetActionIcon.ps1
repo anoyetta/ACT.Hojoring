@@ -1,9 +1,23 @@
-#必要な物
+# 必要な物
 # https://www.nuget.org/packages/HtmlAgilityPack/
 # https://www.nuget.org/packages/Selenium.WebDriver
 # https://www.nuget.org/packages/Selenium.WebDriver.ChromeDriver
 
 # 前提 Install-Packageはなんかうまくいかない場合が多いのでDownload packageで.nugetを持ってきて適当な場所にunzipする
+
+# この3つのパスを自分の環境に合わせてください
+# ↓↓↓
+
+# HtmlAgilityPackライブラリをインポート
+Add-Type -Path "C:\temp\htmlagilitypack.1.11.71.nupkg\lib\netstandard2.0\HtmlAgilityPack.dll"
+
+# Seleniumライブラリをインポート
+Add-Type -Path "C:\temp\selenium.webdriver.4.27.0.nupkg\lib\netstandard2.0\WebDriver.dll"
+
+# ChromeDriverのパスを設定
+$chromeDriverPath = "C:\temp\selenium.webdriver.chromedriver.131.0.6778.10800.nupkg\driver\win32\chromedriver.exe"
+
+# ↑↑↑
 
 $jobGuideUrls = @(
 "https://na.finalfantasyxiv.com/jobguide/paladin/",
@@ -43,14 +57,6 @@ Function Remove-InvalidFileNameChars {
 	return ($Name -replace $re)
 }
 
-# HtmlAgilityPackライブラリをインポート
-Add-Type -Path "C:\temp\htmlagilitypack.1.11.71.nupkg\lib\netstandard2.0\HtmlAgilityPack.dll"
-
-# Seleniumライブラリをインポート
-Add-Type -Path "C:\temp\selenium.webdriver.4.27.0.nupkg\lib\netstandard2.0\WebDriver.dll"
-
-# ChromeDriverのパスを設定
-$chromeDriverPath = "C:\temp\selenium.webdriver.chromedriver.131.0.6778.10800.nupkg\driver\win32\chromedriver.exe"
 
 # Chromeオプションを設定
 $options = New-Object OpenQA.Selenium.Chrome.ChromeOptions
