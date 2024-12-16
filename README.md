@@ -4,6 +4,7 @@
 
 10.4.5でスペスペの「アイコンを入手する」機能を使えないようにしました  
 メニューに無いのはバグじゃ無いです
+代わりになるスクリプトを作りました https://github.com/anoyetta/ACT.Hojoring/issues/440
 
 [resourceのCSVファイル](https://github.com/anoyetta/ACT.Hojoring.Resources/tree/master/resources/xivdb)を生成するプログラムを[作りました](https://github.com/wbonbon/HojoringSupportTool)
 
