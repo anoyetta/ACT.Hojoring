@@ -7,6 +7,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -120,6 +121,8 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             lock (this)
             {
+                var sw = Stopwatch.StartNew();
+                this.AppLogger.Trace("LoadCurrentTimeline start"); LogManager.Flush();
                 WPFHelper.Invoke(() =>
                 {
                     TimelineNoticeOverlay.CloseNotice();
@@ -132,18 +135,22 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 var toReloads = timelines.Where(x =>
                     x.IsGlobalZone ||
                     x.IsReference);
+                /*
                 foreach (var tl in toReloads)
                 {
                     tl.Reload();
                     WPFHelper.DelayTask();
                 }
-
+                */
                 // すでにコントローラがロードされていたらアンロードする
                 foreach (var tl in timelines)
                 {
-                    tl.Controller.Unload();
-                    tl.IsActive = false;
-                    WPFHelper.DelayTask();
+                    if (tl.Controller.Status != TimelineStatus.Unloaded)
+                    {
+                        tl.Controller.Unload();
+                        tl.IsActive = false;
+                        WPFHelper.DelayTask();
+                    }
                 }
 
                 // 現在のゾーンで有効なタイムラインを取得する
@@ -180,6 +187,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 // ゾーングローバルオブジェクトを初期化する
                 TimelineScriptGlobalModel.Instance.DynamicObject.ClearZoneGlobal();
+                this.AppLogger.Trace("LoadCurrentTimeline end " + sw.Elapsed.TotalMilliseconds.ToString() + "ms"); LogManager.Flush();
             }
         }
 

@@ -147,9 +147,13 @@ namespace ACT.SpecialSpellTimer.Models
         {
             lock (this)
             {
-                if ((DateTime.UtcNow - this.lastQueueTimestamp).TotalMilliseconds <= CompileHandlerInterval)
+                // ゾーンチェンジが発生していない場合はインターバルをもうける
+                if (!this.isQueueZoneChange)
                 {
-                    return;
+                    if ((DateTime.UtcNow - this.lastQueueTimestamp).TotalMilliseconds <= CompileHandlerInterval)
+                    {
+                        return;
+                    }
                 }
 
                 this.lastQueueTimestamp = DateTime.MaxValue;

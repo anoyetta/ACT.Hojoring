@@ -1,4 +1,5 @@
 # 必要な物
+# Google Chrome
 # https://www.nuget.org/packages/HtmlAgilityPack/
 # https://www.nuget.org/packages/Selenium.WebDriver
 # https://www.nuget.org/packages/Selenium.WebDriver.ChromeDriver
