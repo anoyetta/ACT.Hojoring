@@ -330,7 +330,7 @@ namespace ACT.TTSYukkuri
         /// コマンドの発行から5.5秒後に「こんにちは」という
         /// </example>
         private static readonly Regex WaitCommandRegex = new Regex(
-            @"/wait\s+(?<due>[\d\.]+)[,\s]+(?<tts>.+)$",
+            @"/wait\s+(?<due>[\d\.]+)(?<operator>[+-]|)(?<offset>\d|)[,\s]+(?<tts>.+)$",
             RegexOptions.Compiled);
 
         private void SpeakTTS(
@@ -356,6 +356,8 @@ namespace ACT.TTSYukkuri
                 }
 
                 var delayAsText = match.Groups["due"].Value;
+                var operatorAsText = match.Groups["operator"].Value;
+                var offsetAsText = match.Groups["offset"].Value;
                 var message = match.Groups["tts"].Value?.Trim();
 
                 if (!double.TryParse(delayAsText, out double delay))
@@ -368,6 +370,23 @@ namespace ACT.TTSYukkuri
                 if (string.IsNullOrEmpty(message))
                 {
                     return;
+                }
+
+                // 必要ならdurationに対して簡易な足し算と引き算を行う
+                if (operatorAsText != string.Empty && offsetAsText != string.Empty)
+                {
+                    double offset;
+                    if (double.TryParse(offsetAsText, out offset))
+                    {
+                        if (operatorAsText == "+")
+                        {
+                            delay += offset;
+                        }
+                        else if (operatorAsText == "-")
+                        {
+                            delay -= offset;
+                        }
+                    }
                 }
 
                 // ディレイをかけて読上げる
