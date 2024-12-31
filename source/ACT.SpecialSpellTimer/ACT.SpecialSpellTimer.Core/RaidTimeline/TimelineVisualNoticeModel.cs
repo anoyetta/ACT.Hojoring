@@ -62,6 +62,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             set => this.SetProperty(ref this.duration, value);
         }
 
+        private double? duration_offset = null;
+
+        [XmlIgnore]
+        public double? DurationOffset
+        {
+            get => this.duration_offset;
+            set => this.SetProperty(ref this.duration_offset, value);
+        }
+
+
         private double durationToDisplay = 0;
 
         [XmlIgnore]
@@ -87,6 +97,13 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             get => this.Duration?.ToString();
             set => this.Duration = double.TryParse(value, out var v) ? v : (double?)null;
+        }
+
+        [XmlAttribute(AttributeName = "offset")]
+        public string OffsetXML
+        {
+            get => this.DurationOffset?.ToString();
+            set => this.DurationOffset = double.TryParse(value, out var v) ? v : (double?)null;
         }
 
         private bool? durationVisible = null;
@@ -339,7 +356,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
         [XmlIgnore]
         public DateTime TimeToHide
-            => this.Timestamp.AddSeconds(this.Duration.GetValueOrDefault());
+            => this.Timestamp.AddSeconds(this.Duration.GetValueOrDefault() + this.DurationOffset.GetValueOrDefault());
 
         private volatile bool toHide = false;
 
