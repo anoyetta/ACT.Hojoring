@@ -197,6 +197,14 @@ namespace FFXIV.Framework.XIVHelper
 
                     this.currentFFXIVProcess = ffxiv;
                     this.currentFFXIVLanguage = ffxivLanguage;
+                    string apibaseurl;
+                    if (FFXIV.Framework.Config.Instance.IsUseCustomSharlayan)
+                    {
+                        apibaseurl = "https://raw.githubusercontent.com/wbonbon/sharlayan-resources/master";
+                    } else
+                    {
+                        apibaseurl = "https://raw.githubusercontent.com/FFXIVAPP/sharlayan-resources/master";
+                    }
 
                     var config = new SharlayanConfiguration()
                     {
@@ -212,7 +220,7 @@ namespace FFXIV.Framework.XIVHelper
                             _ => GameRegion.Global
                         },
                         UseLocalCache = true,
-                        //APIBaseURL = "https://raw.githubusercontent.com/wbonbon/sharlayan-resources/dawntrail-7.0",
+                        APIBaseURL = apibaseurl,
                     };
 
                     this._memoryHandler = SharlayanMemoryManager.Instance.AddHandler(config);

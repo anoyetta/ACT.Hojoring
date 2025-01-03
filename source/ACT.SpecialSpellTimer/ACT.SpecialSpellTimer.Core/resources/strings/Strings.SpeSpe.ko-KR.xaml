@@ -228,6 +228,7 @@
 
   <system:String x:Key="Options_MinimizeOnStart">ACT 시작 시 최소화</system:String>
   <system:String x:Key="Options_Polon">15초마다 "포롱♪" 알림음 재생</system:String>
+  <system:String x:Key="Options_use_custom_sharlayan">Using Custom Sharlayan resource (ACT must be restart to apply)</system:String>
 
   <system:String x:Key="Info_Placeholders">대체식</system:String>
   <system:String x:Key="Info_Triggers">활성화된 트리거</system:String>

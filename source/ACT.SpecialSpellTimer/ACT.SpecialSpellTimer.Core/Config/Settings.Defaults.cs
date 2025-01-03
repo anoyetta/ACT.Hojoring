@@ -47,6 +47,7 @@ namespace ACT.SpecialSpellTimer.Config
             { nameof(Settings.EnableMultiLineMaching), false },
             { nameof(Settings.MaxFPS), 30 },
             { nameof(Settings.IsEnabledPolon), false },
+            { nameof(Settings.IsUseCustomSharlayan), false },
 
             { nameof(Settings.LPSViewVisible), false },
             { nameof(Settings.LPSViewX), 0 },
