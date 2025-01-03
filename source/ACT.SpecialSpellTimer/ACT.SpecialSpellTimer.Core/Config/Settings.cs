@@ -576,6 +576,13 @@ namespace ACT.SpecialSpellTimer.Config
             }
         }
 
+        private bool isUseCustomSharlayan = false;
+        public bool IsUseCustomSharlayan
+        {
+            get => this.isUseCustomSharlayan;
+            set => this.SetProperty(ref this.isUseCustomSharlayan, value);
+        }
+
         private void PolonTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             lock (this.polonTimer)
@@ -802,6 +809,7 @@ namespace ACT.SpecialSpellTimer.Config
                             {
                                 instance = data;
                                 instance.isLoaded = true;
+                                FFXIV.Framework.Config.Instance.IsUseCustomSharlayan = instance.IsUseCustomSharlayan;
                             }
                         }
                     }

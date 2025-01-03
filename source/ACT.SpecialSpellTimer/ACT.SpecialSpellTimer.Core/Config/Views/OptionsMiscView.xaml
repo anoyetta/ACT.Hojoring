@@ -67,5 +67,6 @@
   <StackPanel>
     <CheckBox Margin="0 15 0 0" Content="{DynamicResource Options_MinimizeOnStart}" IsChecked="{Binding Config.IsMinimizeOnStart, Mode=TwoWay}" />
     <CheckBox Margin="0 10 0 0" Content="{DynamicResource Options_Polon}" IsChecked="{Binding Config.IsEnabledPolon, Mode=TwoWay}" />
-  </StackPanel>
+    <CheckBox Margin="0 10 0 0" Content="{DynamicResource Options_use_custom_sharlayan}" IsChecked="{Binding Config.IsUseCustomSharlayan, Mode=TwoWay}" />
+    </StackPanel>
 </UserControl>

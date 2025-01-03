@@ -230,6 +230,7 @@ HEALER1 に me（自分）が含まれる場合にこのトリガが有効にな
 
   <system:String x:Key="Options_MinimizeOnStart">ACTを最小化して起動する</system:String>
   <system:String x:Key="Options_Polon">15秒ごとにポロン♪と鳴らす</system:String>
+  <system:String x:Key="Options_use_custom_sharlayan">独自のsharlayan resourceを使う (適用するにはACTの再起動が必要です)</system:String>
 
   <system:String x:Key="Info_Placeholders">有効なプレースホルダ</system:String>
   <system:String x:Key="Info_Triggers">アクティブなトリガ</system:String>
