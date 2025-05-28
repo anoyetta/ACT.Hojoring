@@ -125,7 +125,7 @@ namespace FFXIV.Framework.Common
 
                 sim.Keyboard.KeyPress(keys);
             }
-
+            
             foreach (var key in modifiers.Reverse())
             {
                 Thread.Sleep(TimeSpan.FromMilliseconds(20));
@@ -143,7 +143,7 @@ namespace FFXIV.Framework.Common
 
     public static class KeyShortcutExtensions
     {
-        public static VirtualKeyCode[] GetModifiers(
+        public static IEnumerable<VirtualKeyCode> GetModifiers(
             this KeyShortcut shortcut)
         {
             var keys = new List<VirtualKeyCode>();
