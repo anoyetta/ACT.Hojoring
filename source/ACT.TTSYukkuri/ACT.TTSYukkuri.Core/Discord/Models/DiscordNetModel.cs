@@ -162,7 +162,7 @@ namespace ACT.TTSYukkuri.Discord.Models
             DiscordBridge.Instance.SendMessageDelegate = this.SendMessage;
             DiscordBridge.Instance.SendSpeakingDelegate = this.Play;
 
-            this.SetupLibrary();
+           // this.SetupLibrary();
         }
 
         public void Dispose()
@@ -270,7 +270,7 @@ namespace ACT.TTSYukkuri.Discord.Models
             }
 
             // opus.dll の存在を確認する
-            var entryDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+/*            var entryDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             var opus = Path.Combine(entryDirectory, "opus.dll");
             if (!File.Exists(opus))
             {
@@ -280,7 +280,7 @@ namespace ACT.TTSYukkuri.Discord.Models
                     true);
 
                 return;
-            }
+            }*/
 
             try
             {

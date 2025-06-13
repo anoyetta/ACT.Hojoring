@@ -16,11 +16,15 @@
       AqKanji2Koe
       AquesTalk
       AquesTalkDriver
+      libsodium
+      opus
     </Unmanaged32Assemblies>
     <Unmanaged64Assemblies>
       AqKanji2Koe
       AquesTalk
       AquesTalkDriver
+      libsodium
+      opus
     </Unmanaged64Assemblies>
   </Costura>
 </Weavers>
