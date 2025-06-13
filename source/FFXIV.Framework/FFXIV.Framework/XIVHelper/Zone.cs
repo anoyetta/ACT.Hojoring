@@ -89,6 +89,7 @@ namespace FFXIV.Framework.XIVHelper
             // エウレカ等
             if (intendedUse == (int)TerritoryIntendedUse.Eukrea ||
                 intendedUse == (int)TerritoryIntendedUse.Bozja ||
+                intendedUse == (int)TerritoryIntendedUse.Crescent ||
                 intendedUse == (int)TerritoryIntendedUse.DR ||
                 intendedUse == (int)TerritoryIntendedUse.DRS)
             {
@@ -136,6 +137,7 @@ namespace FFXIV.Framework.XIVHelper
         PvP3 = 42,
         DeepDungeon = 31,
         Eukrea = 41,
+        Crescent = 61,
         Bozja = 48,
         DR = 52,
         DRS = 53,

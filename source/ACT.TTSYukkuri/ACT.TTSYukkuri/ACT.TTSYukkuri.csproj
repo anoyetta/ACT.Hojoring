@@ -116,6 +116,10 @@
     <EmbeddedResource Include="Costura64\AquesTalk.dll" />
     <EmbeddedResource Include="Costura32\AqKanji2Koe.dll" />
     <EmbeddedResource Include="Costura64\AqKanji2Koe.dll" />
+    <EmbeddedResource Include="Costura32\libsodium.dll" />
+    <EmbeddedResource Include="Costura64\libsodium.dll" />
+    <EmbeddedResource Include="Costura32\opus.dll" />
+    <EmbeddedResource Include="Costura64\opus.dll" />
     <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
