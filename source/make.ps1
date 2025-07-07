@@ -104,6 +104,8 @@ if (Test-Path .\ACT.Hojoring\bin\Release) {
     Remove-Item -Force *.exe.config
     Remove-Item -Force libgrpc_csharp_ext.*.so
     Remove-Item -Force libgrpc_csharp_ext.*.dylib
+    Remove-Item -Force -Recurse x86
+    Remove-Item -Force -Recurse x64
 
     '●フォルダをリネームする'
     Rename-Item Yukkuri _yukkuri

@@ -101,8 +101,14 @@
       <Version>4.0.3</Version>
     </PackageReference>
     <PackageReference Include="Costura.Fody">
-      <Version>5.7.0</Version>
+      <Version>6.0.0</Version>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Discord.Net">
+      <Version>3.17.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reactive">
+      <Version>6.0.1</Version>
     </PackageReference>
     <PackageReference Include="System.Text.RegularExpressions">
       <Version>4.3.1</Version>
@@ -110,16 +116,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ACT.Hojoring.ico" />
-    <EmbeddedResource Include="Costura32\AquesTalkDriver.dll" />
-    <EmbeddedResource Include="Costura64\AquesTalkDriver.dll" />
-    <EmbeddedResource Include="Costura32\AquesTalk.dll" />
-    <EmbeddedResource Include="Costura64\AquesTalk.dll" />
-    <EmbeddedResource Include="Costura32\AqKanji2Koe.dll" />
-    <EmbeddedResource Include="Costura64\AqKanji2Koe.dll" />
-    <EmbeddedResource Include="Costura32\libsodium.dll" />
-    <EmbeddedResource Include="Costura64\libsodium.dll" />
-    <EmbeddedResource Include="Costura32\opus.dll" />
-    <EmbeddedResource Include="Costura64\opus.dll" />
+    <EmbeddedResource Include="costura-win-x86\AquesTalkDriver.dll" />
+    <EmbeddedResource Include="costura-win-x64\AquesTalkDriver.dll" />
+    <EmbeddedResource Include="costura-win-x86\AquesTalk.dll" />
+    <EmbeddedResource Include="costura-win-x64\AquesTalk.dll" />
+    <EmbeddedResource Include="costura-win-x86\AqKanji2Koe.dll" />
+    <EmbeddedResource Include="costura-win-x64\AqKanji2Koe.dll" />
+    <EmbeddedResource Include="costura-win-x86\libsodium.dll" />
+    <EmbeddedResource Include="costura-win-x64\libsodium.dll" />
+    <EmbeddedResource Include="costura-win-x86\opus.dll" />
+    <EmbeddedResource Include="costura-win-x64\opus.dll" />
     <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>

@@ -98,7 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Costura.Fody">
-      <Version>5.7.0</Version>
+      <Version>6.0.0</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit">
@@ -108,7 +108,7 @@
       <Version>1.0.4</Version>
     </PackageReference>
     <PackageReference Include="NLog">
-      <Version>5.2.8</Version>
+      <Version>6.0.1</Version>
     </PackageReference>
     <PackageReference Include="OBS.WebSockets.Core">
       <Version>1.0.0</Version>

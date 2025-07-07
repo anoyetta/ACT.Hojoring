@@ -12,19 +12,19 @@
       ACT.Hojoring.Activator
       CeVIO.*
     </IncludeAssemblies>
-    <Unmanaged32Assemblies>
+    <UnmanagedWinX86Assemblies>
       AqKanji2Koe
       AquesTalk
       AquesTalkDriver
       libsodium
       opus
-    </Unmanaged32Assemblies>
-    <Unmanaged64Assemblies>
+    </UnmanagedWinX86Assemblies>
+    <UnmanagedWinX64Assemblies>
       AqKanji2Koe
       AquesTalk
       AquesTalkDriver
       libsodium
       opus
-    </Unmanaged64Assemblies>
+    </UnmanagedWinX64Assemblies>
   </Costura>
 </Weavers>

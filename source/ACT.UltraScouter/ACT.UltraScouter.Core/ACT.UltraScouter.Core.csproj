@@ -505,7 +505,7 @@
       <Version>13.0.3</Version>
     </PackageReference>
     <PackageReference Include="NLog">
-      <Version>5.2.8</Version>
+      <Version>6.0.1</Version>
     </PackageReference>
     <PackageReference Include="Prism.Core">
       <Version>8.1.97</Version>
@@ -514,7 +514,7 @@
       <Version>8.1.97</Version>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
-      <Version>1.0.112</Version>
+      <Version>1.0.119</Version>
     </PackageReference>
     <PackageReference Include="System.Text.RegularExpressions">
       <Version>4.3.1</Version>

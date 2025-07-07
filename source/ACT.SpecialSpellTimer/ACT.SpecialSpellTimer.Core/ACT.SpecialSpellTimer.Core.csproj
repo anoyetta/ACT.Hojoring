@@ -323,7 +323,7 @@
       <Version>13.0.3</Version>
     </PackageReference>
     <PackageReference Include="NLog">
-      <Version>5.2.8</Version>
+      <Version>6.0.1</Version>
     </PackageReference>
     <PackageReference Include="NPOI">
       <Version>2.6.2</Version>
