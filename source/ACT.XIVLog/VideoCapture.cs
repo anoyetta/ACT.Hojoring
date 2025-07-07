@@ -1,8 +1,9 @@
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog;
-using OBS.WebSockets.Core;
 using SLOBSharp.Client;
 using SLOBSharp.Client.Requests;
 using System;
@@ -14,6 +15,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WindowsInput;
+using WebSocketSharp;
 
 namespace ACT.XIVLog
 {
@@ -33,7 +35,7 @@ namespace ACT.XIVLog
 
         #region Logger
 
-        private Logger AppLogger => AppLog.DefaultLogger;
+        private NLog.Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -260,7 +262,7 @@ namespace ACT.XIVLog
             this.prevInCombat = inCombat;
         }
 
-        public void StartRecording()
+        public async void StartRecording()
         {
             lock (this)
             {
@@ -283,11 +285,15 @@ namespace ACT.XIVLog
                 }
                 else
                 {
-                    this.SendToggleRecording();
+                    bool ret = await this.SendToggleRecording();
+                    if (!ret)
+                    {
+                        return;
+                    }
                 }
             }
 
-            WPFHelper.InvokeAsync(async () =>
+            await WPFHelper.InvokeAsync(async () =>
             {
                 if (Config.Instance.IsEnabledRecording)
                 {
@@ -338,7 +344,7 @@ namespace ACT.XIVLog
 
         private static readonly string VideoDurationPlaceholder = "#duration#";
 
-        public void FinishRecording()
+        public async void FinishRecording()
         {
             this.StopRecordingSubscriber?.Stop();
 
@@ -363,7 +369,11 @@ namespace ACT.XIVLog
             }
             else
             {
-                this.SendToggleRecording();
+                bool ret = await this.SendToggleRecording();
+                if (!ret)
+                {
+                    return;
+                }
             }
 
             var contentName = !string.IsNullOrEmpty(this.contentName) ?
@@ -373,7 +383,7 @@ namespace ACT.XIVLog
             if (!string.IsNullOrEmpty(Config.Instance.VideoSaveDictory) &&
                 Directory.Exists(Config.Instance.VideoSaveDictory))
             {
-                Task.Run(async () =>
+                await Task.Run(async () =>
                 {
                     var now = DateTime.Now;
 
@@ -388,7 +398,7 @@ namespace ACT.XIVLog
 
                     var f = $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} {VideoDurationPlaceholder}{deathCountText}.ext";
 
-                    await Task.Delay(TimeSpan.FromSeconds(8));
+                    await Task.Delay(TimeSpan.FromSeconds(1));
 
                     var files = Directory.GetFiles(
                         Config.Instance.VideoSaveDictory,
@@ -460,7 +470,7 @@ namespace ACT.XIVLog
                 });
             }
 
-            WPFHelper.InvokeAsync(() =>
+            await WPFHelper.InvokeAsync(() =>
             {
                 lock (this)
                 {
@@ -470,23 +480,129 @@ namespace ACT.XIVLog
         }
 
         private readonly Lazy<object> LazySLOBSClient = new Lazy<object>(() => new SlobsPipeClient("slobs"));
+        private TaskCompletionSource<bool> identifyReceived;
+        private TaskCompletionSource<bool> toggleReceived;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private async void SendToggleRecording()
+        private async Task<bool> SendToggleRecording()
         {
             if (Config.Instance.UseObsWS)
             {
-                OBS.WebSockets.Core.OBSWebsocket obs;
-                obs = new OBSWebsocket { WSTimeout = TimeSpan.FromMinutes(10) };
-                obs.Connect("ws://127.0.0.1:4444", "");
-                if (obs.IsConnected)
+                try
                 {
-                    obs.ToggleRecording();
-                    obs.Disconnect();
+                    WebSocket ws;
+                    identifyReceived = new TaskCompletionSource<bool>();
+                    toggleReceived = new TaskCompletionSource<bool>();
+
+                    ws = new WebSocket("ws://127.0.0.1:4455");
+
+                    ws.OnMessage += (sender, e) =>
+                    {
+                        try
+                        {
+                            var json = JObject.Parse(e.Data);
+                            int op = json["op"]?.Value<int>() ?? -1;
+
+                            if (op == 2) // Identify 応答
+                            {
+                                var authObj = json["d"]["authentication"];
+                                if (authObj != null)
+                                {
+                                    this.AppLogger.Info("[OBS Websocket] Identify failed: OBS requires authentication");
+                                    identifyReceived.TrySetResult(false);
+                                }
+                                else
+                                {
+                                    this.AppLogger.Info("[OBS Websocket] Identify response received (no auth required)");
+                                    identifyReceived.TrySetResult(true);
+                                }
+                            }
+                            else if (op == 7) // リクエスト応答
+                            {
+                                var status = json["d"]["requestStatus"];
+                                bool result = status["result"]?.Value<bool>() ?? false;
+                                int code = status["code"]?.Value<int>() ?? 0;
+                                string comment = status["comment"]?.Value<string>() ?? "";
+
+                                this.AppLogger.Info($"[OBS WebSocket] ToggleRecord response : Code={code}, Result={(result ? "Success" : "Failure")}, Reason={(string.IsNullOrEmpty(comment) ? "(empty)" : comment)}");
+
+                                toggleReceived.TrySetResult(result);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            this.AppLogger.Info("[OBS Websocket] JSON Parse error : " + ex.Message);
+                        }
+                    };
+
+                    ws.OnError += (sender, e) =>
+                    {
+                        this.AppLogger.Info("[OBS Websocket] error : " + e.Message);
+                    };
+
+                    ws.OnClose += (sender, e) =>
+                    {
+                        this.AppLogger.Info($"[OBS WebSocket] close : Code={e.Code}, Reason={(string.IsNullOrEmpty(e.Reason) ? "(empty)" : e.Reason)}");
+                    };
+
+                    ws.Connect();
+
+                    if (!ws.IsAlive)
+                    {
+                        this.AppLogger.Info("[OBS Websocket] WebSocket connection failed. Please check that OBS is running.");
+                        return false;
+                    }
+
+                    // Step 1: Identify
+                    var identify = new
+                    {
+                        op = 1,
+                        d = new
+                        {
+                            rpcVersion = 1,
+                            authentication = ""
+                        }
+                    };
+                    ws.Send(JsonConvert.SerializeObject(identify));
+
+                    var identifyDone = await Task.WhenAny(identifyReceived.Task, Task.Delay(2000));
+                    if (identifyDone != identifyReceived.Task || !identifyReceived.Task.Result)
+                    {
+                        this.AppLogger.Info("[OBS Websocket] Identify failed or OBS requires authentication");
+                        ws.Close();
+                        return false;
+                    }
+
+                    // Step 2: ToggleRecord リクエスト
+                    var toggleRequest = new
+                    {
+                        op = 6,
+                        d = new
+                        {
+                            requestType = "ToggleRecord",
+                            requestId = Guid.NewGuid().ToString()
+                        }
+                    };
+                    ws.Send(JsonConvert.SerializeObject(toggleRequest));
+
+                    var toggleDone = await Task.WhenAny(toggleReceived.Task, Task.Delay(1000));
+                    if (toggleDone == toggleReceived.Task && toggleReceived.Task.Result)
+                    {
+                        this.AppLogger.Info("[OBS Websocket] Success: ToggleRecord completed");
+                        ws.Close();
+                        return true;
+                    }
+                    else
+                    {
+                        this.AppLogger.Info("[OBS Websocket] Failure: ToggleRecord timed out or failed");
+                        ws.Close();
+                        return false;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    this.AppLogger.Info("Tried to record, but OBS Websocket connect faild.");
+                    this.AppLogger.Info(ex.ToString());
+                    return false;
                 }
             }
             else
@@ -496,7 +612,7 @@ namespace ACT.XIVLog
                     p.Length < 1)
                 {
                     this.AppLogger.Info("Tried to record, but Streamlabs OBS is not found.");
-                    return;
+                    return false;
                 }
 
                 var client = this.LazySLOBSClient.Value as SlobsPipeClient;
@@ -510,6 +626,8 @@ namespace ACT.XIVLog
                 await client
                     .ExecuteRequestAsync(req)
                     .ConfigureAwait(false);
+
+                return true;
             }
         }
     }
