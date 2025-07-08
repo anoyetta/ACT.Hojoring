@@ -398,7 +398,7 @@ namespace ACT.XIVLog
 
                     var f = $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} {VideoDurationPlaceholder}{deathCountText}.ext";
 
-                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    await Task.Delay(TimeSpan.FromSeconds(4));
 
                     var files = Directory.GetFiles(
                         Config.Instance.VideoSaveDictory,
