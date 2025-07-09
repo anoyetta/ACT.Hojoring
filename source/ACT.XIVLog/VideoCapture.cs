@@ -12,10 +12,12 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
-using WindowsInput;
 using WebSocketSharp;
+using WindowsInput;
 
 namespace ACT.XIVLog
 {
@@ -285,8 +287,8 @@ namespace ACT.XIVLog
                 }
                 else
                 {
-                    bool ret = await this.SendToggleRecording();
-                    if (!ret)
+                    var (success, path) = await this.SendToggleRecording(true);
+                    if (!success)
                     {
                         return;
                     }
@@ -343,7 +345,6 @@ namespace ACT.XIVLog
         }
 
         private static readonly string VideoDurationPlaceholder = "#duration#";
-
         public async void FinishRecording()
         {
             this.StopRecordingSubscriber?.Stop();
@@ -361,6 +362,8 @@ namespace ACT.XIVLog
                 return;
             }
 
+            string outputPath = null;
+
             if (!Config.Instance.UseObsRpc)
             {
                 this.Input.Keyboard.ModifiedKeyStroke(
@@ -369,9 +372,26 @@ namespace ACT.XIVLog
             }
             else
             {
-                bool ret = await this.SendToggleRecording();
-                if (!ret)
+                var (success, path) = await this.SendToggleRecording(false);
+                if (!success || string.IsNullOrEmpty(path))
                 {
+                    return;
+                }
+
+                int retries = 3;
+                for (int i = 0; i < retries; i++)
+                {
+                    if (IsFileReady(path))
+                    {
+                        outputPath = path;
+                        break;
+                    }
+                    await Task.Delay(500);
+                }
+
+                if (string.IsNullOrEmpty(outputPath))
+                {
+                    XIVLogPlugin.Instance.EnqueueLogLine("[XIVLog] output file not ready.");
                     return;
                 }
             }
@@ -383,88 +403,62 @@ namespace ACT.XIVLog
             if (!string.IsNullOrEmpty(Config.Instance.VideoSaveDictory) &&
                 Directory.Exists(Config.Instance.VideoSaveDictory))
             {
-                await Task.Run(async () =>
+                await Task.Run(() =>
                 {
                     var now = DateTime.Now;
 
                     var prefix = Config.Instance.VideFilePrefix.Trim();
-                    prefix = string.IsNullOrEmpty(prefix) ?
-                        string.Empty :
-                        $"{prefix} ";
-
-                    var deathCountText = this.deathCount > 1 ?
-                        $" death{this.deathCount - 1}" :
-                        string.Empty;
+                    prefix = string.IsNullOrEmpty(prefix) ? string.Empty : $"{prefix} ";
+                    var deathCountText = this.deathCount > 1 ? $" death{this.deathCount - 1}" : string.Empty;
 
                     var f = $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} {VideoDurationPlaceholder}{deathCountText}.ext";
 
-                    await Task.Delay(TimeSpan.FromSeconds(4));
-
-                    var files = Directory.GetFiles(
-                        Config.Instance.VideoSaveDictory,
-                        "*.*");
-
-                    var original = files
-                        .OrderByDescending(x => File.GetLastWriteTime(x))
-                        .FirstOrDefault();
-
-                    if (!string.IsNullOrEmpty(original))
+                    if (File.Exists(outputPath))
                     {
-                        var timestamp = File.GetLastWriteTime(original);
-                        if (timestamp >= now.AddSeconds(-10))
+                        var ext = Path.GetExtension(outputPath);
+                        f = f.Replace(".ext", ext);
+
+                        var dest = Path.Combine(Path.GetDirectoryName(outputPath), f);
+
+                        using (var tf = TagLib.File.Create(outputPath))
                         {
-                            var ext = Path.GetExtension(original);
-                            f = f.Replace(".ext", ext);
+                            dest = dest.Replace(
+                                VideoDurationPlaceholder,
+                                $"{tf.Properties.Duration.TotalSeconds:N0}s");
 
-                            var dest = Path.Combine(
-                                Path.GetDirectoryName(original),
-                                f);
+                            tf.Tag.Title = Path.GetFileNameWithoutExtension(dest);
+                            tf.Tag.Subtitle = $"{prefix} - {contentName}";
+                            tf.Tag.Album = $"FFXIV - {contentName}";
+                            tf.Tag.AlbumArtists = new[] { "FFXIV", this.playerName }.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                            tf.Tag.Genres = new[] { "Game" };
+                            tf.Tag.Comment =
+                                $"{prefix} - {contentName}\n" +
+                                $"{this.startTime:yyyy-MM-dd HH:mm} try{this.TryCount}{deathCountText}";
+                            tf.Save();
+                        }
 
-                            using (var tf = TagLib.File.Create(original))
+                        int i = 0;
+                        bool result = false;
+                        do
+                        {
+                            try
                             {
-                                dest = dest.Replace(
-                                    VideoDurationPlaceholder,
-                                    $"{tf.Properties.Duration.TotalSeconds:N0}s");
-
-                                tf.Tag.Title = Path.GetFileNameWithoutExtension(dest);
-                                tf.Tag.Subtitle = $"{prefix} - {contentName}";
-                                tf.Tag.Album = $"FFXIV - {contentName}";
-                                tf.Tag.AlbumArtists = new[] { "FFXIV", this.playerName }.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-                                tf.Tag.Genres = new[] { "Game" };
-                                tf.Tag.Comment =
-                                    $"{prefix} - {contentName}\n" +
-                                    $"{this.startTime:yyyy-MM-dd HH:mm} try{this.TryCount}{deathCountText}";
-                                tf.Save();
+                                File.Move(outputPath, dest);
+                                result = true;
+                                break;
                             }
-
-                            int i = 0;
-                            bool result = false;
-                            do
+                            catch (Exception ex)
                             {
-                                try
-                                {
-                                    File.Move(
-                                        original,
-                                        dest);
-                                    result = true;
-                                    break;
-                                }
-                                catch (Exception ex)
-                                {
-                                    XIVLogPlugin.Instance.EnqueueLogLine(
-                                        $"[XIVLog] rename failed, retry... {ex.Message}");
-                                    await Task.Delay(5);
-                                    i++;
-                                }
-                            } while (i < 5);
-
-                            XIVLogPlugin.Instance.EnqueueLogLine(
-                                $"[XIVLog] The video was saved. {Path.GetFileName(dest)}");
-                            if (!result)
-                            {
-                                XIVLogPlugin.Instance.EnqueueLogLine(
-                                    $"[XIVLog] rename failed.");
+                                XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] rename failed, retry... {ex.Message}");
+                                Thread.Sleep(5);
+                                i++;
                             }
+                        } while (i < 5);
+
+                        XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] The video was saved. {Path.GetFileName(dest)}");
+                        if (!result)
+                        {
+                            XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] rename failed.");
                         }
                     }
                 });
@@ -478,156 +472,206 @@ namespace ACT.XIVLog
                 }
             });
         }
-
+        private bool IsFileReady(string path)
+        {
+            try
+            {
+                using (var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    return stream.Length > 0;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
         private readonly Lazy<object> LazySLOBSClient = new Lazy<object>(() => new SlobsPipeClient("slobs"));
-        private TaskCompletionSource<bool> identifyReceived;
-        private TaskCompletionSource<bool> toggleReceived;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private async Task<bool> SendToggleRecording()
+        public async Task<(bool success, string outputPath)> SendToggleRecording(bool start)
         {
-            if (Config.Instance.UseObsWS)
+            try
             {
-                try
+                WebSocket ws;
+                var helloReceived = new TaskCompletionSource<JObject>();
+                var identifyReceived = new TaskCompletionSource<bool>();
+                var recordStatusReceived = new TaskCompletionSource<bool?>();
+                var recordControlReceived = new TaskCompletionSource<bool>();
+                var recordStoppedReceived = new TaskCompletionSource<string>(); // outputPath
+
+                ws = new WebSocket("ws://127.0.0.1:4455");
+
+                ws.OnMessage += (sender, e) =>
                 {
-                    WebSocket ws;
-                    identifyReceived = new TaskCompletionSource<bool>();
-                    toggleReceived = new TaskCompletionSource<bool>();
-
-                    ws = new WebSocket("ws://127.0.0.1:4455");
-
-                    ws.OnMessage += (sender, e) =>
+                    try
                     {
-                        try
-                        {
-                            var json = JObject.Parse(e.Data);
-                            int op = json["op"]?.Value<int>() ?? -1;
+                        var json = JObject.Parse(e.Data);
+                        int op = json["op"]?.Value<int>() ?? -1;
 
-                            if (op == 2) // Identify 応答
+                        if (op == 0) // Hello
+                        {
+                            helloReceived.TrySetResult(json["d"] as JObject);
+                        }
+                        else if (op == 2) // Identified
+                        {
+                            identifyReceived.TrySetResult(true);
+                        }
+                        else if (op == 7) // RequestResponse
+                        {
+                            string reqType = json["d"]["requestType"]?.Value<string>();
+                            var result = json["d"]["requestStatus"]["result"]?.Value<bool>() ?? false;
+
+                            if (reqType == "GetRecordStatus")
                             {
-                                var authObj = json["d"]["authentication"];
-                                if (authObj != null)
-                                {
-                                    this.AppLogger.Info("[OBS Websocket] Identify failed: OBS requires authentication");
-                                    identifyReceived.TrySetResult(false);
-                                }
+                                if (!result)
+                                    recordStatusReceived.TrySetResult(null);
                                 else
-                                {
-                                    this.AppLogger.Info("[OBS Websocket] Identify response received (no auth required)");
-                                    identifyReceived.TrySetResult(true);
-                                }
+                                    recordStatusReceived.TrySetResult(json["d"]["responseData"]["outputActive"]?.Value<bool>());
                             }
-                            else if (op == 7) // リクエスト応答
+                            else if (reqType == "StartRecord" || reqType == "StopRecord")
                             {
-                                var status = json["d"]["requestStatus"];
-                                bool result = status["result"]?.Value<bool>() ?? false;
-                                int code = status["code"]?.Value<int>() ?? 0;
-                                string comment = status["comment"]?.Value<string>() ?? "";
-
-                                this.AppLogger.Info($"[OBS WebSocket] ToggleRecord response : Code={code}, Result={(result ? "Success" : "Failure")}, Reason={(string.IsNullOrEmpty(comment) ? "(empty)" : comment)}");
-
-                                toggleReceived.TrySetResult(result);
+                                recordControlReceived.TrySetResult(result);
                             }
                         }
-                        catch (Exception ex)
+                        else if (op == 5) // Event
                         {
-                            this.AppLogger.Info("[OBS Websocket] JSON Parse error : " + ex.Message);
+                            string eventType = json["d"]["eventType"]?.Value<string>();
+                            if (eventType == "RecordOutputStopped")
+                            {
+                                string outputPath = json["d"]["eventData"]["outputPath"]?.Value<string>() ?? "";
+                                recordStoppedReceived.TrySetResult(outputPath);
+                            }
                         }
-                    };
-
-                    ws.OnError += (sender, e) =>
-                    {
-                        this.AppLogger.Info("[OBS Websocket] error : " + e.Message);
-                    };
-
-                    ws.OnClose += (sender, e) =>
-                    {
-                        this.AppLogger.Info($"[OBS WebSocket] close : Code={e.Code}, Reason={(string.IsNullOrEmpty(e.Reason) ? "(empty)" : e.Reason)}");
-                    };
-
-                    ws.Connect();
-
-                    if (!ws.IsAlive)
-                    {
-                        this.AppLogger.Info("[OBS Websocket] WebSocket connection failed. Please check that OBS is running.");
-                        return false;
                     }
-
-                    // Step 1: Identify
-                    var identify = new
+                    catch (Exception ex)
                     {
-                        op = 1,
-                        d = new
-                        {
-                            rpcVersion = 1,
-                            authentication = ""
-                        }
-                    };
-                    ws.Send(JsonConvert.SerializeObject(identify));
-
-                    var identifyDone = await Task.WhenAny(identifyReceived.Task, Task.Delay(2000));
-                    if (identifyDone != identifyReceived.Task || !identifyReceived.Task.Result)
-                    {
-                        this.AppLogger.Info("[OBS Websocket] Identify failed or OBS requires authentication");
-                        ws.Close();
-                        return false;
+                        this.AppLogger.Info("[OBS WebSocket] JSON Parse error: " + ex.Message);
                     }
+                };
 
-                    // Step 2: ToggleRecord リクエスト
-                    var toggleRequest = new
+                ws.Connect();
+                if (!ws.IsAlive)
+                {
+                    this.AppLogger.Info("[OBS WebSocket] WebSocket connection failed.");
+                    return (false, null);
+                }
+
+                // Hello
+                var helloDone = await Task.WhenAny(helloReceived.Task, Task.Delay(2000));
+                if (helloDone != helloReceived.Task)
+                {
+                    ws.Close();
+                    return (false, null);
+                }
+
+                var helloData = helloReceived.Task.Result;
+                string authString = "";
+                if (helloData["authentication"] != null)
+                {
+                    string challenge = helloData["authentication"]["challenge"].Value<string>();
+                    string salt = helloData["authentication"]["salt"].Value<string>();
+                    string password = ""; // そのうちUIで設定できるようにする
+
+                    string secret = Convert.ToBase64String(
+                        System.Security.Cryptography.SHA256.Create().ComputeHash(
+                            Encoding.UTF8.GetBytes(password + salt)
+                        )
+                    );
+                    authString = Convert.ToBase64String(
+                        System.Security.Cryptography.SHA256.Create().ComputeHash(
+                            Encoding.UTF8.GetBytes(secret + challenge)
+                        )
+                    );
+                }
+
+                // Identify（eventIntentにOutputsを含める = 1 << 6 = 64）
+                var identify = new
+                {
+                    op = 1,
+                    d = new
+                    {
+                        rpcVersion = helloData["rpcVersion"].Value<int>(),
+                        authentication = string.IsNullOrEmpty(authString) ? null : authString,
+                        eventSubscriptions = 64
+                    }
+                };
+                ws.Send(JsonConvert.SerializeObject(identify));
+
+                var identifyDone = await Task.WhenAny(identifyReceived.Task, Task.Delay(2000));
+                if (identifyDone != identifyReceived.Task || !identifyReceived.Task.Result)
+                {
+                    ws.Close();
+                    return (false, null);
+                }
+
+                // GetRecordStatus
+                var statusRequest = new
+                {
+                    op = 6,
+                    d = new
+                    {
+                        requestType = "GetRecordStatus",
+                        requestId = Guid.NewGuid().ToString()
+                    }
+                };
+                ws.Send(JsonConvert.SerializeObject(statusRequest));
+                var statusDone = await Task.WhenAny(recordStatusReceived.Task, Task.Delay(2000));
+                bool? isRecording = statusDone == recordStatusReceived.Task ? recordStatusReceived.Task.Result : null;
+
+                if (isRecording == null)
+                {
+                    ws.Close();
+                    return (false, null);
+                }
+
+                // 実行条件判定
+                if ((start && !isRecording.Value) || (!start && isRecording.Value))
+                {
+                    string reqType = start ? "StartRecord" : "StopRecord";
+                    var recordRequest = new
                     {
                         op = 6,
                         d = new
                         {
-                            requestType = "ToggleRecord",
+                            requestType = reqType,
                             requestId = Guid.NewGuid().ToString()
                         }
                     };
-                    ws.Send(JsonConvert.SerializeObject(toggleRequest));
+                    ws.Send(JsonConvert.SerializeObject(recordRequest));
 
-                    var toggleDone = await Task.WhenAny(toggleReceived.Task, Task.Delay(1000));
-                    if (toggleDone == toggleReceived.Task && toggleReceived.Task.Result)
+                    var controlDone = await Task.WhenAny(recordControlReceived.Task, Task.Delay(2000));
+                    if (controlDone != recordControlReceived.Task || !recordControlReceived.Task.Result)
                     {
-                        this.AppLogger.Info("[OBS Websocket] Success: ToggleRecord completed");
                         ws.Close();
-                        return true;
+                        return (false, null);
                     }
-                    else
+
+                    // StopRecord時に outputPath を待つ
+                    if (!start)
                     {
-                        this.AppLogger.Info("[OBS Websocket] Failure: ToggleRecord timed out or failed");
+                        var stoppedDone = await Task.WhenAny(recordStoppedReceived.Task, Task.Delay(5000));
                         ws.Close();
-                        return false;
+                        if (stoppedDone == recordStoppedReceived.Task)
+                            return (true, recordStoppedReceived.Task.Result);
+                        else
+                            return (false, null);
                     }
+
+                    ws.Close();
+                    return (true, null);
                 }
-                catch (Exception ex)
+                else
                 {
-                    this.AppLogger.Info(ex.ToString());
-                    return false;
+                    this.AppLogger.Info("[OBS WebSocket] No action needed.");
+                    ws.Close();
+                    return (true, null);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                var p = Process.GetProcessesByName("Streamlabs OBS");
-                if (p == null ||
-                    p.Length < 1)
-                {
-                    this.AppLogger.Info("Tried to record, but Streamlabs OBS is not found.");
-                    return false;
-                }
-
-                var client = this.LazySLOBSClient.Value as SlobsPipeClient;
-
-                var req = SlobsRequestBuilder
-                    .NewRequest()
-                    .SetMethod("toggleRecording")
-                    .SetResource("StreamingService")
-                    .BuildRequest();
-
-                await client
-                    .ExecuteRequestAsync(req)
-                    .ConfigureAwait(false);
-
-                return true;
+                this.AppLogger.Info("[OBS WebSocket] Exception: " + ex.ToString());
+                return (false, null);
             }
         }
     }
