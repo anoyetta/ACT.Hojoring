@@ -266,19 +266,24 @@ namespace ACT.XIVLog
 
         public async void StartRecording()
         {
+            if (Config.Instance.IsRecording)
+            {
+                return;
+            }
+
             lock (this)
             {
-                if (Config.Instance.IsRecording)
+                this.TryCount++;
+                this.startTime = DateTime.Now;
+            }
+
+            try
+            {
+                if (!Config.Instance.IsEnabledRecording)
                 {
                     return;
                 }
-            }
 
-            this.TryCount++;
-            this.startTime = DateTime.Now;
-
-            if (Config.Instance.IsEnabledRecording)
-            {
                 if (!Config.Instance.UseObsRpc)
                 {
                     this.Input.Keyboard.ModifiedKeyStroke(
@@ -287,191 +292,196 @@ namespace ACT.XIVLog
                 }
                 else
                 {
-                    var (success, path) = await this.SendToggleRecording(true);
+                    var (success, _) = await this.SendToggleRecording(true);
                     if (!success)
                     {
                         return;
                     }
                 }
-            }
 
-            await WPFHelper.InvokeAsync(async () =>
+                await WPFHelper.InvokeAsync(async () =>
+                {
+                    var contentName = !string.IsNullOrEmpty(this.contentName) ?
+                        this.contentName :
+                        ActGlobals.oFormActMain.CurrentZone;
+
+                    this.playerName = CombatantsManager.Instance.Player.Name;
+
+                    if (Config.Instance.IsShowTitleCard)
+                    {
+                        TitleCardView.ShowTitleCard(contentName, this.TryCount, this.startTime);
+                    }
+
+                    await Task.Delay(TimeSpan.FromSeconds(5));
+                });
+            }
+            catch (Exception ex)
             {
-                if (Config.Instance.IsEnabledRecording)
+                XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] StartRecording exception: {ex.Message}");
+            }
+            finally
+            {
+                await WPFHelper.InvokeAsync(() =>
+                {
+                    if (Config.Instance.IsEnabledRecording)
+                    {
+                        lock (this)
+                        {
+                            Config.Instance.IsRecording = true;
+                        }
+                    }
+                });
+
+                if (Config.Instance.StopRecordingAfterCombatMinutes > 0)
                 {
                     lock (this)
                     {
-                        Config.Instance.IsRecording = true;
-                    }
-                }
-
-                await Task.Delay(TimeSpan.FromSeconds(5));
-
-                var contentName = !string.IsNullOrEmpty(this.contentName) ?
-                    this.contentName :
-                    ActGlobals.oFormActMain.CurrentZone;
-
-                this.playerName = CombatantsManager.Instance.Player.Name;
-
-                if (Config.Instance.IsShowTitleCard)
-                {
-                    TitleCardView.ShowTitleCard(
-                        contentName,
-                        this.TryCount,
-                        this.startTime);
-                }
-            });
-
-            if (Config.Instance.StopRecordingAfterCombatMinutes > 0)
-            {
-                lock (this)
-                {
-                    if (this.StopRecordingSubscriber == null)
-                    {
-                        var interval = Config.Instance.StopRecordingSubscribeInterval;
-                        if (interval <= 0)
+                        if (this.StopRecordingSubscriber == null)
                         {
-                            interval = 10;
+                            var interval = Config.Instance.StopRecordingSubscribeInterval;
+                            if (interval <= 0)
+                            {
+                                interval = 10;
+                            }
+
+                            this.StopRecordingSubscriber = new System.Timers.Timer(interval * 1000);
+                            this.StopRecordingSubscriber.Elapsed += (_, __) => this.DetectStopRecording();
                         }
 
-                        this.StopRecordingSubscriber = new System.Timers.Timer(interval * 1000);
-                        this.StopRecordingSubscriber.Elapsed += (_, __) => this.DetectStopRecording();
+                        this.endCombatDateTime = DateTime.UtcNow;
+                        this.StopRecordingSubscriber.Start();
                     }
-
-                    this.endCombatDateTime = DateTime.UtcNow;
-                    this.StopRecordingSubscriber.Start();
                 }
             }
         }
+
 
         private static readonly string VideoDurationPlaceholder = "#duration#";
         public async void FinishRecording()
         {
             this.StopRecordingSubscriber?.Stop();
 
-            lock (this)
-            {
-                if (!Config.Instance.IsRecording)
-                {
-                    return;
-                }
-            }
-
-            if (!Config.Instance.IsEnabledRecording)
-            {
-                return;
-            }
-
-            string outputPath = null;
-
-            if (!Config.Instance.UseObsRpc)
-            {
-                this.Input.Keyboard.ModifiedKeyStroke(
-                    Config.Instance.StopRecordingShortcut.GetModifiers(),
-                    Config.Instance.StopRecordingShortcut.GetKeys());
-            }
-            else
-            {
-                var (success, path) = await this.SendToggleRecording(false);
-                if (!success || string.IsNullOrEmpty(path))
-                {
-                    return;
-                }
-
-                int retries = 3;
-                for (int i = 0; i < retries; i++)
-                {
-                    if (IsFileReady(path))
-                    {
-                        outputPath = path;
-                        break;
-                    }
-                    await Task.Delay(500);
-                }
-
-                if (string.IsNullOrEmpty(outputPath))
-                {
-                    XIVLogPlugin.Instance.EnqueueLogLine("[XIVLog] output file not ready.");
-                    return;
-                }
-            }
-
-            var contentName = !string.IsNullOrEmpty(this.contentName) ?
-                this.contentName :
-                ActGlobals.oFormActMain.CurrentZone;
-
-            if (!string.IsNullOrEmpty(Config.Instance.VideoSaveDictory) &&
-                Directory.Exists(Config.Instance.VideoSaveDictory))
-            {
-                await Task.Run(() =>
-                {
-                    var now = DateTime.Now;
-
-                    var prefix = Config.Instance.VideFilePrefix.Trim();
-                    prefix = string.IsNullOrEmpty(prefix) ? string.Empty : $"{prefix} ";
-                    var deathCountText = this.deathCount > 1 ? $" death{this.deathCount - 1}" : string.Empty;
-
-                    var f = $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} {VideoDurationPlaceholder}{deathCountText}.ext";
-
-                    if (File.Exists(outputPath))
-                    {
-                        var ext = Path.GetExtension(outputPath);
-                        f = f.Replace(".ext", ext);
-
-                        var dest = Path.Combine(Path.GetDirectoryName(outputPath), f);
-
-                        using (var tf = TagLib.File.Create(outputPath))
-                        {
-                            dest = dest.Replace(
-                                VideoDurationPlaceholder,
-                                $"{tf.Properties.Duration.TotalSeconds:N0}s");
-
-                            tf.Tag.Title = Path.GetFileNameWithoutExtension(dest);
-                            tf.Tag.Subtitle = $"{prefix} - {contentName}";
-                            tf.Tag.Album = $"FFXIV - {contentName}";
-                            tf.Tag.AlbumArtists = new[] { "FFXIV", this.playerName }.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-                            tf.Tag.Genres = new[] { "Game" };
-                            tf.Tag.Comment =
-                                $"{prefix} - {contentName}\n" +
-                                $"{this.startTime:yyyy-MM-dd HH:mm} try{this.TryCount}{deathCountText}";
-                            tf.Save();
-                        }
-
-                        int i = 0;
-                        bool result = false;
-                        do
-                        {
-                            try
-                            {
-                                File.Move(outputPath, dest);
-                                result = true;
-                                break;
-                            }
-                            catch (Exception ex)
-                            {
-                                XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] rename failed, retry... {ex.Message}");
-                                Thread.Sleep(5);
-                                i++;
-                            }
-                        } while (i < 5);
-
-                        XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] The video was saved. {Path.GetFileName(dest)}");
-                        if (!result)
-                        {
-                            XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] rename failed.");
-                        }
-                    }
-                });
-            }
-
-            await WPFHelper.InvokeAsync(() =>
+            try
             {
                 lock (this)
                 {
-                    Config.Instance.IsRecording = false;
+                    if (!Config.Instance.IsRecording)
+                        return;
                 }
-            });
+
+                if (!Config.Instance.IsEnabledRecording)
+                    return;
+
+                string outputPath = null;
+
+                if (!Config.Instance.UseObsRpc)
+                {
+                    this.Input.Keyboard.ModifiedKeyStroke(
+                        Config.Instance.StopRecordingShortcut.GetModifiers(),
+                        Config.Instance.StopRecordingShortcut.GetKeys());
+                }
+                else
+                {
+                    var (success, path) = await this.SendToggleRecording(false);
+                    if (!success || string.IsNullOrEmpty(path))
+                        return;
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (IsFileReady(path))
+                        {
+                            outputPath = path;
+                            break;
+                        }
+                        await Task.Delay(500);
+                    }
+
+                    if (string.IsNullOrEmpty(outputPath))
+                    {
+                        XIVLogPlugin.Instance.EnqueueLogLine("[XIVLog] output file not ready.");
+                        return;
+                    }
+                }
+
+                var contentName = !string.IsNullOrEmpty(this.contentName) ?
+                    this.contentName :
+                    ActGlobals.oFormActMain.CurrentZone;
+
+                if (!string.IsNullOrEmpty(Config.Instance.VideoSaveDictory) &&
+                    Directory.Exists(Config.Instance.VideoSaveDictory))
+                {
+                    await Task.Run(() =>
+                    {
+                        var now = DateTime.Now;
+                        var prefix = Config.Instance.VideFilePrefix.Trim();
+                        prefix = string.IsNullOrEmpty(prefix) ? string.Empty : $"{prefix} ";
+                        var deathCountText = this.deathCount > 1 ? $" death{this.deathCount - 1}" : string.Empty;
+                        var f = $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} {VideoDurationPlaceholder}{deathCountText}.ext";
+
+                        if (File.Exists(outputPath))
+                        {
+                            var ext = Path.GetExtension(outputPath);
+                            f = f.Replace(".ext", ext);
+                            var dest = Path.Combine(Path.GetDirectoryName(outputPath), f);
+
+                            using (var tf = TagLib.File.Create(outputPath))
+                            {
+                                dest = dest.Replace(
+                                    VideoDurationPlaceholder,
+                                    $"{tf.Properties.Duration.TotalSeconds:N0}s");
+
+                                tf.Tag.Title = Path.GetFileNameWithoutExtension(dest);
+                                tf.Tag.Subtitle = $"{prefix} - {contentName}";
+                                tf.Tag.Album = $"FFXIV - {contentName}";
+                                tf.Tag.AlbumArtists = new[] { "FFXIV", this.playerName }.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                tf.Tag.Genres = new[] { "Game" };
+                                tf.Tag.Comment =
+                                    $"{prefix} - {contentName}\n" +
+                                    $"{this.startTime:yyyy-MM-dd HH:mm} try{this.TryCount}{deathCountText}";
+                                tf.Save();
+                            }
+
+                            int i = 0;
+                            bool result = false;
+                            do
+                            {
+                                try
+                                {
+                                    File.Move(outputPath, dest);
+                                    result = true;
+                                    break;
+                                }
+                                catch (Exception ex)
+                                {
+                                    XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] rename failed, retry... {ex.Message}");
+                                    Thread.Sleep(5);
+                                    i++;
+                                }
+                            } while (i < 5);
+
+                            XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] The video was saved. {Path.GetFileName(dest)}");
+                            if (!result)
+                                XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] rename failed.");
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] FinishRecording exception: {ex.Message}");
+            }
+            finally
+            {
+                await WPFHelper.InvokeAsync(() =>
+                {
+                    lock (this)
+                    {
+                        Config.Instance.IsRecording = false;
+                    }
+                });
+            }
         }
+
         private bool IsFileReady(string path)
         {
             try
@@ -486,6 +496,8 @@ namespace ACT.XIVLog
                 return false;
             }
         }
+
+
         private readonly Lazy<object> LazySLOBSClient = new Lazy<object>(() => new SlobsPipeClient("slobs"));
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -503,57 +515,64 @@ namespace ACT.XIVLog
                 ws = new WebSocket("ws://127.0.0.1:4455");
 
                 ws.OnMessage += (sender, e) =>
-                {
-                    try
                     {
-                        var json = JObject.Parse(e.Data);
-                        int op = json["op"]?.Value<int>() ?? -1;
+                        try
+                        {
+                            var json = JObject.Parse(e.Data);
+                            int op = json["op"]?.Value<int>() ?? -1;
 
-                        if (op == 0) // Hello
-                        {
-                            helloReceived.TrySetResult(json["d"] as JObject);
-                        }
-                        else if (op == 2) // Identified
-                        {
-                            identifyReceived.TrySetResult(true);
-                        }
-                        else if (op == 7) // RequestResponse
-                        {
-                            string reqType = json["d"]["requestType"]?.Value<string>();
-                            var result = json["d"]["requestStatus"]["result"]?.Value<bool>() ?? false;
+                            if (op == 0) // Hello
+                            {
+                                helloReceived.TrySetResult(json["d"] as JObject);
+                            }
+                            else if (op == 2) // Identified
+                            {
+                                identifyReceived.TrySetResult(true);
+                            }
+                            else if (op == 7) // RequestResponse
+                            {
+                                string reqType = json["d"]["requestType"]?.Value<string>();
+                                var result = json["d"]["requestStatus"]["result"]?.Value<bool>() ?? false;
 
-                            if (reqType == "GetRecordStatus")
-                            {
-                                if (!result)
-                                    recordStatusReceived.TrySetResult(null);
-                                else
-                                    recordStatusReceived.TrySetResult(json["d"]["responseData"]["outputActive"]?.Value<bool>());
+                                if (reqType == "GetRecordStatus")
+                                {
+                                    if (!result)
+                                        recordStatusReceived.TrySetResult(null);
+                                    else
+                                        recordStatusReceived.TrySetResult(json["d"]["responseData"]["outputActive"]?.Value<bool>());
+                                }
+                                else if (reqType == "StartRecord" || reqType == "StopRecord")
+                                {
+                                    recordControlReceived.TrySetResult(result);
+                                }
                             }
-                            else if (reqType == "StartRecord" || reqType == "StopRecord")
+                            else if (op == 5) // Event
                             {
-                                recordControlReceived.TrySetResult(result);
+                                string eventType = json["d"]["eventType"]?.Value<string>() ?? "";
+
+                                if (eventType == "RecordStateChanged")
+                                {
+                                    string state = json["d"]["eventData"]["outputState"]?.Value<string>() ?? "";
+                                    string outputPath = json["d"]["eventData"]["outputPath"]?.Value<string>() ?? "";
+
+                                    if (state == "OBS_WEBSOCKET_OUTPUT_STOPPED" && !string.IsNullOrEmpty(outputPath))
+                                    {
+                                        recordStoppedReceived.TrySetResult(outputPath);
+                                    }
+                                }
                             }
                         }
-                        else if (op == 5) // Event
+                        catch (Exception ex)
                         {
-                            string eventType = json["d"]["eventType"]?.Value<string>();
-                            if (eventType == "RecordOutputStopped")
-                            {
-                                string outputPath = json["d"]["eventData"]["outputPath"]?.Value<string>() ?? "";
-                                recordStoppedReceived.TrySetResult(outputPath);
-                            }
+                            this.AppLogger.Info("[OBS WebSocket] JSON Parse error: " + ex.Message);
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        this.AppLogger.Info("[OBS WebSocket] JSON Parse error: " + ex.Message);
-                    }
-                };
+                    };
 
                 ws.Connect();
                 if (!ws.IsAlive)
                 {
                     this.AppLogger.Info("[OBS WebSocket] WebSocket connection failed.");
+                    LogManager.Flush();
                     return (false, null);
                 }
 
@@ -650,7 +669,7 @@ namespace ACT.XIVLog
                     // StopRecord時に outputPath を待つ
                     if (!start)
                     {
-                        var stoppedDone = await Task.WhenAny(recordStoppedReceived.Task, Task.Delay(5000));
+                        var stoppedDone = await Task.WhenAny(recordStoppedReceived.Task, Task.Delay(10000));
                         ws.Close();
                         if (stoppedDone == recordStoppedReceived.Task)
                             return (true, recordStoppedReceived.Task.Result);
@@ -664,6 +683,7 @@ namespace ACT.XIVLog
                 else
                 {
                     this.AppLogger.Info("[OBS WebSocket] No action needed.");
+                    LogManager.Flush();
                     ws.Close();
                     return (true, null);
                 }
@@ -671,6 +691,7 @@ namespace ACT.XIVLog
             catch (Exception ex)
             {
                 this.AppLogger.Info("[OBS WebSocket] Exception: " + ex.ToString());
+                LogManager.Flush();
                 return (false, null);
             }
         }
