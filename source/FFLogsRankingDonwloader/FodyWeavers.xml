@@ -8,11 +8,11 @@
     <IncludeAssemblies>
       ACT.Hojoring.Activator
     </IncludeAssemblies>
-    <Unmanaged32Assemblies>
+    <UnmanagedWinX86Assemblies>
       SQLite.Interop
-    </Unmanaged32Assemblies>
-    <Unmanaged64Assemblies>
+    </UnmanagedWinX86Assemblies>
+    <UnmanagedWinX64Assemblies>
       SQLite.Interop
-    </Unmanaged64Assemblies>
+    </UnmanagedWinX64Assemblies>
   </Costura>
 </Weavers>

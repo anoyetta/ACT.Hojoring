@@ -1,8 +1,9 @@
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.XIVHelper;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog;
-using OBS.WebSockets.Core;
 using SLOBSharp.Client;
 using SLOBSharp.Client.Requests;
 using System;
@@ -11,8 +12,11 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using WebSocketSharp;
 using WindowsInput;
 
 namespace ACT.XIVLog
@@ -33,7 +37,7 @@ namespace ACT.XIVLog
 
         #region Logger
 
-        private Logger AppLogger => AppLog.DefaultLogger;
+        private NLog.Logger AppLogger => AppLog.DefaultLogger;
 
         #endregion Logger
 
@@ -260,21 +264,26 @@ namespace ACT.XIVLog
             this.prevInCombat = inCombat;
         }
 
-        public void StartRecording()
+        public async void StartRecording()
         {
+            if (Config.Instance.IsRecording)
+            {
+                return;
+            }
+
             lock (this)
             {
-                if (Config.Instance.IsRecording)
+                this.TryCount++;
+                this.startTime = DateTime.Now;
+            }
+
+            try
+            {
+                if (!Config.Instance.IsEnabledRecording)
                 {
                     return;
                 }
-            }
 
-            this.TryCount++;
-            this.startTime = DateTime.Now;
-
-            if (Config.Instance.IsEnabledRecording)
-            {
                 if (!Config.Instance.UseObsRpc)
                 {
                     this.Input.Keyboard.ModifiedKeyStroke(
@@ -283,134 +292,139 @@ namespace ACT.XIVLog
                 }
                 else
                 {
-                    this.SendToggleRecording();
-                }
-            }
-
-            WPFHelper.InvokeAsync(async () =>
-            {
-                if (Config.Instance.IsEnabledRecording)
-                {
-                    lock (this)
+                    var (success, _) = await this.SendToggleRecording(true);
+                    if (!success)
                     {
-                        Config.Instance.IsRecording = true;
+                        return;
                     }
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(5));
+                await WPFHelper.InvokeAsync(async () =>
+                {
+                    var contentName = !string.IsNullOrEmpty(this.contentName) ?
+                        this.contentName :
+                        ActGlobals.oFormActMain.CurrentZone;
+
+                    this.playerName = CombatantsManager.Instance.Player.Name;
+
+                    if (Config.Instance.IsShowTitleCard)
+                    {
+                        TitleCardView.ShowTitleCard(contentName, this.TryCount, this.startTime);
+                    }
+
+                    await Task.Delay(TimeSpan.FromSeconds(5));
+                });
+            }
+            catch (Exception ex)
+            {
+                XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] StartRecording exception: {ex.Message}");
+            }
+            finally
+            {
+                await WPFHelper.InvokeAsync(() =>
+                {
+                    if (Config.Instance.IsEnabledRecording)
+                    {
+                        lock (this)
+                        {
+                            Config.Instance.IsRecording = true;
+                        }
+                    }
+                });
+
+                if (Config.Instance.StopRecordingAfterCombatMinutes > 0)
+                {
+                    lock (this)
+                    {
+                        if (this.StopRecordingSubscriber == null)
+                        {
+                            var interval = Config.Instance.StopRecordingSubscribeInterval;
+                            if (interval <= 0)
+                            {
+                                interval = 10;
+                            }
+
+                            this.StopRecordingSubscriber = new System.Timers.Timer(interval * 1000);
+                            this.StopRecordingSubscriber.Elapsed += (_, __) => this.DetectStopRecording();
+                        }
+
+                        this.endCombatDateTime = DateTime.UtcNow;
+                        this.StopRecordingSubscriber.Start();
+                    }
+                }
+            }
+        }
+
+
+        private static readonly string VideoDurationPlaceholder = "#duration#";
+        public async void FinishRecording()
+        {
+            this.StopRecordingSubscriber?.Stop();
+
+            try
+            {
+                lock (this)
+                {
+                    if (!Config.Instance.IsRecording)
+                        return;
+                }
+
+                if (!Config.Instance.IsEnabledRecording)
+                    return;
+
+                string outputPath = null;
+
+                if (!Config.Instance.UseObsRpc)
+                {
+                    this.Input.Keyboard.ModifiedKeyStroke(
+                        Config.Instance.StopRecordingShortcut.GetModifiers(),
+                        Config.Instance.StopRecordingShortcut.GetKeys());
+                }
+                else
+                {
+                    var (success, path) = await this.SendToggleRecording(false);
+                    if (!success || string.IsNullOrEmpty(path))
+                        return;
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (IsFileReady(path))
+                        {
+                            outputPath = path;
+                            break;
+                        }
+                        await Task.Delay(500);
+                    }
+
+                    if (string.IsNullOrEmpty(outputPath))
+                    {
+                        XIVLogPlugin.Instance.EnqueueLogLine("[XIVLog] output file not ready.");
+                        return;
+                    }
+                }
 
                 var contentName = !string.IsNullOrEmpty(this.contentName) ?
                     this.contentName :
                     ActGlobals.oFormActMain.CurrentZone;
 
-                this.playerName = CombatantsManager.Instance.Player.Name;
-
-                if (Config.Instance.IsShowTitleCard)
+                if (!string.IsNullOrEmpty(Config.Instance.VideoSaveDictory) &&
+                    Directory.Exists(Config.Instance.VideoSaveDictory))
                 {
-                    TitleCardView.ShowTitleCard(
-                        contentName,
-                        this.TryCount,
-                        this.startTime);
-                }
-            });
-
-            if (Config.Instance.StopRecordingAfterCombatMinutes > 0)
-            {
-                lock (this)
-                {
-                    if (this.StopRecordingSubscriber == null)
+                    await Task.Run(() =>
                     {
-                        var interval = Config.Instance.StopRecordingSubscribeInterval;
-                        if (interval <= 0)
+                        var now = DateTime.Now;
+                        var prefix = Config.Instance.VideFilePrefix.Trim();
+                        prefix = string.IsNullOrEmpty(prefix) ? string.Empty : $"{prefix} ";
+                        var deathCountText = this.deathCount > 1 ? $" death{this.deathCount - 1}" : string.Empty;
+                        var f = $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} {VideoDurationPlaceholder}{deathCountText}.ext";
+
+                        if (File.Exists(outputPath))
                         {
-                            interval = 10;
-                        }
-
-                        this.StopRecordingSubscriber = new System.Timers.Timer(interval * 1000);
-                        this.StopRecordingSubscriber.Elapsed += (_, __) => this.DetectStopRecording();
-                    }
-
-                    this.endCombatDateTime = DateTime.UtcNow;
-                    this.StopRecordingSubscriber.Start();
-                }
-            }
-        }
-
-        private static readonly string VideoDurationPlaceholder = "#duration#";
-
-        public void FinishRecording()
-        {
-            this.StopRecordingSubscriber?.Stop();
-
-            lock (this)
-            {
-                if (!Config.Instance.IsRecording)
-                {
-                    return;
-                }
-            }
-
-            if (!Config.Instance.IsEnabledRecording)
-            {
-                return;
-            }
-
-            if (!Config.Instance.UseObsRpc)
-            {
-                this.Input.Keyboard.ModifiedKeyStroke(
-                    Config.Instance.StopRecordingShortcut.GetModifiers(),
-                    Config.Instance.StopRecordingShortcut.GetKeys());
-            }
-            else
-            {
-                this.SendToggleRecording();
-            }
-
-            var contentName = !string.IsNullOrEmpty(this.contentName) ?
-                this.contentName :
-                ActGlobals.oFormActMain.CurrentZone;
-
-            if (!string.IsNullOrEmpty(Config.Instance.VideoSaveDictory) &&
-                Directory.Exists(Config.Instance.VideoSaveDictory))
-            {
-                Task.Run(async () =>
-                {
-                    var now = DateTime.Now;
-
-                    var prefix = Config.Instance.VideFilePrefix.Trim();
-                    prefix = string.IsNullOrEmpty(prefix) ?
-                        string.Empty :
-                        $"{prefix} ";
-
-                    var deathCountText = this.deathCount > 1 ?
-                        $" death{this.deathCount - 1}" :
-                        string.Empty;
-
-                    var f = $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} {VideoDurationPlaceholder}{deathCountText}.ext";
-
-                    await Task.Delay(TimeSpan.FromSeconds(8));
-
-                    var files = Directory.GetFiles(
-                        Config.Instance.VideoSaveDictory,
-                        "*.*");
-
-                    var original = files
-                        .OrderByDescending(x => File.GetLastWriteTime(x))
-                        .FirstOrDefault();
-
-                    if (!string.IsNullOrEmpty(original))
-                    {
-                        var timestamp = File.GetLastWriteTime(original);
-                        if (timestamp >= now.AddSeconds(-10))
-                        {
-                            var ext = Path.GetExtension(original);
+                            var ext = Path.GetExtension(outputPath);
                             f = f.Replace(".ext", ext);
+                            var dest = Path.Combine(Path.GetDirectoryName(outputPath), f);
 
-                            var dest = Path.Combine(
-                                Path.GetDirectoryName(original),
-                                f);
-
-                            using (var tf = TagLib.File.Create(original))
+                            using (var tf = TagLib.File.Create(outputPath))
                             {
                                 dest = dest.Replace(
                                     VideoDurationPlaceholder,
@@ -433,83 +447,252 @@ namespace ACT.XIVLog
                             {
                                 try
                                 {
-                                    File.Move(
-                                        original,
-                                        dest);
+                                    File.Move(outputPath, dest);
                                     result = true;
                                     break;
                                 }
                                 catch (Exception ex)
                                 {
-                                    XIVLogPlugin.Instance.EnqueueLogLine(
-                                        $"[XIVLog] rename failed, retry... {ex.Message}");
-                                    await Task.Delay(5);
+                                    XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] rename failed, retry... {ex.Message}");
+                                    Thread.Sleep(5);
                                     i++;
                                 }
                             } while (i < 5);
 
-                            XIVLogPlugin.Instance.EnqueueLogLine(
-                                $"[XIVLog] The video was saved. {Path.GetFileName(dest)}");
+                            XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] The video was saved. {Path.GetFileName(dest)}");
                             if (!result)
-                            {
-                                XIVLogPlugin.Instance.EnqueueLogLine(
-                                    $"[XIVLog] rename failed.");
-                            }
+                                XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] rename failed.");
                         }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] FinishRecording exception: {ex.Message}");
+            }
+            finally
+            {
+                await WPFHelper.InvokeAsync(() =>
+                {
+                    lock (this)
+                    {
+                        Config.Instance.IsRecording = false;
                     }
                 });
             }
-
-            WPFHelper.InvokeAsync(() =>
-            {
-                lock (this)
-                {
-                    Config.Instance.IsRecording = false;
-                }
-            });
         }
+
+        private bool IsFileReady(string path)
+        {
+            try
+            {
+                using (var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    return stream.Length > 0;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
 
         private readonly Lazy<object> LazySLOBSClient = new Lazy<object>(() => new SlobsPipeClient("slobs"));
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private async void SendToggleRecording()
+        public async Task<(bool success, string outputPath)> SendToggleRecording(bool start)
         {
-            if (Config.Instance.UseObsWS)
+            try
             {
-                OBS.WebSockets.Core.OBSWebsocket obs;
-                obs = new OBSWebsocket { WSTimeout = TimeSpan.FromMinutes(10) };
-                obs.Connect("ws://127.0.0.1:4444", "");
-                if (obs.IsConnected)
+                WebSocket ws;
+                var helloReceived = new TaskCompletionSource<JObject>();
+                var identifyReceived = new TaskCompletionSource<bool>();
+                var recordStatusReceived = new TaskCompletionSource<bool?>();
+                var recordControlReceived = new TaskCompletionSource<bool>();
+                var recordStoppedReceived = new TaskCompletionSource<string>(); // outputPath
+
+                ws = new WebSocket("ws://127.0.0.1:4455");
+
+                ws.OnMessage += (sender, e) =>
+                    {
+                        try
+                        {
+                            var json = JObject.Parse(e.Data);
+                            int op = json["op"]?.Value<int>() ?? -1;
+
+                            if (op == 0) // Hello
+                            {
+                                helloReceived.TrySetResult(json["d"] as JObject);
+                            }
+                            else if (op == 2) // Identified
+                            {
+                                identifyReceived.TrySetResult(true);
+                            }
+                            else if (op == 7) // RequestResponse
+                            {
+                                string reqType = json["d"]["requestType"]?.Value<string>();
+                                var result = json["d"]["requestStatus"]["result"]?.Value<bool>() ?? false;
+
+                                if (reqType == "GetRecordStatus")
+                                {
+                                    if (!result)
+                                        recordStatusReceived.TrySetResult(null);
+                                    else
+                                        recordStatusReceived.TrySetResult(json["d"]["responseData"]["outputActive"]?.Value<bool>());
+                                }
+                                else if (reqType == "StartRecord" || reqType == "StopRecord")
+                                {
+                                    recordControlReceived.TrySetResult(result);
+                                }
+                            }
+                            else if (op == 5) // Event
+                            {
+                                string eventType = json["d"]["eventType"]?.Value<string>() ?? "";
+
+                                if (eventType == "RecordStateChanged")
+                                {
+                                    string state = json["d"]["eventData"]["outputState"]?.Value<string>() ?? "";
+                                    string outputPath = json["d"]["eventData"]["outputPath"]?.Value<string>() ?? "";
+
+                                    if (state == "OBS_WEBSOCKET_OUTPUT_STOPPED" && !string.IsNullOrEmpty(outputPath))
+                                    {
+                                        recordStoppedReceived.TrySetResult(outputPath);
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            this.AppLogger.Info("[OBS WebSocket] JSON Parse error: " + ex.Message);
+                        }
+                    };
+
+                ws.Connect();
+                if (!ws.IsAlive)
                 {
-                    obs.ToggleRecording();
-                    obs.Disconnect();
+                    this.AppLogger.Info("[OBS WebSocket] WebSocket connection failed.");
+                    LogManager.Flush();
+                    return (false, null);
+                }
+
+                // Hello
+                var helloDone = await Task.WhenAny(helloReceived.Task, Task.Delay(2000));
+                if (helloDone != helloReceived.Task)
+                {
+                    ws.Close();
+                    return (false, null);
+                }
+
+                var helloData = helloReceived.Task.Result;
+                string authString = "";
+                if (helloData["authentication"] != null)
+                {
+                    string challenge = helloData["authentication"]["challenge"].Value<string>();
+                    string salt = helloData["authentication"]["salt"].Value<string>();
+                    string password = ""; // そのうちUIで設定できるようにする
+
+                    string secret = Convert.ToBase64String(
+                        System.Security.Cryptography.SHA256.Create().ComputeHash(
+                            Encoding.UTF8.GetBytes(password + salt)
+                        )
+                    );
+                    authString = Convert.ToBase64String(
+                        System.Security.Cryptography.SHA256.Create().ComputeHash(
+                            Encoding.UTF8.GetBytes(secret + challenge)
+                        )
+                    );
+                }
+
+                // Identify（eventIntentにOutputsを含める = 1 << 6 = 64）
+                var identify = new
+                {
+                    op = 1,
+                    d = new
+                    {
+                        rpcVersion = helloData["rpcVersion"].Value<int>(),
+                        authentication = string.IsNullOrEmpty(authString) ? null : authString,
+                        eventSubscriptions = 64
+                    }
+                };
+                ws.Send(JsonConvert.SerializeObject(identify));
+
+                var identifyDone = await Task.WhenAny(identifyReceived.Task, Task.Delay(2000));
+                if (identifyDone != identifyReceived.Task || !identifyReceived.Task.Result)
+                {
+                    ws.Close();
+                    return (false, null);
+                }
+
+                // GetRecordStatus
+                var statusRequest = new
+                {
+                    op = 6,
+                    d = new
+                    {
+                        requestType = "GetRecordStatus",
+                        requestId = Guid.NewGuid().ToString()
+                    }
+                };
+                ws.Send(JsonConvert.SerializeObject(statusRequest));
+                var statusDone = await Task.WhenAny(recordStatusReceived.Task, Task.Delay(2000));
+                bool? isRecording = statusDone == recordStatusReceived.Task ? recordStatusReceived.Task.Result : null;
+
+                if (isRecording == null)
+                {
+                    ws.Close();
+                    return (false, null);
+                }
+
+                // 実行条件判定
+                if ((start && !isRecording.Value) || (!start && isRecording.Value))
+                {
+                    string reqType = start ? "StartRecord" : "StopRecord";
+                    var recordRequest = new
+                    {
+                        op = 6,
+                        d = new
+                        {
+                            requestType = reqType,
+                            requestId = Guid.NewGuid().ToString()
+                        }
+                    };
+                    ws.Send(JsonConvert.SerializeObject(recordRequest));
+
+                    var controlDone = await Task.WhenAny(recordControlReceived.Task, Task.Delay(2000));
+                    if (controlDone != recordControlReceived.Task || !recordControlReceived.Task.Result)
+                    {
+                        ws.Close();
+                        return (false, null);
+                    }
+
+                    // StopRecord時に outputPath を待つ
+                    if (!start)
+                    {
+                        var stoppedDone = await Task.WhenAny(recordStoppedReceived.Task, Task.Delay(10000));
+                        ws.Close();
+                        if (stoppedDone == recordStoppedReceived.Task)
+                            return (true, recordStoppedReceived.Task.Result);
+                        else
+                            return (false, null);
+                    }
+
+                    ws.Close();
+                    return (true, null);
                 }
                 else
                 {
-                    this.AppLogger.Info("Tried to record, but OBS Websocket connect faild.");
+                    this.AppLogger.Info("[OBS WebSocket] No action needed.");
+                    LogManager.Flush();
+                    ws.Close();
+                    return (true, null);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                var p = Process.GetProcessesByName("Streamlabs OBS");
-                if (p == null ||
-                    p.Length < 1)
-                {
-                    this.AppLogger.Info("Tried to record, but Streamlabs OBS is not found.");
-                    return;
-                }
-
-                var client = this.LazySLOBSClient.Value as SlobsPipeClient;
-
-                var req = SlobsRequestBuilder
-                    .NewRequest()
-                    .SetMethod("toggleRecording")
-                    .SetResource("StreamingService")
-                    .BuildRequest();
-
-                await client
-                    .ExecuteRequestAsync(req)
-                    .ConfigureAwait(false);
+                this.AppLogger.Info("[OBS WebSocket] Exception: " + ex.ToString());
+                LogManager.Flush();
+                return (false, null);
             }
         }
     }
