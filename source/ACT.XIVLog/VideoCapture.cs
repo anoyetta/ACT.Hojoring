@@ -4,8 +4,6 @@ using FFXIV.Framework.XIVHelper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
-using SLOBSharp.Client;
-using SLOBSharp.Client.Requests;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -496,9 +494,6 @@ namespace ACT.XIVLog
                 return false;
             }
         }
-
-
-        private readonly Lazy<object> LazySLOBSClient = new Lazy<object>(() => new SlobsPipeClient("slobs"));
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public async Task<(bool success, string outputPath)> SendToggleRecording(bool start)
