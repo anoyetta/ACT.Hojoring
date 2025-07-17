@@ -116,8 +116,9 @@
             <Label Margin="5 0 0 0" Content="{Binding Config.StopRecordingShortcut.Text, Mode=OneWay}" Foreground="Gray" />
           </StackPanel>
 
-          <CheckBox Margin="0 8 0 0" Content="Use SLOBS-RPC" IsChecked="{Binding Config.UseObsRpc, Mode=TwoWay}" ToolTip="Use Streamlabs OBS RPC Application Interface." />
-          <CheckBox Content="Use OBS" IsChecked="{Binding Config.UseObsWS, Mode=TwoWay}"/>
+          <!-- <CheckBox Margin="0 8 0 0" Content="Use SLOBS-RPC" IsChecked="{Binding Config.UseObsRpc, Mode=TwoWay}" ToolTip="Use Streamlabs OBS RPC Application Interface." /> -->
+                    <CheckBox Margin="0 8 0 0" Content="Use OBS WebSocket V5" IsChecked="{Binding Config.UseObsRpc, Mode=TwoWay}" ToolTip="Remote-control OBS Studio using WebSockets 5, SLOBS is no longer supported." />
+          <!--<CheckBox Content="Use OBS" IsChecked="{Binding Config.UseObsWS, Mode=TwoWay}"/>-->
 
           <StackPanel Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Left">
             <Button
