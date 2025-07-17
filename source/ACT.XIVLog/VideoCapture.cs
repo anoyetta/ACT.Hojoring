@@ -422,21 +422,28 @@ namespace ACT.XIVLog
                             f = f.Replace(".ext", ext);
                             var dest = Path.Combine(Path.GetDirectoryName(outputPath), f);
 
-                            using (var tf = TagLib.File.Create(outputPath))
+                            try
                             {
-                                dest = dest.Replace(
-                                    VideoDurationPlaceholder,
-                                    $"{tf.Properties.Duration.TotalSeconds:N0}s");
+                                using (var tf = TagLib.File.Create(outputPath))
+                                {
+                                    dest = dest.Replace(
+                                        VideoDurationPlaceholder,
+                                        $"{tf.Properties.Duration.TotalSeconds:N0}s");
 
-                                tf.Tag.Title = Path.GetFileNameWithoutExtension(dest);
-                                tf.Tag.Subtitle = $"{prefix} - {contentName}";
-                                tf.Tag.Album = $"FFXIV - {contentName}";
-                                tf.Tag.AlbumArtists = new[] { "FFXIV", this.playerName }.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-                                tf.Tag.Genres = new[] { "Game" };
-                                tf.Tag.Comment =
-                                    $"{prefix} - {contentName}\n" +
-                                    $"{this.startTime:yyyy-MM-dd HH:mm} try{this.TryCount}{deathCountText}";
-                                tf.Save();
+                                    tf.Tag.Title = Path.GetFileNameWithoutExtension(dest);
+                                    tf.Tag.Subtitle = $"{prefix} - {contentName}";
+                                    tf.Tag.Album = $"FFXIV - {contentName}";
+                                    tf.Tag.AlbumArtists = new[] { "FFXIV", this.playerName }.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                    tf.Tag.Genres = new[] { "Game" };
+                                    tf.Tag.Comment =
+                                        $"{prefix} - {contentName}\n" +
+                                        $"{this.startTime:yyyy-MM-dd HH:mm} try{this.TryCount}{deathCountText}";
+                                    tf.Save();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] TagLib Save failed: {ex.Message}");
                             }
 
                             int i = 0;
