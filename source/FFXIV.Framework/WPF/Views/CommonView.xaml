@@ -1,0 +1,83 @@
+﻿<UserControl
+  x:Class="FFXIV.Framework.WPF.Views.CommonView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:FFXIV.Framework.WPF.Views"
+  xmlns:fa="http://schemas.fontawesome.io/icons/"
+  mc:Ignorable="d"
+  Background="White"
+  FontFamily="Consolas, Yu Gothic UI, Meiryo UI"
+  FontSize="17"
+  RenderOptions.BitmapScalingMode="HighQuality"
+  RenderOptions.ClearTypeHint="Enabled"
+  RenderOptions.EdgeMode="Unspecified"
+  TextOptions.TextFormattingMode="Display"
+  TextOptions.TextHintingMode="Animated"
+  TextOptions.TextRenderingMode="ClearType"
+  Focusable="False"
+  IsTabStop="False"
+  d:DesignHeight="450" d:DesignWidth="800">
+  <Grid>
+    <TabControl>
+      <TabItem>
+        <TabItem.Header>
+          <TextBlock Width="70" TextAlignment="Center">Help</TextBlock>
+        </TabItem.Header>
+        <local:HelpView x:Name="HelpView" />
+      </TabItem>
+
+      <TabItem
+        Padding="10 0 10 0"
+        Background="AntiqueWhite">
+        <TabItem.Header>
+          <TextBlock Width="70" TextAlignment="Center" ToolTip="寄付する">DONATE</TextBlock>
+        </TabItem.Header>
+
+        <StackPanel Margin="20">
+          <TextBlock FontWeight="Bold">
+          謝 辞 / Thanks for using.
+          </TextBlock>
+          <TextBlock Margin="10 10 0 0" TextWrapping="WrapWithOverflow">
+          いつもご利用いただきありがとうございます。<LineBreak />
+          難解な設定も多いツールですがそれらのカスタマイズを楽しんでもらえればと思い開発しています。<LineBreak />
+          FFXIVとともに末永く楽しんで頂ければと思います。m(_ _)m<LineBreak />
+          <LineBreak />
+          Thank you very match for always using Hojoring.<LineBreak />
+          Although it is a tool with many esoteric settings, I'm thinking that if you can enjoy those customization.<LineBreak />
+          I hope you enjoy it together with FFXIV. m(_ _)m
+          </TextBlock>
+
+          <TextBlock FontWeight="Bold" Margin="0 40 0 0">
+          寄付する / Donate
+          </TextBlock>
+
+          <Button BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" Margin="0 15 0 0" Click="SendAmazonGiftCard_Click">
+            <Border
+              BorderBrush="Black"
+              BorderThickness="1"
+              CornerRadius="8"
+              Padding="8 5 15 5">
+              <StackPanel Orientation="Horizontal">
+                <fa:ImageAwesome Icon="Amazon" VerticalAlignment="Center" Height="30" Width="30" />
+                <TextBlock Margin="10 0 0 0" VerticalAlignment="Center">Amazonギフト券を送る / Send Amazon eGift Card.</TextBlock>
+              </StackPanel>
+            </Border>
+          </Button>
+          <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
+            <TextBox VerticalAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" HorizontalAlignment="Left" Margin="0 0 0 0" Padding="3 2 3 2" BorderThickness="0">
+              受取人/TO:
+            </TextBox>
+            <TextBox VerticalAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" HorizontalAlignment="Left" Margin="0 0 0 0" Padding="3 2 10 2" BorderThickness="0">
+              anoyetta@gmail.com
+            </TextBox>
+            <Button BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Margin="10 0 0 0" VerticalAlignment="Center" FontSize="13" Foreground="Blue" Click="CopyAddress_Click">
+              Copy Address
+            </Button>
+          </StackPanel>
+        </StackPanel>
+      </TabItem>
+    </TabControl>
+  </Grid>
+</UserControl>

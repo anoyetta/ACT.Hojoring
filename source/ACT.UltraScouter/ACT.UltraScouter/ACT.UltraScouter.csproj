@@ -76,7 +76,7 @@
       <Project>{6d17f2c1-f9bd-4c9c-96c9-1a60ad975e4b}</Project>
       <Name>ACT.UltraScouter.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
+    <ProjectReference Include="..\..\FFXIV.Framework\FFXIV.Framework.csproj">
       <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>
       <Name>FFXIV.Framework</Name>
     </ProjectReference>

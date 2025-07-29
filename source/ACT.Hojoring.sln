@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{F9A5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{EC98C548-6268-4B67-BC45-88DCD9B63960}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFXIV.Framework", "FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj", "{22EBF8A4-EED1-4CD1-99EB-99665163A315}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFXIV.Framework", "FFXIV.Framework\FFXIV.Framework.csproj", "{22EBF8A4-EED1-4CD1-99EB-99665163A315}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACT.SpecialSpellTimer", "ACT.SpecialSpellTimer\ACT.SpecialSpellTimer\ACT.SpecialSpellTimer.csproj", "{CCF72089-92FA-4AFB-BDE7-869CA0E394F9}"
 EndProject
