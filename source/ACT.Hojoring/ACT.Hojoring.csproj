@@ -78,7 +78,7 @@
       <Project>{d504e286-56ec-494f-82cd-fd71aefef606}</Project>
       <Name>ACT.XIVLog</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework\FFXIV.Framework.csproj">
+    <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework.csproj">
       <Project>{22ebf8a4-eed1-4cd1-99eb-99665163a315}</Project>
       <Name>FFXIV.Framework</Name>
     </ProjectReference>
@@ -112,7 +112,6 @@
 @move /y "$(TargetDir)*.dll" "$(TargetDir)bin"&gt;nul
 
 @move /y "$(TargetDir)bin\RazorEngine.dll" "$(TargetDir)"&gt;nul
-@move /y "$(TargetDir)bin\SLOBSharp.dll" "$(TargetDir)"&gt;nul
 @move /y "$(TargetDir)bin\ACT.Hojoring.Common.dll" "$(TargetDir)"&gt;nul
 @move /y "$(TargetDir)bin\ACT.Hojoring.Updater.dll" "$(TargetDir)"&gt;nul
 @move /y "$(TargetDir)bin\ACT.SpecialSpellTimer.dll" "$(TargetDir)"&gt;nul
