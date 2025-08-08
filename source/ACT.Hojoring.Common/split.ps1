@@ -27,7 +27,7 @@ try {
             }
         }
         if ($copying) {
-            if (-not ($line -like "*[DEBUG]")) {
+            if (-not $line.Contains("[DEBUG]")) {
                 $null = $outputBuffer.Add($line)
             }
             if ($endPatterns.IsMatch($line)) {

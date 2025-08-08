@@ -27,17 +27,17 @@ namespace ACT.XIVLog
 
         public static VideoCapture Instance => LazyInstance.Value;
 
+        #region Logger
+
+        private NLog.Logger AppLogger => FFXIV.Framework.Common.AppLog.DefaultLogger;
+
+        #endregion Logger
+
         private VideoCapture()
         {
         }
 
         #endregion Lazy Instance
-
-        #region Logger
-
-        private NLog.Logger AppLogger => AppLog.DefaultLogger;
-
-        #endregion Logger
 
         private readonly InputSimulator Input = new InputSimulator();
 
@@ -315,7 +315,7 @@ namespace ACT.XIVLog
             }
             catch (Exception ex)
             {
-                XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] StartRecording exception: {ex.Message}");
+                AppLogger.Info($"[XIVLog] StartRecording exception: {ex.Message}");
             }
             finally
             {
@@ -396,7 +396,7 @@ namespace ACT.XIVLog
 
                     if (string.IsNullOrEmpty(outputPath))
                     {
-                        XIVLogPlugin.Instance.EnqueueLogLine("[XIVLog] output file not ready.");
+                        AppLogger.Info("[XIVLog] output file not ready.");
                         return;
                     }
                 }
@@ -443,7 +443,7 @@ namespace ACT.XIVLog
                             }
                             catch (Exception ex)
                             {
-                                XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] TagLib Save failed: {ex.Message}");
+                                AppLogger.Info($"[XIVLog] TagLib Save failed: {ex.Message}");
                             }
 
                             int i = 0;
@@ -458,22 +458,22 @@ namespace ACT.XIVLog
                                 }
                                 catch (Exception ex)
                                 {
-                                    XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] rename failed, retry... {ex.Message}");
+                                    AppLogger.Info($"[XIVLog] rename failed, retry... {ex.Message}");
                                     Thread.Sleep(5);
                                     i++;
                                 }
                             } while (i < 5);
 
-                            XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] The video was saved. {Path.GetFileName(dest)}");
+                            AppLogger.Info($"[XIVLog] The video was saved. {Path.GetFileName(dest)}");
                             if (!result)
-                                XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] rename failed.");
+                                AppLogger.Info($"[XIVLog] rename failed.");
                         }
                     });
                 }
             }
             catch (Exception ex)
             {
-                XIVLogPlugin.Instance.EnqueueLogLine($"[XIVLog] FinishRecording exception: {ex.Message}");
+                AppLogger.Info($"[XIVLog] FinishRecording exception: {ex.Message}");
             }
             finally
             {
