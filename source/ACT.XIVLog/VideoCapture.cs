@@ -384,7 +384,8 @@ namespace ACT.XIVLog
                     if (!success || string.IsNullOrEmpty(path))
                         return;
 
-                    for (int i = 0; i < 3; i++)
+                    await Task.Delay(500);
+                    for (int i = 0; i < 9; i++)
                     {
                         if (IsFileReady(path))
                         {
@@ -556,6 +557,8 @@ namespace ACT.XIVLog
                                 {
                                     string state = json["d"]["eventData"]["outputState"]?.Value<string>() ?? "";
                                     string outputPath = json["d"]["eventData"]["outputPath"]?.Value<string>() ?? "";
+
+                                    this.AppLogger.Info($"[OBS WebSocket] Event: {eventType}, outputState: {state}, outputPath: {outputPath}");
 
                                     if (state == "OBS_WEBSOCKET_OUTPUT_STOPPED" && !string.IsNullOrEmpty(outputPath))
                                     {
