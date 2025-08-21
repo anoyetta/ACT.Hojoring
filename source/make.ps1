@@ -52,18 +52,18 @@ Write-Output "***"
 Copy-Item -Force $masterVersionTemp ".\ACT.Hojoring.Common\Version.cs"
 
 if (Test-Path .\ACT.Hojoring\bin\Release) {
-    Remove-Item -Path .\ACT.Hojoring\bin\Release\* -Force -Recurse
-    Remove-Item -Path .\ACT.Hojoring\bin\Release -Force -Recurse
+    Remove-Item -Path .\ACT.Hojoring\bin\x64\Release\* -Force -Recurse
+    Remove-Item -Path .\ACT.Hojoring\bin\x64\Release -Force -Recurse
 }
 
 '●Build ACT.Hojoring Release'
 Start-Sleep -m 500
-& $msbuild $sln /nologo /v:minimal /p:Configuration=Release /t:"ACT_Hojoring:Rebuild" | Write-Output
+& $msbuild $sln /nologo /v:minimal /p:Configuration=Release /p:Platform=x64 /t:"ACT_Hojoring:Rebuild" | Write-Output
 Start-Sleep -m 500
 
 '●Deploy Release'
-if (Test-Path .\ACT.Hojoring\bin\Release) {
-    Set-Location .\ACT.Hojoring\bin\Release
+if (Test-Path .\ACT.Hojoring\bin\x64\Release) {
+    Set-Location .\ACT.Hojoring\bin\x64\Release
 
     '●不要なロケールを削除する'
     $locales = @(

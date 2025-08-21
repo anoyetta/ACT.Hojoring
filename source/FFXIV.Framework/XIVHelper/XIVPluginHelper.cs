@@ -791,7 +791,7 @@ namespace FFXIV.Framework.XIVHelper
 
         #region Dummy Combatants
 
-        private static readonly Combatant DummyPlayer = new Combatant()
+        private static readonly FFXIV_ACT_Plugin.Common.Models.Combatant DummyPlayer = new FFXIV_ACT_Plugin.Common.Models.Combatant()
         {
             ID = 1,
             Name = "J'ibun T-aro",
@@ -803,11 +803,11 @@ namespace FFXIV.Framework.XIVHelper
             type = (byte)Actor.Type.PC,
         };
 
-        private static readonly List<Combatant> DummyCombatants = new List<Combatant>()
+        private static readonly List<FFXIV_ACT_Plugin.Common.Models.Combatant> DummyCombatants = new List<FFXIV_ACT_Plugin.Common.Models.Combatant>()
         {
             DummyPlayer,
 
-            new Combatant()
+            new FFXIV_ACT_Plugin.Common.Models.Combatant()
             {
                 ID = 2,
                 Name = "Warrior Jiro",
@@ -819,7 +819,7 @@ namespace FFXIV.Framework.XIVHelper
                 type = (byte)Actor.Type.PC,
             },
 
-            new Combatant()
+            new FFXIV_ACT_Plugin.Common.Models.Combatant()
             {
                 ID = 3,
                 Name = "White Hanako",
@@ -831,7 +831,7 @@ namespace FFXIV.Framework.XIVHelper
                 type = (byte)Actor.Type.PC,
             },
 
-            new Combatant()
+            new FFXIV_ACT_Plugin.Common.Models.Combatant()
             {
                 ID = 4,
                 Name = "Astro Himeko",
@@ -1252,17 +1252,34 @@ namespace FFXIV.Framework.XIVHelper
 
                 case OverlayType.FocusTarget:
                 case OverlayType.HoverTarget:
-                    // FocusTarget, HoverTarget はsharlayan経由で取得する
-                    targetInfo = SharlayanHelper.Instance.TargetInfo;
-                    if (targetInfo == null)
+                    if (FFXIV.Framework.XIVHelper.OverlayPluginHelper.Instance.IsAttached)
                     {
-                        return targetEx;
-                    }
+                        uint combatantID;
 
-                    targetEx = CombatantsManager.Instance.GetCombatantMain(
-                        type == OverlayType.FocusTarget ?
-                        targetInfo.FocusTarget?.ID ?? 0 :
-                        targetInfo.MouseOverTarget?.ID ?? 0);
+                        if (type == OverlayType.FocusTarget)
+                        {
+                            combatantID = OverlayPluginHelper.Instance.GetFocusCombatantID();
+                        }
+                        else
+                        {
+                            combatantID = OverlayPluginHelper.Instance.GetHoverCombatantID();
+                        }
+                        targetEx = CombatantsManager.Instance.GetCombatantMain(combatantID);
+                    } else
+                    {
+                        // OverlayPluginが無い場合はsharlayan経由で取得する ただしsharlayanは更新されていないので必ず失敗する
+                        //AppLogger.Warn("OverlayPlugin is not available. Using Sharlayan for FocusTarget/HoverTarget.");
+                        // FocusTarget, HoverTarget はsharlayan経由で取得する
+                        targetInfo = SharlayanHelper.Instance.TargetInfo;
+                        if (targetInfo == null)
+                        {
+                            return targetEx;
+                        }
+                        targetEx = CombatantsManager.Instance.GetCombatantMain(
+                            type == OverlayType.FocusTarget ?
+                            targetInfo.FocusTarget?.ID ?? 0 :
+                            targetInfo.MouseOverTarget?.ID ?? 0);
+                    }
                     break;
             }
 
