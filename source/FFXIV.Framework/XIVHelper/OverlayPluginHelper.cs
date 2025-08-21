@@ -1,12 +1,8 @@
 ﻿using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
-using NLog;
-using RainbowMage.OverlayPlugin.MemoryProcessors.Combatant;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,29 +24,11 @@ namespace FFXIV.Framework.XIVHelper
 
         private dynamic plugin;
 
-        public object targetMemory;
-        public MethodInfo method_GetFocusCombatant;
-        public MethodInfo method_GetHoverCombatant;
-
-        public interface IVersionedMemory
-        {
-            Version GetVersion();
-            void ScanPointers();
-            bool IsValid();
-        }
-
-        public interface ITargetMemory : IVersionedMemory
-        {
-            RainbowMage.OverlayPlugin.MemoryProcessors.Combatant.Combatant GetTargetCombatant();
-
-            RainbowMage.OverlayPlugin.MemoryProcessors.Combatant.Combatant GetFocusCombatant();
-
-            RainbowMage.OverlayPlugin.MemoryProcessors.Combatant.Combatant GetHoverCombatant();
-        }
-
-        
+        private object container = null;
+        public bool wasAttached = false;
         private ThreadWorker attachOverlayPluginWorker;
         private volatile bool isStarted = false;
+
         public async void Start()
         {
             lock (this)
@@ -117,10 +95,6 @@ namespace FFXIV.Framework.XIVHelper
         }
         public bool IsAttached => this.plugin != null;
 
-        // グローバル変数としてキャッシュするメンバー
-        private object pluginLoaderInstance = null;
-        private object container = null;
-        public bool wasAttached = false;
 
         private void Attach()
         {
@@ -155,7 +129,7 @@ namespace FFXIV.Framework.XIVHelper
 
                     if (overlayPluginActData == null) return;
 
-                    pluginLoaderInstance = overlayPluginActData.pluginObj;
+                    var pluginLoaderInstance = overlayPluginActData.pluginObj;
                     if (pluginLoaderInstance == null) return;
 
                     var overlayPluginAssembly = System.Reflection.Assembly.Load("OverlayPlugin");
@@ -185,7 +159,6 @@ namespace FFXIV.Framework.XIVHelper
                     if (getFocusCombatantMethod != null && getHoverCombatantMethod != null)
                     {
                         attach_success = true;
-                        AppLogger.Trace("OverlayPluginへのアタッチに成功しました。");
                     }
                     else
                     {
