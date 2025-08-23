@@ -28,7 +28,7 @@ namespace FFXIV.Framework.XIVHelper
             var src = actor;
             var dst = destination;
 
-            dst.LastUpdateTimestamp = DateTime.Now;
+            dst.LastUpdateTimestamp = DateTime.UtcNow;
 
             dst.ID = src.ID;
             dst.OwnerID = src.OwnerID;
@@ -75,7 +75,7 @@ namespace FFXIV.Framework.XIVHelper
             var src = source;
             var dst = destination;
 
-            dst.LastUpdateTimestamp = DateTime.Now;
+            dst.LastUpdateTimestamp = DateTime.UtcNow;
 
             dst.ID = src.ID;
             dst.OwnerID = src.OwnerID;
@@ -121,7 +121,7 @@ namespace FFXIV.Framework.XIVHelper
             var src = source;
             var dst = destination;
 
-            dst.LastUpdateTimestamp = DateTime.Now;
+            dst.LastUpdateTimestamp = DateTime.UtcNow;
 
             dst.ID = src.ID;
             dst.OwnerID = src.OwnerID;

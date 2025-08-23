@@ -83,6 +83,9 @@ namespace ACT.SpecialSpellTimer
                 Settings.Default.LogPollSleepInterval,
                 Settings.Default.FFXIVLocale));
 
+            // OverlayPluginのスキャンを開始する
+            await Task.Run(() => OverlayPluginHelper.Instance.Start());
+
             await Task.Run(() =>
             {
                 // テーブルコンパイラを開始する
@@ -234,6 +237,9 @@ namespace ACT.SpecialSpellTimer
             // テーブルコンパイラを停止する
             TableCompiler.Instance.End();
             TableCompiler.Free();
+
+            OverlayPluginHelper.Instance.End();
+            OverlayPluginHelper.Free();
 
             // FFXIVのスキャンを停止する
             XIVPluginHelper.Instance.End();
