@@ -543,13 +543,17 @@ namespace FFXIV.Framework.XIVHelper
 
         private void GetTargetInfo()
         {
+            this.UpdateEnmityFromOverlayPlugin();
+#if false
             var result = this._memoryHandler.Reader.GetTargetInfo();
 
             this.TargetInfo = result.TargetsFound ?
                 result.TargetInfo :
                 null;
 
+            
             this.GetEnmity();
+#endif
         }
 
         private void GetEnmity()
@@ -651,6 +655,101 @@ namespace FFXIV.Framework.XIVHelper
                 }
             }
         }
+
+        // HojoringのSharlayanHelperクラス内での利用を想定
+        // OverlayPluginHelper.Instanceがすでにアタッチされている前提です。
+        public void UpdateEnmityFromOverlayPlugin()
+        {
+            // OverlayPluginHelperのGetEnmityEntryList()を呼び出し、
+            // 敵視リストをクラスメンバーのEnmityEntryListに格納する
+            var count = OverlayPluginHelper.Instance.GetEnmityEntryList();
+
+            if (this.IsSkipEnmity)
+            {
+                if (this.EnmityDictionary.Count > 0)
+                {
+                    lock (this.EnmityDictionary)
+                    {
+                        this.EnmityDictionary.Clear();
+                    }
+                }
+                return;
+            }
+
+            lock (this.EnmityDictionary)
+            {
+                // OverlayPluginHelperから取得したリストが空またはnullの場合
+                if (count == 0 || !OverlayPluginHelper.Instance.EnmityEntryList.Any())
+                {
+                    this.EnmityDictionary.Clear();
+                    return;
+                }
+
+                // 敵視の最大値を計算
+                var max = OverlayPluginHelper.Instance.EnmityEntryList.Max(x => ((dynamic)x).Enmity);
+                var player = CombatantsManager.Instance.Player;
+                var first = default(dynamic);
+                var combatantDictionary = CombatantsManager.Instance.GetCombatantMainDictionary();
+
+                var existingEnmityIds = this.EnmityDictionary.Keys.ToList();
+                var currentEnmityIds = new HashSet<uint>(OverlayPluginHelper.Instance.EnmityEntryList.Select(x => (uint)((dynamic)x).ID));
+
+                // 存在しないエントリを削除
+                foreach (var id in existingEnmityIds)
+                {
+                    if (!currentEnmityIds.Contains(id))
+                    {
+                        this.EnmityDictionary.Remove(id);
+                    }
+                }
+
+                var loopCount = 0;
+                foreach (var source in OverlayPluginHelper.Instance.EnmityEntryList)
+                {
+                    if (loopCount >= this.EnmityMaxCount)
+                    {
+                        break;
+                    }
+
+                    Thread.Yield();
+
+                    var enmityId = ((dynamic)source).ID;
+                    var existing = this.EnmityDictionary.ContainsKey(enmityId);
+                    var enmity = existing ? this.EnmityDictionary[enmityId] : new EnmityEntry() { ID = enmityId };
+
+                    enmity.Enmity = ((dynamic)source).Enmity;
+                    enmity.HateRate = (int)(((double)enmity.Enmity / (double)max) * 100d);
+                    enmity.IsMe = enmity.ID == player?.ID;
+
+                    if (first == null)
+                    {
+                        first = enmity;
+                    }
+
+                    if (!existing)
+                    {
+                        var combatant = combatantDictionary.ContainsKey(enmity.ID) ? combatantDictionary[enmity.ID] : null;
+
+                        enmity.Name = combatant?.Name;
+                        enmity.OwnerID = combatant?.OwnerID ?? 0;
+                        enmity.Job = (byte)(combatant?.Job ?? 0);
+
+                        if (string.IsNullOrEmpty(enmity.Name))
+                        {
+                            enmity.Name = CombatantEx.UnknownName;
+                        }
+                        this.EnmityDictionary[enmity.ID] = enmity;
+                    }
+                    loopCount++;
+                }
+
+                if (first != null)
+                {
+                    this.IsFirstEnmityMe = first.IsMe;
+                }
+            }
+        }
+
 
         private DateTime partyListTimestamp = DateTime.MinValue;
 
