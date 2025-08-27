@@ -471,7 +471,7 @@ namespace FFXIV.Framework.XIVHelper
             lock (LockObject)
             {
                 var targets = this.MainDictionary.Select(x => x.Value)
-                    .Where(x => (DateTime.Now - x.LastUpdateTimestamp).TotalSeconds >= GarbageThreshold)
+                    .Where(x => (DateTime.UtcNow - x.LastUpdateTimestamp).TotalSeconds >= GarbageThreshold)
                     .ToArray();
 
                 foreach (var target in targets)

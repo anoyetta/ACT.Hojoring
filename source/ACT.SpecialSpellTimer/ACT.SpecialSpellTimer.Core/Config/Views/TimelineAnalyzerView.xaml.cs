@@ -321,8 +321,14 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
                 this.saveFileDialog.Filter = SpreadFilter;
                 this.saveFileDialog.DefaultExt = SpreadExt;
-                this.saveFileDialog.FileName =
-                    $"{timestamp.ToString("yyyy-MM-dd")}.{zone}.xlsx";
+
+                string filename = $"{timestamp.ToString("yyyy-MM-dd")}.{zone}.xlsx";
+
+                // ファイル名に使用できない文字を除去する
+                var InvalidCars = Path.GetInvalidFileNameChars();
+                filename = string.Concat(filename.Where(c => !InvalidCars.Contains(c)));
+
+                this.saveFileDialog.FileName = filename;
 
                 if (this.saveFileDialog.ShowDialog(ActGlobals.oFormActMain)
                     == System.Windows.Forms.DialogResult.OK)
@@ -366,8 +372,14 @@ namespace ACT.SpecialSpellTimer.Config.Views
 
                 this.saveFileDialog.Filter = TimelineFilter;
                 this.saveFileDialog.DefaultExt = TimelineExt;
-                this.saveFileDialog.FileName =
-                    $"{zone}.xml";
+
+                string filename = $"{zone}.xml";
+
+                // ファイル名に使用できない文字を除去する
+                var InvalidCars = Path.GetInvalidFileNameChars();
+                filename = string.Concat(filename.Where(c => !InvalidCars.Contains(c)));
+
+                this.saveFileDialog.FileName = filename;
 
                 if (this.saveFileDialog.ShowDialog(ActGlobals.oFormActMain)
                     == System.Windows.Forms.DialogResult.OK)

@@ -372,6 +372,11 @@ namespace ACT.XIVLog
 
                 string outputPath = null;
 
+                // contentNameの取得が録画停止より後だと停止処理に時間が掛かってコンテンツ名がCurrentZoneになることがある
+                var contentName = !string.IsNullOrEmpty(this.contentName) ?
+                    this.contentName :
+                    ActGlobals.oFormActMain.CurrentZone;
+
                 if (!Config.Instance.UseObsRpc)
                 {
                     this.Input.Keyboard.ModifiedKeyStroke(
@@ -384,7 +389,8 @@ namespace ACT.XIVLog
                     if (!success || string.IsNullOrEmpty(path))
                         return;
 
-                    for (int i = 0; i < 3; i++)
+                    await Task.Delay(500);
+                    for (int i = 0; i < 9; i++)
                     {
                         if (IsFileReady(path))
                         {
@@ -401,10 +407,6 @@ namespace ACT.XIVLog
                     }
                 }
 
-                var contentName = !string.IsNullOrEmpty(this.contentName) ?
-                    this.contentName :
-                    ActGlobals.oFormActMain.CurrentZone;
-
                 if (!string.IsNullOrEmpty(Config.Instance.VideoSaveDictory) &&
                     Directory.Exists(Config.Instance.VideoSaveDictory))
                 {
@@ -420,6 +422,10 @@ namespace ACT.XIVLog
                         {
                             var ext = Path.GetExtension(outputPath);
                             f = f.Replace(".ext", ext);
+                            // ファイル名に使用できない文字を除去する
+                            var InvalidCars = Path.GetInvalidFileNameChars();
+                            f = string.Concat(f.Where(c => !InvalidCars.Contains(c)));
+
                             var dest = Path.Combine(Path.GetDirectoryName(outputPath), f);
 
                             try
@@ -556,6 +562,8 @@ namespace ACT.XIVLog
                                 {
                                     string state = json["d"]["eventData"]["outputState"]?.Value<string>() ?? "";
                                     string outputPath = json["d"]["eventData"]["outputPath"]?.Value<string>() ?? "";
+
+                                    this.AppLogger.Info($"[OBS WebSocket] Event: {eventType}, outputState: {state}, outputPath: {outputPath}");
 
                                     if (state == "OBS_WEBSOCKET_OUTPUT_STOPPED" && !string.IsNullOrEmpty(outputPath))
                                     {

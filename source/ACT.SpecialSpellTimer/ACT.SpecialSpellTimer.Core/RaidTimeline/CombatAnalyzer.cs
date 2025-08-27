@@ -1360,6 +1360,11 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             var xlsx = $"{timeStamp.ToString("yyyy-MM-dd_HHmm")}.{zone}.auto.xlsx";
             var log = $"{timeStamp.ToString("yyyy-MM-dd_HHmm")}.{zone}.auto.log";
 
+            // ファイル名に使用できない文字を除去する
+            var InvalidCars = Path.GetInvalidFileNameChars();
+            xlsx = string.Concat(xlsx.Where(c => !InvalidCars.Contains(c)));
+            log = string.Concat(log.Where(c => !InvalidCars.Contains(c)));
+
             this.SaveToSpreadsheet(
                 Path.Combine(Settings.Default.CombatLogSaveDirectory, xlsx),
                 logs);
