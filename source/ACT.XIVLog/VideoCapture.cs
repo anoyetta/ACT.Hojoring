@@ -4,6 +4,7 @@ using FFXIV.Framework.XIVHelper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -382,6 +383,8 @@ namespace ACT.XIVLog
                     this.Input.Keyboard.ModifiedKeyStroke(
                         Config.Instance.StopRecordingShortcut.GetModifiers(),
                         Config.Instance.StopRecordingShortcut.GetKeys());
+
+                        await Task.Delay(500);
                 }
                 else
                 {
@@ -410,13 +413,35 @@ namespace ACT.XIVLog
                 if (!string.IsNullOrEmpty(Config.Instance.VideoSaveDictory) &&
                     Directory.Exists(Config.Instance.VideoSaveDictory))
                 {
-                    await Task.Run(() =>
+                    await Task.Run(async () =>
                     {
                         var now = DateTime.Now;
                         var prefix = Config.Instance.VideFilePrefix.Trim();
                         prefix = string.IsNullOrEmpty(prefix) ? string.Empty : $"{prefix} ";
                         var deathCountText = this.deathCount > 1 ? $" death{this.deathCount - 1}" : string.Empty;
                         var f = $"{prefix}{this.startTime:yyyy-MM-dd HH-mm} {contentName} try{this.TryCount:00} {VideoDurationPlaceholder}{deathCountText}.ext";
+
+                        if (!Config.Instance.UseObsRpc)
+                        {
+                            var files = Directory.GetFiles(Config.Instance.VideoSaveDictory, "*.*");
+                            var original = files
+                                .OrderByDescending(x => File.GetLastWriteTime(x))
+                                .FirstOrDefault();
+                            for (int i = 0; i < 9; i++)
+                            {
+                                if (IsFileReady(original))
+                                {
+                                    break;
+                                }
+                                await Task.Delay(500);
+                            }
+
+                            var timestamp = File.GetLastWriteTime(original);
+                            if (timestamp >= now.AddSeconds(-10))
+                            {
+                                outputPath = original;
+                            }
+                        }
 
                         if (File.Exists(outputPath))
                         {
