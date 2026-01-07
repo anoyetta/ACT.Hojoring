@@ -1,0 +1,177 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+  <!--  Resources Strings in English  -->
+  <system:String x:Key="UILanguage">UI Language (* requires restart)</system:String>
+  <system:String x:Key="FFXIVLanguage">FFXIV Language (* requires restart)</system:String>
+
+  <system:String x:Key="GeneralConfig_LockAllOverlayOnHojoring">Lock all overlays on Hojoring</system:String>
+  <system:String x:Key="GeneralConfig_ClickThrough">Click through</system:String>
+  <system:String x:Key="GeneralConfig_Opacity">Opacity</system:String>
+  <system:String x:Key="GeneralConfig_LogPollingRate">Log polling rate (msec)</system:String>
+  <system:String x:Key="GeneralConfig_OverlayRefreshRate">Overlay refresh rate (msec)</system:String>
+  <system:String x:Key="GeneralConfig_LogPollingPriority">Log polling thread priority</system:String>
+  <system:String x:Key="GeneralConfig_OverlayRefreshPriority">Overlay refresh thread priority</system:String>
+  <system:String x:Key="GeneralConfig_RestartThreads">Restart threads</system:String>
+  <system:String x:Key="GeneralConfig_AnimationMaxFPS">Animation frame rate (0 is auto adjust)</system:String>
+  <system:String x:Key="GeneralConfig_TextStrokeThickenessGain">Text stroke thickeness gain</system:String>
+  <system:String x:Key="GeneralConfig_TextBlurGain">Text blur gain</system:String>
+  <system:String x:Key="GeneralConfig_Sound">Sound</system:String>
+  <system:String x:Key="GeneralConfig_UseNAudio">Play wave sound in NAudio (recommend)</system:String>
+  <system:String x:Key="GeneralConfig_WaveVolume">Wave volume</system:String>
+  <system:String x:Key="GeneralConfig_TTSDestination">TTS destination</system:String>
+
+  <system:String x:Key="Common_Visible">Visible</system:String>
+  <system:String x:Key="Common_Location">Location</system:String>
+  <system:String x:Key="Common_Layout">Layout</system:String>
+  <system:String x:Key="Common_Style">Style</system:String>
+  <system:String x:Key="Common_Alignment">Alignment</system:String>
+  <system:String x:Key="Common_BarWidth">Bar width</system:String>
+  <system:String x:Key="Common_BarSize">Bar size</system:String>
+  <system:String x:Key="Common_Scale">Scale</system:String>
+  <system:String x:Key="Common_Background">Background</system:String>
+  <system:String x:Key="Common_Font">Font</system:String>
+  <system:String x:Key="Common_FillColor">Fill Color</system:String>
+  <system:String x:Key="Common_StrokeColor">Stroke Color</system:String>
+  <system:String x:Key="Common_Text">Text</system:String>
+  <system:String x:Key="Common_Bar">Bar</system:String>
+  <system:String x:Key="Common_RefreshDisplay">Refresh</system:String>
+  <system:String x:Key="Common_Add">add</system:String>
+  <system:String x:Key="Common_Change">change</system:String>
+  <system:String x:Key="Common_Delete">delete</system:String>
+  <system:String x:Key="Common_TTS">Text to speak</system:String>
+  <system:String x:Key="Common_TestMode">Design mode (Always display)</system:String>
+
+  <system:String x:Key="Target_UserHoverTarget">Use hover target</system:String>
+
+  <system:String x:Key="HP_HPLocation">HP Location</system:String>
+  <system:String x:Key="HP_BarLocation">Bar Location</system:String>
+  <system:String x:Key="HP_VisibleHPBar">Visible HP bar</system:String>
+  <system:String x:Key="HP_HPValueOnHPBar">Display HP value on HP bar</system:String>
+  <system:String x:Key="HP_HPValueCompact">Compact display of HP value</system:String>
+  <system:String x:Key="HP_HPBarStrokeColor">HP bar stroke color</system:String>
+  <system:String x:Key="HP_LinkBarStrokeColorToBarColor">Link 'Bar stroke color' &lt;- 'Bar color'</system:String>
+  <system:String x:Key="HP_LinkTextFillColorToBarColor">Link 'Text fill color' &lt;- 'Bar color'</system:String>
+  <system:String x:Key="HP_LinkTextStrokeColorToBarColor">Link 'Text stroke color' &lt;- 'Bar color'</system:String>
+  <system:String x:Key="HP_HPBarSize">HP bar size</system:String>
+
+  <system:String x:Key="Action_VisibleActionName">Visible action name</system:String>
+  <system:String x:Key="Action_VisibleRemainOfCasting">Visible remain of casting</system:String>
+  <system:String x:Key="Action_VisibleRemainAsInteger">As integer</system:String>
+  <system:String x:Key="Action_VisibleRateOfCasting">Visible rate of casting</system:String>
+  <system:String x:Key="Action_VisibleType">Visible attack type</system:String>
+  <system:String x:Key="Action_DummyActionName">Dummy action name</system:String>
+  <system:String x:Key="Action_CastingBar">Casting bar</system:String>
+  <system:String x:Key="Action_CastingBarStrokeColor">Casting bar stroke color</system:String>
+  <system:String x:Key="Action_LinkBarStrokeColorToBarColor">Link 'Bar stroke color' &lt;- 'Bar color'</system:String>
+  <system:String x:Key="Action_CastingBarSize">Casting bar size</system:String>
+  <system:String x:Key="Action_CircleStyle">Circle style</system:String>
+  <system:String x:Key="Action_RotateCCW">Rotate CCW</system:String>
+  <system:String x:Key="Action_CircleBlurRadius">Circle blur radius</system:String>
+  <system:String x:Key="Action_Sound">Sound</system:String>
+  <system:String x:Key="Action_WaveSound">Wave sound</system:String>
+
+  <system:String x:Key="BOSS_BossThreshold">'BOSS HP' vs 'Party Avg.' ratio threshold</system:String>
+  <system:String x:Key="BOSS_BossVSTargetHideBoss">If BOSS='Target' then to hide BOSS</system:String>
+  <system:String x:Key="BOSS_BossVSFTHideBoss">If BOSS='Focus Target' then to hide BOSS</system:String>
+  <system:String x:Key="BOSS_BossVSToTHideBoss">If BOSS='Target of Target' then to hide BOSS</system:String>
+
+  <system:String x:Key="MyStatus_VisibleText">Visible value</system:String>
+  <system:String x:Key="MyStatus_VisibleBar">Visible bar</system:String>
+  <system:String x:Key="MyStatus_ObjectLayout">Object layout</system:String>
+  <system:String x:Key="MyStatus_HorizontalAlignment">Horizontal alignment</system:String>
+  <system:String x:Key="MyStatus_ColorRange">Color ranges (%)</system:String>
+
+  <system:String x:Key="MPTicker_VisibleCounter">Visible counter</system:String>
+  <system:String x:Key="MPTicker_SyncHoT">Sync to HoT</system:String>
+  <system:String x:Key="MPTicker_SyncDoT">Sync to DoT</system:String>
+  <system:String x:Key="MPTicker_Offset">Offset (sec)</system:String>
+  <system:String x:Key="MPTicker_SyncMP">Sync to MP</system:String>
+  <system:String x:Key="MPTicker_ResyncInterval">Resync interval (sec)</system:String>
+  <system:String x:Key="MPTicker_Bar">Bar</system:String>
+  <system:String x:Key="MPTicker_BarStrokeColor">Bar stroke color</system:String>
+  <system:String x:Key="MPTicker_LinkBarStrokeColorToBarColor">Link 'Bar stroke color' &lt;- 'Bar color'</system:String>
+  <system:String x:Key="MPTicker_BarSize">Bar size</system:String>
+  <system:String x:Key="MPTicker_CircleStyle">Circle style</system:String>
+  <system:String x:Key="MPTicker_RotateCCW">Rotate CCW</system:String>
+  <system:String x:Key="MPTicker_SwapBarAndText">Swap bar and text positions</system:String>
+  <system:String x:Key="MPTicker_ExplationTimeForDisplay1">Explation time for Display (sec)</system:String>
+  <system:String x:Key="MPTicker_ExplationTimeForDisplay2">* at 0 is infinity</system:String>
+  <system:String x:Key="MPTicker_TargetJobs">Target jobs</system:String>
+
+  <system:String x:Key="MyUtility_OnRestart">On the restart</system:String>
+  <system:String x:Key="MyUtility_DelayFromWipeout">Delay seconds from wipeout</system:String>
+  <system:String x:Key="MyUtility_OnlyForRAIDParty">Only in RAID party</system:String>
+  <system:String x:Key="MyUtility_SendOnZoneChanged">Send a key on zone changed</system:String>
+  <system:String x:Key="MyUtility_ExtendMealEffect">Extend duration of "Well Fed" effect</system:String>
+  <system:String x:Key="MyUtility_RemainingTimeThreshold">threshold to extend duration of "Well Fed" effect (min)</system:String>
+  <system:String x:Key="MyUtility_RestoreTankStance">Restore TANK stance</system:String>
+  <system:String x:Key="MyUtility_RestoreTankStanceDescription">Restore the tank stance from the last time the battle began.</system:String>
+  <system:String x:Key="MyUtility_SummonFairy">Summon SCH's fairy</system:String>
+  <system:String x:Key="MyUtility_DrawCard">Draw AST's card</system:String>
+  <system:String x:Key="MyUtility_SummonEgi">Summon SMN's egi</system:String>
+
+  <system:String x:Key="MobList_VisibleMePosition">Visible Me position</system:String>
+  <system:String x:Key="MobList_SimpleView">Simple View</system:String>
+  <system:String x:Key="MobList_UngroupSameNameMobs">Ungroup same name mobs</system:String>
+  <system:String x:Key="MobList_VisibleZPosition">Visible Z position</system:String>
+  <system:String x:Key="MobList_DisableAether">Disable Aether</system:String>  
+  <system:String x:Key="MobList_DirectionOrigin">Origin of Direction</system:String>
+  <system:String x:Key="MobList_DirectionAdjustmentAngle">Direction adjustment angle</system:String>
+  <system:String x:Key="MobList_DirectionOriginDescription">To use "Me" or "Camera", FFXIV_MemoryReader is required.</system:String>
+  <system:String x:Key="MobList_ScanNPC">Scan NPC</system:String>
+  <system:String x:Key="MobList_NotScanNPCInFullParty">Not scan NPC in full party</system:String>
+  <system:String x:Key="MobList_OpenTargetMobList">Open target mob list</system:String>
+  <system:String x:Key="MobList_ReloadTargetMobList">Reload target mob list</system:String>
+  <system:String x:Key="MobList_CountOfDisplay">Count of display</system:String>
+  <system:String x:Key="MobList_NotifyByTTS">Notify by Text to speak</system:String>
+  <system:String x:Key="MobList_Me">Me</system:String>
+  <system:String x:Key="MobList_MobFont">Mob Font</system:String>
+  <system:String x:Key="MobList_MobEXColor">Mob EX Color</system:String>
+  <system:String x:Key="MobList_MobSColor">Mob S Color</system:String>
+  <system:String x:Key="MobList_MobAColor">Mob A Color</system:String>
+  <system:String x:Key="MobList_MobBColor">Mob B Color</system:String>
+  <system:String x:Key="MobList_MobOtherColor">Mob Other Color</system:String>
+
+  <system:String x:Key="Enmity_HideInNotCombat">Hide when not combat</system:String>
+  <system:String x:Key="Enmity_HideInSolo">Hide in solo</system:String>
+  <system:String x:Key="Enmity_DisplayPCasYou">Display PC as "You"</system:String>
+  <system:String x:Key="Enmity_IsDenomi">Cut the value less than 1,000</system:String>
+  <system:String x:Key="Enmity_IsVisibleJobIcon">Visible job icon</system:String>
+  <system:String x:Key="Enmity_IsIconRight">Alignment job icon right</system:String>
+  <system:String x:Key="Enmity_IsVisibleName">Visible character name</system:String>
+  <system:String x:Key="Enmity_IsDifferenceMode">GUILTEX Style (Relative value mode)</system:String>
+  <system:String x:Key="Enmity_JobIconScale">Job icon scale</system:String>
+  <system:String x:Key="Enmity_MaxCountOfDisplay">Max count of display</system:String>
+  <system:String x:Key="Enmity_ScaningRate">Enmity scaning rate (msec)</system:String>
+  <system:String x:Key="Enmity_AlterTextMeValue">Alternative text for Your enmity</system:String>
+  <system:String x:Key="Enmity_IsNearIndicator">Use bar to near enmity alert</system:String>
+  <system:String x:Key="Enmity_NearIndicatorColor">Near Enmity Color</system:String>
+  <system:String x:Key="Enmity_NearThresholdRate">Near enmity threshold rate</system:String>
+  <system:String x:Key="Enmity_IsVisibleNearThreshold">Visible near enmity threshold</system:String>
+  <system:String x:Key="Enmity_LogDirectory">Log folder</system:String>
+
+  <system:String x:Key="FFLogs_VisibleHistogram">Visible histogram</system:String>
+  <system:String x:Key="FFLogs_HideInCombat">Hide in combat</system:String>
+  <system:String x:Key="FFLogs_HideInCombatDescription" xml:space="preserve">
+Judgment during battle is simple.
+When one of the party members HP, MP, TP is not the maximum value,
+it is judged that it is in battle.
+  </system:String>
+
+  <system:String x:Key="TacticalRadar_HorizontalLayout">Horizontal layout</system:String>
+  <system:String x:Key="TacticalRadar_Target">Tactical targets</system:String>
+  <system:String x:Key="TacticalRadar_TargetName">Name</system:String>
+  <system:String x:Key="TacticalRadar_DetectRange">Range</system:String>
+  <system:String x:Key="TacticalRadar_NoticeEnabled">Notice</system:String>
+  <system:String x:Key="TacticalRadar_Enabled">Enabled</system:String>
+
+  <system:String x:Key="Help_GotoLastestRelease">Go to Lastest release on GitHub</system:String>
+  <system:String x:Key="Help_ContactToAnoyetta">Contact to anoyetta on Discord</system:String>
+  <system:String x:Key="Help_OpenConfig">Open Config</system:String>
+  <system:String x:Key="Help_ReloadConfig">Reload Config</system:String>
+  <system:String x:Key="Help_ReloadViews">Reload Views</system:String>
+  <system:String x:Key="Help_OpenLog">Open Log</system:String>
+</ResourceDictionary>

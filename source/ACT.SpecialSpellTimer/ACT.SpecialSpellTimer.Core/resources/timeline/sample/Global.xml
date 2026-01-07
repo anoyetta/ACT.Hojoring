@@ -47,5 +47,33 @@
       style="NOTICE_NORMAL"
       icon="Marker.png" />
   </t>
+
+  <!-- クリコンの録画用 -->
+  <t enabled="true" text="録画開始" sync="^21:[id8]:40000004:1E:">
+    <expressions>
+      <set name="recording" value="true" />
+      <set name="pvpend" value="false" />
+    </expressions>
+    <script>
+      RaiseLogLine("/xivlog rec");
+    </script>
+  </t>
+  <t enabled="true" text="戦闘終了" sync="^21:[id8]:40000007:01:">
+    <expressions>
+      <pre name="recording" value="true" />
+      <set name="pvpend" value="true" />
+    </expressions>
+  </t>
+  <t enabled="true" text="録画停止" sync="レストエリアに入った！">
+    <expressions>
+      <pre name="recording" value="true" />
+      <pre name="pvpend" value="true" />
+      <set name="recording" value="false" />
+      <set name="pvpend" value="false" />
+    </expressions>
+    <script>
+      RaiseLogLine("/xivlog stop");
+    </script>
+  </t>
   <!-- 重要なアクティビティを通知するトリガ end -->
 </timeline>

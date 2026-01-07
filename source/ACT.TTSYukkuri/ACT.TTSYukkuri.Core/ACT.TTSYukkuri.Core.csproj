@@ -471,6 +471,11 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\strings\Strings.Yukkuri.zh-TW.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config\Models\" />
@@ -483,7 +488,7 @@
       <Version>2.0.7</Version>
     </PackageReference>
     <PackageReference Include="Discord.Net">
-      <Version>3.18.0</Version>
+      <Version>3.18.0-nightly.20250921.631</Version>
     </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit">
       <Version>4.1.0</Version>

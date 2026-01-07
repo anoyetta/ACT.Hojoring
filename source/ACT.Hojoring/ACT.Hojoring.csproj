@@ -109,7 +109,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Discord.Net">
-      <Version>3.18.0</Version>
+      <Version>3.18.0-nightly.20250921.631</Version>
     </PackageReference>
     <PackageReference Include="System.Reactive">
       <Version>6.1.0</Version>
