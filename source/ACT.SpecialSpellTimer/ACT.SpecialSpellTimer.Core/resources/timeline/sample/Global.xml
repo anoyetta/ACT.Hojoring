@@ -49,7 +49,7 @@
   </t>
 
   <!-- クリコンの録画用 -->
-  <t enabled="true" text="録画開始" sync="^21:<id8>:40000004:1E:">
+  <t enabled="true" text="録画開始" sync="^21:[id8]:40000004:1E:">
     <expressions>
       <set name="recording" value="true" />
       <set name="pvpend" value="false" />
@@ -58,7 +58,7 @@
       RaiseLogLine("/xivlog rec");
     </script>
   </t>
-  <t enabled="true" text="戦闘終了" sync="^21:<id8>:40000007:01:">
+  <t enabled="true" text="戦闘終了" sync="^21:[id8]:40000007:01:">
     <expressions>
       <pre name="recording" value="true" />
       <set name="pvpend" value="true" />
