@@ -150,6 +150,9 @@ namespace ACT.UltraScouter
 
                 this.AppLogger.Trace("[ULTRA SCOUTER] Start InitPlugin");
 
+                var updater = new FFXIV.Framework.Updater.FFXIVFrameworkUpdater();
+                updater.ApplyPendingUpdates();
+
                 // .NET FrameworkとOSのバージョンを確認する
                 if (!UpdateChecker.IsAvailableDotNet() ||
                     !UpdateChecker.IsAvailableWindows())

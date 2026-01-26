@@ -223,6 +223,7 @@
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\TagTable.cs" />
     <Compile Include="Models\Ticker.cs" />
+    <Compile Include="RaidTimeline\RazorEngineProvider.cs" />
     <Compile Include="RaidTimeline\TimelineActivityModel.cs" />
     <Compile Include="RaidTimeline\TimelineBase.cs" />
     <Compile Include="RaidTimeline\TimelineConstants.cs" />
@@ -1554,6 +1555,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ACT.Hojoring.Common\ACT.Hojoring.Common.csproj">
+      <Project>{7e1502b5-db00-4b2e-bdba-19e3379670b3}</Project>
+      <Name>ACT.Hojoring.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ACT.SpecialSpellTimer.RazorModel\ACT.SpecialSpellTimer.RazorModel.csproj">
       <Project>{450f38fa-7f7d-41b9-9bbb-503efc6c0a72}</Project>
       <Name>ACT.SpecialSpellTimer.RazorModel</Name>

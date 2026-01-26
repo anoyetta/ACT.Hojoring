@@ -14,6 +14,7 @@ using System.Windows.Threading;
 
 namespace ACT.SpecialSpellTimer.RazorModel
 {
+    [Serializable]
     public class TimelineRazorModel
     {
         static TimelineRazorModel()
@@ -179,6 +180,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
         }
     }
 
+    [Serializable]
     public class TimelineRazorPlayer
     {
         public int Number { get; set; } = 0;
@@ -212,6 +214,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
         }
     }
 
+    [Serializable]
     public class TimelineRazorVariable
     {
         public static Func<IReadOnlyDictionary<string, TimelineVariable>> GetVarDelegate { get; set; }

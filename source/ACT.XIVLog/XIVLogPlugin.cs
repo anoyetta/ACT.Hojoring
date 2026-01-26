@@ -53,6 +53,10 @@ namespace ACT.XIVLog
             pluginScreenSpace.Text = "XIVLog";
             this.pluginLabel = pluginStatusText;
 
+
+            var updater = new FFXIV.Framework.Updater.FFXIVFrameworkUpdater();
+            updater.ApplyPendingUpdates();
+
             DirectoryHelper.GetPluginRootDirectoryDelegate = () => ActGlobals.oFormActMain?.PluginGetSelfData(this)?.pluginFile.DirectoryName;
 
             // 設定ファイルをロードする

@@ -41,6 +41,9 @@ namespace ACT.SpecialSpellTimer
             {
                 DirectoryInfo temp = new DirectoryInfo(Path.GetTempPath());
 
+                var updater = new FFXIV.Framework.Updater.FFXIVFrameworkUpdater();
+                updater.ApplyPendingUpdates();
+
                 var folders = temp.EnumerateDirectories("RazorEngine_*");
 
                 foreach (var folder in folders)

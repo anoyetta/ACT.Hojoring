@@ -450,6 +450,9 @@ namespace ACT.TTSYukkuri
 
                 this.AppLogger.Trace("[YUKKURI] Start InitPlugin");
 
+                var updater = new FFXIV.Framework.Updater.FFXIVFrameworkUpdater();
+                updater.ApplyPendingUpdates();
+
                 var pluginInfo = ActGlobals.oFormActMain.PluginGetSelfData(plugin);
                 if (pluginInfo != null)
                 {

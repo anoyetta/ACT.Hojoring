@@ -1,3 +1,16 @@
+using ACT.Hojoring.Common;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Bridge;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.Updater;
+using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
+using Microsoft.VisualBasic.FileIO;
+using NLog;
+using NLog.Targets;
+using Prism.Commands;
+using Prism.Mvvm;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -9,17 +22,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Bridge;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.WPF.Views;
-using FFXIV.Framework.XIVHelper;
-using Microsoft.VisualBasic.FileIO;
-using NLog;
-using NLog.Targets;
-using Prism.Commands;
-using Prism.Mvvm;
 
 namespace FFXIV.Framework.WPF.ViewModels
 {
@@ -278,9 +280,22 @@ namespace FFXIV.Framework.WPF.ViewModels
         private ICommand updateCommand;
 
         public ICommand UpdateCommand =>
-            this.updateCommand ?? (this.updateCommand = new DelegateCommand(() =>
+            this.updateCommand ?? (this.updateCommand = new DelegateCommand(async () =>
             {
-                UpdateChecker.StartUpdateScript(this.usePreRelease);
+                var updater = new FFXIVFrameworkUpdater();
+
+                var assembly = Assembly.GetAssembly(typeof(ACT.Hojoring.Common.Hojoring));
+                var target = new FFXIVFrameworkUpdater.UpdateTarget
+                {
+                    AssetKeyword = "ACT.Hojoring-v",
+                    DisplayName = "ACT.Hojoring",
+                    PluginDirectory = Path.GetDirectoryName(assembly.Location),
+                    CurrentVersion = assembly.GetName().Version,
+                    IsFullPackage = true
+                };
+
+                // 4. 更新チェックと実行
+                await Task.Run(() => updater.CheckAndDoUpdate(target, this.usePreRelease));
             }));
 
         #endregion Update
