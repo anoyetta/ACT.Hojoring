@@ -17,8 +17,10 @@ using ACT.SpecialSpellTimer.Views;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.resources;
+using FFXIV.Framework.Updater;
 using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
+using ACT.Hojoring;
 
 namespace ACT.SpecialSpellTimer
 {
@@ -40,9 +42,6 @@ namespace ACT.SpecialSpellTimer
             try
             {
                 DirectoryInfo temp = new DirectoryInfo(Path.GetTempPath());
-
-                var updater = new FFXIV.Framework.Updater.FFXIVFrameworkUpdater();
-                updater.ApplyPendingUpdates();
 
                 var folders = temp.EnumerateDirectories("RazorEngine_*");
 

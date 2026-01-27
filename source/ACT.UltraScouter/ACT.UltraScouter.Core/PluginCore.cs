@@ -10,6 +10,7 @@ using FFXIV.Framework.Bridge;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.resources;
+using FFXIV.Framework.Updater;
 using FFXIV.Framework.WPF;
 using FFXIV.Framework.WPF.Views;
 using FFXIV.Framework.XIVHelper;
@@ -149,9 +150,6 @@ namespace ACT.UltraScouter
                 });
 
                 this.AppLogger.Trace("[ULTRA SCOUTER] Start InitPlugin");
-
-                var updater = new FFXIV.Framework.Updater.FFXIVFrameworkUpdater();
-                updater.ApplyPendingUpdates();
 
                 // .NET FrameworkとOSのバージョンを確認する
                 if (!UpdateChecker.IsAvailableDotNet() ||

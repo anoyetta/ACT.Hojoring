@@ -385,6 +385,10 @@
       <Project>{7e1502b5-db00-4b2e-bdba-19e3379670b3}</Project>
       <Name>ACT.Hojoring.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ACT.Hojoring.Updater\ACT.Hojoring.Updater.csproj">
+      <Project>{611cc237-0ac4-4ab1-9f31-6e1bf589ca14}</Project>
+      <Name>ACT.Hojoring.Updater</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="resources\PCOrder.sample.txt">

@@ -1,7 +1,9 @@
+using ACT.Hojoring;
 using ACT.Hojoring.Shared;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using FFXIV.Framework.Extensions;
+using FFXIV.Framework.Updater;
 using FFXIV.Framework.XIVHelper;
 using Sharlayan.Core.Enums;
 using System;
@@ -13,6 +15,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Media;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -46,16 +49,45 @@ namespace ACT.XIVLog
 
         private Label pluginLabel;
 
-        public async void InitPlugin(
+        /// <summary>
+        /// Init Plugin
+        /// </summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public void InitPlugin(
             TabPage pluginScreenSpace,
             Label pluginStatusText)
         {
+            // 1. まずアップデートを適用する
+            // このメソッド自体に FFXIV.Framework 等の型を直接出現させない
+            this.ApplyUpdate();
+
+            // 2. アップデート完了後に、実際の初期化（Frameworkを使用する処理）を呼び出す
+            // async void を維持するために別メソッド化
+            this.InitializePlugin(pluginScreenSpace, pluginStatusText);
+        }
+
+        /// <summary>
+        /// アップデートを適用する
+        /// </summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void ApplyUpdate()
+        {
+            AtomicUpdater.Apply();
+        }
+
+        /// <summary>
+        /// 実際の初期化処理
+        /// </summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private async void InitializePlugin(
+            TabPage pluginScreenSpace,
+            Label pluginStatusText)
+        {
+            // アセンブリを明示的にロード
+            Assembly.Load("FFXIV.Framework");
+
             pluginScreenSpace.Text = "XIVLog";
             this.pluginLabel = pluginStatusText;
-
-
-            var updater = new FFXIV.Framework.Updater.FFXIVFrameworkUpdater();
-            updater.ApplyPendingUpdates();
 
             DirectoryHelper.GetPluginRootDirectoryDelegate = () => ActGlobals.oFormActMain?.PluginGetSelfData(this)?.pluginFile.DirectoryName;
 
@@ -288,7 +320,6 @@ namespace ACT.XIVLog
             }
         }
 
-        //[MethodImpl(MethodImplOptions.NoInlining)]
         private void OnLogLineRead(
             bool isImport,
             LogLineEventArgs logInfo)
@@ -330,29 +361,6 @@ namespace ACT.XIVLog
 
             LogParser.RaiseLog(DateTime.Now, message);
         }
-
-        /*
-        private string ConvertZoneNameToLog()
-        {
-            var result = this.currentZoneName;
-
-            if (string.IsNullOrEmpty(result))
-            {
-                result = "GLOBAL";
-            }
-            else
-            {
-                // 無効な文字を置き換える
-                result = string.Concat(
-                    result.Select(c =>
-                        Path.GetInvalidFileNameChars().Contains(c) ?
-                        '_' :
-                        c));
-            }
-
-            return result;
-        }
-        */
 
         private const string CommandKeywordOpen = "/xivlog open";
         private const string CommandKeywordFlush = "/xivlog flush";
@@ -401,24 +409,24 @@ namespace ACT.XIVLog
 
         public async Task ForceFlushAsync()
             => await Task.Run(() =>
-        {
-            this.isForceFlush = true;
-
-            Task.Run(async () =>
             {
-                for (int i = 0; i < 10; i++)
+                this.isForceFlush = true;
+
+                Task.Run(async () =>
                 {
-                    if (!this.isForceFlush)
+                    for (int i = 0; i < 10; i++)
                     {
-                        break;
+                        if (!this.isForceFlush)
+                        {
+                            break;
+                        }
+
+                        await Task.Delay(TimeSpan.FromSeconds(0.1));
                     }
 
-                    await Task.Delay(TimeSpan.FromSeconds(0.1));
-                }
-
-                SystemSounds.Beep.Play();
+                    SystemSounds.Beep.Play();
+                });
             });
-        });
 
         #region INotifyPropertyChanged
 
@@ -469,20 +477,8 @@ namespace ACT.XIVLog
             this.IsImport = isImport;
             this.LogInfo = logInfo;
 
-            // ログの書式の例
-            /*
-            旧形式：
-            [08:20:19.383] 00:0000:clear stacks of Loading....
-            */
-
-            /*
-            新形式：
-            [00:40:19.102] AddCombatant 03:40000C94:木人:00:1:0000:00::541:901:44:44:0:10000:::94.38:55.71:7.07:2.43
-            */
-
             var line = this.LogInfo.logLine;
 
-            // 15文字未満のログは書式エラーになるため無視する
             if (line.Length < 15)
             {
                 return;
@@ -497,14 +493,11 @@ namespace ACT.XIVLog
             }
             else
             {
-                // タイムスタンプ書式が不正なものは無視する
                 return;
             }
 
-            // タイムスタンプの後を取り出す
             var message = line.Substring(15);
 
-            // ログタイプを除去する
             var i = message.IndexOf(" ");
             if (i < 0)
             {
@@ -540,19 +533,10 @@ namespace ACT.XIVLog
 
         public string ZoneName { get; private set; }
 
-        /// <summary>
-        /// FFXIV_ACT_Plugin からの生のログ
-        /// </summary>
         public string Log { get; private set; } = string.Empty;
 
-        /// <summary>
-        /// Log に対してPC名を無読化置換したログ
-        /// </summary>
         public string LogReplacedPCName { get; private set; } = string.Empty;
 
-        /// <summary>
-        /// LogReplacedPCName に対してHojoring内の判定で使用している形式にParseしたログ
-        /// </summary>
         public string ParsedLog { get; private set; } = string.Empty;
 
         public LogLineEventArgs LogInfo { get; set; }
@@ -589,7 +573,6 @@ namespace ACT.XIVLog
             }
 
             var now = DateTime.Now;
-            // 古くなったエントリを削除する
             var olds = PCNameDictionary.Where(x =>
                 (now - x.Value.Timestamp).TotalMinutes >= 10.0)
                 .ToArray();
@@ -613,7 +596,6 @@ namespace ACT.XIVLog
 
         public void Parse()
         {
-            // PC名を置換する
             this.ReplacePCName();
 
             var log = this.LogReplacedPCName;
@@ -624,11 +606,9 @@ namespace ACT.XIVLog
                 CultureInfo.InvariantCulture,
                 out int detectedType);
 
-            // ツールチップシンボル, ワールド名を除去する
             log = LogParser.RemoveTooltipSynbols(log);
             log = LogParser.RemoveWorldName(log);
 
-            // ログを互換形式に変換する
             log = LogParser.FormatLogLine(
                 detectedType,
                 log);

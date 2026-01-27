@@ -450,9 +450,6 @@ namespace ACT.TTSYukkuri
 
                 this.AppLogger.Trace("[YUKKURI] Start InitPlugin");
 
-                var updater = new FFXIV.Framework.Updater.FFXIVFrameworkUpdater();
-                updater.ApplyPendingUpdates();
-
                 var pluginInfo = ActGlobals.oFormActMain.PluginGetSelfData(plugin);
                 if (pluginInfo != null)
                 {
@@ -460,8 +457,8 @@ namespace ACT.TTSYukkuri
                 }
 
                 // .NET FrameworkとOSのバージョンを確認する
-                if (!UpdateChecker.IsAvailableDotNet() ||
-                    !UpdateChecker.IsAvailableWindows())
+                if (!FFXIV.Framework.Common.UpdateChecker.IsAvailableDotNet() ||
+                    !FFXIV.Framework.Common.UpdateChecker.IsAvailableWindows())
                 {
                     NotSupportedView.AddAndShow(pluginScreenSpace);
                     return;
@@ -474,7 +471,7 @@ namespace ACT.TTSYukkuri
                 }
 
                 // HojoringのSplashを表示する
-                UpdateChecker.ShowSplash();
+                FFXIV.Framework.Common.UpdateChecker.ShowSplash();
 
                 // 外部リソースをダウンロードする
                 if (await ResourcesDownloader.Instance.DownloadAsync())

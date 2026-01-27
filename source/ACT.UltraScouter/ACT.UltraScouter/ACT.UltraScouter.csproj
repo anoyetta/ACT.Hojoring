@@ -91,6 +91,10 @@
       <Project>{c1bc2d6e-e10d-4a7f-900b-5fd84f39bf0a}</Project>
       <Name>ACT.Hojoring.Activator</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ACT.Hojoring.Updater\ACT.Hojoring.Updater.csproj">
+      <Project>{611cc237-0ac4-4ab1-9f31-6e1bf589ca14}</Project>
+      <Name>ACT.Hojoring.Updater</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ACT.UltraScouter.Core\ACT.UltraScouter.Core.csproj">
       <Project>{6d17f2c1-f9bd-4c9c-96c9-1a60ad975e4b}</Project>
       <Name>ACT.UltraScouter.Core</Name>

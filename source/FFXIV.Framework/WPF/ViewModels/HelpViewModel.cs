@@ -1,3 +1,4 @@
+using ACT.Hojoring;
 using ACT.Hojoring.Common;
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Bridge;
@@ -282,7 +283,18 @@ namespace FFXIV.Framework.WPF.ViewModels
         public ICommand UpdateCommand =>
             this.updateCommand ?? (this.updateCommand = new DelegateCommand(async () =>
             {
-                var updater = new FFXIVFrameworkUpdater();
+                var updater = FFXIVFrameworkUpdater.Instance;
+
+                // AtomicUpdater のロガーをセットする
+                updater.Logger = (message, ex) =>
+                {
+                    AtomicUpdater.Log(message, ex);
+                };
+
+                updater.OnBeforeUpdate = () =>
+                {
+                    HelpBridge.Instance.BeforeUpdateCallback?.Invoke();
+                };
 
                 var assembly = Assembly.GetAssembly(typeof(ACT.Hojoring.Common.Hojoring));
                 var target = new FFXIVFrameworkUpdater.UpdateTarget
@@ -294,7 +306,6 @@ namespace FFXIV.Framework.WPF.ViewModels
                     IsFullPackage = true
                 };
 
-                // 4. 更新チェックと実行
                 await Task.Run(() => updater.CheckAndDoUpdate(target, this.usePreRelease));
             }));
 

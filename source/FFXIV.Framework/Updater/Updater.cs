@@ -18,25 +18,52 @@ using Newtonsoft.Json;
 
 namespace FFXIV.Framework.Updater
 {
-    public class FFXIVFrameworkUpdater
+    /// <summary>
+    /// FFXIV.Framework および ACT.Hojoring のアップデート（ダウンロード・展開・配置準備）を管理するクラスです。
+    /// .7z形式の展開には外部ツール(7za.exe)を使用します。
+    /// </summary>
+    public class FFXIVFrameworkUpdater : IDisposable
     {
+        #region Singleton
+        private static FFXIVFrameworkUpdater instance;
+        private static readonly object lockObj = new object();
+
+        public static FFXIVFrameworkUpdater Instance
+        {
+            get
+            {
+                lock (lockObj)
+                {
+                    return instance ?? (instance = new FFXIVFrameworkUpdater());
+                }
+            }
+        }
+
+        private FFXIVFrameworkUpdater() { }
+        #endregion
+
+        #region Constants & Fields
         private const string GitHubRepo = "anoyetta/ACT.Hojoring";
         private const string UserAgent = "FFXIV-Framework-Updater";
 
-        private const uint FILE_OVERWRITE_RETRIES = 10;
-        private const int FILE_OVERWRITE_WAIT_BASE = 500;
-
-        // アップデート用サフィックス
         public const string NewFileSuffix = ".new";
         public const string OldFileSuffix = ".old";
 
-        private bool bUpdated = false;
+        private bool disposed = false;
 
         /// <summary>
         /// アップデート（ファイル置換）の直前に実行されるアクション。
         /// </summary>
         public Action OnBeforeUpdate { get; set; }
+        #endregion
+        public Action<string, Exception> Logger { get; set; }
 
+        private void Log(string message, Exception ex = null)
+        {
+            this.Logger?.Invoke(message, ex);
+        }
+
+        #region Win32 API
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool DeleteFile(string lpFileName);
@@ -44,9 +71,8 @@ namespace FFXIV.Framework.Updater
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, uint dwFlags);
 
-        private const uint MOVEFILE_REPLACE_EXISTING = 0x00000001;
-        private const uint MOVEFILE_COPY_ALLOWED = 0x00000002;
         private const uint MOVEFILE_DELAY_UNTIL_REBOOT = 0x00000004;
+        #endregion
 
         #region Data Models
         public class UpdateTarget
@@ -88,62 +114,6 @@ namespace FFXIV.Framework.Updater
             TempDir = Path.Combine(parent, tmpName);
         }
 
-        /// <summary>
-        /// 起動時に呼び出され、保留されているアップデートファイルを適用します。
-        /// DLLがメインドメインにロードされる前に実行する必要があります。
-        /// </summary>
-        public void ApplyPendingUpdates()
-        {
-            if (this.bUpdated)
-            {
-                return;
-            }
-
-            try
-            {
-                // アセンブリの場所から自動的にプラグインディレクトリを特定する
-                var assembly = Assembly.GetAssembly(typeof(ACT.Hojoring.Common.Hojoring));
-                var pluginDir = Path.GetDirectoryName(assembly.Location);
-
-                if (!Directory.Exists(pluginDir))
-                {
-                    return;
-                }
-
-                // 1. まず過去の .old ファイルを掃除する
-                DeleteOldFiles(pluginDir);
-
-                // 2. .new ファイルを探して置換する
-                var newFiles = Directory.GetFiles(pluginDir, "*" + NewFileSuffix, SearchOption.AllDirectories);
-                foreach (var newFile in newFiles)
-                {
-                    string targetPath = newFile.Substring(0, newFile.Length - NewFileSuffix.Length);
-                    try
-                    {
-                        if (File.Exists(targetPath))
-                        {
-                            File.SetAttributes(targetPath, FileAttributes.Normal);
-                            File.Delete(targetPath);
-                        }
-                        File.Move(newFile, targetPath);
-                    }
-                    catch
-                    {
-                        // 起動直後のロック等で失敗した場合は、次回のチャンスに回す
-                    }
-                }
-
-                this.bUpdated = true;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Failed to apply pending updates: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// 指定ディレクトリ以下の .old ファイルをすべて削除します。
-        /// </summary>
         public static void DeleteOldFiles(string dir)
         {
             if (!Directory.Exists(dir)) return;
@@ -157,7 +127,7 @@ namespace FFXIV.Framework.Updater
                         File.SetAttributes(old, FileAttributes.Normal);
                         File.Delete(old);
                     }
-                    catch { /* ロード中の場合は消せないので無視 */ }
+                    catch { }
                 }
             }
             catch { }
@@ -170,7 +140,6 @@ namespace FFXIV.Framework.Updater
             private RichTextBox logBox;
             private WebBrowser releaseNoteBox;
             private Button closeButton;
-
             private TaskCompletionSource<bool> _dialogCloseTask = new TaskCompletionSource<bool>();
             public Task WaitForClose => _dialogCloseTask.Task;
 
@@ -181,23 +150,12 @@ namespace FFXIV.Framework.Updater
                 this.StartPosition = FormStartPosition.CenterScreen;
                 this.FormBorderStyle = FormBorderStyle.FixedDialog;
                 this.TopMost = true;
-                this.MaximizeBox = false;
 
                 progressBar = new ProgressBar { Dock = DockStyle.Top, Height = 25, Minimum = 0, Maximum = 100 };
+                logBox = new RichTextBox { Dock = DockStyle.Bottom, Height = 180, ReadOnly = true, BackColor = Color.Black, ForeColor = Color.White };
 
-                logBox = new RichTextBox
-                {
-                    Dock = DockStyle.Bottom,
-                    Height = 180,
-                    ReadOnly = true,
-                    BackColor = Color.FromArgb(30, 30, 30),
-                    ForeColor = Color.White,
-                    Font = new Font("Consolas", 9),
-                    HideSelection = false
-                };
-
-                Panel bottomPanel = new Panel { Dock = DockStyle.Bottom, Height = 45, Padding = new Padding(8) };
-                closeButton = new Button { Text = "Close", Dock = DockStyle.Right, Width = 120, Enabled = false };
+                Panel bottomPanel = new Panel { Dock = DockStyle.Bottom, Height = 45, Padding = new Padding(5) };
+                closeButton = new Button { Text = "Close", Dock = DockStyle.Right, Width = 100, Enabled = false };
                 closeButton.Click += (s, e) => this.Close();
                 bottomPanel.Controls.Add(closeButton);
 
@@ -207,35 +165,49 @@ namespace FFXIV.Framework.Updater
                 this.Controls.Add(progressBar);
                 this.Controls.Add(logBox);
                 this.Controls.Add(bottomPanel);
-
                 this.FormClosed += (s, e) => _dialogCloseTask.TrySetResult(true);
             }
 
             public void UpdateProgress(int value) => this.SafeInvoke(() => progressBar.Value = Math.Min(100, Math.Max(0, value)));
-            public void Log(string message) => this.SafeInvoke(() => {
-                logBox.AppendText($"[{DateTime.Now:HH:mm:ss}] {message}\n");
-                logBox.SelectionStart = logBox.Text.Length;
-                logBox.ScrollToCaret();
-            });
-
+            public void Log(string message) => this.SafeInvoke(() => { logBox.AppendText($"[{DateTime.Now:HH:mm:ss}] {message}\n"); logBox.ScrollToCaret(); });
             public void EnableCloseButton() => this.SafeInvoke(() => closeButton.Enabled = true);
 
-            public void SetReleaseNotes(string markdown)
+            public void SetReleaseNotes(string tagName, string markdown)
             {
-                var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-                string html = Markdown.ToHtml(markdown ?? "", pipeline);
-                string styledHtml = $"<html><head><style>body{{font-family:'Segoe UI',sans-serif;font-size:10pt;background:#fefefe;padding:20px;line-height:1.6;}} code{{background:#eee;padding:2px 4px;}}</style></head><body>{html}</body></html>";
-                this.SafeInvoke(() => releaseNoteBox.DocumentText = styledHtml);
-            }
+                // 改行コードを正規化し、Markdownとして適切に処理されるようにする
+                // GitHubのBodyは \r\n だったり \n だったりするため、一度 \n に統一してから
+                // Markdig のパイプラインオプション（Configure）で改行をそのままHTMLに反映させる設定を使用する
+                var rawMarkdown = (markdown ?? "").Replace("\r\n", "\n").Replace("\r", "\n");
 
-            private void SafeInvoke(Action action)
-            {
-                if (!this.IsDisposed && this.IsHandleCreated)
-                {
-                    if (this.InvokeRequired) this.Invoke(action);
-                    else action();
-                }
+                // Markdigの設定でソフト改行をハード改行として扱う（GitHubに近い挙動）
+                var pipeline = new MarkdownPipelineBuilder()
+                    .UseAdvancedExtensions()
+                    .UseSoftlineBreakAsHardlineBreak()
+                    .Build();
+
+                var htmlContent = Markdown.ToHtml(rawMarkdown, pipeline);
+                var fullHtml = $@"
+<html>
+<head>
+<meta http-equiv='X-UA-Compatible' content='IE=edge' />
+<style>
+    body {{ font-family: 'Segoe UI', 'Meiryo', sans-serif; font-size: 10pt; line-height: 1.6; padding: 15px; color: #333; }}
+    h1.release-tag {{ color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-top: 0; font-size: 18pt; }}
+    h2, h3 {{ border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #444; margin-top: 20px; }}
+    code {{ background-color: #f0f0f0; padding: 2px 4px; border-radius: 3px; font-family: 'Consolas', monospace; }}
+    pre {{ background-color: #f8f8f8; padding: 10px; border-radius: 5px; overflow-x: auto; border: 1px solid #eee; }}
+    ul, ol {{ padding-left: 25px; }}
+    li {{ margin-bottom: 4px; }}
+</style>
+</head>
+<body>
+    <h1 class='release-tag'>{tagName}</h1>
+    {htmlContent}
+</body>
+</html>";
+                this.SafeInvoke(() => releaseNoteBox.DocumentText = fullHtml);
             }
+            private void SafeInvoke(Action action) { if (!this.IsDisposed && this.IsHandleCreated) { if (this.InvokeRequired) this.Invoke(action); else action(); } }
         }
         #endregion
 
@@ -243,21 +215,26 @@ namespace FFXIV.Framework.Updater
         {
             try
             {
+                this.Log($"[Updater] Checking for updates: {target.DisplayName}");
+
                 var releases = await FetchAllReleasesAsync(target.Repo);
                 var latest = usePreRelease ? releases?.FirstOrDefault() : releases?.FirstOrDefault(x => !x.Prerelease);
                 if (latest == null) return false;
-
-                var assembly = Assembly.GetAssembly(typeof(ACT.Hojoring.Common.Hojoring));
-                var currentVersion = target.CurrentVersion ?? assembly.GetName().Version;
 
                 var versionRaw = latest.TagName.TrimStart('v').Split('-')[0];
                 var versionMatch = Regex.Match(versionRaw, @"[\d\.]+");
                 var versionString = versionMatch.Success ? versionMatch.Value.Trim('.') : string.Empty;
 
                 if (string.IsNullOrEmpty(versionString) || !Version.TryParse(versionString, out Version latestVersion)) return false;
+
+                var assembly = Assembly.GetAssembly(typeof(ACT.Hojoring.Common.Hojoring)) ?? Assembly.GetExecutingAssembly();
+                var currentVersion = target.CurrentVersion ?? assembly.GetName().Version;
+
                 if (latestVersion <= currentVersion) return false;
 
-                var asset = latest.Assets.FirstOrDefault(a => a.Name.Contains(target.AssetKeyword) && (a.Name.EndsWith(".7z") || a.Name.EndsWith(".zip")));
+                var asset = latest.Assets.FirstOrDefault(a => a.Name.Contains(target.AssetKeyword) && a.Name.EndsWith(".7z"))
+                         ?? latest.Assets.FirstOrDefault(a => a.Name.Contains(target.AssetKeyword) && a.Name.EndsWith(".zip"));
+
                 if (asset == null) return false;
 
                 InitializePaths(target.PluginDirectory, target.DisplayName + ".tmp");
@@ -267,8 +244,8 @@ namespace FFXIV.Framework.Updater
                     using (var dialog = new ProgressDialog(target.DisplayName))
                     {
                         dialog.Show();
-                        dialog.SetReleaseNotes(latest.Body);
-                        dialog.Log($"New version found: {latest.TagName}");
+                        dialog.SetReleaseNotes(latest.TagName, latest.Body);
+                        dialog.Log($"New version available: {latest.TagName}");
 
                         var (success, failedFiles) = await PerformUpdateTask(asset.DownloadUrl, asset.Name, target, dialog);
 
@@ -276,31 +253,38 @@ namespace FFXIV.Framework.Updater
                         {
                             if (failedFiles.Count > 0)
                             {
-                                dialog.Log("Update completed with some pending files.");
+                                dialog.Log("Preparation complete. Some files are pending.");
                                 dialog.EnableCloseButton();
-                                MessageBox.Show(dialog,
-                                    "一部のファイルは使用中のため、次回のACT起動時に適用されます。このままACTを再起動してください。",
-                                    "Pending Updates", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                TryRestartACT(target.DisplayName);
+                                ACT.Hojoring.AtomicUpdater.RequestExternalUpdate();
+                                MessageBox.Show(dialog, "一部のファイルが使用中のため .new として準備しました。ACT再起動時に適用されます。", "Update Pending", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
-                                dialog.Log("Update applied successfully.");
-                                await Task.Delay(1000);
-                                TryRestartACT(target.DisplayName);
-                                dialog.Close();
+                                dialog.Log("Update prepared successfully.");
+                                dialog.Log("Ready to restart ACT.");
+                                dialog.EnableCloseButton();
                             }
+
+                            TryRestartACT(target.DisplayName);
                         }
                         else
                         {
-                            dialog.Log("!!! UPDATE FAILED !!!");
+                            dialog.Log("FAILED to prepare update.");
                             dialog.EnableCloseButton();
                         }
+
+                        await dialog.WaitForClose;
+
+                        this.Log($"[Updater] Update check completed for {target.DisplayName}");
                         return success;
                     }
                 }));
             }
-            catch (Exception ex) { Debug.WriteLine(ex); return false; }
+            catch (Exception ex)
+            {
+                this.Log($"[Updater] Error during update check: {target.DisplayName}", ex);
+                return false;
+            }
         }
 
         private async Task<(bool success, List<string> failedFiles)> PerformUpdateTask(string url, string fileName, UpdateTarget target, ProgressDialog dialog)
@@ -311,48 +295,111 @@ namespace FFXIV.Framework.Updater
                 if (Directory.Exists(TempDir)) try { Directory.Delete(TempDir, true); } catch { }
                 Directory.CreateDirectory(TempDir);
 
-                string zipPath = Path.Combine(TempDir, "update.file");
+                dialog.Log("Downloading update...");
+                string archivePath = Path.Combine(TempDir, "update" + Path.GetExtension(fileName));
 
-                dialog.Log($"Downloading: {fileName}");
                 using (var client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
                     using (var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
                     {
                         response.EnsureSuccessStatusCode();
-                        var totalBytes = response.Content.Headers.ContentLength;
-                        using (var contentStream = await response.Content.ReadAsStreamAsync())
-                        using (var fileStream = new FileStream(zipPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                        var totalBytes = response.Content.Headers.ContentLength ?? -1L;
+                        var canReportProgress = totalBytes != -1;
+
+                        using (var stream = await response.Content.ReadAsStreamAsync())
+                        using (var fileStream = new FileStream(archivePath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
                         {
                             var buffer = new byte[8192];
-                            long totalReadBytes = 0;
-                            int readBytes;
-                            while ((readBytes = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                            var totalRead = 0L;
+                            var readCount = 0;
+                            var lastReportTime = DateTime.MinValue;
+
+                            while ((readCount = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                             {
-                                await fileStream.WriteAsync(buffer, 0, readBytes);
-                                totalReadBytes += readBytes;
-                                if (totalBytes.HasValue) dialog.UpdateProgress((int)((double)totalReadBytes / totalBytes.Value * 100));
+                                await fileStream.WriteAsync(buffer, 0, readCount);
+                                totalRead += readCount;
+
+                                // ログが流れすぎるのを防ぐため200ms間隔で出力
+                                if ((DateTime.Now - lastReportTime).TotalMilliseconds > 200)
+                                {
+                                    if (canReportProgress)
+                                    {
+                                        int percent = (int)((double)totalRead / totalBytes * 100);
+                                        dialog.UpdateProgress(percent);
+                                        dialog.Log($"Downloading... {percent}% ({totalRead / 1024 / 1024}MB / {totalBytes / 1024 / 1024}MB)");
+                                    }
+                                    else
+                                    {
+                                        dialog.Log($"Downloading... {totalRead / 1024 / 1024}MB");
+                                    }
+                                    lastReportTime = DateTime.Now;
+                                }
                             }
                         }
                     }
                 }
 
+                dialog.Log("Extracting assets...");
                 string extractDir = Path.Combine(TempDir, "contents");
-                dialog.Log("Extracting files...");
-                ZipFile.ExtractToDirectory(zipPath, extractDir);
+
+                if (archivePath.EndsWith(".7z", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!ExtractWith7Zip(archivePath, extractDir, dialog))
+                    {
+                        dialog.Log("7-Zip extraction failed.");
+                        return (false, failedFiles);
+                    }
+                }
+                else
+                {
+                    ZipFile.ExtractToDirectory(archivePath, extractDir);
+                }
 
                 UnblockFiles(extractDir);
                 string installSrc = GetStrippedPath(extractDir, target.StrippedDirs);
 
-                // 解放処理の実行
                 this.OnBeforeUpdate?.Invoke();
-
                 return await Task.Run(() => Install(installSrc, _destDir, dialog));
+            }
+            catch (Exception ex) { dialog.Log($"Error during task: {ex.Message}"); return (false, failedFiles); }
+        }
+
+        private bool ExtractWith7Zip(string archivePath, string outputDir, ProgressDialog dialog)
+        {
+            try
+            {
+                var assembly = Assembly.GetAssembly(typeof(ACT.Hojoring.Common.Hojoring)) ?? Assembly.GetExecutingAssembly();
+                var pluginDir = Path.GetDirectoryName(assembly.Location);
+                var exe7z = Path.Combine(pluginDir, "bin", "tools", "7z", "7za.exe");
+
+                if (!File.Exists(exe7z))
+                {
+                    dialog.Log($"7za.exe not found at: {exe7z}");
+                    return false;
+                }
+
+                if (!Directory.Exists(outputDir)) Directory.CreateDirectory(outputDir);
+
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = exe7z,
+                    Arguments = $"x \"{archivePath}\" -o\"{outputDir}\" -y",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true
+                };
+
+                using (var p = Process.Start(startInfo))
+                {
+                    p.WaitForExit();
+                    return p.ExitCode == 0;
+                }
             }
             catch (Exception ex)
             {
-                dialog.Log($"Error: {ex.Message}");
-                return (false, failedFiles);
+                dialog.Log($"7-Zip Error: {ex.Message}");
+                return false;
             }
         }
 
@@ -362,7 +409,8 @@ namespace FFXIV.Framework.Updater
             try
             {
                 var files = Directory.GetFiles(src, "*.*", SearchOption.AllDirectories);
-                dialog.Log($"Installing {files.Length} files...");
+                int total = files.Length;
+                int count = 0;
 
                 foreach (var file in files)
                 {
@@ -372,91 +420,57 @@ namespace FFXIV.Framework.Updater
 
                     if (!Directory.Exists(targetDir)) Directory.CreateDirectory(targetDir);
 
-                    bool fileSuccess = false;
-                    for (int i = 0; i < FILE_OVERWRITE_RETRIES; i++)
+                    bool isCopied = false;
+                    try
+                    {
+                        if (File.Exists(targetPath))
+                        {
+                            File.SetAttributes(targetPath, FileAttributes.Normal);
+                            File.Delete(targetPath);
+                        }
+                        File.Copy(file, targetPath, true);
+                        isCopied = true;
+                    }
+                    catch (Exception)
                     {
                         try
                         {
-                            // 1. 通常の上書きを試みる
-                            if (File.Exists(targetPath))
-                            {
-                                File.SetAttributes(targetPath, FileAttributes.Normal);
-                            }
-                            File.Copy(file, targetPath, true);
-                            fileSuccess = true;
-                            break;
+                            string pendingPath = targetPath + NewFileSuffix;
+                            if (File.Exists(pendingPath)) File.SetAttributes(pendingPath, FileAttributes.Normal);
+                            File.Copy(file, pendingPath, true);
+
+                            MoveFileEx(targetPath, null, MOVEFILE_DELAY_UNTIL_REBOOT);
+                            failedFiles.Add(relativePath);
+
+                            // どのファイルが Pending になったかを明示的にログ出力
+                            dialog.Log($"[Pending] {relativePath}");
+                            this.Log($"[Updater] Pending: {relativePath}");
                         }
-                        catch (IOException)
+                        catch (Exception ex)
                         {
-                            // 2. ロックされている場合、アトミックリネームを試みる (.oldに逃がす)
-                            try
-                            {
-                                string oldPath = targetPath + "." + DateTime.Now.Ticks.ToString("x") + OldFileSuffix;
-                                if (MoveFileEx(targetPath, oldPath, MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED))
-                                {
-                                    // 削除予約（OS再起動時に確実に消去するため）
-                                    MoveFileEx(oldPath, null, MOVEFILE_DELAY_UNTIL_REBOOT);
-
-                                    File.Copy(file, targetPath, true);
-                                    fileSuccess = true;
-                                    break;
-                                }
-                                throw new IOException("MoveFileEx failed");
-                            }
-                            catch
-                            {
-                                // 3. リネームすらできない場合 (ロード中かつ排他ロック)
-                                // 次回起動時に置換するため、.new として配置する
-                                try
-                                {
-                                    string pendingPath = targetPath + NewFileSuffix;
-                                    File.Copy(file, pendingPath, true);
-                                    fileSuccess = true;
-                                    dialog.Log($"Pending: {relativePath} (Will be replaced on next restart)");
-                                    failedFiles.Add(relativePath);
-                                    break;
-                                }
-                                catch (Exception ex)
-                                {
-                                    if (i == FILE_OVERWRITE_RETRIES - 1)
-                                    {
-                                        dialog.Log($"Failed to replace {relativePath}: {ex.Message}");
-                                    }
-                                }
-                            }
+                            dialog.Log($"Copy error {relativePath}: {ex.Message}");
+                            this.Log($"Copy error {relativePath}: {ex.Message}");
                         }
-                        Thread.Sleep(FILE_OVERWRITE_WAIT_BASE + (i * 100));
                     }
-                }
 
+                    count++;
+                    dialog.UpdateProgress((int)((float)count / total * 100));
+                }
                 return (true, failedFiles);
             }
             catch (Exception ex)
             {
-                dialog.Log($"Installation Error: {ex.Message}");
+                dialog.Log($"Install Exception: {ex.Message}");
+                this.Log($"Install Exception: {ex.Message}");
                 return (false, failedFiles);
             }
-            finally
-            {
-                // 全ファイル成功時のみ一時ファイルを掃除（保留がある場合は残す）
-                // 同時に、消去可能な .old ファイルも掃除する
-                Cleanup();
-            }
+            finally { Cleanup(); }
         }
 
         public void Cleanup()
         {
-            // 一時フォルダの削除
-            if (Directory.Exists(TempDir))
-            {
-                try { Directory.Delete(TempDir, true); } catch { }
-            }
-
-            // インストール先にある消去可能な .old ファイルの掃除
-            if (!string.IsNullOrEmpty(_destDir))
-            {
-                DeleteOldFiles(_destDir);
-            }
+            try { if (Directory.Exists(TempDir)) Directory.Delete(TempDir, true); } catch { }
+            if (!string.IsNullOrEmpty(_destDir)) DeleteOldFiles(_destDir);
         }
 
         private async Task<List<GitHubRelease>> FetchAllReleasesAsync(string repo)
@@ -479,16 +493,12 @@ namespace FFXIV.Framework.Updater
             for (int i = 0; i < level; i++)
             {
                 var dirs = Directory.GetDirectories(current);
-                if (dirs.Length == 1) current = dirs[0];
-                else break;
+                if (dirs.Length == 1) current = dirs[0]; else break;
             }
             return current;
         }
 
-        private void UnblockFiles(string dir)
-        {
-            foreach (var f in Directory.GetFiles(dir, "*", SearchOption.AllDirectories)) DeleteFile(f + ":Zone.Identifier");
-        }
+        private void UnblockFiles(string dir) { foreach (var f in Directory.GetFiles(dir, "*", SearchOption.AllDirectories)) DeleteFile(f + ":Zone.Identifier"); }
 
         private void TryRestartACT(string name)
         {
@@ -499,5 +509,31 @@ namespace FFXIV.Framework.Updater
             }
             catch { }
         }
+
+        #region IDisposable
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    Cleanup();
+                    OnBeforeUpdate = null;
+                }
+                disposed = true;
+            }
+        }
+
+        ~FFXIVFrameworkUpdater()
+        {
+            Dispose(false);
+        }
+        #endregion
     }
 }
