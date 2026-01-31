@@ -108,7 +108,10 @@ namespace FFXIV.Framework.Updater
         {
             _destDir = dest;
             string parent = Path.GetDirectoryName(dest);
-            if (string.IsNullOrEmpty(parent)) parent = AppDomain.CurrentDomain.BaseDirectory;
+            if (string.IsNullOrEmpty(parent))
+            {
+                parent = AppDomain.CurrentDomain.BaseDirectory;
+            }
             TempDir = Path.Combine(parent, tmpName);
         }
 
@@ -138,22 +141,50 @@ namespace FFXIV.Framework.Updater
                 this.FormBorderStyle = FormBorderStyle.FixedDialog;
                 this.TopMost = true;
 
-                progressBar = new ProgressBar { Dock = DockStyle.Top, Height = 25, Minimum = 0, Maximum = 100 };
-                logBox = new RichTextBox { Dock = DockStyle.Bottom, Height = 180, ReadOnly = true, BackColor = Color.Black, ForeColor = Color.White };
+                progressBar = new ProgressBar
+                {
+                    Dock = DockStyle.Top,
+                    Height = 25,
+                    Minimum = 0,
+                    Maximum = 100
+                };
 
-                Panel bottomPanel = new Panel { Dock = DockStyle.Bottom, Height = 45, Padding = new Padding(5) };
+                logBox = new RichTextBox
+                {
+                    Dock = DockStyle.Bottom,
+                    Height = 180,
+                    ReadOnly = true,
+                    BackColor = Color.Black,
+                    ForeColor = Color.White
+                };
+
+                Panel bottomPanel = new Panel
+                {
+                    Dock = DockStyle.Bottom,
+                    Height = 45,
+                    Padding = new Padding(5)
+                };
 
                 startButton = new Button { Text = "Update", Dock = DockStyle.Right, Width = 100 };
                 cancelButton = new Button { Text = "キャンセル", Dock = DockStyle.Right, Width = 100 };
                 closeButton = new Button { Text = "閉じる", Dock = DockStyle.Right, Width = 100, Enabled = false };
 
-                startButton.Click += (s, e) => {
+                startButton.Click += (s, e) =>
+                {
                     startButton.Enabled = false;
                     cancelButton.Enabled = false;
                     _startTask.TrySetResult(true);
                 };
-                cancelButton.Click += (s, e) => { this.Close(); };
-                closeButton.Click += (s, e) => { this.Close(); };
+
+                cancelButton.Click += (s, e) =>
+                {
+                    this.Close();
+                };
+
+                closeButton.Click += (s, e) =>
+                {
+                    this.Close();
+                };
 
                 bottomPanel.Controls.Add(closeButton);
                 bottomPanel.Controls.Add(new Label { Dock = DockStyle.Right, Width = 10 });
@@ -175,7 +206,8 @@ namespace FFXIV.Framework.Updater
                 this.Controls.Add(logBox);
                 this.Controls.Add(bottomPanel);
 
-                this.FormClosed += (s, e) => {
+                this.FormClosed += (s, e) =>
+                {
                     _startTask.TrySetResult(false);
                     _dialogCloseTask.TrySetResult(true);
                 };
@@ -186,22 +218,39 @@ namespace FFXIV.Framework.Updater
                 if (e.Url != null && !string.Equals(e.Url.ToString(), "about:blank", StringComparison.OrdinalIgnoreCase))
                 {
                     e.Cancel = true;
-                    try { Process.Start(e.Url.ToString()); } catch { }
+                    try
+                    {
+                        Process.Start(e.Url.ToString());
+                    }
+                    catch { }
                 }
             }
 
-            public void UpdateProgress(int value) => this.SafeInvoke(() => progressBar.Value = Math.Min(100, Math.Max(0, value)));
+            public void UpdateProgress(int value)
+            {
+                this.SafeInvoke(() =>
+                {
+                    progressBar.Value = Math.Min(100, Math.Max(0, value));
+                });
+            }
 
             public void WriteLog(string message)
             {
-                this.SafeInvoke(() => {
+                this.SafeInvoke(() =>
+                {
                     logBox.AppendText($"[{DateTime.Now:HH:mm:ss}] {message}\n");
                     logBox.ScrollToCaret();
                 });
                 this.ExternalLogger?.Invoke(message);
             }
 
-            public void EnableCloseButton() => this.SafeInvoke(() => closeButton.Enabled = true);
+            public void EnableCloseButton()
+            {
+                this.SafeInvoke(() =>
+                {
+                    closeButton.Enabled = true;
+                });
+            }
 
             public void SetReleaseNotes(string tagName, string markdown)
             {
@@ -209,9 +258,26 @@ namespace FFXIV.Framework.Updater
                 var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSoftlineBreakAsHardlineBreak().Build();
                 var htmlContent = Markdown.ToHtml(rawMarkdown, pipeline);
                 var fullHtml = $@"<html><head><meta http-equiv='X-UA-Compatible' content='IE=edge' /><style>body {{ font-family: 'Segoe UI', 'Meiryo', sans-serif; font-size: 10pt; line-height: 1.6; padding: 15px; color: #333; }} h1.release-tag {{ color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-top: 0; font-size: 18pt; }} h2, h3 {{ border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #444; margin-top: 20px; }} code {{ background-color: #f0f0f0; padding: 2px 4px; border-radius: 3px; font-family: 'Consolas', monospace; }} pre {{ background-color: #f8f8f8; padding: 10px; border-radius: 5px; overflow-x: auto; border: 1px solid #eee; }} ul, ol {{ padding-left: 25px; }} li {{ margin-bottom: 4px; }} a {{ color: #0066cc; text-decoration: none; font-weight: bold; }} a:hover {{ text-decoration: underline; }}</style></head><body><h1 class='release-tag'>{tagName}</h1>{htmlContent}</body></html>";
-                this.SafeInvoke(() => releaseNoteBox.DocumentText = fullHtml);
+                this.SafeInvoke(() =>
+                {
+                    releaseNoteBox.DocumentText = fullHtml;
+                });
             }
-            private void SafeInvoke(Action action) { if (!this.IsDisposed && this.IsHandleCreated) { if (this.InvokeRequired) this.Invoke(action); else action(); } }
+
+            private void SafeInvoke(Action action)
+            {
+                if (!this.IsDisposed && this.IsHandleCreated)
+                {
+                    if (this.InvokeRequired)
+                    {
+                        this.Invoke(action);
+                    }
+                    else
+                    {
+                        action();
+                    }
+                }
+            }
         }
         #endregion
 
@@ -223,7 +289,10 @@ namespace FFXIV.Framework.Updater
 
                 var releases = await FetchAllReleasesAsync(target.Repo);
                 var latest = usePreRelease ? releases?.FirstOrDefault() : releases?.FirstOrDefault(x => !x.Prerelease);
-                if (latest == null) return false;
+                if (latest == null)
+                {
+                    return false;
+                }
 
                 var versionRaw = latest.TagName.TrimStart('v').Split('-')[0];
                 var versionMatch = Regex.Match(versionRaw, @"[\d\.]+");
@@ -247,7 +316,10 @@ namespace FFXIV.Framework.Updater
                 var asset = latest.Assets.FirstOrDefault(a => a.Name.Contains(target.AssetKeyword) && a.Name.EndsWith(".7z"))
                            ?? latest.Assets.FirstOrDefault(a => a.Name.Contains(target.AssetKeyword) && a.Name.EndsWith(".zip"));
 
-                if (asset == null) return false;
+                if (asset == null)
+                {
+                    return false;
+                }
 
                 InitializePaths(target.PluginDirectory, target.DisplayName + ".tmp");
 
@@ -259,7 +331,10 @@ namespace FFXIV.Framework.Updater
                         dialog.Show();
                         dialog.SetReleaseNotes(latest.TagName, latest.Body);
 
-                        if (isNewVersionAvailable) dialog.WriteLog($"新しいバージョンが見つかりました: {latest.TagName}");
+                        if (isNewVersionAvailable)
+                        {
+                            dialog.WriteLog($"新しいバージョンが見つかりました: {latest.TagName}");
+                        }
                         else
                         {
                             dialog.WriteLog($"現在のバージョン {currentVersion} は最新です。");
@@ -267,18 +342,24 @@ namespace FFXIV.Framework.Updater
                         }
 
                         bool userApproved = await dialog.WaitForStart;
-                        if (!userApproved) return false;
-
-                        var (success, failedFiles) = await PerformUpdateTask(asset.DownloadUrl, asset.Name, target, dialog);
-
-                        if (success)
+                        if (!userApproved)
                         {
-                            if (failedFiles.Count > 0)
+                            return false;
+                        }
+
+                        var result = await PerformUpdateTask(asset.DownloadUrl, asset.Name, target, dialog);
+
+                        if (result.success)
+                        {
+                            if (result.failedFiles.Count > 0)
                             {
                                 dialog.WriteLog("一部のファイルは保留中です。ACT再起動時に適用されます。");
                                 ACT.Hojoring.AtomicUpdater.RequestExternalUpdate();
                             }
-                            else dialog.WriteLog("アップデートが正常に完了しました。");
+                            else
+                            {
+                                dialog.WriteLog("アップデートが正常に完了しました。");
+                            }
 
                             dialog.EnableCloseButton();
                             TryRestartACT(target.DisplayName);
@@ -290,7 +371,7 @@ namespace FFXIV.Framework.Updater
                         }
 
                         await dialog.WaitForClose;
-                        return success;
+                        return result.success;
                     }
                 }));
             }
@@ -306,7 +387,14 @@ namespace FFXIV.Framework.Updater
             List<string> failedFiles = new List<string>();
             try
             {
-                if (Directory.Exists(TempDir)) try { Directory.Delete(TempDir, true); } catch { }
+                if (Directory.Exists(TempDir))
+                {
+                    try
+                    {
+                        Directory.Delete(TempDir, true);
+                    }
+                    catch { }
+                }
                 Directory.CreateDirectory(TempDir);
 
                 dialog.WriteLog("ダウンロード中...");
@@ -341,13 +429,19 @@ namespace FFXIV.Framework.Updater
                 }
 
                 dialog.WriteLog("展開中...");
-                dialog.UpdateProgress(0); // リセット
+                dialog.UpdateProgress(0);
                 string extractDir = Path.Combine(TempDir, "contents");
                 if (archivePath.EndsWith(".7z", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (!ExtractWith7Zip(archivePath, extractDir, dialog)) return (false, failedFiles);
+                    if (!ExtractWith7Zip(archivePath, extractDir, dialog))
+                    {
+                        return (false, failedFiles);
+                    }
                 }
-                else ZipFile.ExtractToDirectory(archivePath, extractDir);
+                else
+                {
+                    ZipFile.ExtractToDirectory(archivePath, extractDir);
+                }
 
                 UnblockFiles(extractDir);
                 string installSrc = GetStrippedPath(extractDir, target.StrippedDirs);
@@ -367,7 +461,11 @@ namespace FFXIV.Framework.Updater
                 this.OnBeforeUpdate?.Invoke();
                 return await Task.Run(() => Install(installSrc, _destDir, ignoreList, dialog));
             }
-            catch (Exception ex) { dialog.WriteLog($"例外発生: {ex.Message}"); return (false, failedFiles); }
+            catch (Exception ex)
+            {
+                dialog.WriteLog($"例外発生: {ex.Message}");
+                return (false, failedFiles);
+            }
         }
 
         private List<string> GetIgnoreList(string dest)
@@ -395,7 +493,10 @@ namespace FFXIV.Framework.Updater
             try
             {
                 string backupDir = Path.Combine(dest, "backup");
-                if (Directory.Exists(backupDir)) Directory.Delete(backupDir, true);
+                if (Directory.Exists(backupDir))
+                {
+                    Directory.Delete(backupDir, true);
+                }
 
                 Directory.CreateDirectory(backupDir);
                 foreach (var file in Directory.GetFiles(dest))
@@ -403,7 +504,10 @@ namespace FFXIV.Framework.Updater
                     File.Copy(file, Path.Combine(backupDir, Path.GetFileName(file)), true);
                 }
             }
-            catch (Exception ex) { dialog.WriteLog($"バックアップ失敗 (継続): {ex.Message}"); }
+            catch (Exception ex)
+            {
+                dialog.WriteLog($"バックアップ失敗 (継続): {ex.Message}");
+            }
         }
 
         private void CleanupOldAssets(string dest, List<string> ignoreList, ProgressDialog dialog)
@@ -411,27 +515,54 @@ namespace FFXIV.Framework.Updater
             string[] dirsToClean = { "references", "openJTalk", "yukkuri", "tools" };
             foreach (var d in dirsToClean)
             {
-                if (IsIgnored(d, ignoreList)) continue;
+                if (IsIgnored(d, ignoreList))
+                {
+                    continue;
+                }
                 string path = Path.Combine(dest, d);
-                if (Directory.Exists(path)) { try { Directory.Delete(path, true); dialog.WriteLog($"構成削除: {d}"); } catch { } }
+                if (Directory.Exists(path))
+                {
+                    try
+                    {
+                        Directory.Delete(path, true);
+                        dialog.WriteLog($"構成削除: {d}");
+                    }
+                    catch { }
+                }
             }
 
             foreach (var dll in Directory.GetFiles(dest, "*.dll"))
             {
                 string fileName = Path.GetFileName(dll);
-                if (IsIgnored(fileName, ignoreList)) continue;
-                try { File.Delete(dll); } catch { }
+                if (IsIgnored(fileName, ignoreList))
+                {
+                    continue;
+                }
+                try
+                {
+                    File.Delete(dll);
+                }
+                catch { }
             }
 
             string binPath = Path.Combine(dest, "bin");
             if (Directory.Exists(binPath) && !IsIgnored("bin", ignoreList))
             {
-                foreach (var f in Directory.GetFiles(binPath, "*.*", SearchOption.AllDirectories)
-                    .Where(s => s.EndsWith(".dll") || s.EndsWith(".exe")))
+                var targetFiles = Directory.GetFiles(binPath, "*.*", SearchOption.AllDirectories)
+                    .Where(s => s.EndsWith(".dll") || s.EndsWith(".exe"));
+
+                foreach (var f in targetFiles)
                 {
                     string relativePath = f.Substring(dest.Length).TrimStart('\\', '/');
-                    if (IsIgnored(relativePath, ignoreList)) continue;
-                    try { File.Delete(f); } catch { }
+                    if (IsIgnored(relativePath, ignoreList))
+                    {
+                        continue;
+                    }
+                    try
+                    {
+                        File.Delete(f);
+                    }
+                    catch { }
                 }
             }
         }
@@ -451,7 +582,10 @@ namespace FFXIV.Framework.Updater
                 {
                     try
                     {
-                        if (!Directory.Exists(newPath)) Directory.Move(oldPath, newPath);
+                        if (!Directory.Exists(newPath))
+                        {
+                            Directory.Move(oldPath, newPath);
+                        }
                         else
                         {
                             foreach (var f in Directory.GetFiles(oldPath, "*", SearchOption.AllDirectories))
@@ -489,11 +623,18 @@ namespace FFXIV.Framework.Updater
 
                     string targetPath = Path.Combine(dest, relativePath);
                     string targetDir = Path.GetDirectoryName(targetPath);
-                    if (!Directory.Exists(targetDir)) Directory.CreateDirectory(targetDir);
+                    if (!Directory.Exists(targetDir))
+                    {
+                        Directory.CreateDirectory(targetDir);
+                    }
 
                     try
                     {
-                        if (File.Exists(targetPath)) { File.SetAttributes(targetPath, FileAttributes.Normal); File.Delete(targetPath); }
+                        if (File.Exists(targetPath))
+                        {
+                            File.SetAttributes(targetPath, FileAttributes.Normal);
+                            File.Delete(targetPath);
+                        }
                         File.Copy(file, targetPath, true);
                     }
                     catch
@@ -501,21 +642,34 @@ namespace FFXIV.Framework.Updater
                         try
                         {
                             string pendingPath = targetPath + NewFileSuffix;
-                            if (File.Exists(pendingPath)) File.SetAttributes(pendingPath, FileAttributes.Normal);
+                            if (File.Exists(pendingPath))
+                            {
+                                File.SetAttributes(pendingPath, FileAttributes.Normal);
+                            }
                             File.Copy(file, pendingPath, true);
                             MoveFileEx(targetPath, null, MOVEFILE_DELAY_UNTIL_REBOOT);
                             failedFiles.Add(relativePath);
                             dialog.WriteLog($"[Pending] {relativePath}");
                         }
-                        catch (Exception ex) { dialog.WriteLog($"Copy Failed {relativePath}: {ex.Message}"); }
+                        catch (Exception ex)
+                        {
+                            dialog.WriteLog($"Copy Failed {relativePath}: {ex.Message}");
+                        }
                     }
                     count++;
                     dialog.UpdateProgress((int)((float)count / total * 100));
                 }
                 return (true, failedFiles);
             }
-            catch (Exception ex) { dialog.WriteLog($"Install Error: {ex.Message}"); return (false, failedFiles); }
-            finally { Cleanup(); }
+            catch (Exception ex)
+            {
+                dialog.WriteLog($"Install Error: {ex.Message}");
+                return (false, failedFiles);
+            }
+            finally
+            {
+                Cleanup();
+            }
         }
 
         private bool ExtractWith7Zip(string archivePath, string outputDir, ProgressDialog dialog)
@@ -530,9 +684,17 @@ namespace FFXIV.Framework.Updater
                 };
                 string exe7z = possiblePaths.FirstOrDefault(File.Exists);
 
-                if (exe7z == null) { dialog.WriteLog("7za.exe not found."); return false; }
+                if (exe7z == null)
+                {
+                    dialog.WriteLog("7za.exe not found.");
+                    return false;
+                }
 
-                if (!Directory.Exists(outputDir)) Directory.CreateDirectory(outputDir);
+                if (!Directory.Exists(outputDir))
+                {
+                    Directory.CreateDirectory(outputDir);
+                }
+
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = exe7z,
@@ -541,24 +703,56 @@ namespace FFXIV.Framework.Updater
                     CreateNoWindow = true,
                     RedirectStandardOutput = true
                 };
-                using (var p = Process.Start(startInfo)) { p.WaitForExit(); return p.ExitCode == 0; }
+
+                using (var p = Process.Start(startInfo))
+                {
+                    p.WaitForExit();
+                    return p.ExitCode == 0;
+                }
             }
-            catch (Exception ex) { dialog.WriteLog($"7-Zip Error: {ex.Message}"); return false; }
+            catch (Exception ex)
+            {
+                dialog.WriteLog($"7-Zip Error: {ex.Message}");
+                return false;
+            }
         }
 
         public void Cleanup()
         {
-            try { if (Directory.Exists(TempDir)) Directory.Delete(TempDir, true); } catch { }
-            if (!string.IsNullOrEmpty(_destDir)) DeleteOldFiles(_destDir);
+            try
+            {
+                if (Directory.Exists(TempDir))
+                {
+                    Directory.Delete(TempDir, true);
+                }
+            }
+            catch { }
+
+            if (!string.IsNullOrEmpty(_destDir))
+            {
+                DeleteOldFiles(_destDir);
+            }
         }
 
         public static void DeleteOldFiles(string dir)
         {
-            if (!Directory.Exists(dir)) return;
+            if (!Directory.Exists(dir))
+            {
+                return;
+            }
+
             try
             {
                 var oldFiles = Directory.GetFiles(dir, "*" + OldFileSuffix, SearchOption.AllDirectories);
-                foreach (var old in oldFiles) { try { File.SetAttributes(old, FileAttributes.Normal); File.Delete(old); } catch { } }
+                foreach (var old in oldFiles)
+                {
+                    try
+                    {
+                        File.SetAttributes(old, FileAttributes.Normal);
+                        File.Delete(old);
+                    }
+                    catch { }
+                }
             }
             catch { }
         }
@@ -574,7 +768,10 @@ namespace FFXIV.Framework.Updater
                     return JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
                 }
             }
-            catch { return null; }
+            catch
+            {
+                return null;
+            }
         }
 
         private string GetStrippedPath(string path, int level)
@@ -583,12 +780,25 @@ namespace FFXIV.Framework.Updater
             for (int i = 0; i < level; i++)
             {
                 var dirs = Directory.GetDirectories(current);
-                if (dirs.Length == 1) current = dirs[0]; else break;
+                if (dirs.Length == 1)
+                {
+                    current = dirs[0];
+                }
+                else
+                {
+                    break;
+                }
             }
             return current;
         }
 
-        private void UnblockFiles(string dir) { foreach (var f in Directory.GetFiles(dir, "*", SearchOption.AllDirectories)) DeleteFile(f + ":Zone.Identifier"); }
+        private void UnblockFiles(string dir)
+        {
+            foreach (var f in Directory.GetFiles(dir, "*", SearchOption.AllDirectories))
+            {
+                DeleteFile(f + ":Zone.Identifier");
+            }
+        }
 
         private void TryRestartACT(string name)
         {
