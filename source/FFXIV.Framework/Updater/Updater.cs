@@ -1,8 +1,4 @@
-﻿using Advanced_Combat_Tracker;
-using FFXIV.Framework.Common;
-using Markdig;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -16,12 +12,16 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Advanced_Combat_Tracker;
+using Markdig;
+using Newtonsoft.Json;
 
 namespace FFXIV.Framework.Updater
 {
     /// <summary>
-    /// FFXIV.Framework および ACT.Hojoring のアップデート（ダウンロード・展開・配置準備）を管理するクラスです。
-    /// .7z形式の展開には外部ツール(7za.exe)を使用します。
+    /// FFXIV.Framework and ACT.Hojoring update management class.
+    /// Supports re-installation even if the current version is up-to-date.
+    /// Handles release notes display with Markdown support.
     /// </summary>
     public class FFXIVFrameworkUpdater : IDisposable
     {
@@ -45,236 +45,48 @@ namespace FFXIV.Framework.Updater
 
         #region Constants & Fields
         private const string GitHubRepo = "anoyetta/ACT.Hojoring";
-        private const string UserAgent = "FFXIV-Framework-Updater";
-
-        public const string NewFileSuffix = ".new";
-        public const string OldFileSuffix = ".old";
-
+        private const string UserAgent = "ACT.Hojoring.Updater";
         private bool disposed = false;
 
-        /// <summary>
-        /// アップデート（ファイル置換）の直前に実行されるアクション。
-        /// </summary>
+        public Action<string, Exception> Logger { get; set; }
         public Action OnBeforeUpdate { get; set; }
         #endregion
-        public Action<string, Exception> Logger { get; set; }
 
-        private void Log(string message, Exception ex = null)
-        {
-            this.Logger?.Invoke(message, ex);
-        }
-
-        #region Win32 API
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool DeleteFile(string lpFileName);
-
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern bool MoveFileEx(string lpExistingFileName, string lpNewFileName, uint dwFlags);
-
-        private const uint MOVEFILE_DELAY_UNTIL_REBOOT = 0x00000004;
-        #endregion
-
-        #region Data Models
-        public class UpdateTarget
-        {
-            public string AssetKeyword { get; set; }
-            public string DisplayName { get; set; }
-            public string PluginDirectory { get; set; }
-            public Version CurrentVersion { get; set; }
-            public bool IsFullPackage { get; set; } = false;
-            public int StrippedDirs { get; set; } = 0;
-            public string Repo { get; set; } = GitHubRepo;
-        }
-
-        public class GitHubRelease
-        {
-            [JsonProperty("tag_name")] public string TagName { get; set; }
-            [JsonProperty("name")] public string Name { get; set; }
-            [JsonProperty("html_url")] public string HtmlUrl { get; set; }
-            [JsonProperty("body")] public string Body { get; set; }
-            [JsonProperty("prerelease")] public bool Prerelease { get; set; }
-            [JsonProperty("assets")] public List<GitHubAsset> Assets { get; set; }
-        }
-
-        public class GitHubAsset
-        {
-            [JsonProperty("name")] public string Name { get; set; }
-            [JsonProperty("browser_download_url")] public string DownloadUrl { get; set; }
-        }
-        #endregion
-
-        public string TempDir { get; private set; }
-        private string _destDir;
-
-        public void InitializePaths(string dest, string tmpName)
-        {
-            _destDir = dest;
-            string parent = Path.GetDirectoryName(dest);
-            if (string.IsNullOrEmpty(parent)) parent = AppDomain.CurrentDomain.BaseDirectory;
-            TempDir = Path.Combine(parent, tmpName);
-        }
-
-        public static void DeleteOldFiles(string dir)
-        {
-            if (!Directory.Exists(dir)) return;
-            try
-            {
-                var oldFiles = Directory.GetFiles(dir, "*" + OldFileSuffix, SearchOption.AllDirectories);
-                foreach (var old in oldFiles)
-                {
-                    try
-                    {
-                        File.SetAttributes(old, FileAttributes.Normal);
-                        File.Delete(old);
-                    }
-                    catch { }
-                }
-            }
-            catch { }
-        }
-
-        #region Progress Dialog
-        public class ProgressDialog : Form
-        {
-            private ProgressBar progressBar;
-            private RichTextBox logBox;
-            private WebBrowser releaseNoteBox;
-            private Button closeButton;
-            private TaskCompletionSource<bool> _dialogCloseTask = new TaskCompletionSource<bool>();
-            public Task WaitForClose => _dialogCloseTask.Task;
-
-            public ProgressDialog(string title)
-            {
-                this.Text = $"{title} - Update Progress";
-                this.Size = new Size(750, 600);
-                this.StartPosition = FormStartPosition.CenterScreen;
-                this.FormBorderStyle = FormBorderStyle.FixedDialog;
-                this.TopMost = true;
-
-                progressBar = new ProgressBar { Dock = DockStyle.Top, Height = 25, Minimum = 0, Maximum = 100 };
-                logBox = new RichTextBox { Dock = DockStyle.Bottom, Height = 180, ReadOnly = true, BackColor = Color.Black, ForeColor = Color.White };
-
-                Panel bottomPanel = new Panel { Dock = DockStyle.Bottom, Height = 45, Padding = new Padding(5) };
-                closeButton = new Button { Text = "Close", Dock = DockStyle.Right, Width = 100, Enabled = false };
-                closeButton.Click += (s, e) => this.Close();
-                bottomPanel.Controls.Add(closeButton);
-
-                releaseNoteBox = new WebBrowser { Dock = DockStyle.Fill };
-
-                this.Controls.Add(releaseNoteBox);
-                this.Controls.Add(progressBar);
-                this.Controls.Add(logBox);
-                this.Controls.Add(bottomPanel);
-                this.FormClosed += (s, e) => _dialogCloseTask.TrySetResult(true);
-            }
-
-            public void UpdateProgress(int value) => this.SafeInvoke(() => progressBar.Value = Math.Min(100, Math.Max(0, value)));
-            public void Log(string message) => this.SafeInvoke(() => { logBox.AppendText($"[{DateTime.Now:HH:mm:ss}] {message}\n"); logBox.ScrollToCaret(); });
-            public void EnableCloseButton() => this.SafeInvoke(() => closeButton.Enabled = true);
-
-            public void SetReleaseNotes(string tagName, string markdown)
-            {
-                // 改行コードを正規化し、Markdownとして適切に処理されるようにする
-                // GitHubのBodyは \r\n だったり \n だったりするため、一度 \n に統一してから
-                // Markdig のパイプラインオプション（Configure）で改行をそのままHTMLに反映させる設定を使用する
-                var rawMarkdown = (markdown ?? "").Replace("\r\n", "\n").Replace("\r", "\n");
-
-                // Markdigの設定でソフト改行をハード改行として扱う（GitHubに近い挙動）
-                var pipeline = new MarkdownPipelineBuilder()
-                    .UseAdvancedExtensions()
-                    .UseSoftlineBreakAsHardlineBreak()
-                    .Build();
-
-                var htmlContent = Markdown.ToHtml(rawMarkdown, pipeline);
-                var fullHtml = $@"
-<html>
-<head>
-<meta http-equiv='X-UA-Compatible' content='IE=edge' />
-<style>
-    body {{ font-family: 'Segoe UI', 'Meiryo', sans-serif; font-size: 10pt; line-height: 1.6; padding: 15px; color: #333; }}
-    h1.release-tag {{ color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-top: 0; font-size: 18pt; }}
-    h2, h3 {{ border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #444; margin-top: 20px; }}
-    code {{ background-color: #f0f0f0; padding: 2px 4px; border-radius: 3px; font-family: 'Consolas', monospace; }}
-    pre {{ background-color: #f8f8f8; padding: 10px; border-radius: 5px; overflow-x: auto; border: 1px solid #eee; }}
-    ul, ol {{ padding-left: 25px; }}
-    li {{ margin-bottom: 4px; }}
-</style>
-</head>
-<body>
-    <h1 class='release-tag'>{tagName}</h1>
-    {htmlContent}
-</body>
-</html>";
-                this.SafeInvoke(() => releaseNoteBox.DocumentText = fullHtml);
-            }
-            private void SafeInvoke(Action action) { if (!this.IsDisposed && this.IsHandleCreated) { if (this.InvokeRequired) this.Invoke(action); else action(); } }
-        }
-        #endregion
+        #region Public Methods
 
         public async Task<bool> CheckAndDoUpdate(UpdateTarget target, bool usePreRelease = false)
         {
             try
             {
-                this.Log($"[Updater] Checking for updates: {target.DisplayName}");
+                this.Log($"[Updater] Update check started: {target.DisplayName}");
 
                 var releases = await FetchAllReleasesAsync(target.Repo);
                 var latest = usePreRelease ? releases?.FirstOrDefault() : releases?.FirstOrDefault(x => !x.Prerelease);
                 if (latest == null) return false;
 
-                // --- Parsing Remote Version ---
-                // Example: "v10.5.3-260131" -> "10.5.3"
                 var versionRaw = latest.TagName.TrimStart('v').Split('-')[0];
                 var versionMatch = Regex.Match(versionRaw, @"[\d\.]+");
                 var versionString = versionMatch.Success ? versionMatch.Value.Trim('.') : string.Empty;
 
                 if (string.IsNullOrEmpty(versionString) || !Version.TryParse(versionString, out Version latestVersion))
                 {
-                    this.Log($"[Updater] Failed to parse version from tag: {latest.TagName}");
+                    this.Log($"[Updater] Failed to parse version: {latest.TagName}");
                     return false;
                 }
 
-                // --- Parsing Current Assembly Version ---
                 var assembly = Assembly.GetAssembly(typeof(ACT.Hojoring.Common.Hojoring)) ?? Assembly.GetExecutingAssembly();
                 var rawAssemblyVersion = target.CurrentVersion ?? assembly.GetName().Version;
 
-                // Fix: 10.5.3 becoming 10.5.0.3 issue
-                // Convert to string and re-parse to ensure Major.Minor.Build consistency with GitHub tags
                 var assemblyVersionStr = rawAssemblyVersion.ToString();
-                var assemblyMatch = Regex.Match(assemblyVersionStr, @"^\d+\.\d+\.\d+"); // Get only X.Y.Z
-                var normalizedVersionStr = assemblyMatch.Success ? assemblyMatch.Value : assemblyVersionStr;
+                var assemblyMatch = Regex.Match(assemblyVersionStr, @"^(\d+)\.(\d+)\.(\d+)");
+                Version currentVersion = assemblyMatch.Success ? new Version(assemblyMatch.Value) : rawAssemblyVersion;
 
-                if (!Version.TryParse(normalizedVersionStr, out Version currentVersion))
+                var asset = latest.Assets.FirstOrDefault(a => a.Name.Contains(target.AssetKeyword) && (a.Name.EndsWith(".7z") || a.Name.EndsWith(".zip")));
+                if (asset == null)
                 {
-                    currentVersion = rawAssemblyVersion; // Fallback to raw if parsing fails
+                    this.Log($"[Updater] No matching asset found: {target.DisplayName}");
+                    return false;
                 }
-
-                // If no newer version and not forced re-install, exit
-                if (latestVersion < currentVersion) return false;
-
-                // --- アップデート実行確認の追加 ---
-                var isNewer = latestVersion > currentVersion;
-                var statusMsg = isNewer ? "新しいバージョンが見つかりました。" : "現在のバージョンは最新です。";
-                var confirmMsg = $"{target.DisplayName}\n\n{statusMsg}\n最新バージョン: {latest.TagName}\n現在のバージョン: {currentVersion}\n\nアップデート(再インストール)を実行しますか？";
-
-                var result = (DialogResult)ActGlobals.oFormActMain.Invoke((Func<DialogResult>)(() =>
-                {
-                    return MessageBox.Show(
-                        ActGlobals.oFormActMain,
-                        confirmMsg,
-                        "Update Confirmation",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question);
-                }));
-
-                if (result != DialogResult.Yes) return false;
-
-                var asset = latest.Assets.FirstOrDefault(a => a.Name.Contains(target.AssetKeyword) && a.Name.EndsWith(".7z"))
-                           ?? latest.Assets.FirstOrDefault(a => a.Name.Contains(target.AssetKeyword) && a.Name.EndsWith(".zip"));
-
-                if (asset == null) return false;
-
-                InitializePaths(target.PluginDirectory, target.DisplayName + ".tmp");
 
                 return await (Task<bool>)ActGlobals.oFormActMain.Invoke((Func<Task<bool>>)(async () =>
                 {
@@ -282,7 +94,25 @@ namespace FFXIV.Framework.Updater
                     {
                         dialog.Show();
                         dialog.SetReleaseNotes(latest.TagName, latest.Body);
-                        dialog.Log($"Target version: {latest.TagName}");
+
+                        if (latestVersion <= currentVersion)
+                        {
+                            dialog.Log($"Current version {currentVersion} is up to date.");
+                            dialog.Log("You can still perform an overwrite installation.");
+                        }
+                        else
+                        {
+                            dialog.Log($"New version found: {latest.TagName} (Current: {currentVersion})");
+                        }
+
+                        dialog.Log("Click 'Start Update' to proceed.");
+
+                        bool userConfirmed = await dialog.WaitForStartConfirmation();
+                        if (!userConfirmed)
+                        {
+                            dialog.Log("Update cancelled by user.");
+                            return false;
+                        }
 
                         var (success, failedFiles) = await PerformUpdateTask(asset.DownloadUrl, asset.Name, target, dialog);
 
@@ -290,230 +120,180 @@ namespace FFXIV.Framework.Updater
                         {
                             if (failedFiles.Count > 0)
                             {
-                                dialog.Log("Preparation complete. Some files are pending.");
-                                dialog.EnableCloseButton();
-                                ACT.Hojoring.AtomicUpdater.RequestExternalUpdate();
-                                MessageBox.Show(dialog, "一部のファイルが使用中のため .new として準備しました。ACT再起動時に適用されます。", "Update Pending", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                dialog.Log("Some files are in use. Prepared as .new files.");
+                                try
+                                {
+                                    var atomicType = assembly.GetType("ACT.Hojoring.AtomicUpdater");
+                                    atomicType?.GetMethod("RequestExternalUpdate")?.Invoke(null, null);
+                                }
+                                catch { }
+                                MessageBox.Show(dialog, "Remaining files will be applied on next ACT restart.", "Update Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
-                                dialog.Log("Update prepared successfully.");
-                                dialog.Log("Ready to restart ACT.");
-                                dialog.EnableCloseButton();
+                                dialog.Log("All files deployed successfully.");
                             }
 
+                            dialog.EnableCloseButton();
                             TryRestartACT(target.DisplayName);
                         }
                         else
                         {
-                            dialog.Log("FAILED to prepare update.");
+                            dialog.Log("An error occurred during update.");
                             dialog.EnableCloseButton();
                         }
 
                         await dialog.WaitForClose;
-
-                        this.Log($"[Updater] Update check completed for {target.DisplayName}");
                         return success;
                     }
                 }));
             }
             catch (Exception ex)
             {
-                this.Log($"[Updater] Error during update check: {target.DisplayName}", ex);
+                this.Log($"[Updater] Update failed: {target.DisplayName}", ex);
                 return false;
             }
         }
+
+        #endregion
+
+        #region Internal Logic
+
         private async Task<(bool success, List<string> failedFiles)> PerformUpdateTask(string url, string fileName, UpdateTarget target, ProgressDialog dialog)
         {
-            List<string> failedFiles = new List<string>();
+            var failedFiles = new List<string>();
             try
             {
-                if (Directory.Exists(TempDir)) try { Directory.Delete(TempDir, true); } catch { }
-                Directory.CreateDirectory(TempDir);
+                var tempZip = Path.Combine(Path.GetTempPath(), fileName);
+                var extractPath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(fileName));
 
-                dialog.Log("Downloading update...");
-                string archivePath = Path.Combine(TempDir, "update" + Path.GetExtension(fileName));
+                dialog.Log("Starting download...");
+                await DownloadFileAsync(url, tempZip, dialog);
 
-                using (var client = new HttpClient())
+                dialog.Log("Extracting files...");
+                if (Directory.Exists(extractPath)) Directory.Delete(extractPath, true);
+
+                bool extracted = fileName.EndsWith(".7z") ? Extract7z(tempZip, extractPath) : ExtractZip(tempZip, extractPath);
+                if (!extracted) return (false, failedFiles);
+
+                this.OnBeforeUpdate?.Invoke();
+
+                dialog.Log("Deploying files...");
+                var sourceDir = GetStrippedPath(extractPath, target.IsFullPackage ? 0 : 1);
+                failedFiles = DeployFiles(sourceDir, target.PluginDirectory);
+
+                if (File.Exists(tempZip)) File.Delete(tempZip);
+                if (Directory.Exists(extractPath)) Directory.Delete(extractPath, true);
+
+                return (true, failedFiles);
+            }
+            catch (Exception ex)
+            {
+                dialog.Log($"Error: {ex.Message}");
+                return (false, failedFiles);
+            }
+        }
+
+        private List<string> DeployFiles(string sourceDir, string targetDir)
+        {
+            var failed = new List<string>();
+            if (!Directory.Exists(targetDir)) Directory.CreateDirectory(targetDir);
+
+            foreach (var file in Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories))
+            {
+                var relativePath = file.Substring(sourceDir.Length).TrimStart(Path.DirectorySeparatorChar);
+                var destPath = Path.Combine(targetDir, relativePath);
+                var destDir = Path.GetDirectoryName(destPath);
+
+                if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
+
+                try
                 {
-                    client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
-                    using (var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+                    if (File.Exists(destPath))
                     {
-                        response.EnsureSuccessStatusCode();
-                        var totalBytes = response.Content.Headers.ContentLength ?? -1L;
-                        var canReportProgress = totalBytes != -1;
+                        File.SetAttributes(destPath, FileAttributes.Normal);
+                        var oldPath = destPath + ".old";
+                        if (File.Exists(oldPath)) File.Delete(oldPath);
+                        File.Move(destPath, oldPath);
+                    }
+                    File.Copy(file, destPath, true);
+                }
+                catch
+                {
+                    try
+                    {
+                        File.Copy(file, destPath + ".new", true);
+                        failed.Add(destPath);
+                    }
+                    catch { }
+                }
+            }
+            return failed;
+        }
 
-                        using (var stream = await response.Content.ReadAsStreamAsync())
-                        using (var fileStream = new FileStream(archivePath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+        private async Task DownloadFileAsync(string url, string dest, ProgressDialog dialog)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+                using (var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var total = response.Content.Headers.ContentLength ?? -1L;
+                    using (var stream = await response.Content.ReadAsStreamAsync())
+                    using (var fileStream = new FileStream(dest, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                    {
+                        var buffer = new byte[8192];
+                        var read = 0;
+                        var processed = 0L;
+                        while ((read = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                         {
-                            var buffer = new byte[8192];
-                            var totalRead = 0L;
-                            var readCount = 0;
-                            var lastReportTime = DateTime.MinValue;
-
-                            while ((readCount = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-                            {
-                                await fileStream.WriteAsync(buffer, 0, readCount);
-                                totalRead += readCount;
-
-                                // ログが流れすぎるのを防ぐため200ms間隔で出力
-                                if ((DateTime.Now - lastReportTime).TotalMilliseconds > 200)
-                                {
-                                    if (canReportProgress)
-                                    {
-                                        int percent = (int)((double)totalRead / totalBytes * 100);
-                                        dialog.UpdateProgress(percent);
-                                        dialog.Log($"Downloading... {percent}% ({totalRead / 1024 / 1024}MB / {totalBytes / 1024 / 1024}MB)");
-                                    }
-                                    else
-                                    {
-                                        dialog.Log($"Downloading... {totalRead / 1024 / 1024}MB");
-                                    }
-                                    lastReportTime = DateTime.Now;
-                                }
-                            }
+                            await fileStream.WriteAsync(buffer, 0, read);
+                            processed += read;
+                            if (total > 0) dialog.UpdateProgress((int)((processed * 100) / total));
                         }
                     }
                 }
-
-                dialog.Log("Extracting assets...");
-                string extractDir = Path.Combine(TempDir, "contents");
-
-                if (archivePath.EndsWith(".7z", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (!ExtractWith7Zip(archivePath, extractDir, dialog))
-                    {
-                        dialog.Log("7-Zip extraction failed.");
-                        return (false, failedFiles);
-                    }
-                }
-                else
-                {
-                    ZipFile.ExtractToDirectory(archivePath, extractDir);
-                }
-
-                UnblockFiles(extractDir);
-                string installSrc = GetStrippedPath(extractDir, target.StrippedDirs);
-
-                this.OnBeforeUpdate?.Invoke();
-                return await Task.Run(() => Install(installSrc, _destDir, dialog));
             }
-            catch (Exception ex) { dialog.Log($"Error during task: {ex.Message}"); return (false, failedFiles); }
         }
 
-        private bool ExtractWith7Zip(string archivePath, string outputDir, ProgressDialog dialog)
+        private bool ExtractZip(string zipPath, string destPath)
+        {
+            try { ZipFile.ExtractToDirectory(zipPath, destPath); return true; }
+            catch { return false; }
+        }
+
+        private bool Extract7z(string archivePath, string destPath)
         {
             try
             {
-                var assembly = Assembly.GetAssembly(typeof(ACT.Hojoring.Common.Hojoring)) ?? Assembly.GetExecutingAssembly();
-                var pluginDir = Path.GetDirectoryName(assembly.Location);
-                var exe7z = Path.Combine(pluginDir, "bin", "tools", "7z", "7za.exe");
-
-                if (!File.Exists(exe7z))
-                {
-                    dialog.Log($"7za.exe not found at: {exe7z}");
-                    return false;
-                }
-
-                if (!Directory.Exists(outputDir)) Directory.CreateDirectory(outputDir);
+                var exePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "tools", "7za.exe");
+                if (!File.Exists(exePath)) return false;
 
                 var startInfo = new ProcessStartInfo
                 {
-                    FileName = exe7z,
-                    Arguments = $"x \"{archivePath}\" -o\"{outputDir}\" -y",
-                    UseShellExecute = false,
+                    FileName = exePath,
+                    Arguments = $"x \"{archivePath}\" -o\"{destPath}\" -y",
+                    WindowStyle = ProcessWindowStyle.Hidden,
                     CreateNoWindow = true,
-                    RedirectStandardOutput = true
+                    UseShellExecute = false
                 };
-
                 using (var p = Process.Start(startInfo))
                 {
                     p.WaitForExit();
                     return p.ExitCode == 0;
                 }
             }
-            catch (Exception ex)
-            {
-                dialog.Log($"7-Zip Error: {ex.Message}");
-                return false;
-            }
+            catch { return false; }
         }
 
-        private (bool success, List<string> failedFiles) Install(string src, string dest, ProgressDialog dialog)
-        {
-            List<string> failedFiles = new List<string>();
-            try
-            {
-                var files = Directory.GetFiles(src, "*.*", SearchOption.AllDirectories);
-                int total = files.Length;
-                int count = 0;
-
-                foreach (var file in files)
-                {
-                    string relativePath = file.Substring(src.Length).TrimStart('\\', '/');
-                    string targetPath = Path.Combine(dest, relativePath);
-                    string targetDir = Path.GetDirectoryName(targetPath);
-
-                    if (!Directory.Exists(targetDir)) Directory.CreateDirectory(targetDir);
-
-                    try
-                    {
-                        if (File.Exists(targetPath))
-                        {
-                            File.SetAttributes(targetPath, FileAttributes.Normal);
-                            File.Delete(targetPath);
-                        }
-                        File.Copy(file, targetPath, true);
-                    }
-                    catch (Exception)
-                    {
-                        try
-                        {
-                            string pendingPath = targetPath + NewFileSuffix;
-                            if (File.Exists(pendingPath)) File.SetAttributes(pendingPath, FileAttributes.Normal);
-                            File.Copy(file, pendingPath, true);
-
-                            MoveFileEx(targetPath, null, MOVEFILE_DELAY_UNTIL_REBOOT);
-                            failedFiles.Add(relativePath);
-
-                            // どのファイルが Pending になったかを明示的にログ出力
-                            dialog.Log($"[Pending] {relativePath}");
-                            this.Log($"[Updater] Pending: {relativePath}");
-                        }
-                        catch (Exception ex)
-                        {
-                            dialog.Log($"Copy error {relativePath}: {ex.Message}");
-                            this.Log($"Copy error {relativePath}: {ex.Message}");
-                        }
-                    }
-
-                    count++;
-                    dialog.UpdateProgress((int)((float)count / total * 100));
-                }
-                return (true, failedFiles);
-            }
-            catch (Exception ex)
-            {
-                dialog.Log($"Install Exception: {ex.Message}");
-                this.Log($"Install Exception: {ex.Message}");
-                return (false, failedFiles);
-            }
-            finally { Cleanup(); }
-        }
-
-        public void Cleanup()
-        {
-            try { if (Directory.Exists(TempDir)) Directory.Delete(TempDir, true); } catch { }
-            if (!string.IsNullOrEmpty(_destDir)) DeleteOldFiles(_destDir);
-        }
-
-        private async Task<List<GitHubRelease>> FetchAllReleasesAsync(string repo)
+        private async Task<List<GitHubRelease>> FetchAllReleasesAsync(string repo = GitHubRepo)
         {
             try
             {
                 using (var client = new HttpClient())
                 {
-                    client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+                    client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
                     var json = await client.GetStringAsync($"https://api.github.com/repos/{repo}/releases");
                     return JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
                 }
@@ -532,17 +312,45 @@ namespace FFXIV.Framework.Updater
             return current;
         }
 
-        private void UnblockFiles(string dir) { foreach (var f in Directory.GetFiles(dir, "*", SearchOption.AllDirectories)) DeleteFile(f + ":Zone.Identifier"); }
+        private void Log(string msg, Exception ex = null) => Logger?.Invoke(msg, ex);
 
         private void TryRestartACT(string name)
         {
             try
             {
                 var act = ActGlobals.oFormActMain;
-                act.GetType().GetMethod("RestartACT")?.Invoke(act, new object[] { true, $"{name} updated." });
+                act.GetType().GetMethod("RestartACT")?.Invoke(act, new object[] { true, $"{name} has been updated." });
             }
             catch { }
         }
+
+        #endregion
+
+        #region Data Models
+        public class UpdateTarget
+        {
+            public string DisplayName { get; set; }
+            public string Repo { get; set; } = GitHubRepo;
+            public string AssetKeyword { get; set; }
+            public string PluginDirectory { get; set; }
+            public Version CurrentVersion { get; set; }
+            public bool IsFullPackage { get; set; }
+        }
+
+        private class GitHubRelease
+        {
+            [JsonProperty("tag_name")] public string TagName { get; set; }
+            [JsonProperty("prerelease")] public bool Prerelease { get; set; }
+            [JsonProperty("body")] public string Body { get; set; }
+            [JsonProperty("assets")] public List<GitHubAsset> Assets { get; set; }
+        }
+
+        private class GitHubAsset
+        {
+            [JsonProperty("name")] public string Name { get; set; }
+            [JsonProperty("browser_download_url")] public string DownloadUrl { get; set; }
+        }
+        #endregion
 
         #region IDisposable
         public void Dispose()
@@ -555,19 +363,167 @@ namespace FFXIV.Framework.Updater
         {
             if (!disposed)
             {
-                if (disposing)
-                {
-                    Cleanup();
-                    OnBeforeUpdate = null;
-                }
+                if (disposing) OnBeforeUpdate = null;
                 disposed = true;
             }
         }
 
-        ~FFXIVFrameworkUpdater()
-        {
-            Dispose(false);
-        }
+        ~FFXIVFrameworkUpdater() { Dispose(false); }
         #endregion
+    }
+
+    public class ProgressDialog : Form
+    {
+        private ProgressBar progressBar;
+        private Label statusLabel;
+        private TextBox logTextBox;
+        private WebBrowser releaseNotes;
+        private Button startButton;
+        private Button closeButton;
+
+        public Task<bool> WaitForStartConfirmation() => startCompletionSource.Task;
+        public Task WaitForClose => closeCompletionSource.Task;
+
+        private TaskCompletionSource<bool> startCompletionSource = new TaskCompletionSource<bool>();
+        private TaskCompletionSource<bool> closeCompletionSource = new TaskCompletionSource<bool>();
+
+        public ProgressDialog(string title)
+        {
+            this.Text = $"{title} Update";
+            this.Size = new Size(620, 600);
+            this.StartPosition = FormStartPosition.CenterParent;
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+
+            statusLabel = new Label { Text = "Initializing...", Top = 10, Left = 15, Width = 570 };
+            progressBar = new ProgressBar { Top = 35, Left = 15, Width = 570, Height = 20 };
+
+            var lblNotes = new Label { Text = "Release Notes:", Top = 65, Left = 15, Width = 570 };
+
+            releaseNotes = new WebBrowser
+            {
+                Top = 85,
+                Left = 15,
+                Width = 570,
+                Height = 300,
+                IsWebBrowserContextMenuEnabled = false,
+                AllowWebBrowserDrop = false
+            };
+
+            // [NEW] 外部ブラウザでリンクを開くためのハンドラ
+            releaseNotes.Navigating += ReleaseNotes_Navigating;
+
+            logTextBox = new TextBox { Top = 395, Left = 15, Width = 570, Height = 110, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical, Font = new Font("Consolas", 9) };
+
+            startButton = new Button { Text = "Start Update", Top = 515, Left = 375, Width = 110, Height = 35, BackColor = Color.LightBlue };
+            startButton.Click += (s, e) => {
+                startButton.Enabled = false;
+                startCompletionSource.TrySetResult(true);
+            };
+
+            closeButton = new Button { Text = "Cancel", Top = 515, Left = 495, Width = 90, Height = 35 };
+            closeButton.Click += (s, e) => this.Close();
+
+            this.Controls.AddRange(new Control[] { statusLabel, progressBar, lblNotes, releaseNotes, logTextBox, startButton, closeButton });
+
+            this.FormClosing += (s, e) => {
+                startCompletionSource.TrySetResult(false);
+                closeCompletionSource.TrySetResult(true);
+            };
+        }
+
+        private void ReleaseNotes_Navigating(object sender, WebBrowserNavigatingEventArgs e)
+        {
+            // about:blank（初期ロード時など）以外はすべて外部ブラウザで開く
+            if (e.Url.ToString() != "about:blank")
+            {
+                e.Cancel = true; // コントロール内での遷移をキャンセル
+                try
+                {
+                    Process.Start(e.Url.ToString());
+                }
+                catch (Exception ex)
+                {
+                    Log($"Failed to open URL: {ex.Message}");
+                }
+            }
+        }
+
+        public void UpdateProgress(int percent) => this.SafeInvoke(() => { progressBar.Value = percent; statusLabel.Text = $"Progress: {percent}%"; });
+        public void Log(string msg) => this.SafeInvoke(() => { logTextBox.AppendText($"[{DateTime.Now:HH:mm:ss}] {msg}{Environment.NewLine}"); statusLabel.Text = msg; });
+
+        public void EnableCloseButton() => this.SafeInvoke(() => {
+            closeButton.Text = "Close";
+            closeButton.Enabled = true;
+            startButton.Visible = false;
+        });
+
+        public void SetReleaseNotes(string tag, string markdown)
+        {
+            this.SafeInvoke(() => {
+                var pipeline = new MarkdownPipelineBuilder()
+                    .UseSoftlineBreakAsHardlineBreak()
+                    .UseAdvancedExtensions()
+                    .Build();
+
+                var html = Markdown.ToHtml(markdown ?? "No release notes provided.", pipeline);
+
+                var styledHtml = $@"
+                    <html>
+                    <head>
+                        <meta charset='utf-8'>
+                        <style>
+                            body {{ 
+                                font-family: 'Segoe UI', 'Meiryo', 'MS PGothic', sans-serif; 
+                                font-size: 13px; 
+                                line-height: 1.6; 
+                                padding: 15px; 
+                                color: #24292e; 
+                                background-color: #ffffff;
+                                margin: 0;
+                            }}
+                            h2 {{ 
+                                border-bottom: 1px solid #eaecef; 
+                                padding-bottom: 0.3em; 
+                                font-size: 1.5em; 
+                                margin-top: 0; 
+                                margin-bottom: 16px; 
+                                font-weight: 600;
+                            }}
+                            p, ul, ol {{ margin-top: 0; margin-bottom: 10px; }}
+                            code {{ 
+                                background-color: rgba(27,31,35,0.05); 
+                                border-radius: 3px; 
+                                font-family: Consolas, monospace;
+                                font-size: 85%;
+                                padding: 0.2em 0.4em;
+                            }}
+                            pre {{ 
+                                background-color: #f6f8fa; 
+                                border-radius: 3px; 
+                                padding: 16px; 
+                                overflow: auto; 
+                            }}
+                            ul, ol {{ padding-left: 20px; }}
+                            li {{ margin-bottom: 4px; }}
+                            a {{ color: #0366d6; text-decoration: none; }}
+                            a:hover {{ text-decoration: underline; }}
+                        </style>
+                    </head>
+                    <body>
+                        <h2>Version {tag}</h2>
+                        <div class='content'>{html}</div>
+                    </body>
+                    </html>";
+                releaseNotes.DocumentText = styledHtml;
+            });
+        }
+
+        private void SafeInvoke(Action action)
+        {
+            if (this.IsDisposed) return;
+            if (this.InvokeRequired) this.Invoke(action);
+            else action();
+        }
     }
 }
