@@ -600,8 +600,30 @@ namespace FFXIV.Framework.Updater
             catch { }
         }
 
-        public void Dispose() { Dispose(true); GC.SuppressFinalize(this); }
-        protected virtual void Dispose(bool disposing) { if (!disposed) { if (disposing) { Cleanup(); OnBeforeUpdate = null; } disposed = true; } }
-        ~FFXIVFrameworkUpdater() { Dispose(false); }
+        #region IDisposable
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    Cleanup();
+                    OnBeforeUpdate = null;
+                }
+                disposed = true;
+            }
+        }
+
+        ~FFXIVFrameworkUpdater()
+        {
+            Dispose(false);
+        }
+        #endregion
     }
 }
