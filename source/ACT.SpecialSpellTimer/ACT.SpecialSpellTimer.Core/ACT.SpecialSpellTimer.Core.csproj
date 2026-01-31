@@ -223,7 +223,6 @@
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\TagTable.cs" />
     <Compile Include="Models\Ticker.cs" />
-    <Compile Include="RaidTimeline\RazorEngineProvider.cs" />
     <Compile Include="RaidTimeline\TimelineActivityModel.cs" />
     <Compile Include="RaidTimeline\TimelineBase.cs" />
     <Compile Include="RaidTimeline\TimelineConstants.cs" />

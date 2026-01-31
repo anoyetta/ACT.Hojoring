@@ -1,13 +1,3 @@
-using ACT.SpecialSpellTimer.Config;
-using ACT.SpecialSpellTimer.RazorModel;
-using Advanced_Combat_Tracker;
-using FFXIV.Framework.Bridge;
-using FFXIV.Framework.Common;
-using FFXIV.Framework.Extensions;
-using FFXIV.Framework.Globalization;
-using FFXIV.Framework.WPF.Views;
-using FFXIV.Framework.XIVHelper;
-using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,7 +5,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -25,6 +14,19 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Serialization;
+using ACT.SpecialSpellTimer.Config;
+using ACT.SpecialSpellTimer.RazorModel;
+using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
+using FFXIV.Framework.Extensions;
+using FFXIV.Framework.Globalization;
+using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.XIVHelper;
+using Prism.Commands;
+using RazorEngine;
+using RazorEngine.Configuration;
+using RazorEngine.Templating;
+using RazorEngine.Text;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -36,85 +38,6 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
     public partial class TimelineModel :
         TimelineBase
     {
-        static TimelineModel()
-        {
-            // HelpBridge に RazorEngine の解放処理を登録する
-            HelpBridge.Instance.BeforeUpdateCallback = () =>
-            {
-                DisposeRazorProvider();
-            };
-
-            // 2. \bin フォルダ内の Core.dll 等を解決するためのイベントを登録する
-            // TTSYukkuri等と同様、サブフォルダにあるアセンブリを明示的にロードできるようにする
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
-            {
-                try
-                {
-                    // 読み込もうとしているアセンブリの簡易名を取得
-                    var name = new AssemblyName(args.Name).Name;
-
-                    // 既にロード済みならそれを返す
-                    var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies()
-                        .FirstOrDefault(x => x.FullName == args.Name);
-                    if (loadedAssembly != null) return loadedAssembly;
-
-                    // 自分自身の場所を基準に \bin フォルダを探す
-                    var asm = Assembly.GetExecutingAssembly();
-                    var binPath = Path.Combine(Path.GetDirectoryName(asm.Location), "bin");
-
-                    if (Directory.Exists(binPath))
-                    {
-                        var targetPath = Path.Combine(binPath, name + ".dll");
-                        if (File.Exists(targetPath))
-                        {
-                            return Assembly.LoadFrom(targetPath);
-                        }
-                    }
-                }
-                catch
-                {
-                    // ロード失敗時は null を返して標準の解決に任せる
-                }
-
-                return null;
-            };
-        }
-
-
-        #region RazorEngine Isolation Support
-
-        private static RazorEngineProvider razorProvider;
-
-        /// <summary>
-        /// RazorEngine プロバイダーを取得します。
-        /// 必要に応じて遅延初期化します。
-        /// </summary>
-        public static RazorEngineProvider RazorProvider
-        {
-            get
-            {
-                if (razorProvider == null)
-                {
-                    razorProvider = new RazorEngineProvider();
-                }
-                return razorProvider;
-            }
-        }
-
-        /// <summary>
-        /// アップデート時などに呼び出し、AppDomain をアンロードして DLL のロックを解除します。
-        /// </summary>
-        public static void DisposeRazorProvider()
-        {
-            if (razorProvider != null)
-            {
-                razorProvider.Dispose();
-                razorProvider = null;
-            }
-        }
-
-        #endregion RazorEngine Isolation Support
-
         public override TimelineElementTypes TimelineType => TimelineElementTypes.Timeline;
 
         public override IList<TimelineBase> Children => this.elements;
@@ -301,6 +224,30 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 var result = this.Description;
 
+#if false
+                var b = new List<string>(); ;
+                if (this.IsExistsAuthor)
+                {
+                    b.Add(this.AuthorForDisplay);
+                }
+
+                if (this.IsExistsLicense)
+                {
+                    b.Add(this.LicenseForDisplay);
+                }
+
+                if (b.Any())
+                {
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        result += $"\n\n{string.Join(Environment.NewLine, b)}";
+                    }
+                    else
+                    {
+                        result = string.Join(Environment.NewLine, b);
+                    }
+                }
+#endif
                 if (string.IsNullOrEmpty(result))
                 {
                     result = "no description";
@@ -619,21 +566,21 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             }
 
             var tl = default(TimelineModel);
-            string compiledResult = string.Empty;
+            var sb = default(StringBuilder);
 
             try
             {
-                // 修正: static プロバイダー経由でパースを実行する
-                compiledResult = CompileRazor(file);
+                // Razorエンジンで読み込む
+                sb = CompileRazor(file);
 
                 if (File.Exists(RazorDumpFile))
                 {
                     File.Delete(RazorDumpFile);
                 }
 
-                if (!string.IsNullOrEmpty(compiledResult))
+                if (sb.Length > 0)
                 {
-                    using (var sr = new StringReader(compiledResult))
+                    using (var sr = new StringReader(sb.ToString()))
                     {
                         var xs = new XmlSerializer(typeof(TimelineModel));
                         var data = xs.Deserialize(sr) as TimelineModel;
@@ -666,14 +613,14 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
                 tl.ErrorText = msg.ToString();
 
-                if (!string.IsNullOrEmpty(compiledResult))
+                if (sb != null)
                 {
                     File.WriteAllText(
                         RazorDumpFile,
-                        compiledResult,
+                        sb.ToString(),
                         new UTF8Encoding(false));
 
-                    tl.CompiledText = compiledResult;
+                    tl.CompiledText = sb.ToString();
                 }
 
                 return tl;
@@ -683,9 +630,12 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
             {
                 // 既定値を適用する
                 tl.SetDefaultValues();
-                // Compile後のテキストを保存する
-                tl.CompiledText = compiledResult;
             }
+
+            // Compile後のテキストを保存する
+            tl.CompiledText = tl != null ?
+                sb.ToString() :
+                string.Empty;
 
             return tl;
         }
@@ -693,19 +643,83 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         /// <summary>
         /// テキストを RazorEngine でCompile(パース)する
         /// </summary>
-        /// <param name="file">元のファイルパス</param>
-        /// <returns>パース後のテキスト</returns>
-        private static string CompileRazor(
+        /// <param name="source">
+        /// 元のテキスト</param>
+        /// <returns>
+        /// パース後のテキスト</returns>
+        private static StringBuilder CompileRazor(
             string file)
         {
             // Razorモデルに対象のファイルパスを設定する
             TimelineRazorModel.Instance.UpdateCurrentTimelineFile(file);
 
-            // 修正: プロバイダーの RunCompile を使用する
-            return RazorProvider.RunCompile(
-                file,
-                file,
-                TimelineRazorModel.Instance);
+            var sb = new StringBuilder();
+
+            using (var sw = new StringWriter(sb))
+            using (var engine = CreateTimelineEngine())
+            {
+                engine.RunCompile(
+                    file,
+                    sw,
+                    typeof(TimelineRazorModel),
+                    TimelineRazorModel.Instance);
+            }
+
+            return sb;
+        }
+
+        /// <summary>
+        /// タイムライン定義ファイル用の RazorEngine を生成する
+        /// </summary>
+        /// <returns>RazorEngine</returns>
+        private static IRazorEngineService CreateTimelineEngine()
+        {
+            var config = new TemplateServiceConfiguration();
+
+            config.Language = Language.CSharp;
+
+            config.ReferenceResolver = new RazorReferenceResolver();
+
+            config.Namespaces.Add("System.Runtime");
+            config.Namespaces.Add("System.IO");
+            config.Namespaces.Add("System.Linq");
+            config.Namespaces.Add("System.Text");
+            config.Namespaces.Add("System.Text.RegularExpressions");
+            config.Namespaces.Add("FFXIV.Framework.Common");
+            config.Namespaces.Add("FFXIV.Framework.Extensions");
+            config.Namespaces.Add("ACT.SpecialSpellTimer.RazorModel");
+
+            //You can use config.DisableTempFileLocking = true as well.
+            //This will work in any AppDomain (including the default one).
+            //To remove the RazorEngine warnings you can additionally use config.CachingProvider = new DefaultCachingProvider(t => {}).
+            // See also https://github.com/Antaris/RazorEngine/issues/244 for more details.
+
+//            config.DisableTempFileLocking = true;
+//            config.CachingProvider = new DefaultCachingProvider(t => { });
+
+
+            config.EncodedStringFactory = new RawStringFactory();
+
+            config.TemplateManager = new DelegateTemplateManager((name) =>
+            {
+                if (File.Exists(name))
+                {
+                    return File.ReadAllText(name, new UTF8Encoding(false));
+                }
+
+                var path = Path.Combine(
+                    TimelineRazorModel.Instance.TimelineDirectory,
+                    name);
+
+                if (File.Exists(path))
+                {
+                    return File.ReadAllText(path, new UTF8Encoding(false));
+                }
+
+                return name;
+            });
+
+            return RazorEngineService.Create(config);
         }
 
         /// <summary>

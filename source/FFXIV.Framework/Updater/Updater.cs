@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Advanced_Combat_Tracker;
+using FFXIV.Framework.Common;
+using Markdig;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -12,9 +16,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Advanced_Combat_Tracker;
-using Markdig;
-using Newtonsoft.Json;
 
 namespace FFXIV.Framework.Updater
 {
@@ -221,19 +222,55 @@ namespace FFXIV.Framework.Updater
                 var latest = usePreRelease ? releases?.FirstOrDefault() : releases?.FirstOrDefault(x => !x.Prerelease);
                 if (latest == null) return false;
 
+                // --- Parsing Remote Version ---
+                // Example: "v10.5.3-260131" -> "10.5.3"
                 var versionRaw = latest.TagName.TrimStart('v').Split('-')[0];
                 var versionMatch = Regex.Match(versionRaw, @"[\d\.]+");
                 var versionString = versionMatch.Success ? versionMatch.Value.Trim('.') : string.Empty;
 
-                if (string.IsNullOrEmpty(versionString) || !Version.TryParse(versionString, out Version latestVersion)) return false;
+                if (string.IsNullOrEmpty(versionString) || !Version.TryParse(versionString, out Version latestVersion))
+                {
+                    this.Log($"[Updater] Failed to parse version from tag: {latest.TagName}");
+                    return false;
+                }
 
+                // --- Parsing Current Assembly Version ---
                 var assembly = Assembly.GetAssembly(typeof(ACT.Hojoring.Common.Hojoring)) ?? Assembly.GetExecutingAssembly();
-                var currentVersion = target.CurrentVersion ?? assembly.GetName().Version;
+                var rawAssemblyVersion = target.CurrentVersion ?? assembly.GetName().Version;
 
-                if (latestVersion <= currentVersion) return false;
+                // Fix: 10.5.3 becoming 10.5.0.3 issue
+                // Convert to string and re-parse to ensure Major.Minor.Build consistency with GitHub tags
+                var assemblyVersionStr = rawAssemblyVersion.ToString();
+                var assemblyMatch = Regex.Match(assemblyVersionStr, @"^\d+\.\d+\.\d+"); // Get only X.Y.Z
+                var normalizedVersionStr = assemblyMatch.Success ? assemblyMatch.Value : assemblyVersionStr;
+
+                if (!Version.TryParse(normalizedVersionStr, out Version currentVersion))
+                {
+                    currentVersion = rawAssemblyVersion; // Fallback to raw if parsing fails
+                }
+
+                // If no newer version and not forced re-install, exit
+                if (latestVersion < currentVersion) return false;
+
+                // --- アップデート実行確認の追加 ---
+                var isNewer = latestVersion > currentVersion;
+                var statusMsg = isNewer ? "新しいバージョンが見つかりました。" : "現在のバージョンは最新です。";
+                var confirmMsg = $"{target.DisplayName}\n\n{statusMsg}\n最新バージョン: {latest.TagName}\n現在のバージョン: {currentVersion}\n\nアップデート(再インストール)を実行しますか？";
+
+                var result = (DialogResult)ActGlobals.oFormActMain.Invoke((Func<DialogResult>)(() =>
+                {
+                    return MessageBox.Show(
+                        ActGlobals.oFormActMain,
+                        confirmMsg,
+                        "Update Confirmation",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+                }));
+
+                if (result != DialogResult.Yes) return false;
 
                 var asset = latest.Assets.FirstOrDefault(a => a.Name.Contains(target.AssetKeyword) && a.Name.EndsWith(".7z"))
-                         ?? latest.Assets.FirstOrDefault(a => a.Name.Contains(target.AssetKeyword) && a.Name.EndsWith(".zip"));
+                           ?? latest.Assets.FirstOrDefault(a => a.Name.Contains(target.AssetKeyword) && a.Name.EndsWith(".zip"));
 
                 if (asset == null) return false;
 
@@ -245,7 +282,7 @@ namespace FFXIV.Framework.Updater
                     {
                         dialog.Show();
                         dialog.SetReleaseNotes(latest.TagName, latest.Body);
-                        dialog.Log($"New version available: {latest.TagName}");
+                        dialog.Log($"Target version: {latest.TagName}");
 
                         var (success, failedFiles) = await PerformUpdateTask(asset.DownloadUrl, asset.Name, target, dialog);
 
@@ -286,7 +323,6 @@ namespace FFXIV.Framework.Updater
                 return false;
             }
         }
-
         private async Task<(bool success, List<string> failedFiles)> PerformUpdateTask(string url, string fileName, UpdateTarget target, ProgressDialog dialog)
         {
             List<string> failedFiles = new List<string>();
@@ -420,7 +456,6 @@ namespace FFXIV.Framework.Updater
 
                     if (!Directory.Exists(targetDir)) Directory.CreateDirectory(targetDir);
 
-                    bool isCopied = false;
                     try
                     {
                         if (File.Exists(targetPath))
@@ -429,7 +464,6 @@ namespace FFXIV.Framework.Updater
                             File.Delete(targetPath);
                         }
                         File.Copy(file, targetPath, true);
-                        isCopied = true;
                     }
                     catch (Exception)
                     {
