@@ -98,6 +98,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ACT.Hojoring.Updater\ACT.Hojoring.Updater.csproj">
+      <Project>{611cc237-0ac4-4ab1-9f31-6e1bf589ca14}</Project>
+      <Name>ACT.Hojoring.Updater</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FFXIV.Framework\FFXIV.Framework.csproj">
       <Project>{22EBF8A4-EED1-4CD1-99EB-99665163A315}</Project>
       <Name>FFXIV.Framework</Name>

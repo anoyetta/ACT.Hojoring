@@ -81,6 +81,7 @@
   <ItemGroup>
     <Compile Include="UpdateChecker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AtomicUpdater.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FodyWeavers.xsd">
@@ -113,12 +114,21 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="NLog">
+      <Version>6.0.5</Version>
+    </PackageReference>
     <PackageReference Include="Octokit">
       <Version>14.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.Net.Http">
       <Version>4.3.4</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ACT.Hojoring.Common\ACT.Hojoring.Common.csproj">
+      <Project>{7e1502b5-db00-4b2e-bdba-19e3379670b3}</Project>
+      <Name>ACT.Hojoring.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

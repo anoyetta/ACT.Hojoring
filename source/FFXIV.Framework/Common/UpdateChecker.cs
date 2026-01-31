@@ -1,6 +1,7 @@
 using Advanced_Combat_Tracker;
 using FFXIV.Framework.Extensions;
 using FFXIV.Framework.WPF.Views;
+using FFXIV.Framework.Updater; // 追加
 using Microsoft.Win32;
 using NLog;
 using Octokit;
@@ -16,6 +17,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks; // 追加
 using System.Windows.Forms;
 using System.Windows.Threading;
 
@@ -23,7 +25,7 @@ namespace FFXIV.Framework.Common
 {
     /// <summary>
     /// Update Checker
-    /// </summary>7
+    /// </summary>
     public static class UpdateChecker
     {
         #region Logger
@@ -304,8 +306,6 @@ namespace FFXIV.Framework.Common
             return r;
         }
 
-        private static readonly string UpdateScriptUrl = "https://raw.githubusercontent.com/anoyetta/ACT.Hojoring/master/source/ACT.Hojoring.Updater/update_hojoring.ps1";
-
         /// <summary>
         /// アップデートスクリプトを起動する
         /// </summary>
@@ -314,37 +314,54 @@ namespace FFXIV.Framework.Common
         public static async void StartUpdateScript(
             bool usePreRelease = false)
         {
-            var cd = DirectoryHelper.GetPluginRootDirectoryDelegate?.Invoke();
-            if (string.IsNullOrEmpty(cd))
-            {
-                cd = Path.Combine(
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    "..");
+            var updater = FFXIVFrameworkUpdater.Instance;
 
-                cd = Path.GetFullPath(cd);
+            // ログのブリッジ
+            updater.Logger = (message, ex) =>
+            {
+                AppLogger.Info(message);
+                if (ex != null) AppLogger.Error(ex);
+            };
+
+            // コールバックの実行ロジック
+            updater.OnBeforeUpdate = () =>
+            {
+                try
+                {
+                    var helpBridgeType = Type.GetType("FFXIV.Framework.Bridge.HelpBridge, FFXIV.Framework");
+                    var instanceProperty = helpBridgeType?.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static);
+                    var instance = instanceProperty?.GetValue(null);
+                    var callbackProperty = helpBridgeType?.GetProperty("BeforeUpdateCallback", BindingFlags.Public | BindingFlags.Instance);
+                    var callback = callbackProperty?.GetValue(instance) as Action;
+                    callback?.Invoke();
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.Error(ex, "Failed to execute BeforeUpdateCallback via HelpBridge.");
+                }
+            };
+
+            // アセンブリ情報の取得
+            var hojoring = GetHojoring();
+            if (hojoring == null)
+            {
+                AppLogger.Error("Hojoring instance is null. Cannot start update.");
+                return;
             }
 
-            var script = Path.Combine(cd, "update_hojoring.ps1");
+            Assembly assembly = hojoring.GetType().Assembly;
 
-            using (var web = new WebClient())
+            var target = new FFXIVFrameworkUpdater.UpdateTarget
             {
-                var temp = Path.GetTempFileName();
-                File.Delete(temp);
+                AssetKeyword = "ACT.Hojoring-v",
+                DisplayName = "ACT.Hojoring",
+                PluginDirectory = Path.GetDirectoryName(assembly.Location),
+                CurrentVersion = assembly.GetName().Version,
+                IsFullPackage = true
+            };
 
-                await web.DownloadFileTaskAsync(
-                    UpdateScriptUrl,
-                    temp);
-
-                Thread.Sleep(10);
-                File.Copy(temp, script, true);
-            }
-
-            if (File.Exists(script))
-            {
-                var args = $"-NoLogo -NoProfile -ExecutionPolicy Unrestricted -File \"{script}\" {usePreRelease}";
-
-                Process.Start(EnvironmentHelper.Pwsh, args);
-            }
+            // update_hojoring.ps1 を直接呼び出していたロジックを FFXIVFrameworkUpdater に変更
+            await Task.Run(() => updater.CheckAndDoUpdate(target, usePreRelease));
         }
 
         #region .NET Framework Version
@@ -477,14 +494,15 @@ namespace FFXIV.Framework.Common
                 @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion",
                 "CurrentBuild");
                 int intBuildNo = 0;
-                Int32.TryParse( buildNo, out intBuildNo);
+                Int32.TryParse(buildNo, out intBuildNo);
                 if (intBuildNo >= 20000)
                 {
                     productName = "Windows11 or later ";
                     productName += GetRegistryValue(
                     @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion",
                     "EditionID");
-                } else
+                }
+                else
                 {
                     productName = "Windows10 ";
                     productName += GetRegistryValue(

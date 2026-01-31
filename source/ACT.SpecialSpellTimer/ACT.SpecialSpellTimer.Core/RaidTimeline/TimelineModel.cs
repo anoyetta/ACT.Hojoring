@@ -27,7 +27,6 @@ using RazorEngine;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
 using RazorEngine.Text;
-using static Sharlayan.Core.Enums.Actor;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {

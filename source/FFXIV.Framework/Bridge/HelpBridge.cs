@@ -19,5 +19,15 @@ namespace FFXIV.Framework.Bridge
             string destinationDirectory);
 
         public BackupDelegate BackupCallback;
+
+        /// <summary>
+        /// アップデート（ファイル置換）の直前に実行すべき処理のデリゲート
+        /// </summary>
+        public delegate void BeforeUpdateDelegate();
+
+        /// <summary>
+        /// アップデート（ファイル置換）の直前に実行すべき処理のコールバック
+        /// </summary>
+        public BeforeUpdateDelegate BeforeUpdateCallback;
     }
 }

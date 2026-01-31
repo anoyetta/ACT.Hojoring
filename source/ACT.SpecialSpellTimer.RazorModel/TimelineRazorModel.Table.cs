@@ -6,6 +6,7 @@ using Prism.Mvvm;
 
 namespace ACT.SpecialSpellTimer.RazorModel
 {
+    [Serializable]
     public class TimelineTables
     {
         public static Func<string, TimelineTable> GetTableDelegate { get; set; }
@@ -13,6 +14,7 @@ namespace ACT.SpecialSpellTimer.RazorModel
         public TimelineTable this[string name] => GetTableDelegate?.Invoke(name);
     }
 
+    [Serializable]
     public class TimelineTable :
         BindableBase
     {
