@@ -1,44 +1,248 @@
 # スペスペたいむの構文
+*rev37 (unofficial update)*
 
-このドキュメントは、[SpecialSpellTimer](https://github.com/anoyetta/ACT.SpecialSpellTimer) のタイムライン定義ファイル (`.xml`) の構文リファレンスです。
-ソースコードの最新状態に基づき、一部の記述を更新・追記しています。
-
-## 変更履歴 (Changes)
+## 変更点 (Changes based on source code analysis)
+このドキュメントは、提供されたWikiの原文に対し、現在のソースコード (`ACT.SpecialSpellTimer.Core`) に基づく以下の変更・追記を行っています。
 
 *   **[New]** `<hp-sync>` 要素の記述を追加 (HP同期機能)。
-*   **[New]** `<t>` (Trigger) 要素の `sync-count` 属性について、リスト指定(`1,3`)や範囲指定(`1-5`)が可能であることを追記。
-*   **[New]** `exec` 属性の拡張機能 (`args`, `exec-hidden`, `json`ペイロード) について記述を追加。
-*   **[Update]** `notice-d` (通知デバイス) の値をコード定義に合わせて更新。
+*   **[Update]** `<t>` (Trigger) 要素の `sync-count` 属性について、リスト指定(`1,3`)や範囲指定(`1-5`)が可能であることを追記。
+*   **[New]** `<a>`, `<t>` 要素に `json` (REST APIペイロード) の記述を追加。
 
 ---
 
-## ファイル属性
+## 目次
+<details>
+<summary>ファイル属性</summary>
 
-### `<timeline>`
+  - [timeline](#timeline)
+  - [name](#name)
+  - [rev, description, author](#rev-description-author)
+  - [license](#license)
+  - [zone](#zone)
+  - [local](#local)
+</details>
+
+<details>
+<summary>タイムライン制御</summary>
+
+  - [entry](#entry)
+  - [start](#start)
+  - [a](#a-Activity)
+    <details>
+    <summary>属性</summary>
+
+      - name
+      - inherits
+      - time
+      - text
+      - sync
+      - sync-s
+      - sync-e
+      - goto
+      - call
+      - notice
+      - notice-d
+      - notice-o
+      - notice-vol
+      - notice-sync
+      - style
+      - icon
+      - [json](#json-payload)
+      - enable
+    </details>
+  - [t](#t-Trigger)
+    <details>
+    <summary>属性</summary>
+
+      - name
+      - inherits
+      - no
+      - text
+      - sync
+      - sync-count
+      - sync-interval
+      - goto
+      - call
+      - notice
+        - auto
+      - notice-d
+      - notice-o
+      - notice-vol
+      - notice-sync
+      - exec
+      - args
+      - exec-hidden
+      - [json](#json-payload)
+      - enabled
+      - [load](#load)
+        <details>
+        <summary>属性</summary>
+
+          - target
+          - truncate
+          - enabled
+        </details>
+      - [hp-sync](#hp-sync-HP-Sync) **[New]**
+        <details>
+        <summary>属性</summary>
+          - name
+          - hpp
+          - enabled
+        </details>
+      - [v-notice](#v-notice-Visual-Notice)
+        <details>
+        <summary>属性</summary>
+
+          - inherits
+          - text
+          - duration
+          - duration-visible
+          - delay
+          - stack-visible
+          - sync-to-hide
+          - order
+          - style
+          - icon
+          - job-icon
+          - enabled
+        </details>
+      - [i-notice](#i-notice-Image-Notice)
+        <details>
+        <summary>属性</summary>
+
+          - inherits
+          - image
+          - duration
+          - delay
+          - sync-to-hide
+          - scale
+          - left
+          - top
+          - enabled
+        </details>
+      - [p-sync](#p-sync-Position-Sync)
+        <details>
+        <summary>属性</summary>
+
+          - interval
+          - enabled
+          - [combatant](#combatant)
+            <details>
+            <summary>属性</summary>
+
+              - name
+              - x,y,z
+              - tolerance
+              - enabled
+            </details>
+          - dump
+          - [expressions](#expressions)
+            <details>
+            <summary>属性</summary>
+
+              - enabled
+              - [pre](#pre)
+                <details>
+                <summary>属性</summary>
+
+                  - name
+                  - value
+                  - count
+                  - [set](#set)
+                    <details>
+                    <summary>属性</summary>
+
+                      - name
+                      - value
+                      - toggle
+                      - count
+                      - ttl
+                    </details>
+                - [table](#table)
+                  <details>
+                  <summary>属性</summary>
+
+                    - method
+                    - table
+                    - cols
+                  </details>
+                </details>
+            </details>
+        </details>
+    </details>
+  - [s](#s-Subroutine)
+    <details>
+    <summary>属性</summary>
+
+      - 子要素
+      - name
+      - enabled
+      - [import](#import)
+        <details>
+        <summary>属性</summary>
+
+          - source
+          - enabled
+        </details>
+    </details>
+  - [default](#default)
+    <details>
+    <summary>属性</summary>
+
+      - enum
+      - target-element
+      - target-attr
+      - value
+      - enabled
+    </details>
+</details>
+<details>
+<summary>Razorの構文</summary>
+
+  - [Zone の判定](#zone-の判定)
+  - [JOB の判定](#job-の判定)
+  - [Role の判定](#Role-の判定)
+  - [JSON の読込み](#json-の読込み)
+  - [Include](#Include)
+  - [環境変数の操作](#環境変数の操作)
+    <details>
+    <summary>環境変数</summary>
+
+    - [環境変数の参照](#環境変数の参照)
+      - [Razor 構文での参照](#Razor-構文での参照)
+      - [各種タグでの参照](#各種タグでの参照)
+    - [環境変数の編集](#環境変数の編集)
+    </details>
+</details>
+
+Ξ [改訂履歴](#改訂履歴) Ξ
+
+## ファイル属性
+### \<timeline>
 ルート要素
 
 ```xml
 <timeline>
 ```
 
-### `<name>`
-string, 任意項目
+### \<name>
+string, 任意項目  
 タイムラインを識別するための名前。オーバーレイや管理画面に表示しタイムラインを識別する。
 
 ```xml
 <name>スペスペたいむの説明書</name>
 ```
 
-### `<rev>`, `<description>`, `<author>`
-string, 任意項目
+### \<rev>, \<description>, \<author>
+string, 任意項目  
 動作には一切影響がない項目。ファイルの識別用にリビジョンと詳細説明、作者を記述できる。それぞれ設定画面で表示される。作者はイニシャルでも偽名でもよいので何かしら識別出来る情報を記載することを薦める。
 
 ```xml
 <rev>rev1</rev>
 <description>
-スペスペたいむの定義ファイルの説明書です。
-これ自体をタイムラインとして使用することは出来ません。
-ファイルに書かれたコメントを定義ファイル作成時の参考としてください。
+  スペスペたいむの定義ファイルの説明書です。
+  これ自体をタイムラインとして使用することは出来ません。
+  ファイルに書かれたコメントを定義ファイル作成時の参考としてください。
 </description>
 <author>anoyetta</author>
 ```
@@ -50,139 +254,239 @@ string, 任意項目
 
 ```xml
 <!-- 改変によって複数人の作者が存在する場合 -->
-<author>anoyetta Taro Yamada Naoki Yoshida and my friends...</author>
+<author>
+  anoyetta
+  Taro Yamada
+  Naoki Yoshida
+  and my friends...
+</author>
 ```
 
-### `<license>`
-string, 任意項目
-動作には一切影響がない項目。このファイルに適用されたライセンスを記述する。
-ライセンスにこだわらない場合は [クリエイティブ・コモンズ 表示 - 継承 (CC BY-SA)](https://creativecommons.org/licenses/by-sa/4.0/deed.ja) を適用することを薦める。
-- 自由に使用して良い
-- 改変物を作成、配布した場合でも元の作者をクレジットしなければならない
-- 改変物にもこのライセンスが継承される
-いわゆる完全に著作権フリーとする場合は パブリックドメイン (Public Domain) の扱いとなる。この場合も Public Domain と明記することを薦める。全く記載がない場合は通常の著作権の適用となるためパブリックドメインよりも制限が厳しくなる。
+### \<license>
+string, 任意項目  
+動作には一切影響がない項目。このファイルに適用されたライセンスを記述する。  
+ライセンスにこだわらない場合は [クリエイティブ・コモンズ 表示 - 継承 (CC BY-SA)](https://creativecommons.org/licenses/by-sa/4.0/deed.ja) を適用することを薦める。  
+* 自由に使用して良い
+* 改変物を作成、配布した場合でも元の作者をクレジットしなければならない
+* 改変物にもこのライセンスが継承される
 
+いわゆる完全に著作権フリーとする場合は *パブリックドメイン (Public Domain)* の扱いとなる。この場合も *Public Domain* と明記することを薦める。全く記載がない場合は通常の著作権の適用となるためパブリックドメインよりも制限が厳しくなる。
 ```xml
 <!-- クリエイティブ・コモンズ 表示 - 継承 の例 -->
 <license>CC BY-SA</license>
 ```
-
 ```xml
 <!-- パブリック・ドメイン の例 -->
 <license>Public Domain</license>
 ```
 
-### `<zone>`
-string, 任意項目
+### \<zone>
+string, 任意項目  
 このタイムラインが自動的にロードされるゾーン名。 FFXIV_ACT_Plugin が識別する CurrentZoneName と一致させる必要があるため英語で指定する。
-
 ```xml
 <!-- 極白虎の例 -->
 <zone>The Jade Stoa</zone>
 ```
-
 `{GLOBAL}` と指定した場合は全てのゾーンで動作する。ただし、全てのゾーンで動作するのはトリガのみであり、一部のトリガをゾーンに依存せず汎用的に使用するための指定。
 
-```xml
-{GLOBAL}
-```
-
-### `<locale>`
-enum, 任意項目 `JA`, `EN`, `FR`, `DE`, `KO`, `CN`
-このタイムライン定義がどのロケール向けに作られているのかを識別する。
-ゾーンと合わせて自動ロードの条件に含まれる。
-スペスペで設定しているゲームのロケールとタイムラインファイルのロケール、FFXIVプラグインの現在ゾーン名とタイムラインファイルのゾーンのが一致した場合にタイムラインがロードされる。
-
+### \<locale>
+enum, 任意項目  
+JA, EN, FR, DE, KO  
+このタイムライン定義がどのロケール向けに作られているのかを識別する。 ゾーンと合わせて自動ロードの条件に含まれる。 スペスペで設定しているゲームのロケールとタイムラインファイルのロケール、FFXIVプラグインの現在ゾーン名とタイムラインファイルのゾーンのが一致した場合にタイムラインがロードされる。
 ```xml
 <locale>JA</locale>
 ```
 
-### `<entry>`
-string, 任意項目
-最初にロードするサブルーチンを指定する。
-指定しない場合はtimeline直下の `<a>` タグを読み込む。
-指定した場合はtimeline直下の `<a>` タグは無視され、指定されたサブルーチンを初期アクティビティラインとして読み込む。
+## タイムライン制御
 
+### \<entry>
+string, 任意項目  
+最初にロードするサブルーチンを指定する。 指定しない場合はtimeline直下の \<a> タグを読み込む。 指定した場合はtimeline直下の \<a> タグは無視され、指定されたサブルーチンを初期アクティビティラインとして読み込む。
 ```xml
 <entry>メインフェーズ</entry>
 ```
 
-### `<start>`
-string(RegEx), 任意項目
-通常では「戦闘開始まで5秒前！」を検知してから4.8秒後にタイムラインをスタートする。
-この `<start>` タグに任意のログを指定するとそのログを検知したときに即時スタートする。`<start>` タグの指定がある場合は前述の「戦闘開始まで5秒前！」による自動スタートは無効になる。
-例) シグマ零式2層
+### \<start>
+string(RegEx), 任意項目  
+通常では「戦闘開始まで5秒前！」を検知してから4.8秒後にタイムラインをスタートする。 この \<start> タグに任意のログを指定するとそのログを検知したときに即時スタートする。\<start> タグの指定がある場合は前述の「戦闘開始まで5秒前！」による自動スタートは無効になる。
 
+例) シグマ零式2層  
 ```xml
-<start>こいつは久しぶりに良い絵だわい……。 誰にも邪魔はさせんぞ！！</start>
+ <start>こいつは久しぶりに良い絵だわい……。 誰にも邪魔はさせんぞ！！</start>
 ```
 
-## タイムライン制御
-
-### `<a>` Activity
-
+### \<a> Activity
 ```xml
 <a time="00:06" text="風雷波動" notice="次は、風雷波動。" />
 ```
-
 Activityを示すタイムラインの主な定義要素。
 
 #### name
-string, 任意項目
+string, 任意項目  
 このアクティビティの識別子。gotoやcallで指定するために使用する。
 
 #### inherits
-string, 任意項目
+string, 任意項目  
 この属性で指定された name のアクティビティの各属性を継承する。
 
 #### time
-TimeSpan, **必須**
-アクティビティの発生時刻を示す。 `mm:ss`形式, `s`形式 どちらで書いてもよい。
+TimeSpan, アクティビティの発生時刻を示す。  
+mm:ss形式, s形式 どちらで書いてもよい。
 
 #### text
-string, 任意項目
-オーバーレイに表示するアクティビティの表示テキスト。textを省略すると同期のみ、通知のみに使用されオーバーレイには表示されない。 `\n` で文字列中の改行を示す。
-- sync 正規表現結果による置換 : 有効
-- 変数よる置換 : 有効
+string, 任意項目  
+オーバーレイに表示するアクティビティの表示テキスト。textを省略すると同期のみ、通知のみに使用されオーバーレイには表示されない。  
+\n で文字列中の改行を示す。
+* sync 正規表現結果による置換 : 有効
+* 変数よる置換 : 有効
 
 #### sync
-string(RegEx), 任意項目
-タイムラインの時間経過を強制的にこのアクティビティの時刻に合わせるためのログマッチングキーワード。ここに指定されたパターンとログがマッチしたときタイムラインの現在時刻をこのアクティビティの時刻に合わせる。正規表現が使える。
-スペル・テロップと同様に各種プレースホルダが使用できるが `<` `>` をエスケープしなければらないため、プレースホルダを囲む記号を `[` `]` に置き換えている。
-例) `<me>` は タイムライン定義のsync内で使用する場合は `[me]` と記述する。
+string(RegEx), 任意項目  
+タイムラインの時間経過を強制的にこのアクティビティの時刻に合わせるためのログマッチングキーワード。ここに指定されたパターンとログがマッチしたときタイムラインの現在時刻をこのアクティビティの時刻に合わせる。正規表現が使える。  
+スペル・テロップと同様に各種プレースホルダが使用できるが<>をエスケープしなければらないため、プレースホルダを囲む記号を [] に置き換えている。  
+
+例)  
+\<me> は タイムライン定義のsync内で使用する場合は [me] と記述する。
 
 #### sync-s
-double, 任意項目, 既定値-12
+double, 任意項目, 既定値-12  
 syncマッチングを開始する時間のオフセット秒数。このアクティビティの12秒前から同期マッチングを開始する。
 
 #### sync-e
-double, 任意項目, 既定値12
+double, 任意項目, 既定値12  
 syncマッチングを終了する時間のオフセット秒数。このアクティビティの12秒後まで同期マッチングを継続する。
 
 #### goto
-string, 任意項目
+string, 任意項目  
 このアクティビティの時刻が到来したときにここで指定されたnameのアクティビティ、サブルーチンにジャンプする。
 
 #### call
-string, 任意項目
+string, 任意項目  
 このアクティビティの時刻が到来したときにここで指定されたnameのサブルーチンをコールする。
 
 #### notice
-string, 任意項目
+string, 任意項目  
 このアクティビティの時刻が到来したときに通知を行う。waveファイルを指定した場合はwaveを再生する。その他の文字列の場合はTTSとして発声する。
-- sync 正規表現結果による置換 : 有効
-- 変数よる置換 : 有効
+* sync 正規表現結果による置換 : 有効
+* 変数よる置換 : 有効
 
 #### notice-d
-enum, 任意項目, 既定値Both
+enum, 任意項目, 既定値Both  
 通知を再生するデバイスを指定します。TTSYukkuriでのメインデバイス、サブデバイスの設定に準ずる。
-- `Both` : 普通の設定。デバイスを指定せず、TTSYukkuriでメイン、サブ両方を定義している場合両方で再生する。
-- `Main` : TTSYukkuriで定義されたメインデバイスでのみ再生する。
-- `Sub` : TTSYukkuriで定義されたサブデバイスでのみ再生する。
+* Both : 普通の設定。デバイスを指定せず、TTSYukkuriでメイン、サブ両方を定義している場合両方で再生する。
+* Main : TTSYukkuriで定義されたメインデバイスでのみ再生する。
+* Sub : TTSYukkuriで定義されたサブデバイスでのみ再生する。
 
 #### notice-o
-double, 任意項目, 既定値-6
+double, 任意項目, 既定値-6  
 通知発生させる時間的オフセット秒数。既定値ではアクティビティの時刻が到来する6秒前に通知する。
+
+#### notice-vol
+float, 任意項目, 既定値1.0  
+サウンド通知の音量を指定する。0.0（ミュート）～ 1.0 で指定する。
+
+#### notice-sync
+bool, 任意項目, 既定値false  
+サウンドを同期再生する。true に指定された通知同士は同時再生されずに順次再生されるようになる。
+
+#### style
+string, 任意項目  
+設定UIで定義したStyleを割り当てる。指定しない場合は規定のStyleが割当てられる。
+
+#### icon
+string, 任意項目  
+Styleのicon属性を上書きする。アイコンのファイル名を指定するとStyle定義よりも優先してこの属性のアイコンを表示する。アイコンの表示サイズはStyleのアイコンサイズに依存する。
+```xml
+<a time="00:01" text="マーカ" icon="マーカー.png" />
+```
+
+#### json <a name="json-payload"></a>
+string (Inner XML), 任意項目, **[New]**  
+REST API呼び出し時のペイロード定義。POST, PUTメソッドのときのペイロードは `<a>` または `<t>` タグの配下に `<json>` タグで定義する。
+
+```xml
+<a ...>
+  <json>{ "key": "value" }</json>
+</a>
+```
+
+#### enabled
+bool, 任意項目, 既定値true  
+このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
+
+### \<t> Trigger
+```xml
+<t text="天雷掌" sync="白虎は「天雷掌」の構え。" notice="天雷掌" goto="フェーズ1" />
+```
+タイムラインの実行中に常駐するトリガ。通知に使用したりランダムなフェーズ展開を追尾したりという用途で使用する。
+
+#### name
+string, 任意項目  
+このトリガの識別子。
+
+#### inherits
+string, 任意項目  
+この属性で指定された name のトリガの各属性を継承する。
+
+#### no
+int, 任意項目, 既定値0  
+判定の順序を指定する。複数のトリガは no属性 でソートされた後に判定される。
+
+#### text
+string, 任意項目  
+トリガはオーバーレイには表示されないがログには出力される。そのときに出力されるtext。\n で文字列中の改行を示す。
+* sync 正規表現結果による置換 : 有効
+* 変数よる置換 : 有効
+
+#### sync
+string(RegEx)  
+このトリガのマッチングパターン
+
+#### sync-count
+string, 任意項目, 既定値0 **[Update]**  
+何回目のマッチングでこのトリガを実行するか？
+
+* `0` : 毎回のマッチングでトリガを実行する。
+* `1` : 1回目のマッチング時のみトリガを実行する。
+* `1,3` : カンマ区切りで複数回指定可能。
+* `1-5` : ハイフン区切りで範囲指定も可能。
+
+#### sync-interval
+int, 任意項目, 既定値0  
+最後マッチしてから次にマッチするまでの秒数を設定する。0ならば間隔を考慮せず毎回判定する。
+
+#### goto
+string, 任意項目  
+このトリガにマッチしたときにここで指定されたnameのアクティビティ、サブルーチンにジャンプする。
+
+#### call
+string, 任意項目  
+このアクティビティの時刻が到来したときにここで指定されたnameのサブルーチンをコールする。
+
+#### notice
+string, 任意項目  
+このトリガにマッチしたときに通知を行う。waveファイルを指定した場合はwaveを再生する。その他の文字列の場合はTTSとして発声する。
+* sync 正規表現結果による置換 : 有効
+* 変数よる置換 : 有効
+
+#### auto
+notice="auto" と指定すると通知メッセージを自動生成して通知する。  
+```xml
+<a text="デスセンテンス" notice="auto" notice-o="-6" />
+```
+この場合「デスセンテンス まで、あと6秒。」という通知文を自動生成する。
+
+#### notice-d
+enum, 任意項目, 既定値Both  
+通知を再生するデバイスを指定します。TTSYukkuriでのメインデバイス、サブデバイスの設定に準ずる。
+* Both : 普通の設定。デバイスを指定せず、TTSYukkuriでメイン、サブ両方を定義している場合両方で再生する。
+* Main : TTSYukkuriで定義されたメインデバイスでのみ再生する。
+* Sub : TTSYukkuriで定義されたサブデバイスでのみ再生する。
+
+#### notice-o
+double, 任意項目, 既定値0  
+サウンド通知を発生させる遅延秒数を指定する。他の要素との属性名の統一のため notice-o としているが、実質はサウンド通知に対する delay として動作する。  
+このオフセット値はサウンド通知にのみ影響し、配下のv-notice, i-noticeには影響を与えない。v-notice, i-notice の表示を遅延させたい場合はそれぞれの要素に搭載された delay 属性によって指定する。
 
 #### notice-vol
 float, 任意項目, 既定値1.0
@@ -192,134 +496,49 @@ float, 任意項目, 既定値1.0
 bool, 任意項目, 既定値false
 サウンドを同期再生する。true に指定された通知同士は同時再生されずに順次再生されるようになる。
 
-#### style
-string, 任意項目
-設定UIで定義したStyleを割り当てる。指定しない場合は規定のStyleが割当てられる。
-
-#### icon
-string, 任意項目
-Styleのicon属性を上書きする。アイコンのファイル名を指定するとStyle定義よりも優先してこの属性のアイコンを表示する。アイコンの表示サイズはStyleのアイコンサイズに依存する。
-
-```xml
-<a time="00:01" text="マーカ" icon="マーカー.png" />
-```
-
 #### exec
-string, 任意項目
-このアクティビティが実行された（時刻が到来した）ときに指定されたパスを起動する。実行時の作業フォルダは timeline フォルダとなる。
+string, 任意項目, 既定値null  
+このトリガにマッチしたときに指定されたパスを起動する。実行時の作業フォルダは timeline フォルダとなる。
 URIを記載した場合はREST APIとみなしてAPIをコールする。
-- `.ps1`, `.bat` などのスクリプトも実行可能。
 
-ex. `http://localhost:1334/place` 上記URIをGETで呼び出す
-```xml
-"http://localhost:1334/place"
-```
+ex. `"http://localhost:1334/place"`  
+上記URIをGETで呼び出す
 
-ex. `DELETE http://localhost:1334/place/1` 上記URIをDELETEで呼び出す
-```xml
-"DELETE http://localhost:1334/place/1"
-```
+ex. `"GET http://localhost:1334/place/1"`  
+上記URIをGETで呼び出す
 
-コマンドの冒頭に `/wait [duration]` を付与すると duration 秒遅延させてコマンドを実行する。
-ex. `exec="/wait 5.5 notepad.exe"` トリガの条件を満たしてから5.5秒後にメモ帳を起動する。
+ex. `"POST http://localhost:1334/place"`  
+上記URIをPOSTで呼び出す
 
-```xml
-exec="/wait 5.5 notepad.exe"
-```
+ex. `"PUT http://localhost:1334/place/1"`  
+上記URIをPUTで呼び出す
+
+ex. `"DELETE http://localhost:1334/place/1"`  
+上記URIをDELETEで呼び出す
+
+URIにはプレースホルダを使用できる。プレースホルダは実際の値に置換されURIエンコードされる。POST, PUTメソッドのときのペイロードは trigger タグの配下に `<json></json>` タグで定義する。
+
+コマンドの冒頭に `/wait [duration]` を付与すると duration 秒遅延させてコマンドを実行する。  
+ex. `exec="/wait 5.5 notepad.exe"`  
+トリガの条件を満たしてから5.5秒後にメモ帳を起動する。
 
 #### args
-string, 任意項目
+string, 任意項目, 既定値null  
 exec で指示されたアプリケーションに渡されるコマンドライン引数を指定する。
 
 #### exec-hidden
-bool, 任意項目, 既定値false
+bool, 任意項目, 既定値false  
 exec で起動するアプリケーションの Window を非表示にする。対象のアプリケーションによっては効かない場合もある。
 
 #### json
-string (Inner XML), 任意項目
-REST API呼び出し時のペイロード定義。POST, PUTメソッドのときのペイロードは <a> タグの配下に `<json>` タグで定義する。
-
-```xml
-<a ...>
-  <json>{ "key": "value" }</json>
-</a>
-```
+string (Inner XML), 任意項目, **[New]**  
+(Activity と同様)
 
 #### enabled
-bool, 任意項目, 既定値true
+bool, 任意項目, 既定値true  
 このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
 
----
-
-### `<t>` Trigger
-
-```xml
-<t text="天雷掌" sync="白虎は「天雷掌」の構え。" notice="天雷掌" goto="フェーズ1" />
-```
-
-タイムラインの実行中に常駐するトリガ。通知に使用したりランダムなフェーズ展開を追尾したりという用途で使用する。
-
-#### name
-string, 任意項目
-このトリガの識別子。
-
-#### inherits
-string, 任意項目
-この属性で指定された name のトリガの各属性を継承する。
-
-#### no
-int, 任意項目, 既定値0
-判定の順序を指定する。複数のトリガは no属性 でソートされた後に判定される。
-
-#### text
-string, 任意項目
-トリガはオーバーレイには表示されないがログには出力される。そのときに出力されるtext。`\n` で文字列中の改行を示す。
-- sync 正規表現結果による置換 : 有効
-- 変数よる置換 : 有効
-
-#### sync
-string(RegEx), **必須**
-このトリガのマッチングパターン
-
-#### sync-count
-string, 任意項目, 既定値0
-何回目のマッチングでこのトリガを実行するか？
-- `0` : 毎回のマッチングでトリガを実行する。
-- `1` : 1回目のマッチング時のみトリガを実行する。
-- `1,3` : カンマ区切りで複数回指定可能。
-- `1-5` : 範囲指定も可能。
-
-#### sync-interval
-int, 任意項目, 既定値0
-最後マッチしてから次にマッチするまでの秒数を設定する。0ならば間隔を考慮せず毎回判定する。
-
-#### goto
-string, 任意項目
-このトリガにマッチしたときにここで指定されたnameのアクティビティ、サブルーチンにジャンプする。
-
-#### call
-string, 任意項目
-このトリガにマッチしたときにここで指定されたnameのサブルーチンをコールする。
-
-#### notice, notice-d, notice-o, notice-vol, notice-sync
-（Activityと同様）
-
-#### auto
-`notice="auto"` と指定すると通知メッセージを自動生成して通知する。
-
-```xml
-<a text="デスセンテンス" notice="auto" notice-o="-6" />
-```
-この場合「デスセンテンス まで、あと6秒。」という通知文を自動生成する。
-
-#### exec, args, exec-hidden, json
-（Activityと同様）
-
-#### enabled
-bool, 任意項目, 既定値true
-
-### `<load>`
-
+### \<load>
 ```xml
 <t name="to Phase1" sync="オオオオオ……この衝動、もはや止められん！">
   <load target="フェーズ1" truncate="true" />
@@ -327,23 +546,21 @@ bool, 任意項目, 既定値true
   <load target="最終フェーズ" />
 </t>
 ```
-
 トリガの子要素として使用する。トリガの条件に合致したときに指定したサブルーチンのアクティビティを現在のアクティビティラインの最後尾に追加する。
 
 #### target
-string, 任意項目
+string, 任意項目  
 追加するサブルーチンの名前
 
 #### truncate
-bool, 任意項目, 既定値false
+bool, 任意項目, 既定値false  
 追加するときに現在のアクティビティラインをすべて消去してから追加するか否か。消去した場合は強制的に現在のアクティビティが追加されるサブルーチンの冒頭のアクティビティに変わる。
 
 #### enabled
-bool, 任意項目, 既定値true
+bool, 任意項目, 既定値true  
+このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
 
----
-
-### `<hp-sync>` HP Sync
+### \<hp-sync> HP Sync **[New]**
 
 敵のHP残量(%)をトリガーとして同期またはアクションを行うための定義。`<t>` や `<a>` の子要素として記述できるが、主に単独の `<t>` としてフェーズ移行検知などに使われる。
 
@@ -355,11 +572,11 @@ bool, 任意項目, 既定値true
 ```
 
 #### name
-string(RegEx), **必須**
+string(RegEx), **必須**  
 HPを監視する対象 (`Combatant`) の名前（正規表現）。
 
 #### hpp
-double, **必須**
+double, **必須**  
 HP率 (0.0 - 100.0)。指定したHP以下になった瞬間にマッチする。
 内部的には `CurrentHPRate <= hpp` の条件で判定される。
 
@@ -368,152 +585,822 @@ bool, 任意項目, 既定値true。
 
 ---
 
-### `<v-notice>` Visual Notice
-
+### \<v-notice> Visual Notice
 ```xml
 <t name="to Phase1" sync="オオオオオ……この衝動、もはや止められん！">
   <v-notice text="おおおお！" />
 </t>
 ```
-
 トリガにヒットしたときに専用のオーバーレイに通知メッセージを表示する。アクティビティ（aタグ）配下でも同様に使用できる。
 
 #### inherits
-string, 任意項目
-この属性で指定された name の v-notice の各属性を継承する。
+string, 任意項目  
+この属性で指定された name のv-noticeの各属性を継承する。
 
 #### text
-string, 任意項目, 既定値`{text}`
-通知オーバーレイに表示するテキスト。`{text}`を指定すると親トリガのtext属性を参照する。`{notice}`を指定するうと親トリガのnotice属性を参照する。`\n` で文字列中の改行を示す。
+string, 任意項目, 既定値{text}  
+通知オーバーレイに表示するテキスト。`{text}`を指定すると親トリガのtext属性を参照する。`{notice}`を指定するうと親トリガのnotice属性を参照する。\n で文字列中の改行を示す。
+* sync 正規表現結果による置換 : 有効
+* 変数よる置換 : 有効
 
 #### duration
-int, 任意項目, 既定値3
+int, 任意項目, 既定値3  
 通知を表示する時間
 
 #### duration-visible
-bool, 任意項目, 既定値true
+bool, 任意項目, 既定値true  
 durationを通知オーバーレイに表示するか否か。
 
 #### delay
-double, 任意項目, 既定値0
+double, 任意項目, 既定値0  
 表示までの遅延秒数
 
 #### stack-visible
-bool, 任意項目, 既定値false
+bool, 任意項目, 既定値false  
 重複ヒット数を通知にオーバーレイに表示するか否か。当該通知の表示中に同じテキストの通知の表示条件を満たしたとき stack 数を加算する。その stack 数を表示する。
 
 #### sync-to-hide
-string(RegEx), 任意項目
-このキーワードにマッチしたとき残り時間を無視してこの視覚通知を非表示にする。親トリガの正規表現Matchオブジェクトによる置換を使用できる。テロップの非表示機能と同等の機能。
+string, 任意項目  
+このキーワードにマッチしたとき残り時間を無視してこの視覚通知を非表示にする。親トリガの正規表現Matchオブジェクトによる置換を使用できる。テロップの非表示機能やスペルのマイナス延長と同等の機能。
 
 ```xml
 <!-- シグマ零式3層のエーテルロットの例 -->
 <t text="エーテルロット\n ➜ ${_pc}" sync="[pc]に「エーテルロット」の効果。">
-  <v-notice duration="15" sync-to-hide="${_pc}の「エーテルロット」が切れた。" order="-3" icon="Virus.png" />
+ <v-notice
+  duration="15"
+  sync-to-hide="${_pc}の「エーテルロット」が切れた。"
+  order="-3"
+  icon="Virus.png" />
 </t>
 ```
 
+現在エーテルロットを持っている人のカウントのみを視覚通知に表示する。エーテルロットが別の人に渡ったときに前の人の効果が切れるためそれを検知して前の人の表示を消す。
+
 #### order
-int, 任意項目, 既定値0
+int, 任意項目, 既定値0  
 通知オーバーレイ内の表示順序
 
 #### style
-string, 任意項目
-設定UIで定義したStyleを割り当てる。
+string, 任意項目  
+設定UIで定義したStyleを割り当てる。指定しない場合は規定のStyleが割当てられる。
 
 #### icon
-string, 任意項目
-アイコンのファイル名。
+string, 任意項目  
+Styleのicon属性を上書きする。アイコンのファイル名を指定するとStyle定義よりも優先してこの属性のアイコンを表示する。アイコンの表示サイズはStyleのアイコンサイズに依存する。
 
 #### job-icon
-bool, 任意項目, 既定値false
+bool, 任意項目, 既定値false  
 Styleのicon属性を上書きし、triggerのキャプチャーグループに含まれるキャラのジョブアイコンを表示する。複数キャラをキャプチャーしていた場合は最後のキャラのジョブアイコンを表示する。
 
 #### enabled
-bool, 任意項目, 既定値true
+bool, 任意項目, 既定値true  
+このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
 
-### `<i-notice>` Image Notice
-
+### \<i-notice> Image Notice
 ```xml
 <t name="to Phase1" sync="オオオオオ……この衝動、もはや止められん！">
-  <i-notice image="Sample.png" duration="5" scale="1.0" left="500" top="100" />
+  <i-notice
+    image="Sample.png"
+    duration="5"
+    scale="1.0"
+    left="500"
+    top="100" />
 </t>
 ```
-
 トリガにヒットしたときに専用のオーバーレイに画像を表示する。アクティビティ（aタグ）配下でも同様に使用できる。
 
 #### inherits
-string, 任意項目
+string, 任意項目  
+この属性で指定された name のi-noticeの各属性を継承する。
 
 #### image
-string, **必須**
-通知オーバーレイに表示するイメージファイル。`resources\images` 配下のフォルダに配置された png イメージを検索して表示する。フルパス指定も可能。
+string, 必須項目  
+通知オーバーレイに表示するイメージファイル。`resources\images` 配下のフォルダに配置された png イメージを検索して表示する。よってファイル名のみの指定で良い。フルパスで指定した場合は前述のフォルダ以外の場所のファイルも表示できる。
 
 #### duration
-int, 任意項目, 既定値5
+int, 任意項目, 既定値5  
 通知を表示する時間
 
 #### delay
-double, 任意項目, 既定値0
+double, 任意項目, 既定値0  
 表示までの遅延秒数
 
 #### sync-to-hide
-string, 任意項目
+string, 任意項目  
 v-notice タグと同様。
 
 #### scale
-double, 任意項目, 既定値1.0
-画像の拡大率。
+double, 任意項目, 既定値1.0  
+画像の拡大率。画像の縮尺／伸尺を変える場合は指定する。
 
-#### left, top
-int, 任意項目, 既定値-1
-画像の表示位置。指定しない場合はウィンドウ中央。
+#### left
+int, 任意項目, 既定値-1  
+画像の表示位置。left, top ともに指定しない場合はウィンドウ中央に表示される。
+
+#### top
+int, 任意項目, 既定値-1  
+画像の表示位置。left, top ともに指定しない場合はウィンドウ中央に表示される。
 
 #### enabled
-bool, 任意項目, 既定値true
+bool, 任意項目, 既定値true  
+このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
 
----
-
-### `<p-sync>` Position Sync
-
+### \<p-sync> Position Sync
 ```xml
 <t text="楔がポップ！">
   <p-sync interval="30">
     <combatant name="炎の楔" X="21.5" Y="21.5" Z="0" tolerance="0.01" />
     <combatant name="炎の楔" X="30.0" Y="40.0" Z="0" tolerance="0.01" />
+    <combatant name="炎の楔" X="50.0" Y="60.0" Z="0" tolerance="0.01" />
+    <combatant name="炎の楔" X="70.0" Y="80.0" Z="0" tolerance="0.01" />
   </p-sync>
-  <v-notice duration="5" duration-visible="false" style="NOTICE_NORMAL" icon="Marker.png" />
+
+  <v-notice
+    duration="5"
+    duration-visible="false"
+    style="NOTICE_NORMAL"
+    icon="Marker.png" />
+
+  <i-notice
+    image="フォーメーションA.png"
+    duration="5"
+    scale="1.0"
+    left="500"
+    top="100" />
 </t>
 ```
+トリガの判定を拡張する。子要素で定義する combatant の座標をすべて満たしたときにトリガを起動する。もっぱらオブジェクトや敵の配置に対して決まった移動やフォーメーションを通知するために使用する。
 
-トリガの判定を拡張する。子要素で定義する combatant の座標をすべて満たしたときにトリガを起動する。
+p-sync に合致したとき通知用の text 属性を動的に置換する代名詞を使用できる。
+```text
+{nameN} : N番目の combatant の実際の名前で置換する。
+{XN}    : N番目の combatant の実際のX座標で置換する。
+{YN}    : N番目の combatant の実際のY座標で置換する。
+{ZN}    : N番目の combatant の実際のZ座標で置換する。
+```
+```xml
+<t text="{name1}\nX{X1}\nY{Y1}\nZ{Z1}">
+ <p-sync>
+  <combatant name="Me Taro" X="21.5" Y="21.5" />
+  <combatant name="Warrior Jiro" X="30.5" Y="40.5" />
+ </p-sync>
+```
+
+この場合、text は
+```text
+Me Taro
+X21.5
+Y21.5
+Z[実際の値]
+```
+となる。  
+\* ZはMe Taroが実際にいた場所のZ座標が表示される
 
 #### interval
-double, 任意項目, 既定値30
+double, 任意項目, 既定値30  
 最後に合致してから再度判定を行うまでの間隔。
 
-### `<combatant>`
+#### enabled
+bool, 任意項目, 既定値true  
+このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
+
+### \<combatant>
 p-syncの条件となる combatant の座標を定義する。
 
 #### name
-string(RegEx), **必須**
-対象とする combatant の名前。正規表現。
+string(RegEx), 必須項目  
+対象とする combatant の名前。正規表現であるため完全一致で判定する場合は文頭と文末を指定すること。  
+`"^Naoki Yoshida$"`
 
 #### X, Y, Z
-float, 任意項目
+float, 任意項目  
 combatant の座標。省略した場合は該当の座標軸を判定対象としない。
 
 #### tolerance
-float, 任意項目, 既定値0.01
-座標の判定誤差。
+float, 任意項目, 既定値0.01  
+座標の判定誤差。座標は完全一致ではなく多少を誤差を許容して判定する。その判定誤差を指定する。
 
 #### enabled
-bool, 任意項目, 既定値true
+bool, 任意項目, 既定値true  
+このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
 
----
-
-### `<dump>`
+### \<dump>
 トリガの動作を拡張する。このトリガが実行されるときに周囲の全ての Combatant の座標をログに出力する。a タグの配下でも使用できる。
 
-### `<expressions>`, `<pre>`, `<set>`, `<table>`, `<s>`, `<import>`, `<default>`, `Razorの構文`
-(Wikiと同様のため、詳細は割愛するか、必要に応じて追記してください。主な変更は上記のアクティビティ・トリガー周りです。)
+### \<expressions>
+```xml
+<!-- 1回目 横回転の定義 -->
+<t text="横回転" sync="^15:[id8]:ミドガルズオルム:31C7" notice="横回転。">
+  <expressions>
+    <set name="take1_yoko" value="true" />
+  </expressions>
+</t>
+
+<!-- 2回目 横回転の定義 -->
+<t text="横回転 ➔離れる" sync="^15:[id8]:ミドガルズオルム:31C9" notice="横回転、離れる。">
+  <expressions>
+    <pre name="take1_yoko" value="true" />
+  </expressions>
+</t>
+```
+トリガの判定を拡張する。子要素で定義する pre の条件式をすべて満たしたときにトリガを実行する。
+
+#### enabled
+bool, 任意項目, 既定値true  
+このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
+
+### \<pre>
+条件式
+
+#### name
+string, 必須項目  
+変数の名前
+
+#### value
+object, 任意項目, 既定値true  
+変数を判定する期待値。
+* sync 正規表現結果による置換 : 有効
+* 変数よる置換 : 有効
+
+ex. `<pre name="flag1" value="true">` の場合、下記の条件式と同等の動作となる
+```csharp
+if (flag1 == true)
+{
+  トリガを実行する
+}
+```
+
+ex. `<pre name="flag2" value="false">` の場合
+```csharp
+if (flag1 == false)
+{
+  トリガを実行する
+}
+```
+##### 変数による評価
+変数の値を期待値として使用できる。  
+
+変数の場合
+```csharp
+VAR['変数名']
+```
+```xml
+<!-- フラグAとフラグBが一致するか？ -->
+<pre name="flagA" value="VAR['flagB']" />
+```
+
+テーブルの場合
+```csharp
+TABLE['テーブル名'][インデックス]['フィールド名']
+```
+```xml
+<!-- hogeテーブルの1レコード目のジョブが学者か？ -->
+<pre name="TABLE['hoge'][0]['job']" value="SCH" />
+```
+
+#### count
+int?, 任意項目, 既定値null  
+変数を数値として評価する。一致の場合に真, 不一致の場合に偽 として扱われる。value 属性と同時には使用できない。
+
+### \<set>
+変数に値を格納する
+
+#### name
+string, 必須項目  
+変数の名前
+
+#### value
+object, 任意項目, 既定値true  
+変数に格納する値。bool, int, double, string など任意の変数型を使用できる。
+* sync 正規表現結果による置換 : 有効
+* 変数よる置換 : 有効
+
+#### toggle
+bool, 任意項目, 既定値false  
+フラグに対してトグル操作を行う。`toggle="true"` のとき value は無視される。
+
+#### count
+string, 任意項目, 既定値null  
+変数をカウンタとして操作する。
+```text
+"+1" : 1加算する
+"-1" : 1減算する
+"1"  : 1で初期化する（1を代入する）
+```
+value 属性と同時には使用できない。
+
+#### ttl
+double, 任意項目, 既定値-1 (無限大)  
+変数の有効期限、秒数で指定する。`ttl="30"` とした場合、30秒経過後にはこの変数は false として扱われる。count 属性を使用した場合はTLLの概念は適用されない。
+
+### \<table>
+テーブル生成しデータを格納する。テーブルのフィールドにはキーを設定できる。レコードはキーによって昇順ソートされて格納される。
+
+テーブルの操作は table タグの子要素としてJSONで記述する。JSON文字列は変数や正規表現による置換を使用できる。
+* sync 正規表現結果による置換 : 有効
+* 変数よる置換 : 有効
+
+**Insert**
+```json
+{
+  "method" : "Insert",
+  "table" : "TEST",
+  "cols" : [
+    {
+      "name" : "id",
+      "val" : "0002",
+      "key" : "true"
+    },
+    {
+      "name" : "job",
+      "val" : "SCH",
+    }
+  ]
+}
+```
+
+**Update**
+```json
+{
+  "method" : "Update",
+  "table" : "TEST",
+  "cols" : [
+    {
+      "name" : "id",
+      "val" : "0002",
+      "key" : "true"
+    },
+    {
+      "name" : "job",
+      "val" : "WHM",
+    }
+  ]
+}
+```
+
+**Delete**
+```json
+{
+  "method" : "Delete",
+  "table" : "TEST",
+  "cols" : [
+    {
+      "name" : "id",
+      "val" : "0002",
+      "key" : "true"
+    },
+  ]
+}
+```
+
+#### method
+テーブルに対するメソッドを指定する。  
+Insert, Update, Delete  
+Insert と Update は実質的に同じ処理を行う。キーが重複するレコードが存在しなければ追加し、キーに該当するレコードが存在する場合はそのレコードを更新する。
+
+#### table
+テーブルの名前
+
+#### cols
+レコードとして格納するフィールドの配列  
+`name` : フィールド名  
+`val` : 格納する値  
+`key` : （任意）このフィールドをキーとするか？
+
+#### 実用例
+```xml
+<a time="10" text="テーブルセット1">
+  <expressions>
+    <table>
+    {
+      "method" : "Insert",
+      "table" : "TEST",
+      "cols" : [
+        {
+          "name" : "id",
+          "val" : "0002",
+          "key" : "true"
+        },
+        {
+          "name" : "job",
+          "val" : "SCH",
+        }
+      ]
+    }
+    </table>
+    <table>
+    {
+      "method" : "Insert",
+      "table" : "TEST",
+      "cols" : [
+        {
+          "name" : "id",
+          "val" : "0001",
+          "key" : "true"
+        },
+        {
+          "name" : "job",
+          "val" : "WHM",
+        }
+      ]
+    }
+    </table>
+  </expressions>
+</a>
+
+<a time="15" text="1行目が白魔道士です" notice-o="0">
+  <expressions>
+    <pre name="TABLE['TEST'][0]['job']" value="WHM" />
+  </expressions>
+  <v-notice
+    text="テーブル変数は TABLE['TEST'][0]['job'] です。"
+    duration="2"
+    duration-visible="false" />
+</a>
+
+<a time="18" text="2行目が学者です" notice-o="0">
+  <expressions>
+    <pre name="TABLE['TEST'][1]['job']" value="SCH" />
+  </expressions>
+  <v-notice
+    text="テーブル変数は TABLE['TEST'][1]['job'] です。"
+    duration="2"
+    duration-visible="false" />
+</a>
+```
+
+### \<s> Subroutine
+```xml
+<s name="メインフェーズ">
+  <a time="00:29" text="乾坤一擲" notice="次は、乾坤一擲。" />
+  <a time="00:37" text="呪縛雷" notice="次は、呪縛雷。" />
+  <a time="00:06" text="風雷波動" notice="次は、風雷波動。" />
+  <t sync="Added New Combatant 白帝" goto="フェーズ3" />
+</s>
+```
+アクティビティのブロックを定義するサブルーチンを定義する。s タグの子要素がサブルーチンとして機能する。サブルーチン内の時刻はサブルーチンの開始時からのオフセットで定義すること。
+
+#### 子要素
+\<a> : サブルーチン内部のタイムラインを定義する。時間はサブルーチン開始時点からのオフセットで定義する。  
+\<t> : サブルーチン内部でのみ稼働するトリガを定義する。  
+\<import> : 後述  
+
+#### name
+string  
+このサブルーチンの名前および識別子。goto, callのターゲットとなる。またこのサブルーチンの実行中はそのサブルーチン名がオーバーレイに表示される。
+
+#### enabled
+bool, 任意項目, 既定値true  
+このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
+
+### \<import>
+```xml
+<s name="トリガ定義">
+  <t sync="starts using パンチ" notice="パンチ！" />
+  <t sync="starts using キック" notice="キック！" />
+</s>
+
+<s name="フェーズ2">
+  <import source="トリガ定義" />
+  <a time="00:15" text="パンチ" notice="次は、パンチ。" />
+  <a time="00:21" text="キック" notice="次は、キック。" />
+  <a time="00:28" text="アルテマ" notice="次は、アルテマ。" />
+</s>
+```
+s タグ配下でのみ使用できる。source で指定されたサブルーチンからトリガだけをインポートする。
+
+#### source
+string  
+トリガのインポート元のサブルーチン名（name）を指定する。
+
+#### enabled
+bool, 任意項目, 既定値true  
+このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
+
+### \<default>
+各要素, 属性に規定値を設定する。無効な要素名, 属性。特にキャストできない型の値を設定した場合はエラーになる。ログをよく確認すること。
+
+#### target-element
+enum  
+規定値を設定する要素を指定する
+* Activity   : a タグ（アクティビティ）に対して適用する
+* Trigger    : t タグ（トリガ）に対して適用する
+* Subroutine  : s タグ（サブルーチン）に対して適用する
+* Load     : load タグ（ロード）に対して適用する
+* VisualNotice : v-notice タグ（視覚通知）に対して適用する
+* ImageNotice  : i-notice タグ（画像通知）に対して適用する
+* PositionSync : p-sync タグ（座標トリガ）に対して適用する
+* Combatant   : combatant タグ（座標定義）に対して適用する
+
+#### target-attr
+string  
+既定値を設定する属性を指定する。
+
+```xml
+<default
+  target-element="Activity"
+  target-attr="notice-o"
+  value="-3" />
+```
+アクティビティの規定の通知時刻オフセットを-3秒にする。
+
+#### value
+object  
+設定する既定値。キャストできないとエラーになるので注意すること。defaultを使用した場合はロード時にログを確認してエラーがないことを確認するのが望ましい。
+
+#### enabled
+bool, 任意項目, 既定値true  
+このエレメントが有効か無効か。無効な場合はコメントと同じ扱いになる。
+
+## Razorの構文
+Razor 構文を使用できる。詳細は下記のリファレンスを参照のこと。  
+[Razor の構文リファレンス - MSDN](https://docs.microsoft.com/ja-jp/aspnet/core/mvc/views/razor)  
+Razor のパーサには、定義ファイルのロード時点の情報をデータモデルとして渡している。データモデルの内容は下記のとおり。
+
+```text
+LT     : @(data.LT)
+ET     : @(data.ET)
+Zone   : @(data.Zone)
+ZoneID : @(data.ZoneID)
+Locale : @(data.Locale)
+
+Player.Number : @(data.Player.Number)
+Player.Name   : @(data.Player.Name)
+Player.Job    : @(data.Player.Job)
+Player.Role   : @(data.Player.Role)
+
+Party :
+  Party[0].Number : @(data.Party[0].Number)
+  Party[0].Name   : @(data.Party[0].Name)
+  Party[0].Job    : @(data.Party[0].Job)
+  Party[0].Role   : @(data.Party[0].Role)
+
+  Party[1].Number : @(data.Party[1].Number)
+  Party[1].Name   : @(data.Party[1].Name)
+  Party[1].Job    : @(data.Party[1].Job)
+  Party[1].Role   : @(data.Party[1].Role)
+
+  Party[2].Number : @(data.Party[2].Number)
+  Party[2].Name   : @(data.Party[2].Name)
+  Party[2].Job    : @(data.Party[2].Job)
+  Party[2].Role   : @(data.Party[2].Role)
+
+  Party[3].Number : @(data.Party[3].Number)
+  Party[3].Name   : @(data.Party[3].Name)
+  Party[3].Job    : @(data.Party[3].Job)
+  Party[3].Role   : @(data.Party[3].Role)
+
+  Party[4...8] more...
+
+Locale :
+  FFXIV Game Locale
+  JA, EN, FR, DE, KO
+
+Job  : PLD, WAR, DRK, WHM, SCH, AST...
+Role : Tank, Healer, MeleeDPS, RangeDPS, MagicDPS, Crafter, Gatherer
+```
+
+### Zone の判定
+```csharp
+if (Model.Zone == "Sigmascape")
+if (Model.ZoneID == 123)
+```
+と通常の条件式を使用してもよいが判定用のメソッドも提供されている。
+
+```csharp
+bool Model.InZone(param string[] zones)
+```
+現在のゾーンが引数で与えられたゾーンのリストのいずれかに該当するかを返す。大文字/小文字は識別しない。現在のゾーン名に引数のゾーン名が含まれるとき、真を返す。
+
+```csharp
+bool Model.InZone(param int[] zoneIDs)
+```
+現在のゾーンが引数で与えられたゾーンIDのリストのいずれかに該当するかを返す。
+
+### Job の判定
+Zone と同様に専用の判定メソッドが提供されている。
+
+```csharp
+bool Model.Player.InJob(param string[] jobs)
+```
+プレイヤーのジョブが引数で与えられたジョブのリストのいずれかに該当するかを返す。大文字/小文字は識別しない。現在のジョブに引数のジョブが含まれるとき、真を返す。
+
+```csharp
+// 使用例
+if (Model.Player.InJob("PLD", "WAR", "DRK")) {
+    do something...
+}
+```
+
+### Role の判定
+Zone と同様に専用の判定メソッドが提供されている。
+
+```csharp
+bool Model.Player.InRole(param string[] jobs)
+```
+プレイヤーのロールが引数で与えられたロールのリストのいずれかに該当するかを返す。大文字/小文字は識別しない。現在のロールに引数のロールが含まれるとき、真を返す。
+
+```csharp
+// 使用例
+if (Model.Player.InRole("Tank")) {
+    do something...
+}
+
+if (Model.Player.InRole("Healer")) {
+    do something...
+}
+
+if (Model.Player.InRole("DPS")) {
+    do something...
+}
+
+if (Model.Player.InRole("MeleeDPS")) {
+    do something...
+}
+```
+
+### JSON の読込み
+```csharp
+dynamic Model.ParseJsonFile(string file)
+```
+JSON ファイルを読み込みます。パスは timeline フォルダからの相対パスまたは絶対パスで指定します。
+
+### Include
+```csharp
+string Model.Include(string file)
+```
+指定したファイルを読み込みその内容を返す。パスは timeline フォルダからの相対パスまたは絶対パスで指定します。
+
+### 環境変数の操作
+#### 環境変数の参照
+##### Razor 構文での参照
+```csharp
+model.Var["変数名"]
+```
+
+```csharp
+// 使用例
+if (modeel.Var["TANK_ROLE"] == "MT")
+{
+    // Do somthing...
+}
+```
+
+##### 各種タグでの参照
+```csharp
+VAR['TANK_ROLE']
+```
+
+```xml
+<a time="10" text="フルイドスイング" notice="VAR['TANK_ROLE']に痛い攻撃" />
+```
+
+#### 環境変数の編集
+```csharp
+/// <summary>
+/// 環境変数をセットする
+/// </summary>
+/// <remarks>
+/// 環境変数をセットする。
+/// 通常スコープの場合はゾーンチェンジに消去される。
+/// グローバルスコープの場合はアプリケーションの実行中、常に保持される。</remarks>
+/// <param name="name">変数名</param>
+/// <param name="value">値</param>
+/// <param name="global">グローバルスコープか？</param>
+model.SetVar(string name, object value, bool global = false)
+```
+
+```csharp
+/// <summary>
+/// 一時変数をセットする
+/// </summary>
+/// <remarks>
+/// タイムラインのリセット時に消去される一時変数をセットする</remarks>
+/// <param name="name">変数名</param>
+/// <param name="value">値</param>
+model.SetTemp(string name, object value)
+```
+
+## 改訂履歴
+#### 2026-02-06 rev37
+* `hp-sync` 要素を追加した
+* `sync-count` でカンマ区切りのリスト指定、ハイフン区切りの範囲指定ができる旨を追記した
+* a, t 要素に `json` ペイロードの定義を追加した
+
+#### 2020-04-04 rev36
+* 目次を追加した
+
+#### 2019-12-12 rev35
+* dump タグの説明を追加した
+
+#### 2019-12-11 rev34
+* table タグの説明を追加した
+
+#### 2019-12-06 rev33
+* table タグを追加した
+* 変数値による置換の説明を追加した
+
+#### 2019-11-07 rev32
+* trigger に exec に起動にディレイをかける /wait 構文を追加した
+
+#### 2019-09-18 rev31
+* trigger に notice-o 属性を追加した
+* v-notice, i-notice に表示を遅延させる delay 属性を追加した
+
+#### 2019-09-13 rev30
+* trigger から REST API を呼び出せるようにした
+
+#### 2019-08-28 rev29
+* 共通属性として他の要素の属性を継承する inherits 属性を追加した
+
+#### 2019-07-24 rev28
+* trigger 再度判定するまでの間隔を指定する属性 sync-interval を追加した
+
+#### 2019-06-05 rev27
+* trigger に外部ツールを起動する属性 exec, args, exec-hidden を追加した
+
+#### 2019-03-22 rev26
+* 環境変数に関する Razor モデルメンバを追加した
+* pre, set タグの value の型を object 型に変更した
+
+#### 2018-10-24 rev25
+* import タグを追加した
+* Razorモデルに Include メソッドを追加した
+
+#### 2018-10-22 rev24
+* a タグ, t タグにサウンド通知の音量を個別に指定できる notice-vol 属性を追加した  
+  otice-vol="1.0"  
+  0.0 - 1.0 max, default 1.0
+
+* a タグ, t タグにサウンドを同期再生する notice-sync 属性を追加した  
+  notice-sync="true"  
+  bool, default false
+
+#### 2018-10-06 rev23
+* 環境変数の説明を追加した
+
+#### 2018-10-03 rev22
+* ユーザの拡大、作者の増加に伴って author タグ, license タグを追加した
+
+#### 2018-09-28 rev21
+* set タグ, pre タグ に数値を扱う count 属性を追加した  
+  set count="+1" で加算, pre count="1" で評価を行う。
+* t タグに判定の順序を規定する no属性 を追加した
+
+#### 2018-09-26 rev20
+* set タグにトグル操作を行う toggle 属性を追加した
+
+#### 2018-09-24 rev19
+* t タグの判定を拡張する expressions タグを追加した
+  判定結果をフラグとして変数に格納し後の判定条件として使用できるようにした。
+
+#### 2018-08-08 rev17
+* v-notice にジョブアイコンを自動的に表示する job-icon 属性を追加した  
+  job-icon="true" で事前の正規表現によるキャプチャーグループ中の最後のキャラのジョブのジョブアイコンを表示する。
+
+#### 2018-07-31 rev16
+* p-sync の combatant の name を単純な完全一致による文字列比較から正規表現に変更した
+
+#### 2018-06-11 rev15
+* t タグの配下に Combatants の座標情報とマッチングする p-sync タグを追加した
+* default タグが対象とするエレメントの説明を追加した
+
+#### 2018-05-24 rev14
+* v-notice タグにスタック数（重複ヒット数）を表示する stack-visible 属性を追加した
+
+#### 2018-05-09 rev13
+* v-notice タグに強制的に非表示にする sync-to-hide 属性を追加した
+* i-notice タグに強制的に非表示にする sync-to-hide 属性を追加した
+
+#### 2018-04-27 rev12
+* a タグ配下で v-notice を使用できるようにした
+* a タグ配下で i-notice を使用できるようにした
+
+#### 2018-04-26 rev11
+* イメージを表示する i-notice タグを t タグの小要素として追加した。
+
+#### 2018-03-17 rev10
+* JSON を読み込むメソッドを追加した
+* Include の説明を削除した  
+  従来どおり Include は使用できますが、積極的に使うものではなくなったため説明を削除した。
+
+#### 2018-03-13 rev9
+* 各種判定メソッドを用意した。  
+  InZone, InJob, InRole
+* Include を Razor ネイティブの方式に変えた
+* データモデルへのアクセス例の記述を変えた  
+  キャストしてからアクセスするようにした。以前の書き方でも問題なく動くが dynamic アクセスになるためこちらのほうが早い。
+
+#### 2018-03-12 rev8
+* #define を廃止した
+* 代わりに RazorEngine を搭載した
+
+#### 2018-03-11 rev7
+* `<v-notice>` に order 属性を追加した
+* #define の説明文を修正した
+
+#### 2018-03-09 rev6
+* \#defineプリプロセッサの説明を追加した
+* {GLOBAL}の説明を追加した
+
+&copy;anoyetta, 2018-2020  
