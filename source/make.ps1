@@ -1,27 +1,56 @@
-﻿# 現在のディレクトリを取得する
-$cd = Split-Path -Parent $MyInvocation.MyCommand.Path
+﻿# 現在のディレクトリを取得する (PS7+ compliant)
+$cd = $PSScriptRoot
 Set-Location $cd
+
+# 1. PowerShell Version Check
+if ($PSVersionTable.PSVersion.Major -lt 7) {
+    Write-Host "==========================================================" -ForegroundColor Red
+    Write-Host " [ERROR] This script requires PowerShell 7 (Core) or later." -ForegroundColor Red
+    Write-Host " Please install modern PowerShell from Microsoft Store.   " -ForegroundColor Red
+    Write-Host "==========================================================" -ForegroundColor Red
+    exit 1
+}
 
 Start-Transcript make.log | Out-Null
 
 function EndMake() {
     Stop-Transcript | Out-Null
     ''
-    Read-Host "終了するには何かキーを教えてください..."
+    Read-Host "終了するには何かキーを押してください..."
     exit
 }
 
-$msbuild = ""
-foreach ($f in (
-    "C:\Program Files\Microsoft Visual Studio\2022\Professional\Msbuild\Current\Bin\MSBuild.exe",
-    "C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe",
-    "C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Current\Bin\MSBuild.exe")) {
+# 2. Find MSBuild (Robust detection via vswhere)
+$msbuild = $null
+$vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
 
-    if ((Test-Path $f)) {
-        $msbuild = $f
-        break
+if (Test-Path $vswhere) {
+    try {
+        $msbuild = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe | Select-Object -First 1
+    } catch {
+        Write-Warning "Failed to execute vswhere.exe"
     }
 }
+
+# Fallback to hardcoded paths if vswhere fails or is missing
+if ([string]::IsNullOrEmpty($msbuild) -or !(Test-Path $msbuild)) {
+    foreach ($f in (
+        "C:\Program Files\Microsoft Visual Studio\2022\Professional\Msbuild\Current\Bin\MSBuild.exe",
+        "C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe",
+        "C:\Program Files\Microsoft Visual Studio\2022\Preview\Msbuild\Current\Bin\MSBuild.exe")) {
+        if (Test-Path $f) {
+            $msbuild = $f
+            break
+        }
+    }
+}
+
+if ([string]::IsNullOrEmpty($msbuild) -or !(Test-Path $msbuild)) {
+    Write-Error "MSBuild.exe not found. Please install Visual Studio 2022."
+    EndMake
+}
+
+Write-Output "Using MSBuild: $msbuild"
 
 $startdir = Get-Location
 $7z = Get-Item .\tools\7za.exe
@@ -57,7 +86,14 @@ if (Test-Path .\ACT.Hojoring\bin\x64\Release) {
 
 '●Build ACT.Hojoring Release'
 Start-Sleep -m 500
+
+# 3. Build & Error Check
 & $msbuild $sln /nologo /v:minimal /p:Configuration=Release /p:Platform=x64 /t:"ACT_Hojoring:Rebuild" | Write-Output
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Build Failed! Exit Code: $LASTEXITCODE"
+    EndMake
+}
+
 Start-Sleep -m 500
 
 '●Deploy Release'
@@ -105,11 +141,13 @@ if (Test-Path .\ACT.Hojoring\bin\x64\Release) {
     }
 
     '●不要なファイルを削除する'
-    Remove-Item -Force *.pdb -ErrorAction SilentlyContinue
-    Remove-Item -Force *.xml -ErrorAction SilentlyContinue
-    Remove-Item -Force *.exe.config -ErrorAction SilentlyContinue
-    Remove-Item -Force libgrpc_csharp_ext.*.so -ErrorAction SilentlyContinue
-    Remove-Item -Force libgrpc_csharp_ext.*.dylib -ErrorAction SilentlyContinue
+    $garbage = @(
+        "*.pdb", "*.xml", "*.exe.config",
+        "libgrpc_csharp_ext.*.so", "libgrpc_csharp_ext.*.dylib"
+    )
+    foreach ($g in $garbage) {
+        Remove-Item -Force $g -ErrorAction SilentlyContinue
+    }
     Remove-Item -Force -Recurse x86 -ErrorAction SilentlyContinue
     Remove-Item -Force -Recurse x64 -ErrorAction SilentlyContinue
 
@@ -149,6 +187,7 @@ if (Test-Path .\ACT.Hojoring\bin\x64\Release) {
     )
 
     '●各コンポーネントの個別アーカイブを作成する (並列実行)'
+    # PS7 Parallel feature
     $componentTasks | ForEach-Object -Parallel {
         $task = $_
         $deployDir = $using:deployDir
@@ -181,7 +220,11 @@ if (Test-Path .\ACT.Hojoring\bin\x64\Release) {
 
         Push-Location $targetDir
         & $sevenZipExe a -tzip -y $zipPath "*" | Out-Null
+        if ($LASTEXITCODE -ne 0) { Write-Warning "Failed to zip $baseName" }
+        
         & $sevenZipExe a -mx9 -y $sevenZipPath "*" | Out-Null
+        if ($LASTEXITCODE -ne 0) { Write-Warning "Failed to 7z $baseName" }
+        
         Pop-Location
         
         Write-Output "  -> Created Component: $baseName.zip / .7z"
@@ -202,6 +245,8 @@ if (Test-Path .\ACT.Hojoring\bin\x64\Release) {
         $sevenZipExe = $using:7z
         $argsList = $_.Args.Split(" ")
         & $sevenZipExe a $argsList $_.Target * | Out-Null
+        if ($LASTEXITCODE -ne 0) { Write-Warning "Failed to archive full package: $($_.Target)" }
+        
         Write-Output "  -> Created Full Package: $($_.Target | Split-Path -Leaf)"
     }
 

@@ -229,15 +229,30 @@ namespace FFXIV.Framework.Common
                     repository = "ACT.Hojoring";
                 }
 
-                var releases = client.Repository.Release.GetAll("anoyetta", repository).Result;
+                Release latest = null;
 
-                var lastest = releases.FirstOrDefault(x => !x.Prerelease);
-                if (lastest == null)
+                try
+                {
+                    latest = client.Repository.Release.GetLatest("anoyetta", repository).Result;
+                }
+                catch (AggregateException ae)
+                {
+                    if (ae.InnerException is NotFoundException)
+                    {
+                        latest = null;
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                if (latest == null)
                 {
                     return r;
                 }
 
-                var lastestReleaseVersion = lastest.Name;
+                var lastestReleaseVersion = latest.Name;
 
                 // 現在のバージョンを取得する
                 var currentVersion = currentAssembly.GetName().Version;
