@@ -13,12 +13,23 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FFXIV.Framework.Updater
 {
+    public interface IUpdaterUI : IDisposable
+    {
+        void Show();
+        void SetReleaseNotes(string tagName, string markdown);
+        void WriteLog(string message);
+        void UpdateProgress(int value);
+        void EnableCloseButton();
+        Task<bool> WaitForStart { get; }
+        Task WaitForClose { get; }
+        Action<string> ExternalLogger { get; set; }
+    }
+
     /// <summary>
     /// FFXIV.Framework および ACT.Hojoring のアップデート（ダウンロード・展開・配置準備）を管理するクラスです。
     /// 旧PowerShell版のロジックを継承し、除外リストを考慮したクリーンアップ・バックアップ・マイグレーションを行います。
@@ -115,8 +126,8 @@ namespace FFXIV.Framework.Updater
             TempDir = Path.Combine(parent, tmpName);
         }
 
-        #region Progress Dialog
-        public class ProgressDialog : Form
+        #region Progress Dialog (Default UI)
+        public class ProgressDialog : Form, IUpdaterUI
         {
             private ProgressBar progressBar;
             private RichTextBox logBox;
@@ -287,8 +298,19 @@ namespace FFXIV.Framework.Updater
             {
                 this.Log($"[Updater] アップデート確認中: {target.DisplayName}");
 
-                var releases = await FetchAllReleasesAsync(target.Repo);
-                var latest = usePreRelease ? releases?.FirstOrDefault() : releases?.FirstOrDefault(x => !x.Prerelease);
+                GitHubRelease latest = null;
+
+                if (usePreRelease)
+                {
+                    var releases = await FetchAllReleasesAsync(target.Repo);
+                    latest = releases?.FirstOrDefault();
+                }
+                else
+                {
+                    // 最適化: 最新リリースAPIを使用
+                    latest = await FetchLatestReleaseAsync(target.Repo);
+                }
+
                 if (latest == null)
                 {
                     return false;
@@ -323,9 +345,10 @@ namespace FFXIV.Framework.Updater
 
                 InitializePaths(target.PluginDirectory, target.DisplayName + ".tmp");
 
+                // UIスレッドで実行
                 return await (Task<bool>)ActGlobals.oFormActMain.Invoke((Func<Task<bool>>)(async () =>
                 {
-                    using (var dialog = new ProgressDialog(target.DisplayName))
+                    using (IUpdaterUI dialog = new ProgressDialog(target.DisplayName))
                     {
                         dialog.ExternalLogger = (msg) => this.Log($"[Dialog] {msg}");
                         dialog.Show();
@@ -382,7 +405,7 @@ namespace FFXIV.Framework.Updater
             }
         }
 
-        private async Task<(bool success, List<string> failedFiles)> PerformUpdateTask(string url, string fileName, UpdateTarget target, ProgressDialog dialog)
+        private async Task<(bool success, List<string> failedFiles)> PerformUpdateTask(string url, string fileName, UpdateTarget target, IUpdaterUI dialog)
         {
             List<string> failedFiles = new List<string>();
             try
@@ -470,14 +493,18 @@ namespace FFXIV.Framework.Updater
 
         private List<string> GetIgnoreList(string dest)
         {
-            string ignoreFile = Path.Combine(dest, "config", "update_hojoring_ignores.txt");
-            if (File.Exists(ignoreFile))
+            try
             {
-                return File.ReadAllLines(ignoreFile)
-                    .Where(l => !string.IsNullOrWhiteSpace(l) && !l.TrimStart().StartsWith("#"))
-                    .Select(l => l.Trim())
-                    .ToList();
+                string ignoreFile = Path.Combine(dest, "config", "update_hojoring_ignores.txt");
+                if (File.Exists(ignoreFile))
+                {
+                    return File.ReadAllLines(ignoreFile)
+                        .Where(l => !string.IsNullOrWhiteSpace(l) && !l.TrimStart().StartsWith("#"))
+                        .Select(l => l.Trim())
+                        .ToList();
+                }
             }
+            catch { }
             return new List<string>();
         }
 
@@ -488,7 +515,7 @@ namespace FFXIV.Framework.Updater
                 normalizedPath.IndexOf(ig.Replace('/', '\\'), StringComparison.OrdinalIgnoreCase) >= 0);
         }
 
-        private void CreateBackup(string dest, ProgressDialog dialog)
+        private void CreateBackup(string dest, IUpdaterUI dialog)
         {
             try
             {
@@ -510,7 +537,7 @@ namespace FFXIV.Framework.Updater
             }
         }
 
-        private void CleanupOldAssets(string dest, List<string> ignoreList, ProgressDialog dialog)
+        private void CleanupOldAssets(string dest, List<string> ignoreList, IUpdaterUI dialog)
         {
             string[] dirsToClean = { "references", "openJTalk", "yukkuri", "tools" };
             foreach (var d in dirsToClean)
@@ -567,7 +594,7 @@ namespace FFXIV.Framework.Updater
             }
         }
 
-        private void MigrateDirectories(string dest, ProgressDialog dialog)
+        private void MigrateDirectories(string dest, IUpdaterUI dialog)
         {
             string[][] maps = {
                 new[] { "resources\\icon\\Timeline EN", "resources\\icon\\Timeline_EN" },
@@ -603,7 +630,7 @@ namespace FFXIV.Framework.Updater
             }
         }
 
-        private (bool success, List<string> failedFiles) Install(string src, string dest, List<string> ignoreList, ProgressDialog dialog)
+        private (bool success, List<string> failedFiles) Install(string src, string dest, List<string> ignoreList, IUpdaterUI dialog)
         {
             List<string> failedFiles = new List<string>();
             try
@@ -672,7 +699,7 @@ namespace FFXIV.Framework.Updater
             }
         }
 
-        private bool ExtractWith7Zip(string archivePath, string outputDir, ProgressDialog dialog)
+        private bool ExtractWith7Zip(string archivePath, string outputDir, IUpdaterUI dialog)
         {
             try
             {
@@ -766,6 +793,23 @@ namespace FFXIV.Framework.Updater
                     client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
                     var json = await client.GetStringAsync($"https://api.github.com/repos/{repo}/releases");
                     return JsonConvert.DeserializeObject<List<GitHubRelease>>(json);
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private async Task<GitHubRelease> FetchLatestReleaseAsync(string repo)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+                    var json = await client.GetStringAsync($"https://api.github.com/repos/{repo}/releases/latest");
+                    return JsonConvert.DeserializeObject<GitHubRelease>(json);
                 }
             }
             catch
