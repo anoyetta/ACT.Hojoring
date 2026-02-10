@@ -29,10 +29,13 @@ jobs:
 
     - name: Restore Signing Key
       id: restore_key
-      if: secrets.HOJORING_SNK_BASE64 != ''
       run: |
-        $bytes = [Convert]::FromBase64String("${{ secrets.HOJORING_SNK_BASE64 }}")
-        [IO.File]::WriteAllBytes("source/ACT.Hojoring.Common/Hojoring.snk", $bytes)
+        if ("${{ secrets.HOJORING_SNK_BASE64 }}" -ne "") {
+          $bytes = [Convert]::FromBase64String("${{ secrets.HOJORING_SNK_BASE64 }}")
+          [IO.File]::WriteAllBytes("source/ACT.Hojoring.Common/Hojoring.snk", $bytes)
+        } else {
+          Write-Host "HOJORING_SNK_BASE64 is not set. Skipping signing key restoration."
+        }
       shell: pwsh
 
     - name: Build Solution
