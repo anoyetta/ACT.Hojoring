@@ -112,18 +112,23 @@ jobs:
         Remove-Item resources\icon\Timeline_JP\* -ErrorAction SilentlyContinue
 
         # Get Version
-        $versionFile = Join-Path $startdir "source/MasterVersion.txt"
+        $versionFile = Join-Path $startdir "source/@MasterVersion.txt"
         $versionShort = if (Test-Path $versionFile) { (Get-Content $versionFile).Trim().Trim("`r","`n") } else { "0.0.0" }
         Write-Host "Packaging Version: $versionShort"
         
-        # Export Version for next step
+        # Get Commit Hash
+        $hash = git rev-parse --short=7 HEAD
+        Write-Host "Commit Hash: $hash"
+
+        # Export Version and Hash
         echo "VERSION=$versionShort" >> $env:GITHUB_OUTPUT
+        echo "HASH=$hash" >> $env:GITHUB_OUTPUT
       shell: pwsh
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: ACT.Hojoring-${{ steps.package.outputs.VERSION }}
+        name: ACT.Hojoring-${{ steps.package.outputs.VERSION }}-${{ steps.package.outputs.HASH }}
         path: source/ACT.Hojoring/bin/x64/Release
 
     # Uncomment if tests are available and runnable
