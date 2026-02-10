@@ -24,6 +24,21 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2
 
+    - name: Checkout Secrets
+      uses: actions/checkout@v4
+      with:
+        repository: wbonbon/ACT.Hojoring.Secrets
+        token: ${{ secrets.HOJORING_SECRETS_PAT }}
+        path: dep-secrets
+
+    - name: Copy Dependencies
+      run: |
+        Copy-Item -Recurse -Force dep-secrets/ThirdParty/* source/ThirdParty
+        Copy-Item -Recurse -Force dep-secrets/costura-win-x64 source/ACT.TTSYukkuri/ACT.TTSYukkuri/
+        Copy-Item -Recurse -Force dep-secrets/costura-win-x86 source/ACT.TTSYukkuri/ACT.TTSYukkuri/
+        Copy-Item -Force dep-secrets/fflogs_debug.db source/FFLogsRankingDonwloader/resources/
+      shell: pwsh
+
     - name: Configure NuGet Access
       run: |
         if ("${{ secrets.DISCORD_NET_PAT }}" -ne "") {
