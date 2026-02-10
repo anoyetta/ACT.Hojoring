@@ -1,0 +1,136 @@
+name: Build ACT.Hojoring
+
+on:
+  push:
+    branches: [ "master", "feature/*", "topic/*" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env:
+      Solution_Path: source/ACT.Hojoring.sln
+      Test_Project_Path: source/ACT.Hojoring.Tests/ACT.Hojoring.Tests.csproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Checkout Secrets
+      uses: actions/checkout@v4
+      with:
+        repository: wbonbon/ACT.Hojoring.Secrets
+        token: ${{ secrets.HOJORING_SECRETS_PAT }}
+        path: dep-secrets
+
+    - name: Copy Dependencies
+      run: |
+        Copy-Item -Recurse -Force dep-secrets/ThirdParty/* source/ThirdParty
+        Copy-Item -Recurse -Force dep-secrets/costura-win-x64 source/ACT.TTSYukkuri/ACT.TTSYukkuri/
+        Copy-Item -Recurse -Force dep-secrets/costura-win-x86 source/ACT.TTSYukkuri/ACT.TTSYukkuri/
+        Copy-Item -Recurse -Force dep-secrets/ACT.TTSYukkuri/Thirdparty source/ACT.TTSYukkuri/
+        Copy-Item -Force dep-secrets/fflogs_debug.db source/FFLogsRankingDonwloader/resources/
+      shell: pwsh
+
+    - name: Configure NuGet Access
+      run: |
+        if ("${{ secrets.DISCORD_NET_PAT }}" -ne "") {
+           nuget sources update -Name "discord-net-nightly" -UserName "${{ secrets.DISCORD_NET_USER }}" -Password "${{ secrets.DISCORD_NET_PAT }}" -ConfigFile source/NuGet.Config
+        }
+      shell: pwsh
+
+    - name: Restore NuGet packages
+      run: nuget restore ${{ env.Solution_Path }}
+
+    - name: Restore Signing Key
+      id: restore_key
+      run: |
+        if ("${{ secrets.HOJORING_SNK_BASE64 }}" -ne "") {
+          $bytes = [Convert]::FromBase64String("${{ secrets.HOJORING_SNK_BASE64 }}")
+          [IO.File]::WriteAllBytes("source/ACT.Hojoring.Common/Hojoring.snk", $bytes)
+          [IO.File]::WriteAllBytes("source/ACT.Hojoring.Activator/Hojoring.snk", $bytes)
+        } else {
+          Write-Host "HOJORING_SNK_BASE64 is not set. Skipping signing key restoration."
+        }
+      shell: pwsh
+
+    - name: Build Solution
+      run: msbuild ${{ env.Solution_Path }} /p:Configuration=Release /p:Platform=x64
+
+    - name: Package Artifacts
+      id: package
+      run: |
+        $ErrorActionPreference = "Stop"
+        $startdir = Get-Location
+        $binDir = Join-Path $startdir "source/ACT.Hojoring/bin/x64/Release"
+        
+        if (-not (Test-Path $binDir)) { Write-Error "Build output directory not found: $binDir"; exit 1 }
+
+        Set-Location $binDir
+
+        Write-Host "Cleaning up locales..."
+        $locales = @("cs", "cs-CZ", "de", "es", "fr", "hu", "it", "ja", "ja-JP", "ko", "pl", "pt-BR", "ro", "ru", "sv", "tr", "zh-Hans", "zh-Hant")
+        foreach ($locale in $locales) { if (Test-Path $locale) { Remove-Item -Force -Recurse $locale } }
+
+        Write-Host "Reorganizing into 'bin' directory..."
+        if (-not (Test-Path "bin")) { New-Item -ItemType Directory "bin" | Out-Null }
+        $targets = @("yukkuri", "openJTalk", "lib", "tools")
+        foreach ($t in $targets) {
+            if (Test-Path $t) {
+                $dest = Join-Path "bin" $t
+                if (Test-Path $dest) { Get-ChildItem -Path $dest -Recurse | ForEach-Object { if ($_.Attributes -ne 'Directory') { $_.Attributes = 'Normal' } }; Remove-Item -Path $dest -Recurse -Force }
+                Copy-Item -Path $t -Destination $dest -Recurse -Force
+                if (Test-Path $dest) { Remove-Item -Path $t -Recurse -Force }
+            }
+        }
+
+        Write-Host "Removing garbage files..."
+        $garbage = @("*.pdb", "*.xml", "*.exe.config", "libgrpc_csharp_ext.*.so", "libgrpc_csharp_ext.*.dylib")
+        foreach ($g in $garbage) { Remove-Item -Force $g -ErrorAction SilentlyContinue }
+        Remove-Item -Force -Recurse x86 -ErrorAction SilentlyContinue; Remove-Item -Force -Recurse x64 -ErrorAction SilentlyContinue
+
+        Write-Host "Removing specific resources..."
+        Remove-Item bin\openJTalk\dic\sys.dic -ErrorAction SilentlyContinue
+        Remove-Item bin\openJTalk\voice\* -ErrorAction SilentlyContinue
+        Remove-Item bin\yukkuri\aq_dic\aqdic.bin -ErrorAction SilentlyContinue
+        Remove-Item bin\lib\*.dll -ErrorAction SilentlyContinue
+        Remove-Item resources\icon\Common\*.png -ErrorAction SilentlyContinue
+        Remove-Item resources\icon\Job\*.png -ErrorAction SilentlyContinue
+        Remove-Item resources\icon\Role\*.png -ErrorAction SilentlyContinue
+        Remove-Item resources\xivdb\*.csv -ErrorAction SilentlyContinue
+        Remove-Item resources\timeline\wallpaper\* -ErrorAction SilentlyContinue
+        Remove-Item resources\wav\* -Exclude _asterisk.wav,_beep.wav,_wipeout.wav -ErrorAction SilentlyContinue
+        Remove-Item resources\icon\Timeline_EN\* -ErrorAction SilentlyContinue
+        Remove-Item resources\icon\Timeline_JP\* -ErrorAction SilentlyContinue
+
+        # Get Version
+        $versionFile = Join-Path $startdir "source/@MasterVersion.txt"
+        $versionShort = if (Test-Path $versionFile) { (Get-Content $versionFile).Trim().Trim("`r","`n") } else { "0.0.0" }
+        Write-Host "Packaging Version: $versionShort"
+        
+        # Get Commit Hash
+        $hash = git rev-parse --short=7 HEAD
+        Write-Host "Commit Hash: $hash"
+
+        # Export Version and Hash
+        echo "VERSION=$versionShort" >> $env:GITHUB_OUTPUT
+        echo "HASH=$hash" >> $env:GITHUB_OUTPUT
+      shell: pwsh
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ACT.Hojoring-${{ steps.package.outputs.VERSION }}-${{ steps.package.outputs.HASH }}
+        path: source/ACT.Hojoring/bin/x64/Release
+
+    # Uncomment if tests are available and runnable
+    # - name: Run Tests
+    #   run: dotnet test ${{ env.Test_Project_Path }} --no-build --verbosity normal

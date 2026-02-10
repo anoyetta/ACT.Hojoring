@@ -1,0 +1,34 @@
+# Tasks
+
+- [x] Read Wiki: Basic Structure & Activity/Trigger <!-- id: 1 -->
+- [x] Read Wiki: Visual/Image Notice & Syncs <!-- id: 2 -->
+- [x] Read Wiki: Advanced Features (Script, Import, Razor) <!-- id: 3 -->
+- [x] Verify `inherits` attribute in `TimelineBase.cs` <!-- id: 4 -->
+- [x] Verify `window-state` and other unconfirmed attributes <!-- id: 5 -->
+- [x] Create `timeline_reference_update.md` with corrections and additions <!-- id: 6 -->
+- [x] Notify User <!-- id: 7 -->
+- [x] Move `fix/updater-refactor` to `feature/refactor` <!-- id: 8 -->
+- [x] Rewrite history: `feature/updater-improvements` -> `feature/refactor` <!-- id: 9 -->
+- [x] Analyze solution and propose improvements for all features <!-- id: 10 -->
+- [x] Address CI Key and RazorEngine concerns <!-- id: 11 -->
+- [x] Update roadmap based on user feedback <!-- id: 12 -->
+- [x] **Phase 0: Foundation & Security** (CI/CD, RazorEngine -> RazorLight)
+    - [x] **CI/CD Environment Setup**
+        - [x] Refactor `build.yml` to inline `ci_package.ps1`
+        - [x] Ensure `7za.exe` is used correctly (switched to system 7z)
+        - [x] Fix artifact naming (Version + Hash)
+    - [x] **Change RazorEngine to RazorLight**
+        - [x] Add RazorLight to dependencies (Checked `csproj`)
+        - [x] Replace `RazorEngine` usage with `RazorLight` in `TimelineModel.cs`
+        - [x] Verify `TimelineRazorProject` and `NullHtmlEncoder`
+        - [x] **Fix**: Inject `NullHtmlEncoder` correctly (using `disableEncoding` reflection)
+        - [x] Cleanup `RazorEngine` references from `.csproj` and `PluginCore.cs`
+        - [x] **Fix**: Add `netstandard` and `Microsoft.CSharp` metadata references
+        - [x] **Fix**: Correct PostBuildEvents in `.csproj` files
+
+- [ ] Phase 1: Core Timeline Implementation <!-- id: 17 -->
+    - [ ] Create `Chronology` Class (Timeline Root) <!-- id: 18 -->
+    - [ ] Create `Zone` Class <!-- id: 19 -->
+    - [ ] Create `Activity` Class <!-- id: 20 -->
+    - [ ] Create `Trigger` Class <!-- id: 21 -->
+    - [ ] Implement XML/YAML Serialization Support <!-- id: 22 -->
