@@ -66,16 +66,13 @@ jobs:
       run: msbuild ${{ env.Solution_Path }} /p:Configuration=Release /p:Platform=x64
 
     - name: Package Artifacts
+      id: package
       run: |
         $ErrorActionPreference = "Stop"
         $startdir = Get-Location
         $binDir = Join-Path $startdir "source/ACT.Hojoring/bin/x64/Release"
-        $toolsDir = Join-Path $startdir "source/tools"
-        $7z = "7z" # Use system 7-zip
-        $archivesDir = Join-Path $startdir "archives"
-
+        
         if (-not (Test-Path $binDir)) { Write-Error "Build output directory not found: $binDir"; exit 1 }
-        if (-not (Test-Path $archivesDir)) { New-Item -ItemType Directory -Path $archivesDir | Out-Null }
 
         Set-Location $binDir
 
@@ -118,21 +115,16 @@ jobs:
         $versionFile = Join-Path $startdir "source/MasterVersion.txt"
         $versionShort = if (Test-Path $versionFile) { (Get-Content $versionFile).Trim().Trim("`r","`n") } else { "0.0.0" }
         Write-Host "Packaging Version: $versionShort"
-
-        $archiveBase = "ACT.Hojoring-$versionShort.7z"
-        $full7zPath = Join-Path $archivesDir $archiveBase
-        if (Test-Path $full7zPath) { Remove-Item $full7zPath -Force }
-
-        Write-Host "Creating 7z archive..."
-        & $7z a -mx9 -r $full7zPath * | Out-Null
-        if ($LASTEXITCODE -ne 0) { Write-Error "Failed to create 7z archive."; exit 1 }
+        
+        # Export Version for next step
+        echo "VERSION=$versionShort" >> $env:GITHUB_OUTPUT
       shell: pwsh
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: ACT.Hojoring-Build
-        path: archives/*.7z
+        name: ACT.Hojoring-${{ steps.package.outputs.VERSION }}
+        path: source/ACT.Hojoring/bin/x64/Release
 
     # Uncomment if tests are available and runnable
     # - name: Run Tests
