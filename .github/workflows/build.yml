@@ -71,7 +71,7 @@ jobs:
         $startdir = Get-Location
         $binDir = Join-Path $startdir "source/ACT.Hojoring/bin/x64/Release"
         $toolsDir = Join-Path $startdir "source/tools"
-        $7z = Join-Path $toolsDir "7za.exe"
+        $7z = "7z" # Use system 7-zip
         $archivesDir = Join-Path $startdir "archives"
 
         if (-not (Test-Path $binDir)) { Write-Error "Build output directory not found: $binDir"; exit 1 }
