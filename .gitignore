@@ -292,7 +292,6 @@ __pycache__/
 *.snk
 *.bak
 *.ps1
-!source/ci_package.ps1
 *_wpftemp*
 AquesTalkDriver.dll
 push.ps1
