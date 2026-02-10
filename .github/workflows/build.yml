@@ -65,11 +65,15 @@ jobs:
     - name: Build Solution
       run: msbuild ${{ env.Solution_Path }} /p:Configuration=Release /p:Platform=x64
 
+    - name: Package Artifacts
+      run: source/ci_package.ps1
+      shell: pwsh
+
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: ACT.Hojoring-Build
-        path: source/ACT.Hojoring/bin/x64/Release
+        path: archives/*.7z
 
     # Uncomment if tests are available and runnable
     # - name: Run Tests
