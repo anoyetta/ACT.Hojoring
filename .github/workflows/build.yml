@@ -24,6 +24,13 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2
 
+    - name: Configure NuGet Access
+      run: |
+        if ("${{ secrets.DISCORD_NET_PAT }}" -ne "") {
+           nuget sources update -Name "discord-net-nightly" -UserName "${{ secrets.DISCORD_NET_USER }}" -Password "${{ secrets.DISCORD_NET_PAT }}" -ConfigFile source/NuGet.Config
+        }
+      shell: pwsh
+
     - name: Restore NuGet packages
       run: nuget restore ${{ env.Solution_Path }}
 
