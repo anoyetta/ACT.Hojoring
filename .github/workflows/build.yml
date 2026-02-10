@@ -36,6 +36,7 @@ jobs:
         Copy-Item -Recurse -Force dep-secrets/ThirdParty/* source/ThirdParty
         Copy-Item -Recurse -Force dep-secrets/costura-win-x64 source/ACT.TTSYukkuri/ACT.TTSYukkuri/
         Copy-Item -Recurse -Force dep-secrets/costura-win-x86 source/ACT.TTSYukkuri/ACT.TTSYukkuri/
+        Copy-Item -Recurse -Force dep-secrets/ACT.TTSYukkuri/Thirdparty source/ACT.TTSYukkuri/
         Copy-Item -Force dep-secrets/fflogs_debug.db source/FFLogsRankingDonwloader/resources/
       shell: pwsh
 
