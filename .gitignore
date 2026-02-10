@@ -292,6 +292,7 @@ __pycache__/
 *.snk
 *.bak
 *.ps1
+!source/ci_package.ps1
 *_wpftemp*
 AquesTalkDriver.dll
 push.ps1
@@ -316,3 +317,13 @@ source_dotnet5/
 resources/desktop.ini
 
 *.lnk
+
+# Secret files (to be encrypted)
+source/ACT.TTSYukkuri/ACT.TTSYukkuri/costura-win-x64/
+source/ACT.TTSYukkuri/ACT.TTSYukkuri/costura-win-x86/
+source/FFLogsRankingDonwloader/resources/fflogs_debug.db
+source/ThirdParty/
+source/ACT.TTSYukkuri/Thirdparty/
+
+# Allow the encrypted archive
+!Secure.7z
