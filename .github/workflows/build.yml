@@ -1,0 +1,42 @@
+name: Build ACT.Hojoring
+
+on:
+  push:
+    branches: [ "master", "feature/*" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env:
+      Solution_Path: source/ACT.Hojoring.sln
+      Test_Project_Path: source/ACT.Hojoring.Tests/ACT.Hojoring.Tests.csproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore NuGet packages
+      run: nuget restore ${{ env.Solution_Path }}
+
+    - name: Restore Signing Key
+      id: restore_key
+      if: ${{ secrets.HOJORING_SNK_BASE64 != '' }}
+      run: |
+        $bytes = [Convert]::FromBase64String("${{ secrets.HOJORING_SNK_BASE64 }}")
+        [IO.File]::WriteAllBytes("source/ACT.Hojoring.Common/Hojoring.snk", $bytes)
+      shell: pwsh
+
+    - name: Build Solution
+      run: msbuild ${{ env.Solution_Path }} /p:Configuration=Release /p:Platform=x64
+
+    # Uncomment if tests are available and runnable
+    # - name: Run Tests
+    #   run: dotnet test ${{ env.Test_Project_Path }} --no-build --verbosity normal
