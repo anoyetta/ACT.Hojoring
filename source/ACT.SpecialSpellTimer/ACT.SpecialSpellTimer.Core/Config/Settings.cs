@@ -768,6 +768,8 @@ namespace ACT.SpecialSpellTimer.Config
             }
         }
 
+        public DateTime LastRazorEngineCleanupDateTime { get; set; } = DateTime.MinValue;
+
         #endregion Data - Hidden
 
         #region Load & Save
