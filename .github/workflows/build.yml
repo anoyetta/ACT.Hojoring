@@ -2,7 +2,7 @@ name: Build ACT.Hojoring
 
 on:
   push:
-    branches: [ "master", "feature/*" ]
+    branches: [ "master", "feature/*", "topic/*" ]
   pull_request:
     branches: [ "master" ]
 
