@@ -23,10 +23,12 @@ using FFXIV.Framework.Globalization;
 using FFXIV.Framework.WPF.Views;
 using FFXIV.Framework.XIVHelper;
 using Prism.Commands;
-using RazorEngine;
-using RazorEngine.Configuration;
-using RazorEngine.Templating;
-using RazorEngine.Text;
+using RazorLight;
+using RazorLight.Razor;
+using Microsoft.CodeAnalysis;
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+using System.Text.Encodings.Web;
 
 namespace ACT.SpecialSpellTimer.RaidTimeline
 {
@@ -38,6 +40,49 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
     public partial class TimelineModel :
         TimelineBase
     {
+        /// <summary>
+        /// タイムライン定義ファイル用の RazorLightEngine を生成する
+        /// </summary>
+        /// <returns>RazorLightEngine</returns>
+        private static RazorLightEngine CreateTimelineEngine()
+        {
+            var builder = new RazorLightEngineBuilder()
+                .UseProject(new TimelineRazorProject(TimelineRazorModel.Instance.TimelineDirectory))
+                .UseMemoryCachingProvider();
+
+            // Add Namespaces
+            builder.AddDefaultNamespaces(
+                "System.Runtime",
+                "System.IO",
+                "System.Linq",
+                "System.Text",
+                "System.Text.RegularExpressions",
+                "FFXIV.Framework.Common",
+                "FFXIV.Framework.Extensions",
+                "ACT.SpecialSpellTimer.RazorModel"
+            );
+
+            // Add References
+            // Add Assemblies containing types used in Razor templates
+            // RazorLight requires MetadataReference, not Assembly
+            builder.AddMetadataReferences(
+                MetadataReference.CreateFromFile(typeof(TimelineModel).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(TimelineRazorModel).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(FFXIV.Framework.Common.WPFHelper).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(System.Linq.Enumerable).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(System.Text.RegularExpressions.Regex).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(System.Xml.XmlDocument).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Advanced_Combat_Tracker.ActGlobals).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(RazorLightEngine).Assembly.Location),
+                MetadataReference.CreateFromFile(Assembly.Load("netstandard").Location),
+                MetadataReference.CreateFromFile(Assembly.Load("Microsoft.CSharp").Location)
+            );
+
+            // Inject NullHtmlEncoder to disable HTML encoding
+            InjectNullHtmlEncoder(builder);
+
+            return builder.Build();
+        }
         public override TimelineElementTypes TimelineType => TimelineElementTypes.Timeline;
 
         public override IList<TimelineBase> Children => this.elements;
@@ -641,7 +686,7 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         }
 
         /// <summary>
-        /// テキストを RazorEngine でCompile(パース)する
+        /// テキストを RazorLight でCompile(パース)する
         /// </summary>
         /// <param name="source">
         /// 元のテキスト</param>
@@ -655,71 +700,88 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
 
             var sb = new StringBuilder();
 
-            using (var sw = new StringWriter(sb))
-            using (var engine = CreateTimelineEngine())
+            try 
             {
-                engine.RunCompile(
-                    file,
-                    sw,
-                    typeof(TimelineRazorModel),
-                    TimelineRazorModel.Instance);
+                var template = File.ReadAllText(file, new UTF8Encoding(false));
+                var engine = CreateTimelineEngine();
+
+                // Synchronously wait for the result
+                string result = engine.CompileRenderStringAsync(
+                    file, 
+                    template, 
+                    TimelineRazorModel.Instance).GetAwaiter().GetResult();
+                
+                sb.Append(result);
+            }
+            catch (Exception ex)
+            {
+                // Let the caller handle it (TimelineModel.Load catches exceptions)
+                throw new InvalidOperationException($"Razor Compile Error in {Path.GetFileName(file)}: {ex.Message}", ex);
             }
 
             return sb;
         }
 
-        /// <summary>
-        /// タイムライン定義ファイル用の RazorEngine を生成する
-        /// </summary>
-        /// <returns>RazorEngine</returns>
-        private static IRazorEngineService CreateTimelineEngine()
+
+
+        private static void InjectNullHtmlEncoder(RazorLightEngineBuilder builder)
         {
-            var config = new TemplateServiceConfiguration();
-
-            config.Language = Language.CSharp;
-
-            config.ReferenceResolver = new RazorReferenceResolver();
-
-            config.Namespaces.Add("System.Runtime");
-            config.Namespaces.Add("System.IO");
-            config.Namespaces.Add("System.Linq");
-            config.Namespaces.Add("System.Text");
-            config.Namespaces.Add("System.Text.RegularExpressions");
-            config.Namespaces.Add("FFXIV.Framework.Common");
-            config.Namespaces.Add("FFXIV.Framework.Extensions");
-            config.Namespaces.Add("ACT.SpecialSpellTimer.RazorModel");
-
-            //You can use config.DisableTempFileLocking = true as well.
-            //This will work in any AppDomain (including the default one).
-            //To remove the RazorEngine warnings you can additionally use config.CachingProvider = new DefaultCachingProvider(t => {}).
-            // See also https://github.com/Antaris/RazorEngine/issues/244 for more details.
-
-//            config.DisableTempFileLocking = true;
-//            config.CachingProvider = new DefaultCachingProvider(t => { });
-
-
-            config.EncodedStringFactory = new RawStringFactory();
-
-            config.TemplateManager = new DelegateTemplateManager((name) =>
+            try
             {
-                if (File.Exists(name))
+                // Try to set 'disableEncoding' field (RazorLight 2.0+)
+                var allFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+                var field = builder.GetType().GetField("disableEncoding", allFlags);
+                if (field != null)
                 {
-                    return File.ReadAllText(name, new UTF8Encoding(false));
+                    field.SetValue(builder, true);
+                    return;
                 }
 
-                var path = Path.Combine(
-                    TimelineRazorModel.Instance.TimelineDirectory,
-                    name);
+                // Fallback: Try to find IServiceCollection and inject NullHtmlEncoder
+                IServiceCollection services = null;
 
-                if (File.Exists(path))
+                // 1. Search Properties
+                var props = builder.GetType().GetProperties(allFlags);
+                foreach(var p in props)
                 {
-                    return File.ReadAllText(path, new UTF8Encoding(false));
+                    if (typeof(IServiceCollection).IsAssignableFrom(p.PropertyType))
+                    {
+                        services = (IServiceCollection)p.GetValue(builder);
+                        break;
+                    }
                 }
 
-                return name;
-            });
+                // 2. Search Fields (fallback)
+                if (services == null)
+                {
+                    var fields = builder.GetType().GetFields(allFlags);
+                    foreach(var f in fields)
+                    {
+                        if (typeof(IServiceCollection).IsAssignableFrom(f.FieldType))
+                        {
+                            services = (IServiceCollection)f.GetValue(builder);
+                            break;
+                        }
+                    }
+                }
 
-            return RazorEngineService.Create(config);
+                if (services != null)
+                {
+                    // Remove existing HtmlEncoder if present
+                    var descriptor = services.FirstOrDefault(d => d.ServiceType == typeof(HtmlEncoder));
+                    if (descriptor != null)
+                    {
+                        services.Remove(descriptor);
+                    }
+
+                    // Add NullHtmlEncoder
+                    services.AddSingleton<HtmlEncoder, ACT.SpecialSpellTimer.RazorModel.NullHtmlEncoder>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to inject NullHtmlEncoder: {ex.Message}");
+            }
         }
 
         /// <summary>
