@@ -72,7 +72,10 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
                 MetadataReference.CreateFromFile(typeof(System.Linq.Enumerable).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Text.RegularExpressions.Regex).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Xml.XmlDocument).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(Advanced_Combat_Tracker.ActGlobals).Assembly.Location)
+                MetadataReference.CreateFromFile(typeof(Advanced_Combat_Tracker.ActGlobals).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(RazorLightEngine).Assembly.Location),
+                MetadataReference.CreateFromFile(Assembly.Load("netstandard").Location),
+                MetadataReference.CreateFromFile(Assembly.Load("Microsoft.CSharp").Location)
             );
 
             // Inject NullHtmlEncoder to disable HTML encoding
@@ -725,7 +728,16 @@ namespace ACT.SpecialSpellTimer.RaidTimeline
         {
             try
             {
+                // Try to set 'disableEncoding' field (RazorLight 2.0+)
                 var allFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+                var field = builder.GetType().GetField("disableEncoding", allFlags);
+                if (field != null)
+                {
+                    field.SetValue(builder, true);
+                    return;
+                }
+
+                // Fallback: Try to find IServiceCollection and inject NullHtmlEncoder
                 IServiceCollection services = null;
 
                 // 1. Search Properties
