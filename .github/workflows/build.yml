@@ -65,6 +65,12 @@ jobs:
     - name: Build Solution
       run: msbuild ${{ env.Solution_Path }} /p:Configuration=Release /p:Platform=x64
 
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ACT.Hojoring-Build
+        path: source/ACT.Hojoring/bin/x64/Release
+
     # Uncomment if tests are available and runnable
     # - name: Run Tests
     #   run: dotnet test ${{ env.Test_Project_Path }} --no-build --verbosity normal
