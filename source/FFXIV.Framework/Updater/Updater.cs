@@ -144,8 +144,11 @@ namespace FFXIV.Framework.Updater
             public Task<bool> WaitForStart => _startTask.Task;
             public Task WaitForClose => _dialogCloseTask.Task;
 
-            public ProgressDialog(string title)
+            private string currentRepo = GitHubRepo;
+
+            public ProgressDialog(string title, string repo)
             {
+                this.currentRepo = repo;
                 this.Text = $"{title} - アップデートの進行状況";
                 this.Size = new Size(750, 600);
                 this.StartPosition = FormStartPosition.CenterScreen;
@@ -266,6 +269,14 @@ namespace FFXIV.Framework.Updater
             public void SetReleaseNotes(string tagName, string markdown)
             {
                 var rawMarkdown = (markdown ?? "").Replace("\r\n", "\n").Replace("\r", "\n");
+
+                // Linkify issues #123 -> [#123](https://github.com/user/repo/issues/123)
+                if (!string.IsNullOrEmpty(this.currentRepo))
+                {
+                    rawMarkdown = Regex.Replace(rawMarkdown, @"#(\d+)", match => 
+                        $"[#{match.Groups[1].Value}](https://github.com/{this.currentRepo}/issues/{match.Groups[1].Value})");
+                }
+
                 var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSoftlineBreakAsHardlineBreak().Build();
                 var htmlContent = Markdown.ToHtml(rawMarkdown, pipeline);
                 var fullHtml = $@"<html><head><meta http-equiv='X-UA-Compatible' content='IE=edge' /><style>body {{ font-family: 'Segoe UI', 'Meiryo', sans-serif; font-size: 10pt; line-height: 1.6; padding: 15px; color: #333; }} h1.release-tag {{ color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-top: 0; font-size: 18pt; }} h2, h3 {{ border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #444; margin-top: 20px; }} code {{ background-color: #f0f0f0; padding: 2px 4px; border-radius: 3px; font-family: 'Consolas', monospace; }} pre {{ background-color: #f8f8f8; padding: 10px; border-radius: 5px; overflow-x: auto; border: 1px solid #eee; }} ul, ol {{ padding-left: 25px; }} li {{ margin-bottom: 4px; }} a {{ color: #0066cc; text-decoration: none; font-weight: bold; }} a:hover {{ text-decoration: underline; }}</style></head><body><h1 class='release-tag'>{tagName}</h1>{htmlContent}</body></html>";
@@ -348,7 +359,7 @@ namespace FFXIV.Framework.Updater
                 // UIスレッドで実行
                 return await (Task<bool>)ActGlobals.oFormActMain.Invoke((Func<Task<bool>>)(async () =>
                 {
-                    using (IUpdaterUI dialog = new ProgressDialog(target.DisplayName))
+                    using (IUpdaterUI dialog = new ProgressDialog(target.DisplayName, target.Repo))
                     {
                         dialog.ExternalLogger = (msg) => this.Log($"[Dialog] {msg}");
                         dialog.Show();

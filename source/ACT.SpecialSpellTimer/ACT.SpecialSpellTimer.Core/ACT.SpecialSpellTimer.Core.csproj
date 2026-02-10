@@ -355,8 +355,11 @@
     <PackageReference Include="Prism.Wpf">
       <Version>8.1.97</Version>
     </PackageReference>
-    <PackageReference Include="RazorEngine">
-      <Version>3.10.0</Version>
+    <PackageReference Include="RazorLight">
+      <Version>2.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encodings.Web">
+      <Version>4.7.2</Version>
     </PackageReference>
     <PackageReference Include="Sharlayan">
       <Version>8.0.1</Version>

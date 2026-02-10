@@ -156,9 +156,10 @@
 @del /q /f $(TargetDir)bin\*.dll &gt;nul 2&gt;&amp;1
 
 @mkdir "$(TargetDir)bin" &gt;nul 2&gt;&amp;1
-@move /y "$(TargetDir)*.dll" "$(TargetDir)bin"&gt;nul
+@move /y "$(TargetDir)*.dll" "$(TargetDir)bin" &gt;nul
 
-@move /y "$(TargetDir)bin\RazorEngine.dll" "$(TargetDir)"&gt;nul
+@move /y "$(TargetDir)bin\FFXIV.Framework.dll" "$(TargetDir)"&gt;nul
+
 @move /y "$(TargetDir)bin\ACT.Hojoring.Common.dll" "$(TargetDir)"&gt;nul
 @move /y "$(TargetDir)bin\ACT.Hojoring.Updater.dll" "$(TargetDir)"&gt;nul
 @move /y "$(TargetDir)bin\ACT.SpecialSpellTimer.dll" "$(TargetDir)"&gt;nul
