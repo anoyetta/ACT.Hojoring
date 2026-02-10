@@ -29,7 +29,7 @@ jobs:
 
     - name: Restore Signing Key
       id: restore_key
-      if: ${{ secrets.HOJORING_SNK_BASE64 != '' }}
+      if: secrets.HOJORING_SNK_BASE64 != ''
       run: |
         $bytes = [Convert]::FromBase64String("${{ secrets.HOJORING_SNK_BASE64 }}")
         [IO.File]::WriteAllBytes("source/ACT.Hojoring.Common/Hojoring.snk", $bytes)
