@@ -55,6 +55,7 @@ jobs:
         if ("${{ secrets.HOJORING_SNK_BASE64 }}" -ne "") {
           $bytes = [Convert]::FromBase64String("${{ secrets.HOJORING_SNK_BASE64 }}")
           [IO.File]::WriteAllBytes("source/ACT.Hojoring.Common/Hojoring.snk", $bytes)
+          [IO.File]::WriteAllBytes("source/ACT.Hojoring.Activator/Hojoring.snk", $bytes)
         } else {
           Write-Host "HOJORING_SNK_BASE64 is not set. Skipping signing key restoration."
         }
