@@ -1,3 +1,29 @@
 <Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
   <PropertyChanged />
+  <Costura IncludeDebugSymbols="false">
+    <IncludeAssemblies>
+      Sharlayan
+      Newtonsoft.Json
+      Newtonsoft.Json.Bson
+      System.Runtime.CompilerServices.Unsafe
+      System.Memory
+      System.Buffers
+      System.Numerics.Vectors
+      System.ValueTuple
+      WindowsInput
+      Prism
+      Prism.Wpf
+      CommonServiceLocator
+      Hjson
+      Markdig.Signed
+      NAudio
+      NAudio.Asio
+      NAudio.Core
+      NAudio.Midi
+      NAudio.Wasapi
+      NAudio.WinMM
+      Octokit
+      FontAwesome.WPF
+    </IncludeAssemblies>
+  </Costura>
 </Weavers>

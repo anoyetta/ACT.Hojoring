@@ -1,0 +1,13 @@
+<Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
+  <Costura IncludeDebugSymbols="false">
+    <IncludeAssemblies>
+      Xceed.Wpf.Toolkit
+      FontAwesome.WPF
+      NLog
+      MahApps.Metro.IconPacks
+      MahApps.Metro.IconPacks.Core
+      MahApps.Metro.IconPacks.Material
+      MahApps.Metro.IconPacks.MaterialLight
+    </IncludeAssemblies>
+  </Costura>
+</Weavers>

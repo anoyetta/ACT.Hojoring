@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -92,6 +92,8 @@ namespace ACT.Hojoring
         public const string OldFileSuffix = ".old";
         private static bool executed = false;
 
+
+
         /// <summary>
         /// 現在のプラグインディレクトリから .new ファイルを探し、可能な限り即時置換します。
         /// 置換できなかったファイルは自動的に ACT 終了後のバッチ処理に回されます。
@@ -108,7 +110,8 @@ namespace ACT.Hojoring
                 DeleteOldFiles(targetDir);
 
                 var newFiles = Directory.GetFiles(targetDir, "*" + NewFileSuffix, SearchOption.AllDirectories);
-                if (newFiles.Length == 0) return;
+                var pendingDeletes = Directory.GetFiles(targetDir, "*.pending_delete", SearchOption.AllDirectories);
+                if (newFiles.Length == 0 && pendingDeletes.Length == 0) return;
 
                 Log($"[AtomicUpdater] .new files detected. Starting replacement in {targetDir}");
 
@@ -143,7 +146,7 @@ namespace ACT.Hojoring
                     }
                 }
 
-                if (lockedFiles.Count > 0)
+                if (lockedFiles.Count > 0 || pendingDeletes.Length > 0)
                 {
                     ScheduleExternalUpdate(lockedFiles);
                 }
@@ -167,9 +170,10 @@ namespace ACT.Hojoring
             if (string.IsNullOrEmpty(targetDir)) return;
 
             var newFiles = Directory.GetFiles(targetDir, "*" + NewFileSuffix, SearchOption.AllDirectories);
-            if (newFiles.Length == 0) return;
+            var pendingDeletes = Directory.GetFiles(targetDir, "*.pending_delete", SearchOption.AllDirectories);
+            if (newFiles.Length == 0 && pendingDeletes.Length == 0) return;
 
-            Log($"[AtomicUpdater] External update requested. {newFiles.Length} files scheduled.");
+            Log($"[AtomicUpdater] External update requested. {newFiles.Length} files scheduled, {pendingDeletes.Length} deletes scheduled.");
             ScheduleExternalUpdate(newFiles);
         }
 
@@ -206,6 +210,9 @@ namespace ACT.Hojoring
 
         private static void ScheduleExternalUpdate(IEnumerable<string> newFiles)
         {
+            string targetDir = GetTargetDirectory();
+            if (string.IsNullOrEmpty(targetDir)) return;
+
             try
             {
                 var batchPath = Path.Combine(Path.GetTempPath(), $"hojoring_atomic_swap_{Guid.NewGuid():N}.bat");
@@ -244,6 +251,27 @@ namespace ACT.Hojoring
                         sw.WriteLine($"  echo %date% %time% [INFO ] [Batch] Successfully replaced {fileName}. >> \"{logFile}\"");
                         sw.WriteLine($")");
                     }
+
+                    // 不要となったDLL（保留削除）のクリーンアップを更新（移動）処理の後に実行する
+                    try
+                    {
+                        var pendingDeletes = Directory.GetFiles(targetDir, "*.pending_delete", SearchOption.AllDirectories);
+                        if (pendingDeletes.Length > 0)
+                        {
+                            sw.WriteLine("echo 不要なアセンブリをクリーンアップしています...");
+                            foreach (var pdFile in pendingDeletes)
+                            {
+                                string targetPath = pdFile.Substring(0, pdFile.Length - ".pending_delete".Length);
+                                string fileName = Path.GetFileName(targetPath);
+
+                                sw.WriteLine($"echo クリーンアップ中: {fileName}");
+                                sw.WriteLine($"if exist \"{targetPath}\" attrib -r \"{targetPath}\" > nul");
+                                sw.WriteLine($"del /f /q \"{targetPath}\" > nul 2>&1");
+                                sw.WriteLine($"del /f /q \"{pdFile}\" > nul 2>&1");
+                            }
+                        }
+                    }
+                    catch { }
 
                     sw.WriteLine($"echo %date% %time% [INFO ] [Batch] External update session completed. >> \"{logFile}\"");
                     sw.WriteLine("echo すべての更新が完了しました。");

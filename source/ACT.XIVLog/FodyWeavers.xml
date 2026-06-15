@@ -6,6 +6,8 @@
     </PreloadOrder>
     <IncludeAssemblies>
       ACT.Hojoring.Activator
+      websocket-sharp
+      TagLibSharp
     </IncludeAssemblies>
   </Costura>
 </Weavers>

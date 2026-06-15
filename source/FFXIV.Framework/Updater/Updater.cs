@@ -1,4 +1,4 @@
-﻿using Advanced_Combat_Tracker;
+using Advanced_Combat_Tracker;
 using FFXIV.Framework.Common;
 using Markdig;
 using Newtonsoft.Json;
@@ -494,14 +494,32 @@ namespace FFXIV.Framework.Updater
                 CreateBackup(_destDir, dialog);
 
                 dialog.WriteLog("クリーンアップ中...");
-                CleanupOldAssets(_destDir, ignoreList, dialog);
+                CleanupOldAssets(_destDir, installSrc, ignoreList, dialog);
 
                 dialog.WriteLog("マイグレーション中...");
                 MigrateDirectories(_destDir, dialog);
 
                 dialog.WriteLog("ファイルを配置中...");
                 this.OnBeforeUpdate?.Invoke();
-                return await Task.Run(() => Install(installSrc, _destDir, ignoreList, dialog));
+                
+                var installResult = await Task.Run(() => Install(installSrc, _destDir, ignoreList, dialog));
+                
+                // 保留削除マークファイルが存在する場合、失敗リスト（保留リスト）に追加して外部アップデート（バッチ）を誘発させる
+                try
+                {
+                    var pendingDeletes = Directory.GetFiles(_destDir, "*.pending_delete", SearchOption.AllDirectories);
+                    foreach (var pd in pendingDeletes)
+                    {
+                        string relative = pd.Substring(_destDir.Length).TrimStart('\\', '/');
+                        if (!installResult.failedFiles.Contains(relative))
+                        {
+                            installResult.failedFiles.Add(relative);
+                        }
+                    }
+                }
+                catch { }
+
+                return installResult;
             }
             catch (Exception ex)
             {
@@ -556,7 +574,7 @@ namespace FFXIV.Framework.Updater
             }
         }
 
-        private void CleanupOldAssets(string dest, List<string> ignoreList, IUpdaterUI dialog)
+        private void CleanupOldAssets(string dest, string src, List<string> ignoreList, IUpdaterUI dialog)
         {
             string[] dirsToClean = { "references", "openJTalk", "yukkuri", "tools" };
             foreach (var d in dirsToClean)
@@ -584,11 +602,30 @@ namespace FFXIV.Framework.Updater
                 {
                     continue;
                 }
-                try
+
+                // 新パッケージ（src）にこのファイルが存在しないかチェックする
+                string srcPath = Path.Combine(src, fileName);
+                if (!File.Exists(srcPath))
                 {
-                    File.Delete(dll);
+                    try
+                    {
+                        File.Delete(dll);
+                        dialog.WriteLog($"クリーンアップ: {fileName}");
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            string pendingDeletePath = dll + ".pending_delete";
+                            if (!File.Exists(pendingDeletePath))
+                            {
+                                File.WriteAllText(pendingDeletePath, string.Empty);
+                            }
+                        }
+                        catch { }
+                        dialog.WriteLog($"保留クリーンアップ (ロック中): {fileName}");
+                    }
                 }
-                catch { }
             }
 
             string binPath = Path.Combine(dest, "bin");
@@ -604,11 +641,30 @@ namespace FFXIV.Framework.Updater
                     {
                         continue;
                     }
-                    try
+
+                    // 新パッケージ（src）にこのファイルが存在しないかチェックする
+                    string srcPath = Path.Combine(src, relativePath);
+                    if (!File.Exists(srcPath))
                     {
-                        File.Delete(f);
+                        try
+                        {
+                            File.Delete(f);
+                            dialog.WriteLog($"クリーンアップ: {relativePath}");
+                        }
+                        catch
+                        {
+                            try
+                            {
+                                string pendingDeletePath = f + ".pending_delete";
+                                if (!File.Exists(pendingDeletePath))
+                                {
+                                    File.WriteAllText(pendingDeletePath, string.Empty);
+                                }
+                            }
+                            catch { }
+                            dialog.WriteLog($"保留クリーンアップ (ロック中): {relativePath}");
+                        }
                     }
-                    catch { }
                 }
             }
         }

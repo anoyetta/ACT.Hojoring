@@ -1,4 +1,4 @@
-﻿# 現在のディレクトリを取得する (PS7+ compliant)
+# 現在のディレクトリを取得する (PS7+ compliant)
 $cd = $PSScriptRoot
 Set-Location $cd
 
@@ -148,6 +148,61 @@ if (Test-Path .\ACT.Hojoring\bin\x64\Release) {
     }
 
     '●不要なファイルを削除する'
+    # Costura.Fodyで埋め込まれたため不要となったサードパーティDLLを削除
+    $embedded_dlls = @(
+        # FFXIV.Framework 埋め込み
+        "Sharlayan.dll",
+        "Newtonsoft.Json.dll", "Newtonsoft.Json.Bson.dll",
+        "System.Reactive.dll", "System.Reactive.Linq.dll",
+        "Microsoft.CodeAnalysis.CSharp.Scripting.dll", "Microsoft.CodeAnalysis.Scripting.dll",
+        "System.Runtime.CompilerServices.Unsafe.dll", "System.Memory.dll", "System.Buffers.dll", "System.Numerics.Vectors.dll",
+        "System.Collections.Immutable.dll", "System.Threading.Tasks.Extensions.dll", "System.ValueTuple.dll", "System.Reflection.Metadata.dll",
+        "System.Text.Encoding.CodePages.dll", "Microsoft.Bcl.AsyncInterfaces.dll",
+        "websocket-sharp.dll", "WindowsInput.dll",
+        "Grpc.Core.dll", "Grpc.Core.Api.dll", "Grpc.Net.Client.dll", "Grpc.Net.Common.dll",
+        "TagLibSharp.dll", "Prism.dll", "Prism.Wpf.dll", "CommonServiceLocator.dll",
+
+        # ACT.SpecialSpellTimer 埋め込み
+        "Microsoft.AspNetCore.Http.Abstractions.dll", "Microsoft.AspNetCore.Http.Features.dll",
+        "Microsoft.Extensions.Caching.Abstractions.dll", "Microsoft.Extensions.Caching.Memory.dll", "Microsoft.Extensions.Configuration.Abstractions.dll",
+        "Microsoft.Extensions.DependencyInjection.dll", "Microsoft.Extensions.DependencyInjection.Abstractions.dll", "Microsoft.Extensions.FileProviders.Abstractions.dll",
+        "Microsoft.Extensions.FileProviders.Physical.dll", "Microsoft.Extensions.FileSystemGlobbing.dll", "Microsoft.Extensions.Hosting.Abstractions.dll",
+        "Microsoft.Extensions.Logging.Abstractions.dll", "Microsoft.Extensions.Options.dll", "Microsoft.Extensions.Primitives.dll",
+        "Microsoft.IO.RecyclableMemoryStream.dll",
+        "SixLabors.Fonts.dll", "SixLabors.ImageSharp.dll",
+        "NPOI.Core.dll", "NPOI.OOXML.dll", "NPOI.OpenXml4Net.dll", "NPOI.OpenXmlFormats.dll",
+        "ICSharpCode.SharpZipLib.dll", "Enums.NET.dll", "BouncyCastle.Cryptography.dll", "MathNet.Numerics.dll",
+        "ICSharpCode.AvalonEdit.dll", "Markdig.Signed.dll", "Hjson.dll",
+
+        # ACT.TTSYukkuri 埋め込み
+        "RucheHome.Voiceroid.dll", "RucheHomeLib.dll", "VoiceTextWebAPI.Client.dll",
+
+        # ACT.UltraScouter 埋め込み
+        "Extended.Wpf.Toolkit.dll", "Xceed.Wpf.Toolkit.dll",
+        "FontAwesome.WPF.dll", "NLog.dll",
+        "MahApps.Metro.IconPacks.dll", "MahApps.Metro.IconPacks.Core.dll",
+        "MahApps.Metro.IconPacks.Material.dll", "MahApps.Metro.IconPacks.MaterialLight.dll",
+        "MahApps.Metro.IconPacks.BootstrapIcons.dll", "MahApps.Metro.IconPacks.BoxIcons.dll",
+        "MahApps.Metro.IconPacks.Codicons.dll", "MahApps.Metro.IconPacks.Coolicons.dll",
+        "MahApps.Metro.IconPacks.Entypo.dll", "MahApps.Metro.IconPacks.EvaIcons.dll",
+        "MahApps.Metro.IconPacks.FeatherIcons.dll", "MahApps.Metro.IconPacks.FileIcons.dll",
+        "MahApps.Metro.IconPacks.Fontaudio.dll", "MahApps.Metro.IconPacks.FontAwesome.dll",
+        "MahApps.Metro.IconPacks.Fontisto.dll", "MahApps.Metro.IconPacks.ForkAwesome.dll",
+        "MahApps.Metro.IconPacks.Ionicons.dll", "MahApps.Metro.IconPacks.JamIcons.dll",
+        "MahApps.Metro.IconPacks.MaterialDesign.dll", "MahApps.Metro.IconPacks.MaterialLight.dll",
+        "MahApps.Metro.IconPacks.Microns.dll", "MahApps.Metro.IconPacks.Modern.dll",
+        "MahApps.Metro.IconPacks.Octicons.dll", "MahApps.Metro.IconPacks.PicolIcons.dll",
+        "MahApps.Metro.IconPacks.PixelartIcons.dll", "MahApps.Metro.IconPacks.RadixIcons.dll",
+        "MahApps.Metro.IconPacks.RemixIcon.dll", "MahApps.Metro.IconPacks.RPGAwesome.dll",
+        "MahApps.Metro.IconPacks.SimpleIcons.dll", "MahApps.Metro.IconPacks.Typicons.dll",
+        "MahApps.Metro.IconPacks.Unicons.dll", "MahApps.Metro.IconPacks.VaadinIcons.dll",
+        "MahApps.Metro.IconPacks.WeatherIcons.dll", "MahApps.Metro.IconPacks.Zondicons.dll"
+    )
+    foreach ($dll in $embedded_dlls) {
+        Remove-Item -Force $dll -ErrorAction SilentlyContinue
+        Remove-Item -Force "bin\$dll" -ErrorAction SilentlyContinue
+    }
+
     $garbage = @(
         "*.pdb", "*.xml", "*.exe.config",
         "libgrpc_csharp_ext.*.so", "libgrpc_csharp_ext.*.dylib"

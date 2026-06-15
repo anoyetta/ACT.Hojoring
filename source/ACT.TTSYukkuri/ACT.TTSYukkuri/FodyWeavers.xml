@@ -11,6 +11,17 @@
     <IncludeAssemblies>
       ACT.Hojoring.Activator
       CeVIO.*
+      RucheHome.Voiceroid
+      RucheHomeLib
+      VoiceTextWebAPI.Client
+      System.Reactive
+      System.Reactive.Linq
+      Grpc.Core
+      Grpc.Core.Api
+      Grpc.Net.Client
+      Grpc.Net.Common
+      Microsoft.Bcl.AsyncInterfaces
+      FontAwesome.WPF
     </IncludeAssemblies>
     <UnmanagedWinX86Assemblies>
       AqKanji2Koe
@@ -18,6 +29,7 @@
       AquesTalkDriver
       libsodium
       opus
+      grpc_csharp_ext
     </UnmanagedWinX86Assemblies>
     <UnmanagedWinX64Assemblies>
       AqKanji2Koe
@@ -25,6 +37,7 @@
       AquesTalkDriver
       libsodium
       opus
+      grpc_csharp_ext
     </UnmanagedWinX64Assemblies>
   </Costura>
 </Weavers>

@@ -10,9 +10,15 @@ namespace ACT.Hojoring.Shared
         private static bool isConflictChecked = false;
         private static readonly object ConflictLock = new object();
 
+        // Costuraに埋め込まれているアセンブリ名のリスト
+        private static readonly HashSet<string> EmbeddedAssemblies = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
         public static void Initialize(
             Func<string> directoryResolver)
         {
+            // 埋め込みアセンブリ名をスキャンして収集
+            ScanEmbeddedAssemblies();
+
             DirectoryResolvers.Add(directoryResolver);
             AppDomain.CurrentDomain.AssemblyResolve += CustomAssemblyResolve;
 
@@ -26,6 +32,63 @@ namespace ACT.Hojoring.Shared
                     // 競合検出が強すぎて不要な警告が出るため一時的に呼び出しを無効化
                     // System.Threading.Tasks.Task.Run(() => CheckConflicts(directoryResolver?.Invoke()));
                 }
+            }
+        }
+
+        private static void ScanEmbeddedAssemblies()
+        {
+            try
+            {
+                // 現在のAppDomainにロードされている全アセンブリを走査
+                foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    try
+                    {
+                        var name = asm.GetName().Name;
+                        if (string.IsNullOrEmpty(name)) continue;
+
+                        // Hojoring関連アセンブリのみを走査対象にして無関係なスキャンを避ける
+                        if (name.StartsWith("ACT.Hojoring", StringComparison.OrdinalIgnoreCase) ||
+                            name.StartsWith("FFXIV.Framework", StringComparison.OrdinalIgnoreCase) ||
+                            name.StartsWith("ACT.SpecialSpellTimer", StringComparison.OrdinalIgnoreCase) ||
+                            name.StartsWith("ACT.TTSYukkuri", StringComparison.OrdinalIgnoreCase) ||
+                            name.StartsWith("ACT.UltraScouter", StringComparison.OrdinalIgnoreCase) ||
+                            name.StartsWith("ACT.XIVLog", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var resourceNames = asm.GetManifestResourceNames();
+                            if (resourceNames == null) continue;
+
+                            foreach (var resName in resourceNames)
+                            {
+                                if (resName.StartsWith("costura.", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    string cleanName = resName.Substring("costura.".Length);
+                                    if (cleanName.EndsWith(".dll.compressed", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        cleanName = cleanName.Substring(0, cleanName.Length - ".dll.compressed".Length);
+                                    }
+                                    else if (cleanName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        cleanName = cleanName.Substring(0, cleanName.Length - ".dll".Length);
+                                    }
+
+                                    if (!string.IsNullOrEmpty(cleanName))
+                                    {
+                                        EmbeddedAssemblies.Add(cleanName);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // 個別アセンブリのスキャン失敗は無視
+                    }
+                }
+            }
+            catch
+            {
+                // 全体的な例外は無視して安全性を確保
             }
         }
 
@@ -117,7 +180,7 @@ namespace ACT.Hojoring.Shared
                 $"■ 競合アセンブリの一覧:\n{details}\n\n" +
                 $"【推奨する解決方法】\n" +
                 $"1. ACTの「Plugins」➔「Plugin Listing」タブを開きます。\n" +
-                $"2. 「ACT.SpecialSpellTimer.dll」や「ACT.TTSYukkuri.dll」などのHojoringプラグインを、右側の『UP (⬆️)』ボタンでリストの最上部（FFXIV_ACT_Plugin.dllのすぐ下）に引き上げてください。\n" +
+                $"2. 「ACT.SpecialSpellTimer.dll」や「ACT.TTSYukkuri.dll」などのHojoringプラグインを, 右側の『UP (⬆️)』ボタンでリストの最上部（FFXIV_ACT_Plugin.dllのすぐ下）に引き上げてください。\n" +
                 $"3. OverlayPluginやCactbotなどの併用プラグインをすべて最新版にアップデートしてください。\n" +
                 $"4. ACTを再起動してください。";
 
@@ -149,6 +212,24 @@ namespace ACT.Hojoring.Shared
 
         private static Assembly CustomAssemblyResolve(object sender, ResolveEventArgs e)
         {
+            try
+            {
+                var asmName = new AssemblyName(e.Name);
+                if (asmName != null && !string.IsNullOrEmpty(asmName.Name))
+                {
+                    // Costura埋め込み対象のアセンブリである場合、物理ファイルからのロードを回避する。
+                    // nullを返すことで.NET FrameworkはCostura自身のハンドラでアセンブリを解決する。
+                    if (EmbeddedAssemblies.Contains(asmName.Name))
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch
+            {
+                // Ignore
+            }
+
             var dirs = new List<string>();
 
             foreach (var directoryResolver in DirectoryResolvers)
